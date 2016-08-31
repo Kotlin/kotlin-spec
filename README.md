@@ -9,7 +9,7 @@ The Kotlin Language Specification is available in the following formats:
 
 PDF | Single-page HTML | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
 :----:|:----:|:----:
-[kotlin-spec.pdf](kotlin-spec.pdf) | [kotlin-spec.html](kotlin-spec.html) | [kotlin-spec.asc](kotlin.asc)
+[kotlin-spec.pdf](kotlin-spec.pdf) | [View online](http://jetbrains.github.io/kotlin-spec/) | [kotlin-spec.asc](kotlin.asc)
 
 ## Build
 
