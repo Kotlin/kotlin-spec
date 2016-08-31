@@ -7,9 +7,9 @@ For user documentation please refer to the [Kotlin Website](https://kotlinlang.o
 
 The Kotlin Language Specification is available in the following formats:  
 
-PDF | Single-page HTML | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
+Single-page HTML | PDF | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
 :----:|:----:|:----:
-[kotlin-spec.pdf](kotlin-spec.pdf) | [View online](http://jetbrains.github.io/kotlin-spec/) | [kotlin-spec.asc](kotlin.asc)
+[View online](http://jetbrains.github.io/kotlin-spec/) | [kotlin-spec.pdf](kotlin-spec.pdf) | [kotlin-spec.asc](kotlin.asc)
 
 ## Build
 
@@ -17,14 +17,14 @@ Prerequisites:
 * `asciidoctor` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/install-toolchain/))
 * `asciidoctor-pdf` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/convert-asciidoc-to-pdf/#install-the-published-gem)) 
 
-The build script does the following:
-
-- Renders the single-page HTML version
-- Uploads it to GitHub Pages (requires **write access** to the repo)
-- Renders the PDF version
-
-To run the build script:
+To build the HTML and PDF versions into the `.pages` directory: 
 
 ``` bash
 $ ./build.sh
+```
+
+To build everything and publish to GitHub Pages:
+
+``` bash
+$ ./publish.sh
 ```
