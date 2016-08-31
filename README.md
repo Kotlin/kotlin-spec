@@ -13,9 +13,17 @@ PDF | Single-page HTML | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
 
 ## Build
 
-* To set up `asciidoctor`, follow the instructions on [this page](http://asciidoctor.org/docs/install-toolchain/).
-* Then, to set up `asciidoctor-pdf`, follow the instructions on [this page](http://asciidoctor.org/docs/convert-asciidoc-to-pdf/#install-the-published-gem). 
-* Then, to render both the HTML and PDF versions, run the following script:
+Prerequisites:
+* `asciidoctor` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/install-toolchain/))
+* `asciidoctor-pdf` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/convert-asciidoc-to-pdf/#install-the-published-gem)) 
+
+The build script does the following:
+
+- Renders the single-page HTML version
+- Uploads it to GitHub Pages (requires **write access** to the repo)
+- Renders the PDF version
+
+To run the build script:
 
 ``` bash
 $ ./build.sh
