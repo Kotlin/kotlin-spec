@@ -4,7 +4,7 @@
 
 echo "Cloning GitHub Pages"
 rm -rf .pages
-git clone -b gh-pages --single-branch https://github.com/JetBrains/kotlin-spec.git .pages
+git clone  --depth 1 -b gh-pages --single-branch https://github.com/JetBrains/kotlin-spec.git .pages
 echo "done"
 
 ./build.sh
