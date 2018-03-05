@@ -15,7 +15,8 @@ Single-page HTML | PDF | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
 
 Prerequisites:
 * `asciidoctor` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/install-toolchain/))
-* `asciidoctor-pdf` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/convert-asciidoc-to-pdf/#install-the-published-gem)) 
+* `asciidoctor-pdf` (to set up, follow the instructions on [this page](https://asciidoctor.org/docs/asciidoctor-pdf/#install-the-published-gem))
+* `asciidoctor-mathematical` (to set up, follow the instructions on [this page](https://asciidoctor.org/docs/asciidoctor-pdf/#asciidoctor-mathematical))
 
 To build the HTML and PDF versions into the `.pages` directory: 
 
