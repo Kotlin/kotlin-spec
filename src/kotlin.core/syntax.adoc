@@ -44,7 +44,7 @@ _HexDigit_: ::
 _Operator_: ::
       `.` | `,` | `(` | `)` | `[` | `]` | `@[` | `{` | `}` | `\*` | `%` | `/` | `+` | `-` | `++` | `--` +
       | `&&` | `||` | `!` | `!!` | `:` | `;` | `=` | `+=` | `-=` | `*=` | `/=` | `%=` | `\->` | `\=>` +
-      | `..` | `::` | `?::` | `;;` | `#` | `@` | `?` | `?:` | `<` | `>` | `\<=` | `>=` | `!=` | `!==` +
+      | `..` | `::` | `?::` | `;;` | `#` | `@` | `?` | `?:` | `<` | `>` | `\m` | `>=` | `!=` | `!==` +
       | `==` | `===` | `'` | `"` | `"""`
 
 _SoftKeyword_: ::
@@ -275,7 +275,7 @@ _enumClassBody_: ::
       `{` {_NL_} [_enumEntries_] [{_NL_} `;` {_NL_} [_classMemberDeclarations_]] {_NL_} `}` +
 
 _enumEntries_: ::
-      _enumEntry_ {{_NL_} `,` {_NL_} _enumEntry_} {_NL_} `,`? +
+      _enumEntry_ {{_NL_} `,` {_NL_} _enumEntry_} {_NL_} [`,`] +
 
 _enumEntry_: ::
       [modifierList {_NL_}] _simpleIdentifier_ [{_NL_} _valueArguments_] [{_NL_} _classBody_] +
@@ -322,7 +322,7 @@ _propertyDeclaration_: ::
       [{_NL_} _type_ {_NL_} `.`] +
       ({_NL_} (_multiVariableDeclaration_ | _variableDeclaration_)) +
       [{_NL_} _typeConstraints_] +
-      ({_NL_} (`by` | `=`) {_NL_} _expression_)? +
+      [{_NL_} (`by` | `=`) {_NL_} _expression_] +
       [NL+ `;`] {_NL_} [[_getter_] ({_NL_} [_semi_] _setter_] | [_setter_] [{_NL_} [_semi_] _getter_]) +
 
 _multiVariableDeclaration_: ::
@@ -370,7 +370,7 @@ _typeReference_: ::
     | `dynamic`
 
 _functionType_: ::
-      [_receiverType_ {_NL_} `.` {_NL_}] _functionTypeParameters_  {_NL_} `->` [{_NL_} _type_] +
+      [_receiverType_ {_NL_} `.` {_NL_}] _functionTypeParameters_  {_NL_} `\->` [{_NL_} _type_] +
 
 _receiverType_: ::
       _parenthesizedType_ +
@@ -614,11 +614,11 @@ _controlStructureBody_: ::
     | _statement_ +
 
 _whenExpression_: ::
-      `when` {_NL_} (`(` _expression_ `)`)? {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}` +
+      `when` {_NL_} [`(` _expression_ `)`] {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}` +
 
 _whenEntry_: ::
-      _whenCondition_ {{_NL_} `,` {_NL_} _whenCondition_} {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_] +
-    | `else` {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_] +
+      _whenCondition_ {{_NL_} `,` {_NL_} _whenCondition_} {_NL_} `\->` {_NL_} _controlStructureBody_ [_semi_] +
+    | `else` {_NL_} `\->` {_NL_} _controlStructureBody_ [_semi_] +
 
 _whenCondition_: ::
       _expression_ +
@@ -681,7 +681,7 @@ _equalityOperator_: ::
 _comparisonOperator_: ::
       `<` +
     | `>` +
-    | `<=` +
+    | `\<=` +
     | `>=` +
 
 _inOperator_: ::
