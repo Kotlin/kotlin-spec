@@ -579,11 +579,11 @@ _lambdaLiteral_: ::
     | `{` {_NL_} _lambdaParameters_ {_NL_} _ARROW_ {_NL_} _statements_ {_NL_} `}` +
 
 _lambdaParameters_: ::
-      [_lambdaParameter_] {{_NL_} _COMMA_ {_NL_} _lambdaParameter_} +
+      [_lambdaParameter_] {{_NL_} `,` {_NL_} _lambdaParameter_} +
 
 _lambdaParameter_: ::
       _variableDeclaration_ +
-    | _multiVariableDeclaration_ [{_NL_} _COLON_ {_NL_} _type_] +
+    | _multiVariableDeclaration_ [{_NL_} `:` {_NL_} _type_] +
 
 _anonymousFunction_: ::
       `fun` +
@@ -602,12 +602,10 @@ _objectLiteral_: ::
     | `object` {_NL_} _classBody_ +
 
 _thisExpression_: ::
-      `this` [_AtIdentifier_] +
-    | _THIS_AT_ +
+      `this` [_AtIdentifier_]
 
 _superExpression_: ::
-      `super` [`<` {_NL_} _type_ {_NL_} `>`] [_AtIdentifier_] +
-    | _SUPER_AT_ +
+      `super` [`<` {_NL_} _type_ {_NL_} `>`] [_AtIdentifier_]
 
 _controlStructureBody_: ::
       _block_ +
