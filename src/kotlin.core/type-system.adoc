@@ -1,3 +1,46 @@
 = Type system
 
-TODO()
+[glossary]
+== Glossary
+
+[glossary]
+stem:[T]:: Type
+stem:[T!]:: Non-nullable type
+stem:[T?]:: Nullable type
+stem:[\langle T\rangle]:: Value of type stem:[T]
+
+== Introduction
+
+Kotlin has a type system with the following main properties:
+
+* static type checking
+* null safety
+* no unsafe implicit conversions
+* unified root type
+* nominal subtyping with bounded parametric polymorphism
+
+TODO(static type checking)
+
+Null safety is enforced by having two type universes --- _nullable_ (with nullable types stem:[T?]) and _non-nullable_ (with non-nullable types stem:[T!]). All operations footnote:[Except for TODO()] which are allowed on nullable types are safe, i.e., should never cause a runtime null pointer error.
+
+Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an <<Cast expression,explicit cast>>. However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail <<Smart casts,here>>.
+
+The unified root type for all types in Kotlin is `kotlin.Any?`, a nullable version of <<kotlin.Any>>.
+
+Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as <<Generics,generics>>.
+
+== Built-in types
+
+Kotlin type system uses the following built-in types, which have special semantics and representation (or lack thereof).
+
+=== `kotlin.Any` [[kotlin.Any]]
+
+=== `kotlin.Nothing` [[kotlin.Nothing]]
+
+=== `kotlin.Unit` [[kotlin.Unit]]
+
+== Nullability
+
+== Subtyping
+
+== Generics
