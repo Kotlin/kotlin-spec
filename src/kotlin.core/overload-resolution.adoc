@@ -220,4 +220,66 @@ overload resolution in the following way:
 
 == Choosing the most specific function from the overload candidate set
 
-TODO()
+=== Rationale
+
+The main rationale behind choosing the most specific function from a candidate set
+is that the function chosen could be easily forwarded to by all the other functions
+in the set, while the reverse is not true. If there are several functions with
+this property, none of them is the most specific and an ambiguity error should
+be reported by the compiler.
+
+Let's look at an example with two functions:
+
+```kotlin
+fun f(arg: Int, arg2: String) {}        // (1)
+fun f(arg: Any?, arg2: CharSequence) {} // (2)
+...
+f(2, "Hello")
+```
+
+Here both functions are applicable for the call, but also function (1) could easily
+call function (2) by forwarding both arguments into it, but the reverse is impossible.
+As a result, function (1) is more specific of the two.
+Let's rename the functions to make it more clear:
+
+```kotlin
+fun f1(arg: Int, arg2: String) {
+    f2(arg, arg2) // perfectly valid
+}
+fun f2(arg: Any?, arg2: CharSequence) {
+    f1(arg, arg2) // invalid: function f1 is not appicable
+}
+```
+
+The rest of this section will try to clarify this mechanism a little more.
+
+=== Formal definition(?)
+
+One applicable function stem:[f_1] is *more specific* than other applicable
+function stem:[f_2] for an invocation with argument expressions stem:[e_1,e_2...e_K]
+if any of the following are true:
+
+- stem:[f_2] is generic and stem:[f_1] is _inferred to be more specific_<<TODO()>> than `f_2` for argument
+  expressions stem:[e_1,e_2...e_K];
+- stem:[f_2] is not generic and all of the following holds:
+    ** `f1` has formal parameter types (including the receiver parameter, if any) stem:[S_1,S_2,S_3...S_N]
+    ** `f2` has formal parameter types (including the receiver parameter, if any) stem:[T_1,T_2,T_3...T_N]
+    ** Types stem:[S_1...S_K] are more specific for expressions stem:[e_1...e_K] than types stem:[T_1...T_K]
+- TODO(): varargs
+
+The most specific function of a candidate set is the element of the set that is more specific than any
+other element of the set. If there is more than one such function, an ambiguity error should be reported.
+
+A type S is more specific than type T for expression e if any of the following holds:
+
+- stem:[S <: T]
+- TODO()
+
+== TODO:
+
+- Properties business
+- Definition of "applicable function"
+- Calls with named parameters `f(x = 2)`
+- Calls with trailing lambda without parameter type
+** Lambdas with parameter types seem to be covered (or do they?)
+- Calls with specified type parameters `f<Double>(3)`
