@@ -13,20 +13,4 @@ Single-page HTML | PDF | [AsciiDoc](http://www.methods.co.nz/asciidoc/) Source |
 
 ## Build
 
-Prerequisites:
-* `asciidoctor` (to set up, follow the instructions on [this page](http://asciidoctor.org/docs/install-toolchain/))
-* `asciidoctor-pdf` (to set up, follow the instructions on [this page](https://asciidoctor.org/docs/asciidoctor-pdf/#install-the-published-gem))
-* `asciidoctor-mathematical` (to set up, follow the instructions on [this page](https://asciidoctor.org/docs/asciidoctor-pdf/#asciidoctor-mathematical))
-* `pygments` (to set up, follow the instructions on [this page](https://asciidoctor.org/docs/user-manual/#pygments))
-
-To build the HTML and PDF versions into the `.pages` directory: 
-
-``` bash
-$ ./build.sh
-```
-
-To build everything and publish to GitHub Pages:
-
-``` bash
-$ ./publish.sh
-```
+```TODO()```

@@ -1,11 +1,11 @@
-= Overload resolution
+## Overload resolution
 
 Kotlin supports _function overloading_, that is, the ability for several functions
 of the same name to coexist in the same scope, with the compiler picking the
 most suitable one when such a function is called. This section describes this
 mechanism in detail.
 
-== Intro
+### Intro
 
 Unlike other object-oriented languages, Kotlin does not only have object methods,
 but also top-level functions, local functions, extension functions and function-like
@@ -13,7 +13,7 @@ values, which complicates the overloading process quite a lot. Kotlin also
 has infix functions, operator and property overloading which all work in a similar
 but rather different way.
 
-== Receivers
+### Receivers
 
 Every function or property that is defined as a method or an extension has one
 or more special parameters called _receiver_ parameters.
@@ -46,12 +46,12 @@ The available receivers are prioritized in the following way:
 The implicit receiver having the highest priority is also called the _default
 implicit receiver_. The default implicit receiver is available in the scope
 as `this`. Other available receivers may be accessed using
-<<This-expressions,this-expressions>> of different form.
+[this-expressions][This-expressions] of different form.
 
 If an implicit receiver is available in some scope, it may be used to call functions
 implicitely without using the navigation operator.
 
-== The forms of call-expression
+### The forms of call-expression
 
 Any function in Kotlin may be called in several different ways:
 
@@ -67,7 +67,7 @@ callees and then _choose the most specific function_ to call based on the types
 of the function and the call operands. Please note that the overload candidates
 are picked **before** the most specific function is chosen.
 
-== Overload resolution for a fully-qualified call
+### Overload resolution for a fully-qualified call
 
 If the function name is fully-qualified (that is, contains full package path),
 then the overloading candidate set simply contains all the functions with
@@ -87,10 +87,10 @@ a.b.c.foo()
 Here the overload candidates set contains all the functions named `foo` from the
 package `a.b.c`.
 
-== A call with an explicit receiver
+### A call with an explicit receiver
 
 If a function call is done using a navigation operator (`.` or `?.`, not to be
-confused with a <<Overload resolution for a fully-qualified call,fully-qualified call>>),
+confused with a [fully-qualified call][Overload resolution for a fully-qualified call]),
 then the left hand side operand of this operator is the explicit receiver of this
 call.
 
@@ -135,7 +135,7 @@ more suitable candidate function, but the set constructed in step 1
 is not empty, the function from set 1 is picked even it is a less suitable
 candidate.
 
-== Infix function calls
+### Infix function calls
 
 In reality, infix function calls are a special case of function calls with an
 explicit receiver using the left hand operand as this receiver.
@@ -149,7 +149,7 @@ rules as for normal calls with explicit receiver.
 Different platform implementations may extend the set of functions deemed valid
 candidates for inclusion as infix functions.
 
-== Operator calls
+### Operator calls
 
 According to TODO(), some operator expressions in Kotlin can be overloaded
 using specially-named functions. This makes operator expressions semantically
@@ -166,7 +166,7 @@ candidates for inclusion as operator functions.
 Please note that this is valid not only for dedicated operator expressions, but
 also for `for`-loops iteration process and property delegates.
 
-== A call without an explicit receiver
+### A call without an explicit receiver
 
 A call that is performed with unqualified function name and without using a
 navigation operator is a call without an explicit receiver. It may in fact
@@ -192,7 +192,7 @@ Than for a function named `f` the following sets are looked upon (in this order)
 When looked upon these sets, the first set that contains **any** function
 with the corresponding name and conforming types is picked.
 
-== Function values and `invoke` convention
+### Function values and `invoke` convention
 
 According to TODO(), a special function (be it a member or an extension function)
 called `invoke()` containing an operator modifier can be used as the call
@@ -209,8 +209,8 @@ if there exists a property with the same name as this function, it does particip
 overload resolution in the following way:
 
 * The property is looked for using the same rules it uses for normal functions
-** For a property found, an additional overload resolution looking for operator
-    `invoke` for this property is performed;
+    * For a property found, an additional overload resolution looking for operator
+      `invoke` for this property is performed;
 * The resulting overload candidate sets are ordered in the same fashion the
   candidate sets for normal functions are ordered, but are not united with them;
 * The resulting ordering involves mixing both candidate set orders, putting
@@ -218,9 +218,9 @@ overload resolution in the following way:
   set;
 * The winning set is chosen and the most specific function is found as before.
 
-== Choosing the most specific function from the overload candidate set
+### Choosing the most specific function from the overload candidate set
 
-=== Rationale
+#### Rationale
 
 The main rationale behind choosing the most specific function from a candidate set
 is that the function chosen could be easily forwarded to by all the other functions
@@ -253,18 +253,18 @@ fun f2(arg: Any?, arg2: CharSequence) {
 
 The rest of this section will try to clarify this mechanism a little more.
 
-=== Formal definition(?)
+#### Formal definition(?)
 
-One applicable function stem:[f_1] is *more specific* than other applicable
-function stem:[f_2] for an invocation with argument expressions stem:[e_1,e_2...e_K]
+One applicable function $f_1$ is _more specific_ than other applicable
+function $f_2$ for an invocation with argument expressions $e_1,e_2...e_K$
 if any of the following are true:
 
-- stem:[f_2] is generic and stem:[f_1] is _inferred to be more specific_<<TODO()>> than `f_2` for argument
-  expressions stem:[e_1,e_2...e_K];
-- stem:[f_2] is not generic and all of the following holds:
-    ** `f1` has formal parameter types (including the receiver parameter, if any) stem:[S_1,S_2,S_3...S_N]
-    ** `f2` has formal parameter types (including the receiver parameter, if any) stem:[T_1,T_2,T_3...T_N]
-    ** Types stem:[S_1...S_K] are more specific for expressions stem:[e_1...e_K] than types stem:[T_1...T_K]
+- $f_2$ is generic and $f_1$ is _inferred to be more specific_[TODO()] than $f_2$ for argument
+  expressions $e_1,e_2...e_K$;
+- $f_2$ is not generic and all of the following holds:
+    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$
+    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$
+    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$
 - TODO(): varargs
 
 The most specific function of a candidate set is the element of the set that is more specific than any
@@ -272,15 +272,44 @@ other element of the set. If there is more than one such function, an ambiguity 
 
 A type S is more specific than type T for expression e if any of the following holds:
 
-- stem:[S <: T]
+- $S <: T$
 - TODO()
 
-== TODO:
+#### TODO:
 
 - Properties business
 - Definition of "applicable function"
 - Definition of "inferred to be more specific"
 - Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
-** Lambdas with parameter types seem to be covered (or do they?)
+    * Lambdas with parameter types seem to be covered (or do they?)
 - Calls with specified type parameters `f<Double>(3)`
+
+#### Playground:
+
+\begin{align*}
+x &= 1 \\
+y &= \left[\varphi\right] \\
+z &= \sum\limits_{n \in N}{n^{n^n}}
+\end{align*}
+
+```kotlin
+object SimpleJSONParser: StringsAsParsers {
+    val string = Literals.JSTRING
+    val number = Literals.FLOAT
+    val boolean = Literals.BOOLEAN
+    val nully = (+"null").map { null }
+
+    val arrayElements = defer { element } joinedBy -',' orElse emptyList()
+    val array = -'[' + arrayElements + -']'
+
+    val entry_ = string + -':' + defer { element }
+    val entry = entry_.map { (a, b) -> a to b }
+
+    val objectElements = entry joinedBy -',' orElse emptyList()
+    val obj = -'{' + objectElements + -'}'
+
+    val element: Parser<Char, Any?> = nully or string or number or boolean or array or obj
+    val whole = element + eof()
+}
+```
