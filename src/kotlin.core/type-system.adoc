@@ -15,13 +15,13 @@ stem:[\langle T\rangle]:: Value of type stem:[T]
 
 Kotlin has a type system with the following main properties:
 
-* static type checking
+* hybrid static and gradual type checking
 * null safety
 * no unsafe implicit conversions
 * unified root type
 * nominal subtyping with bounded parametric polymorphism
 
-TODO(static type checking)
+TODO(static type checking, gradual type checking)
 
 Null safety is enforced by having two type universes --- _nullable_ (with nullable types `T?`) and _non-nullable_ (with non-nullable types `T!!`). All operations footnote:[Except for TODO()] which are allowed on nullable types are safe, i.e., should never cause a runtime null pointer error.
 
@@ -57,23 +57,40 @@ TODO(Compare to `void`)
 
 == Nullability
 
-Kotlin supports null safety by having two kinds of types --- nullable and non-nullable. All type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime. To specify a nullable version of type `Foo`, one needs to use `Foo?` as a type.
+Kotlin supports null safety by having two kinds of types --- nullable and non-nullable. All type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
-NOTE: Informally, question mark means "type `T?` may hold values of type T or value `null`"
+To specify a nullable version of type `Foo`, one needs to use `Foo?` as a type. Redundant nullability specifiers are ignored --- `Foo???` is equivalent to `Foo?`.
 
-As arbitrary operations on `T?` may violate null safety, one has three options when working with nullable types:
+NOTE: Informally, question mark means "`T?` may hold values of type T or value `null`"
+
+If an operation is safe regardless of absence or presence of `null`, i.e., assignment of one nullable value to another, it can be used as-is for nullable types. For operations on `T?` which may violate null safety, one has the following null-safe options:
 
 . Use safe operations
 * <<Safe call expression,safe call>>
 . Downcast from `T?` to `T!!`
 * <<Cast expression,unsafe cast>>
 * <<Type check expression,type check>> combined with <<Smart casts,smart casts>>
+* Null check combined with <<Smart casts,smart casts>>
+* <<Not-null assertion operator expression,not-null assertion operator>>
 . Supply a default value to use instead of `null`
 * <<Elvis operator expression,elvis operator>>
 
 == Flexible types
 
+Kotlin, being a multi-platform language, should support transparent interoperability with platform-dependent code. However, this presents a problem in that some platforms may not support null safety the way Kotlin does. To deal with this, Kotlin supports _gradual typing_ in the form of *flexible types*.
+
+A flexible type represents a range of possible types between type `A` (lower bound) and type `B` (upper bound), written as `(A..B)`. One should note flexible types are non-denotable, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
+
+To represent a valid flexible type, `(A..B)` should satisfy the following conditions:
+
+* `A <: B`
+* `not (B <: A)`
+* `A` and `B` are *not* flexible types
+
 == Platform types
+
+TODO(Platform types as flexible types)
+TODO(Reference different platforms)
 
 == Subtyping
 
