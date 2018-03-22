@@ -1,3 +1,3 @@
-= Introduction
+## Introduction
 
 Here be dragons...

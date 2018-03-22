@@ -1,11 +1,12 @@
 #!/bin/bash
 
+mkdir -p ../.pages
+
 echo "Rendering HTML..."
-asciidoctor index.adoc
-mv index.html ../.pages/index.html
+gpp -H index.md | pandoc --toc -c index.css --mathjax -s -f markdown-raw_html -o ../.pages/index.html
+cp index.css ../.pages/
 echo "done"
 
 echo "Rendering PDF..."
-asciidoctor-pdf -r asciidoctor-mathematical index.adoc
-mv index.pdf ../.pages/kotlin-spec.pdf
+gpp -H index.md | pandoc --toc -H preamble.tex --variable documentclass=book -s -f markdown-raw_html+smart -o ../.pages/kotlin-spec.pdf
 echo "done"
