@@ -96,14 +96,14 @@ call.
 
 A call of function `f` with explicit receiver `e` is correct if one (or more) of the following holds:
 
-. `f` is a method of the classifier type of `e` or any of its supertypes;
-. `f` is an extension function for the classifier type of `e` or any of its supertypes;
-. `f` is a property of the classifier type of `e` or any of its supertypes which allows
-  a call-like operator through the `invoke` convention (see below);
-. `f` is an extension property for the classifier type of `e` or any of its supertypes which allows
-  a call-like operator through the `invoke` convention (see below);
-. `f` is a local variable of an extension type with receiver type equivalent to the
-  type of `e` or any of its supertypes
+1. `f` is a method of the classifier type of `e` or any of its supertypes;
+2. `f` is an extension function for the classifier type of `e` or any of its supertypes;
+3. `f` is a property of the classifier type of `e` or any of its supertypes which allows
+   a call-like operator through the `invoke` convention (see below);
+4. `f` is an extension property for the classifier type of `e` or any of its supertypes which allows
+   a call-like operator through the `invoke` convention (see below);
+5. `f` is a local variable of an extension type with receiver type equivalent to the
+   type of `e` or any of its supertypes
 
 Cases 3, 4 and 5 will be covered later in the section TODO(). For now we assume that
 the function called is either a method or an extension function.
