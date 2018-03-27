@@ -6,7 +6,7 @@
 
 ##### Character classes
 
-**_LF_:**    
+**_LF_:**  
   ~  _<unicode character Line Feed U+000A>_
 
 **_CR_:**  
