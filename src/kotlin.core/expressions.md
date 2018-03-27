@@ -154,7 +154,7 @@ Any character literal has type `kotlin.Char`.
 #### String literals
 
 Kotlin supports [string interpolation][String Interpolation] mechanisms
-that superseed traditional string literals. Please refer to the corresponding
+that supersede traditional string literals. Please refer to the corresponding
 section.
 
 #### Null literal
@@ -163,6 +163,33 @@ The keyword `null` signifies the **null reference**, which is a valid value for 
 [nullable types][Nullable types].
 Null reference implicitly has the nullable `kotlin.Nothing?` type and is, by definition,
 the only valid value for this type (see [the corresponding section][`kotlin.Nothing`]).
+
+TODO(): reshuffle these sections
+
+### Conditional expression
+
+**_ifExpression_:**  
+  ~  `if` {_NL_} `(` {_NL_} _expression_ {_NL_} `)` {_NL_} _controlStructureBody_ [[`;`] {_NL_} `else` {_NL_} _controlStructureBody_]   
+    | `if` {_NL_} `(` {_NL_} _expression_ {_NL_} `)` {_NL_} [`;` {_NL_}] `else` {_NL_} _controlStructureBody_   
+
+**Conditional expressions** use the boolean value of one expression (*condition*) to decide
+which of two other expressions (*branches*) should be evaluated.
+If the condition evaluates to `true`, than the first branch (the true branch) is
+evaluated, otherwise the second branch is.
+The value of the resulting expression is the same as the value of the chosen branch.
+The type of the resulting expression is
+the [least upper bound][Least upper bound] of the types of two branches (TODO(): not that simple).
+If one of the branches is omitted (see the grammar entry above), the resulting expression
+has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
+but only as a statement.
+
+The condition expression must have type `kotlin.Boolean` (TODO(): or be smartcasted to it!),
+otherwise it is a type error.
+
+### When expression
+
+**_whenExpression_:**  
+  ~  `when` {_NL_} [`(` _expression_ `)`] {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}`   
 
 ### Cast expression
 
@@ -175,3 +202,9 @@ the only valid value for this type (see [the corresponding section][`kotlin.Noth
 ### Safe call expression
 
 ### Type check expression
+
+## TODOS()
+
+- Control structure body typing
+- Smart casts vs compile-time types
+- The whole "used as an expression" vs "used as a statement" business
