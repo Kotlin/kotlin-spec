@@ -369,7 +369,7 @@ Syntax literals are fully defined in syntax grammar due to the complex nature of
     | `dynamic`
 
 **_functionType_:**  
-  ~  [_receiverType_ {_NL_} `.` {_NL_}] _functionTypeParameters_  {_NL_} `\->` [{_NL_} _type_]   
+  ~  [_receiverType_ {_NL_} `.` {_NL_}] _functionTypeParameters_  {_NL_} `->` [{_NL_} _type_]   
 
 **_receiverType_:**  
   ~  _parenthesizedType_   

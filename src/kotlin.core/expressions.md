@@ -4,6 +4,10 @@ TODO()
 
 ### Constant literals
 
+Constant literals are expressions that correspond to constant, non-changing values.
+Every constant literal is defined to have a single standard library type, whichever
+it is defined to be on current platform.
+
 #### Boolean literals
 
 **_BooleanLiteral_:**  
@@ -152,6 +156,13 @@ Any character literal has type `kotlin.Char`.
 Kotlin supports [string interpolation][String Interpolation] mechanisms
 that superseed traditional string literals. Please refer to the corresponding
 section.
+
+#### Null literal
+
+The keyword `null` signifies the **null reference**, which is a valid value for all
+[nullable types][Nullable types].
+Null reference implicitly has the nullable `kotlin.Nothing?` type and is, by definition,
+the only valid value for this type (see [the corresponding section][`kotlin.Nothing`]).
 
 ### Cast expression
 
