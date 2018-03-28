@@ -614,8 +614,8 @@ Syntax literals are fully defined in syntax grammar due to the complex nature of
   ~  `when` {_NL_} [`(` _expression_ `)`] {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}`   
 
 **_whenEntry_:**  
-  ~  _whenCondition_ {{_NL_} `,` {_NL_} _whenCondition_} {_NL_} `\->` {_NL_} _controlStructureBody_ [_semi_]   
-    | `else` {_NL_} `\->` {_NL_} _controlStructureBody_ [_semi_]   
+  ~  _whenCondition_ {{_NL_} `,` {_NL_} _whenCondition_} {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_]   
+    | `else` {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_]   
 
 **_whenCondition_:**  
   ~  _expression_   
