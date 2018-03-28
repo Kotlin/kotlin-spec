@@ -253,15 +253,24 @@ In fact, it supports three different condition forms:
 > checked directly as if it would be in the other form, but rather checked for **equality**
 > with the bound variable, which is not the same thing.
 
+A when expression is called **_exhaustive_** if at least one of the following is true:
+
+- It has an `else` entry;
+- It has a bound value and at least one of the following holds:
+    - The bound expression is of type `kotlin.Boolean` and there are both
+      constant conditions with literals `true` and `false` TODO(): it actually supports (`true || true`) and such stuff;
+    - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
+      are covered using type test conditions of this expression;
+    - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
+      are checked for equality using constant conditions.
+
 The type of the resulting expression is
 the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).
-If the entries are non-exhaustive (TODO(): wat????), the resulting expression
+If the expression is not exhaustive, it
 has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
 but only as a statement.
 
 #### TODO()
-
-- When exhaustiveness checks
 
 ### Cast expression
 
