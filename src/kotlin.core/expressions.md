@@ -257,8 +257,10 @@ A when expression is called **_exhaustive_** if at least one of the following is
 
 - It has an `else` entry;
 - It has a bound value and at least one of the following holds:
-    - The bound expression is of type `kotlin.Boolean` and there are both
-      constant conditions with literals `true` and `false` TODO(): it actually supports (`true || true`) and such stuff;
+    - The bound expression is of type `kotlin.Boolean` and the conditions contain
+      both:
+        - A [constant expression][Constant expressions] evaluating to value `true`;
+        - A [constant expression][Constant expressions] evaluating to value `false`;
     - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
       are covered using type test conditions of this expression;
     - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
