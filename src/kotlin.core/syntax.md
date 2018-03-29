@@ -678,7 +678,7 @@ Syntax literals are fully defined in syntax grammar due to the complex nature of
 **_comparisonOperator_:**  
   ~  `<`   
     | `>`   
-    | `\<=`   
+    | `<=`   
     | `>=`   
 
 **_inOperator_:**  
