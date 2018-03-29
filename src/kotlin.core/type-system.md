@@ -40,15 +40,29 @@ The unified supertype type for all types in Kotlin is `kotlin.Any?`, a nullable 
 
 Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics].
 
-### Built-in types
+### Type kinds
+
+For the purposes of this section, we establish the following notation w.r.t. type kinds --- different flavours of types which exist in the Kotlin type system.
+
+* [Classifier types][Classifier types]
+* [Flexible types][Flexible types]
+* [Captured types][Captured types]
+* [Projected types][Projected types]
+* [Bounded types][Bounded types]
+* [Nullable types][Nullable types]
+* Intersection and union types
+
+We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types need to be instantiated as concrete types before they may be used as value types.
+
+#### Built-in types
 
 Kotlin type system uses the following built-in types, which have special semantics and representation (or lack thereof).
 
-#### `kotlin.Any`
+##### `kotlin.Any`
 
-`kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by transitivity of subtyping relation.
+`kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by subtyping relation.
 
-#### `kotlin.Nothing`
+##### `kotlin.Nothing`
 
 `kotlin.Nothing` is the unified subtype ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones. This makes it an uninhabited type (as it is impossible for anything to be a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
 
@@ -58,19 +72,119 @@ As the evaluation of an expression with `kotlin.Nothing` type can never complete
 * exceptional control flow
 * control flow transfer
 
-#### `kotlin.Unit`
+##### `kotlin.Unit`
 
 `kotlin.Unit` is a unit type, i.e., a type with only one value `kotlin.Unit`; all values of type `kotlin.Unit` should reference the same underlying `kotlin.Unit` object.
 
 TODO(Compare to `void`)
 
-### Nullability
+#### Classifier types
 
-Kotlin supports null safety by having two kinds of types --- nullable and non-nullable. All type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
+Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects].
 
-To specify a nullable version of type `Foo`, one needs to use `Foo?` as a type. Redundant nullability specifiers are ignored --- `Foo???` is equivalent to `Foo?`.
+##### Simple classifier types {.unnumbered}
+
+A simple concrete classifier type
+
+$$T : S_1, \ldots, S_m$$
+
+consists of
+
+* type name $T$
+* (optional) list of supertypes $S_1, \ldots, S_m$
+
+To represent a valid concrete classifier type, $T : S_1, \ldots, S_m$ should satisfy the following conditions.
+
+* $T$ is a valid type name
+* $\forall i \in [1,m]: S_i$ must be concrete, non-nullable, valid type
+
+##### Parametrized classifier types {.unnumbered}
+
+A parametrized abstract classifier type
+
+$$T[F_1, \ldots, F_n] : S_1, \ldots, S_m$$
+
+consists of
+
+* type constructor $T$ which takes actual type arguments and returns an instantiated type
+* (optional) formal type arguments $F_1, \ldots, F_n$
+* (optional) list of supertypes $S_1, \ldots, S_m$
+
+To represent a valid parametrized abstract classifier type, $T[F_1, \ldots, F_n] : S_1, \ldots, S_m$ should satisfy the following conditions.
+
+* $\forall i \in [1,n]: F_i$ must be one of the following kinds
+    - unbounded type variable
+    - projected type variable
+    - bounded type variable
+* $\forall j \in [1,m]: S_j$ must be concrete, non-nullable, valid type w.r.t. type argument substitution
+
+An instantiated parametrized concrete classifier type
+
+$$T(A_1, \ldots, A_n)$$
+
+consists of
+
+* parametrized abstract classifier type $T$
+* actual type arguments $A_1, \ldots, A_n$
+
+To represent a valid instantiated parametrized concrete classifier type, $T(A_1, \ldots, A_n)$ should satisfy the following conditions.
+
+* $T$ is a valid parametrized abstract classifier type with $n$ formal type parameters
+* $\forall i \in [1,n]: A_i$ must be one of the following kinds
+    - concrete type
+    - projected type
+* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the corresponding formal type argument from $T$
+
+#### Flexible types
+
+Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. However, this presents a problem in that some platforms may not support null safety the way Kotlin does. To deal with this, Kotlin supports *gradual typing* in the form of flexible types.
+
+A flexible type represents a range of possible types between type $L$ (lower bound) and type $U$ (upper bound), written as $(L..U)$. One should note flexible types are abstract and *non-denotable*, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
+
+To represent a valid flexible type, $(L..U)$ should satisfy the following conditions.
+
+* $L$ and $U$ are valid types
+* $L <: U$
+* $\neg (L <: U)$
+* $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
+
+As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). This conversion is unsafe in many cases, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
+
+##### Platform types
+
+TODO(Platform types as flexible types)
+
+TODO(Reference for different platforms)
+
+#### Captured types
+
+TODO
+
+#### Projected types
+
+TODO
+
+TODO(type projections are not allowed on functions and properties)
+
+#### Bounded types
+
+TODO
+
+TODO(Single generic bound allowed)
+
+TODO(Only one class bound allowed)
+
+#### Nullable types
+
+Kotlin supports null safety by having two kinds of types --- nullable and non-nullable. All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
+
+To specify a nullable version of type `T`, one needs to use `T?` as a type. Redundant nullability specifiers are ignored --- `T???` is equivalent to `T?`.
 
 > Informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
+
+To represent a valid nullable type, $T?$ should satisfy the following conditions.
+
+* $T$ is a valid type
 
 If an operation is safe regardless of absence or presence of `null`, i.e., assignment of one nullable value to another, it can be used as-is for nullable types. For operations on $T?$ which may violate null safety, one has the following null-safe options:
 
@@ -84,26 +198,6 @@ If an operation is safe regardless of absence or presence of `null`, i.e., assig
 3. Supply a default value to use instead of `null`
     * [elvis operator][Elvis operator expression]
 
-### Flexible types
-
-Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. However, this presents a problem in that some platforms may not support null safety the way Kotlin does. To deal with this, Kotlin supports *gradual typing* in the form of flexible types.
-
-A flexible type represents a range of possible types between type $L$ (lower bound) and type $U$ (upper bound), written as $(L..U)$. One should note flexible types are non-denotable, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
-
-To represent a valid flexible type, $(L..U)$ should satisfy the following conditions:
-
-* $L <: U$
-* $\neg (L <: U)$
-* $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
-
-As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). This conversion is unsafe in many cases, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
-
-### Platform types
-
-TODO(Platform types as flexible types)
-
-TODO(Reference for different platforms)
-
 ### Subtyping
 
 Kotlin uses the classic notion of *subtyping* as *substituability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected. The subtyping relation $<:$ is:
@@ -112,6 +206,13 @@ Kotlin uses the classic notion of *subtyping* as *substituability* --- if $S$ is
 * transitive ($A <: B \land B <: C \Rightarrow A <: C$)
 
 Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$. Due to the presence of flexible types, this relation is **not** transitive (see [here][Subtyping for flexible types] for more details).
+
+#### Subtyping rules
+
+Subtyping for non-nullable, concrete types uses the following rules.
+
+* $\forall T : kotlin.Nothing <: T <: kotlin.Any$
+* TODO
 
 #### Subtyping for flexible types
 
