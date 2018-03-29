@@ -253,6 +253,14 @@ In fact, it supports three different condition forms:
 > checked directly as if it would be in the other form, but rather checked for **equality**
 > with the bound variable, which is not the same thing.
 
+The type of the resulting expression is
+the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).
+If the expression is not [exhaustive][Exhaustive when expressions], it
+has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
+but only as a statement.
+
+#### Exhaustive when expressions
+
 A when expression is called **_exhaustive_** if at least one of the following is true:
 
 - It has an `else` entry;
@@ -266,17 +274,238 @@ A when expression is called **_exhaustive_** if at least one of the following is
     - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
       are checked for equality using constant conditions.
 
-The type of the resulting expression is
-the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).
-If the expression is not exhaustive, it
-has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
-but only as a statement.
+### Logical disjunction expression
 
-#### TODO()
+**_disjunction_:**  
+  ~  _conjunction_ {{_NL_} `||` {_NL_} (_conjunction_ | _ifExpression_)}   
+
+Operator symbol `||` performs logical disjunction over two values of type `kotlin.Boolean`.
+Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
+argument unless the left hand side argument evaluated to `false`.
+
+### Logical conjunction expression
+
+**_conjunction_:**  
+  ~  _equality_ {{_NL_} `&&` {_NL_} (_equality_ | _ifExpression_)}   
+
+Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
+Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
+argument unless the left hand side argument evaluated to `true`.
+
+### Equality expressions
+
+**_equality_:**  
+  ~  _comparison_ {_equalityOperator_ {_NL_} (_comparison_ | _ifExpression_)}   
+
+**_equalityOperator_:**  
+  ~  `!=`   
+    | `!==`   
+    | `==`   
+    | `===`   
+
+Equality expressions are binary expressions involving equality operators. There are
+two kinds of equality operators: *reference equality operators* and
+*value equality operators*.
+
+#### Reference equality expressions
+
+*Reference equality expressions* are binary expressions employing reference equality operators:
+`===` and `!==`. These expressions check if two values are equal *by reference*, meaning
+that two values are equal (non-equal for operator `!==`) if and only if they represent the
+same runtime value created using the same constructor call.
+
+For values created without
+construction calls, notably the constant literals and constant expressions composed
+of those literals, the following holds:
+
+- If these values are [non-equal by value][Value equality expressions], they are also
+  non-equal by reference;
+- Any instance of the null reference `null` is reference-equals to any other
+  instance of the null reference;
+- Otherwise, it is implementation-defined and must not be used as a means of comparing
+  two such values.
+
+Reference equality expressions always have type `kotlin.Boolean`.
+
+#### Value equality expressions
+
+*Value equality expressions* are binary expressions employing value equality operators:
+`==` and `!=`. These operators are [overloadable][Overloadable operators] with the following
+expansion:
+
+- $A$ `==` $B$ is exactly the same as $A$`?.equals(`$B$`) ?: (`$B$` === null)` where `equals` is a valid
+  operator function available in the current scope;
+- $A$ `!=` $B$ is exactly the same as `!(`$A$`?.equals(`$B$`) ?: (`$B$` === null))` where `equals` is a valid
+  operator function available in the current scope.
+
+> Please note that the class `kotlin.Any` has a built-in open operator member function called `equals`,
+> meaning that there is always at least one available overloading candidate for any value equality expression.
+
+Value equality expressions always have type `kotlin.Boolean`. If the corresponding operator function
+has a different return type, it is invalid and a compiler error should be generated.
+
+### Comparison expressions
+
+**_comparison_:**  
+  ~  _infixOperation_ [_comparisonOperator_ {_NL_} (_infixOperation_ | _ifExpression_)]   
+
+**_comparisonOperator_:**  
+  ~  `<`   
+    | `>`   
+    | `<=`   
+    | `>=`   
+
+*Comparison expressions* are binary expressions employing the comparison operators:
+`<`, `>`, `<=` and `>=`. These operators are [overloadable][Overloadable operators] with the following
+expansion:
+
+- $A$`<`$B$ is exactly the same as $A$`.compareTo(`$B$`) [<] 0`
+- $A$`>`$B$ is exactly the same as `0 [<] `$A$`.compareTo(`$B$`)`
+- $A$`<=`$B$ is exactly the same as `!(`$A$`.compareTo(`$B$`) [<] 0)`
+- $A$`>=`$B$ is exactly the same as `!(0 [<] `$A$`.compareTo(`$B$`))`
+
+where `compareTo` is a valid operator function available in the current scope
+and `[<]` (read "boxed less") is a special operator unavailable for in-code use in Kotlin and performing
+integer "less-than" comparison of two integer numbers. The `compareTo` overloaded function
+must have return type `kotlin.Int`, otherwise it's a compiler error.
+
+All comparison expressions always have type `kotlin.Boolean`.
+
+### Type-checking and containment-checking expressions
+
+**_infixOperation_:**  
+  ~  _elvisExpression_ {_inOperator_ {_NL_} (_elvisExpression_ | _ifExpression_) | _isOperator_ {_NL_} _type_}   
+
+**_inOperator_:**  
+  ~  `in` | `!in`   
+
+**_isOperator_:**  
+  ~  `is` | `!is`   
+
+#### Type-checking expression
+
+A type checking expression employs the use of an type-checking operators `is` or `!is`
+and has an expression as a left-hand side operand and a type name as a right-hand
+side operand. The type must be [runtime-available][Runtime-available types], otherwise
+a compiler error should be generated. The expression checks whether the runtime type of
+the expression on the left is the same (not the same for `!is`) as the type denoted
+by the right-hand side argument.
+
+Type-checking expression always has type `kotlin.Boolean`.
+
+##### TODO()
+
+- Smart casts!
+
+#### Containment-checking expression
+
+A *containment-checking expression* is a binary expression employing the containment operator
+(`in` or `!in`). These are [overloadable][Overloadable operators] operators with the following expansion:
+
+- $A$` in `$B$ is exactly the same as $B$`.contains(`$B$`)`;
+- $A$` !in `$B$ is exactly the same as `!(`$B$`.contains(`$B$`))`;
+
+where `contains` is a valid operator function available in the current scope. This
+function must have return type `kotlin.Boolean`, otherwise a compiler error is generated.
+Containment-checking expressions always have type `kotlin.Boolean`.
+
+### Elvis operator expression
+
+**_elvisExpression_:**  
+  ~  _infixFunctionCall_ {{_NL_} `?:` {_NL_} (_infixFunctionCall_ | _ifExpression_)}   
+
+*Elvis operator expression* is a binary expression that emplys the elvis operator (`?:`).
+It checks whether the left-hand side expression is equal to `null`, and if it is,
+evaluates and return the right-hand side expression.
+
+This operator is **lazy**, meaning that if the left-hand side expression is not equal
+to `null`, the right-hand side expression is never evaluated.
+
+The type of elvis operator expression is the [least upper bound][The least upper bound]
+of the non-nullable variant of the type of the left-hand side expression and the
+type of the right-hand side expression. TODO(): not that simple, too
+
+### Range expression
+
+**_rangeExpression_:**  
+  ~  _additiveExpression_ {`..` {_NL_} (_additiveExpression_ | _ifExpression_)}   
+
+A *range expression* is a binary expression employing the range operator `..`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+- $A$`..`$B$ is exactly the same as $A$`.rangeTo(`$B$`)`
+
+where `rangeTo` is a valid operator function available in the current scope.
+The return type of this function is not restricted.
+The range expression has the same type as the return type of the corresponding
+`rangeTo` overload variant.
+
+### Additive expression
+
+**_additiveExpression_:**  
+  ~  _multiplicativeExpression_ {_additiveOperator_ {_NL_} (_multiplicativeExpression_ | _ifExpression_)}   
+
+**_additiveOperator_:**  
+  ~  `+` | `-`   
+
+An *additive expression* is a binary expression employing the addition (`+`) or subtraction (`-`) operators.
+These are [overloadable][Overloadable operators] operators with the following expansions:
+
+- $A$`+`$B$ is exactly the same as $A$`.plus(`$B$`)`
+- $A$`-`$B$ is exactly the same as $A$`.minus(`$B$`)`
+
+where `plus` or `minus` is a valid operator function available in the current scope.
+The return type of this function is not restricted.
+The range expression has the same type as the return type of the corresponding
+operator function overload variant.
+
+### Multiplicative expression
+
+**_multiplicativeExpression_:**  
+  ~  _asExpression_ {_multiplicativeOperator_ {_NL_} (_asExpression_ | _ifExpression_)}   
+
+**_multiplicativeOperator_:**  
+  ~  `*`   
+    | `/`   
+    | `%`   
+
+An *multiplicative expression* is a binary expression employing the multiplication (`*`), division (`/`) or remainder (`%`) operators.
+These are [overloadable][Overloadable operators] operators with the following expansions:
+
+- $A$`*`$B$ is exactly the same as $A$`.times(`$B$`)`
+- $A$`/`$B$ is exactly the same as $A$`.div(`$B$`)`
+- $A$`%`$B$ is exactly the same as $A$`.rem(`$B$`)` or $A$`.mod(`$B$`)`, whichever is available
+
+> As of Kotlin version 1.2.30, the `mod` form of remainder operator is deprecated
+
+where `times`, `div`, `rem` or `mod` is a valid operator function available in the current scope.
+The return type of this function is not restricted.
+The range expression has the same type as the return type of the corresponding
+operator function overload variant.
 
 ### Cast expression
 
-### Elvis operator expression
+**_asExpression_:**  
+  ~  _prefixUnaryExpression_ [{_NL_} _asOperator_ {_NL_} _type_]   
+
+**_asOperator_:**  
+  ~  `as`   
+    | `as?`   
+    | `:`   
+
+A *cast expression* is a binary expression employing the cast operators (`as` or `as?`) and
+receives an expression as the left-hand side operand and a type name as the right-hand side operand.
+This operator perform a runtime check whether runtime type of the expression
+is a [subtype][Subtyping] of the type given on the right-hand side operand and
+throws an exception otherwise.
+
+#### TODO()
+
+- Smart casts!
+- It doesn't really work that way if the type is not runtime-available
+- `as?` returns null (or not, see above)
+
+
 
 ### Not-null assertion operator expression
 
@@ -289,5 +518,6 @@ but only as a statement.
 ## TODOS()
 
 - Control structure body typing
+- Overloadable operators && operator expansion
 - Smart casts vs compile-time types
 - The whole "used as an expression" vs "used as a statement" business
