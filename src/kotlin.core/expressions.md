@@ -320,6 +320,8 @@ of those literals, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also
   non-equal by reference;
+- Any instance of the null reference `null` is reference-equals to any other
+  instance of the null reference;
 - Otherwise, it is implementation-defined and must not be used as a means of comparing
   two such values.
 
@@ -331,9 +333,9 @@ Reference equality expressions always have type `kotlin.Boolean`.
 `==` and `!=`. These operators are [overloadable][Overloadable operators] with the following
 expansion:
 
-- $A$ `==` $B$ is exactly the same as $A$`.equals(`$B$`)` where `equals` is a valid
+- $A$ `==` $B$ is exactly the same as $A$`?.equals(`$B$`) ?: (`$B$` === null)` where `equals` is a valid
   operator function available in the current scope;
-- $A$ `!=` $B$ is exactly the same as `!`$A$`.equals(`$B$`)` where `equals` is a valid
+- $A$ `!=` $B$ is exactly the same as `!(`$A$`?.equals(`$B$`) ?: (`$B$` === null))` where `equals` is a valid
   operator function available in the current scope.
 
 > Please note that the class `kotlin.Any` has a built-in open operator member function called `equals`,
