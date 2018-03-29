@@ -272,7 +272,9 @@ A when expression is called **_exhaustive_** if at least one of the following is
     - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
       are covered using type test conditions of this expression;
     - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
-      are checked for equality using constant conditions.
+      are checked for equality using constant conditions;
+    - The bound expression is of a nullable type and one of the cases above is met for
+      its non-nullable counterpart and, in addition, there is a condition containing literal `null`.
 
 ### Logical disjunction expression
 
