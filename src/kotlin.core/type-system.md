@@ -20,6 +20,12 @@ $\{T?\}$
 $\langle T\rangle$
 ~ Value of type $T$
 
+PACT
+~ Parametrized abstract classifier type
+
+iPACT
+~ Instantiated parametrized concrete classifier type
+
 ### Introduction
 
 Kotlin has a type system with the following main properties:
@@ -52,7 +58,7 @@ For the purposes of this section, we establish the following notation w.r.t. typ
 * [Nullable types][Nullable types]
 * Intersection and union types
 
-We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types need to be instantiated as concrete types before they may be used as value types.
+We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they may be used as value types, or are used internally by the type system and are not directly denotable.
 
 #### Built-in types
 
@@ -80,7 +86,7 @@ TODO(Compare to `void`)
 
 #### Classifier types
 
-Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects].
+Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parametrized.
 
 ##### Simple classifier types {.unnumbered}
 
@@ -100,7 +106,7 @@ To represent a valid concrete classifier type, $T : S_1, \ldots, S_m$ should sat
 
 ##### Parametrized classifier types {.unnumbered}
 
-A parametrized abstract classifier type
+A parametrized abstract classifier type (PACT)
 
 $$T[F_1, \ldots, F_n] : S_1, \ldots, S_m$$
 
@@ -118,7 +124,7 @@ To represent a valid parametrized abstract classifier type, $T[F_1, \ldots, F_n]
     - bounded type variable
 * $\forall j \in [1,m]: S_j$ must be concrete, non-nullable, valid type w.r.t. type argument substitution
 
-An instantiated parametrized concrete classifier type
+An instantiated parametrized concrete classifier type (iPACT)
 
 $$T(A_1, \ldots, A_n)$$
 
@@ -162,13 +168,22 @@ TODO
 
 #### Projected types
 
-TODO
+Type projections are used to support declaration- and use-site variance for parametrized types. Kotlin supports three flavours of type projections.
+
+TODO(in, out, star)
 
 TODO(type projections are not allowed on functions and properties)
 
 #### Bounded types
 
-TODO
+A bounded type is an abstract, non-denotable type which is used to represent bounds on type arguments and is defined as $A <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type $A$.
+
+To represent a valid bounded type, $A <: B_1, \ldots, B_n$ should satisfy the following conditions.
+
+* $A$ is a type argument of PACT $T$
+* $\forall i \in [1,n]: B_i$ must be one of the following kinds
+    - concrete type
+    - a type argument of $T$
 
 TODO(Single generic bound allowed)
 
@@ -211,7 +226,9 @@ Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$
 
 Subtyping for non-nullable, concrete types uses the following rules.
 
-* $\forall T : kotlin.Nothing <: T <: kotlin.Any$
+* $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
+* For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
+* For any instantiated parametrized classifier type $\widehat{T} = T[F_1, \ldots, F_n](A_1, \ldots, A_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i(A_1, \ldots, A_n)$
 * TODO
 
 #### Subtyping for flexible types
