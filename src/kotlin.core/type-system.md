@@ -1,6 +1,12 @@
 ## Type system
 
+TODO(Add examples)
+
+TODO(Add grammar snippets?)
+
 ### Glossary
+
+TODO(Cleanup)
 
 $T$
 ~ Type
@@ -28,7 +34,7 @@ iPACT
 
 ### Introduction
 
-Kotlin has a type system with the following main properties:
+Kotlin has a type system with the following main properties.
 
 * hybrid static and gradual type checking
 * null safety
@@ -50,13 +56,11 @@ Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type
 
 For the purposes of this section, we establish the following notation w.r.t. type kinds --- different flavours of types which exist in the Kotlin type system.
 
+* [Built-in types][Built-in types]
 * [Classifier types][Classifier types]
 * [Flexible types][Flexible types]
-* [Captured types][Captured types]
-* [Projected types][Projected types]
-* [Bounded types][Bounded types]
 * [Nullable types][Nullable types]
-* Intersection and union types
+* TODO(Intersection and union types)
 
 We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they may be used as value types, or are used internally by the type system and are not directly denotable.
 
@@ -68,15 +72,19 @@ Kotlin type system uses the following built-in types, which have special semanti
 
 `kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by subtyping relation.
 
+TODO(`kotlin.Any` members?)
+
 ##### `kotlin.Nothing`
 
-`kotlin.Nothing` is the unified subtype ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones. This makes it an uninhabited type (as it is impossible for anything to be a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
+`kotlin.Nothing` is the unified subtype ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones. This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
 
 As the evaluation of an expression with `kotlin.Nothing` type can never complete normally, it is used to mark special situations, such as:
 
 * non-terminating expressions
 * exceptional control flow
 * control flow transfer
+
+Additional details about how `kotlin.Nothing` should be processed are available [here][Control- and data-flow analysis].
 
 ##### `kotlin.Unit`
 
@@ -88,7 +96,7 @@ TODO(Compare to `void`)
 
 Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parametrized.
 
-##### Simple classifier types {.unnumbered}
+##### Simple classifier types
 
 A simple concrete classifier type
 
@@ -108,7 +116,7 @@ To represent a valid concrete classifier type, $T : S_1, \ldots, S_m$ should sat
 
 A parametrized abstract classifier type (PACT)
 
-$$T[F_1, \ldots, F_n] : S_1, \ldots, S_m$$
+$$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
 
 consists of
 
@@ -116,30 +124,87 @@ consists of
 * (optional) formal type arguments $F_1, \ldots, F_n$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
-To represent a valid parametrized abstract classifier type, $T[F_1, \ldots, F_n] : S_1, \ldots, S_m$ should satisfy the following conditions.
+To represent a valid PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $\forall i \in [1,n]: F_i$ must be one of the following kinds
-    - unbounded type variable
-    - projected type variable
-    - bounded type variable
+    - [unbounded type argument][Unbounded type arguments]
+    - [projected type argument][Projected type arguments]
+    - [bounded type argument][Bounded type arguments]
 * $\forall j \in [1,m]: S_j$ must be concrete, non-nullable, valid type w.r.t. type argument substitution
 
 An instantiated parametrized concrete classifier type (iPACT)
 
-$$T(A_1, \ldots, A_n)$$
+$$T[A_1, \ldots, A_n]$$
 
 consists of
 
-* parametrized abstract classifier type $T$
+* PACT $T$
 * actual type arguments $A_1, \ldots, A_n$
 
-To represent a valid instantiated parametrized concrete classifier type, $T(A_1, \ldots, A_n)$ should satisfy the following conditions.
+To represent a valid iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
 
-* $T$ is a valid parametrized abstract classifier type with $n$ formal type parameters
+* $T$ is a valid PACT with $n$ formal type parameters
 * $\forall i \in [1,n]: A_i$ must be one of the following kinds
-    - concrete type
-    - projected type
+    - valid concrete type
+    - valid projected type
+    - type argument available in the type context of $T$  
+      TODO(What is a type context?)
 * $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the corresponding formal type argument from $T$
+
+##### Type arguments
+
+Type arguments are a special kind of abstract types, which are introduced by PACTs. They are valid only in the context of their declaring PACT.
+
+When creating an iPACT from PACT, actual type arguments go through [capturing][Type argument capturing] and create *captured* type arguments, which follow special rules described in more detail below.
+
+###### Unbounded type arguments
+
+An unbounded type argument $A$ is an abstract type which may capture any valid type.
+
+To represent a valid unbounded type argument of PACT $T$, $A$ should satisfy the following conditions.
+
+* $A$ is a type argument of PACT $T$
+
+###### Projected type arguments
+
+Projected type arguments are abstract types which are used to support declaration-site variance for parametrized types, i.e., the ability to declare a type argument as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type arguments.
+
+> Kotlin also supports use-site variance, which is covered in more detail [here][Use-site variance].
+
+To represent a valid covariant type argument $\text{out} A$ of PACT $T$, $\text{out} A$ should satisfy the following conditions.
+
+* $A$ is a type argument of PACT $T$
+
+To represent a valid contravariant type argument $\text{in} A$ of PACT $T$, $\text{in} A$ should satisfy the following conditions.
+
+* $A$ is a type argument of PACT $T$
+
+TODO(star)
+
+TODO(type projections are not allowed on functions and properties)
+
+###### Bounded type arguments
+
+A bounded type argument is an abstract type which is used to add upper type bounds to type arguments and is defined as $A <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type $A$.
+
+To represent a valid bounded type argument of PACT $T$, $A <: B_1, \ldots, B_n$ should satisfy the following conditions.
+
+* $A$ is a type argument of PACT $T$
+* $\forall i \in [1,n]: B_i$ must be one of the following kinds
+    - concrete type
+    - a type argument of $T$
+
+TODO(Single generic bound allowed)
+
+TODO(Only one class bound allowed)
+
+##### Type argument capturing
+
+TODO(Captured types?)
+
+##### Use-site variance
+
+TODO()
 
 #### Flexible types
 
@@ -156,42 +221,17 @@ To represent a valid flexible type, $(L..U)$ should satisfy the following condit
 
 As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). This conversion is unsafe in many cases, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
 
+TODO(Details of assertion generation?)
+
 ##### Platform types
 
 TODO(Platform types as flexible types)
 
 TODO(Reference for different platforms)
 
-#### Captured types
-
-TODO
-
-#### Projected types
-
-Type projections are used to support declaration- and use-site variance for parametrized types. Kotlin supports three flavours of type projections.
-
-TODO(in, out, star)
-
-TODO(type projections are not allowed on functions and properties)
-
-#### Bounded types
-
-A bounded type is an abstract, non-denotable type which is used to represent bounds on type arguments and is defined as $A <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type $A$.
-
-To represent a valid bounded type, $A <: B_1, \ldots, B_n$ should satisfy the following conditions.
-
-* $A$ is a type argument of PACT $T$
-* $\forall i \in [1,n]: B_i$ must be one of the following kinds
-    - concrete type
-    - a type argument of $T$
-
-TODO(Single generic bound allowed)
-
-TODO(Only one class bound allowed)
-
 #### Nullable types
 
-Kotlin supports null safety by having two kinds of types --- nullable and non-nullable. All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
+Kotlin supports null safety by having two type universes --- nullable and non-nullable. All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
 To specify a nullable version of type `T`, one needs to use `T?` as a type. Redundant nullability specifiers are ignored --- `T???` is equivalent to `T?`.
 
@@ -253,4 +293,4 @@ However, $A \not \equiv B$.
 
 ### Generics
 
-TODO(Here be a lot of dragons)
+TODO(Here be a lot of dragons...)
