@@ -26,14 +26,14 @@ $\{T?\}$
 $\langle T\rangle$
 ~ Value of type $T$
 
-$T\lbrack A_1, \ldots, A_n\rbrack$
-~ The result of type argument substitution for type $T$ with actual types $A_i$
+$T\lbrack S_1, \ldots, S_n\rbrack$
+~ The result of type argument substitution for type $T$ with types $S_i$
 
 PACT
-~ Parametrized abstract classifier type
+~ Parameterized abstract classifier type
 
 iPACT
-~ Instantiated parametrized concrete classifier type
+~ Instantiated parameterized concrete classifier type
 
 ### Introduction
 
@@ -98,7 +98,7 @@ TODO(Compare to `void`)
 
 #### Classifier types
 
-Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parametrized.
+Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parameterized.
 
 ##### Simple classifier types
 
@@ -116,9 +116,9 @@ To represent a valid concrete classifier type, $T : S_1, \ldots, S_m$ should sat
 * $T$ is a valid type name
 * $\forall i \in [1,m]: S_i$ must be concrete, non-nullable, valid type
 
-##### Parametrized classifier types {.unnumbered}
+##### Parameterized classifier types {.unnumbered}
 
-A parametrized abstract classifier type (PACT)
+A parameterized abstract classifier type (PACT)
 
 $$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
 
@@ -136,7 +136,7 @@ To represent a valid PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satis
     - [bounded type argument][Bounded type arguments]
 * $\forall j \in [1,m]: S_j$ must be concrete, non-nullable, valid type w.r.t. type argument substitution
 
-An instantiated parametrized concrete classifier type (iPACT)
+An instantiated parameterized concrete classifier type (iPACT)
 
 $$T[A_1, \ldots, A_n]$$
 
@@ -171,7 +171,7 @@ To represent a valid unbounded type argument of PACT $T$, $F$ should satisfy the
 
 ###### Projected type arguments
 
-Projected type arguments are abstract types which are used to support declaration-site variance for parametrized types, i.e., the ability to declare a type argument as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type arguments.
+Projected type arguments are abstract types which are used to support declaration-site variance for parameterized types, i.e., the ability to declare a type argument as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type arguments.
 
 > Kotlin also supports use-site variance, which is covered in more detail [here][Use-site variance].
 
@@ -210,7 +210,7 @@ TODO(stuff)
 
 ##### Type argument capturing
 
-Type argument capturing (similarly to Java capturing conversion) is used when instantiating parametrized types; it creates *captured* types based on the type information of both formal and actual type arguments, which present a unified view on the resulting types and simplifies further reasoning.
+Type argument capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both formal and actual type arguments, which present a unified view on the resulting types and simplifies further reasoning.
 
 For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the formal $F_i$ and actual $A_i$ argument.
 
@@ -291,10 +291,14 @@ Subtyping for non-nullable, concrete types uses the following rules.
 
 Subtyping for non-nullable, abstract types and type arguments uses the following rules.
 
+* $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
 * For any PACT $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i[F_1, \ldots, F_n]$
-* TODO(...)
+* For any covariant type $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
+* For any contravariant type $\triangleright T$ it is true that $\forall L <: T \Rightarrow L <: \triangleright T$
+* For any star type $\star T$, $Nothing <: C_i <: Any?$
+* For any bounded type $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
 
-Subtyping for nullable types uses a special procedure, which is described [here][Subtyping for nullability].
+Subtyping for nullable types is checked separately and uses a special procedure, which is described [here][Subtyping for nullability].
 
 #### Subtyping for flexible types
 
