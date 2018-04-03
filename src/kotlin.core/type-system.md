@@ -53,7 +53,7 @@ Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. 
 
 The unified supertype type for all types in Kotlin is `kotlin.Any?`, a nullable version of [kotlin.Any][`kotlin.Any`].
 
-Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics].
+Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
 
 ### Type kinds
 
@@ -66,7 +66,7 @@ For the purposes of this section, we establish the following notation w.r.t. typ
 * TODO(Intersection and union types)
 * TODO(Error / invalid types)
 
-We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they may be used as value types, or are used internally by the type system and are not directly denotable.
+We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as value types, or are used internally by the type system and are not directly denotable.
 
 #### Built-in types
 
@@ -74,7 +74,7 @@ Kotlin type system uses the following built-in types, which have special semanti
 
 ##### `kotlin.Any`
 
-`kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by subtyping relation.
+`kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by subtyping relation.
 
 TODO(`kotlin.Any` members?)
 
@@ -94,7 +94,7 @@ Additional details about how `kotlin.Nothing` should be processed are available 
 
 `kotlin.Unit` is a unit type, i.e., a type with only one value `kotlin.Unit`; all values of type `kotlin.Unit` should reference the same underlying `kotlin.Unit` object.
 
-TODO(Compare to `void`)
+TODO(Compare to `void`?)
 
 #### Classifier types
 
@@ -157,7 +157,7 @@ To represent a valid iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following c
     - type argument available in the current type context  
       TODO(What is a type context?)  
       TODO(Inner vs nested contexts)
-* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective formal type argument from $T$
+* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective formal type argument of $T$
 
 ##### Type arguments
 
@@ -199,7 +199,7 @@ To represent a valid bounded type argument of PACT $T$, $F <: B_1, \ldots, B_n$ 
 
 * $F$ is a type argument of PACT $T$
 * $\forall i \in [1,n]: B_i$ must be one of the following kinds
-    - concrete type
+    - valid concrete type
     - a type argument available in the current type context
 
 TODO(Single generic bound allowed)
@@ -216,15 +216,17 @@ TODO(stuff)
 
 Type argument capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both formal and actual type arguments, which present a unified view on the resulting types and simplifies further reasoning.
 
-For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the formal $F_i$ and actual $A_i$ argument. The captured type is represented as a set of type constraints.
+For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the formal $F_i$ and actual $A_i$ argument.
 
 TODO(Does this set describe a type universe?)
 
-> NB: **All** applicable rules are used to create the resulting captured type.
+TODO(Blah-blah about existential types?)
+
+> NB: A captured type $C$ may be represented as a set of its type constraints $\mathbb{C}$. **All** applicable rules are used to create the resulting captured type.
 
 * If $\triangleleft  F_i$ is a covariant type argument and $A_i$ **is not** a concrete type or a covariant type argument, it is an error. Otherwise, $C_i <: A_i$.
 * If $\triangleright F_i$ is a contravariant type argument and $A_i$ **is not** a concrete type or a contravariant type argument, it is an error. Otherwise, $C_i :> A_i$.
-* If $F_i <: B_1, \ldots, B_n$ is a bounded type argument, $C_i$ is bounded on $B_i[C_1, \ldots, C_n]$ (i.e., by upper bounds with formal type arguments substituted with captured ones)
+* If $F_i <: B_1, \ldots, B_n$ is a bounded type argument, $C_i <: B_i[C_1, \ldots, C_n]$
 * If $\triangleleft A_i$ is a covariant type argument, $C_i <: A_i$
 * If $\triangleright A_i$ is a contravariant type argument, $C_i :> A_i$
 * If $\star A_i$ is a star type argument, $Nothing <: C_i <: Any?$
@@ -238,12 +240,12 @@ A flexible type represents a range of possible types between type $L$ (lower bou
 
 To represent a valid flexible type, $(L..U)$ should satisfy the following conditions.
 
-* $L$ and $U$ are valid types
+* $L$ and $U$ are valid concrete types
 * $L <: U$
 * $\neg (L <: U)$
 * $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
 
-As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). However, the actual type will be a specific type between $L$ and $U$, thus making the substitution unsafe in many cases, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
+As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). However, the actual type will be a specific type between $L$ and $U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
 
 TODO(Details of assertion generation?)
 
@@ -293,18 +295,26 @@ Subtyping for non-nullable, concrete types uses the following rules.
 * $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
 * For any iPACT $\widehat{T} = T(F_1, \ldots, F_n)[A_1, \ldots, A_n] : S_1, \ldots, S_m$ with captured type arguments $C_1, \ldots, C_n$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i[C_1, \ldots, C_n]$
-* For any two iPACTs $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $C_i$ and $C_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ iff $\forall i \in [1,n]: C_i <: C_i^\prime$
+* For any two iPACTs $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $C_i$ and $C_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: C_i <: C_i^\prime$
 
-Subtyping for non-nullable, abstract types and type arguments uses the following rules.
+Subtyping for non-nullable, abstract types uses the following rules.
 
 * $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
-* For any PACT $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i[F_1, \ldots, F_n]$
-* For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
-* For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
-* For any star type argument $\star T$, $Nothing <: T <: Any?$
-* For any bounded type $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
+* For any PACT $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
 
-Subtyping for nullable types is checked separately and uses a special procedure, which is described [here][Subtyping for nullability].
+---
+# * For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
+# * For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
+# * For any star type argument $\star T$, $Nothing <: T <: Any?$
+# * For any bounded type argument $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
+---
+
+Subtyping for non-nullable, captured types uses rules of different kind, as captured type $C$ describes not one, but a set of types which satisfy its type constraints $\mathbb{C}$. Therefore, we use the following subtyping rules for captured types.
+
+* $\forall C : \text{kotlin.Nothing} <: C <: \text{kotlin.Any}$
+* For any two captured types $C$ and $C^\prime$, $C <: C^\prime$ if $\forall T : \mathbb{C}(T) \Rightarrow \mathbb{C^\prime}(T)$ (i.e., a set of types for $C$ is a subset of a set of types for $C^\prime$)
+
+Subtyping for nullable types is checked separately and uses a special set of rules which are described [here][Subtyping for nullable types].
 
 #### Subtyping for flexible types
 
@@ -324,9 +334,21 @@ This is the most extensive definition possible, which, unfortunately, makes the 
 
 However, $A \not \equiv B$.
 
-#### Subtyping for nullability
+#### Subtyping for nullable types
 
-TODO(Nullability subtyping rules)
+Subtyping for two possibly nullable types $A$ and $B$ is defined via *two* relations, both of which must hold.
+
+* Regular subtyping $<:$ for non-nullable types $A!!$ and $B!!$
+* Subtyping by nullability $\sbn$
+
+Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses the following rules.
+
+* $A!! \sbn B$
+* $A \sbn B$ if $\exists T!! : A <: T!!$
+* $A \sbn B?$
+* $A \sbn B$ if $\not \exists T!! : B <: T!!$
+
+TODO(How the existence check works)
 
 ### Generics
 
