@@ -120,6 +120,8 @@ To represent a valid simple concrete classifier type, $T : S_1, \ldots, S_m$ sho
 
 ##### Parameterized classifier types
 
+TODO(type parameter vs type argument?)
+
 A parameterized abstract classifier type (PACT)
 
 $$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
@@ -175,6 +177,8 @@ To represent a valid unbounded type argument of PACT $T$, $F$ should satisfy the
 
 ###### Projected type arguments
 
+TODO(Mixed-site variance)
+
 Projected type arguments are abstract types which are used to support declaration-site variance for parameterized types, i.e., the ability to declare a type argument as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type arguments.
 
 > Kotlin also supports use-site variance, which is covered in more detail [here][Use-site variance].
@@ -190,6 +194,8 @@ To represent a valid contravariant type argument $\triangleright F$ of PACT $T$,
 TODO(type projections are not allowed on functions and properties)
 
 TODO(no type projections on supertype type arguments)
+
+TODO(conflicting projections)
 
 ###### Bounded type arguments
 
@@ -208,9 +214,7 @@ TODO(Only one class bound allowed)
 
 ##### Use-site variance
 
-TODO(star)
-
-TODO(stuff)
+Kotlin also supports specifying type argument variance on use-site, specifying projections for *actual* type arguments. Just like for [projected type arguments](Projected type arguments), ...
 
 ##### Type argument capturing
 
@@ -353,3 +357,7 @@ TODO(How the existence check works)
 ### Generics
 
 TODO(Here be a lot of dragons...)
+
+### References
+
+1. Tate, Ross. "Mixed-site variance." FOOL, 2013.
