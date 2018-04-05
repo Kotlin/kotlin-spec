@@ -23,11 +23,17 @@ $\{T!!\}$
 $\{T?\}$
 ~ Universe of nullable types
 
-$\langle T\rangle$
-~ Value of type $T$
+$\Gamma$
+~ Type context
 
 $T\lbrack S_1, \ldots, S_n\rbrack$
 ~ The result of type argument substitution for type $T$ with types $S_i$
+
+Type parameter
+~ Formal type argument of parameterized type
+
+Type argument
+~ Actual type argument in parameterized type constructor application
 
 PACT
 ~ Parameterized abstract classifier type
@@ -43,21 +49,21 @@ Kotlin has a type system with the following main properties.
 * Null safety
 * No unsafe implicit conversions
 * Unified root type
-* Nominal subtyping with bounded parametric polymorphism
+* Nominal subtyping with bounded parametric polymorphism and mixed-site variance
 
 TODO(static type checking, gradual type checking)
 
-Null safety is enforced by having two type universes --- _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$). All operations^[Except for TODO()] which are allowed on nullable types are safe, i.e., should never cause a runtime null pointer error.
+Null safety is enforced by having two type universes --- _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$). All operations within the non-nullable type universe are safe, i.e., should never cause a runtime null pointer error.
 
 Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression]. However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
 The unified supertype type for all types in Kotlin is `kotlin.Any?`, a nullable version of [kotlin.Any][`kotlin.Any`].
 
-Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
+Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types]. Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
 
 ### Type kinds
 
-For the purposes of this section, we establish the following notation w.r.t. type kinds --- different flavours of types which exist in the Kotlin type system.
+For the purposes of this section, we establish the following type kinds --- different flavours of types which exist in the Kotlin type system.
 
 * [Built-in types][Built-in types]
 * [Classifier types][Classifier types]
@@ -120,25 +126,23 @@ To represent a valid simple concrete classifier type, $T : S_1, \ldots, S_m$ sho
 
 ##### Parameterized classifier types
 
-TODO(type parameter vs type argument?)
-
 A parameterized abstract classifier type (PACT)
 
 $$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
 
 consists of
 
-* type constructor $T$ which takes actual type arguments and returns an instantiated type
-* formal type arguments $F_1, \ldots, F_n$
+* type constructor $T$ which takes type arguments and returns an instantiated type
+* type parameters $F_1, \ldots, F_n$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
 To represent a valid PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $T$ is a valid type name
 * $\forall i \in [1,n]: F_i$ must be one of the following kinds
-    - [unbounded type argument][Unbounded type arguments]
-    - [projected type argument][Projected type arguments]
-    - [bounded type argument][Bounded type arguments]
+    - [unbounded type parameter][Unbounded type parameters]
+    - [projected type parameter][Projected type parameters]
+    - [bounded type parameter][Bounded type parameters]
 * $\forall j \in [1,m]: S_j[F_1, \ldots, F_n]$ must be concrete, non-nullable, valid type
 
 An instantiated parameterized concrete classifier type (iPACT)
@@ -148,48 +152,61 @@ $$T[A_1, \ldots, A_n]$$
 consists of
 
 * PACT $T$
-* actual type arguments $A_1, \ldots, A_n$
+* type arguments $A_1, \ldots, A_n$
 
 To represent a valid iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
 
-* $T$ is a valid PACT with $n$ formal type parameters
+* $T$ is a valid PACT with $n$ type parameters
 * $\forall i \in [1,n]: A_i$ must be one of the following kinds
     - valid concrete type
     - valid projected type
-    - type argument available in the current type context  
+    - type parameter available in the current type context $\Gamma$  
       TODO(What is a type context?)  
       TODO(Inner vs nested contexts)
-* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective formal type argument of $T$
+* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective type parameter of $T$
 
-##### Type arguments
+##### Type parameters
 
-Type arguments are a special kind of abstract types, which are introduced by PACTs. They are valid only in the context of their declaring PACT.
+Type parameters are a special kind of abstract types, which are introduced by PACTs. They are valid only in the context of their declaring PACT.
 
-When creating an iPACT from PACT, type arguments go through [capturing][Type argument capturing] and create *captured* type arguments, which follow special rules described in more detail below.
+When creating an iPACT from PACT, type parameters with their respective type arguments go through [capturing][Type capturing] and create *captured* type arguments, which follow special rules described in more detail below.
 
-###### Unbounded type arguments
+###### Bounded type parameters
 
-An unbounded type argument $F$ is an abstract type which may capture any valid type. It is also *invariant* by default (see [subtyping][Subtyping] for more details on variance); if one needs co- or contravariant type argument, they need to use [projected type arguments][Projected type arguments].
+A bounded type parameter is an abstract type which is used to specify upper type bounds for type parameters and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
 
-To represent a valid unbounded type argument of PACT $T$, $F$ should satisfy the following conditions.
+To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$ should satisfy the following conditions.
 
-* $F$ is a type argument available in the current type context
+* $F$ is a type parameter of PACT $T$
+* $\forall i \in [1,n]: B_i$ must be one of the following kinds
+    - valid concrete type
+    - a type parameter available in the current type context $\Gamma$
 
-###### Projected type arguments
+TODO(Single generic bound allowed)
 
-TODO(Mixed-site variance)
+TODO(Only one class bound allowed)
 
-Projected type arguments are abstract types which are used to support declaration-site variance for parameterized types, i.e., the ability to declare a type argument as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type arguments.
+###### Mixed-site variance
 
-> Kotlin also supports use-site variance, which is covered in more detail [here][Use-site variance].
+To implement subtyping between parameterized types, Kotlin uses *mixed-site variance* --- a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java. Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site). For more practical discussion about mixed-site variance, we readdress you to [generics][Generics].
 
-To represent a valid covariant type argument $\triangleleft F$ of PACT $T$, $\triangleleft F$ should satisfy the following conditions.
+###### Declaration-site variance
 
-* $F$ is a type argument available in the current type context
+An invariant type parameter $F$ is an abstract type which may capture any valid type (see [subtyping][Subtyping] for more details on variance); if one needs co- or contravariant type parameter, they need to use projected type parameters.
 
-To represent a valid contravariant type argument $\triangleright F$ of PACT $T$, $\triangleright F$ should satisfy the following conditions.
+To represent a valid invariant type parameter of PACT $T$, $F$ should satisfy the following conditions.
 
-* $F$ is a type argument available in the current type context
+* $F$ is a type parameter available in the current type context $\Gamma$
+
+Projected type parameters are abstract types which are used to declare a type parameter as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
+
+To represent a valid covariant type parameter $\triangleleft F$ of PACT $T$, $\triangleleft F$ should satisfy the following conditions.
+
+* $F$ is a type parameter available in the current type context $\Gamma$
+
+To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$, $\triangleright F$ should satisfy the following conditions.
+
+* $F$ is a type parameter available in the current type context $\Gamma$
 
 TODO(type projections are not allowed on functions and properties)
 
@@ -197,43 +214,50 @@ TODO(no type projections on supertype type arguments)
 
 TODO(conflicting projections)
 
-###### Bounded type arguments
+###### Use-site variance
 
-A bounded type argument is an abstract type which is used to specify upper type bounds for type arguments and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type argument $F$.
+Kotlin also supports use-site variance, by specifying the variance for type arguments. Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.
 
-To represent a valid bounded type argument of PACT $T$, $F <: B_1, \ldots, B_n$ should satisfy the following conditions.
+To represent a valid invariant type argument of iPACT $T$, $A$ should satisfy the following conditions.
 
-* $F$ is a type argument of PACT $T$
-* $\forall i \in [1,n]: B_i$ must be one of the following kinds
-    - valid concrete type
-    - a type argument available in the current type context
+* $A$ must be one of the following kinds
+    - a valid concrete type
+    - a type parameter available in the current type context $\Gamma$
 
-TODO(Single generic bound allowed)
+To represent a valid covariant type argument $\triangleleft A$ of iPACT $T$, $\triangleleft A$ should satisfy the following conditions.
 
-TODO(Only one class bound allowed)
+* $A$ must be one of the following kinds
+    - a valid concrete type
+    - a type parameter available in the current type context $\Gamma$
 
-##### Use-site variance
+To represent a valid contravariant type argument $\triangleright A$ of iPACT $T$, $\triangleright A$ should satisfy the following conditions.
 
-Kotlin also supports specifying type argument variance on use-site, specifying projections for *actual* type arguments. Just like for [projected type arguments](Projected type arguments), ...
+* $A$ must be one of the following kinds
+    - a valid concrete type
+    - a type parameter available in the current type context $\Gamma$
 
-##### Type argument capturing
+In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [here][Generics]).
 
-Type argument capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both formal and actual type arguments, which present a unified view on the resulting types and simplifies further reasoning.
+TODO(Clean-up this mess)
 
-For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the formal $F_i$ and actual $A_i$ argument.
+##### Type capturing
+
+Type capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
+
+For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the type parameter $F_i$ and type argument $A_i$.
 
 TODO(Does this set describe a type universe?)
 
 TODO(Blah-blah about existential types?)
 
-> NB: A captured type $C$ may be represented as a set of its type constraints $\mathbb{C}$. **All** applicable rules are used to create the resulting captured type.
+> NB: A captured type $C$ may be viewed as a set of its type constraints $\mathbb{C}$. **All** applicable rules are used to create the resulting constraint set.
 
-* If $\triangleleft  F_i$ is a covariant type argument and $A_i$ **is not** a concrete type or a covariant type argument, it is an error. Otherwise, $C_i <: A_i$.
-* If $\triangleright F_i$ is a contravariant type argument and $A_i$ **is not** a concrete type or a contravariant type argument, it is an error. Otherwise, $C_i :> A_i$.
-* If $F_i <: B_1, \ldots, B_n$ is a bounded type argument, $C_i <: B_i[C_1, \ldots, C_n]$
+* If $\triangleleft  F_i$ is a covariant type parameter and $A_i$ is not a concrete type, covariant or star-projected type argument, it is an error. Otherwise, $C_i <: A_i$.
+* If $\triangleright F_i$ is a contravariant type parameter and $A_i$ is not a concrete type, contravariant or star-projected type argument, it is an error. Otherwise, $C_i :> A_i$.
+* If $F_i <: B_1, \ldots, B_n$ is a bounded type parameter, $C_i <: B_i[C_1, \ldots, C_n]$
 * If $\triangleleft A_i$ is a covariant type argument, $C_i <: A_i$
 * If $\triangleright A_i$ is a contravariant type argument, $C_i :> A_i$
-* If $\star A_i$ is a star type argument, $Nothing <: C_i <: Any?$
+* If $\star A_i$ is a star-projected type argument, $kotlin.Nothing <: C_i <: kotlin.Any?$
 * Otherwise, $C_i = A_i$
 
 #### Flexible types
@@ -305,6 +329,8 @@ Subtyping for non-nullable, abstract types uses the following rules.
 
 * $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
 * For any PACT $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
+
+TODO(Subtyping for type parameters)
 
 ---
 # * For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
