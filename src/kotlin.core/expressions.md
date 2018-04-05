@@ -497,17 +497,215 @@ operator function overload variant.
 
 A *cast expression* is a binary expression employing the cast operators (`as` or `as?`) and
 receives an expression as the left-hand side operand and a type name as the right-hand side operand.
+
+The form of cast expression employing the `as` operator is called *a unsafe cast* expression
 This operator perform a runtime check whether runtime type of the expression
 is a [subtype][Subtyping] of the type given on the right-hand side operand and
-throws an exception otherwise.
+throws an exception otherwise. If the type on the right hand side is a [runtime-available][Runtime-available types]
+type without generic parameters, then this exception is thrown immediately when
+evaluating the expression, otherwise it is platform-dependent whether an exception
+is thrown at this point.
+
+> Even if the exception is not thrown when evaluating the cast expression, it is
+> guaranteed to be thrown later when the value is used with any runtime-available type
+
+The unsafe cast expression always has the same type as the type specified in the expression.
+
+The form of cast expression employing the `as?` operator is called *a checked cast* expression
+This operator is very similar to the unsafe cast expression, but does not throw an exception,
+but returns `null` if the types don't match.
+If the type specified on the right hand side of the expression is not
+[runtime-available][Runtime-available types], then the check is not performed
+and `null` is never returned, leading to potential runtime errors later in the
+program execution. This situation should be reported with a compiler warning.
+
+The checked cast expression always has the [nullable][Nullable types] variant of the type specified in the expression.
+
+An *ascription expression* is a binary expression employing the ascription operator (`:`) and
+receives an expression as the left-hand side operand and a type name as the right-hand side operand.
+
+This operator does not perform any actions at runtime and evaluates to the same value
+as its left hand operand. However, it does perform a compile-time check whether the
+current type of the expression is a [subtype][Subtyping] of the type given on the right-hand
+side operand and generates a compiler error otherwise.
+
+The ascription expression always has the same type as the type specified in right-hand side of the expression.
 
 #### TODO()
 
 - Smart casts!
-- It doesn't really work that way if the type is not runtime-available
-- `as?` returns null (or not, see above)
+
+### Prefix expressions
+
+**_prefixUnaryExpression_:**  
+  ~  {_unaryPrefix_} _postfixUnaryExpression_   
+    | _unaryPrefix_ {_unaryPrefix_} _ifExpression_   
+
+**_unaryPrefix_:**  
+  ~  _annotation_   
+    | _labelDefinition_   
+    | _prefixUnaryOperator_ {_NL_}   
+
+**_prefixUnaryOperator_:**  
+  ~  `++`   
+    | `--`   
+    | `-`   
+    | `+`   
+    | `!`   
+
+#### Annotated and labeled expression
+
+Any expression in Kotlin may be prefixed with any number of [annotations][Annotations]
+and [labels][Labels]. These do not change the value of the expression and can be used
+by external tools and platform-dependent features.
+
+#### Prefix increment expression
+
+A *prefix increment* expression is an expression employing the prefix form of
+operator `++`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+`++`$A$ is exactly the same as evaluating the expression $A$`.inc()` where
+`inc` is a suitable `operator` function, assigning the value to $A$ and then
+returning the value of $A$ as the result of the expression.
+
+The left-hand side of a postfix increment expression must be an [assignable expressions][Assignable expressions].
+Otherwise a compiler error must be generated.
+
+The type of prefix increment is always equal to the type of the right-hand side
+expression.
+
+#### Prefix decrement expression
+
+A *prefix increment* expression is an expression employing the prefix form of
+operator `--`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+`--`$A$ is exactly the same as evaluating the expression $A$`.dec()` where
+`dec` is a suitable `operator` function, assigning the value to $A$ and then
+returning the value of $A$ as the result of the expression.
+
+The left-hand side of a prefix decrement expression must be an [assignable expressions][Assignable expressions].
+Otherwise a compiler error must be generated.
+
+The type of prefix increment is always equal to the type of the right-hand side
+expression.
+
+#### Unary minus expression
+
+An *unary minus* expression is an expression employing the prefix form of
+operator `-`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+`-`$A$ is exactly the same as $A$`.unaryMinus()` where `unaryMinus` is a suitable `operator`
+function, including its type. No additional restrictions apply.
+
+#### Unary plus expression
+
+An *unary plus* expression is an expression employing the prefix form of
+operator `+`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+`+`$A$ is exactly the same as $A$`.unaryPlus()` where `unaryPlus` is a suitable `operator`
+function, including its type. No additional restrictions apply.
+
+#### Logical not expression
+
+A *logical not* expression is an expression employing the prefix operator `!`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+`!`$A$ is exactly the same as $A$`.not()` where `not` is a suitable `operator`
+function, including its type. No additional restrictions apply.
+
+### Postfix operator expressions
+
+**_postfixUnaryExpression_:**  
+  ~  _primaryExpression_ {_postfixUnarySuffix_}   
+
+**_postfixUnarySuffix_:**  
+  ~  _postfixUnaryOperator_   
+    | _typeArguments_   
+    | _callSuffix_   
+    | _indexingSuffix_   
+    | _navigationSuffix_   
+
+**_postfixUnaryOperator_:**  
+  ~  `++`   
+    | `--`   
+    | `!!`   
+
+#### Postfix increment expression
+
+A *postfix increment* expression is an expression employing the postfix form of
+operator `++`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+$A$`++` is exactly the same as evaluating the expression $A$`.inc()` where
+`inc` is a suitable `operator` function, assigning the value of $A$ to a temporary
+location, assigning the result of `inc` to $A$ and returning the temporary.
+
+It can also be represented with the following code:
+
+```kotlin
+val tmp = A;
+A = A.inc();
+return tmp;
+```
+
+The left-hand side of a postfix increment expression must be an [assignable expressions][Assignable expressions].
+Otherwise a compiler error must be generated.
+
+The type of postfix increment is always equal to the type of the right-hand side
+expression.
+
+#### Postfix decrement expression
+
+A *postfix decrement* expression is an expression employing the postfix form of
+operator `--`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+$A$`--` is exactly the same as evaluating the expression $A$`.dec()` where
+`dec` is a suitable `operator` function, assigning the value of $A$ to a temporary
+location, assigning the result of `inc` to $A$ and returning the temporary.
+
+It can also be represented with the following code:
+
+```kotlin
+val tmp = A;
+A = A.dec();
+return tmp;
+```
+
+The left-hand side of a postfix decrement expression must be an [assignable expressions][Assignable expressions].
+Otherwise a compiler error must be generated.
+
+The type of prefix increment is always equal to the type of the right-hand side
+expression.
 
 
+### Indexing expressions
+
+**_postfixUnaryExpression_:**  
+  ~  _primaryExpression_ {_postfixUnarySuffix_}   
+
+**_postfixUnarySuffix_:**  
+  ~  _postfixUnaryOperator_   
+    | _typeArguments_   
+    | _callSuffix_   
+    | _indexingSuffix_   
+    | _navigationSuffix_   
+
+**_indexingSuffix_:**  
+  ~  `[` {_NL_} _expression_ {{_NL_} `,` {_NL_} _expression_} {_NL_} `]`   
+
+An *indexing expression* is a suffix expression employing the use of several
+subexpressions *indices* between square brackets (`[` and `]`). At least one
+index must be provided.
+
+It is an [overloadable][Overloadable operators] operator with the following expansion:
+
+$A$`[`$I_0$`,`$I_1$`,`$\ldots$`,`$I_N$`]` is exactly the same as
+$A$`.get(`$I_0$`,`$I_1$`,`$\ldots$`,`$I_N$`)`, where `get` is a suitable `operator`
+function.
+
+A correct indexing expression has the same type as the corresponding `get` expression.
+
+Indexing expressions are [assignable][Assignable expressions].
+For a corresponding assignment form, see [indexing assignment][Indexing assignment].
 
 ### Not-null assertion operator expression
 
