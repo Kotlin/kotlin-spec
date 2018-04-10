@@ -2,6 +2,23 @@
 
 TODO()
 
+An expression may be *used as a statement* or *used as an expression* depending on the context.
+As all expressions are valid statements [see the statements section][Statements],
+free expressions may be used as single statements or inside code blocks.
+
+An expression is used as an expression if it is encountered at any position
+where a statement is not allowed, for example, as an operand to an operator or
+as an immediate argument for a function call.
+An expression is used as a statement if it is encountered at any position where
+a statement is allowed.
+
+Some expressions are only allowed to be used
+as statements unless certain restrictions are met and this may affect the semantics,
+the compile-type type information and the safety of these expressions.
+All expressions are allowed to be used as statements.
+
+TODO()
+
 ### Constant literals
 
 Constant literals are expressions that correspond to constant, non-changing values.
@@ -166,6 +183,54 @@ the only valid value for this type (see [the corresponding section][`kotlin.Noth
 
 TODO(): reshuffle these sections
 
+### Try-expression
+
+**_tryExpression_:**  
+  ~  `try` {_NL_} _block_ {{_NL_} _catchBlock_} [{_NL_} _finallyBlock_]   
+
+**_catchBlock_:**  
+  ~  `catch` {_NL_} `(` {_annotation_} _simpleIdentifier_ `:` _userType_ `)` {_NL_} _block_   
+
+**_finallyBlock_:**  
+  ~  `finally` {_NL_} _block_   
+
+A *try-expression* is an expression starting with the keyword `try`. It consists of
+a code block (*try body*) and several optional additional blocks: one of more *catch blocks*,
+starting with the soft keyword `catch` with a single parameter called *exception parameter*
+followed by another code block
+and a single optional *finally block*, starting with the soft keyword `finally`
+and yet another code block. At least one catch or finally block must exist,
+otherwise the expression is ill-formed.
+
+The try-expression evaluates its body as normally, but if any statement in
+the body throws an exception, the exception, rather than being propagated up
+the call stack, gets checked for its type. If there exists any catch block
+which parameter type is valid for the checked exception, this catch block
+is evaluated immediately after the exception is thrown and the exception itself
+is passed inside the catch block as the corresponding parameter.
+If there are several catch blocks with suitable parameter types, the first one
+is picked.
+
+If there is a finally block, it gets evaluated after any evaluated catch block, or,
+if no catch block was encountered, after the exception was thrown. If no catch
+block was selected, the exception is [propagated as usual][Exceptions] up the call stack
+after the finally block (if any) is evaluated. If no exception is thrown during
+the evaluation of the try body, no catch blocks are checked, but the finally
+block is executed anyway and program execution continues as normal.
+
+The value of the try-expression is the same as the value of the last expression of
+the try body (if no exception was thrown) or the value of the last expression of
+the selected catch block (if one was selected). All other situations mean that
+an exception is propagated up the call stack, so the value of the try-expression
+becomes irrelevant. The finally block does get executed as described above, but
+has no effect on the value returned by the try-expression.
+
+The type of the try-expression is
+the [least upper bound][Least upper bound] of the types of the last expressions of
+the try body and the last expressions of all the catch blocks (TODO(): not that simple).
+If any of the blocks have no valid last expression, the type is inferred to be
+`kotlin.Unit`, but the try-expression may be used as an expression anyway.
+
 ### Conditional expression
 
 **_ifExpression_:**  
@@ -173,7 +238,7 @@ TODO(): reshuffle these sections
     | `if` {_NL_} `(` {_NL_} _expression_ {_NL_} `)` {_NL_} [`;` {_NL_}] `else` {_NL_} _controlStructureBody_   
 
 **Conditional expressions** use the boolean value of one expression (*condition*) to decide
-which of two other expressions (*branches*) should be evaluated.
+which of two control structure bodies (*branches*) should be evaluated.
 If the condition evaluates to `true`, than the first branch (the true branch) is
 evaluated, otherwise the second branch is.
 The value of the resulting expression is the same as the value of the chosen branch.
@@ -212,7 +277,7 @@ otherwise it is a type error.
   ~  _isOperator_ {_NL_} _type_   
 
 **When expression** is alike a **conditional expression** in the sense that it allows
-several different other expressions (*cases*) to be evaluated depending on boolean conditions.
+several different control structure bodies (*cases*) to be evaluated depending on boolean conditions.
 The key difference, however, is that when expressions may include several different
 conditions. When expression has two different forms: with bound value and without it.
 
@@ -676,6 +741,20 @@ Otherwise a compiler error must be generated.
 The type of prefix increment is always equal to the type of the right-hand side
 expression.
 
+### Not-null assertion expression
+
+A *not-null assertion expression* is a postfix expression employing the use of
+operator `!!`. For expressions of nullabe types, this expression checks whether
+the value is equal to `null`, and if it is, throws a runtime exception.
+If it is not equal to `null`, it evaluates to the same value as its
+left-hand side expression.
+
+Not-null assertion expressions have no effect on values of non-nullable types.
+
+The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the
+type of its left-hand side expression. Note that this type may be non-denotable
+in Kotlin and as such, may be [approximated][Type approximation] in some situations
+involving [type inference][Type inference].
 
 ### Indexing expressions
 
@@ -707,7 +786,68 @@ A correct indexing expression has the same type as the corresponding `get` expre
 Indexing expressions are [assignable][Assignable expressions].
 For a corresponding assignment form, see [indexing assignment][Indexing assignment].
 
-### Not-null assertion operator expression
+### Call and property access expressions
+
+**_postfixUnaryExpression_:**  
+  ~  _primaryExpression_ {_postfixUnarySuffix_}   
+
+**_postfixUnarySuffix_:**  
+  ~  _postfixUnaryOperator_   
+    | _typeArguments_   
+    | _callSuffix_   
+    | _indexingSuffix_   
+    | _navigationSuffix_
+
+**_navigationSuffix_:**  
+  ~  {_NL_} _memberAccessOperator_ {_NL_} (_simpleIdentifier_ | `class`)   
+
+**_callSuffix_:**  
+  ~  [_typeArguments_] [_valueArguments_] _annotatedLambda_   
+    | [_typeArguments_] _valueArguments_   
+
+**_annotatedLambda_:**  
+  ~  {annotation | _IdentifierAt_} {_NL_} _lambdaLiteral_   
+
+**_valueArguments_:**  
+  ~  `(` {_NL_} [_valueArgument_] {_NL_} `)`   
+    | `(` {_NL_} _valueArgument_ {{_NL_} `,` {_NL_} _valueArgument_} {_NL_} `)`   
+
+**_typeArguments_:**  
+  ~  `<` {_NL_} _typeProjection_ {{_NL_} `,` {_NL_} _typeProjection_} {_NL_} `>`   
+
+**_typeProjection_:**  
+  ~  [_typeProjectionModifierList_] _type_ | `*`   
+
+**_typeProjectionModifierList_:**  
+  ~  {_varianceAnnotation_}   
+
+**_navigationSuffix_:**  
+  ~  {_NL_} _memberAccessOperator_ {_NL_} (_simpleIdentifier_ | `class`)   
+
+**_memberAccessOperator_:**  
+  ~  `.` | `?.` | `::`   
+
+### The navigation operators
+
+Expressions employing the navigation binary operators (`.`, `.?` or `::`) are all
+syntactically similar, but, in fact, may have very different syntactic meaning.
+`a.c` may have one of the following semantics when used as an expression:
+
+- A fully-qualified type, property or object name. The left side of `.` must be a package name,
+  while the right side corresponds to a declaration in that package. Note that qualification uses
+  operator `.` only;
+- A value property access. Here `a` is another value available in the current scope
+  and `c` is the property name. If used with operator `::` this becomes a
+  [property reference][Callable references]. The left-hand side expression may be a type name,
+  which is similar to using the type's companion object as the left hand side expression;
+- A member function call if followed by the call suffix (arguments enclosed in parentheses).
+  These expressions adhere to the [overloading][Overload resolution] rules. If used
+  with operator `::`, but without the call suffix,
+  this becomes a [function reference][Callable references].
+
+TODO()
+
+
 
 ### Operator expressions
 
@@ -717,7 +857,5 @@ For a corresponding assignment form, see [indexing assignment][Indexing assignme
 
 ## TODOS()
 
-- Control structure body typing
 - Overloadable operators && operator expansion
 - Smart casts vs compile-time types
-- The whole "used as an expression" vs "used as a statement" business
