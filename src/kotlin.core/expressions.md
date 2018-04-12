@@ -633,7 +633,7 @@ operator `++`. It is an [overloadable][Overloadable operators] operator with the
 `inc` is a suitable `operator` function, assigning the value to $A$ and then
 returning the value of $A$ as the result of the expression.
 
-The left-hand side of a postfix increment expression must be an [assignable expressions][Assignable expressions].
+The left-hand side of a postfix increment expression must be an [assignable expressions][Assignments].
 Otherwise a compiler error must be generated.
 
 The type of prefix increment is always equal to the type of the right-hand side
@@ -648,7 +648,7 @@ operator `--`. It is an [overloadable][Overloadable operators] operator with the
 `dec` is a suitable `operator` function, assigning the value to $A$ and then
 returning the value of $A$ as the result of the expression.
 
-The left-hand side of a prefix decrement expression must be an [assignable expressions][Assignable expressions].
+The left-hand side of a prefix decrement expression must be an [assignable expressions][Assignments].
 Otherwise a compiler error must be generated.
 
 The type of prefix increment is always equal to the type of the right-hand side
