@@ -95,12 +95,11 @@ following expansions:
 - $A$`%=`$B$ is exactly the same as one of the following (in this order):
     - $A$`.remAssign(`$B$`)` if a corresponding suitable `remAssign` operator function
       exists and is available;
-    - $A$`.modAssign(`$B$`)` if a corresponding suitable `modAssign` operator function
-      exists and is available;
     - $A$` = `$A$`.rem(`$B$`)` if a corresponding suitable `rem` operator function
       exists and is available.
-    - $A$` = `$A$`.mod(`$B$`)` if a corresponding suitable `mod` operator function
-      exists and is available.
+
+> As of Kotlin version 1.2.31, there exists an additional overloading function for
+> `%` called `mod`, which is deprecated
 
 The expanded simple assignment is then proceeded as described in the previous
 section.
@@ -111,7 +110,81 @@ section.
 
 ### Loop statements
 
-TODO()
+Loop statements are constructs that repeat evaluating a certain number of statements
+until a *loop exit condition* applies.
+
+**_loopStatement_:**  
+  ~  _forStatement_   
+    | _whileStatement_   
+    | _doWhileStatement_   
+
+Loops are closely related to the semantics of several [jump expressions][Jump expressions],
+as these expressions, namely `break` and `continue`, are only allowed in the body of
+a loop. Please refer to the corresponding section for details.
+
+#### While loop
+
+**_whileStatement_:**  
+  ~  `while` {_NL_} `(` _expression_ `)` {_NL_} _controlStructureBody_   
+    | `while` {_NL_} `(` _expression_ `)` {_NL_} `;`  
+
+*While loop statement* is very similar to an [`if` expression][Conditional expression]
+in the way that it contains a condition expression and a body consisting of one
+or more statements. While loop repeats evaluating its body for as long as the
+condition expression evaluates to true or a [jump expression][Jump expressions]
+is evaluated to finish the loop.
+
+> This also means that the condition expression is evaluated before every evaluation
+> of the body, including the first one.
+
+As for the `if` expression, the condition subexpression **must have** type `kotlin.Boolean`.
+
+#### Do-while loop
+
+**_doWhileStatement_:**  
+  ~  `do` {_NL_} [_controlStructureBody_] {_NL_} `while` {_NL_} `(` _expression_ `)`   
+
+A *do-while statement* is very similar to the while statement, but with a few differences.
+First, it has a different syntax. Second, it evaluates the loop condition expression
+**after** evaluating the loop body.
+
+> This also means that the body is always evaluated at least once
+
+As for the `if` expression, the condition subexpression **must have** type `kotlin.Boolean`.
+
+#### For loop
+
+**_forStatement_:**  
+  ~  `for` {_NL_} `(` {_annotation_} (variableDeclaration | _multiVariableDeclaration_) `in` _expression_ `)` {_NL_} [_controlStructureBody_]   
+
+> Unlike other languages, Kotlin does not have a free-form condition-based for loops.
+> The only form of for-loop available in Kotlin is (what it's called in other languages)
+> "the foreach loop", iterating over arrays and other datastructures
+
+A *for statement* is a special kind of loop statements that is used to iterate over
+data structures containing a number of elements. The for loop consists of a loop body,
+a **container expression** and the **iteration variable declaration**.
+
+The for loop is actually an [overloadable][Overloadable operators] syntax form
+with the following expansion:
+
+`for(`$VarDecl$`) in `$C$`) $Body$` is exactly the same as
+
+```kotlin
+val __iterator = C.iterator()
+while(__iterator.hasNext()) {
+    VarDecl = __iterator.next()
+    <... all the statements from Body>
+}
+```
+
+where `iterator`, `hasNext`, `next` are all acceptable operator functions available
+in the current scope.
+
+> Please note that expansions are hygenic, meaning the generated iterator variable
+> never clashes with any other values in the program and cannot be accessed outside
+> the expansion
+
 
 ### Code blocks
 
@@ -159,3 +232,4 @@ The *type of a control structure body* is the type of its value.
     - In the current grammar, they are
 - Wording
 - Mutable vs immutable properties
+- How expansions with new variables actually work

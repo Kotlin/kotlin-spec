@@ -541,11 +541,12 @@ These are [overloadable][Overloadable operators] operators with the following ex
 
 - $A$`*`$B$ is exactly the same as $A$`.times(`$B$`)`
 - $A$`/`$B$ is exactly the same as $A$`.div(`$B$`)`
-- $A$`%`$B$ is exactly the same as $A$`.rem(`$B$`)` or $A$`.mod(`$B$`)`, whichever is available
+- $A$`%`$B$ is exactly the same as $A$`.rem(`$B$`)`
 
-> As of Kotlin version 1.2.30, the `mod` form of remainder operator is deprecated
+> As of Kotlin version 1.2.31, there exists an additional overloading function for
+> `%` called `mod`, which is deprecated
 
-where `times`, `div`, `rem` or `mod` is a valid operator function available in the current scope.
+where `times`, `div`, `rem` is a valid operator function available in the current scope.
 The return type of this function is not restricted.
 The range expression has the same type as the return type of the corresponding
 operator function overload variant.
