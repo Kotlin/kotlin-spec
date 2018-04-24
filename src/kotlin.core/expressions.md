@@ -828,7 +828,7 @@ For a corresponding assignment form, see [indexing assignment][Indexing assignme
 **_memberAccessOperator_:**  
   ~  `.` | `?.` | `::`   
 
-### The navigation operators
+#### The navigation operators
 
 Expressions employing the navigation binary operators (`.`, `.?` or `::`) are all
 syntactically similar, but, in fact, may have very different syntactic meaning.
@@ -846,9 +846,202 @@ syntactically similar, but, in fact, may have very different syntactic meaning.
   with operator `::`, but without the call suffix,
   this becomes a [function reference][Callable references].
 
+TODO() + Identifiers
+
+### Function Literals
+
+Kotlin supports using functions as values. This includes, among other things, being
+able to use named functions (through [function references][Callable references])
+as parts of expressions. Sometimes it does not make much sense to provide a separate
+function declaration, but rather define a function in-place, using *function literals*.
+
+There are two types of function literals in Kotlin: *lambda literals* and
+*anonymous function declarations*. Both of these provide a way of defining a function
+in-place, but have subtle differences.
+
+#### Anonymous function declarations
+
+**_anonymousFunction_:**  
+  ~  `fun`   
+    [{_NL_} _type_ {_NL_} `.`]   
+    {_NL_} _functionValueParameters_   
+    [{_NL_} `:` {_NL_} _type_]   
+    [{_NL_} _typeConstraints_]   
+    [{_NL_} _functionBody_]   
+
+*Anonymous function declarations*, despite the name, are not actually declarations,
+but rather an expression that resembles a function declaration. They have syntax
+very similar to the function declaration syntax, but with a few differences:
+
+- Anonymous functions do not have a name (obviously);
+- Anonymous functions may not have type parameters (TODO(): check!!!);
+- Anonymous functions may not have default parameters (TODO(): check!!!);
+- Anonymous functions may have variable argument parameters, but they are automatically
+  decayed to non-variable argument parameters of array type (TODO(): how does this really work?).
+
+Anonymous function declaration may declare anonymous extension functions.
+The type of an anonymous function declaration is the function type
+constructed similarly to the corresponding
+[named function declaration][Function declarations].
+
+#### Lambda literals
+
+**_lambdaLiteral_:**  
+  ~  `{` {_NL_} _statements_ {_NL_} `}`   
+    | `{` {_NL_} _lambdaParameters_ {_NL_} `->` {_NL_} _statements_ {_NL_} `}`
+
+**_lambdaParameters_:**  
+  ~  [_lambdaParameter_] {{_NL_} `,` {_NL_} _lambdaParameter_}   
+
+**_lambdaParameter_:**  
+  ~  _variableDeclaration_   
+    | _multiVariableDeclaration_ [{_NL_} `:` {_NL_} _type_]   
+
+Lambda literals TODO()
+
+### Object literals
+
+**_objectLiteral_:**  
+  ~  `object` {_NL_} `:` {_NL_} _delegationSpecifiers_ [{_NL_} _classBody_]   
+    | `object` {_NL_} _classBody_   
+
+Object literals are a way of defining anonymous objects in Kotlin. Anonymous objects
+are similar to regular objects, but they (obviously) have no name and thus can
+(only) be used as expressions. Anonymous objects, just like regular object
+declarations, can have at most one base class and many base interfaces declared
+in its delegation specifiers.
+
+The main difference between the regular object declaration and an anonymous
+object is its type. The type of an anonymous object is a special kind of type
+that is usable (and visible) only in the scope where it is declared. It is similar
+to a type that could be normally declared with a corresponding object declaration,
+but cannot be used outside the scope, leading to interesting effects.
+
+When a value of this type escapes current scope:
+
+- If the type has only one declared supertype, it is implicitly downcasted to
+  this declared supertype;
+- If the type has several declared supertypes, there must be an explicit cast to
+  any suitable type visible outside the scope, otherwise a compiler error is generated.
+
+Please not that in this context "escaping" current scope is performed immediately
+if the corresponding value is declared as a global or classifier-scope property,
+as those are a part of package interface.
+
+### This-expressions
+
+**_thisExpression_:**  
+  ~  `this` [_AtIdentifier_]
+
+This-expressions are a special kind of expressions used to access available receivers
+in current scope. For more information about receivers, please refer to the
+[overloading section][Receivers]. The basic form of this expression, denoted by
+`this` keyword, is used to access the current implicit receiver according to
+receiver overloading rules. In order to access other receivers, labeled `this`
+expressions are used. These may be any of the following:
+
+- `this@`$type$ where $type$ is a name of any classifier that is currently being
+  declared (that is, this this-expression is located inside its declaration's
+  inner scope) refers to the implicit object of the type being declared;
+- `this@`$function$ where $function$ is a name of a function currently being declared
+  (that is, this this-expression is located inside the function body)
+  refers to the implicit receiver object of this function (if it is an extension
+  function) or is illegal and generates a compiler error.
+
+Any other form of this-expression is illegal and generates a compiler error.
+
+### Super-forms
+
+**_superExpression_:**  
+  ~  `super` [`<` {_NL_} _type_ {_NL_} `>`] [_AtIdentifier_]
+
+Super form is a special kind of expression that can only be used as the receiver
+of a function or property access expression. Any usage of such an expression in
+any other context is prohibited.
+
+Super forms are used in classifier declarations to access the method implementations
+from base classifier types without invoking overriding behaviour.
+
 TODO()
 
+### Jump expressions
 
+**_jumpExpression_:**  
+  ~  `throw` {_NL_} _expression_   
+    | (`return` | `return@` _Identifier_) [_expression_]   
+    | `continue` | `continue@` _Identifier_   
+    | `break` | `break@` _Identifier_   
+
+*Jump expressions* are a group of expressions that redirect the order the program
+is evaluated to a different program point when evaluated. All these expressions
+have several things in common:
+
+- They all have type `kotlin.Nothing`, effectively meaning that they never produce
+  any runtime value;
+- Any code that unconditionally follows such expression is never evaluated.
+
+#### Throw expressions
+
+TODO(): [Exceptions] go first
+
+#### Return expressions
+
+A *return expression*, when used inside a function body, immediately
+stops evaluating the function and returns to the point where this function was
+called, making the function call expression evaluate to the value specified
+in this return expression (if any). A return expression with no value implicitly
+returns the `kotlin.Unit` object.
+
+There are two forms of return expression: a simple return expression, specified using
+the `return` keyword, returning from the innermost
+[function declaration][Function declaration] (or
+[anonymous function expression][Anonymous function expression]) and the extended
+return expression, using the form `return@`$Context$ where $Context$ may be one
+of the following:
+
+- The name of one of the enclosing function declarations to refer to this function.
+  If several declarations match one name, an ambiguity compiler error is generated;
+- If current expression is inside a lambda expression body, the name of the function
+  using this lambda expression as a trailing lambda (TODO: Wut?) parameter may be used
+  to refer to the lambda literal itself.
+
+If returning from the referred function is allowed in current context, the return
+is performed as usual. If returning from the referred function is not allowed,
+a compiler error is generated.
+
+#### Continue expression
+
+A *continue expression* is a jump expression allowed only within loop bodies.
+When evaluated, this expression passes the control to the start of the next loop
+iteration.
+
+There are two forms of continue expressions:
+
+- A simple continue expression, specified using
+  the `continue` keyword, which refers to the innermost loop statement in the current
+  scope;
+- An extended continue expression, denoted `continue@`$Loop$, where $Loop$ is a
+  label referring to a labeled loop statement, which refers to the loop the label
+  refers to.
+
+TODO(): as a matter of fact, `continue` is not allowed inside `when` >_<
+
+#### Break expression
+
+A *break expression* is a jump expression allowed only within loop bodies.
+When evaluated, this expression passes the control to the next program point
+after the loop.
+
+There are two forms of break expressions:
+
+- A simple break expression, specified using
+  the `break` keyword, which refers to the innermost loop statement in the current
+  scope;
+- An extended break expression, denoted `break@`$Loop$, where $Loop$ is a
+  label referring to a labeled loop statement, which refers to the loop the label
+  refers to.
+
+TODO(): as a matter of fact, `break` is not allowed inside `when` >_<
 
 ### Operator expressions
 
@@ -860,3 +1053,8 @@ TODO()
 
 - Overloadable operators && operator expansion
 - Smart casts vs compile-time types
+- What does `decaying` for vararg actually mean?
+
+- !!! object literal typing looks just like restricted union types. Are there any traps hidden here?
+- The whole last paragraph in [Object literals][Object literals] is pretty shady
+- What does it mean for returning to be disallowed?

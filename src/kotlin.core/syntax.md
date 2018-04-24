@@ -575,7 +575,7 @@ Syntax literals are fully defined in syntax grammar due to the complex nature of
 
 **_lambdaLiteral_:**  
   ~  `{` {_NL_} _statements_ {_NL_} `}`   
-    | `{` {_NL_} _lambdaParameters_ {_NL_} _ARROW_ {_NL_} _statements_ {_NL_} `}`   
+    | `{` {_NL_} _lambdaParameters_ {_NL_} `->` {_NL_} _statements_ {_NL_} `}`   
 
 **_lambdaParameters_:**  
   ~  [_lambdaParameter_] {{_NL_} `,` {_NL_} _lambdaParameter_}   
@@ -654,9 +654,9 @@ Syntax literals are fully defined in syntax grammar due to the complex nature of
 
 **_jumpExpression_:**  
   ~  `throw` {_NL_} _expression_   
-    | (`return` | _RETURN_AT_) [_expression_]   
-    | `continue` | _CONTINUE_AT_   
-    | `break` | _BREAK_AT_   
+    | (`return` | `return@` _Identifier_) [_expression_]   
+    | `continue` | `continue@` _Identifier_   
+    | `break` | `break@` _Identifier_   
 
 **_callableReference_:**  
   ~  [_receiverType_] {_NL_} (`::`|`?::`) {_NL_} (_simpleIdentifier_ | `class`)   
