@@ -74,21 +74,78 @@ in which case `x` is used as a synonym to the getter invocation when read from a
 
 #### Delegated property declaration
 
-A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. One may view these properties as regular properties with a special *delegating* [getters][Getters and setters].
+A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. One may view these properties as regular properties with a special *delegating* [getters][Getters and setters]. TODO(Type is optional if inferred?)
 
 In case of a delegated read-only property, access to `x` is replaced with the call to a special function `getValue`, which must be available on `e`. This function has the following signature
 
 ```kotlin
-operator fun getValue(thisRef: T, property: KProperty<*>): R
+operator fun getValue(thisRef: E, property: PropertyInfo): R
 ```
 
 where
 
-TODO...
+* `thisRef: E` is the reference to the enclosing entity
+    - holds the enclosing class or object instance in case of classifier property
+    - is `null` for [local properties][Local property declaration]
+* `property: PropertyInfo` contains runtime-available information about the declared property, most importantly
+    - `property.name` holds the property name
 
-TODO(Property declaration scope?)
+This convention implies the following requirements on the `getValue` function
 
-TODO(lateinit?)
+* $S <: E$, where $S$ is the type of the enclosing entity
+* $\text{KProperty<*>} <: \text{PropertyInfo}$
+* $R$ should be in a supertype relation with the delegated property type $T$
+
+> In case of the local property, enclosing entity has the type `Nothing?`
+
+A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
+
+Read access is handeled using the same `getValue` function as for a delegated read-only property. Write access is processed using a special function `setValue`, which must be available on `e`. This function has the following signature
+
+```kotlin
+operator fun setValue(thisRef: E, property: PropertyInfo, value: R): U
+```
+
+where
+
+* `thisRef: E` is the reference to the enclosing entity
+    - holds the enclosing class or object instance in case of classifier property
+    - is `null` for [local properties][Local property declaration]
+* `property: PropertyInfo` contains runtime-available information about the declared property, most importantly
+    - `property.name` holds the property name
+* `value: R` is the new property value
+
+This convention implies the following requirements on the `setValue` function
+
+* $S <: E$, where $S$ is the type of the enclosing entity
+* $\text{KProperty<*>} <: \text{PropertyInfo}$
+* $R$ should be in a supertype relation with the delegated property type $T$
+* $U$ is ignored
+
+> In case of the local property, enclosing entity has the type `Nothing?`
+
+The delegated property is expanded as follows.
+
+```kotlin
+/*
+ * Actual code
+ */
+class C {
+    var prop: Type by DelegateExpression
+}
+
+/*
+ * Expanded code
+ */
+class C {
+    private val prop$delegate = DelegateExpression
+    var prop: Type
+        get() = prop$delegate.getValue(this, this::prop)
+        set(value: Type) = prop$delegate.setValue(this, this::prop, value)
+}
+```
+
+TODO(provideDelegate)
 
 #### Local property declaration
 
@@ -118,6 +175,10 @@ TODO(Backing field or no backing field)
 #### Property initialization
 
 All non-abstract properties must be definitely initialized before their first use. To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
+
+TODO(Property declaration scope?)
+
+TODO(lateinit?)
 
 ### Type alias
 
