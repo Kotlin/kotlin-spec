@@ -170,7 +170,7 @@ candidate.
 ### Infix function calls
 
 In reality, infix function calls are a special case of function calls with an
-explicit receiver using the left hand operand as this receiver.
+explicit receiver using the left hand operand as the receiver.
 
 There is a slight difference though: during the overload candidate set
 selection the only functions considered for inclusion are the ones with the
@@ -226,6 +226,36 @@ Than for a function named `f` the following sets are looked upon (in this order)
 When looked upon these sets, the first set that contains **any** function
 with the corresponding name and conforming types is picked.
 
+### Calls with named parameters
+
+Most of the call forms listed above may use named parameters in call expressions,
+for example, `f(a = 2)`, where `a` is a named formal parameter specified in
+the declaration of `f`. Such calls are treated the same way as normal calls, but
+the overload resolution sets are filtered to only contain callables that actually
+have formal parameters for all the corresponding names.
+
+> For properties called through invoke-convention, the named parameters must
+> be present in the declaration of the `invoke` operator function
+
+Unlike positional arguments, named arguments specify directly which of the
+formal parameters of the function the argument corresponds to. The matching
+of formal parameters and arguments is performed separately for each function
+candidate and while the number of defaults (
+  see [the MSC definition process][Choosing the most specific function from the overload candidate set]) does affect resolution process,
+the fact that some argument was mapped using named or positional argument does
+not affect is in any way.
+
+### Calls with trailing lambda expressions
+
+Most of the call forms listed above may have a single lambda expression presented outside
+of the parentheses or replacing them (see [Call expression]). This has no effect on
+overload resolution process, aside from argument reordering that may happen due to
+variable argument parameters or parameters with defaults between the arguments.
+
+> This means that calls `f(1,2){ g() } ` and `f(1,2, body = { g() })` are completely equivalent
+> from the overload resolution standpoint, assuming that `body` is the name
+> of the last formal parameter of `f`
+
 ### Choosing the most specific function from the overload candidate set
 
 #### Rationale
@@ -267,27 +297,57 @@ One applicable function $f_1$ is _more specific_ than other applicable
 function $f_2$ for an invocation with argument expressions $e_1,e_2...e_K$
 if any of the following are true:
 
-- $f_2$ is generic and $f_1$ is _inferred to be more specific_[TODO()] than $f_2$ for argument
-  expressions $e_1,e_2...e_K$;
+- $f_2$ has more formal parameters that are **not** specified in this call, including
+  parameters with default values and variable argument parameters;
+- $f_2$ has variable argument formal parameters, while $f_1$ does not;
 - $f_2$ is not generic and all of the following holds:
-    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$
-    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$
-    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$
+    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$;
+    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$;
+    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$.
 - TODO(): varargs
 
 The most specific function of a candidate set is the element of the set that is more specific than any
-other element of the set. If there is more than one such function, an ambiguity error should be reported.
+other element of the set. If there is more than one such function,
+an ambiguity error should be reported.
 
 A type S is more specific than type T for expression e if any of the following holds:
 
 - $S <: T$
-- TODO()
+- S is *less generic* than T, meaning one of the following:
+  - T is generic and S is not;
+  - Both T and S are generic, but S has a bigger depth than S;
+
+TODO(): move it somewhere?
+
+The depth of a generic type is defined as follows:
+- A type parameter or non-generic type has depth 0;
+- A parameterized type $G$<$T_0$,$T_1$,$T_2$,...,$T_N$> has depth
+  $1 + max(depth(T_0), depth(T_1), depth(T_2), ... depth(T_N))$
+
+When calculating type depth, a generic type alias is treated the same way as
+its aliasee type.
+
+> Example 1: Let's suppose that T is type parameter A and S is List\<B\> where B is
+> also a type parameter. As the depth of T is 0 and the depth of S is 1, S is less generic than T
+
+> Example 2: Let's suppose that T is function type A.(B) -> C
+> and S is function type (D) -> (E) -> F where A, B, C, D, E, F are all type parameters
+> S is more specific than T because T has depth 1, while S has depth 2
+> (because function type is parameterized over its return type, which is also a
+> parameterized function type)
+
+### About type inference
+
+[Type inference][Type inference] in Kotlin is a pretty complicated process, which is
+performed after resolving all the overload candidates. Due to the complexity of
+the process, type inference may not affect the way overload resolution candidate
+is picked up.
 
 #### TODO:
 
 - Properties business
 - Definition of "applicable function"
-- Definition of "inferred to be more specific"
+- Definition of "type parameter level"
 - Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
     * Lambdas with parameter types seem to be covered (or do they?)
