@@ -62,16 +62,52 @@ Any function in Kotlin may be called in several different ways:
 - A call without an explicit receiver: `foo()`;
 
 For each of these cases, a compiler should first pick a number of
-_overload candidates_ which is a set of functions that may be the intended
+_overload candidates_ which is a set of callables that may be the intended
 callees and then _choose the most specific function_ to call based on the types
 of the function and the call operands. Please note that the overload candidates
 are picked **before** the most specific function is chosen.
 
+### Callables and invoke convention
+
+A *callable* $X$ for the purpose of this document is one of the following:
+
+- A function named $X$ at declaration site;
+- A property named $X$ at declaration site with an operator function called
+  `invoke` that is available as member or extension in the current scope.
+
+In the latter case a call $X$`(`$Y_0$`,`$Y_1$`,...,`$Y_N$`)` is an overloadable
+operator which is expanded to $X$`.invoke(`$Y_0$`,`$Y_1$`,...,`$Y_N$`)`.
+The call may contain type parameters, named parameters, variable argument parameter
+expansion and trailing lambda parameters, all of which are forwarded as-is to
+the corresponding `invoke` function.
+
+A *member callable* is either a member function or a member property with member
+operator `invoke`. An *extension callable* is either an extension function,
+a member property with an extension operator `invoke` or an extension property
+with an extension operator `invoke`.
+
+When calculating overload resolution sets, member callables
+produce the following separate sets (ordered by priority, bigger priority first):
+- Member functions;
+- Member properties.
+
+Extension callables produce the following
+separate sets (ordered by priority, bigger priority first):
+- Extension functions;
+- Member properties with extension invoke;
+- Extension properties with member invoke;
+- Extension properties with extension invoke.
+
+This division is more granular than all other means of dividing resolution
+candidates into sets, meaning that it is performed the last.
+
 ### Overload resolution for a fully-qualified call
 
-If the function name is fully-qualified (that is, contains full package path),
-then the overloading candidate set simply contains all the functions with
-the same name in the same package.
+If the callable name is fully-qualified (that is, contains full package path),
+then the overloading candidate set simply contains all the callables with
+the same name in the same package. As a package name may never clash with any
+other declared entity, after performing division of callables, these are the only
+sets available.
 
 Example:
 ```kotlin
@@ -80,11 +116,12 @@ package a.b.c
 fun foo(a: Int) {}
 fun foo(a: Double) {}
 fun foo(a: List<Char>) {}
+val foo = {}
 . . .
 a.b.c.foo()
 ```
 
-Here the overload candidates set contains all the functions named `foo` from the
+Here the overload candidates set contains all the callables named `foo` from the
 package `a.b.c`.
 
 ### A call with an explicit receiver
@@ -94,43 +131,38 @@ confused with a [fully-qualified call][Overload resolution for a fully-qualified
 then the left hand side operand of this operator is the explicit receiver of this
 call.
 
-A call of function `f` with explicit receiver `e` is correct if one (or more) of the following holds:
+A call of callable `f` with explicit receiver `e` is correct if one (or more) of the following holds:
 
-1. `f` is a method of the classifier type of `e` or any of its supertypes;
-2. `f` is an extension function for the classifier type of `e` or any of its supertypes;
-3. `f` is a property of the classifier type of `e` or any of its supertypes which allows
-   a call-like operator through the `invoke` convention (see below);
-4. `f` is an extension property for the classifier type of `e` or any of its supertypes which allows
-   a call-like operator through the `invoke` convention (see below);
-5. `f` is a local variable of an extension type with receiver type equivalent to the
-   type of `e` or any of its supertypes
+1. `f` is a member callable of the classifier type of `e` or any of its supertypes;
+2. `f` is an extension callable for the classifier type of `e` or any of its supertypes,
+   including local and imported extensions.
 
-Cases 3, 4 and 5 will be covered later in the section TODO(). For now we assume that
-the function called is either a method or an extension function.
-
-Please note that extension functions for case 2 not only include top-level
-declared extension functions, but also extension functions available in any
+Please note that callables functions for case 2 not only include top-level
+declared extension callables, but also extension callables available in any
 of the available implicit receivers. For example, if a class contains a member extension
 function for another class and an object of this class is available as an implicit
 receiver, this extension function may be used for the call if it has a suitable type.
 
-Than for a function named `f` the following sets are looked upon (in this order):
+Then for a callable named `f` the following sets are looked upon (in this order):
 
-1. The set of non-extension member functions named `f` of the receiver type;
-2. The set of local extension functions named `f` whose receiver type conforms to
-  the explicit receiver type;
-3. The sets of member extension functions named `f` available through all available
-  implicit receivers whose receiver type conforms to
-  the explicit receiver type, in the order of implicit receiver priorities;
-4. Top-level extension functions named `f` or corresponding type, in this order:
-    a. Functions explicitely imported into current file;
-    b. Functions declared in the same package;
-    c. Functions star-imported into current file;
-    d. Implicitly imported functions (kotlin standard library or platform-specific);
+1. The sets of non-extension member callables named `f` of the receiver type;
+2. The sets of local extension callables named `f` whose receiver type conforms to
+   the explicit receiver type, in all declaration scopes containing the current declaration
+   scope, ordered by the size of the scope (smallest first), excluding the package scope;
+3. The sets of explicitly imported extension callables named `f` whose receiver type conforms to
+   the explicit receiver type;
+4. The sets of extension callables named `f` whose receiver type conforms to
+   the explicit receiver type, declared in the current package;
+5. The sets of star-imported extension callables named `f` whose receiver type conforms to
+   the explicit receiver type;
+6. The sets of implicitly imported extension callables named `f` whose receiver type conforms to
+   the explicit receiver type.
 
-When looked upon these sets, the first set that contains **any** function
+TODO() : all this X-imported things need to be defined somewhere
+
+When looked upon these sets, the first set that contains **any** callable
 with the corresponding name and conforming types is picked. This means,
-among other things, that if set constructed during step 2 contains a
+among other things, that if the set constructed during step 2 contains a
 more suitable candidate function, but the set constructed in step 1
 is not empty, the function from set 1 is picked even it is a less suitable
 candidate.
@@ -138,11 +170,12 @@ candidate.
 ### Infix function calls
 
 In reality, infix function calls are a special case of function calls with an
-explicit receiver using the left hand operand as this receiver.
+explicit receiver using the left hand operand as the receiver.
 
 There is a slight difference though: during the overload candidate set
 selection the only functions considered for inclusion are the ones with the
-`infix` modifier. All other functions are not even considered for inclusion.
+`infix` modifier. All other functions
+(and all properties) are not even considered for inclusion.
 Aside from this small difference, candidates are selected using the same
 rules as for normal calls with explicit receiver.
 
@@ -158,7 +191,8 @@ is selected according to operator form (see TODO()). The selection of an exact
 function that is called in each particular case is based on the same rules
 as for function calls with explicit receivers, the only difference being
 that only functions with `operator` modifier are considered for inclusion when
-building overload candidate sets.
+building overload candidate sets. Properties are never considered for inclusion
+for operator calls.
 
 Different platform implementations may extend the set of functions deemed valid
 candidates for inclusion as operator functions.
@@ -192,31 +226,35 @@ Than for a function named `f` the following sets are looked upon (in this order)
 When looked upon these sets, the first set that contains **any** function
 with the corresponding name and conforming types is picked.
 
-### Function values and `invoke` convention
+### Calls with named parameters
 
-According to TODO(), a special function (be it a member or an extension function)
-called `invoke()` containing an operator modifier can be used as the call
-operator, making it indistinguishable from a normal function call. This means,
-among other things, that a property of an appropritate type can be called as
-a function an must participate in overload resolution.
+Most of the call forms listed above may use named parameters in call expressions,
+for example, `f(a = 2)`, where `a` is a named formal parameter specified in
+the declaration of `f`. Such calls are treated the same way as normal calls, but
+the overload resolution sets are filtered to only contain callables that actually
+have formal parameters for all the corresponding names.
 
-A particular case of this are the values of function types
-or extension function types. These are not special, as they are just
-a syntax sugar for interface types defined in the standard library.
+> For properties called through invoke-convention, the named parameters must
+> be present in the declaration of the `invoke` operator function
 
-This all means that for a function call (both with or without an explicit receiver)
-if there exists a property with the same name as this function, it does participate in
-overload resolution in the following way:
+Unlike positional arguments, named arguments specify directly which of the
+formal parameters of the function the argument corresponds to. The matching
+of formal parameters and arguments is performed separately for each function
+candidate and while the number of defaults (
+  see [the MSC definition process][Choosing the most specific function from the overload candidate set]) does affect resolution process,
+the fact that some argument was mapped using named or positional argument does
+not affect is in any way.
 
-* The property is looked for using the same rules it uses for normal functions
-    * For a property found, an additional overload resolution looking for operator
-      `invoke` for this property is performed;
-* The resulting overload candidate sets are ordered in the same fashion the
-  candidate sets for normal functions are ordered, but are not united with them;
-* The resulting ordering involves mixing both candidate set orders, putting
-  every property-based candidate set after the corresponding function candidate
-  set;
-* The winning set is chosen and the most specific function is found as before.
+### Calls with trailing lambda expressions
+
+Most of the call forms listed above may have a single lambda expression presented outside
+of the parentheses or replacing them (see [Call expression]). This has no effect on
+overload resolution process, aside from argument reordering that may happen due to
+variable argument parameters or parameters with defaults between the arguments.
+
+> This means that calls `f(1,2){ g() } ` and `f(1,2, body = { g() })` are completely equivalent
+> from the overload resolution standpoint, assuming that `body` is the name
+> of the last formal parameter of `f`
 
 ### Choosing the most specific function from the overload candidate set
 
@@ -259,27 +297,57 @@ One applicable function $f_1$ is _more specific_ than other applicable
 function $f_2$ for an invocation with argument expressions $e_1,e_2...e_K$
 if any of the following are true:
 
-- $f_2$ is generic and $f_1$ is _inferred to be more specific_[TODO()] than $f_2$ for argument
-  expressions $e_1,e_2...e_K$;
+- $f_2$ has more formal parameters that are **not** specified in this call, including
+  parameters with default values and variable argument parameters;
+- $f_2$ has variable argument formal parameters, while $f_1$ does not;
 - $f_2$ is not generic and all of the following holds:
-    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$
-    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$
-    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$
+    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$;
+    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$;
+    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$.
 - TODO(): varargs
 
 The most specific function of a candidate set is the element of the set that is more specific than any
-other element of the set. If there is more than one such function, an ambiguity error should be reported.
+other element of the set. If there is more than one such function,
+an ambiguity error should be reported.
 
 A type S is more specific than type T for expression e if any of the following holds:
 
 - $S <: T$
-- TODO()
+- S is *less generic* than T, meaning one of the following:
+  - T is generic and S is not;
+  - Both T and S are generic, but S has a bigger depth than S;
+
+TODO(): move it somewhere?
+
+The depth of a generic type is defined as follows:
+- A type parameter or non-generic type has depth 0;
+- A parameterized type $G$<$T_0$,$T_1$,$T_2$,...,$T_N$> has depth
+  $1 + max(depth(T_0), depth(T_1), depth(T_2), ... depth(T_N))$
+
+When calculating type depth, a generic type alias is treated the same way as
+its aliasee type.
+
+> Example 1: Let's suppose that T is type parameter A and S is List\<B\> where B is
+> also a type parameter. As the depth of T is 0 and the depth of S is 1, S is less generic than T
+
+> Example 2: Let's suppose that T is function type A.(B) -> C
+> and S is function type (D) -> (E) -> F where A, B, C, D, E, F are all type parameters
+> S is more specific than T because T has depth 1, while S has depth 2
+> (because function type is parameterized over its return type, which is also a
+> parameterized function type)
+
+### About type inference
+
+[Type inference][Type inference] in Kotlin is a pretty complicated process, which is
+performed after resolving all the overload candidates. Due to the complexity of
+the process, type inference may not affect the way overload resolution candidate
+is picked up.
 
 #### TODO:
 
 - Properties business
 - Definition of "applicable function"
-- Definition of "inferred to be more specific"
+- Definition of "type parameter level"
 - Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
     * Lambdas with parameter types seem to be covered (or do they?)
