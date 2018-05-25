@@ -66,8 +66,8 @@ A mutable property declaration may include a custom [getter][Getters and setters
 
 ```kotlin
 var x: T = e
-    get() { ... }
-    set(value) { ... }
+    get(): TG { ... }
+    set(value: TS) { ... }
 ```
 
 in which case `x` is used as a synonym to the getter invocation when read from and to the setter invocation when written to.
@@ -170,7 +170,53 @@ where `componentN()` should be a valid operator function available on the result
 
 #### Getters and setters
 
-TODO(Backing field or no backing field)
+As mentioned before, a property declaration may include a custom getter and/or custom setter (together called *accessors*) in the form of
+
+```kotlin
+var x: T = e
+    get(): TG { ... }
+    set(anyValidArgumentName: TS) { ... }
+```
+
+These functions have the following requirements
+
+* $TG \equiv T$
+* $TS \equiv T$
+* Both $TG$ and $TG$ types are optional and may be omitted from the declaration
+  
+* Read-only properties may have a custom getter, but not a custom setter
+* Mutable properties may have any combination of a cusom getter and a custom setter
+  
+* Setter argument may have any valid argument name
+
+> Regular coding convention recommends `value` as the name for the setter argument
+
+One can also ommit the accessor body, in which case a *default* implementation is used (also known as default accessor).
+
+```kotlin
+var x: T = e
+    get
+    set
+```
+
+> This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.
+
+Getters and setters allow one to customize how the property is accessed, and may need access to the property's *backing field*, which is responsible for actually storing the property data. It is accessed via the special `field` property available inside accessor body, which follows these conventions
+
+* For a property declaration of type `T`, field` has the same type `T`
+* `field` is read-only inside getter body
+* `field` is mutable inside setter body
+
+However, the backing field is created for a property only in the following cases
+
+* A property has no custom accessors
+* A property has a default accessor
+* A property has a custom accessor, and it uses `field` property
+* A mutable property has a custom getter or setter, but not both
+
+In all other cases a property has no backing field.
+
+Read/write access to the property is replaced with getter/setter invocation respectively.
 
 #### Property initialization
 
