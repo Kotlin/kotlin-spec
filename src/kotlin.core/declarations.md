@@ -1,5 +1,7 @@
 ## Declarations
 
+TODO(Examples)
+
 Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are *named*, i.e. they also assign an identifier to their own entity, however, some declarations may be *anonymous*.
 
 Every declaration is accessible in a particular *scope*, which is dependent both on where the declaration is located and on the declaration itself.
@@ -31,6 +33,59 @@ Every declaration is accessible in a particular *scope*, which is dependent both
     [{_NL_} `:` {_NL_} _type_]   
     [{_NL_} _typeConstraints_]   
     [{_NL_} _functionBody_]   
+
+Function declarations assign names to such entities as functions --- blocks of code which may be called by passing them a number of arguments. Functions have special *function types* which are covered in more detail [here][Function types].
+
+A simple function declaration consists of four main parts
+
+* name $f$
+* parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$
+* return type $R$
+* body $b$
+
+and creates a function type $(P_1, \ldots, P_n) \rightarrow R$.
+
+Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$. A function may have zero or more parameters.
+
+A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
+
+Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv kotlin.Nothing$, in which case $R \equiv B$. In other cases return type $R$ must be specified explicitly.
+
+> As type $kotlin.Nothing$ has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious $kotlin.Nothing$ function return types.
+
+Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation. This is allowed only inside an [abstract classifier declaration][Classifier declaration]. If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
+
+A parameterized function declaration consists of five main parts
+
+* name $f$
+* type parameter list $T_1, \ldots, T_m$
+* parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$
+* return type $R$
+* body $b$
+
+and extends the rules for a simple function declaration w.r.t. type parameter list.
+
+TODO(type parameters)
+
+#### Named and positional parameters
+
+TODO()
+
+#### Variable length parameters
+
+One of the parameters may be designated as being variable length (aka *vararg*). A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position. These arguments are represented inside function body $b$ as an [array of type $P_i$][Array types].
+
+If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. If a variable length parameter has a default value, it should be an expression which evaluates to an [array of type $P_i$][Array types].
+
+An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position. A function invocation may include several spread operator expressions corresponding to the vararg parameter.
+
+#### Function type parameters
+
+TODO()
+
+#### Extension function declaration
+
+TODO()
 
 ### Property declaration
 
@@ -225,6 +280,8 @@ All non-abstract properties must be definitely initialized before their first us
 TODO(Property declaration scope?)
 
 TODO(lateinit?)
+
+TODO(abstract?)
 
 ### Type alias
 
