@@ -258,6 +258,7 @@ otherwise it is a type error.
 
 ### When expression
 
+:::{.paragraph}
 **_whenExpression_:**  
   ~  `when` {_NL_} [`(` _expression_ `)`] {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}`   
 
@@ -275,71 +276,81 @@ otherwise it is a type error.
 
 **_typeTest_:**  
   ~  _isOperator_ {_NL_} _type_   
+:::
 
-**When expression** is alike a **conditional expression** in the sense that it allows
-several different control structure bodies (*cases*) to be evaluated depending on boolean conditions.
-The key difference, however, is that when expressions may include several different
-conditions. When expression has two different forms: with bound value and without it.
+:::{.paragraph}
+[**When expression** is alike a **conditional expression** in the sense that it allows
+several different control structure bodies (*cases*) to be evaluated depending on boolean conditions.]{.sentence}
+[The key difference, however, is that when expressions may include several different conditions.]{.sentence}
+[When expression has two different forms: with bound value and without it.]{.sentence}
+:::
 
-**When expression without bound value** (the form where the expression enclosed in parantheses is absent)
-evaluates one of the many different expressions based on corresponding conditions present
-in the same *when entry*. Each entry consists of a boolean *condition* (or a special `else` condition),
-each of which is checked and evaluated in order of appearance. If the current condition
-evaluates to `true`, the corresponding expression is evaluated and the value of
-when expression is the same as the evaluated expression. All remaining conditions and expressions
-are not evaluated. The `else` branch is a special branch that evaluates if none of
-the branches above it evaluated to `true`.
+:::{.paragraph}
+[**When expression without bound value** (the form where the expression enclosed in parentheses is absent)
+evaluates one of the many different expressions based on corresponding conditions present in the same *when entry*.]{.sentence}
+[Each entry consists of a boolean *condition* (or a special `else` condition),
+each of which is checked and evaluated in order of appearance.]{.sentence}
+[If the current condition evaluates to `true`, the corresponding expression is evaluated and the value of
+when expression is the same as the evaluated expression.]{.sentence}
+[All remaining conditions and expressions are not evaluated.]{.sentence}
+[The `else` branch is a special branch that evaluates if none of the branches above it evaluated to `true`.]{.sentence}
 
-> Informally speaking, you can always replace the `else` branch with literal `true` and
-> the semantics of the entry would not change
+> [Informally speaking, you can always replace the `else` branch with literal `true` and
+> the semantics of the entry would not change.]{.sentence}
 
-The `else` entry is also special in the sense that it **must** be the last entry
-in the expression, otherwise a compiler error must be generated.
+[The `else` entry is also special in the sense that it **must** be the last entry
+in the expression, otherwise a compiler error must be generated.]{.sentence}
+:::
 
-**When expression with bound value** (the form where the expression enclosed in parantheses is present)
-are very similar to the form without bound value, but use different syntax for conditions.
-In fact, it supports three different condition forms:
+:::{.paragraph}
+[**When expression with bound value** (the form where the expression enclosed in parenthesis is present)
+are very similar to the form without bound value, but use different syntax for conditions.]{.sentence}
+[In fact, it supports three different condition forms:]{.sentence}
 
-- *Type test condition*: type checking operator [TODO: link] followed by type. The
-  condition generated is a type check expression [TODO: link] with the same operator
+- [*Type test condition*: type checking operator [TODO: link] followed by type.]{.sentence}
+  [The condition generated is a [type check expression][Type-checking expression] with the same operator
   and the same type, but an implicit left hand side, which has the same value as the bound
-  expression.
-- *Contains test condition*: containment operator [TODO: link] followed by an expression; The
-  condition generated is a containment check expression [TODO: link] with the same operator
+  expression.]{.sentence}
+- [*Contains test condition*: containment operator [TODO: link] followed by an expression.]{.sentence}
+  [The condition generated is a [containment check expression][Containment-checking expression] with the same operator
   and the same right hand side expression, but an implicit left hand side, which has the same value as the bound
-  expression.
-- *Any other expression*. The condition generated is an equality operator [TODO: link], with
+  expression.]{.sentence}
+- [*Any other expression*.]{.sentence} [The condition generated is an equality operator, with
   the left hand side being the bound expression, and the right hand side being the expression placed inside
-  the entry.
-- The `else` condition, which works the exact same way as it would in the form
-  without bound expression.
+  the entry.]{.sentence}
+- [The `else` condition, which works the exact same way as it would in the form
+  without bound expression.]{.sentence}
 
-> This also means that if this form of `when` contains a boolean expression, it is not
+> [This also means that if this form of `when` contains a boolean expression, it is not
 > checked directly as if it would be in the other form, but rather checked for **equality**
-> with the bound variable, which is not the same thing.
+> with the bound variable, which is not the same thing.]{.sentence}
+:::
 
-The type of the resulting expression is
-the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).
-If the expression is not [exhaustive][Exhaustive when expressions], it
+:::{.paragraph}
+[The type of the resulting expression is
+the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).]{.sentence}
+[If the expression is not [exhaustive][Exhaustive when expressions], it
 has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
-but only as a statement.
+but only as a statement.]{.sentence}
+:::
 
 #### Exhaustive when expressions
 
-A when expression is called **_exhaustive_** if at least one of the following is true:
+:::{.paragraph}
+[A when expression is called **_exhaustive_** if at least one of the following is true:]{.sentence}
 
-- It has an `else` entry;
-- It has a bound value and at least one of the following holds:
-    - The bound expression is of type `kotlin.Boolean` and the conditions contain
-      both:
-        - A [constant expression][Constant expressions] evaluating to value `true`;
-        - A [constant expression][Constant expressions] evaluating to value `false`;
-    - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
-      are covered using type test conditions of this expression;
-    - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
-      are checked for equality using constant conditions;
-    - The bound expression is of a nullable type and one of the cases above is met for
-      its non-nullable counterpart and, in addition, there is a condition containing literal `null`.
+- [It has an `else` entry;]{.sentence}
+- [It has a bound value and at least one of the following holds:]{.sentence}
+    - [The bound expression is of type `kotlin.Boolean` and the conditions contain both:]{.sentence}
+        - [A [constant expression][Constant expressions] evaluating to value `true`;]{.sentence}
+        - [A [constant expression][Constant expressions] evaluating to value `false`;]{.sentence}
+    - [The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
+      are covered using type test conditions of this expression;]{.sentence}
+    - [The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
+      are checked for equality using constant conditions;]{.sentence}
+    - [The bound expression is of a nullable type and one of the cases above is met for
+      its non-nullable counterpart and, in addition, there is a condition containing literal `null`.]{.sentence}
+:::
 
 ### Logical disjunction expression
 
