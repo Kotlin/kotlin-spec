@@ -9,6 +9,7 @@
 <#include "order-of-evaluation.md">
 <#include "semantics.md">
 <#include "cdfa.md">
+<#include "type-constraints.md">
 <#include "type-inference.md">
 <#include "overload-resolution.md">
 <#include "concurrency.md">
