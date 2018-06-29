@@ -67,6 +67,8 @@ For the purposes of this section, we establish the following type kinds --- diff
 
 * [Built-in types][Built-in types]
 * [Classifier types][Classifier types]
+* [Function types][Function types]
+* [Array types][Array types]
 * [Flexible types][Flexible types]
 * [Nullable types][Nullable types]
 * TODO(Intersection and union types)
@@ -260,6 +262,16 @@ TODO(Blah-blah about existential types?)
 * If $\star A_i$ is a star-projected type argument, $kotlin.Nothing <: C_i <: kotlin.Any?$
 * Otherwise, $C_i = A_i$
 
+#### Function types
+
+TODO(Everything...)
+
+#### Array types
+
+TODO(Everything...)
+
+TODO(Primitive type array coercion)
+
 #### Flexible types
 
 Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. However, this presents a problem in that some platforms may not support null safety the way Kotlin does. To deal with this, Kotlin supports *gradual typing* in the form of flexible types.
@@ -335,7 +347,7 @@ TODO(Subtyping for type parameters)
 ---
 # * For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
 # * For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
-# * For any star type argument $\star T$, $Nothing <: T <: Any?$
+# * For any star type argument $\star T$, $kotlin.Nothing <: T <: kotlin.Any?$
 # * For any bounded type argument $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
 ---
 

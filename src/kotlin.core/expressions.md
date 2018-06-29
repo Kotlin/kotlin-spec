@@ -1045,6 +1045,8 @@ TODO(): as a matter of fact, `break` is not allowed inside `when` >_<
 
 ### Operator expressions
 
+#### Spread operator
+
 ### Safe call expression
 
 ### Type check expression
