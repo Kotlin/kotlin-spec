@@ -256,6 +256,51 @@ variable argument parameters or parameters with defaults between the arguments.
 > from the overload resolution standpoint, assuming that `body` is the name
 > of the last formal parameter of `f`
 
+### Calls with specified type parameters
+
+Most of the call forms listed above may have a list of type arguments that precedes
+the list of value arguments of the call. In this case, all the potential overload
+sets only include callables that contain an exactly same number of formal type
+arguments at declaration site. In the case of property callable through `invoke`
+convention, the type parameters must be present at the `invoke` operator function
+declaration.
+
+### Determining function applicability for a specific call
+
+#### Rationale
+
+A function is *applicable* for a specific call if and only if the function type
+parameters may be assigned the values of the arguments specified in the call and
+all the type constraints of the function still hold.
+
+#### Description
+
+Determining function applicability for a specific call is a
+[type constraint][Type constraints] problem.
+First, for every argument of the function supplied in the call,
+the type inference is performed. This excludes lambda arguments, as
+the inference of the specific type for them needs the results of overloading
+to finish.
+
+After that the following constraint system is built:
+
+- For every parameter of the call (excluding lambda parameters) inferred to have
+  type $T_i$, corresponding to function argument of type $U_j$,
+  a constraint $T_i <: U_j$ is constructed;
+- All the declaration-site type constraints for the function are also added to the system;
+- For each lambda parameter with the number of lambda arguments known to be $K$,
+  a constraint and corresponding to function argument of type $U_m$,
+  an artificial constraint is added in the form $R(L_1,...,L_K) <: U_m$,
+  where $R, L_1, ..., L_K$ are all fresh variables;
+- For each lambda parameter with the number of lambda arguments not known
+  (that is, being equal to 0 or 1), an artificial constraint is added in the
+  form $kotlin.Function <: U_m$, where $kotlin.Function$ is the common base
+  of all functional types; TODO(): what's the name???
+
+If this constraint system is sound, the function is applicable for the call.
+Only applicable functions are considered for the next step: finding the most
+specific overload candidate from the candidate set.
+
 ### Choosing the most specific function from the overload candidate set
 
 #### Rationale
@@ -291,50 +336,54 @@ fun f2(arg: Any?, arg2: CharSequence) {
 
 The rest of this section will try to clarify this mechanism a little more.
 
-#### Formal definition(?)
+#### Description
 
-One applicable function $f_1$ is _more specific_ than other applicable
-function $f_2$ for an invocation with argument expressions $e_1,e_2...e_K$
-if any of the following are true:
+When an overload resolution set is picked up and contains more than one callable,
+the next step is to find the most appropriate candidate from these callables.
 
-- $f_2$ has more formal parameters that are **not** specified in this call, including
-  parameters with default values and variable argument parameters;
-- $f_2$ has variable argument formal parameters, while $f_1$ does not;
-- $f_2$ is not generic and all of the following holds:
-    * $f_1$ has formal parameter types (including the receiver parameter, if any) $S_1,S_2,S_3...S_N$;
-    * $f_2$ has formal parameter types (including the receiver parameter, if any) $T_1,T_2,T_3...T_N$;
-    * Types $S_1...S_K$ are more specific for expressions $e_1...e_K$ than types $T_1...T_K$.
-- TODO(): varargs
+Firts, the appicable set is divided into two sub-sets: the callables that employ
+type parameters (generic callables) and the callables that don't (non-generic callables).
+If there are any non-generic applicable candidates, the choise is limited only to
+non-generic subset. Otherwise, all canidates (of generic callables) is considered.
 
-The most specific function of a candidate set is the element of the set that is more specific than any
-other element of the set. If there is more than one such function,
-an ambiguity error should be reported.
+This process employs the usage of [type constraint][Type constraints] system of
+Kotlin, similar to the process of
+[determining function applicability][Determining function applicability for a specific call].
+For every two members of the candidate set (let's call them $F_1$ and $F_2$),
+the following constraint system is constructed and solved:
 
-A type S is more specific than type T for expression e if any of the following holds:
+- For every non-default argument of the call the corresponding value parameters'
+  types $X_1, X_2, X_3 ... X_N$ of $F_1$ and value parameters' types $Y_1, Y_2, Y_3 ... Y_N$
+  of $F_2$ a type constraint $X_K <: Y_K$ is built. During construction of these
+  constraints, all the type parameters of $F_1$ are considered bound and all the
+  type parameters of $F_2$ are considered free;
+- All the declaration-site type constraints of $X_1, X_2, X_3 ... X_N$ and
+  $Y_1, Y_2, Y_3 ... Y_N$ are also added to the system.
 
-- $S <: T$
-- S is *less generic* than T, meaning one of the following:
-  - T is generic and S is not;
-  - Both T and S are generic, but S has a bigger depth than S;
+If this constraint system is sound, it means that $F_1$ is equally or more applicable
+as an overload candidate. After that the check is repeated with $F_1$ and $F_2$ swapped.
+If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable
+than $F_1$, this means that the two callables are equally applicable and an additional
+decision procedure needs to be invoked.
 
-TODO(): move it somewhere?
+All the members of the overload candidate set are sorted according to the criteria
+of applicability, determining the most applicable callable. If there are several
+callables which are both more applicable than other candidates and equally applicable
+to each other, an additional step is performed:
 
-The depth of a generic type is defined as follows:
-- A type parameter or non-generic type has depth 0;
-- A parameterized type $G$<$T_0$,$T_1$,$T_2$,...,$T_N$> has depth
-  $1 + max(depth(T_0), depth(T_1), depth(T_2), ... depth(T_N))$
+- For each candidate, the number of default parameters not specified in the call is counted;
+- The candidate with the least default parameters is a more specific candidate;
+- If the number of defaulted parameters is equal for several candidates,
+  the candidate having any variable-argument parameters is less specific than
+  any candidate without them.
 
-When calculating type depth, a generic type alias is treated the same way as
-its aliasee type.
+If, even after this additional step, there are several candidates that are equally
+applicable for the call, there is an **overload ambiguity** that must be reported
+as a compiler error.
 
-> Example 1: Let's suppose that T is type parameter A and S is List\<B\> where B is
-> also a type parameter. As the depth of T is 0 and the depth of S is 1, S is less generic than T
-
-> Example 2: Let's suppose that T is function type A.(B) -> C
-> and S is function type (D) -> (E) -> F where A, B, C, D, E, F are all type parameters
-> S is more specific than T because T has depth 1, while S has depth 2
-> (because function type is parameterized over its return type, which is also a
-> parameterized function type)
+> NOTE: Please note that, unlike the applicability test, the candidate comparison
+> constraint system is **not** based on the actuall call, meaning that when comparing
+> two candidates, only constraints visible at declaration site apply.
 
 ### About type inference
 
@@ -346,9 +395,10 @@ is picked up.
 #### TODO:
 
 - Properties business
+- Function types (type system section???)
 - Definition of "applicable function"
 - Definition of "type parameter level"
 - Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
-    * Lambdas with parameter types seem to be covered (or do they?)
+    * Lambdas with parameter types seem to be covered, **nope, they are not**
 - Calls with specified type parameters `f<Double>(3)`
