@@ -19,15 +19,15 @@ same as type parameters of a type or a callable. Some type parameters may be
 Kotlin code, they are not type variables and are not to be substituted.
 
 When such an ambiguity arises, we will use the notation $T_i$ for a type
-variable and $\widetilde{T_i}$ for a bound type parameter. The main difference
+variable and $\tilde{T_i}$ for a bound type parameter. The main difference
 between bound parameters and concrete types is that different concrete types
 may not be equal, but a bound parameter may be equal to another bound parameter
 or a concrete type.
 
 > Several examples of valid type constraints:
 >
-> - $\mathtt{List}\left<\widetilde{X}\right> <: Y$
-> - $\mathtt{List}\left<\widetilde{X}\right> <: \mathtt{List}\left<\mathtt{List}\left<\mathtt{Int}\right>\right>$
+> - $\mathtt{List}\left<\tilde{X}\right> <: Y$
+> - $\mathtt{List}\left<\tilde{X}\right> <: \mathtt{List}\left<\mathtt{List}\left<\mathtt{Int}\right>\right>$
 > - $\widetilde{X} <: Y$
 
 Every constraint system has implicit constraints $\mathtt{Any} <: T_j$ and
