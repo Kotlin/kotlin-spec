@@ -81,7 +81,21 @@ An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in 
 
 #### Function type parameters
 
-TODO()
+Some parameters may have [function types][Function types], as Kotlin supports first-class functions. Function type parameters do not have any special treatment on the function declaration side, however, there are some special cases on the invocation side.
+
+Function type parameter may bind to an argument of the following kinds
+  - [callable reference][Callable references]
+  - [anonymous function][Anonymous function declarations]
+  - [lambda literal][Lambda literals]
+Iff we use a lambda literal for the **last** parameter in the parameter list, it can be written outside the argument list, as in this example.
+
+```kotlin
+fun foo(a: Int, b: Int, f: (Int, Int) -> String): String = f(a, b)
+
+fun bar(a: Int, b: Int) = foo(a, b) { a, b -> "${a + b}" }
+```
+
+TODO(Describe possible ambiguities?)
 
 #### Extension function declaration
 
