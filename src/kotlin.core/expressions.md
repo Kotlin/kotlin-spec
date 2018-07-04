@@ -335,7 +335,10 @@ A when expression is called **_exhaustive_** if at least one of the following is
         - A [constant expression][Constant expressions] evaluating to value `true`;
         - A [constant expression][Constant expressions] evaluating to value `false`;
     - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
-      are covered using type test conditions of this expression;
+      are covered using type test conditions of this expression. This may include:
+        - Checks for all the direct subtypes of this sealed class;
+        - If any of the direct subtypes is also a sealed class, there is either a check for
+          this subtype or all possible subtypes of it are also covered;
     - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
       are checked for equality using constant conditions;
     - The bound expression is of a nullable type and one of the cases above is met for
