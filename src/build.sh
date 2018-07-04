@@ -3,7 +3,7 @@
 mkdir -p ../.pages
 
 echo "Rendering HTML..."
-gpp -H index.md | pandoc --toc --toc-depth=6 -c index.css --mathjax -H preamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash -o ../.pages/index.html
+gpp -H index.md | pandoc --filter=../scripts/linking.hs --toc --toc-depth=6 -c index.css --mathjax -H preamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash -o ../.pages/index.html
 cp index.css ../.pages/
 echo "done"
 
