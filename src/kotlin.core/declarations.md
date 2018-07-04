@@ -67,9 +67,45 @@ and extends the rules for a simple function declaration w.r.t. type parameter li
 
 TODO(type parameters)
 
-#### Named and positional parameters
+#### Named, positional and default parameters
 
-TODO()
+Kotlin supports *named* parameters out-of-the-box, meaning one can bind an argument to a parameter in function invocation not by its position, but by its name, which is equal to the argument name.
+
+```kotlin
+fun bar(a: Int, b: Double, s: String): Double = a + b + s.toDouble()
+
+fun main(args: Array<String>) {
+    println(bar(b = 42.0, a = 5, s = "13"))
+}
+```
+
+TODO(Argument names are resolved in compile time)
+
+If one wants to mix named and positional arguments, the argument list must conform to the following form: $P_1, \ldots, P_M, N_1, \ldots, N_Q$, where $P_i$ is a positional argument, $N_j$ is a named argument; i.e., positional arguments must precede all of the named ones.
+
+Kotlin also supports *default* parameters --- parameters which have a default value used in function invocation, if the corresponding argument is missing. Note that default parameters cannot be used to provide a value for positional argument *in the middle* of the positional argument list; allowing this would create an ambiguity of which argument for position $i$ is the correct one: explicit one provided by the developer or implicit one from the default value.
+
+```kotlin
+fun bar(a: Int = 1, b: Double = 42.0, s: String = "Hello"): Double =
+    a + b + s.toDouble()
+
+fun main(args: Array<String>) {
+    // Valid call, all default parameters used
+    println(bar())
+    // Valid call, defaults for `b` and `s` used
+    println(bar(2))
+    // Valid call, default for `b` used
+    println(bar(2, s = "Me"))
+
+    // Invalid call, default for `b` cannot be used
+    println(bar(2, "Me"))
+}
+```
+
+In summary, argument list should have the following form:
+* Zero or more positional arguments
+* Zero or more named arguments
+* Missing arguments are bound to their default values
 
 #### Variable length parameters
 
