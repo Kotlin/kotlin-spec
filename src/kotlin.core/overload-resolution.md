@@ -88,11 +88,13 @@ with an extension operator `invoke`.
 
 When calculating overload resolution sets, member callables
 produce the following separate sets (ordered by priority, bigger priority first):
+
 - Member functions;
 - Member properties.
 
 Extension callables produce the following
 separate sets (ordered by priority, bigger priority first):
+
 - Extension functions;
 - Member properties with extension invoke;
 - Extension properties with member invoke;
