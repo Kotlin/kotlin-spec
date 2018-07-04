@@ -103,6 +103,7 @@ fun main(args: Array<String>) {
 ```
 
 In summary, argument list should have the following form:
+
 * Zero or more positional arguments
 * Zero or more named arguments
 * Missing arguments are bound to their default values
