@@ -21,6 +21,49 @@ Every declaration is accessible in a particular *scope*, which is dependent both
       [{_NL_} `:` {_NL_} _delegationSpecifiers_]   
       [{_NL_} _classBody_]   
 
+Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. There are three kinds of classifier declarations:
+
+* class declarations
+* interface declarations
+* object declarations
+
+#### Class declaration
+
+A simple class declaration consists of the following parts.
+
+* name $c$
+* primary constructor declaration $ptor$
+* supertype specifiers $S_1, \ldots, S_s$
+* body $b$, which may include the following
+  - secondary constructor declarations $stor_1, \ldots, stor_c$
+  - property declarations $prop_1, \ldots, prop_p$
+  - function declarations $md_1, \ldots, md_m$
+  - companion object declaration $companionObj$
+
+and creates a simple classifier type $c : S_1, \ldots, S_s$.
+
+Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
+
+It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. If a class declaration includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor. Multiple interface inheritance is allowed.
+
+Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
+
+Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the reference `C.CO`.
+
+```kotlin
+TODO(Examples)
+```
+
+##### Constructor declaration
+
+There are two types of ...
+
+#### Interface declaration
+
+#### Object declaration
+
+TODO()
+
 ### Function declaration
 
 **_functionDeclaration_:**  
@@ -43,7 +86,7 @@ A simple function declaration consists of four main parts
 * return type $R$
 * body $b$
 
-and creates a function type $(P_1, \ldots, P_n) \rightarrow R$.
+and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
 
 Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$. A function may have zero or more parameters.
 
@@ -63,9 +106,7 @@ A parameterized function declaration consists of five main parts
 * return type $R$
 * body $b$
 
-and extends the rules for a simple function declaration w.r.t. type parameter list.
-
-TODO(type parameters)
+and extends the rules for a simple function declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
 
 #### Named, positional and default parameters
 
@@ -328,12 +369,6 @@ Read/write access to the property is replaced with getter/setter invocation resp
 
 All non-abstract properties must be definitely initialized before their first use. To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
 
-TODO(Property declaration scope?)
-
-TODO(lateinit?)
-
-TODO(abstract?)
-
 ### Type alias
 
 **_typeAlias_:**  
@@ -342,3 +377,19 @@ TODO(abstract?)
 Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
 At the moment, Kotlin supports only top-level type aliases. The scope where it is accessible is defined by its [*visibility modifiers*][Visibility].
+
+### Declarations with type parameters
+
+TODO()
+
+### Declaration modifiers
+
+TODO(declaration scope)
+
+TODO(open)
+
+TODO(abstract)
+
+TODO(lateinit)
+
+TODO(const)
