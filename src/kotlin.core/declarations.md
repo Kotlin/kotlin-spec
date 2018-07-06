@@ -36,6 +36,7 @@ A simple class declaration consists of the following parts.
 * supertype specifiers $S_1, \ldots, S_s$
 * body $b$, which may include the following
   - secondary constructor declarations $stor_1, \ldots, stor_c$
+  - instance initialization block $init$
   - property declarations $prop_1, \ldots, prop_p$
   - function declarations $md_1, \ldots, md_m$
   - companion object declaration $companionObj$
@@ -45,6 +46,8 @@ and creates a simple classifier type $c : S_1, \ldots, S_s$.
 Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
 
 It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. If a class declaration includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor. Multiple interface inheritance is allowed.
+
+Instance initialization block describes a block of code which should be executed during [object creation][Classifier initialization].
 
 Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
 
@@ -56,11 +59,40 @@ TODO(Examples)
 
 ##### Constructor declaration
 
-There are two types of ...
+There are two types of class constructors in Kotlin: primary and secondary.
+
+A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form
+
+$$ptor : (p_1, \ldots, p_n)$$
+
+where each of $p_i$ may be one of the following:
+
+* regular constructor parameter $name: type$
+* read-only property constructor parameter $val name: type$
+* mutable property constructor parameter $var name: type$
+
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. One can consider them to have the following expansion.
+
+```kotlin
+class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
+
+class FooEx(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
+  val d = d_
+  var s = s_
+}
+```
+
+When accessing property constructor parameters inside the class body, one works with their corresponding properties; however, when accessing them in the supertype specifier list (e.g., as an argument to a superclass constructor invocation), we see them as actual parameters, which cannot be changed.
+
+A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters.
 
 #### Interface declaration
 
 #### Object declaration
+
+TODO()
+
+#### Classifier initialization
 
 TODO()
 
@@ -88,7 +120,7 @@ A simple function declaration consists of four main parts
 
 and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$. A function may have zero or more parameters.
+Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. A function may have zero or more parameters.
 
 A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
 
@@ -147,7 +179,8 @@ In summary, argument list should have the following form:
 
 * Zero or more positional arguments
 * Zero or more named arguments
-* Missing arguments are bound to their default values
+
+Missing arguments are bound to their default values.
 
 #### Variable length parameters
 
