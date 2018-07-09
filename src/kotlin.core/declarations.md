@@ -45,7 +45,7 @@ and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
 Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
 
-It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. If a class declaration includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor. Multiple interface inheritance is allowed.
+It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. Multiple interface inheritance is allowed.
 
 Instance initialization block describes a block of code which should be executed during [object creation][Classifier initialization].
 
@@ -56,6 +56,21 @@ Companion object declaration `companion object CO { ... }` for class `C` introdu
 ```kotlin
 TODO(Examples)
 ```
+
+A parameterized class declaration consists of the following parts.
+
+* name $c$
+* type parameter list $T_1, \ldots, T_m$
+* primary constructor declaration $ptor$
+* supertype specifiers $S_1, \ldots, S_s$
+* body $b$, which may include the following
+  - secondary constructor declarations $stor_1, \ldots, stor_c$
+  - instance initialization block $init$
+  - property declarations $prop_1, \ldots, prop_p$
+  - function declarations $md_1, \ldots, md_m$
+  - companion object declaration $companionObj$
+
+and extends the rules for a simple class declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
 
 ##### Constructor declaration
 
@@ -71,7 +86,7 @@ where each of $p_i$ may be one of the following:
 * read-only property constructor parameter $val name: type$
 * mutable property constructor parameter $var name: type$
 
-Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. One can consider them to have the following expansion.
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. One can consider them to have the following syntactic expansion.
 
 ```kotlin
 class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
@@ -84,13 +99,52 @@ class FooEx(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
 
 When accessing property constructor parameters inside the class body, one works with their corresponding properties; however, when accessing them in the supertype specifier list (e.g., as an argument to a superclass constructor invocation), we see them as actual parameters, which cannot be changed.
 
-A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters.
+If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
+
+A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
+
+If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is available in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
+
+In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
+
+##### Nested and inner classes
+
+TODO(...)
+
+##### Inheritance delegation
+
+TODO(...)
+
+#### Data class declaration
+
+TODO(...)
+
+#### Enum class declaration
+
+TODO(...)
 
 #### Interface declaration
 
+Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
+
+* An interface cannot have a class as its supertype
+* An interface cannot have a constructor
+* Interface properties cannot have initializers
+* All interface members must be public
+
+TODO(Something else?)
+
 #### Object declaration
 
-TODO()
+Object declarations are used to support a singleton pattern and, thus, do two things at the same time. One, they (just like class declarations) introduce a new type to the program. Two, they create a singleton-like object of that type.
+
+Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
+
+* An object type cannot be used as a supertype for other types
+* An object cannot have a constructor
+* An object cannot be parameterized
+
+--> TODO() <--
 
 #### Classifier initialization
 
@@ -130,7 +184,7 @@ Return type $R$ is optional, if function body $b$ is present and may be inferred
 
 Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation. This is allowed only inside an [abstract classifier declaration][Classifier declaration]. If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
-A parameterized function declaration consists of five main parts
+A parameterized function declaration consists of five main parts.
 
 * name $f$
 * type parameter list $T_1, \ldots, T_m$
