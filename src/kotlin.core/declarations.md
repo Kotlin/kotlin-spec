@@ -1,5 +1,12 @@
 ## Declarations
 
+### Glossary
+
+Entity
+~ A distinguishable part of a program
+
+### Introduction
+
 TODO(Examples)
 
 Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are *named*, i.e. they also assign an identifier to their own entity, however, some declarations may be *anonymous*.
@@ -40,6 +47,7 @@ A simple class declaration consists of the following parts.
   - property declarations $prop_1, \ldots, prop_p$
   - function declarations $md_1, \ldots, md_m$
   - companion object declaration $companionObj$
+  - nested classifier declarations $nested$
 
 and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
@@ -52,6 +60,8 @@ Instance initialization block describes a block of code which should be executed
 Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
 
 Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the reference `C.CO`.
+
+TODO(Nested classifier declaraions)
 
 ```kotlin
 TODO(Examples)
@@ -69,6 +79,7 @@ A parameterized class declaration consists of the following parts.
   - property declarations $prop_1, \ldots, prop_p$
   - function declarations $md_1, \ldots, md_m$
   - companion object declaration $companionObj$
+  - nested classifier declarations $nested$
 
 and extends the rules for a simple class declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
 
@@ -103,7 +114,7 @@ If a class declaration has a primary constructor and also includes a class super
 
 A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
 
-If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is available in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
+If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
 
@@ -117,9 +128,28 @@ TODO(...)
 
 #### Data class declaration
 
-TODO(...)
+A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
+
+* `equals() / hashCode() / toString()` functions compliant with their contracts
+* A `copy()` function for shallow object copying
+* A number of `componentN()` functions for destructive declaration
+
+All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
+
+To support these features, data classes have the following restrictions.
+
+* Data classes are final and cannot be inherited from
+* Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class
+
+##### Data class generation
+
+TODO(A more detailed explaination)
 
 #### Enum class declaration
+
+TODO(...)
+
+#### Annotation class declaration
 
 TODO(...)
 
@@ -142,13 +172,25 @@ Similarly to interfaces, we shall specify object declarations by highlighting th
 
 * An object type cannot be used as a supertype for other types
 * An object cannot have a constructor
-* An object cannot be parameterized
+* An object cannot be parameterized, i.e., cannot have type parameters
 
---> TODO() <--
+TODO(Something else?)
+
+#### Anonymous object declaration
+
+TODO()
 
 #### Classifier initialization
 
-TODO()
+When creating a class or object instance via one of its constructors $ctor$, it is initialized in a particular order, which we describe here.
+
+First, a supertype constructor corresponding to $ctor$ is called with its respective parameters.
+
+* If $ctor$ is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list
+* If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$
+* If an explicit supertype constructor is not available, `Any()` is implicitly used
+
+After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. If any initialization step creates a loop, it is considered an undefined behavior.
 
 ### Function declaration
 
@@ -263,6 +305,10 @@ fun bar(a: Int, b: Int) = foo(a, b) { a, b -> "${a + b}" }
 TODO(Describe possible ambiguities?)
 
 #### Extension function declaration
+
+TODO()
+
+#### Anonymous function declaration
 
 TODO()
 
