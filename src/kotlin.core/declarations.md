@@ -1,5 +1,12 @@
 ## Declarations
 
+### Glossary
+
+Entity
+~ A distinguishable part of a program
+
+### Introduction
+
 TODO(Examples)
 
 Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are *named*, i.e. they also assign an identifier to their own entity, however, some declarations may be *anonymous*.
@@ -20,6 +27,170 @@ Every declaration is accessible in a particular *scope*, which is dependent both
       {_NL_} _simpleIdentifier_   
       [{_NL_} `:` {_NL_} _delegationSpecifiers_]   
       [{_NL_} _classBody_]   
+
+Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. There are three kinds of classifier declarations:
+
+* class declarations
+* interface declarations
+* object declarations
+
+#### Class declaration
+
+A simple class declaration consists of the following parts.
+
+* name $c$
+* primary constructor declaration $ptor$
+* supertype specifiers $S_1, \ldots, S_s$
+* body $b$, which may include the following
+  - secondary constructor declarations $stor_1, \ldots, stor_c$
+  - instance initialization block $init$
+  - property declarations $prop_1, \ldots, prop_p$
+  - function declarations $md_1, \ldots, md_m$
+  - companion object declaration $companionObj$
+  - nested classifier declarations $nested$
+
+and creates a simple classifier type $c : S_1, \ldots, S_s$.
+
+Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
+
+It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. Multiple interface inheritance is allowed.
+
+Instance initialization block describes a block of code which should be executed during [object creation][Classifier initialization].
+
+Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
+
+Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the reference `C.CO`.
+
+TODO(Nested classifier declaraions)
+
+```kotlin
+TODO(Examples)
+```
+
+A parameterized class declaration consists of the following parts.
+
+* name $c$
+* type parameter list $T_1, \ldots, T_m$
+* primary constructor declaration $ptor$
+* supertype specifiers $S_1, \ldots, S_s$
+* body $b$, which may include the following
+  - secondary constructor declarations $stor_1, \ldots, stor_c$
+  - instance initialization block $init$
+  - property declarations $prop_1, \ldots, prop_p$
+  - function declarations $md_1, \ldots, md_m$
+  - companion object declaration $companionObj$
+  - nested classifier declarations $nested$
+
+and extends the rules for a simple class declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
+
+##### Constructor declaration
+
+There are two types of class constructors in Kotlin: primary and secondary.
+
+A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form
+
+$$ptor : (p_1, \ldots, p_n)$$
+
+where each of $p_i$ may be one of the following:
+
+* regular constructor parameter $name: type$
+* read-only property constructor parameter $val name: type$
+* mutable property constructor parameter $var name: type$
+
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. One can consider them to have the following syntactic expansion.
+
+```kotlin
+class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
+
+class FooEx(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
+  val d = d_
+  var s = s_
+}
+```
+
+When accessing property constructor parameters inside the class body, one works with their corresponding properties; however, when accessing them in the supertype specifier list (e.g., as an argument to a superclass constructor invocation), we see them as actual parameters, which cannot be changed.
+
+If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
+
+A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
+
+If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
+
+In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
+
+##### Nested and inner classes
+
+TODO(...)
+
+##### Inheritance delegation
+
+TODO(...)
+
+#### Data class declaration
+
+A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
+
+* `equals() / hashCode() / toString()` functions compliant with their contracts
+* A `copy()` function for shallow object copying
+* A number of `componentN()` functions for destructive declaration
+
+All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
+
+To support these features, data classes have the following restrictions.
+
+* Data classes are final and cannot be inherited from
+* Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class
+
+##### Data class generation
+
+TODO(A more detailed explaination)
+
+#### Enum class declaration
+
+TODO(...)
+
+#### Annotation class declaration
+
+TODO(...)
+
+#### Interface declaration
+
+Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
+
+* An interface cannot have a class as its supertype
+* An interface cannot have a constructor
+* Interface properties cannot have initializers
+* All interface members must be public
+
+TODO(Something else?)
+
+#### Object declaration
+
+Object declarations are used to support a singleton pattern and, thus, do two things at the same time. One, they (just like class declarations) introduce a new type to the program. Two, they create a singleton-like object of that type.
+
+Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
+
+* An object type cannot be used as a supertype for other types
+* An object cannot have a constructor
+* An object cannot be parameterized, i.e., cannot have type parameters
+
+TODO(Something else?)
+
+#### Anonymous object declaration
+
+TODO()
+
+#### Classifier initialization
+
+When creating a class or object instance via one of its constructors $ctor$, it is initialized in a particular order, which we describe here.
+
+First, a supertype constructor corresponding to $ctor$ is called with its respective parameters.
+
+* If $ctor$ is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list
+* If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$
+* If an explicit supertype constructor is not available, `Any()` is implicitly used
+
+After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. If any initialization step creates a loop, it is considered an undefined behavior.
 
 ### Function declaration
 
@@ -43,9 +214,9 @@ A simple function declaration consists of four main parts
 * return type $R$
 * body $b$
 
-and creates a function type $(P_1, \ldots, P_n) \rightarrow R$.
+and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$. A function may have zero or more parameters.
+Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. A function may have zero or more parameters.
 
 A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
 
@@ -55,7 +226,7 @@ Return type $R$ is optional, if function body $b$ is present and may be inferred
 
 Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation. This is allowed only inside an [abstract classifier declaration][Classifier declaration]. If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
-A parameterized function declaration consists of five main parts
+A parameterized function declaration consists of five main parts.
 
 * name $f$
 * type parameter list $T_1, \ldots, T_m$
@@ -63,13 +234,49 @@ A parameterized function declaration consists of five main parts
 * return type $R$
 * body $b$
 
-and extends the rules for a simple function declaration w.r.t. type parameter list.
+and extends the rules for a simple function declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
 
-TODO(type parameters)
+#### Named, positional and default parameters
 
-#### Named and positional parameters
+Kotlin supports *named* parameters out-of-the-box, meaning one can bind an argument to a parameter in function invocation not by its position, but by its name, which is equal to the argument name.
 
-TODO()
+```kotlin
+fun bar(a: Int, b: Double, s: String): Double = a + b + s.toDouble()
+
+fun main(args: Array<String>) {
+    println(bar(b = 42.0, a = 5, s = "13"))
+}
+```
+
+TODO(Argument names are resolved in compile time)
+
+If one wants to mix named and positional arguments, the argument list must conform to the following form: $P_1, \ldots, P_M, N_1, \ldots, N_Q$, where $P_i$ is a positional argument, $N_j$ is a named argument; i.e., positional arguments must precede all of the named ones.
+
+Kotlin also supports *default* parameters --- parameters which have a default value used in function invocation, if the corresponding argument is missing. Note that default parameters cannot be used to provide a value for positional argument *in the middle* of the positional argument list; allowing this would create an ambiguity of which argument for position $i$ is the correct one: explicit one provided by the developer or implicit one from the default value.
+
+```kotlin
+fun bar(a: Int = 1, b: Double = 42.0, s: String = "Hello"): Double =
+    a + b + s.toDouble()
+
+fun main(args: Array<String>) {
+    // Valid call, all default parameters used
+    println(bar())
+    // Valid call, defaults for `b` and `s` used
+    println(bar(2))
+    // Valid call, default for `b` used
+    println(bar(2, s = "Me"))
+
+    // Invalid call, default for `b` cannot be used
+    println(bar(2, "Me"))
+}
+```
+
+In summary, argument list should have the following form:
+
+* Zero or more positional arguments
+* Zero or more named arguments
+
+Missing arguments are bound to their default values.
 
 #### Variable length parameters
 
@@ -81,9 +288,27 @@ An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in 
 
 #### Function type parameters
 
-TODO()
+Some parameters may have [function types][Function types], as Kotlin supports first-class functions. Function type parameters do not have any special treatment on the function declaration side, however, there are some special cases on the invocation side.
+
+Function type parameter may bind to an argument of the following kinds
+  - [callable reference][Callable references]
+  - [anonymous function][Anonymous function declarations]
+  - [lambda literal][Lambda literals]
+Iff we use a lambda literal for the **last** parameter in the parameter list, it can be written outside the argument list, as in this example.
+
+```kotlin
+fun foo(a: Int, b: Int, f: (Int, Int) -> String): String = f(a, b)
+
+fun bar(a: Int, b: Int) = foo(a, b) { a, b -> "${a + b}" }
+```
+
+TODO(Describe possible ambiguities?)
 
 #### Extension function declaration
+
+TODO()
+
+#### Anonymous function declaration
 
 TODO()
 
@@ -277,12 +502,6 @@ Read/write access to the property is replaced with getter/setter invocation resp
 
 All non-abstract properties must be definitely initialized before their first use. To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
 
-TODO(Property declaration scope?)
-
-TODO(lateinit?)
-
-TODO(abstract?)
-
 ### Type alias
 
 **_typeAlias_:**  
@@ -291,3 +510,19 @@ TODO(abstract?)
 Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
 At the moment, Kotlin supports only top-level type aliases. The scope where it is accessible is defined by its [*visibility modifiers*][Visibility].
+
+### Declarations with type parameters
+
+TODO()
+
+### Declaration modifiers
+
+TODO(declaration scope)
+
+TODO(open)
+
+TODO(abstract)
+
+TODO(lateinit)
+
+TODO(const)
