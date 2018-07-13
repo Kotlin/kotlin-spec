@@ -24,8 +24,7 @@ sections of this document.
     | _assignableExpression_ _assignmentAndOperator_ {_NL_} _expression_   
 
 **_assignmentAndOperator_:**  
-  ~  `=`   
-    | `+=`   
+  ~  `+=`   
     | `-=`   
     | `*=`   
     | `/=`   
