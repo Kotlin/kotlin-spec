@@ -156,3 +156,8 @@ special rules:
 > Note that this is valid even if $T$ is a variable without any constraints,
 > as every type in kotlin has an implicit constraint
 > $\mathtt{kotlin.Nothing} <: T <: \mathtt{kotlin.Any?}$.
+
+### TODO
+
+- Type approximation for public usage
+- Ordering of lambdas (and ordering of overloading vs TI in general)
