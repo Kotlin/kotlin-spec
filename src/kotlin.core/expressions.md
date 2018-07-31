@@ -185,14 +185,12 @@ TODO(): reshuffle these sections
 
 ### Try-expression
 
-**_tryExpression_:**  
-  ~  `try` {_NL_} _block_ {{_NL_} _catchBlock_} [{_NL_} _finallyBlock_]   
-
-**_catchBlock_:**  
-  ~  `catch` {_NL_} `(` {_annotation_} _simpleIdentifier_ `:` _userType_ `)` {_NL_} _block_   
-
-**_finallyBlock_:**  
-  ~  `finally` {_NL_} _block_   
+:::{.paste target=grammar-rule-tryExpression}
+:::
+:::{.paste target=grammar-rule-catchBlock}
+:::
+:::{.paste target=grammar-rule-finallyBlock}
+:::
 
 A *try-expression* is an expression starting with the keyword `try`. It consists of
 a code block (*try body*) and several optional additional blocks: one of more *catch blocks*,
@@ -233,9 +231,8 @@ If any of the blocks have no valid last expression, the type is inferred to be
 
 ### Conditional expression
 
-**_ifExpression_:**  
-  ~  `if` {_NL_} `(` {_NL_} _expression_ {_NL_} `)` {_NL_} _controlStructureBody_ [[`;`] {_NL_} `else` {_NL_} _controlStructureBody_]   
-    | `if` {_NL_} `(` {_NL_} _expression_ {_NL_} `)` {_NL_} [`;` {_NL_}] `else` {_NL_} _controlStructureBody_   
+:::{.paste target=grammar-rule-ifExpression}
+:::
 
 **Conditional expressions** use the boolean value of one expression (*condition*) to decide
 which of two control structure bodies (*branches*) should be evaluated.
@@ -258,23 +255,16 @@ otherwise it is a type error.
 
 ### When expression
 
-**_whenExpression_:**  
-  ~  `when` {_NL_} [`(` _expression_ `)`] {_NL_} `{` {_NL_} {_whenEntry_ {_NL_}} {_NL_} `}`   
-
-**_whenEntry_:**  
-  ~  _whenCondition_ {{_NL_} `,` {_NL_} _whenCondition_} {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_]   
-    | `else` {_NL_} `->` {_NL_} _controlStructureBody_ [_semi_]   
-
-**_whenCondition_:**  
-  ~  _expression_   
-    | _rangeTest_   
-    | _typeTest_   
-
-**_rangeTest_:**  
-  ~  _inOperator_ {_NL_} _expression_   
-
-**_typeTest_:**  
-  ~  _isOperator_ {_NL_} _type_   
+:::{.paste target=grammar-rule-whenExpression}
+:::
+:::{.paste target=grammar-rule-whenEntry}
+:::
+:::{.paste target=grammar-rule-whenCondition}
+:::
+:::{.paste target=grammar-rule-rangeTest}
+:::
+:::{.paste target=grammar-rule-typeTest}
+:::
 
 **When expression** is alike a **conditional expression** in the sense that it allows
 several different control structure bodies (*cases*) to be evaluated depending on boolean conditions.
@@ -346,8 +336,8 @@ A when expression is called **_exhaustive_** if at least one of the following is
 
 ### Logical disjunction expression
 
-**_disjunction_:**  
-  ~  _conjunction_ {{_NL_} `||` {_NL_} (_conjunction_ | _ifExpression_)}   
+:::{.paste target=grammar-rule-disjunction}
+:::
 
 Operator symbol `||` performs logical disjunction over two values of type `kotlin.Boolean`.
 Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
@@ -355,8 +345,8 @@ argument unless the left hand side argument evaluated to `false`.
 
 ### Logical conjunction expression
 
-**_conjunction_:**  
-  ~  _equality_ {{_NL_} `&&` {_NL_} (_equality_ | _ifExpression_)}   
+:::{.paste target=grammar-rule-conjunction}
+:::
 
 Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
 Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
@@ -364,14 +354,10 @@ argument unless the left hand side argument evaluated to `true`.
 
 ### Equality expressions
 
-**_equality_:**  
-  ~  _comparison_ {_equalityOperator_ {_NL_} (_comparison_ | _ifExpression_)}   
-
-**_equalityOperator_:**  
-  ~  `!=`   
-    | `!==`   
-    | `==`   
-    | `===`   
+:::{.paste target=grammar-rule-equality}
+:::
+:::{.paste target=grammar-rule-equalityOperator}
+:::
 
 Equality expressions are binary expressions involving equality operators. There are
 two kinds of equality operators: *reference equality operators* and
@@ -416,14 +402,10 @@ has a different return type, it is invalid and a compiler error should be genera
 
 ### Comparison expressions
 
-**_comparison_:**  
-  ~  _infixOperation_ [_comparisonOperator_ {_NL_} (_infixOperation_ | _ifExpression_)]   
-
-**_comparisonOperator_:**  
-  ~  `<`   
-    | `>`   
-    | `<=`   
-    | `>=`   
+:::{.paste target=grammar-rule-comparison}
+:::
+:::{.paste target=grammar-rule-comparisonOperator}
+:::
 
 *Comparison expressions* are binary expressions employing the comparison operators:
 `<`, `>`, `<=` and `>=`. These operators are [overloadable][Overloadable operators] with the following
@@ -443,14 +425,12 @@ All comparison expressions always have type `kotlin.Boolean`.
 
 ### Type-checking and containment-checking expressions
 
-**_infixOperation_:**  
-  ~  _elvisExpression_ {_inOperator_ {_NL_} (_elvisExpression_ | _ifExpression_) | _isOperator_ {_NL_} _type_}   
-
-**_inOperator_:**  
-  ~  `in` | `!in`   
-
-**_isOperator_:**  
-  ~  `is` | `!is`   
+:::{.paste target=grammar-rule-infixOperation}
+:::
+:::{.paste target=grammar-rule-inOperator}
+:::
+:::{.paste target=grammar-rule-isOperator}
+:::
 
 #### Type-checking expression
 
@@ -481,8 +461,8 @@ Containment-checking expressions always have type `kotlin.Boolean`.
 
 ### Elvis operator expression
 
-**_elvisExpression_:**  
-  ~  _infixFunctionCall_ {{_NL_} `?:` {_NL_} (_infixFunctionCall_ | _ifExpression_)}   
+:::{.paste target=grammar-rule-elvisExpression}
+:::
 
 *Elvis operator expression* is a binary expression that emplys the elvis operator (`?:`).
 It checks whether the left-hand side expression is equal to `null`, and if it is,
@@ -497,8 +477,8 @@ type of the right-hand side expression. TODO(): not that simple, too
 
 ### Range expression
 
-**_rangeExpression_:**  
-  ~  _additiveExpression_ {`..` {_NL_} (_additiveExpression_ | _ifExpression_)}   
+:::{.paste target=grammar-rule-rangeExpression}
+:::
 
 A *range expression* is a binary expression employing the range operator `..`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
@@ -512,11 +492,10 @@ The range expression has the same type as the return type of the corresponding
 
 ### Additive expression
 
-**_additiveExpression_:**  
-  ~  _multiplicativeExpression_ {_additiveOperator_ {_NL_} (_multiplicativeExpression_ | _ifExpression_)}   
-
-**_additiveOperator_:**  
-  ~  `+` | `-`   
+:::{.paste target=grammar-rule-additiveExpression}
+:::
+:::{.paste target=grammar-rule-additiveOperator}
+:::
 
 An *additive expression* is a binary expression employing the addition (`+`) or subtraction (`-`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
@@ -531,13 +510,10 @@ operator function overload variant.
 
 ### Multiplicative expression
 
-**_multiplicativeExpression_:**  
-  ~  _asExpression_ {_multiplicativeOperator_ {_NL_} (_asExpression_ | _ifExpression_)}   
-
-**_multiplicativeOperator_:**  
-  ~  `*`   
-    | `/`   
-    | `%`   
+:::{.paste target=grammar-rule-multiplicativeExpression}
+:::
+:::{.paste target=grammar-rule-multiplicativeOperator}
+:::
 
 An *multiplicative expression* is a binary expression employing the multiplication (`*`), division (`/`) or remainder (`%`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
@@ -556,13 +532,10 @@ operator function overload variant.
 
 ### Cast expression
 
-**_asExpression_:**  
-  ~  _prefixUnaryExpression_ [{_NL_} _asOperator_ {_NL_} _type_]   
-
-**_asOperator_:**  
-  ~  `as`   
-    | `as?`   
-    | `:`   
+:::{.paste target=grammar-rule-asExpression}
+:::
+:::{.paste target=grammar-rule-asOperator}
+:::
 
 A *cast expression* is a binary expression employing the cast operators (`as` or `as?`) and
 receives an expression as the left-hand side operand and a type name as the right-hand side operand.
@@ -606,21 +579,12 @@ The ascription expression always has the same type as the type specified in righ
 
 ### Prefix expressions
 
-**_prefixUnaryExpression_:**  
-  ~  {_unaryPrefix_} _postfixUnaryExpression_   
-    | _unaryPrefix_ {_unaryPrefix_} _ifExpression_   
-
-**_unaryPrefix_:**  
-  ~  _annotation_   
-    | _labelDefinition_   
-    | _prefixUnaryOperator_ {_NL_}   
-
-**_prefixUnaryOperator_:**  
-  ~  `++`   
-    | `--`   
-    | `-`   
-    | `+`   
-    | `!`   
+:::{.paste target=grammar-rule-prefixUnaryExpression}
+:::
+:::{.paste target=grammar-rule-unaryPrefix}
+:::
+:::{.paste target=grammar-rule-prefixUnaryOperator}
+:::
 
 #### Annotated and labeled expression
 
@@ -684,20 +648,12 @@ function, including its type. No additional restrictions apply.
 
 ### Postfix operator expressions
 
-**_postfixUnaryExpression_:**  
-  ~  _primaryExpression_ {_postfixUnarySuffix_}   
-
-**_postfixUnarySuffix_:**  
-  ~  _postfixUnaryOperator_   
-    | _typeArguments_   
-    | _callSuffix_   
-    | _indexingSuffix_   
-    | _navigationSuffix_   
-
-**_postfixUnaryOperator_:**  
-  ~  `++`   
-    | `--`   
-    | `!!`   
+:::{.paste target=grammar-rule-postfixUnaryExpression}
+:::
+:::{.paste target=grammar-rule-postfixUnarySuffix}
+:::
+:::{.paste target=grammar-rule-postfixUnaryOperator}
+:::
 
 #### Postfix increment expression
 
@@ -762,18 +718,12 @@ involving [type inference][Type inference].
 
 ### Indexing expressions
 
-**_postfixUnaryExpression_:**  
-  ~  _primaryExpression_ {_postfixUnarySuffix_}   
-
-**_postfixUnarySuffix_:**  
-  ~  _postfixUnaryOperator_   
-    | _typeArguments_   
-    | _callSuffix_   
-    | _indexingSuffix_   
-    | _navigationSuffix_   
-
-**_indexingSuffix_:**  
-  ~  `[` {_NL_} _expression_ {{_NL_} `,` {_NL_} _expression_} {_NL_} `]`   
+:::{.paste target=grammar-rule-postfixUnaryExpression}
+:::
+:::{.paste target=grammar-rule-postfixUnarySuffix}
+:::
+:::{.paste target=grammar-rule-indexingSuffix}
+:::
 
 An *indexing expression* is a suffix expression employing the use of several
 subexpressions *indices* between square brackets (`[` and `]`). At least one
@@ -792,44 +742,26 @@ For a corresponding assignment form, see [indexing assignment][Indexing assignme
 
 ### Call and property access expressions
 
-**_postfixUnaryExpression_:**  
-  ~  _primaryExpression_ {_postfixUnarySuffix_}   
-
-**_postfixUnarySuffix_:**  
-  ~  _postfixUnaryOperator_   
-    | _typeArguments_   
-    | _callSuffix_   
-    | _indexingSuffix_   
-    | _navigationSuffix_
-
-**_navigationSuffix_:**  
-  ~  {_NL_} _memberAccessOperator_ {_NL_} (_simpleIdentifier_ | `class`)   
-
-**_callSuffix_:**  
-  ~  [_typeArguments_] [_valueArguments_] _annotatedLambda_   
-    | [_typeArguments_] _valueArguments_   
-
-**_annotatedLambda_:**  
-  ~  {annotation | _IdentifierAt_} {_NL_} _lambdaLiteral_   
-
-**_valueArguments_:**  
-  ~  `(` {_NL_} [_valueArgument_] {_NL_} `)`   
-    | `(` {_NL_} _valueArgument_ {{_NL_} `,` {_NL_} _valueArgument_} {_NL_} `)`   
-
-**_typeArguments_:**  
-  ~  `<` {_NL_} _typeProjection_ {{_NL_} `,` {_NL_} _typeProjection_} {_NL_} `>`   
-
-**_typeProjection_:**  
-  ~  [_typeProjectionModifierList_] _type_ | `*`   
-
-**_typeProjectionModifierList_:**  
-  ~  {_varianceAnnotation_}   
-
-**_navigationSuffix_:**  
-  ~  {_NL_} _memberAccessOperator_ {_NL_} (_simpleIdentifier_ | `class`)   
-
-**_memberAccessOperator_:**  
-  ~  `.` | `?.` | `::`   
+:::{.paste target=grammar-rule-postfixUnaryExpression}
+:::
+:::{.paste target=grammar-rule-postfixUnarySuffix}
+:::
+:::{.paste target=grammar-rule-navigationSuffix}
+:::
+:::{.paste target=grammar-rule-callSuffix}
+:::
+:::{.paste target=grammar-rule-annotatedLambda}
+:::
+:::{.paste target=grammar-rule-valueArguments}
+:::
+:::{.paste target=grammar-rule-typeArguments}
+:::
+:::{.paste target=grammar-rule-typeProjection}
+:::
+:::{.paste target=grammar-rule-typeProjectionModifiers}
+:::
+:::{.paste target=grammar-rule-memberAccessOperator}
+:::
 
 #### The navigation operators
 
@@ -864,13 +796,8 @@ in-place, but have subtle differences.
 
 #### Anonymous function declarations
 
-**_anonymousFunction_:**  
-  ~  `fun`   
-    [{_NL_} _type_ {_NL_} `.`]   
-    {_NL_} _functionValueParameters_   
-    [{_NL_} `:` {_NL_} _type_]   
-    [{_NL_} _typeConstraints_]   
-    [{_NL_} _functionBody_]   
+:::{.paste target=grammar-rule-anonymousFunction}
+:::
 
 *Anonymous function declarations*, despite the name, are not actually declarations,
 but rather an expression that resembles a function declaration. They have syntax
@@ -889,24 +816,19 @@ constructed similarly to the corresponding
 
 #### Lambda literals
 
-**_lambdaLiteral_:**  
-  ~  `{` {_NL_} _statements_ {_NL_} `}`   
-    | `{` {_NL_} _lambdaParameters_ {_NL_} `->` {_NL_} _statements_ {_NL_} `}`
-
-**_lambdaParameters_:**  
-  ~  [_lambdaParameter_] {{_NL_} `,` {_NL_} _lambdaParameter_}   
-
-**_lambdaParameter_:**  
-  ~  _variableDeclaration_   
-    | _multiVariableDeclaration_ [{_NL_} `:` {_NL_} _type_]   
+:::{.paste target=grammar-rule-lambdaLiteral}
+:::
+:::{.paste target=grammar-rule-lambdaParameters}
+:::
+:::{.paste target=grammar-rule-lambdaParameter}
+:::
 
 Lambda literals TODO()
 
 ### Object literals
 
-**_objectLiteral_:**  
-  ~  `object` {_NL_} `:` {_NL_} _delegationSpecifiers_ [{_NL_} _classBody_]   
-    | `object` {_NL_} _classBody_   
+:::{.paste target=grammar-rule-objectLiteral}
+:::
 
 Object literals are a way of defining anonymous objects in Kotlin. Anonymous objects
 are similar to regular objects, but they (obviously) have no name and thus can
@@ -933,8 +855,8 @@ as those are a part of package interface.
 
 ### This-expressions
 
-**_thisExpression_:**  
-  ~  `this` [_AtIdentifier_]
+:::{.paste target=grammar-rule-thisExpression}
+:::
 
 This-expressions are a special kind of expressions used to access available receivers
 in current scope. For more information about receivers, please refer to the
@@ -955,8 +877,8 @@ Any other form of this-expression is illegal and generates a compiler error.
 
 ### Super-forms
 
-**_superExpression_:**  
-  ~  `super` [`<` {_NL_} _type_ {_NL_} `>`] [_AtIdentifier_]
+:::{.paste target=grammar-rule-superExpression}
+:::
 
 Super form is a special kind of expression that can only be used as the receiver
 of a function or property access expression. Any usage of such an expression in
@@ -969,11 +891,8 @@ TODO()
 
 ### Jump expressions
 
-**_jumpExpression_:**  
-  ~  `throw` {_NL_} _expression_   
-    | (`return` | `return@` _Identifier_) [_expression_]   
-    | `continue` | `continue@` _Identifier_   
-    | `break` | `break@` _Identifier_   
+:::{.paste target=grammar-rule-jumpExpression}
+:::
 
 *Jump expressions* are a group of expressions that redirect the order the program
 is evaluated to a different program point when evaluated. All these expressions
