@@ -1,5 +1,3 @@
 ## Semantics
 
 TODO()
-
-### Smart casts
