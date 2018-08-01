@@ -1,7 +1,7 @@
 #!/bin/env kscript
 
 @file:MavenRepository("bintray-vorpal-research-kotlin-maven","https://dl.bintray.com/vorpal-research/kotlin-maven" )
-@file:DependsOn("ru.spbstu:kotlin-pandoc:0.0.3")
+@file:DependsOn("ru.spbstu:kotlin-pandoc:0.0.4")
 
 import ru.spbstu.pandoc.*
 import ru.spbstu.pandoc.builder.*
