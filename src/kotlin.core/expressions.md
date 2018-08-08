@@ -290,8 +290,8 @@ in the expression, otherwise a compiler error must be generated.
 are very similar to the form without bound value, but use different syntax for conditions.
 In fact, it supports three different condition forms:
 
-- *Type test condition*: type checking operator [TODO: link] followed by type. The
-  condition generated is a type check expression [TODO: link] with the same operator
+- *Type test condition*: [type checking operator][Type-checking expression] followed by type. The
+  condition generated is a [type check expression][Type-checking expression] with the same operator
   and the same type, but an implicit left hand side, which has the same value as the bound
   expression.
 - *Contains test condition*: containment operator [TODO: link] followed by an expression; The
@@ -438,10 +438,14 @@ A type checking expression employs the use of an type-checking operators `is` or
 and has an expression as a left-hand side operand and a type name as a right-hand
 side operand. The type must be [runtime-available][Runtime-available types], otherwise
 a compiler error should be generated. The expression checks whether the runtime type of
-the expression on the left is the same (not the same for `!is`) as the type denoted
+the expression on the left is a subtype of (not the subtype of in the case of `!is`) the type denoted
 by the right-hand side argument.
 
 Type-checking expression always has type `kotlin.Boolean`.
+
+> For example, the expression `null is T?` for any type `T` always evaluates to `true`, because
+> the type of the left-hand side (`null`) is `kotlin.Nothing?`, which is a subtype of any
+> nullable type `T?`
 
 ##### TODO()
 
