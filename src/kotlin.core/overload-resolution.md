@@ -139,7 +139,7 @@ A call of callable `f` with explicit receiver `e` is correct if one (or more) of
 2. `f` is an extension callable for the classifier type of `e` or any of its supertypes,
    including local and imported extensions.
 
-Please note that callables functions for case 2 not only include top-level
+Please note that callables for case 2 not only include top-level
 declared extension callables, but also extension callables available in any
 of the available implicit receivers. For example, if a class contains a member extension
 function for another class and an object of this class is available as an implicit
@@ -181,6 +181,10 @@ selection the only functions considered for inclusion are the ones with the
 Aside from this small difference, candidates are selected using the same
 rules as for normal calls with explicit receiver.
 
+> This also means that all the properties available through `invoke`-convention
+> are non-eligible for such calls, because there is no way of specifying
+> the `infix` modifier for them
+
 Different platform implementations may extend the set of functions deemed valid
 candidates for inclusion as infix functions.
 
@@ -196,11 +200,18 @@ that only functions with `operator` modifier are considered for inclusion when
 building overload candidate sets. Properties are never considered for inclusion
 for operator calls.
 
+> This also means that all the properties available through `invoke`-convention
+> are non-eligible for such calls, because there is no way of specifying
+> the `operator` modifier for them, even though the `invoke` callable is required
+> to have such modifier.
+> This means that, as `invoke`-convention itself is an operator call, it is
+> impossible to employ more than one `invoke`-conventions in a single call.
+
 Different platform implementations may extend the set of functions deemed valid
 candidates for inclusion as operator functions.
 
 Please note that this is valid not only for dedicated operator expressions, but
-also for `for`-loops iteration process and property delegates.
+also for `for`-loops iteration convention and property delegates.
 
 ### A call without an explicit receiver
 

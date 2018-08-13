@@ -40,10 +40,10 @@ for any purpose (including, but not limited to, function overloading and
 further type inference of other values) if it is dominated by a smart casting
 condition, is, for every condition:
 
-- If the condition is a nullability condition, the intersection of the type
+- If the condition is a nullability condition, the [intersection][Type intersection] of the type
   it had before (including the results of smart casting performed for other conditions) and
   type `kotlin.Any`;
-- If the condition is a type condition, the intersection of the type it had before
+- If the condition is a type condition, the [intersection][Type intersection] of the type it had before
   (including the results of smart casting performed for other conditions) and
   the assumed type of the condition.
 

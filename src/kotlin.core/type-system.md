@@ -29,6 +29,9 @@ $\Gamma$
 $T\lbrack S_1, \ldots, S_n\rbrack$
 ~ The result of type argument substitution for type $T$ with types $S_i$
 
+$A \cup B$
+~ Intersection type intersecting A and B
+
 Type parameter
 ~ Formal type argument of parameterized type
 
@@ -71,6 +74,7 @@ For the purposes of this section, we establish the following type kinds --- diff
 * [Array types][Array types]
 * [Flexible types][Flexible types]
 * [Nullable types][Nullable types]
+* [Intersection types][Intersection types]
 * TODO(Intersection and union types)
 * TODO(Error / invalid types)
 
@@ -355,6 +359,32 @@ If an operation is safe regardless of absence or presence of `null`, i.e., assig
 3. Supply a default value to use instead of `null`
     * [elvis operator][Elvis operator expression]
 
+#### Intersection types
+
+Intersection types are special non-denotable types that are used to express (loosely) that a value has two or more types to choose from.
+Intersection type of two non-nullable types $A$ and $B$ is denoted $A \cup B$. Intersection types are used for [smart casting][Smart casts].
+Intersection types are commutative and associative, meaning that $A \cup B$ is the same type as $B \cup A$ and $A \cup (B \cup C)$
+is the same type as $A \cup B \cup C$.
+
+For presentation purposes, we will normalize intersection type operands lexicographically based on their notation.
+
+##### Type intersection
+
+The primary operation on types that is used to construct intersection types is called type intersection (do not confuse the two).
+Type intersection $A \times B$ of types $A$ and $B$ has the following properties:
+
+- it is commutative and associative, just like set intersection (for simplicity, all other properties will be shown for only one order of operands, meaning they hold under both commutativity and associativity)
+- it is idempotent, meaning that $A \times A = A$
+- if $A <: B$ then $A \times B = A$
+    - $\times$ has identity at `kotlin.Any`: $\forall T . T \times \mathtt{kotlin.Any} = T$
+- if $A$ is non-nullable, than $A \times B$ is also non-nullable
+- if both $A$ and $B$ are nullable, $A \times B = (A!! \times B!!)?$
+- if type $A$ is nullable and type $B$ is not, $A \times B = A!! \times B$
+- if both $A$ and $B$ are non-nullable and no other rules apply, $A \times B = A \cup B$
+
+TODO(Intersection of flexible types)
+TODO(If $A <: B$ and $B <: A$, what is $A \times B$???)
+
 ### Subtyping
 
 Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected. The subtyping relation $<:$ is:
@@ -411,6 +441,14 @@ This is the most extensive definition possible, which, unfortunately, makes the 
 * $B <: (A..B) \land (A..B) <: B \Rightarrow B \equiv (A..B)$
 
 However, $A \not \equiv B$.
+
+#### Subtyping for intersection types
+
+Intersection types introduce several new rules for subtyping. Let $A, B, C, D$ be non-nullable types:
+
+- $A \cup B <: A$
+- $A \cup B <: B$
+- $A <: C \land B <: D \Rightarrow A \cup B <: C \cup D$
 
 #### Subtyping for nullable types
 

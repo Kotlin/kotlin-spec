@@ -245,7 +245,7 @@ If one of the branches is omitted (see the grammar entry above), the resulting e
 has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
 but only as a statement.
 
-The condition expression must have type `kotlin.Boolean` (TODO(): or be smartcasted to it!),
+The condition expression must be a subtype of `kotlin.Boolean`,
 otherwise it is a type error.
 
 > When used as expressions, conditional expressions are special in the sense of operator
