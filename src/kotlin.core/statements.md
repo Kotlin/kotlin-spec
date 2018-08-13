@@ -2,15 +2,10 @@
 
 TODO()
 
-**_statements_:**  
-  ~  [_statement_ {semis _statement_} [_semis_]]   
-
-**_statement_:**  
-  ~  {_labelDefinition_}   
-    ( _declaration_   
-    | _assignment_   
-    | _loopStatement_   
-    | _expression_)   
+:::{.paste target=grammar-rule-statements}
+:::
+:::{.paste target=grammar-rule-statement}
+:::
 
 Unlike some other languages, Kotlin statements include bare expressions and declarations.
 This section is focused on those statements that are *not* expressions or declarations.
@@ -19,16 +14,10 @@ sections of this document.
 
 ### Assignments
 
-**_assignment_:**  
-  ~  _directlyAssignableExpression_ `=` {_NL_} _expression_   
-    | _assignableExpression_ _assignmentAndOperator_ {_NL_} _expression_   
-
-**_assignmentAndOperator_:**  
-  ~  `+=`   
-    | `-=`   
-    | `*=`   
-    | `/=`   
-    | `%=`   
+:::{.paste target=grammar-rule-assignment}
+:::
+:::{.paste target=grammar-rule-assignmentAndOperator}
+:::
 
 An *assignment* is a statement that writes a new value to some location, denoted
 by its left hand side. Both left-hand and right-hand sides of an assignment are
@@ -112,10 +101,8 @@ section.
 Loop statements are constructs that repeat evaluating a certain number of statements
 until a *loop exit condition* applies.
 
-**_loopStatement_:**  
-  ~  _forStatement_   
-    | _whileStatement_   
-    | _doWhileStatement_   
+:::{.paste target=grammar-rule-loopStatement}
+:::
 
 Loops are closely related to the semantics of several [jump expressions][Jump expressions],
 as these expressions, namely `break` and `continue`, are only allowed in the body of
@@ -123,9 +110,8 @@ a loop. Please refer to the corresponding section for details.
 
 #### While loop
 
-**_whileStatement_:**  
-  ~  `while` {_NL_} `(` _expression_ `)` {_NL_} _controlStructureBody_   
-    | `while` {_NL_} `(` _expression_ `)` {_NL_} `;`  
+:::{.paste target=grammar-rule-whileStatement}
+:::
 
 *While loop statement* is very similar to an [`if` expression][Conditional expression]
 in the way that it contains a condition expression and a body consisting of one
@@ -140,8 +126,8 @@ As for the `if` expression, the condition subexpression **must have** type `kotl
 
 #### Do-while loop
 
-**_doWhileStatement_:**  
-  ~  `do` {_NL_} [_controlStructureBody_] {_NL_} `while` {_NL_} `(` _expression_ `)`   
+:::{.paste target=grammar-rule-doWhileStatement}
+:::
 
 A *do-while statement* is very similar to the while statement, but with a few differences.
 First, it has a different syntax. Second, it evaluates the loop condition expression
@@ -153,8 +139,8 @@ As for the `if` expression, the condition subexpression **must have** type `kotl
 
 #### For loop
 
-**_forStatement_:**  
-  ~  `for` {_NL_} `(` {_annotation_} (variableDeclaration | _multiVariableDeclaration_) `in` _expression_ `)` {_NL_} [_controlStructureBody_]   
+:::{.paste target=grammar-rule-forStatement}
+:::
 
 > Unlike other languages, Kotlin does not have a free-form condition-based for loops.
 > The only form of for-loop available in Kotlin is (what it's called in other languages)
@@ -187,11 +173,10 @@ in the current scope.
 
 ### Code blocks
 
-**_block_:**  
-  ~  `{` {_NL_} _statements_ {_NL_} `}`   
-
-**_statements_:**  
-  ~  [_statement_ {semis _statement_} [_semis_]]   
+:::{.paste target=grammar-rule-block}
+:::
+:::{.paste target=grammar-rule-statements}
+:::
 
 A *code block* is a series of statements between curly braces separated by
 newlines or/and semicolons. A code block may be empty. Evaluating a code block

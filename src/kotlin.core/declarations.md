@@ -22,18 +22,10 @@ Every declaration is accessible in a particular *scope*, which is dependent both
 
 ### Classifier declaration
 
-**_classDeclaration_:**  
-  ~  [_modifierList_] (`class` | `interface`) {_NL_} _simpleIdentifier_   
-      [{_NL_} _typeParameters_] [{_NL_} _primaryConstructor_]   
-      [{_NL_} `:` {_NL_} _delegationSpecifiers_]   
-      [{_NL_} _typeConstraints_]   
-      [{_NL_} _classBody_ | {_NL_} _enumClassBody_]   
-
-**_objectDeclaration_:**  
-  ~  [_modifierList_] `object`   
-      {_NL_} _simpleIdentifier_   
-      [{_NL_} `:` {_NL_} _delegationSpecifiers_]   
-      [{_NL_} _classBody_]   
+:::{.paste target=grammar-rule-classDeclaration}
+:::
+:::{.paste target=grammar-rule-objectDeclaration}
+:::
 
 Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. There are three kinds of classifier declarations:
 
@@ -208,16 +200,10 @@ After the supertype initialization is done, we continue the initialization by pr
 
 ### Function declaration
 
-**_functionDeclaration_:**  
-  ~  [_modifierList_]   
-    `fun`   
-    [{_NL_} _typeParameters_]   
-    [{_NL_} _type_ {_NL_} `.`]
-    ({_NL_} _simpleIdentifier_)   
-    {_NL_} _functionValueParameters_   
-    [{_NL_} `:` {_NL_} _type_]   
-    [{_NL_} _typeConstraints_]   
-    [{_NL_} _functionBody_]   
+:::{.paste target=grammar-rule-functionDeclaration}
+:::
+:::{.paste target=grammar-rule-functionBody}
+:::
 
 Function declarations assign names to such entities as functions --- blocks of code which may be called by passing them a number of arguments. Functions have special *function types* which are covered in more detail [here][Function types].
 
@@ -328,14 +314,8 @@ TODO()
 
 ### Property declaration
 
-**_propertyDeclaration_:**  
-  ~  [_modifierList_] (`val` | `var`)   
-      [{_NL_} _typeParameters_]   
-      [{_NL_} _type_ {_NL_} `.`]   
-      ({_NL_} (_multiVariableDeclaration_ | _variableDeclaration_))   
-      [{_NL_} _typeConstraints_]   
-      [{_NL_} (`by` | `=`) {_NL_} _expression_]   
-      [NL+ `;`] {_NL_} [[_getter_] ({_NL_} [_semi_] _setter_] | [_setter_] [{_NL_} [_semi_] _getter_])   
+:::{.paste target=grammar-rule-propertyDeclaration}
+:::
 
 Property declarations are used to create read-only (`val`) or mutable (`var`) entities in their respective scope. Properties may also have custom getter or setter --- functions which are used to read or write the property value.
 
@@ -518,8 +498,8 @@ All non-abstract properties must be definitely initialized before their first us
 
 ### Type alias
 
-**_typeAlias_:**  
-  ~  [_modifierList_] `typealias` {_NL_} _simpleIdentifier_ [{_NL_} _typeParameters_] {_NL_} `=` {_NL_} _type_   
+:::{.paste target=grammar-rule-typeAlias}
+:::
 
 Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
