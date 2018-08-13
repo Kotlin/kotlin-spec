@@ -5,6 +5,13 @@
 Entity
 ~ A distinguishable part of a program
 
+Path
+~ A sequence of names which identifies a program entity
+
+### Identifiers, names and paths
+
+TODO(Explain paths)
+
 ### Introduction
 
 TODO(Examples)
@@ -59,9 +66,9 @@ Instance initialization block describes a block of code which should be executed
 
 Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
 
-Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the reference `C.CO`.
+Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
-TODO(Nested classifier declaraions)
+Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. Inner classes are available only on the corresponding class' entities. Further details are available [here][Inner and nested classes].
 
 ```kotlin
 TODO(Examples)
@@ -118,7 +125,13 @@ If a class does not have a primary constructor, its secondary constructors must 
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
 
-##### Nested and inner classes
+##### Nested and inner classifiers
+
+If a classifier declaration $ND$ is *nested* in another classifier declaration $PD$, it creates a nested classifier type --- a classifier type available under the path $PD.ND$. In all other aspects, nested classifiers are equivalent to regular ones.
+
+Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. An inner class declaration $ID$ nested in another classifier declaration $PD$ may reference an *object* of type $ID$ associated with it.
+
+This association happens when instantiating an object of type $ID$, as its constructor may be invoked only when a receiver of type $PD$ is available, and this receiver becomes associated with the new instantiated object of type $ID$.
 
 TODO(...)
 
@@ -161,6 +174,7 @@ Interfaces differ from classes in that they cannot be directly instantiated in t
 * An interface cannot have a constructor
 * Interface properties cannot have initializers
 * All interface members must be public
+* An interface and all its members are implicitly open
 
 TODO(Something else?)
 

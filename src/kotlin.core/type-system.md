@@ -108,8 +108,6 @@ TODO(Compare to `void`?)
 
 Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parameterized.
 
-TODO(No objects as supertypes?)
-
 ##### Simple classifier types
 
 A simple concrete classifier type
@@ -264,7 +262,45 @@ TODO(Blah-blah about existential types?)
 
 #### Function types
 
-TODO(Everything...)
+Kotlin has first-order functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.
+
+A function type FT
+
+$$FT(A_1, \ldots, A_n) \rightarrow R$$
+
+consists of
+
+* argument types $A_i$
+* return type $R$
+
+and may be considered the following instantiation of a special parameterized abstract classifier type $FunctionN$
+
+$$FunctionN(\triangleleft P_1, \ldots, \triangleleft P_n, \triangleright RT)$$
+
+$$FT(A_1, \ldots, A_n) \rightarrow R \equiv FunctionN[A_1, \ldots, A_n, R]$$
+
+These $FunctionN$ types follow the rules of regular PACTs w.r.t. subtyping.
+
+A function type with receiver FTR
+
+$$FTR(TH, A_1, \ldots, A_n) \rightarrow R$$
+
+consists of
+
+* receiver type $TH$
+* argument types $A_i$
+* return type $R$
+
+From the type system's point of view, it is equivalent to the following function type
+
+$$FTR(TH, A_1, \ldots, A_n) \rightarrow R \equiv FT(TH, A_1, \ldots, A_n) \rightarrow R$$
+
+i.e., receiver is considered as yet another argument of its function type.
+
+> Note: this means that, for example, these two types are equivalent
+>
+> * `Int.(Int) -> String`
+> * `(Int, Int) -> String`
 
 #### Array types
 
