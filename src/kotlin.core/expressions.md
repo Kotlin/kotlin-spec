@@ -395,9 +395,9 @@ Reference equality expressions always have type `kotlin.Boolean`.
 `==` and `!=`. These operators are [overloadable][Overloadable operators] with the following
 expansion:
 
-- $A$ `==` $B$ is exactly the same as $A$`?.equals(`$B$`) ?: (`$B$` === null)` where `equals` is a valid
+- `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid
   operator function available in the current scope;
-- $A$ `!=` $B$ is exactly the same as `!(`$A$`?.equals(`$B$`) ?: (`$B$` === null))` where `equals` is a valid
+- `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid
   operator function available in the current scope.
 
 > Please note that the class `kotlin.Any` has a built-in open operator member function called `equals`,
@@ -417,10 +417,10 @@ has a different return type, it is invalid and a compiler error should be genera
 `<`, `>`, `<=` and `>=`. These operators are [overloadable][Overloadable operators] with the following
 expansion:
 
-- $A$`<`$B$ is exactly the same as $A$`.compareTo(`$B$`) [<] 0`
-- $A$`>`$B$ is exactly the same as `0 [<] `$A$`.compareTo(`$B$`)`
-- $A$`<=`$B$ is exactly the same as `!(`$A$`.compareTo(`$B$`) [<] 0)`
-- $A$`>=`$B$ is exactly the same as `!(0 [<] `$A$`.compareTo(`$B$`))`
+- `A < B` is exactly the same as `A.compareTo(B) [<] 0`
+- `A > B` is exactly the same as `0 [<] A.compareTo(B)`
+- `A <= B` is exactly the same as `!(A.compareTo(B) [<] 0)`
+- `A >= B` is exactly the same as `!(0 [<] A.compareTo(B))`
 
 where `compareTo` is a valid operator function available in the current scope
 and `[<]` (read "boxed less") is a special operator unavailable for in-code use in Kotlin and performing
@@ -462,8 +462,8 @@ Type-checking expression always has type `kotlin.Boolean`.
 A *containment-checking expression* is a binary expression employing the containment operator
 (`in` or `!in`). These are [overloadable][Overloadable operators] operators with the following expansion:
 
-- $A$` in `$B$ is exactly the same as $B$`.contains(`$B$`)`;
-- $A$` !in `$B$ is exactly the same as `!(`$B$`.contains(`$B$`))`;
+- `A in B` is exactly the same as `A.contains(B)`;
+- `A !in B` is exactly the same as `!(A.contains(B))`;
 
 where `contains` is a valid operator function available in the current scope. This
 function must have return type `kotlin.Boolean`, otherwise a compiler error is generated.
@@ -493,7 +493,7 @@ type of the right-hand side expression. TODO(): not that simple, too
 A *range expression* is a binary expression employing the range operator `..`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-- $A$`..`$B$ is exactly the same as $A$`.rangeTo(`$B$`)`
+- `A..B` is exactly the same as `A.rangeTo(B)`
 
 where `rangeTo` is a valid operator function available in the current scope.
 The return type of this function is not restricted.
@@ -510,8 +510,8 @@ The range expression has the same type as the return type of the corresponding
 An *additive expression* is a binary expression employing the addition (`+`) or subtraction (`-`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
 
-- $A$`+`$B$ is exactly the same as $A$`.plus(`$B$`)`
-- $A$`-`$B$ is exactly the same as $A$`.minus(`$B$`)`
+- `A + B` is exactly the same as `A.plus(B)`
+- `A - B` is exactly the same as `A.minus(B)`
 
 where `plus` or `minus` is a valid operator function available in the current scope.
 The return type of this function is not restricted.
@@ -528,9 +528,9 @@ operator function overload variant.
 An *multiplicative expression* is a binary expression employing the multiplication (`*`), division (`/`) or remainder (`%`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
 
-- $A$`*`$B$ is exactly the same as $A$`.times(`$B$`)`
-- $A$`/`$B$ is exactly the same as $A$`.div(`$B$`)`
-- $A$`%`$B$ is exactly the same as $A$`.rem(`$B$`)`
+- `A * B` is exactly the same as `A.times(B)`
+- `A / B` is exactly the same as `A.div(B)`
+- `A % B` is exactly the same as `A.rem(B)`
 
 > As of Kotlin version 1.2.31, there exists an additional overloading function for
 > `%` called `mod`, which is deprecated
@@ -607,9 +607,9 @@ by external tools and platform-dependent features.
 A *prefix increment* expression is an expression employing the prefix form of
 operator `++`. It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`++`$A$ is exactly the same as evaluating the expression $A$`.inc()` where
-`inc` is a suitable `operator` function, assigning the value to $A$ and then
-returning the value of $A$ as the result of the expression.
+`++A` is exactly the same as evaluating the expression `A.inc()` where
+`inc` is a suitable `operator` function, assigning the value to `A` and then
+returning the value of `A` as the result of the expression.
 
 The left-hand side of a postfix increment expression must be an [assignable expressions][Assignments].
 Otherwise a compiler error must be generated.
@@ -619,7 +619,7 @@ expression.
 
 #### Prefix decrement expression
 
-A *prefix increment* expression is an expression employing the prefix form of
+A *prefix decrement* expression is an expression employing the prefix form of
 operator `--`. It is an [overloadable][Overloadable operators] operator with the following expansion:
 
 `--`$A$ is exactly the same as evaluating the expression $A$`.dec()` where
