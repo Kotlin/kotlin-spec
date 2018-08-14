@@ -57,4 +57,17 @@ TODO?
 
 #### Finding optimal solution
 
+As any constraint system may have several valid solutions, finding one that is "optimal"
+in some sense is not possible in general, because the notion of the best solution for
+a task depends on a particular use-case. To solve this problem,
+the constraint system allows two additional types of constraints:
+
+- A pull-up constraint for type variable $T$, denoted $\uparrow T$, signifying that when finding
+  a substitution for this variable, the optimal solution is the least one according to subtyping relation;
+- A push-down constraint for type variable $T$, denoted $\downarrow T$, signifying that when finding
+  a substitution for this variable, the optimal solution is the biggest one according to subtyping relation.
+
+If a variable have no constraints of these two kinds associated with it, it is assumed to have a pull-up constraint,
+that is, in an ambigious situation, the biggest possible type is chosen.
+
 TODO?

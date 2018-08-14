@@ -468,7 +468,7 @@ Containment-checking expressions always have type `kotlin.Boolean`.
 :::{.paste target=grammar-rule-elvisExpression}
 :::
 
-*Elvis operator expression* is a binary expression that emplys the elvis operator (`?:`).
+*Elvis operator expression* is a binary expression that employs the elvis operator (`?:`).
 It checks whether the left-hand side expression is equal to `null`, and if it is,
 evaluates and return the right-hand side expression.
 

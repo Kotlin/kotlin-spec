@@ -203,7 +203,7 @@ for operator calls.
 > This also means that all the properties available through `invoke`-convention
 > are non-eligible for such calls, because there is no way of specifying
 > the `operator` modifier for them, even though the `invoke` callable is required
-> to have such modifier.
+> to always have such modifier.
 > This means that, as `invoke`-convention itself is an operator call, it is
 > impossible to employ more than one `invoke`-conventions in a single call.
 
