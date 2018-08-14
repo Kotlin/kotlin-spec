@@ -7,10 +7,9 @@ TODO()
 :::{.paste target=grammar-rule-statement}
 :::
 
-Unlike some other languages, Kotlin statements include bare expressions and declarations.
-This section is focused on those statements that are *not* expressions or declarations.
-For information about expressions and declarations please refer to the corresponding
-sections of this document.
+Unlike some other languages, Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions.
+This section focuses on those statements that are *not* expressions or declarations.
+For information on those parts of Kotlin, please refer to the [Expressions][Expressions] and [Declarations][Declarations] sections of the specification.
 
 ### Assignments
 
@@ -19,157 +18,124 @@ sections of this document.
 :::{.paste target=grammar-rule-assignmentAndOperator}
 :::
 
-An *assignment* is a statement that writes a new value to some location, denoted
-by its left hand side. Both left-hand and right-hand sides of an assignment are
-expressions, although there are several restrictions for the expression on the
-left hand side.
+An *assignment* is a statement that writes a new value to some program entity, denoted by its left-hand side.
+Both left-hand and right-hand sides of an assignment must be expressions, more so, there are several restrictions for the expression on the left-hand side.
 
-For an expression to be *assignable*, i.e. be allowed to occur on the left-hand
-side of an assignment, it **must** be one of the following:
+For an expression to be *assignable*, i.e. be allowed to occur on the left-hand side of an assignment, it **must** be one of the following:
 
-- An identifier referring to a mutable property;
-- A navigation expression referring to a mutable property;
-- An [indexing expression][Indexing expression], see details below.
+- an identifier referring to a mutable property;
+- a navigation expression referring to a mutable property;
+- an indexing expression.
 
-Unlike some other languages, Kotlin assignments **are not** expressions and cannot
-be used as such.
+TODO(switch to navigation paths when we have them?)
 
-#### Simple assignment
+> Note: Kotlin assignments **are not** expressions and cannot be used as such.
 
-A *simple assigment* is the assignment form employing the assign operator `=`.
-If the left-hand side of the assignment refers to a mutable property, a mutation of
-that property is performed when the assignment is evaluated:
+#### Simple assignments
 
-- If the property is [delegated][Property delegation], the corresponding operator
-  function `setValue` is called using the right-hand side expression value as value argument;
-- If the property has a setter, it is called using the right-hand side expression value as
-  value argument;
-- If the property is just a variable without delegation or setter, it's value is directly changed
-  to the value of the right-hand side expression.
+A *simple assigment* is an assignment which uses the assign operator `=`.
+If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).
 
-If the left-hand side of the assignment is an indexing expression, the whole statement
-is treated as an overloaded operator with the following expansion:
+- If a property is [delegated][Delegated property declaration], the corresponding operator function `setValue` is called using the right-hand side expression as the `value` argument;
+- If a property has a [setter][Getters and setters], it is called using the right-hand side expression as its argument;
+- Otherwise, if a property is a [mutable property][Mutable property declaration], its value is changed to the evaluation result of the right-hand side expression.
 
-$A$`[`$B_1$,$B_2$,$B_3$,...,$B_N$`] = `$C$ is exactly the same as calling
-$A$`.set(`$B_1$,$B_2$,$B_3$,...,$B_N$,$C$`)` where `set` is a sutable `operator`
-function.
+If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Overloadable operators] with the following expansion:
+
+$A[B_1,B_2,B_3,\ldots,B_N] = C$ is the same as calling $A\text{.set}(B_1,B_2,B_3,\ldots,B_N,C)$ where `set` is a suitable operator function.
 
 #### Operator assignments
 
-An *operator assignment* is a combined-form assignment that involves one of the following
-operators: `+=`, `-=`, `*=`, `/=`, `%=`. All these are overloadable operators with the
-following expansions:
+An *operator assignment* is a combined-form assignment which involves one of the following operators: `+=`, `-=`, `*=`, `/=`, `%=`.
+All of these operators are overloadable operator functions with the following expansions (applied in order):
 
-- $A$`+=`$B$ is exactly the same as one of the following (in this order):
-    - $A$`.plusAssign(`$B$`)` if a corresponding suitable `plusAssign` operator function
-      exists and is available;
-    - $A$` = `$A$`.plus(`$B$`)` if a corresponding suitable `plus` operator function exists
-      and is available.
-- $A$`-=`$B$ is exactly the same as one of the following (in this order):
-    - $A$`.minusAssign(`$B$`)` if a corresponding suitable `minusAssign` operator function
-      exists and is available;
-    - $A$` = `$A$`.minus(`$B$`)` if a corresponding suitable `minus` operator function exists
-      and is available.
-- $A$`*=`$B$ is exactly the same as one of the following (in this order):
-    - $A$`.timesAssign(`$B$`)` if a corresponding suitable `timesAssign` operator function
-      exists and is available;
-    - $A$` = `$A$`.times(`$B$`)` if a corresponding suitable `times` operator function exists
-      and is available.
-- $A$`/=`$B$ is exactly the same as one of the following (in this order):
-    - $A$`.divAssign(`$B$`)` if a corresponding suitable `divAssign` operator function
-      exists and is available;
-    - $A$` = `$A$`.div(`$B$`)` if a corresponding suitable `div` operator function exists
-      and is available;
-- $A$`%=`$B$ is exactly the same as one of the following (in this order):
-    - $A$`.remAssign(`$B$`)` if a corresponding suitable `remAssign` operator function
-      exists and is available;
-    - $A$` = `$A$`.rem(`$B$`)` if a corresponding suitable `rem` operator function
-      exists and is available.
+- $A$`+=`$B$ is exactly the same as one of the following:
+    - $A$`.plusAssign(`$B$`)` if a suitable `plusAssign` operator function exists and is available;
+    - $A$` = `$A$`.plus(`$B$`)` if a suitable `plus` operator function exists and is available.
+- $A$`-=`$B$ is exactly the same as one of the following:
+    - $A$`.minusAssign(`$B$`)` if a suitable `minusAssign` operator function exists and is available;
+    - $A$` = `$A$`.minus(`$B$`)` if a suitable `minus` operator function exists and is available.
+- $A$`*=`$B$ is exactly the same as one of the following:
+    - $A$`.timesAssign(`$B$`)` if a suitable `timesAssign` operator function exists and is available;
+    - $A$` = `$A$`.times(`$B$`)` if a suitable `times` operator function exists and is available.
+- $A$`/=`$B$ is exactly the same as one of the following:
+    - $A$`.divAssign(`$B$`)` if a suitable `divAssign` operator function exists and is available;
+    - $A$` = `$A$`.div(`$B$`)` if a suitable `div` operator function exists and is available;
+- $A$`%=`$B$ is exactly the same as one of the following:
+    - $A$`.remAssign(`$B$`)` if a suitable `remAssign` operator function exists and is available;
+    - $A$` = `$A$`.rem(`$B$`)` if a suitable `rem` operator function exists and is available.
 
-> As of Kotlin version 1.2.31, there exists an additional overloading function for
-> `%` called `mod`, which is deprecated
+> Note: as of Kotlin version 1.2.31, there are additional overloadable functions for `%` called `mod`/`modAssign`, which are deprecated.
 
-The expanded simple assignment is then proceeded as described in the previous
-section.
+After the expansion, the resulting [function call expression][Function call expressions] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
 
-> Although for most real-world usecases operators `++` and `--` are very similar to
-> operator assignments, in Kotlin they are actually expressions and are described as such
-> in the [corresponding section][Expressions] of this document.
+> Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions] of this specification.
 
 ### Loop statements
 
-Loop statements are constructs that repeat evaluating a certain number of statements
-until a *loop exit condition* applies.
+Loop statements describe an evaluation of a certain number of statements repeatedly until a *loop exit condition* applies.
 
 :::{.paste target=grammar-rule-loopStatement}
 :::
 
-Loops are closely related to the semantics of several [jump expressions][Jump expressions],
-as these expressions, namely `break` and `continue`, are only allowed in the body of
-a loop. Please refer to the corresponding section for details.
+Loops are closely related to the semantics of [jump expressions][Jump expressions], as these expressions, namely [`break`][Break expression] and [`continue`][Continue expression], are only allowed in a body of a loop.
+Please refer to the corresponding sections for details.
 
-#### While loop
+#### While-loop statement
 
 :::{.paste target=grammar-rule-whileStatement}
 :::
 
-*While loop statement* is very similar to an [`if` expression][Conditional expression]
-in the way that it contains a condition expression and a body consisting of one
-or more statements. While loop repeats evaluating its body for as long as the
-condition expression evaluates to true or a [jump expression][Jump expressions]
-is evaluated to finish the loop.
+A *while-loop statement* is similar to an [`if` expression][Conditional expression] in that it also has a condition expression and a body consisting of zero or more statements.
+While-loop statement evaluating its body repeatedly for as long as its condition expression evaluates to true or a [jump expression][Jump expressions] is evaluated to finish the loop.
 
-> This also means that the condition expression is evaluated before every evaluation
-> of the body, including the first one.
+> Note: this also means that the condition expression is evaluated before every evaluation of the body, including the first one.
 
-As for the `if` expression, the condition subexpression **must have** type `kotlin.Boolean`.
+The while-loop condition expression **must be a subtype** of `kotlin.Boolean`.
 
-#### Do-while loop
+#### Do-while-loop statement
 
 :::{.paste target=grammar-rule-doWhileStatement}
 :::
 
-A *do-while statement* is very similar to the while statement, but with a few differences.
-First, it has a different syntax. Second, it evaluates the loop condition expression
-**after** evaluating the loop body.
+A *do-while-loop statement*, similarly to a while-loop statement, also describes a loop, with the following differences.
+First, it has a different syntax.
+Second, it evaluates the loop condition expression **after** evaluating the loop body.
 
-> This also means that the body is always evaluated at least once
+> Note: this also means that the body is always evaluated at least once.
 
-As for the `if` expression, the condition subexpression **must have** type `kotlin.Boolean`.
+The do-while-loop condition expression **must be a subtype** of `kotlin.Boolean`.
 
-#### For loop
+#### For-loop statement
 
 :::{.paste target=grammar-rule-forStatement}
 :::
 
-> Unlike other languages, Kotlin does not have a free-form condition-based for loops.
-> The only form of for-loop available in Kotlin is (what it's called in other languages)
-> "the foreach loop", iterating over arrays and other datastructures
+> Note: unlike most other languages, Kotlin does not have a free-form condition-based for loops.
+> The only form of a for-loop available in Kotlin is the "foreach" loop, which iterates over lists, arrays and other data structures.
 
-A *for statement* is a special kind of loop statements that is used to iterate over
-data structures containing a number of elements. The for loop consists of a loop body,
-a **container expression** and the **iteration variable declaration**.
+A *for-loop statement* is a special kind of loop statement used to iterate over
+some data structure viewed as an iterable collection of elements.
+A for-loop statement consists of a loop body, a **container expression** and an **iteration variable declaration**.
 
-The for loop is actually an [overloadable][Overloadable operators] syntax form
+The for-loop is actually an [overloadable][Overloadable operators] syntax form
 with the following expansion:
 
-`for(`$VarDecl$`) in `$C$`) $Body$` is exactly the same as
+`for(VarDecl in C) Body` is the same as
 
 ```kotlin
 val __iterator = C.iterator()
-while(__iterator.hasNext()) {
+while (__iterator.hasNext()) {
     VarDecl = __iterator.next()
     <... all the statements from Body>
 }
 ```
 
-where `iterator`, `hasNext`, `next` are all acceptable operator functions available
-in the current scope.
+where `iterator`, `hasNext`, `next` are all suitable operator functions available in the current scope.
 
-> Please note that expansions are hygenic, meaning the generated iterator variable
-> never clashes with any other values in the program and cannot be accessed outside
-> the expansion
+> Note: the expansion is hygenic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
 
+TODO(What about iterator value life-time and such?)
 
 ### Code blocks
 
@@ -178,42 +144,34 @@ in the current scope.
 :::{.paste target=grammar-rule-statements}
 :::
 
-A *code block* is a series of statements between curly braces separated by
-newlines or/and semicolons. A code block may be empty. Evaluating a code block
-means evaluating all its statements in the order they are given inside it.
+A *code block* is a sequence of zero or more statements between curly braces separated by newlines or/and semicolons.
+Evaluating a code block means evaluating all its statements in the order they are given inside of it.
 
-The *last expression* of a code block is the last statement in the block (if any)
-if and only if this statement is also an expression. The last expressions are
-important when defining functions and control structure expressions.
+> Note: Unlike some other languages, Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is, in fact, a [lambda literal][Lambda literals].
 
-The code block is said to contain no last expression if it does not contain
-any statements of the last statement is not an expression (e.g. it is an assignment,
-a loop or a declaration).
+A *last expression* of a code block is the last statement in it (if any) if and only if this statement is also an expression.
+The last expressions are important when defining functions and control structure expressions.
 
-> This usually means that a synthetic last expression with no runtime semantics and
-> with type `kotlin.Unit` is introduced instead
+A code block is said to contain no last expression if it does not contain any statements or its last statement is not an expression (e.g., it is an assignment, a loop or a declaration).
 
-A *control structure body* is either a single statement or a code block. The *last expression*
-of a control structure body is either the last expression of the code block
-(if it is a code block) or the single statement itself if it is an expression.
-If the control structure body is not a code block or an expression, it has no
-last expression.
+> Note: you may consider the case of a missing last expression as if a synthetic last expression with no runtime semantics and type `kotlin.Unit` is introduced in its place.
 
-> This is usually equivalent to wrapping the single statement in a new synthetic
-> code block
+A *control structure body* is either a single statement or a code block.
+A *last expression* of a control structure body `CSB` is either the last expression of a code block (if `CSB` is a code block) or the single statement itself (if `CSB` is an expression).
+If a control structure body is not a code block or an expression, it has no last expression.
+
+> Note: this is equivalent to wrapping the single statement in a new synthetic code block.
 
 In some contexts, a control structure body is expected to have a value and/or a type.
 The value of a control structure body is:
 
-- The value of its last expression if it exists;
-- The singleton `kotlin.Unit` object otherwise.
+- the value of its last expression if it exists;
+- the singleton `kotlin.Unit` object otherwise.
 
-The *type of a control structure body* is the type of its value.
+The type of a control structure body is the type of its value.
 
 ### TODO
 
 - Are declarations statements or not?
     - In the current grammar, they are
-- Wording
-- Mutable vs immutable properties
 - How expansions with new variables actually work
