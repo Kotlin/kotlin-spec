@@ -23,7 +23,7 @@ TODO()
 
 Constant literals are expressions that correspond to constant, non-changing values.
 Every constant literal is defined to have a single standard library type, whichever
-it is defined to be on current platform.
+it is defined to be on current platform. All constant literals are evaluated immediately.
 
 #### Boolean literals
 
@@ -343,6 +343,9 @@ Operator symbol `||` performs logical disjunction over two values of type `kotli
 Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
 argument unless the left hand side argument evaluated to `false`.
 
+Both operands of a logical disjunction expression must have a type that is a subtype of `kotlin.Boolean`,
+producing a type error otherwise. The logical disjunction expression itself always has type `kotlin.Boolean`.
+
 ### Logical conjunction expression
 
 :::{.paste target=grammar-rule-conjunction}
@@ -351,6 +354,9 @@ argument unless the left hand side argument evaluated to `false`.
 Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
 Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
 argument unless the left hand side argument evaluated to `true`.
+
+Both operands of a logical conjunction expression must have a type that is a subtype of `kotlin.Boolean`,
+producing a type error otherwise. The logical disjunction expression itself always has type `kotlin.Boolean`.
 
 ### Equality expressions
 
