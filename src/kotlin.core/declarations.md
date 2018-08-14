@@ -477,7 +477,7 @@ var x: T = e
 
 Getters and setters allow one to customize how the property is accessed, and may need access to the property's *backing field*, which is responsible for actually storing the property data. It is accessed via the special `field` property available inside accessor body, which follows these conventions
 
-* For a property declaration of type `T`, field` has the same type `T`
+* For a property declaration of type `T`, `field` has the same type `T`
 * `field` is read-only inside getter body
 * `field` is mutable inside setter body
 
@@ -513,10 +513,10 @@ TODO()
 
 TODO(declaration scope)
 
-TODO(open)
+TODO(`open`)
 
-TODO(abstract)
+TODO(`abstract`)
 
-TODO(lateinit)
+TODO(`lateinit`)
 
-TODO(const)
+TODO(`const`)

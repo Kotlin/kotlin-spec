@@ -1,7 +1,7 @@
 #!/bin/env kscript
 
 @file:MavenRepository("bintray-vorpal-research-kotlin-maven","https://dl.bintray.com/vorpal-research/kotlin-maven" )
-@file:DependsOn("ru.spbstu:g4toEBNF:0.0.0.1")
+@file:DependsOn("ru.spbstu:g4toEBNF:0.0.0.2")
 
 import ru.spbstu.grammarConverter.*
 import java.io.File
