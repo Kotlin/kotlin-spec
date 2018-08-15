@@ -1,5 +1,12 @@
 ## Expressions
 
+### Glossary
+
+CSB
+~ [Control structure body][Code blocks]
+
+### Introduction
+
 TODO()
 
 An expression may be *used as a statement* or *used as an expression* depending on the context.
@@ -169,66 +176,51 @@ TODO(rearrange these sections)
 :::{.paste target=grammar-rule-finallyBlock}
 :::
 
-A *try-expression* is an expression starting with the keyword `try`. It consists of
-a code block (*try body*) and several optional additional blocks: one of more *catch blocks*,
-starting with the soft keyword `catch` with a single parameter called *exception parameter*
-followed by another code block
-and a single optional *finally block*, starting with the soft keyword `finally`
-and yet another code block. At least one catch or finally block must exist,
-otherwise the expression is ill-formed.
+A *try-expression* is an expression starting with the keyword `try`. It consists of a [code block][Code blocks] (*try body*) and one or more of the following kinds of blocks: zero or more *catch blocks* and an optional *finally block*.
+A *catch block* starts with the soft keyword `catch` with a single *exception parameter*, which is followed by a [code block][Code blocks].
+A *finally block* starts with the soft keyword `finally`, which is followed by a [code block][Code blocks].
+A valid try-expression must have at least one catch or finally block.
 
-The try-expression evaluates its body as normally, but if any statement in
-the body throws an exception, the exception, rather than being propagated up
-the call stack, gets checked for its type. If there exists any catch block
-which parameter type is valid for the checked exception, this catch block
-is evaluated immediately after the exception is thrown and the exception itself
-is passed inside the catch block as the corresponding parameter.
-If there are several catch blocks with suitable parameter types, the first one
-is picked.
+The try-expression evaluation evaluates its body; if any statement in the try body throws an exception (of type $E$), this exception, rather than being immediately propagated up the call stack, is checked for a matching catch block.
+If a catch block of this try-expression has an exception parameter of type $T :> E$, this catch block is evaluated immediately after the exception is thrown and the exception itself is passed inside the catch block as the corresponding parameter.
+If there are several catch blocks which match the exception type, the first one is picked.
 
-If there is a finally block, it gets evaluated after any evaluated catch block, or,
-if no catch block was encountered, after the exception was thrown. If no catch
-block was selected, the exception is [propagated as usual][Exceptions] up the call stack
-after the finally block (if any) is evaluated. If no exception is thrown during
-the evaluation of the try body, no catch blocks are checked, but the finally
-block is executed anyway and program execution continues as normal.
+TODO(Exception handling?)
 
-The value of the try-expression is the same as the value of the last expression of
-the try body (if no exception was thrown) or the value of the last expression of
-the selected catch block (if one was selected). All other situations mean that
-an exception is propagated up the call stack, so the value of the try-expression
-becomes irrelevant. The finally block does get executed as described above, but
-has no effect on the value returned by the try-expression.
+If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:
 
-The type of the try-expression is
-the [least upper bound][Least upper bound] of the types of the last expressions of
-the try body and the last expressions of all the catch blocks (TODO(): not that simple).
-If any of the blocks have no valid last expression, the type is inferred to be
-`kotlin.Unit`, but the try-expression may be used as an expression anyway.
+* If no exception is thrown during the evaluation of the try body, no catch blocks are executed, the finally block is evaluated after the try body, and the program execution continues as normal.
+* If an exception was thrown, and one of the catch blocks matched its type, the finally block is evaluated after the evaluation of the matching catch block.
+* If an exception was thrown, but no catch block matched its type, the finally block is evaluated before [propagating the exception][Exceptions] up the call stack.
+
+The value of the try-expression is the same as the value of the [last expression][Code blocks] of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched).
+All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression becomes irrelevant.
+
+> Note: as desribed, the finally block (if present) is executed regardless, but it has no effect on the value returned by the try-expression.
+
+The type of the try-expression is the [least upper bound][Least upper bound] of the types of the last expressions of the try body and the last expressions of all the catch blocks (TODO(not that simple)).
+
+> Note: these rules mean the try-expression always may be used as an expression, as it always has a corresponding result value.
 
 ### Conditional expression
 
 :::{.paste target=grammar-rule-ifExpression}
 :::
 
-**Conditional expressions** use the boolean value of one expression (*condition*) to decide
-which of two control structure bodies (*branches*) should be evaluated.
-If the condition evaluates to `true`, than the first branch (the true branch) is
-evaluated, otherwise the second branch is.
+*Conditional expressions* use a boolean value of one expression (*condition*) to decide which of the two [control structure bodies][Code blocks] (*branches*) should be evaluated.
+If the condition evaluates to `true`, the first branch (the *true branch*) is evaluated, otherwise the second branch (the *false branch*) is evaluated if it is present.
+
 The value of the resulting expression is the same as the value of the chosen branch.
-The type of the resulting expression is
-the [least upper bound][Least upper bound] of the types of two branches (TODO(): not that simple).
-If one of the branches is omitted (see the grammar entry above), the resulting expression
-has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
-but only as a statement.
 
-The condition expression must be a subtype of `kotlin.Boolean`,
-otherwise it is a type error.
+The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches (TODO(not that simple)), if both branches are present.
+If the false branches is omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and it may used only as a statement.
 
-> When used as expressions, conditional expressions are special in the sense of operator
-> precedence: they have the highest (same as all primary expressions) priority when
-> placed on the right side of any binary expression, but when placed on the left side,
-> they have the lowest priority. For details, see the [grammar][Syntax grammar]
+TODO(Examples?)
+
+The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is an error.
+
+> Note: when used as expressions, conditional expressions are special w.r.t. of operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority.
+> For details, see Kotlin [grammar][Syntax grammar].
 
 ### When expression
 
@@ -243,73 +235,56 @@ otherwise it is a type error.
 :::{.paste target=grammar-rule-typeTest}
 :::
 
-**When expression** is alike a **conditional expression** in the sense that it allows
-several different control structure bodies (*cases*) to be evaluated depending on boolean conditions.
-The key difference, however, is that when expressions may include several different
-conditions. When expression has two different forms: with bound value and without it.
+*When expression* is similar to a [conditional expression][Conditional expression] in that it allows one of several different [control structure bodies][Code blocks] (*cases*) to be evaluated, depending on some boolean conditions.
+The key difference is exactly that a when expressions may include several different conditions with their corresponding control structure bodies.
+When expression has two different forms: with bound value and without it.
 
-**When expression without bound value** (the form where the expression enclosed in parantheses is absent)
-evaluates one of the many different expressions based on corresponding conditions present
-in the same *when entry*. Each entry consists of a boolean *condition* (or a special `else` condition),
-each of which is checked and evaluated in order of appearance. If the current condition
-evaluates to `true`, the corresponding expression is evaluated and the value of
-when expression is the same as the evaluated expression. All remaining conditions and expressions
-are not evaluated. The `else` branch is a special branch that evaluates if none of
-the branches above it evaluated to `true`.
+**When expression without bound value** (the form where the expression enclosed in parantheses after the `when` keyword is absent) evaluates one of the different CSBs based on its condition from the *when entry*.
+Each when entry consists of a boolean *condition* (or a special `else` condition) and its corresponding CSB.
+When entries are checked and evaluated in their order of appearance.
+If the condition evaluates to `true`, the corresponding CSB is evaluated and the value of when expression is the same as the value of the CSB.
+All remaining conditions and expressions are not evaluated.
 
-> Informally speaking, you can always replace the `else` branch with literal `true` and
-> the semantics of the entry would not change
+The `else` condition is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
+The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
 
-The `else` entry is also special in the sense that it **must** be the last entry
-in the expression, otherwise a compiler error must be generated.
+> Note: informally, you can always replace the `else` condition with an always-`true` condition (e.g., boolean literal `true`) with no change to the resulting semantics.
 
-**When expression with bound value** (the form where the expression enclosed in parantheses is present)
-are very similar to the form without bound value, but use different syntax for conditions.
+**When expression with bound value** (the form where the expression enclosed in parantheses after the `when` keyword is present) are similar to the form without bound value, but use a different syntax for conditions.
 In fact, it supports three different condition forms:
 
-- *Type test condition*: [type checking operator][Type-checking expression] followed by type. The
-  condition generated is a [type check expression][Type-checking expression] with the same operator
-  and the same type, but an implicit left hand side, which has the same value as the bound
-  expression.
-- *Contains test condition*: containment operator [TODO: link] followed by an expression; The
-  condition generated is a containment check expression [TODO: link] with the same operator
-  and the same right hand side expression, but an implicit left hand side, which has the same value as the bound
-  expression.
-- *Any other expression*. The condition generated is an equality operator [TODO: link], with
-  the left hand side being the bound expression, and the right hand side being the expression placed inside
-  the entry.
-- The `else` condition, which works the exact same way as it would in the form
-  without bound expression.
+- *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T`).
+  The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
+- *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
+  The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
+- *Any other expression* (`Expr`).
+  The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
+- The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
+  The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
 
-> This also means that if this form of `when` contains a boolean expression, it is not
-> checked directly as if it would be in the other form, but rather checked for **equality**
-> with the bound variable, which is not the same thing.
+> Note: the rule for "any other expression" means that if a when expression with bound value contains a boolean condition, this condition is **checked for equality** with the bound value, instead of being used directly for when entry selection.
 
-The type of the resulting expression is
-the [least upper bound][Least upper bound] of the types of all the entries (TODO(): not that simple).
-If the expression is not [exhaustive][Exhaustive when expressions], it
-has type [`kotlin.Unit`][`kotlin.Unit`] and the whole construct may not be used as an expression,
-but only as a statement.
+TODO(Examples)
+
+The type of the resulting expression is the [least upper bound][Least upper bound] of the types of all its entries (TODO(not that simple)).
+If the when expression is not [exhaustive][Exhaustive when expressions], it has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
 
 #### Exhaustive when expressions
 
 A when expression is called **_exhaustive_** if at least one of the following is true:
 
 - It has an `else` entry;
-- It has a bound value and at least one of the following holds:
-    - The bound expression is of type `kotlin.Boolean` and the conditions contain
-      both:
-        - A [constant expression][Constant expressions] evaluating to value `true`;
-        - A [constant expression][Constant expressions] evaluating to value `false`;
-    - The bound expression is of a [`sealed class`][Sealed classes] type and all its possible subtypes
-      are covered using type test conditions of this expression. This may include:
-        - Checks for all the direct subtypes of this sealed class;
-        - If any of the direct subtypes is also a sealed class, there is either a check for
-          this subtype or all possible subtypes of it are also covered;
-    - The bound expression is of an [`enum class`][Enum classes] type and all enumerated values
-      are checked for equality using constant conditions;
-    - The bound expression is of a nullable type and one of the cases above is met for
-      its non-nullable counterpart and, in addition, there is a condition containing literal `null`.
+- It has a bound value and at least one of the following is true:
+    - The bound expression is of type `kotlin.Boolean` and the conditions contain both:
+        - A [constant expression][Constant expressions] evaluating to `true`;
+        - A [constant expression][Constant expressions] evaluating to `false`;
+    - The bound expression is of a [`sealed class`][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression.
+      This should include checks for all direct subtypes of this sealed class.
+      If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
+    - The bound expression is of an [`enum class`][Enum classes] type and all its enumerated values are checked for equality using constant expression;
+    - The bound expression is of a [nullable type][Nullability] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
+
+> Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
 ### Logical disjunction expression
 
@@ -317,11 +292,12 @@ A when expression is called **_exhaustive_** if at least one of the following is
 :::
 
 Operator symbol `||` performs logical disjunction over two values of type `kotlin.Boolean`.
-Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
-argument unless the left hand side argument evaluated to `false`.
+This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `false`.
 
-Both operands of a logical disjunction expression must have a type that is a subtype of `kotlin.Boolean`,
-producing a type error otherwise. The logical disjunction expression itself always has type `kotlin.Boolean`.
+Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+The type of logical disjunction expression is `kotlin.Boolean`.
+
+TODO(Types of errors? Compile-time, type, run-time, whatever?)
 
 ### Logical conjunction expression
 
@@ -329,11 +305,10 @@ producing a type error otherwise. The logical disjunction expression itself alwa
 :::
 
 Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
-Note that this operator is **lazy**, meaning that it does not evaluate the right hand side
-argument unless the left hand side argument evaluated to `true`.
+This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `true`.
 
-Both operands of a logical conjunction expression must have a type that is a subtype of `kotlin.Boolean`,
-producing a type error otherwise. The logical disjunction expression itself always has type `kotlin.Boolean`.
+Both operands of a logical conjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+The type of logical disjunction expression is `kotlin.Boolean`.
 
 ### Equality expressions
 
