@@ -29,7 +29,7 @@ $\Gamma$
 $T\lbrack S_1, \ldots, S_n\rbrack$
 ~ The result of type argument substitution for type $T$ with types $S_i$
 
-$A \cup B$
+$A \amp B$
 ~ Intersection type intersecting A and B
 
 Type parameter
@@ -43,6 +43,8 @@ PACT
 
 iPACT
 ~ Instantiated parameterized concrete classifier type
+
+TODO(Not everything is in the glossary, make some criteria)
 
 ### Introduction
 
@@ -75,7 +77,7 @@ For the purposes of this section, we establish the following type kinds --- diff
 * [Flexible types][Flexible types]
 * [Nullable types][Nullable types]
 * [Intersection types][Intersection types]
-* TODO(Intersection and union types)
+* TODO(GLB, LUB)
 * TODO(Error / invalid types)
 
 We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as value types, or are used internally by the type system and are not directly denotable.
@@ -107,6 +109,12 @@ Additional details about how `kotlin.Nothing` should be processed are available 
 `kotlin.Unit` is a unit type, i.e., a type with only one value `kotlin.Unit`; all values of type `kotlin.Unit` should reference the same underlying `kotlin.Unit` object.
 
 TODO(Compare to `void`?)
+
+##### `kotlin.Function`
+
+`kotlin.Function<R>` is the unified supertype of all [function types][Function types]. It is parameterized over function return type `R`.
+
+TODO(Elaborate about the parameter, or maybe in function type section?)
 
 #### Classifier types
 
@@ -165,8 +173,8 @@ To represent a valid iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following c
     - valid concrete type
     - valid projected type
     - type parameter available in the current type context $\Gamma$  
-      TODO(What is a type context?)  
-      TODO(Inner vs nested contexts)
+        - TODO(What is a type context?)  
+        - TODO(Inner vs nested contexts)
 * $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective type parameter of $T$
 
 ##### Type parameters
@@ -306,6 +314,12 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
+TODO(The relation between function types and classifier types (every function is actually an interface, `kotlin.Function` is also an interface))
+
+TODO(The variance of arguments for function types)
+
+TODO(Make the decision about notation (right now it is shaky a.f.))
+
 #### Array types
 
 TODO(Everything...)
@@ -362,9 +376,9 @@ If an operation is safe regardless of absence or presence of `null`, i.e., assig
 #### Intersection types
 
 Intersection types are special non-denotable types that are used to express (loosely) that a value has two or more types to choose from.
-Intersection type of two non-nullable types $A$ and $B$ is denoted $A \cup B$. Intersection types are used for [smart casting][Smart casts].
-Intersection types are commutative and associative, meaning that $A \cup B$ is the same type as $B \cup A$ and $A \cup (B \cup C)$
-is the same type as $A \cup B \cup C$.
+Intersection type of two non-nullable types $A$ and $B$ is denoted $A \amp B$. Intersection types are used for [smart casting][Smart casts].
+Intersection types are commutative and associative, meaning that $A \amp B$ is the same type as $B \amp A$ and $A \amp (B \amp C)$
+is the same type as $A \amp B \amp C$.
 
 For presentation purposes, we will normalize intersection type operands lexicographically based on their notation.
 
@@ -380,9 +394,17 @@ Type intersection $A \times B$ of types $A$ and $B$ has the following properties
 - if $A$ is non-nullable, than $A \times B$ is also non-nullable
 - if both $A$ and $B$ are nullable, $A \times B = (A!! \times B!!)?$
 - if type $A$ is nullable and type $B$ is not, $A \times B = A!! \times B$
-- if both $A$ and $B$ are non-nullable and no other rules apply, $A \times B = A \cup B$
+- if both $A$ and $B$ are non-nullable and no other rules apply, $A \times B = A \amp B$
+
+These properties have several important implications:
+
+- $\forall A, B : (A \times B) <: A \land (A \times B) <: B$
+- $\forall A, B, C : C <: (A \times C) <: B \implies C <: (A \times B)$.
+
+TODO(Prove the implications??)
 
 TODO(Intersection of flexible types)
+
 TODO(If $A <: B$ and $B <: A$, what is $A \times B$???)
 
 ### Subtyping
@@ -446,11 +468,15 @@ However, $A \not \equiv B$.
 
 Intersection types introduce several new rules for subtyping. Let $A, B, C, D$ be non-nullable types:
 
-- $A \cup B <: A$
-- $A \cup B <: B$
-- $A <: C \land B <: D \Rightarrow A \cup B <: C \cup D$
+- $A \amp B <: A$
+- $A \amp B <: B$
+- $A <: C \land B <: D \Rightarrow A \amp B <: C \amp D$
+
+More, any type $T$ with supertypes $S_1, S_2, S_3, \ldots, S_N$ is also a subtype of $S_1 \amp S_2 \amp S_3 \amp \ldots \amp S_N$.
 
 #### Subtyping for nullable types
+
+TODO(Why can't we just say that $\forall T : T <: T?$ and $\forall T : T!! <: T$ and be done with it?)
 
 Subtyping for two possibly nullable types $A$ and $B$ is defined via *two* relations, both of which must hold.
 
@@ -468,7 +494,27 @@ TODO(How the existence check works)
 
 ### Generics
 
+TODO(How is generics different from type parameters? Or are we going to get into deep technical detail?)
+
 TODO(Here be a lot of dragons...)
+
+### Upper and lower bounds
+
+A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$. A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$. As the type system of Kotlin is bounded by definition (the upper bound of all types being $\text{kotlin.Any}?$, while the lower bound of all types being $\text{kotlin.Nothing}$, see the rest of this section for details), any two types have at least one lower bound and at least one upper bound.
+
+The _least upper bound_ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types that is less (by subtyping relation) than $U$.  Note that among the supertypes of $A$ and $B$ there may be several types that adhere to these properties and $B$ and are not related by subtyping. In such situation, an intersection of these types is the least upper bound of $A$ and $B$, as, by definition, the intersection $I$ of types $X$ and $Y$ is less than both $X$ and $Y$.
+
+TODO: but what if there are equivalent types arising?
+
+TODO: check this for shady cases
+
+TODO: actual algorithm for computing LUB
+
+TODO: generics, especially contravariant TP, make the enumeration impossible
+
+The _greatest lower bound_ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types that is greater by subtyping relation than $L$. Enumerating all subtypes of a given type is impossible in general, but may easily be show that, in the presense of intersection types ([again, see type intersection section][Type intersection]), an intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
+
+> Note: let's assume that there is a type $C$ that is not an intersection of types $A$ and $B$, but is the greatest lower bound of $A$ and $B$. This, by definition of type intersection, means that it is a subtype of $A \times B$, which is also a lower bound of $A$ and $B$, and is greater. This is a contradiction to the definition of greatest lower bound, meaning that our assumption was wrong. Hence, the intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
 
 ### References
 
