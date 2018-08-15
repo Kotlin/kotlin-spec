@@ -282,7 +282,7 @@ A when expression is called **_exhaustive_** if at least one of the following is
       This should include checks for all direct subtypes of this sealed class.
       If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
     - The bound expression is of an [`enum class`][Enum classes] type and all its enumerated values are checked for equality using constant expression;
-    - The bound expression is of a [nullable type][Nullability] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
+    - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
 > Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
@@ -317,46 +317,36 @@ The type of logical disjunction expression is `kotlin.Boolean`.
 :::{.paste target=grammar-rule-equalityOperator}
 :::
 
-Equality expressions are binary expressions involving equality operators. There are
-two kinds of equality operators: *reference equality operators* and
-*value equality operators*.
+Equality expressions are binary expressions involving equality operators.
+There are two kinds of equality operators: *reference equality operators* and *value equality operators*.
 
 #### Reference equality expressions
 
-*Reference equality expressions* are binary expressions employing reference equality operators:
-`===` and `!==`. These expressions check if two values are equal *by reference*, meaning
-that two values are equal (non-equal for operator `!==`) if and only if they represent the
-same runtime value created using the same constructor call.
+*Reference equality expressions* are binary expressions which use reference equality operators: `===` and `!==`.
+These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference* --- two values are equal by reference if and only if they represent the same runtime value.
 
-For values created without
-construction calls, notably the constant literals and constant expressions composed
-of those literals, the following holds:
+For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:
 
-- If these values are [non-equal by value][Value equality expressions], they are also
-  non-equal by reference;
-- Any instance of the null reference `null` is reference-equals to any other
+- If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
+- Any instance of the null reference `null` is equal by reference to any other
   instance of the null reference;
-- Otherwise, it is implementation-defined and must not be used as a means of comparing
-  two such values.
+- Otherwise, equality by reference is implementation-defined and must not be used as a means of comparing such values.
 
 Reference equality expressions always have type `kotlin.Boolean`.
 
 #### Value equality expressions
 
-*Value equality expressions* are binary expressions employing value equality operators:
-`==` and `!=`. These operators are [overloadable][Overloadable operators] with the following
+*Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
+These operators are [overloadable][Overloadable operators] with the following
 expansion:
 
-- `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid
-  operator function available in the current scope;
-- `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid
-  operator function available in the current scope.
+- `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid operator function available in the current scope;
+- `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid operator function available in the current scope.
 
-> Please note that the class `kotlin.Any` has a built-in open operator member function called `equals`,
-> meaning that there is always at least one available overloading candidate for any value equality expression.
+> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always at least one available overloading candidate for any value equality expression.
 
-Value equality expressions always have type `kotlin.Boolean`. If the corresponding operator function
-has a different return type, it is invalid and a compiler error should be generated.
+Value equality expressions always have type `kotlin.Boolean`.
+If the corresponding operator function `equals` has a different return type, it is a compile-time error.
 
 ### Comparison expressions
 
@@ -365,19 +355,17 @@ has a different return type, it is invalid and a compiler error should be genera
 :::{.paste target=grammar-rule-comparisonOperator}
 :::
 
-*Comparison expressions* are binary expressions employing the comparison operators:
-`<`, `>`, `<=` and `>=`. These operators are [overloadable][Overloadable operators] with the following
-expansion:
+*Comparison expressions* are binary expressions which use the comparison operators: `<`, `>`, `<=` and `>=`.
+These operators are [overloadable][Overloadable operators] with the following expansion:
 
 - `A < B` is exactly the same as `A.compareTo(B) [<] 0`
 - `A > B` is exactly the same as `0 [<] A.compareTo(B)`
 - `A <= B` is exactly the same as `!(A.compareTo(B) [<] 0)`
 - `A >= B` is exactly the same as `!(0 [<] A.compareTo(B))`
 
-where `compareTo` is a valid operator function available in the current scope
-and `[<]` (read "boxed less") is a special operator unavailable for in-code use in Kotlin and performing
-integer "less-than" comparison of two integer numbers. The `compareTo` overloaded function
-must have return type `kotlin.Int`, otherwise it's a compiler error.
+where `compareTo` is a valid operator function available in the current scope and `[<]` (read "boxed less") is a special operator unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
+
+The `compareTo` operator function must have a return type `kotlin.Int`, otherwise it is a compile-time error.
 
 All comparison expressions always have type `kotlin.Boolean`.
 
@@ -392,33 +380,25 @@ All comparison expressions always have type `kotlin.Boolean`.
 
 #### Type-checking expression
 
-A type checking expression employs the use of an type-checking operators `is` or `!is`
-and has an expression as a left-hand side operand and a type name as a right-hand
-side operand. The type must be [runtime-available][Runtime-available types], otherwise
-a compiler error should be generated. The expression checks whether the runtime type of
-the expression on the left is a subtype of (not the subtype of in the case of `!is`) the type denoted
-by the right-hand side argument.
+A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
+The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
+A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
 Type-checking expression always has type `kotlin.Boolean`.
 
-> For example, the expression `null is T?` for any type `T` always evaluates to `true`, because
-> the type of the left-hand side (`null`) is `kotlin.Nothing?`, which is a subtype of any
-> nullable type `T?`
-
-##### TODO()
-
-- Smart casts!
+> Note: the expression `null is T?` for any type `T` always evaluates to `true`, as the type of the left-hand side (`null`) is `kotlin.Nothing?`, which is a subtype of any nullable type `T?`.
 
 #### Containment-checking expression
 
-A *containment-checking expression* is a binary expression employing the containment operator
-(`in` or `!in`). These are [overloadable][Overloadable operators] operators with the following expansion:
+A *containment-checking expression* is a binary expression which uses a containment operator `in` or `!in`.
+These operators are [overloadable][Overloadable operators] with the following expansion:
 
 - `A in B` is exactly the same as `A.contains(B)`;
-- `A !in B` is exactly the same as `!(A.contains(B))`;
+- `A !in B` is exactly the same as `!(A.contains(B))`.
 
-where `contains` is a valid operator function available in the current scope. This
-function must have return type `kotlin.Boolean`, otherwise a compiler error is generated.
+where `contains` is a valid operator function available in the current scope.
+
+The `contains` function must have a return type `kotlin.Boolean`, otherwise it is a compile-time error.
 Containment-checking expressions always have type `kotlin.Boolean`.
 
 ### Elvis operator expression
