@@ -1,9 +1,10 @@
 #!/bin/env kscript
 
 @file:MavenRepository("bintray-vorpal-research-kotlin-maven","https://dl.bintray.com/vorpal-research/kotlin-maven" )
-@file:DependsOn("ru.spbstu:kotlin-pandoc:0.0.4")
+@file:DependsOn("ru.spbstu:kotlin-pandoc:0.0.5")
 
 import ru.spbstu.pandoc.*
+import ru.spbstu.pandoc.helper.*
 
 class IdCollector : PandocVisitor() {
     val blocks: MutableMap<String, Block> = mutableMapOf()
@@ -22,6 +23,7 @@ class IdCollector : PandocVisitor() {
 
 makeFilter(object : PandocVisitor() {
     val collector = IdCollector()
+    var nextId: Int = 0
 
     override fun visit(doc: Pandoc): Pandoc {
         collector.visit(doc)
@@ -51,7 +53,12 @@ makeFilter(object : PandocVisitor() {
             "paste" in b.attr.classes -> {
                 val props = b.attr.propertiesMap()
                 val target = props["target"] ?: return super.visit(b)
-                return getBlock(target)
+                val block = getBlock(target)
+                if(block is Attributes) {
+                    val id = if(b.attr.id.isNotBlank()) b.attr.id else "$target-pasted-${nextId++}"
+                    return block.copy(attr = block.attr.copy(id = id)) as Block
+                }
+                return block
             }
             else -> return super.visit(b)
         }
@@ -62,7 +69,12 @@ makeFilter(object : PandocVisitor() {
             "paste" in i.attr.classes -> {
                 val props = i.attr.propertiesMap()
                 val target = props["target"] ?: return super.visit(i)
-                return getInline(target)
+                val inline = getInline(target)
+                if(inline is Attributes) {
+                    val id = if(i.attr.id.isNotBlank()) i.attr.id else "$target-pasted-${nextId++}"
+                    return inline.copy(attr = inline.attr.copy(id = id)) as Inline
+                }
+                return inline
             }
             else -> return super.visit(i)
         }
