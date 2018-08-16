@@ -62,9 +62,7 @@ Companion object declaration `companion object CO { ... }` for class `C` introdu
 
 Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. Inner classes are available only on the corresponding class' entities. Further details are available [here][Inner and nested classes].
 
-```kotlin
 TODO(Examples)
-```
 
 A parameterized class declaration consists of the following parts.
 
@@ -101,7 +99,7 @@ Property constructor parameters, together with being regular constructor paramet
 ```kotlin
 class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
 
-class FooEx(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
+class Foo(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
   val d = d_
   var s = s_
 }
@@ -116,6 +114,10 @@ A secondary constructor describes an alternative way of creating a class instanc
 If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
+
+TODO(elaborate this `this(...)` and `super(...)` business)
+
+TODO(default values in constructors???)
 
 ##### Nested and inner classifiers
 
@@ -136,8 +138,11 @@ TODO(...)
 A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
 * `equals() / hashCode() / toString()` functions compliant with their contracts
+    * TODO(Nope, we should explicitly specify the contracts here, especially for `toString`)
 * A `copy()` function for shallow object copying
 * A number of `componentN()` functions for destructive declaration
+
+TODO(Some of these may be overriden, some cannot)
 
 All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
 
@@ -164,9 +169,11 @@ Interfaces differ from classes in that they cannot be directly instantiated in t
 
 * An interface cannot have a class as its supertype
 * An interface cannot have a constructor
-* Interface properties cannot have initializers
-* All interface members must be public
+* Interface properties cannot have initializers or backing fields
+* An interface cannot have inner classes (but can have nested classes and companion objects)
 * An interface and all its members are implicitly open
+* All interface member properties and functions are implicitly public
+    * Trying to declare a non-public member property or function in an interface is an error
 
 TODO(Something else?)
 
@@ -174,17 +181,19 @@ TODO(Something else?)
 
 Object declarations are used to support a singleton pattern and, thus, do two things at the same time. One, they (just like class declarations) introduce a new type to the program. Two, they create a singleton-like object of that type.
 
+TODO(do we really need this ironic-ish statement about doing two things at the same time?)
+
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
 * An object type cannot be used as a supertype for other types
 * An object cannot have a constructor
+* An object cannot have a companion object
+* An object may not have inner classes
 * An object cannot be parameterized, i.e., cannot have type parameters
 
 TODO(Something else?)
 
-#### Anonymous object declaration
-
-TODO()
+> Note: this section is about declaration of _named_ objects. Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
 
 #### Classifier initialization
 
@@ -205,9 +214,9 @@ After the supertype initialization is done, we continue the initialization by pr
 :::{.paste target=grammar-rule-functionBody}
 :::
 
-Function declarations assign names to such entities as functions --- blocks of code which may be called by passing them a number of arguments. Functions have special *function types* which are covered in more detail [here][Function types].
+Function declarations assign names to functions --- blocks of code which may be called by passing them a number of arguments. Functions have special *function types* which are covered in more detail [here][Function types].
 
-A simple function declaration consists of four main parts
+A simple function declaration consists of four main parts:
 
 * name $f$
 * parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$
@@ -276,7 +285,7 @@ In summary, argument list should have the following form:
 * Zero or more positional arguments
 * Zero or more named arguments
 
-Missing arguments are bound to their default values.
+Missing arguments are bound to their default values, if they exist.
 
 #### Variable length parameters
 
@@ -286,31 +295,30 @@ If a variable length parameter is not last in the parameter list, all subsequent
 
 An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position. A function invocation may include several spread operator expressions corresponding to the vararg parameter.
 
-#### Function type parameters
-
-Some parameters may have [function types][Function types], as Kotlin supports first-class functions. Function type parameters do not have any special treatment on the function declaration side, however, there are some special cases on the invocation side.
-
-Function type parameter may bind to an argument of the following kinds
-  - [callable reference][Callable references]
-  - [anonymous function][Anonymous function declarations]
-  - [lambda literal][Lambda literals]
-Iff we use a lambda literal for the **last** parameter in the parameter list, it can be written outside the argument list, as in this example.
-
-```kotlin
-fun foo(a: Int, b: Int, f: (Int, Int) -> String): String = f(a, b)
-
-fun bar(a: Int, b: Int) = foo(a, b) { a, b -> "${a + b}" }
-```
-
-TODO(Describe possible ambiguities?)
-
 #### Extension function declaration
 
-TODO()
+An _extension function declaration_ is similar to a standard function declaration, but introduces an additional special function parameter, the _receiver parameter_. This parameter is designated by specifying the receiver type (the type before `.` in function name), which becomes the type of this receiver parameter. This parameter is not named and must always be supplied, e.g. it cannot be a variable-argument parameter, have a default value, etc.
 
-#### Anonymous function declaration
+Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the [_receiver_][Receivers] of the call, be it implicit or explicit. This parameter is available inside the scope of the function as the implicit receiver or `this`-expression, while nested scopes may introduce additional receivers that take precedence over this one. See [the receiver section][Receivers] for details. This receiver is also available (as usual) in nested scope using labeled `this` syntax using the name of the declared function as the label.
 
-TODO()
+> Note: when declaring extension functions inside classifier declarations, this receiver takes precedence over the classifier object, which is usually the current receiver inside nested functions
+
+For all other purposes, extension functions are not different from non-extension functions.
+
+Examples:
+
+```kotlin
+fun Int.foo() { println(this + 1) } // this has type Int
+
+fun main(args: Array<String>) {
+    2.foo() // prints "3"
+}
+
+class Bar {
+    fun foo() { println(this) } // this has type Bar
+    fun Int.foo() { println(this) } // this has type Int
+}
+```
 
 ### Property declaration
 
@@ -449,21 +457,22 @@ As mentioned before, a property declaration may include a custom getter and/or c
 ```kotlin
 var x: T = e
     get(): TG { ... }
-    set(anyValidArgumentName: TS) { ... }
+    set(anyValidArgumentName: TS): RT { ... }
 ```
 
 These functions have the following requirements
 
 * $TG \equiv T$
 * $TS \equiv T$
-* Both $TG$ and $TG$ types are optional and may be omitted from the declaration
+* $RT \equiv \mathtt{kotlin.Unit}$
+* Types $TG$, $TS$ and $RT$ are optional and may be omitted from the declaration
   
 * Read-only properties may have a custom getter, but not a custom setter
-* Mutable properties may have any combination of a cusom getter and a custom setter
+* Mutable properties may have any combination of a custom getter and a custom setter
   
-* Setter argument may have any valid argument name
+* Setter argument may have any valid identifier as argument name
 
-> Regular coding convention recommends `value` as the name for the setter argument
+> Note: Regular coding convention recommends `value` as the name for the setter argument
 
 One can also ommit the accessor body, in which case a *default* implementation is used (also known as default accessor).
 
@@ -491,6 +500,41 @@ However, the backing field is created for a property only in the following cases
 In all other cases a property has no backing field.
 
 Read/write access to the property is replaced with getter/setter invocation respectively.
+
+#### Extension property declaration
+
+An _extension property declaration_ is similar to a standard property declaration, but, very much alike an [extension function][Extension function declaration], introduces an additional parameter to the property called _the receiver parameter_. This is different from usual property declarations, that do not have any parameters. There are other differences from standar property declarations:
+
+- Extension properties cannot have initializers
+- Extension properties cannot have backing fields
+- Extension properties cannot have default accessors
+
+> Note: informally, on can say that extension properties have no state of their own. Only properties that use other objects' storage facilities and/or uses constant data can be extension properties.
+
+Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter.
+
+The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. It may also be accessed inside nested scopes using [labeled `this` syntax][] using the name of the property declared as the label. For delegated properties, the value passed into the operator functions `getValue` and `setValue` as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. This is also true for local extension properties: while regular local properties are passed `null` as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.
+
+> Note: when declaring extension properties inside classifier declarations, this receiver takes precedence over the classifier object, which is usually the current receiver inside nested properties
+
+For all other purposes, extension properties are not different from non-extension properties.
+
+Examples:
+
+```kotlin
+val Int.foo: Int get() = this + 1
+
+fun main(args: Array<String>) {
+    println(2.foo.foo) // prints "4"
+}
+
+class Bar {
+    val foo get() = this // returns type Bar
+    val Int.foo get() = this // returns type Int
+}
+```
+
+TODO(More examples (delegation, at least))
 
 #### Property initialization
 
@@ -520,3 +564,5 @@ TODO(`abstract`)
 TODO(`lateinit`)
 
 TODO(`const`)
+
+TODO(overriding vs overloading vs shadowing)

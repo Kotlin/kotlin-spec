@@ -81,4 +81,10 @@ class Visitor(val format: String) : PandocVisitor() {
     }
 }
 
+interface CC {
+    companion object CCC {
+
+    }
+}
+
 makeFilter(Visitor(args[0]))
