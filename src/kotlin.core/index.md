@@ -3,6 +3,7 @@
 <#include "introduction.md">
 <#include "syntax.md">
 <#include "type-system.md">
+<#include "rtti.md">
 <#include "declarations.md">
 <#include "statements.md">
 <#include "expressions.md">
