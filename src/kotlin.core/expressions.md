@@ -208,12 +208,17 @@ The type of the try-expression is the [least upper bound][Least upper bound] of 
 :::
 
 *Conditional expressions* use a boolean value of one expression (*condition*) to decide which of the two [control structure bodies][Code blocks] (*branches*) should be evaluated.
-If the condition evaluates to `true`, the first branch (the *true branch*) is evaluated, otherwise the second branch (the *false branch*) is evaluated if it is present.
+If the condition evaluates to `true`, the first branch (the *true branch*) is evaluated if it is present, otherwise the second branch (the *false branch*) is evaluated if it is present.
+
+> Note: this means the following branchless conditional expression, despite being of almost no practical use, is valid in Kotlin
+> ```kotlin
+> if (condition) else;
+> ```
 
 The value of the resulting expression is the same as the value of the chosen branch.
 
 The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches (TODO(not that simple)), if both branches are present.
-If the false branches is omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and it may used only as a statement.
+If either of the branches are omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
 
 TODO(Examples?)
 
@@ -283,6 +288,8 @@ A when expression is called **_exhaustive_** if at least one of the following is
       If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
     - The bound expression is of an [`enum class`][Enum classes] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
+
+TODO(Equality check with object behaves kinda like a type check. Or not.)
 
 > Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
@@ -388,6 +395,8 @@ Type-checking expression always has type `kotlin.Boolean`.
 
 > Note: the expression `null is T?` for any type `T` always evaluates to `true`, as the type of the left-hand side (`null`) is `kotlin.Nothing?`, which is a subtype of any nullable type `T?`.
 
+> Note: type-checking expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.
+
 #### Containment-checking expression
 
 A *containment-checking expression* is a binary expression which uses a containment operator `in` or `!in`.
@@ -406,31 +415,29 @@ Containment-checking expressions always have type `kotlin.Boolean`.
 :::{.paste target=grammar-rule-elvisExpression}
 :::
 
-*Elvis operator expression* is a binary expression that employs the elvis operator (`?:`).
-It checks whether the left-hand side expression is equal to `null`, and if it is,
-evaluates and return the right-hand side expression.
+An *elvis operator expression* is a binary expression which uses an elvis operator (`?:`).
+It checks whether the left-hand side expression is reference equal to `null`, and, if it is, evaluates and return the right-hand side expression.
 
-This operator is **lazy**, meaning that if the left-hand side expression is not equal
-to `null`, the right-hand side expression is never evaluated.
+This operator is **lazy**, meaning that if the left-hand side expression is not reference equal to `null`, the right-hand side expression is not evaluated.
 
-The type of elvis operator expression is the [least upper bound][The least upper bound]
-of the non-nullable variant of the type of the left-hand side expression and the
-type of the right-hand side expression. TODO(): not that simple, too
+The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.
+
+TODO(not that simple either)
 
 ### Range expression
 
 :::{.paste target=grammar-rule-rangeExpression}
 :::
 
-A *range expression* is a binary expression employing the range operator `..`.
+A *range expression* is a binary expression which uses a range operator `..`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
 - `A..B` is exactly the same as `A.rangeTo(B)`
 
 where `rangeTo` is a valid operator function available in the current scope.
+
 The return type of this function is not restricted.
-The range expression has the same type as the return type of the corresponding
-`rangeTo` overload variant.
+A range expression has the same type as the return type of the corresponding `rangeTo` overload variant.
 
 ### Additive expression
 
@@ -439,16 +446,16 @@ The range expression has the same type as the return type of the corresponding
 :::{.paste target=grammar-rule-additiveOperator}
 :::
 
-An *additive expression* is a binary expression employing the addition (`+`) or subtraction (`-`) operators.
+An *additive expression* is a binary expression which uses the addition (`+`) or subtraction (`-`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
 
 - `A + B` is exactly the same as `A.plus(B)`
 - `A - B` is exactly the same as `A.minus(B)`
 
 where `plus` or `minus` is a valid operator function available in the current scope.
-The return type of this function is not restricted.
-The range expression has the same type as the return type of the corresponding
-operator function overload variant.
+
+The return type of these functions is not restricted.
+An additive expression has the same type as the return type of the corresponding operator function overload variant.
 
 ### Multiplicative expression
 
@@ -457,20 +464,19 @@ operator function overload variant.
 :::{.paste target=grammar-rule-multiplicativeOperator}
 :::
 
-An *multiplicative expression* is a binary expression employing the multiplication (`*`), division (`/`) or remainder (`%`) operators.
+A *multiplicative expression* is a binary expression which uses the multiplication (`*`), division (`/`) or remainder (`%`) operators.
 These are [overloadable][Overloadable operators] operators with the following expansions:
 
 - `A * B` is exactly the same as `A.times(B)`
 - `A / B` is exactly the same as `A.div(B)`
 - `A % B` is exactly the same as `A.rem(B)`
 
-> As of Kotlin version 1.2.31, there exists an additional overloading function for
-> `%` called `mod`, which is deprecated
-
 where `times`, `div`, `rem` is a valid operator function available in the current scope.
-The return type of this function is not restricted.
-The range expression has the same type as the return type of the corresponding
-operator function overload variant.
+
+> Note: as of Kotlin version 1.2.31, there exists an additional overloadable operator for `%` called `mod`, which is deprecated.
+
+The return type of these functions is not restricted.
+A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.
 
 ### Cast expression
 
@@ -479,45 +485,29 @@ operator function overload variant.
 :::{.paste target=grammar-rule-asOperator}
 :::
 
-A *cast expression* is a binary expression employing the cast operators (`as` or `as?`) and
-receives an expression as the left-hand side operand and a type name as the right-hand side operand.
+A *cast expression* is a binary expression which uses the cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
 
-The form of cast expression employing the `as` operator is called *a unsafe cast* expression
-This operator perform a runtime check whether runtime type of the expression
-is a [subtype][Subtyping] of the type given on the right-hand side operand and
-throws an exception otherwise. If the type on the right hand side is a [runtime-available][Runtime-available types]
-type without generic parameters, then this exception is thrown immediately when
-evaluating the expression, otherwise it is platform-dependent whether an exception
-is thrown at this point.
+An **`as` cast expression** `E as T` is called *a unsafe cast* expression.
+This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
+If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
 
-> Even if the exception is not thrown when evaluating the cast expression, it is
-> guaranteed to be thrown later when the value is used with any runtime-available type
+TODO(We need to sort out undefined/implementation-defined/platform-defined)
 
-The unsafe cast expression always has the same type as the type specified in the expression.
+> Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.
 
-The form of cast expression employing the `as?` operator is called *a checked cast* expression
-This operator is very similar to the unsafe cast expression, but does not throw an exception,
-but returns `null` if the types don't match.
-If the type specified on the right hand side of the expression is not
-[runtime-available][Runtime-available types], then the check is not performed
-and `null` is never returned, leading to potential runtime errors later in the
-program execution. This situation should be reported with a compiler warning.
+An unsafe cast expression result always has the same type as the type $T$ specified in the expression.
 
-The checked cast expression always has the [nullable][Nullable types] variant of the type specified in the expression.
+An **`as?` cast expression** `E as? T` is called *a checked cast* expression.
+This expression is similar to the unsafe cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns `null` instead.
+If type $T$ is not a [runtime-available][Runtime-available types] type, then the check is not performed and `null` is never returned, leading to potential runtime errors later in the program execution.
+This situation should be reported as a compile-time warning.
 
-An *ascription expression* is a binary expression employing the ascription operator (`:`) and
-receives an expression as the left-hand side operand and a type name as the right-hand side operand.
+> Note: if type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
+> This is another porentially erroneous situation, which should be reported as a compile-time warning.
 
-This operator does not perform any actions at runtime and evaluates to the same value
-as its left hand operand. However, it does perform a compile-time check whether the
-current type of the expression is a [subtype][Subtyping] of the type given on the right-hand
-side operand and generates a compiler error otherwise.
+The checked cast expression type is the [nullable][Nullable types] variant of the type $T$.
 
-The ascription expression always has the same type as the type specified in right-hand side of the expression.
-
-#### TODO()
-
-- Smart casts!
+> Note: cast expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.
 
 ### Prefix expressions
 
@@ -530,63 +520,67 @@ The ascription expression always has the same type as the type specified in righ
 
 #### Annotated and labeled expression
 
-Any expression in Kotlin may be prefixed with any number of [annotations][Annotations]
-and [labels][Labels]. These do not change the value of the expression and can be used
-by external tools and platform-dependent features.
+Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels].
+These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
 
 #### Prefix increment expression
 
-A *prefix increment* expression is an expression employing the prefix form of
-operator `++`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`++A` is exactly the same as evaluating the expression `A.inc()` where
-`inc` is a suitable `operator` function, assigning the value to `A` and then
-returning the value of `A` as the result of the expression.
+- `++A` is exactly the same as `A = A.inc(); A` where `inc` is a valid operator function available in the current scope.
 
-The left-hand side of a postfix increment expression must be an [assignable expressions][Assignments].
-Otherwise a compiler error must be generated.
+> Note: informally, `++A` assigns the result of `A.inc()` to `A` and then returns `A` as the result.
 
-The type of prefix increment is always equal to the type of the right-hand side
-expression.
+For a prefix increment expression `++A` expression `A` must be [assignable expressions][Assignments].
+Otherwise, it is a compile-time error.
+
+A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
+
+> Note: as the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 
 #### Prefix decrement expression
 
-A *prefix decrement* expression is an expression employing the prefix form of
-operator `--`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`--`$A$ is exactly the same as evaluating the expression $A$`.dec()` where
-`dec` is a suitable `operator` function, assigning the value to $A$ and then
-returning the value of $A$ as the result of the expression.
+- `--A` is exactly the same as `A = A.dec(); A` where `dec` is a valid operator function available in the current scope.
 
-The left-hand side of a prefix decrement expression must be an [assignable expressions][Assignments].
-Otherwise a compiler error must be generated.
+> Note: informally, `--A` assigns the result of `A.dec()` to `A` and then returns `A` as the result.
 
-The type of prefix increment is always equal to the type of the right-hand side
-expression.
+For a prefix decrement expression `--A` expression `A` must be [assignable expressions][Assignments].
+Otherwise, it is a compile-time error.
+
+A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
+
+> Note: as the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 
 #### Unary minus expression
 
-An *unary minus* expression is an expression employing the prefix form of
-operator `-`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+An *unary minus* expression is an expression which uses the prefix form of operator `-`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`-`$A$ is exactly the same as $A$`.unaryMinus()` where `unaryMinus` is a suitable `operator`
-function, including its type. No additional restrictions apply.
+- `-A` is exactly the same as `A.unaryMinus()` where `unaryMinus` is a valid operator function available in the current scope.
+
+No additional restrictions apply.
 
 #### Unary plus expression
 
-An *unary plus* expression is an expression employing the prefix form of
-operator `+`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+An *unary plus* expression is an expression which uses the prefix form of operator `+`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`+`$A$ is exactly the same as $A$`.unaryPlus()` where `unaryPlus` is a suitable `operator`
-function, including its type. No additional restrictions apply.
+- `+A` is exactly the same as `A.unaryPlus()` where `unaryPlus` is a valid operator function available in the current scope.
+
+No additional restrictions apply.
 
 #### Logical not expression
 
-A *logical not* expression is an expression employing the prefix operator `!`.
+A *logical not* expression is an expression which uses the prefix operator `!`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-`!`$A$ is exactly the same as $A$`.not()` where `not` is a suitable `operator`
-function, including its type. No additional restrictions apply.
+- `!A` is exactly the same as `A.not()` where `not` is a valid operator function available in the current scope.
+
+No additional restrictions apply.
 
 ### Postfix operator expressions
 
@@ -599,64 +593,51 @@ function, including its type. No additional restrictions apply.
 
 #### Postfix increment expression
 
-A *postfix increment* expression is an expression employing the postfix form of
-operator `++`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+A *postfix increment* expression is an expression which uses the postfix form of operator `++`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-$A$`++` is exactly the same as evaluating the expression $A$`.inc()` where
-`inc` is a suitable `operator` function, assigning the value of $A$ to a temporary
-location, assigning the result of `inc` to $A$ and returning the temporary.
+- `A++` is exactly the same as `val $freshId = A; A = A.inc(); $freshId` where `inc` is a valid operator function available in the current scope.
 
-It can also be represented with the following code:
+> Note: informally, `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
 
-```kotlin
-val tmp = A;
-A = A.inc();
-return tmp;
-```
+For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignable expressions].
+Otherwise, it is a compile-time error.
 
-The left-hand side of a postfix increment expression must be an [assignable expressions][Assignable expressions].
-Otherwise a compiler error must be generated.
+A postfix increment expression has the same type as the return type of the corresponding `inc` overload variant.
 
-The type of postfix increment is always equal to the type of the right-hand side
-expression.
+> Note: as the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 
 #### Postfix decrement expression
 
-A *postfix decrement* expression is an expression employing the postfix form of
-operator `--`. It is an [overloadable][Overloadable operators] operator with the following expansion:
+A *postfix decrement* expression is an expression which uses the postfix form of operator `--`.
+It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-$A$`--` is exactly the same as evaluating the expression $A$`.dec()` where
-`dec` is a suitable `operator` function, assigning the value of $A$ to a temporary
-location, assigning the result of `inc` to $A$ and returning the temporary.
+- `A--` is exactly the same as `val $freshId = A; A = A.dec(); $freshId` where `dec` is a valid operator function available in the current scope.
 
-It can also be represented with the following code:
+> Note: informally, `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
 
-```kotlin
-val tmp = A;
-A = A.dec();
-return tmp;
-```
+For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignable expressions].
+Otherwise, it is a compile-time error.
 
-The left-hand side of a postfix decrement expression must be an [assignable expressions][Assignable expressions].
-Otherwise a compiler error must be generated.
+A postfix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
 
-The type of prefix increment is always equal to the type of the right-hand side
-expression.
+> Note: as the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 
 ### Not-null assertion expression
 
-A *not-null assertion expression* is a postfix expression employing the use of
-operator `!!`. For expressions of nullabe types, this expression checks whether
-the value is equal to `null`, and if it is, throws a runtime exception.
-If it is not equal to `null`, it evaluates to the same value as its
-left-hand side expression.
+TODO(We need to define what "evaluation" is)
 
-Not-null assertion expressions have no effect on values of non-nullable types.
+A *not-null assertion expression* is a postfix expression which uses an operator `!!`.
+For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks, whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
+If the evaluation result of `e` is not equal to `null`, the result of `e!!` is the evaluation result of `e`.
 
-The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the
-type of its left-hand side expression. Note that this type may be non-denotable
-in Kotlin and as such, may be [approximated][Type approximation] in some situations
-involving [type inference][Type inference].
+If the type of `e` is non-nullable, not-null assertion expression `e!!` has no effect.
+
+The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the type of `e`.
+
+> Note: this type may be non-denotable in Kotlin and, as such, may be [approximated][Type approximation] in some situations with the help of [type inference][Type inference].
+
+TODO(Example)
 
 ### Indexing expressions
 
@@ -667,17 +648,13 @@ involving [type inference][Type inference].
 :::{.paste target=grammar-rule-indexingSuffix}
 :::
 
-An *indexing expression* is a suffix expression employing the use of several
-subexpressions *indices* between square brackets (`[` and `]`). At least one
-index must be provided.
+An *indexing expression* is a suffix expression which uses one or more subexpression as *indices* between square brackets (`[` and `]`).
 
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-$A$`[`$I_0$`,`$I_1$`,`$\ldots$`,`$I_N$`]` is exactly the same as
-$A$`.get(`$I_0$`,`$I_1$`,`$\ldots$`,`$I_N$`)`, where `get` is a suitable `operator`
-function.
+- $A[I_0,I_1,\ldots,I_N]$ is exactly the same as $A\text{.get}(I_0,I_1,\ldots,I_N)$, where `get` is a valid operator function available in the current scope.
 
-A correct indexing expression has the same type as the corresponding `get` expression.
+An indexing expression has the same type as the corresponding `get` expression.
 
 Indexing expressions are [assignable][Assignable expressions].
 For a corresponding assignment form, see [indexing assignment][Indexing assignment].
@@ -705,56 +682,67 @@ For a corresponding assignment form, see [indexing assignment][Indexing assignme
 :::{.paste target=grammar-rule-memberAccessOperator}
 :::
 
-#### The navigation operators
+#### Navigation operators
 
-Expressions employing the navigation binary operators (`.`, `.?` or `::`) are all
-syntactically similar, but, in fact, may have very different syntactic meaning.
+Expressions which use the navigation binary operators (`.`, `.?` or `::`) are syntactically similar, but, in fact, may have very different semantics.
+
 `a.c` may have one of the following semantics when used as an expression:
 
-- A fully-qualified type, property or object name. The left side of `.` must be a package name,
-  while the right side corresponds to a declaration in that package. Note that qualification uses
-  operator `.` only;
-- A value property access. Here `a` is another value available in the current scope
-  and `c` is the property name. If used with operator `::` this becomes a
-  [property reference][Callable references]. The left-hand side expression may be a type name,
-  which is similar to using the type's companion object as the left hand side expression;
-- A member function call if followed by the call suffix (arguments enclosed in parentheses).
-  These expressions adhere to the [overloading][Overload resolution] rules. If used
-  with operator `::`, but without the call suffix,
-  this becomes a [function reference][Callable references].
+- A fully-qualified type, property or object name.
+  The left side of `.` must be a package name, while the right side corresponds to a declaration in that package.
+    
+    > Note: qualification uses operator `.` only.
+- A property access.
+  Here `a` is a value available in the current scope and `c` is a property name.
+- A function call if followed by the call suffix (arguments in parentheses).
+  Here `a` is a value available in the current scope and `c` is a function name.
+  These expressions follow the [overloading][Overload resolution] rules.
 
-TODO() + Identifiers
+`a::c` may have one of the following semantics when used as an expression:
 
-### Function Literals
+- A [property reference][Callable references].
+  Here `a` may be either a value available in the current scope or a type name, and `c` is a property name.
+- A [function reference][Callable references].
+    Here `a` may be either a value available in the current scope or a type name, and `c` is a function name.
 
-Kotlin supports using functions as values. This includes, among other things, being
-able to use named functions (through [function references][Callable references])
-as parts of expressions. Sometimes it does not make much sense to provide a separate
-function declaration, but rather define a function in-place, using *function literals*.
+`a?.c` is a *safe navigation* operator, which has the following expansion:
 
-There are two types of function literals in Kotlin: *lambda literals* and
-*anonymous function declarations*. Both of these provide a way of defining a function
-in-place, but have subtle differences.
+- `a?.c` is exactly the same as `if (a != null) a.c else null`.
+
+> Note: this means the type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
+
+TODO(Identifiers, paths, that kinda stuff)
+
+### Function literals
+
+Kotlin supports using functions as values.
+This includes, among other things, being able to use named functions (via [function references][Callable references]) as parts of expressions.
+Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place.
+This is implemented using *function literals*.
+
+There are two types of function literals in Kotlin: *lambda literals* and *anonymous function declarations*.
+Both of these provide a way of defining a function in-place, but have subtle differences.
+
+> Note: as some may consider function literals to be closely related to function declarations, [here][Function declarations] is the corresponding section of the specification.
 
 #### Anonymous function declarations
 
 :::{.paste target=grammar-rule-anonymousFunction}
 :::
 
-*Anonymous function declarations*, despite the name, are not actually declarations,
-but rather an expression that resembles a function declaration. They have syntax
-very similar to the function declaration syntax, but with a few differences:
+*Anonymous function declarations*, despite their name, are not declarations per se, but rather expressions which resemble function declarations.
+They have a syntax very similar to function declarations, with the following key differences:
 
-- Anonymous functions do not have a name (obviously);
-- Anonymous functions may not have type parameters (TODO(): check!!!);
-- Anonymous functions may not have default parameters (TODO(): check!!!);
-- Anonymous functions may have variable argument parameters, but they are automatically
-  decayed to non-variable argument parameters of array type (TODO(): how does this really work?).
+- Anonymous functions do not have a name;
+- Anonymous functions may not have type parameters;
+- Anonymous functions may not have default parameters;
+- Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding array type (TODO(how does this really work?)).
 
-Anonymous function declaration may declare anonymous extension functions.
-The type of an anonymous function declaration is the function type
-constructed similarly to the corresponding
-[named function declaration][Function declarations].
+Anonymous function declaration may declare an anonymous extension function.
+
+> Note: as anonymous functions may not have type parameters, you cannot declare an anonymous extension function on a parameterized receiver type.
+
+The type of an anonymous function declaration is the function type constructed similarly to a [named function declaration][Function declarations].
 
 #### Lambda literals
 
@@ -765,7 +753,7 @@ constructed similarly to the corresponding
 :::{.paste target=grammar-rule-lambdaParameter}
 :::
 
-Lambda literals TODO()
+TODO(This funking section)
 
 ### Object literals
 
@@ -917,6 +905,7 @@ TODO(): as a matter of fact, `break` is not allowed inside `when` >_<
 
 ## TODOS()
 
+- String interpolation
 - Overloadable operators && operator expansion
 - Smart casts vs compile-time types
 - What does `decaying` for vararg actually mean?
