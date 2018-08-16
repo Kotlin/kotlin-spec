@@ -301,6 +301,8 @@ An _extension function declaration_ is similar to a standard function declaratio
 
 Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the [_receiver_][Receivers] of the call, be it implicit or explicit. This parameter is available inside the scope of the function as the implicit receiver or `this`-expression, while nested scopes may introduce additional receivers that take precedence over this one. See [the receiver section][Receivers] for details. This receiver is also available (as usual) in nested scope using labeled `this` syntax using the name of the declared function as the label.
 
+For more information on how a particular receiver for each call is chosen, please refer to the [overloading section][Overload resolution].
+
 > Note: when declaring extension functions inside classifier declarations, this receiver takes precedence over the classifier object, which is usually the current receiver inside nested functions
 
 For all other purposes, extension functions are not different from non-extension functions.
@@ -511,7 +513,7 @@ An _extension property declaration_ is similar to a standard property declaratio
 
 > Note: informally, on can say that extension properties have no state of their own. Only properties that use other objects' storage facilities and/or uses constant data can be extension properties.
 
-Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter.
+Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].
 
 The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. It may also be accessed inside nested scopes using [labeled `this` syntax][] using the name of the property declared as the label. For delegated properties, the value passed into the operator functions `getValue` and `setValue` as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. This is also true for local extension properties: while regular local properties are passed `null` as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.
 
