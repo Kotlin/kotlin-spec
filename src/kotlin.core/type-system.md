@@ -405,6 +405,8 @@ TODO(Prove the implications??)
 
 TODO(Intersection of flexible types)
 
+TODO(Intersection of generics)
+
 TODO(If $A <: B$ and $B <: A$, what is $A \times B$???)
 
 ### Subtyping
@@ -502,20 +504,27 @@ TODO(Here be a lot of dragons...)
 
 A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$. A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$. As the type system of Kotlin is bounded by definition (the upper bound of all types being $\text{kotlin.Any}?$, while the lower bound of all types being $\text{kotlin.Nothing}$, see the rest of this section for details), any two types have at least one lower bound and at least one upper bound.
 
-The _least upper bound_ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types that is less (by subtyping relation) than $U$.  Note that among the supertypes of $A$ and $B$ there may be several types that adhere to these properties and $B$ and are not related by subtyping. In such situation, an intersection of these types is the least upper bound of $A$ and $B$, as, by definition, the intersection $I$ of types $X$ and $Y$ is less than both $X$ and $Y$.
+#### Least upper bound
 
-TODO: but what if there are equivalent types arising?
+The _least upper bound_ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types that is less (by subtyping relation) than $U$. Note that among the supertypes of $A$ and $B$ there may be several types that adhere to these properties and are not related by subtyping. In such situation, an intersection of these types is the least upper bound of $A$ and $B$, as, by definition, the intersection $I$ of types $X$ and $Y$ is less than both $X$ and $Y$.
 
-TODO: check this for shady cases
+- TODO(but what if there are equivalent types arising?)
+- TODO(check this for shady cases)
+- TODO(actual algorithm for computing LUB)
+- TODO(generics, especially contravariant TP, make the enumeration impossible, but GLB saves the day)
 
-TODO: actual algorithm for computing LUB
-
-TODO: generics, especially contravariant TP, make the enumeration impossible
+#### Greatest lower bound
 
 The _greatest lower bound_ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types that is greater by subtyping relation than $L$. Enumerating all subtypes of a given type is impossible in general, but may easily be show that, in the presense of intersection types ([again, see type intersection section][Type intersection]), an intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
 
 > Note: let's assume that there is a type $C$ that is not an intersection of types $A$ and $B$, but is the greatest lower bound of $A$ and $B$. This, by definition of type intersection, means that it is a subtype of $A \times B$, which is also a lower bound of $A$ and $B$, and is greater. This is a contradiction to the definition of greatest lower bound, meaning that our assumption was wrong. Hence, the intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
 
+- TODO(maybe throw out the whole concept of $\times$ and just make that the GLB?)
+- TODO(relation between LUB and GLB in contravariant cases)
+- TODO(again, what to do with equivalent types?)
+
 ### References
 
 1. Tate, Ross. "Mixed-site variance." FOOL, 2013.
+
+TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. An example of the second distinction would be difference between $(A?)!!$ and $((A!!)?)!!$. Are they the same type? Are they different, but equivalent? Same goes for $(A..B)?$ vs $(A?..B?)$ and such.)

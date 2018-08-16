@@ -211,7 +211,7 @@ Different platform implementations may extend the set of functions deemed valid
 candidates for inclusion as operator functions.
 
 Please note that this is valid not only for dedicated operator expressions, but
-also for `for`-loops iteration convention and property delegates.
+also for any calls arising from expanding [`for`-loop][For-loop statement] iteration convention, [assignments][Assignments] and [property delegates][Delegated property declaration].
 
 ### A call without an explicit receiver
 
