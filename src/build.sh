@@ -11,6 +11,8 @@ gpp -H index.md | pandoc --filter ../scripts/ProcessTODOFilter.kts \
                          -H preamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash \
                          -o ../.pages/index.html
 cp index.css ../.pages/
+cp index.js ../.pages/
+cp tests-map.json ../.pages/
 echo "done"
 
 echo "Rendering PDF..."
