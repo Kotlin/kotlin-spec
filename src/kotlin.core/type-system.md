@@ -500,6 +500,8 @@ TODO(How is generics different from type parameters? Or are we going to get into
 
 TODO(Here be a lot of dragons...)
 
+TODO(Type parameters are considered to be non-nullable, even if they are not such...)
+
 ### Upper and lower bounds
 
 A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$. A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$. As the type system of Kotlin is bounded by definition (the upper bound of all types being $\text{kotlin.Any}?$, while the lower bound of all types being $\text{kotlin.Nothing}$, see the rest of this section for details), any two types have at least one lower bound and at least one upper bound.

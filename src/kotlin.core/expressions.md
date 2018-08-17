@@ -760,156 +760,119 @@ TODO(This funking section)
 :::{.paste target=grammar-rule-objectLiteral}
 :::
 
-Object literals are a way of defining anonymous objects in Kotlin. Anonymous objects
-are similar to regular objects, but they (obviously) have no name and thus can
-(only) be used as expressions. Anonymous objects, just like regular object
-declarations, can have at most one base class and many base interfaces declared
-in its delegation specifiers.
+Object literals are used to define anonymous objects in Kotlin.
+Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions.
+Anonymous objects, just like regular object declarations, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.
 
-The main difference between the regular object declaration and an anonymous
-object is its type. The type of an anonymous object is a special kind of type
-that is usable (and visible) only in the scope where it is declared. It is similar
-to a type that could be normally declared with a corresponding object declaration,
-but cannot be used outside the scope, leading to interesting effects.
+The main difference between the regular object declaration and an anonymous object is its type.
+The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared.
+It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, with some interesting effects.
 
-When a value of this type escapes current scope:
+When a value of an anonymous object type escapes current scope:
 
-- If the type has only one declared supertype, it is implicitly downcasted to
-  this declared supertype;
-- If the type has several declared supertypes, there must be an explicit cast to
-  any suitable type visible outside the scope, otherwise a compiler error is generated.
+- If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;
+- If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.
 
-Please not that in this context "escaping" current scope is performed immediately
-if the corresponding value is declared as a global or classifier-scope property,
-as those are a part of package interface.
+> Note: an implicit cast may arise, for example, from the results of the type inference.
+
+> Note: in this context "escaping" current scope is performed immediately if the corresponding value is declared as a global- or classifier-scope property, as those are a part of package interface.
 
 ### This-expressions
 
 :::{.paste target=grammar-rule-thisExpression}
 :::
 
-This-expressions are a special kind of expressions used to access available receivers
-in current scope. For more information about receivers, please refer to the
-[overloading section][Receivers]. The basic form of this expression, denoted by
-`this` keyword, is used to access the current implicit receiver according to
-receiver overloading rules. In order to access other receivers, labeled `this`
-expressions are used. These may be any of the following:
+This-expressions are special kind of expressions used to access [receivers][Receivers] available in current scope.
+The basic form of this expression, denoted by `this` keyword, is used to access the current implicit receiver according to the receiver overloading rules.
+In order to access other receivers, labeled `this` expressions are used.
+These may be any of the following:
 
-- `this@`$type$ where $type$ is a name of any classifier that is currently being
-  declared (that is, this this-expression is located inside its declaration's
-  inner scope) refers to the implicit object of the type being declared;
-- `this@`$function$ where $function$ is a name of a function currently being declared
-  (that is, this this-expression is located inside the function body)
-  refers to the implicit receiver object of this function (if it is an extension
-  function) or is illegal and generates a compiler error.
+- `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;
+- `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function.
 
-Any other form of this-expression is illegal and generates a compiler error.
+Any other form of this-expression is illegal and must be a compile-time error.
 
 ### Super-forms
 
 :::{.paste target=grammar-rule-superExpression}
 :::
 
-Super form is a special kind of expression that can only be used as the receiver
-of a function or property access expression. Any usage of such an expression in
-any other context is prohibited.
+Super-forms are special kind of expression which can only be used as receivers in a function or property access expression.
+Any use of super-form expression in any other context is a compile-time error.
 
-Super forms are used in classifier declarations to access the method implementations
-from base classifier types without invoking overriding behaviour.
+Super-forms are used in classifier declarations to access method implementations from the supertypes without invoking overriding behaviour.
 
-TODO()
+TODO(The rest...)
 
 ### Jump expressions
 
 :::{.paste target=grammar-rule-jumpExpression}
 :::
 
-*Jump expressions* are a group of expressions that redirect the order the program
-is evaluated to a different program point when evaluated. All these expressions
-have several things in common:
+*Jump expressions* are expressions which redirect the evaluation of the program to a different program point.
+All these expressions have several things in common:
 
-- They all have type `kotlin.Nothing`, effectively meaning that they never produce
-  any runtime value;
-- Any code that unconditionally follows such expression is never evaluated.
+- They all have type [`kotlin.Nothing`][`kotlin.Nothing`], meaning that they never produce any runtime value;
+- Any code which follows such expressions is never evaluated.
 
 #### Throw expressions
 
-TODO(): [Exceptions] go first
+TODO([Exceptions] go first)
 
 #### Return expressions
 
 A *return expression*, when used inside a function body, immediately
-stops evaluating the function and returns to the point where this function was
-called, making the function call expression evaluate to the value specified
-in this return expression (if any). A return expression with no value implicitly
-returns the `kotlin.Unit` object.
+stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
+A return expression with no value implicitly returns the `kotlin.Unit` object.
 
-There are two forms of return expression: a simple return expression, specified using
-the `return` keyword, returning from the innermost
-[function declaration][Function declaration] (or
-[anonymous function expression][Anonymous function expression]) and the extended
-return expression, using the form `return@`$Context$ where $Context$ may be one
-of the following:
+There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function expression][Anonymous function expression]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
 
-- The name of one of the enclosing function declarations to refer to this function.
-  If several declarations match one name, an ambiguity compiler error is generated;
-- If current expression is inside a lambda expression body, the name of the function
-  using this lambda expression as a trailing lambda (TODO: Wut?) parameter may be used
-  to refer to the lambda literal itself.
+- The name of one of the enclosing function declarations, which refers to this function.
+  If several declarations match one name, it is a compile-time error;
+- If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself.
+- TODO(return from a labeled lambda)
 
-If returning from the referred function is allowed in current context, the return
-is performed as usual. If returning from the referred function is not allowed,
-a compiler error is generated.
+> Note: these rules mean that a simple return expression inside a lambda expression returns **from the innermost function**, in which this lambda expression is defined.
+
+If returning from the referred function is allowed in the current context, the return is performed as usual.
+If returning from the referred function is not allowed, it is a compile-time error.
+
+TODO(What does it mean for returns to be disallowed?)
 
 #### Continue expression
 
 A *continue expression* is a jump expression allowed only within loop bodies.
-When evaluated, this expression passes the control to the start of the next loop
-iteration.
+When evaluated, this expression passes the control to the start of the next loop iteration (aka "continue-jumps").
 
 There are two forms of continue expressions:
 
-- A simple continue expression, specified using
-  the `continue` keyword, which refers to the innermost loop statement in the current
-  scope;
-- An extended continue expression, denoted `continue@`$Loop$, where $Loop$ is a
-  label referring to a labeled loop statement, which refers to the loop the label
-  refers to.
+- A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
+- A labeled continue expression, denoted `continue@Loop`, where `Loop` is a   label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-TODO(): as a matter of fact, `continue` is not allowed inside `when` >_<
+> Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside when expressions.
 
 #### Break expression
 
 A *break expression* is a jump expression allowed only within loop bodies.
-When evaluated, this expression passes the control to the next program point
-after the loop.
+When evaluated, this expression passes the control to the next program point immediately after the loop (aka "break-jumps").
 
 There are two forms of break expressions:
 
-- A simple break expression, specified using
-  the `break` keyword, which refers to the innermost loop statement in the current
-  scope;
-- An extended break expression, denoted `break@`$Loop$, where $Loop$ is a
-  label referring to a labeled loop statement, which refers to the loop the label
-  refers to.
+- A simple break expression, specified using the `break` keyword, which break-jumps to the innermost loop statement in the current scope;
+- A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
-TODO(): as a matter of fact, `break` is not allowed inside `when` >_<
+> Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.
 
 ### Operator expressions
 
-#### Spread operator
+TODO()
 
-### Safe call expression
-
-### Type check expression
-
-## TODOS()
+## TODOs()
 
 - String interpolation
 - Overloadable operators && operator expansion
 - Smart casts vs compile-time types
 - What does `decaying` for vararg actually mean?
-
-- !!! object literal typing looks just like restricted union types. Are there any traps hidden here?
-- The whole last paragraph in [Object literals][Object literals] is pretty shady
-- What does it mean for returning to be disallowed?
+- Where to define spread operator?
+- Object literal types look just like restricted union types. Are there any traps hidden here?
+- The last paragraph in [object literals][Object literals] is also pretty shady
