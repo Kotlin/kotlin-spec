@@ -3,7 +3,11 @@
 <#include "introduction.md">
 <#include "syntax.md">
 <#include "type-system.md">
+<#include "builtins.md">
 <#include "rtti.md">
+<#include "scoping.md">
+<#include "packages.md">
+<#include "operators.md">
 <#include "declarations.md">
 <#include "statements.md">
 <#include "expressions.md">
@@ -18,3 +22,4 @@
 <#include "annotations.md">
 <#include "kdoc.md">
 <#include "fubar.md">
+<#include "exceptions.md">

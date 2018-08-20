@@ -15,7 +15,7 @@ RTTI is also the source of information for platform-specific _reflection_ facili
 
 The types actual values may have are limited to [class and object types][Classifier types] and [function types][Function types] as well as `kotlin.Nothing?` for the `null` reference. `kotlin.Nothing` (not to be confused with its nullable variant `kotlin.Nothing?`) is special in the way that this type is never encountered as a runtime type even though it may have a platform-specific representation. The reason for this is that this type is used to signify non-existent values.
 
-## Runtime-available types
+### Runtime-available types
 
 _Runtime-available types_ are the types that can be guaranteed (during compilation) to have a concrete _runtime_ counterpart. These include all the runtime types, their nullable variants as well as [`reified` type parameters][Reified type parameters], that are guaranteed to inline to a runtime type during type parameter substitution. Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. During these operations, the nullability of the type is checked using reference-equality to `null`, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.
 

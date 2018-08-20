@@ -863,6 +863,10 @@ There are two forms of break expressions:
 
 > Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.
 
+### String interpolation expressions
+
+TODO()
+
 ### Operator expressions
 
 TODO()
