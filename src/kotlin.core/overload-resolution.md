@@ -1,55 +1,42 @@
 ## Overload resolution
 
-Kotlin supports _function overloading_, that is, the ability for several functions
-of the same name to coexist in the same scope, with the compiler picking the
-most suitable one when such a function is called. This section describes this
-mechanism in detail.
+Kotlin supports _function overloading_, that is, the ability for several functions of the same name to coexist in the same scope, with the compiler picking the most suitable one when such a function is called.
+This section describes this mechanism in detail.
 
 ### Intro
 
-Unlike other object-oriented languages, Kotlin does not only have object methods,
-but also top-level functions, local functions, extension functions and function-like
-values, which complicates the overloading process quite a lot. Kotlin also
-has infix functions, operator and property overloading which all work in a similar
-but rather different way.
+Unlike other object-oriented languages, Kotlin does not only have object methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overloading process quite a lot.
+Kotlin also has infix functions, operator and property overloading which all work in a similar, but subtly different way.
 
 ### Receivers
 
-Every function or property that is defined as a method or an extension has one
-or more special parameters called _receiver_ parameters.
-When calling such a callable using navigation operators (`.` or `?.`) the left
-hand side parameter is called an _explicit receiver_ or this particular call.
-In addition to the explicit receiver, each such call may indirectly access
-zero or more _implicit receivers_.
+Every function or property that is defined as a method or an extension has one or more special parameters called _receiver_ parameters.
+When calling such a callable using navigation operators (`.` or `?.`) the left hand side parameter is called an _explicit receiver_ of this particular call.
+In addition to the explicit receiver, each call may indirectly access zero or more _implicit receivers_.
 
-Implicit receivers are available in some syntactic scope according to the
-following rules:
+Implicit receivers are available in some syntactic scope according to the following rules:
 
-- All receivers available in outer scope are also available in all nested scopes;
-- In the scope of a classifier definition, the following receivers are available:
-    - The implicit `this` object of the defined type;
-    - The companion object (if one exist) of this class;
-    - The companion objects (if any exists) of all its superclasses;
-- If a function or a property is an extension, the `this` parameter of the extension
-  is also available inside the extension definition;
-- The scope of a lambda expression if it has an extension function type contains
-  the `this` argument of this lambda expression.
+- All receivers available in an outer scope are also available in the nested scope;
+- In the scope of a classifier declaration, the following receivers are available:
+    - The implicit `this` object of the declared type;
+    - The companion object (if one exists) of this class;
+    - The companion objects (if any exist) of all its superclasses;
+- If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
+- The scope of a lambda expression, if it has an extension function type, contains `this` argument of the lambda expression.
+
+TODO(If I'm a companion object, is a companion object of my supertype an implicit receiver for me or not?)
 
 The available receivers are prioritized in the following way:
 
-- The receivers provided in most inner scope have higher priority;
-- In a classifier body, the implicit `this` reference has higher priority
-  than the companion object receiver;
-- Current class companion object receiver has higher priority than any of
-  the base classes.
+- The receivers provided in the most inner scope have higher priority;
+- In a classifier body, the implicit `this` receiver has higher priority than any companion object receiver;
+- Current class companion object receiver has higher priority than any of the base class companion objects.
 
-The implicit receiver having the highest priority is also called the _default
-implicit receiver_. The default implicit receiver is available in the scope
-as `this`. Other available receivers may be accessed using
-[this-expressions][This-expressions] of different form.
+The implicit receiver having the highest priority is also called the _default implicit receiver_.
+The default implicit receiver is available in the scope as `this`.
+Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
-If an implicit receiver is available in some scope, it may be used to call functions
-implicitely without using the navigation operator.
+If an implicit receiver is available in a given scope, it may be used to call functions implicitely in that scope without using the navigation operator.
 
 ### The forms of call-expression
 
@@ -59,57 +46,47 @@ Any function in Kotlin may be called in several different ways:
 - A call with an explicit receiver: `a.foo()`;
 - An infix function call: `a foo b`;
 - An overloaded operator call: `a + b`;
-- A call without an explicit receiver: `foo()`;
+- A call without an explicit receiver: `foo()`.
 
-For each of these cases, a compiler should first pick a number of
-_overload candidates_ which is a set of callables that may be the intended
-callees and then _choose the most specific function_ to call based on the types
-of the function and the call operands. Please note that the overload candidates
-are picked **before** the most specific function is chosen.
+For each of these cases, a compiler should first pick a number of _overload candidates_, which form a set of possibly intended callables (_overload candidate set_), and then _choose the most specific function_ to call based on the types of the function and the call arguments.
 
-### Callables and invoke convention
+> Important: the overload candidates are picked **before** the most specific function is chosen.
 
-A *callable* $X$ for the purpose of this document is one of the following:
+### Callables and `invoke` convention
 
-- A function named $X$ at declaration site;
-- A property named $X$ at declaration site with an operator function called
-  `invoke` that is available as member or extension in the current scope.
+A *callable* $X$ for the purpose of this section is one of the following:
 
-In the latter case a call $X$`(`$Y_0$`,`$Y_1$`,...,`$Y_N$`)` is an overloadable
-operator which is expanded to $X$`.invoke(`$Y_0$`,`$Y_1$`,...,`$Y_N$`)`.
-The call may contain type parameters, named parameters, variable argument parameter
-expansion and trailing lambda parameters, all of which are forwarded as-is to
-the corresponding `invoke` function.
+- A function named $X$ at its declaration site;
+- A property named $X$ at its declaration site with an operator function called
+  `invoke` available as member or extension in the current scope.
 
-A *member callable* is either a member function or a member property with member
-operator `invoke`. An *extension callable* is either an extension function,
-a member property with an extension operator `invoke` or an extension property
-with an extension operator `invoke`.
+In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
+The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-When calculating overload resolution sets, member callables
-produce the following separate sets (ordered by priority, bigger priority first):
+A *member callable* is either a member function or a member property with a member operator `invoke`.
+An *extension callable* is either an extension function, a member property with an extension operator `invoke` or an extension property with an extension operator `invoke`.
+
+When calculating overload candidate sets, member callables produce the following separate sets (ordered by higher priority first):
 
 - Member functions;
 - Member properties.
 
-Extension callables produce the following
-separate sets (ordered by priority, bigger priority first):
+Extension callables produce the following separate sets (ordered by higher priority first):
 
 - Extension functions;
 - Member properties with extension invoke;
 - Extension properties with member invoke;
 - Extension properties with extension invoke.
 
-This division is more granular than all other means of dividing resolution
-candidates into sets, meaning that it is performed the last.
+Let us define this partition as c-level partition (callable-level partition).
+As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed last, after all other applicable steps.
 
 ### Overload resolution for a fully-qualified call
 
-If the callable name is fully-qualified (that is, contains full package path),
-then the overloading candidate set simply contains all the callables with
-the same name in the same package. As a package name may never clash with any
-other declared entity, after performing division of callables, these are the only
-sets available.
+If a callable name is fully-qualified (that is, it contains a full package path), then the overloading candidate set $S$ simply contains all the callables with the specified name in the specified package.
+As a package name can never clash with any other declared entity, after performing c-level partition on $S$, the resulting sets are the only ones available for further processing.
+
+TODO(Clear up this mess)
 
 Example:
 ```kotlin
@@ -123,51 +100,37 @@ val foo = {}
 a.b.c.foo()
 ```
 
-Here the overload candidates set contains all the callables named `foo` from the
-package `a.b.c`.
+Here the resulting overload candidate set contains all the callables named `foo` from the package `a.b.c`.
 
 ### A call with an explicit receiver
 
-If a function call is done using a navigation operator (`.` or `?.`, not to be
-confused with a [fully-qualified call][Overload resolution for a fully-qualified call]),
-then the left hand side operand of this operator is the explicit receiver of this
-call.
+If a function call is done via a [navigation operator][Navigation operators] (`.` or `?.`, not to be confused with a [fully-qualified call][Overload resolution for a fully-qualified call]), then the left hand side operand of the call is the explicit receiver of this call.
 
-A call of callable `f` with explicit receiver `e` is correct if one (or more) of the following holds:
+A call of callable `f` with an explicit receiver `e` is correct if one (or more) of the following holds:
 
 1. `f` is a member callable of the classifier type of `e` or any of its supertypes;
-2. `f` is an extension callable for the classifier type of `e` or any of its supertypes,
-   including local and imported extensions.
+2. `f` is an extension callable of the classifier type of `e` or any of its supertypes, including local and imported extensions.
 
-Please note that callables for case 2 not only include top-level
-declared extension callables, but also extension callables available in any
-of the available implicit receivers. For example, if a class contains a member extension
-function for another class and an object of this class is available as an implicit
-receiver, this extension function may be used for the call if it has a suitable type.
+> Important: callables for case 2 include not only top-level extension callables, but also extension callables from any of the available implicit receivers.
+> For example, if class $P$ contains a member extension function for another class $T$ and an object of class $P$ is available as an implicit receiver, this extension function may be used for the call if it has a suitable type.
 
-Then for a callable named `f` the following sets are looked upon (in this order):
+If a call is correct, for a callable named `f` with an explicit receiver `e` of type `T` the following sets are analyzed (in the given order):
 
-1. The sets of non-extension member callables named `f` of the receiver type;
-2. The sets of local extension callables named `f` whose receiver type conforms to
-   the explicit receiver type, in all declaration scopes containing the current declaration
-   scope, ordered by the size of the scope (smallest first), excluding the package scope;
-3. The sets of explicitly imported extension callables named `f` whose receiver type conforms to
-   the explicit receiver type;
-4. The sets of extension callables named `f` whose receiver type conforms to
-   the explicit receiver type, declared in the current package;
-5. The sets of star-imported extension callables named `f` whose receiver type conforms to
-   the explicit receiver type;
-6. The sets of implicitly imported extension callables named `f` whose receiver type conforms to
-   the explicit receiver type.
+TODO(Sync with scopes and stuff when we have them)
 
-TODO() : all this X-imported things need to be defined somewhere
+1. The sets of non-extension member callables named `f` of type `T`;
+2. The sets of local extension callables named `f`, whose receiver type conforms to type `T`, in all declaration scopes containing the current declaration scope, ordered by the size of the scope (smallest first), excluding the package scope;
+3. The sets of explicitly imported extension callables named `f`, whose receiver type conforms to type `T`;
+4. The sets of extension callables named `f`, whose receiver type conforms to type `T`, declared in the package scope;
+5. The sets of star-imported extension callables named `f`, whose receiver type conforms to type `T`;
+6. The sets of implicitly imported extension callables named `f`, whose receiver type conforms to type `T`.
 
-When looked upon these sets, the first set that contains **any** callable
-with the corresponding name and conforming types is picked. This means,
-among other things, that if the set constructed during step 2 contains a
-more suitable candidate function, but the set constructed in step 1
-is not empty, the function from set 1 is picked even it is a less suitable
-candidate.
+> Note: here type `U` conforms to type `T`, if $T <: U$.
+
+TODO(all these X-imported things need to be defined somewhere)
+
+When analyzing these sets, the **first** set that contains **any** callable with the corresponding name and conforming types is picked.
+This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.
 
 ### Infix function calls
 
