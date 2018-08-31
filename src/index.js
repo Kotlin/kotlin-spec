@@ -1,13 +1,8 @@
 var testInfoMapPath = "./tests-map.json";
-var githubTestsLink = "https://github.com/JetBrains/kotlin/tree/master/";
+var githubTestsLink = "https://github.com/JetBrains/kotlin/tree/master/compiler/tests-spec/testData";
 
 var testAreas = ["diagnostics", "psi", "codegen"];
 var paragraphSelector = [".paragraph", "DL", "UL", "OL"].join(",");
-
-// temporary helper sections name-number map
-var sectionsMap = {
-    "when-expression": "16.30"
-};
 
 function getQueryParam(name, url) {
     if (!url) url = window.location.href;
@@ -62,7 +57,7 @@ function createTestLinkElement(testArea, paragraphNumber, sectionId) {
     var numberInfoSpan = document.createElement("a");
     numberInfoSpan.innerHTML = testArea;
     numberInfoSpan.setAttribute("target", "_blank");
-    numberInfoSpan.setAttribute("href", githubTestsLink + "compiler/tests-spec/testData/" + testArea + "/s-" + sectionsMap[sectionId] + "_" + sectionId + "/p-" + paragraphNumber);
+    numberInfoSpan.setAttribute("href", githubTestsLink + "/" + testArea + "/linked/" + sectionId + "/p-" + paragraphNumber);
     return numberInfoSpan
 }
 
