@@ -9,7 +9,7 @@ Declaration scopes include:
 - The top level scope of a normal Kotlin file (not script file);
 - The bodies of [classifier declarations][Classifier declaration];
 - The bodies of [object literals][Object literal];
-- TODO: Anything else?
+- TODO(Anything else?)
 
 Statement scopes include:
 
@@ -20,7 +20,7 @@ Statement scopes include:
 - The bodies of getters and setters of [properties][Property declaration];
 - The bodies of [constructors][Constructor declaration];
 - The bodies of instance initialization blocks in [class declarations][Class declaration];
-- TODO: Anything else?
+- TODO(Anything else?)
 
 All the declarations in a particular scope introduce new _bindings_ of identifiers in this scope to their respective entities in the program. These entities may be types or values, where values may refer to objects, functions or properties (that may be delegated). Top-level scopes additionally allow to introduce such bindings using [`import` directive][Packages and imports] from other top-level scopes.
 

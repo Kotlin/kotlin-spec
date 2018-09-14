@@ -323,7 +323,7 @@ If, even after this additional step, there are several candidates that are equal
 applicable for the call, there is an **overload ambiguity** that must be reported
 as a compiler error.
 
-> NOTE: Please note that, unlike the applicability test, the candidate comparison
+> Note: Please note that, unlike the applicability test, the candidate comparison
 > constraint system is **not** based on the actuall call, meaning that when comparing
 > two candidates, only constraints visible at declaration site apply.
 
@@ -344,3 +344,6 @@ is picked up.
 - Calls with trailing lambda without parameter type
     * Lambdas with parameter types seem to be covered, **nope, they are not**
 - Calls with specified type parameters `f<Double>(3)`
+- ! Constructors && companion object `invoke` (clash with functions)
+- ! Singleton objects (clash with properties)
+- ! Enum constants (also may clash with properties)
