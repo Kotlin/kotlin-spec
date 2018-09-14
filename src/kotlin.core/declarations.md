@@ -207,6 +207,8 @@ First, a supertype constructor corresponding to $ctor$ is called with its respec
 
 After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. If any initialization step creates a loop, it is considered an undefined behavior.
 
+TODO(Need to define order between supertype constructor, primary constructor, init blocks and secondary constructors)
+
 ### Function declaration
 
 :::{.paste target=grammar-rule-functionDeclaration}

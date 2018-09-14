@@ -83,7 +83,7 @@ As this partition is the most fine-grained of all other steps of partitioning re
 
 ### Overload resolution for a fully-qualified call
 
-If a callable name is fully-qualified (that is, it contains a full package path), then the overloading candidate set $S$ simply contains all the callables with the specified name in the specified package.
+If a callable name is fully-qualified (that is, it contains a full package path), then the overload candidate set $S$ simply contains all the callables with the specified name in the specified package.
 As a package name can never clash with any other declared entity, after performing c-level partition on $S$, the resulting sets are the only ones available for further processing.
 
 TODO(Clear up this mess)
@@ -134,92 +134,58 @@ This means, among other things, that if the set constructed on step 2 contains t
 
 ### Infix function calls
 
-In reality, infix function calls are a special case of function calls with an
-explicit receiver using the left hand operand as the receiver.
+Infix function calls are a special case of function calls with an explicit receiver in the left hand side position, i.e., `a foo b` may be an infix form of `a.foo(b)`.
 
-There is a slight difference though: during the overload candidate set
-selection the only functions considered for inclusion are the ones with the
-`infix` modifier. All other functions
-(and all properties) are not even considered for inclusion.
-Aside from this small difference, candidates are selected using the same
-rules as for normal calls with explicit receiver.
+However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the `infix` modifier.
+All other functions (and any properties) are not even considered for inclusion.
+Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.
 
-> This also means that all the properties available through `invoke`-convention
-> are non-eligible for such calls, because there is no way of specifying
-> the `infix` modifier for them
+> Note: this also means that all properties available through the `invoke` convention are non-eligible for infix calls, as there is no way of specifying the `infix` modifier for them.
 
-Different platform implementations may extend the set of functions deemed valid
-candidates for inclusion as infix functions.
+Different platform implementations may extend the set of functions considered as infix functions for the overload candidate set.
 
 ### Operator calls
 
-According to TODO(), some operator expressions in Kotlin can be overloaded
-using specially-named functions. This makes operator expressions semantically
-equivalent to function calls with explicit receiver, where the receiver expression
-is selected according to operator form (see TODO()). The selection of an exact
-function that is called in each particular case is based on the same rules
-as for function calls with explicit receivers, the only difference being
-that only functions with `operator` modifier are considered for inclusion when
-building overload candidate sets. Properties are never considered for inclusion
-for operator calls.
+According to TODO(), some operator expressions in Kotlin can be overloaded using specially-named functions.
+This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used (see TODO()).
+The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with `operator` modifier are considered for inclusion when building overload candidate sets.
+Any properties are never considered for the overload candidate sets of operator calls.
 
-> This also means that all the properties available through `invoke`-convention
-> are non-eligible for such calls, because there is no way of specifying
-> the `operator` modifier for them, even though the `invoke` callable is required
-> to always have such modifier.
-> This means that, as `invoke`-convention itself is an operator call, it is
-> impossible to employ more than one `invoke`-conventions in a single call.
+> Note: this also means that all the properties available through the `invoke`convention are non-eligible for operator calls, as there is no way of specifying the `operator` modifier for them, even though the `invoke` callable is required to always have such modifier.
+> As `invoke` convention itself is an operator call, it is impossible to use more than one `invoke` conventions in a single call.
 
-Different platform implementations may extend the set of functions deemed valid
-candidates for inclusion as operator functions.
+Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.
 
-Please note that this is valid not only for dedicated operator expressions, but
-also for any calls arising from expanding [`for`-loop][For-loop statement] iteration convention, [assignments][Assignments] and [property delegates][Delegated property declaration].
+> Note: these rules are valid not only for dedicated operator expressions, but also for any calls arising from expanding [`for`-loop][For-loop statement] iteration conventions, [assignments][Assignments] or [property delegates][Delegated property declaration].
 
 ### A call without an explicit receiver
 
-A call that is performed with unqualified function name and without using a
-navigation operator is a call without an explicit receiver. It may in fact
-have one or more implicit receivers or be a top-level function.
+A call which is performed with unqualified function name and without using a navigation operator is a call without an explicit receiver.
+It may have one or more implicit receivers or reference a top-level function.
 
-As with function calls with explicit receiver, a valid implementation should
-first pick a valid overload candidate set and then search this set for the
-_most specific function_ to match the call.
+As with function calls with explicit receiver, we should first pick a valid overload candidate set and then search this set for the _most specific function_ to match the call.
 
-Than for a function named `f` the following sets are looked upon (in this order):
+For a function named `f` the following sets are analyzed (in the given order):
 
-1. The sets of local non-extension functions named `f` available in current scope, in order of
-   the scope they are declared in, smallest scope first;
-2. The overload candidate sets for each implicit receiver and `f`, calculated as if it was
-   the explicit receiver, in the order of the receiver priority
-   (see previous section);
-3. Top-level non-extension functions named `f`, in this order:
+1. The sets of local non-extension functions named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
+2. The overload candidate sets for each implicit receiver `r` and `f`, calculated as if `r` is the explicit receiver, in order of the receiver priority (see the [corresponding section][A call with an explicit receiver]);
+3. Top-level non-extension functions named `f`, in the order of:
    a. Functions explicitely imported into current file;
    b. Functions declared in the same package;
    c. Functions star-imported into current file;
-   d. Implicitly imported functions (kotlin standard library or platform-specific);
+   d. Implicitly imported functions (either Kotlin standard library or platform-specific ones).
 
-When looked upon these sets, the first set that contains **any** function
-with the corresponding name and conforming types is picked.
+When analyzing these sets, the **first** set which contains **any** function with the corresponding name and conforming types is picked.
 
 ### Calls with named parameters
 
-Most of the call forms listed above may use named parameters in call expressions,
-for example, `f(a = 2)`, where `a` is a named formal parameter specified in
-the declaration of `f`. Such calls are treated the same way as normal calls, but
-the overload resolution sets are filtered to only contain callables that actually
-have formal parameters for all the corresponding names.
+Most of the calls in Kotlin may use named parameters in call expressions, e.g., `f(a = 2)`, where `a` is a parameter specified in the declaration of `f`.
+Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameters for all named parameters from the call.
 
-> For properties called through invoke-convention, the named parameters must
-> be present in the declaration of the `invoke` operator function
+> Note: for properties called via `invoke` convention, the named parameters must be present in the declaration of the `invoke` operator function.
 
-Unlike positional arguments, named arguments specify directly which of the
-formal parameters of the function the argument corresponds to. The matching
-of formal parameters and arguments is performed separately for each function
-candidate and while the number of defaults (
-  see [the MSC definition process][Choosing the most specific function from the overload candidate set]) does affect resolution process,
-the fact that some argument was mapped using named or positional argument does
-not affect is in any way.
+Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.
+While the number of defaults (see [the MSC selection process][Choosing the most specific function from the overload candidate set]) does affect resolution process, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
 
 ### Calls with trailing lambda expressions
 
