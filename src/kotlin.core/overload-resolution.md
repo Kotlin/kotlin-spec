@@ -270,7 +270,7 @@ The selection process uses the [type constraint][Type constraints] system of Kot
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built.
-  During construction of these constraints, all type parameters $T_1, T_2, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\tilda}_1, T^{\tilda}_2, \ldots, T^{\tilda}_M$, and all type parameters of $F_2$ are considered free;
+  During construction of these constraints, all type parameters $T_1, T_2, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, T^{\sim}_2, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
 - All declaration-site type constraints of $X_1, X_2, X_3, \ldots, X_N$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ are also added to the constraint system.
 
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
