@@ -189,55 +189,35 @@ While the number of defaults (see [the MSC selection process][Choosing the most 
 
 ### Calls with trailing lambda expressions
 
-Most of the call forms listed above may have a single lambda expression presented outside
-of the parentheses or replacing them (see [Call expression]). This has no effect on
-overload resolution process, aside from argument reordering that may happen due to
-variable argument parameters or parameters with defaults between the arguments.
+A call expression may have a single lambda expression placed outside of the argument list parentheses or even completely replacing them (see [this section][Call expression] for further details).
+This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable argument parameters or parameters with defaults.
 
-> This means that calls `f(1,2){ g() } ` and `f(1,2, body = { g() })` are completely equivalent
-> from the overload resolution standpoint, assuming that `body` is the name
-> of the last formal parameter of `f`
+> Example: this means that calls `f(1,2) { g() } ` and `f(1,2, body = { g() })` are completely equivalent w.r.t. the overload resolution, assuming `body` is the name of the last formal parameter of `f`.
 
 ### Calls with specified type parameters
 
-Most of the call forms listed above may have a list of type arguments that precedes
-the list of value arguments of the call. In this case, all the potential overload
-sets only include callables that contain an exactly same number of formal type
-arguments at declaration site. In the case of property callable through `invoke`
-convention, the type parameters must be present at the `invoke` operator function
-declaration.
+A call expression may have a type argument list explicitly specified before the argument list (see [this section][Call expression] for further details)..
+In this case all the potential overload sets only include callables which contain exactly the same number of formal type parameters at declaration site.
+In case of a property callable via `invoke` convention, type parameters must be present at the `invoke` operator function declaration.
 
 ### Determining function applicability for a specific call
 
 #### Rationale
 
-A function is *applicable* for a specific call if and only if the function type
-parameters may be assigned the values of the arguments specified in the call and
-all the type constraints of the function still hold.
+A function is *applicable* for a specific call if and only if the function parameters may be assigned the values of the arguments specified at call site and all type constraints of the function hold.
 
 #### Description
 
-Determining function applicability for a specific call is a
-[type constraint][Type constraints] problem.
-First, for every argument of the function supplied in the call,
-the type inference is performed. This excludes lambda arguments, as
-the inference of the specific type for them needs the results of overloading
-to finish.
+Determining function applicability for a specific call is a [type constraint][Type constraints] problem.
+First, for every non-lambda argument of the function supplied in the call, type inference is performed.
+Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
-After that the following constraint system is built:
+Second, the following constraint system is built:
 
-- For every parameter of the call (excluding lambda parameters) inferred to have
-  type $T_i$, corresponding to function argument of type $U_j$,
-  a constraint $T_i <: U_j$ is constructed;
-- All the declaration-site type constraints for the function are also added to the system;
-- For each lambda parameter with the number of lambda arguments known to be $K$,
-  a constraint and corresponding to function argument of type $U_m$,
-  an artificial constraint is added in the form $R(L_1,...,L_K) <: U_m$,
-  where $R, L_1, ..., L_K$ are all fresh variables;
-- For each lambda parameter with the number of lambda arguments not known
-  (that is, being equal to 0 or 1), an artificial constraint is added in the
-  form $kotlin.Function <: U_m$, where $kotlin.Function$ is the common base
-  of all functional types; TODO(): what's the name???
+- For every non-lambda parameter inferred to have type $T_i$, corresponding to the function argument of type $U_j$, a constraint $T_i <: U_j$ is constructed;
+- All declaration-site type constraints for the function are also added to the constraint system;
+- For every lambda parameter with the number of lambda arguments known to be $K$, corresponding to the function argument of type $U_m$, a special constraint of the form $R(L_1, \ldots, L_K) <: U_m$ is added to the constraint system, where $R, L_1, \ldots, L_K$ are fresh variables;
+- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $kotlin.Function <: U_m$ is added to the constraint system, where $kotlin.Function$ is the common base of all functional types (TODO(what's the spec name?)).
 
 If this constraint system is sound, the function is applicable for the call.
 Only applicable functions are considered for the next step: finding the most
@@ -247,13 +227,13 @@ specific overload candidate from the candidate set.
 
 #### Rationale
 
-The main rationale behind choosing the most specific function from a candidate set
-is that the function chosen could be easily forwarded to by all the other functions
-in the set, while the reverse is not true. If there are several functions with
-this property, none of them is the most specific and an ambiguity error should
-be reported by the compiler.
+The main rationale in choosing the most specific function from the overload candidate set is the following:
 
-Let's look at an example with two functions:
+> The most specific function can forward itself to any other function from the overload candidate set, while the opposite is not true.
+
+If there are several functions with this property, none of them are the most specific and an ambiguity error should be reported by the compiler.
+
+Consider the following example with two functions:
 
 ```kotlin
 fun f(arg: Int, arg2: String) {}        // (1)
@@ -262,88 +242,69 @@ fun f(arg: Any?, arg2: CharSequence) {} // (2)
 f(2, "Hello")
 ```
 
-Here both functions are applicable for the call, but also function (1) could easily
-call function (2) by forwarding both arguments into it, but the reverse is impossible.
+Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible.
 As a result, function (1) is more specific of the two.
-Let's rename the functions to make it more clear:
+
+The following snippet should explain this in more detail.
 
 ```kotlin
 fun f1(arg: Int, arg2: String) {
-    f2(arg, arg2) // perfectly valid
+    f2(arg, arg2) // valid: can forward both arguments
 }
 fun f2(arg: Any?, arg2: CharSequence) {
-    f1(arg, arg2) // invalid: function f1 is not appicable
+    f1(arg, arg2) // invalid: function f1 is not applicable
 }
 ```
 
-The rest of this section will try to clarify this mechanism a little more.
+The rest of this section will try to clarify this mechanism in more detail.
 
 #### Description
 
-When an overload resolution set is picked up and contains more than one callable,
-the next step is to find the most appropriate candidate from these callables.
+When an overload resolution set $S$ is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.
 
-Firts, the appicable set is divided into two sub-sets: the callables that employ
-type parameters (generic callables) and the callables that don't (non-generic callables).
-If there are any non-generic applicable candidates, the choise is limited only to
-non-generic subset. Otherwise, all canidates (of generic callables) is considered.
+Firts, $S$ is divided into two subsets: callables with type parameters (generic callables) and callables without such (non-generic callables).
+If there are any non-generic applicable candidates, the choice is limited only to the non-generic subset.
+Otherwise, we consider the generic subset.
 
-This process employs the usage of [type constraint][Type constraints] system of
-Kotlin, similar to the process of
-[determining function applicability][Determining function applicability for a specific call].
-For every two members of the candidate set (let's call them $F_1$ and $F_2$),
-the following constraint system is constructed and solved:
+The selection process uses the [type constraint][Type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
+For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
-- For every non-default argument of the call the corresponding value parameters'
-  types $X_1, X_2, X_3 ... X_N$ of $F_1$ and value parameters' types $Y_1, Y_2, Y_3 ... Y_N$
-  of $F_2$ a type constraint $X_K <: Y_K$ is built. During construction of these
-  constraints, all the type parameters of $F_1$ are considered bound and all the
-  type parameters of $F_2$ are considered free;
-- All the declaration-site type constraints of $X_1, X_2, X_3 ... X_N$ and
-  $Y_1, Y_2, Y_3 ... Y_N$ are also added to the system.
+- For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built.
+  During construction of these constraints, all type parameters $T_1, T_2, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\tilda}_1, T^{\tilda}_2, \ldots, T^{\tilda}_M$, and all type parameters of $F_2$ are considered free;
+- All declaration-site type constraints of $X_1, X_2, X_3, \ldots, X_N$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ are also added to the constraint system.
 
-If this constraint system is sound, it means that $F_1$ is equally or more applicable
-as an overload candidate. After that the check is repeated with $F_1$ and $F_2$ swapped.
-If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable
-than $F_1$, this means that the two callables are equally applicable and an additional
-decision procedure needs to be invoked.
+If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
+The check is then repeated with $F_1$ and $F_2$ swapped.
+If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and an additional decision step is needed to choose the most specific overload candidate.
 
-All the members of the overload candidate set are sorted according to the criteria
-of applicability, determining the most applicable callable. If there are several
-callables which are both more applicable than other candidates and equally applicable
-to each other, an additional step is performed:
+TODO(Can we have two callables incomparable w.r.t. applicability criteria? What do we do then?)
 
-- For each candidate, the number of default parameters not specified in the call is counted;
-- The candidate with the least default parameters is a more specific candidate;
-- If the number of defaulted parameters is equal for several candidates,
-  the candidate having any variable-argument parameters is less specific than
-  any candidate without them.
+All members of the overload candidate set are ranked according to the applicability criteria.
+If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.
 
-If, even after this additional step, there are several candidates that are equally
-applicable for the call, there is an **overload ambiguity** that must be reported
-as a compiler error.
+- For each candidate, we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value);
+- The candidate with the least number of non-specified default parameters is a more specific candidate;
+- If the number of non-specified default parameters is equal for several candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
 
-> Note: Please note that, unlike the applicability test, the candidate comparison
-> constraint system is **not** based on the actuall call, meaning that when comparing
-> two candidates, only constraints visible at declaration site apply.
+If after this additional step there are still several candidates that are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
+
+> Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actuall call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
 ### About type inference
 
-[Type inference][Type inference] in Kotlin is a pretty complicated process, which is
-performed after resolving all the overload candidates. Due to the complexity of
-the process, type inference may not affect the way overload resolution candidate
-is picked up.
+[Type inference][Type inference] in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates.
+Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up.
 
-#### TODO:
+#### TODOs
 
-- Properties business
-- Function types (type system section???)
-- Definition of "applicable function"
+- Property business
+- Function types (type system section?)
+- Definition of an "applicable function"
 - Definition of "type parameter level"
 - Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
-    * Lambdas with parameter types seem to be covered, **nope, they are not**
+    * Lambdas with parameter types seem to be covered (**nope, they are not**)
 - Calls with specified type parameters `f<Double>(3)`
-- ! Constructors && companion object `invoke` (clash with functions)
+- ! Constructors and companion object `invoke` (clash with functions)
 - ! Singleton objects (clash with properties)
-- ! Enum constants (also may clash with properties)
+- ! Enum constants (clash with properties)
