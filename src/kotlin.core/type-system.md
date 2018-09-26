@@ -436,10 +436,10 @@ TODO(Subtyping for type parameters)
 
 ---
 comment: |
-    - For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
-    - For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
-    - For any star type argument $\star T$, $kotlin.Nothing <: T <: kotlin.Any?$
-    - For any bounded type argument $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
+    * For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
+    * For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
+    * For any star type argument $\star T$, $kotlin.Nothing <: T <: kotlin.Any?$
+    * For any bounded type argument $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
 ---
 
 Subtyping for non-nullable, captured types uses rules of different kind, as captured type $C$ describes not one, but a set of types which satisfy its type constraints $\mathbb{C}$. Therefore, we use the following subtyping rules for captured types.
