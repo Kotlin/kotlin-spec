@@ -60,7 +60,8 @@ Property and function declarations in the class body introduce their respective 
 
 Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
-Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. Inner classes are available only on the corresponding class' entities. Further details are available [here][Inner and nested classes].
+Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. Inner classes are available only on the corresponding class' entities. 
+Further details are available [here][Inner and nested classes].
 
 TODO(Examples)
 
@@ -78,7 +79,8 @@ A parameterized class declaration consists of the following parts.
   - companion object declaration $companionObj$
   - nested classifier declarations $nested$
 
-and extends the rules for a simple class declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
+and extends the rules for a simple class declaration w.r.t. type parameter list. 
+Further details are described [here][Declarations with type parameters].
 
 ##### Constructor declaration
 
@@ -109,9 +111,11 @@ When accessing property constructor parameters inside the class body, one works 
 
 If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
 
-A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
+A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. 
+If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
 
-If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. If the only superclass is `Any`, delegation is optional.
+If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. 
+If the only superclass is `Any`, delegation is optional.
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
 
@@ -121,9 +125,11 @@ TODO(default values in constructors???)
 
 ##### Nested and inner classifiers
 
-If a classifier declaration $ND$ is *nested* in another classifier declaration $PD$, it creates a nested classifier type --- a classifier type available under the path $PD.ND$. In all other aspects, nested classifiers are equivalent to regular ones.
+If a classifier declaration $ND$ is *nested* in another classifier declaration $PD$, it creates a nested classifier type --- a classifier type available under the path $PD.ND$. 
+In all other aspects, nested classifiers are equivalent to regular ones.
 
-Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. An inner class declaration $ID$ nested in another classifier declaration $PD$ may reference an *object* of type $ID$ associated with it.
+Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. 
+An inner class declaration $ID$ nested in another classifier declaration $PD$ may reference an *object* of type $ID$ associated with it.
 
 This association happens when instantiating an object of type $ID$, as its constructor may be invoked only when a receiver of type $PD$ is available, and this receiver becomes associated with the new instantiated object of type $ID$.
 
@@ -135,7 +141,8 @@ TODO(...)
 
 #### Data class declaration
 
-A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
+A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. 
+As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
 * `equals() / hashCode() / toString()` functions compliant with their contracts
     * TODO(Nope, we should explicitly specify the contracts here, especially for `toString`)
@@ -165,7 +172,8 @@ TODO(...)
 
 #### Interface declaration
 
-Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
+Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 
+In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
 * An interface cannot have a class as its supertype
 * An interface cannot have a constructor
@@ -179,7 +187,9 @@ TODO(Something else?)
 
 #### Object declaration
 
-Object declarations are used to support a singleton pattern and, thus, do two things at the same time. One, they (just like class declarations) introduce a new type to the program. Two, they create a singleton-like object of that type.
+Object declarations are used to support a singleton pattern and, thus, do two things at the same time. 
+One, they (just like class declarations) introduce a new type to the program. 
+Two, they create a singleton-like object of that type.
 
 TODO(do we really need this ironic-ish statement about doing two things at the same time?)
 
@@ -193,7 +203,8 @@ Similarly to interfaces, we shall specify object declarations by highlighting th
 
 TODO(Something else?)
 
-> Note: this section is about declaration of _named_ objects. Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
+> Note: this section is about declaration of _named_ objects. 
+> Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
 
 #### Classifier initialization
 
@@ -205,7 +216,8 @@ First, a supertype constructor corresponding to $ctor$ is called with its respec
 * If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$
 * If an explicit supertype constructor is not available, `Any()` is implicitly used
 
-After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. If any initialization step creates a loop, it is considered an undefined behavior.
+After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. 
+If any initialization step creates a loop, it is considered an undefined behavior.
 
 TODO(Need to define order between supertype constructor, primary constructor, init blocks and secondary constructors)
 
@@ -227,15 +239,19 @@ A simple function declaration consists of four main parts:
 
 and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. A function may have zero or more parameters.
+Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
+A function may have zero or more parameters.
 
 A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
 
-Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv kotlin.Nothing$, in which case $R \equiv B$. In other cases return type $R$ must be specified explicitly.
+Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv kotlin.Nothing$, in which case $R \equiv B$.
+In other cases return type $R$ must be specified explicitly.
 
 > As type $kotlin.Nothing$ has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious $kotlin.Nothing$ function return types.
 
-Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation. This is allowed only inside an [abstract classifier declaration][Classifier declaration]. If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
+Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation.
+This is allowed only inside an [abstract classifier declaration][Classifier declaration].
+If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
 A parameterized function declaration consists of five main parts.
 
