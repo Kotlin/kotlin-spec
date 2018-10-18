@@ -86,6 +86,8 @@ Digits may be separated by an underscore symbol, but no underscore can be placed
 Any of the decimal, hexadecimal or binary literals may be suffixed by the long literal mark (symbol `L`).
 An integer literal with the long literal mark has type `kotlin.Long`; an integer literal without it has one of the types `kotlin.Int`/`kotlin.Short`/`kotlin.Byte` (the selected type is dependent on the context), if its value is in range of the corresponding type, or type `kotlin.Long` otherwise.
 
+TODO(describe this context dependency somewhere)
+
 TODO(ranges for integer literals)
 
 #### Real literals

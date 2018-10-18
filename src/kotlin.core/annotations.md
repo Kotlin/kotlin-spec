@@ -56,4 +56,10 @@ TODO()
 
 ### Builtin annotations
 
-TODO()
+* Deprecated / ReplaceWith
+* Suppress
+* SinceKotlin
+* UnsafeVariance
+* DslMarker
+* PublishedApi
+* Contract-related stuff???
