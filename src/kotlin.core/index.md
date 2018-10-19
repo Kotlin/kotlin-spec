@@ -21,5 +21,4 @@
 <#include "coroutines.md">
 <#include "annotations.md">
 <#include "kdoc.md">
-<#include "fubar.md">
 <#include "exceptions.md">
