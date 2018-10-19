@@ -33,6 +33,7 @@ Smart cast sources are introduced by:
 
 - Conditional expressions (`if` and `when`);
 - Elvis operator (operator `?:`);
+- Safe navigation operator (operator `?.`);
 - Logical conjunction expressions (operator `&&`);
 - Logical disjunction expressions (operator `||`);
 - Not-null assertion expressions (operator `!!`);
@@ -54,6 +55,9 @@ Nullability and type conditions are derived in the following way.
 - $x$` === `$y$ or $y$` === `$x$ where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for $x$;
 - $x$` == `$y$ or $y$` == `$x$ where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
     + TODO(examples of when this equivalence is true)
+
+Additionally, any type condition with assumed *non-null* type also creates a nullability condition for its value.
+This is used in [bound smart casts][Bound smart casts].
 
 #### Value stability
 
@@ -86,6 +90,7 @@ This means the following for different smart cast sources.
     - Smart cast conditions derived from negated expression condition are active inside the false branch scope;
     - If a branch is statically known to be definitely evaluated, that branch's condition is also propagated over to the containing scope after the conditional expression;
 - Elvis operator (operator `?:`): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
+- Safe navigation operator (operator `?.`) TODO()
 - Logical conjunction expressions (operator `&&`): all conditions derived from the left-hand expression are applied to the right-hand expression;
 - Logical disjunction expressions (operator `||`): all condtions derived from the left-hand expression are applied *negated* to the right-hand expression;
 - Not-null assertion expressions (operator `!!`): a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
@@ -107,7 +112,27 @@ However, some loop configurations, for which we can have static guarantees about
 
 #### Bound smart casts
 
-TODO()
+Smart casting propagates information forward on the control flow, as by the source-sink domination.
+However, in some cases it is beneficial to propagate information *backwards*, to reduce boilerplate code.
+Kotlin supports this feature by bound smart casts.
+
+Bound smart casts apply in the following case.
+Assume we have two inter-dependent or bound values $a$ and $b$.
+Bound smart casts allow to apply smart cast sources for $a$ to $b$ or vice versa, if both values are stable.
+
+Kotlin supports the following bound smart casts (BSC).
+
+- Nullability-by-equality BSC. If two values are known to be equal, nullability conditions for one are applied to the other.
+- Nullability-by-safe-call BSC. For a safe-call property `o?.p` of a non-null type $T$, nullability conditions for `o?.p` are applied to `o`.
+
+Two values $a$ and $b$ are considered equals in the following cases.
+
+- there is a known equality or referential-equality condition between $a$ and $b$
+- $a$ is definitely assigned $b$
+    + however, in this case bound smart casts are applied only to $b$
+    + TODO(Why?)
+
+TODO(Do we need additional condition kinds?)
 
 ### Local type inference
 
