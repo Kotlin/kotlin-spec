@@ -29,38 +29,41 @@ Every declaration is accessible in a particular *scope*, which is dependent both
 
 Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. There are three kinds of classifier declarations:
 
-* class declarations
-* interface declarations
-* object declarations
+* class declarations;
+* interface declarations;
+* object declarations.
 
 #### Class declaration
 
 A simple class declaration consists of the following parts.
 
-* name $c$
-* primary constructor declaration $ptor$
-* supertype specifiers $S_1, \ldots, S_s$
-* body $b$, which may include the following
-  - secondary constructor declarations $stor_1, \ldots, stor_c$
-  - instance initialization block $init$
-  - property declarations $prop_1, \ldots, prop_p$
-  - function declarations $md_1, \ldots, md_m$
-  - companion object declaration $companionObj$
-  - nested classifier declarations $nested$
+* name $c$;
+* primary constructor declaration $ptor$;
+* supertype specifiers $S_1, \ldots, S_s$;
+* body $b$, which may include the following:
+  - secondary constructor declarations $stor_1, \ldots, stor_c$;
+  - instance initialization block $init$;
+  - property declarations $prop_1, \ldots, prop_p$;
+  - function declarations $md_1, \ldots, md_m$;
+  - companion object declaration $companionObj$;
+  - nested classifier declarations $nested$.
 
 and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
 Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
 
-It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. Multiple interface inheritance is allowed.
+It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. 
+Multiple interface inheritance is allowed.
 
 Instance initialization block describes a block of code which should be executed during [object creation][Classifier initialization].
 
 Property and function declarations in the class body introduce their respective entities in this class' scope, meaning they are available only on an entity of the corresponding class.
 
-Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
+Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. 
+Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
-Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. Inner classes are available only on the corresponding class' entities. 
+Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. 
+Inner classes are available only on the corresponding class' entities. 
 Further details are available [here][Inner and nested classes].
 
 TODO(Examples)
@@ -92,11 +95,12 @@ $$ptor : (p_1, \ldots, p_n)$$
 
 where each of $p_i$ may be one of the following:
 
-* regular constructor parameter $name: type$
-* read-only property constructor parameter $val name: type$
-* mutable property constructor parameter $var name: type$
+* regular constructor parameter $name: type$;
+* read-only property constructor parameter $val name: type$;
+* mutable property constructor parameter $var name: type$.
 
-Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. One can consider them to have the following syntactic expansion.
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. 
+One can consider them to have the following syntactic expansion.
 
 ```kotlin
 class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
@@ -115,7 +119,7 @@ A secondary constructor describes an alternative way of creating a class instanc
 If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
 
 If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. 
-If the only superclass is `Any`, delegation is optional.
+If the only superclass is `kotlin.Any`, delegation is optional.
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
 
@@ -144,29 +148,94 @@ TODO(...)
 A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. 
 As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
-* `equals() / hashCode() / toString()` functions compliant with their contracts
-    * TODO(Nope, we should explicitly specify the contracts here, especially for `toString`)
-* A `copy()` function for shallow object copying
-* A number of `componentN()` functions for destructive declaration
+* `equals() / hashCode() / toString()` functions compliant with their contracts:
+    - `equals(that)` returns true iff:
+        - `that` has the same runtime type as `this`;
+        - `this.prop.equals(that.prop)` returns `true` for every data property `prop`;
+    - `hashCode()` returns different numbers for objects `A` and `B` if they do not equal by the generated `equals`;
+    - `toString` returns a string representations which is guaranteed to include the class name along with all the data properties' string representations.
+    - TODO(Be more specific?).
+* A `copy()` function for shallow object copying with the following properties:
+    - It has the same number of parameters as the primary constructor with the same names and types;
+    - It calls the primary constructor with the corresponding parameters at the corresponding positions;
+    - It has defaults for all the parameters defaulting to the value of the corresponding property in `this` object.
+* A number of `componentN()` functions for destructive declaration:
+    - For the data property at position $N$ (**starting with 1**), the generated `component`$N$ function has the same type as this property and returns the value of this property;
+    - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Destructuring declaration];
+    - The number of these functions is the same as the number of data properties.
 
-TODO(Some of these may be overriden, some cannot)
+These generated declarations of `equals`, `hashCode` and `toString` may be overriden the same way they may be overriden in normal classes.
+The overriding version is preferred, as normally.
+The other generated functions may be [overloaded][Function overloading], but not overriden.
 
 All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
 
-To support these features, data classes have the following restrictions.
+Data classes have the following restrictions:
 
-* Data classes are final and cannot be inherited from
-* Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class
+* Data classes are final and cannot be inherited from;
+* Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;
+* There must be at least one data property in the primary constructor.
 
 ##### Data class generation
+
+TODO(Do we really need this?)
 
 TODO(A more detailed explaination)
 
 #### Enum class declaration
 
+TODO(grammar reference)
+
+TODO(Use "enumeration" instead of "enum"?)
+
+Enum class is a special kind of class with the following properties:
+
+- It has a number of predefined values that are declared in the class itself (*enum entries*);
+- No other values of this class can be constructed;
+- It implicitly inherits the built-in class `kotlin.Enum` (and cannot have any other base classes);
+- It it implicitly final and cannot be inherited from;
+- It has special syntax to accommodate for the properties described above.
+
+Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
+Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Object declaration].
+
+> Note: an enum class can have zero enum entries.
+> This makes objects of this class impossible to construct.
+
+In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):
+
+- `valueOf(value: String)` returning an object corresponding to the entry with the name equal to `value` parameter of the call;
+- `values()` returning an [array][Array types] of all the possible enum values.
+  Every invocation of this function returns a new array to disallow changing its contents.
+
+> Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>`.
+> Please refer to the standard library documentation for details.
+
+TODO(`kotlin.Comparable` generation?)
+
 TODO(...)
 
 #### Annotation class declaration
+
+Annotations class is a special kind of class that is used to declare [annotations][Annotations].
+Annotation classes have the following properties:
+
+- They cannot have any secondary constructors;
+- All the primary constructor parameters must use the property syntax;
+- They implicitly inherit `kotlin.Annotation` class (and cannot have any other base classes);
+- They cannot implement interfaces;
+- They are implicitly final and cannot be inherited from;
+- They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
+- They cannot have companion objects;
+- They cannot have nested classes;
+- The types of primary constructor parameters are limited to:
+    - `kotlin.String`;
+    - `kotlin.KClass`;
+    - [Built-in number types][Built-in types];
+    - Other annotation types;
+    - Arrays of any other allowed type.
+
+Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
 
 TODO(...)
 
@@ -175,13 +244,13 @@ TODO(...)
 Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 
 In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
-* An interface cannot have a class as its supertype
-* An interface cannot have a constructor
-* Interface properties cannot have initializers or backing fields
-* An interface cannot have inner classes (but can have nested classes and companion objects)
-* An interface and all its members are implicitly open
-* All interface member properties and functions are implicitly public
-    * Trying to declare a non-public member property or function in an interface is an error
+* An interface cannot have a class as its supertype;
+* An interface cannot have a constructor;
+* Interface properties cannot have initializers or backing fields;
+* An interface cannot have inner classes (but can have nested classes and companion objects);
+* An interface and all its members are implicitly open;
+* All interface member properties and functions are implicitly public;
+    * Trying to declare a non-public member property or function in an interface is an error.
 
 TODO(Something else?)
 
@@ -195,11 +264,11 @@ TODO(do we really need this ironic-ish statement about doing two things at the s
 
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
-* An object type cannot be used as a supertype for other types
-* An object cannot have a constructor
-* An object cannot have a companion object
-* An object may not have inner classes
-* An object cannot be parameterized, i.e., cannot have type parameters
+* An object type cannot be used as a supertype for other types;
+* An object cannot have a constructor;
+* An object cannot have a companion object;
+* An object may not have inner classes;
+* An object cannot be parameterized, i.e., cannot have type parameters.
 
 TODO(Something else?)
 
@@ -212,9 +281,9 @@ When creating a class or object instance via one of its constructors $ctor$, it 
 
 First, a supertype constructor corresponding to $ctor$ is called with its respective parameters.
 
-* If $ctor$ is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list
-* If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$
-* If an explicit supertype constructor is not available, `Any()` is implicitly used
+* If $ctor$ is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list;
+* If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$;
+* If an explicit supertype constructor is not available, `Any()` is implicitly used.
 
 After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. 
 If any initialization step creates a loop, it is considered an undefined behavior.
@@ -228,7 +297,8 @@ TODO(Need to define order between supertype constructor, primary constructor, in
 :::{.paste target=grammar-rule-functionBody}
 :::
 
-Function declarations assign names to functions --- blocks of code which may be called by passing them a number of arguments. Functions have special *function types* which are covered in more detail [here][Function types].
+Function declarations assign names to functions --- blocks of code which may be called by passing them a number of arguments. 
+Functions have special *function types* which are covered in more detail [here][Function types].
 
 A simple function declaration consists of four main parts:
 
@@ -239,7 +309,8 @@ A simple function declaration consists of four main parts:
 
 and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
+Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. 
+Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
 A function may have zero or more parameters.
 
 A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
@@ -300,24 +371,33 @@ fun main(args: Array<String>) {
 
 In summary, argument list should have the following form:
 
-* Zero or more positional arguments
-* Zero or more named arguments
+* Zero or more positional arguments;
+* Zero or more named arguments.
 
 Missing arguments are bound to their default values, if they exist.
 
 #### Variable length parameters
 
-One of the parameters may be designated as being variable length (aka *vararg*). A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position. These arguments are represented inside function body $b$ as an [array of type $P_i$][Array types].
+One of the parameters may be designated as being variable length (aka *vararg*). 
+A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position. 
+These arguments are represented inside function body $b$ as an [array of type $P_i$][Array types].
 
-If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. If a variable length parameter has a default value, it should be an expression which evaluates to an [array of type $P_i$][Array types].
+If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. 
+If a variable length parameter has a default value, it should be an expression which evaluates to an [array of type $P_i$][Array types].
 
-An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position. A function invocation may include several spread operator expressions corresponding to the vararg parameter.
+An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position. 
+A function invocation may include several spread operator expressions corresponding to the vararg parameter.
 
 #### Extension function declaration
 
-An _extension function declaration_ is similar to a standard function declaration, but introduces an additional special function parameter, the _receiver parameter_. This parameter is designated by specifying the receiver type (the type before `.` in function name), which becomes the type of this receiver parameter. This parameter is not named and must always be supplied, e.g. it cannot be a variable-argument parameter, have a default value, etc.
+An _extension function declaration_ is similar to a standard function declaration, but introduces an additional special function parameter, the _receiver parameter_. 
+This parameter is designated by specifying the receiver type (the type before `.` in function name), which becomes the type of this receiver parameter. 
+This parameter is not named and must always be supplied (either explicitly or implicitly), e.g. it cannot be a variable-argument parameter, have a default value, etc.
 
-Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the [_receiver_][Receivers] of the call, be it implicit or explicit. This parameter is available inside the scope of the function as the implicit receiver or `this`-expression, while nested scopes may introduce additional receivers that take precedence over this one. See [the receiver section][Receivers] for details. This receiver is also available (as usual) in nested scope using labeled `this` syntax using the name of the declared function as the label.
+Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the [_receiver_][Receivers] of the call, be it implicit or explicit. 
+This parameter is available inside the scope of the function as the implicit receiver or `this`-expression, while nested scopes may introduce additional receivers that take precedence over this one. 
+See [the receiver section][Receivers] for details. 
+This receiver is also available (as usual) in nested scope using labeled `this` syntax using the name of the declared function as the label.
 
 For more information on how a particular receiver for each call is chosen, please refer to the [overloading section][Overload resolution].
 
@@ -345,11 +425,17 @@ class Bar {
 :::{.paste target=grammar-rule-propertyDeclaration}
 :::
 
-Property declarations are used to create read-only (`val`) or mutable (`var`) entities in their respective scope. Properties may also have custom getter or setter --- functions which are used to read or write the property value.
+Property declarations are used to create read-only (`val`) or mutable (`var`) entities in their respective scope. 
+Properties may also have custom getter or setter --- functions which are used to read or write the property value.
 
 #### Read-only property declaration
 
-A read-only property declaration `val x: T = e` introduces `x` as a name of the result of `e`. Both the right-hand value `e` and the type `T` are optional, however, at least one of them must be specified. More so, if the type of `e` cannot be [inferred][Type inference], the type `T` must be specified explicitly. In case both are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
+A read-only property declaration `val x: T = e` introduces `x` as a name of the result of `e`. 
+Both the right-hand value `e` and the type `T` are optional, however, at least one of them must be specified. 
+More so, if the type of `e` cannot be [inferred][Type inference], the type `T` must be specified explicitly. 
+In case both are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
+
+TODO(it's wrong, the type may also be inferred from getter)
 
 A read-only property declaration may include a custom [getter][Getters and setters] in the form of
 
@@ -362,7 +448,8 @@ in which case `x` is used as a synonym to the getter invocation.
 
 #### Mutable property declaration
 
-A mutable property declaration `var x: T = e` introduces `x` as a name of a mutable variable with type `T` and initial value equals to the result of `e`. The rules regarding the right-hand value `e` and the type `T` match those of a read-only property declaration.
+A mutable property declaration `var x: T = e` introduces `x` as a name of a mutable variable with type `T` and initial value equals to the result of `e`. 
+The rules regarding the right-hand value `e` and the type `T` match those of a read-only property declaration.
 
 A mutable property declaration may include a custom [getter][Getters and setters] and/or custom [setter][Getters and setters] in the form of
 
@@ -376,57 +463,43 @@ in which case `x` is used as a synonym to the getter invocation when read from a
 
 #### Delegated property declaration
 
-A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. One may view these properties as regular properties with a special *delegating* [getters][Getters and setters]. TODO(Type is optional if inferred?)
+A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. 
+One may view these properties as regular properties with a special *delegating* [getters][Getters and setters].
 
-In case of a delegated read-only property, access to `x` is replaced with the call to a special function `getValue`, which must be available on `e`. This function has the following signature
+In case of a delegated read-only property, every access to such property (`x` in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:
 
-```kotlin
-operator fun getValue(thisRef: E, property: PropertyInfo): R
+```haskell
+e.getValue(thisRef, property)
 ```
 
-where
+where 
 
-* `thisRef: E` is the reference to the enclosing entity
-    - holds the enclosing class or object instance in case of classifier property
-    - is `null` for [local properties][Local property declaration]
-* `property: PropertyInfo` contains runtime-available information about the declared property, most importantly
-    - `property.name` holds the property name
+* `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
+* `getValue` is a suitable operator function available on `e`;
+* `thisRef` is the [receiver][Receivers] object for the property.
+  This argument is `null` for local properties;
+* `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details).
 
-This convention implies the following requirements on the `getValue` function
+A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. 
+As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
 
-* $S <: E$, where $S$ is the type of the enclosing entity
-* $\text{KProperty<*>} <: \text{PropertyInfo}$
-* $R$ should be in a supertype relation with the delegated property type $T$
-
-> In case of the local property, enclosing entity has the type `Nothing?`
-
-A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
-
-Read access is handeled using the same `getValue` function as for a delegated read-only property. Write access is processed using a special function `setValue`, which must be available on `e`. This function has the following signature
-
-```kotlin
-operator fun setValue(thisRef: E, property: PropertyInfo, value: R): U
+Read access is handled the same way as for a delegated read-only property. 
+Any write access to `x` (using, for example, an assignment operator `x = y`) becomes an overloadable form with the following expansion:
+```haskell
+e.setValue(thisRef, property, y)
 ```
 
-where
+where 
 
-* `thisRef: E` is the reference to the enclosing entity
-    - holds the enclosing class or object instance in case of classifier property
-    - is `null` for [local properties][Local property declaration]
-* `property: PropertyInfo` contains runtime-available information about the declared property, most importantly
-    - `property.name` holds the property name
-* `value: R` is the new property value
+* `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
+* `getValue` is a suitable operator function available on `e`;
+* `thisRef` is the [receiver][Receivers] object for the property.
+  This argument is `null` for local properties;
+* `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details);
+* `y` is the value `x` is assigned to.
+  In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.
 
-This convention implies the following requirements on the `setValue` function
-
-* $S <: E$, where $S$ is the type of the enclosing entity
-* $\text{KProperty<*>} <: \text{PropertyInfo}$
-* $R$ should be in a supertype relation with the delegated property type $T$
-* $U$ is ignored
-
-> In case of the local property, enclosing entity has the type `Nothing?`
-
-The delegated property is expanded as follows.
+An example on how the delegation expansion may be actually implemented by the compiler is as follows.
 
 ```kotlin
 /*
@@ -446,6 +519,10 @@ class C {
         set(value: Type) = prop$delegate.setValue(this, this::prop, value)
 }
 ```
+
+The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself.
+If this type is omitted, it is inferred as if it was assigned the value of its expansion.
+If this inference fails, it is a compile-time error.
 
 TODO(provideDelegate)
 
@@ -482,15 +559,15 @@ var x: T = e
 
 These functions have the following requirements
 
-* $TG \equiv T$
-* $TS \equiv T$
-* $RT \equiv \mathtt{kotlin.Unit}$
-* Types $TG$, $TS$ and $RT$ are optional and may be omitted from the declaration
+* $TG \equiv T$;
+* $TS \equiv T$;
+* $RT \equiv \mathtt{kotlin.Unit}$;
+* Types $TG$, $TS$ and $RT$ are optional and may be omitted from the declaration;
   
-* Read-only properties may have a custom getter, but not a custom setter
+* Read-only properties may have a custom getter, but not a custom setter;
 * Mutable properties may have any combination of a custom getter and a custom setter
   
-* Setter argument may have any valid identifier as argument name
+* Setter argument may have any valid identifier as argument name.
 
 > Note: Regular coding convention recommends `value` as the name for the setter argument
 
@@ -504,7 +581,8 @@ var x: T = e
 
 > This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.
 
-Getters and setters allow one to customize how the property is accessed, and may need access to the property's *backing field*, which is responsible for actually storing the property data. It is accessed via the special `field` property available inside accessor body, which follows these conventions
+Getters and setters allow one to customize how the property is accessed, and may need access to the property's *backing field*, which is responsible for actually storing the property data. 
+It is accessed via the special `field` property available inside accessor body, which follows these conventions
 
 * For a property declaration of type `T`, `field` has the same type `T`
 * `field` is read-only inside getter body
@@ -512,28 +590,37 @@ Getters and setters allow one to customize how the property is accessed, and may
 
 However, the backing field is created for a property only in the following cases
 
-* A property has no custom accessors
-* A property has a default accessor
-* A property has a custom accessor, and it uses `field` property
-* A mutable property has a custom getter or setter, but not both
+* A property has no custom accessors;
+* A property has a default accessor;
+* A property has a custom accessor, and it uses `field` property;
+* A mutable property has a custom getter or setter, but not both/
 
 In all other cases a property has no backing field.
 
 Read/write access to the property is replaced with getter/setter invocation respectively.
 
+Getters and setters allow for some modifiers available for function declarations (for example, they may be declared `inline`, see grammar for details).
+
 #### Extension property declaration
 
-An _extension property declaration_ is similar to a standard property declaration, but, very much alike an [extension function][Extension function declaration], introduces an additional parameter to the property called _the receiver parameter_. This is different from usual property declarations, that do not have any parameters. There are other differences from standar property declarations:
+An _extension property declaration_ is similar to a standard property declaration, but, very much alike an [extension function][Extension function declaration], introduces an additional parameter to the property called _the receiver parameter_. 
+This is different from usual property declarations, that do not have any parameters. There are other differences from standard property declarations:
 
-- Extension properties cannot have initializers
-- Extension properties cannot have backing fields
-- Extension properties cannot have default accessors
+- Extension properties cannot have initializers;
+- Extension properties cannot have backing fields;
+- Extension properties cannot have default accessors.
 
-> Note: informally, on can say that extension properties have no state of their own. Only properties that use other objects' storage facilities and/or uses constant data can be extension properties.
+> Note: informally, on can say that extension properties have no state of their own. 
+> Only properties that use other objects' storage facilities and/or uses constant data can be extension properties.
 
-Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].
+Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. 
+Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. 
+For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].
 
-The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. It may also be accessed inside nested scopes using [labeled `this` syntax][] using the name of the property declared as the label. For delegated properties, the value passed into the operator functions `getValue` and `setValue` as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. This is also true for local extension properties: while regular local properties are passed `null` as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.
+The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. 
+It may also be accessed inside nested scopes using [labeled `this` syntax][] using the name of the property declared as the label. 
+For delegated properties, the value passed into the operator functions `getValue` and `setValue` as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. 
+This is also true for local extension properties: while regular local properties are passed `null` as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.
 
 > Note: when declaring extension properties inside classifier declarations, this receiver takes precedence over the classifier object, which is usually the current receiver inside nested properties
 
@@ -558,16 +645,22 @@ TODO(More examples (delegation, at least))
 
 #### Property initialization
 
-All non-abstract properties must be definitely initialized before their first use. To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
+All non-abstract properties must be definitely initialized before their first use. 
+To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
+
+TODO(maybe it makes more sense to write all the initialization business right here)
 
 ### Type alias
 
 :::{.paste target=grammar-rule-typeAlias}
 :::
 
-Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
+Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. 
+If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. 
+Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
-At the moment, Kotlin supports only top-level type aliases. The scope where it is accessible is defined by its [*visibility modifiers*][Visibility].
+At the moment, Kotlin supports only top-level type aliases. 
+The scope where it is accessible is defined by its [*visibility modifiers*][Visibility].
 
 ### Declarations with type parameters
 
