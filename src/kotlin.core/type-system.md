@@ -1,12 +1,9 @@
 ## Type system
 
 TODO(Add examples)
-
 TODO(Add grammar snippets?)
 
 ### Glossary
-
-TODO(Cleanup)
 
 $T$
 ~ Type
@@ -26,17 +23,23 @@ $\{T?\}$
 $\Gamma$
 ~ Type context
 
+$A <: B$
+~ A is a subtype of B
+
+$A <:> B$
+~ A and B are not related w.r.t. subtyping
+
 $T\lbrack S_1, \ldots, S_n\rbrack$
 ~ The result of type argument substitution for type $T$ with types $S_i$
 
 $A \amp B$
-~ Intersection type intersecting A and B
+~ Intersection type of $A$ and $B$
 
 Type parameter
-~ Formal type argument of parameterized type
+~ Formal type argument of a parameterized type
 
 Type argument
-~ Actual type argument in parameterized type constructor application
+~ Actual type argument in a parameterized type constructor application
 
 PACT
 ~ Parameterized abstract classifier type
@@ -44,9 +47,13 @@ PACT
 iPACT
 ~ Instantiated parameterized concrete classifier type
 
-TODO(Not everything is in the glossary, make some criteria)
+TODO(Not everything is in the glossary, make some criteria of what goes where)
+TODO(Cleanup glossary)
 
 ### Introduction
+
+Similarly to most other programming languages, Kotlin operates on data in the form of *values* or *objects*, which have *types* --- descriptions of what is the expected behaviour and possible values for their datum.
+An empty value is represented by a special `null` object; most operations with it result in runtime [errors or exceptions][Exceptions].
 
 Kotlin has a type system with the following main properties.
 
@@ -58,13 +65,16 @@ Kotlin has a type system with the following main properties.
 
 TODO(static type checking, gradual type checking)
 
-Null safety is enforced by having two type universes --- _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$). All operations within the non-nullable type universe are safe, i.e., should never cause a runtime null pointer error.
+Null safety is enforced by having two type universes --- _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
+A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe, i.e., should never cause a runtime error.
 
-Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression]. However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
+Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression].
+However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
 The unified supertype type for all types in Kotlin is `kotlin.Any?`, a nullable version of [kotlin.Any][`kotlin.Any`].
 
-Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types]. Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
+Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
+Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
 
 ### Type kinds
 
@@ -80,7 +90,11 @@ For the purposes of this section, we establish the following type kinds --- diff
 * TODO(GLB, LUB)
 * TODO(Error / invalid types)
 
-We distinguish between *concrete* and *abstract* types. Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as value types, or are used internally by the type system and are not directly denotable.
+We distinguish between *concrete* and *abstract* types.
+Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as types for values, or are used internally by the type system and are not directly denotable.
+
+We also may further distinguish *concrete* types between *class* and *interface* types; as Kotlin is a language with single inheritance, sometimes it is important to discriminate between these kinds of types.
+Any given concrete type may be either a class or an interface type, but never both.
 
 #### Built-in types
 
@@ -88,13 +102,14 @@ Kotlin type system uses the following built-in types, which have special semanti
 
 ##### `kotlin.Any`
 
-`kotlin.Any` is the unified supertype ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by subtyping relation.
+`kotlin.Any` is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
 TODO(`kotlin.Any` members?)
 
 ##### `kotlin.Nothing`
 
-`kotlin.Nothing` is the unified subtype ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones. This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
+`kotlin.Nothing` is the unified [subtype][Subtyping] ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones.
+This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
 
 As the evaluation of an expression with `kotlin.Nothing` type can never complete normally, it is used to mark special situations, such as:
 
@@ -114,11 +129,10 @@ TODO(Compare to `void`?)
 
 `kotlin.Function<R>` is the unified supertype of all [function types][Function types]. It is parameterized over function return type `R`.
 
-TODO(Elaborate about the parameter, or maybe in function type section?)
-
 #### Classifier types
 
-Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parameterized.
+Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects].
+As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parameterized.
 
 ##### Simple classifier types
 
@@ -131,14 +145,35 @@ consists of
 * type name $T$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
-To represent a valid simple concrete classifier type, $T : S_1, \ldots, S_m$ should satisfy the following conditions.
+To represent a well-formed simple concrete classifier type, $T : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $T$ is a valid type name
-* $\forall i \in [1,m]: S_i$ must be concrete, non-nullable, valid type
+* $\forall i \in [1,m]: S_i$ must be concrete, [non-nullable][Nullable types], well-formed type
+
+> Example:
+> 
+> ```kotlin
+> // A well-formed type with no supertypes
+> interface Base
+> 
+> // A well-formed type with a single supertype Base
+> interface Derived : Base
+> 
+> // An ill-formed type,
+> // as nullable type cannot be a supertype
+> interface Invalid : Base?
+> ```
+
+> Note: for the purpose of different type system examples, we assume the presence of the following well-formed concrete types:
+> 
+> * class `String`
+> * interface `Number`
+> * class `Int` <: `Number`
+> * class `Double` <: `Number`
 
 ##### Parameterized classifier types
 
-A parameterized abstract classifier type (PACT)
+A parameterized *abstract* classifier type (PACT)
 
 $$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
 
@@ -148,16 +183,16 @@ consists of
 * type parameters $F_1, \ldots, F_n$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
-To represent a valid PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
+To represent a well-formed PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $T$ is a valid type name
 * $\forall i \in [1,n]: F_i$ must be one of the following kinds
-    - [unbounded type parameter][Unbounded type parameters]
-    - [projected type parameter][Projected type parameters]
-    - [bounded type parameter][Bounded type parameters]
-* $\forall j \in [1,m]: S_j[F_1, \ldots, F_n]$ must be concrete, non-nullable, valid type
+    - [unbounded type parameter][Type parameters]
+    - [bounded type parameter][Type parameters]
+    - [projected type parameter][Declaration-site variance]
+* $\forall j \in [1,m]: S_j[F_1, \ldots, F_n]$ must be concrete, non-nullable, well-formed type
 
-An instantiated parameterized concrete classifier type (iPACT)
+An instantiated parameterized *concrete* classifier type (iPACT)
 
 $$T[A_1, \ldots, A_n]$$
 
@@ -166,37 +201,83 @@ consists of
 * PACT $T$
 * type arguments $A_1, \ldots, A_n$
 
-To represent a valid iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
+To represent a well-formed iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
 
 * $T$ is a valid PACT with $n$ type parameters
 * $\forall i \in [1,n]: A_i$ must be one of the following kinds
-    - valid concrete type
-    - valid projected type
-    - type parameter available in the current type context $\Gamma$  
-        - TODO(What is a type context?)  
-        - TODO(Inner vs nested contexts)
-* $\forall i \in [1,n]: A_i <: F_i$ where $F_i$ is the respective type parameter of $T$
+    - well-formed concrete type
+    - well-formed [projected type][Use-site variance]
+    - type parameter available in the current [type context][Type context] $\Gamma$  
+* $\forall i \in [1,n]: C_i <: F_i$, where $C_i$ is a well-formed *abstract* captured type, which is the result of [type capturing][Type capturing]
+
+> Example:
+> 
+> ```kotlin
+> // A well-formed PACT with no supertypes
+> // A and B are unbounded type parameters
+> interface Generic<A, B>
+> 
+> // A well-formed PACT with a single iPACT supertype
+> // Int and String are well-formed concrete types
+> interface ConcreteDerived<P, Q> : Generic<Int, String>
+> 
+> // A well-formed PACT with a single iPACT supertype
+> // P and Q are type parameters of Derived2,
+> //   used as type arguments of Generic
+> interface GenericDerived<P, Q> : Generic<P, Q>
+> 
+> // An ill-formed PACT,
+> //   as an abstract type Generic
+> //   cannot be used as a supertype
+> interface Invalid<P> : Generic
+> 
+> 
+> // A well-formed PACT with no supertypes
+> // out A is a projected type parameter
+> interface Out<out A>
+> 
+> 
+> // A well-formed PACT with no supertypes
+> // S : Number is a bounded type parameter
+> // (S <: Number)
+> interface NumberWrapper<S : Number>
+> 
+> // A well-formed type with a single iPACT supertype
+> // NumberWrapper<Int> is well-formed,
+> //   as Int <: Number
+> interface IntWrapper : NumberWrapper<Int>
+> 
+> // An ill-formed type,
+> //   as NumberWrapper<String> is an ill-formed iPACT
+> //   (String <:> Number)
+> interface InvalidWrapper : NumberWrapper<String>
+>```
 
 ##### Type parameters
 
-Type parameters are a special kind of abstract types, which are introduced by PACTs. They are valid only in the context of their declaring PACT.
+Type parameters are a special kind of abstract types, which are introduced by PACTs.
+They are valid only in the type context of their declaring PACT.
 
 When creating an iPACT from PACT, type parameters with their respective type arguments go through [capturing][Type capturing] and create *captured* type arguments, which follow special rules described in more detail below.
 
-###### Bounded type parameters
+Type parameters may be either unbounded or bounded.
+By default, a type parameter $F$ is unbounded, which is the same as saying it is a bounded type parameter of the form $F <: kotlin.Any?$.
 
 A bounded type parameter is an abstract type which is used to specify upper type bounds for type parameters and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
 
-To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$ should satisfy the following conditions.
+To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$ should satisfy either of the following sets of conditions.
 
-* $F$ is a type parameter of PACT $T$
-* $\forall i \in [1,n]: B_i$ must be one of the following kinds
-    - valid concrete type
-    - a type parameter available in the current type context $\Gamma$
+* Bounded type parameter with concrete bounds:
+    * $F$ is a type parameter of PACT $T$
+    * $\forall i \in [1,n]: B_i$ must be a well-formed concrete type
+    * No more than one of $B_i$ may be a class type
 
-TODO(Single generic bound allowed)
+> Note: the third condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds.
+> For any two class types, either these types are in a subtyping relation (and you should use the more specific type in the bounded type parameter), or they are unrelated (and the bounded type parameter is empty).
 
-TODO(Only one class bound allowed)
+* Bounded type parameter with abstract bounds:
+    * $F$ is a type parameter of PACT $T$
+    * $B_1$ is a type parameter available in the current type context $\Gamma$
 
 ###### Mixed-site variance
 
@@ -204,7 +285,7 @@ To implement subtyping between parameterized types, Kotlin uses *mixed-site vari
 
 ###### Declaration-site variance
 
-An invariant type parameter $F$ is an abstract type which may capture any valid type (see [subtyping][Subtyping] for more details on variance); if one needs co- or contravariant type parameter, they need to use projected type parameters.
+An invariant type parameter $F$ is an abstract type which may capture any well-formed type (see [subtyping][Subtyping] for more details on variance); if one needs co- or contravariant type parameter, they need to use projected type parameters.
 
 To represent a valid invariant type parameter of PACT $T$, $F$ should satisfy the following conditions.
 
@@ -233,19 +314,19 @@ Kotlin also supports use-site variance, by specifying the variance for type argu
 To represent a valid invariant type argument of iPACT $T$, $A$ should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
-    - a valid concrete type
+    - a well-formed concrete type
     - a type parameter available in the current type context $\Gamma$
 
 To represent a valid covariant type argument $\triangleleft A$ of iPACT $T$, $\triangleleft A$ should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
-    - a valid concrete type
+    - a well-formed concrete type
     - a type parameter available in the current type context $\Gamma$
 
 To represent a valid contravariant type argument $\triangleright A$ of iPACT $T$, $\triangleright A$ should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
-    - a valid concrete type
+    - a well-formed concrete type
     - a type parameter available in the current type context $\Gamma$
 
 In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [here][Generics]).
@@ -332,9 +413,9 @@ Kotlin, being a multi-platform language, needs to support transparent interopera
 
 A flexible type represents a range of possible types between type $L$ (lower bound) and type $U$ (upper bound), written as $(L..U)$. One should note flexible types are abstract and *non-denotable*, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
 
-To represent a valid flexible type, $(L..U)$ should satisfy the following conditions.
+To represent a well-formed flexible type, $(L..U)$ should satisfy the following conditions.
 
-* $L$ and $U$ are valid concrete types
+* $L$ and $U$ are well-formed concrete types
 * $L <: U$
 * $\neg (L <: U)$
 * $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
@@ -357,9 +438,9 @@ To specify a nullable version of type `T`, one needs to use `T?` as a type. Redu
 
 > Informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
 
-To represent a valid nullable type, $T?$ should satisfy the following conditions.
+To represent a well-formed nullable type, $T?$ should satisfy the following conditions.
 
-* $T$ is a valid type
+* $T$ is a well-formed type
 
 If an operation is safe regardless of absence or presence of `null`, i.e., assignment of one nullable value to another, it can be used as-is for nullable types. For operations on $T?$ which may violate null safety, one has the following null-safe options:
 
@@ -408,6 +489,11 @@ TODO(Intersection of flexible types)
 TODO(Intersection of generics)
 
 TODO(If $A <: B$ and $B <: A$, what is $A \times B$???)
+
+### Type context
+
+TODO(Type contexts and their relation to scopes)
+TODO(Inner vs nested type contexts)
 
 ### Subtyping
 
