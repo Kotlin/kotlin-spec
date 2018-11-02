@@ -23,6 +23,9 @@ $\{T?\}$
 $\Gamma$
 ~ Type context
 
+$K_T(F, A)$
+~ Captured type from the [type capturing][Type capturing] of type parameter $F$ and type argument $A$ in parameterized type $T$
+
 $A <: B$
 ~ A is a subtype of B
 
@@ -208,7 +211,7 @@ To represent a well-formed iPACT, $T[A_1, \ldots, A_n]$ should satisfy the follo
     - well-formed concrete type
     - well-formed [projected type][Use-site variance]
     - type parameter available in the current [type context][Type context] $\Gamma$  
-* $\forall i \in [1,n]: C_i <: F_i$, where $C_i$ is a well-formed *abstract* captured type, which is the result of [type capturing][Type capturing]
+* $\forall i \in [1,n]: K_T(F_i, A_i)$ is a well-formed captured type, where $K$ is a [type capturing][Type capturing] operator
 
 > Example:
 > 
@@ -272,16 +275,36 @@ To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$
     * $\forall i \in [1,n]: B_i$ must be a well-formed concrete type
     * No more than one of $B_i$ may be a class type
 
-> Note: the third condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds.
+> Note: the last condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds.
 > For any two class types, either these types are in a subtyping relation (and you should use the more specific type in the bounded type parameter), or they are unrelated (and the bounded type parameter is empty).
 
 * Bounded type parameter with abstract bounds:
     * $F$ is a type parameter of PACT $T$
+    * $i = 1$ (i.e., there is a single upper bound)
     * $B_1$ is a type parameter available in the current type context $\Gamma$
 
 ###### Mixed-site variance
 
-To implement subtyping between parameterized types, Kotlin uses *mixed-site variance* --- a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java. Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site). For more practical discussion about mixed-site variance, we readdress you to [generics][Generics].
+To implement subtyping between parameterized types, Kotlin uses *mixed-site variance* --- a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java.
+Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).
+
+> Info: variance is a way of describing how [subtyping][Subtyping] works for parameterized types.
+> With declaration-site variance, for two types $A <: B$, subtyping between $T<A>$ and $T<B>$ depends on the variance of type parameter $F$ of some paraneterized type $T$.
+> 
+> * if $F$ is covariant, $T<A> <: T<B>$
+> * if $F$ is contravariant, $T<A> :> T<B>$
+> * if $F$ is invariant, $T<A> <:> T<B>$
+> 
+> Use-site variance allows the user to change the type variance of an *invariant* type parameter by specifying it on the corresponding type argument.
+> `out A` means covariant type argument, `in A` means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some parameterized type $T$, subtyping for use-site variance has the following rules.
+> 
+> * $T<out A> <: T<out B>$
+> * $T<in A> :> T<in B>$
+> * $T<A> <: T<out A>$
+> * $T<A> <: T<in A>$
+> * $T<in A> <:> T<out A>$
+
+For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
 
 ###### Declaration-site variance
 
@@ -301,37 +324,51 @@ To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$
 
 * $F$ is a type parameter available in the current type context $\Gamma$
 
-TODO(type projections are not allowed on functions and properties)
+> Note: a mnemonic to remember co- and contravariant type parameter notation is as follows: $\triangleleft F$ allows to covariantly get the value *out* of $F$, $\triangleright F$ allows to contravariantly put the value *in* to $F$.
 
-TODO(no type projections on supertype type arguments)
+> Important: declaration-site variance can be used only when declaring types, i.e., type parameters of functions cannot be variant.
 
-TODO(conflicting projections)
+> Example:
+> 
+> ```kotlin
+> TODO()
+> ```
 
 ###### Use-site variance
 
 Kotlin also supports use-site variance, by specifying the variance for type arguments. Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.
 
-To represent a valid invariant type argument of iPACT $T$, $A$ should satisfy the following conditions.
+To represent a valid invariant type argument $A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
     - a well-formed concrete type
     - a type parameter available in the current type context $\Gamma$
 
-To represent a valid covariant type argument $\triangleleft A$ of iPACT $T$, $\triangleleft A$ should satisfy the following conditions.
+To represent a valid covariant type argument $\triangleleft A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
     - a well-formed concrete type
-    - a type parameter available in the current type context $\Gamma$
+    - a non-contravariant type parameter available in the current type context $\Gamma$
+* $F$ must *not* be a contravariant type parameter
 
-To represent a valid contravariant type argument $\triangleright A$ of iPACT $T$, $\triangleright A$ should satisfy the following conditions.
+To represent a valid contravariant type argument $\triangleright A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
 
 * $A$ must be one of the following kinds
     - a well-formed concrete type
-    - a type parameter available in the current type context $\Gamma$
+    - a non-covariant type parameter available in the current type context $\Gamma$
+* $F$ must *not* be a covariant type parameter
+
+> Note: these rules mean it is impossible to have a type parameter or argument in both co- and contravariant positions at the same time.
 
 In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [here][Generics]).
 
-TODO(Clean-up this mess)
+> Important: use-site variance cannot be used when declaring a supertype.
+
+> Example:
+> 
+> ```kotlin
+> TODO()
+> ```
 
 ##### Type capturing
 
