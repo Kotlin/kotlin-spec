@@ -8,8 +8,11 @@ TODO()
 :::
 
 Unlike some other languages, Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions.
-This section focuses on those statements that are *not* expressions or declarations.
+This section focuses only on those statements that are *not* expressions or declarations.
 For information on those parts of Kotlin, please refer to the [Expressions][Expressions] and [Declarations][Declarations] sections of the specification.
+
+> Example: Kotlin supports using [conditionals][Conditional expression] both as expressions and as statements.
+> As their use as expressions is more general, detailed information about conditionals is available in the [Expressions][Expressions] section of the specification.
 
 ### Assignments
 
