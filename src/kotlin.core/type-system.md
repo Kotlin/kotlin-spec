@@ -304,6 +304,8 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > * $T<A> <: T<in A>$
 > * $T<in A> <:> T<out A>$
 
+> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have T<in A out B>.
+
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
 
 ###### Declaration-site variance
@@ -326,12 +328,53 @@ To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$
 
 > Note: a mnemonic to remember co- and contravariant type parameter notation is as follows: $\triangleleft F$ allows to covariantly get the value *out* of $F$, $\triangleright F$ allows to contravariantly put the value *in* to $F$.
 
-> Important: declaration-site variance can be used only when declaring types, i.e., type parameters of functions cannot be variant.
+> Important: declaration-site variance can be used only when declaring types, e.g., type parameters of functions cannot be variant.
 
 > Example:
 > 
 > ```kotlin
-> TODO()
+> // A parameterized type with an invariant type parameter
+> interface Invariant<A>
+> // A parameterized type with a covariant type parameter
+> interface Out<out A>
+> // A parameterized type with a contravariant type parameter
+> interface In<in A>
+> 
+> fun testInvariant() {
+>     var invInt: Invariant<Int> = ...
+>     var invNumber: Invariant<Number> = ...
+>     
+>     if (random) invInt = invNumber // ERROR
+>     else invNumber = invInt // ERROR
+>     
+>     // Invariant type parameters do not create subtyping
+> }
+>
+> fun testOut() {
+>     var outInt: Out<Int> = ...
+>     var outNumber: Out<Number> = ...
+>     
+>     if (random) outInt = outNumber // ERROR
+>     else outNumber = outInt // OK
+>     
+>     // Covariant type parameters create "same-way" subtyping
+>     //   Int <: Number => Out<Int> <: Out<Number>
+>     // (more specific type Out<Int> can be assigned
+>     //  to a less specific type Out<Number>)
+> }
+> 
+> fun testIn() {
+>     var inInt: In<Int> = ...
+>     var inNumber: In<Number> = ...
+>     
+>     if (random) inInt = inNumber // OK
+>     else inNumber = inInt // ERROR
+>     
+>     // Contravariant type parameters create "opposite-way" subtyping
+>     //   Int <: Number => In<Int> :> In<Number>
+>     // (more specific type In<Number> can be assigned
+>     //  to a less specific type In<Int>)
+> }
 > ```
 
 ###### Use-site variance
@@ -360,14 +403,57 @@ To represent a valid contravariant type argument $\triangleright A$, correspondi
 
 > Note: these rules mean it is impossible to have a type parameter or argument in both co- and contravariant positions at the same time.
 
-In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [here][Generics]).
+In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
+
+TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)
 
 > Important: use-site variance cannot be used when declaring a supertype.
 
 > Example:
-> 
 > ```kotlin
-> TODO()
+> // A parameterized type with an invariant type parameter
+> interface Inv<A>
+> 
+> fun test() {
+>     var invInt: Inv<Int> = ...
+>     var invNumber: Inv<Number> = ...
+>     var outInt: Inv<out Int> = ...
+>     var outNumber: Inv<out Number> = ...
+>     var inInt: Inv<in Int> = ...
+>     var inNumber: Inv<in Number> = ...
+>     
+>     when (random) {
+>         1 -> {
+>             inInt = invInt    // OK
+>             // T<in Int> :> T<Int>
+>             
+>             inInt = invNumber // OK
+>             // T<in Int> :> T<in Number> :> T<Number>
+>         }
+>         2 -> {
+>             outNumber = invInt    // OK
+>             // T<out Number> :> T<out Int> :> T<Int>
+>             
+>             outNumber = invNumber // OK
+>             // T<out Number> :> T<Number>
+>         }
+>         3 -> {
+>             invInt = inInt  // ERROR
+>             invInt = outInt // ERROR
+>             // It is invalid to assign less specific type
+>             // to a more specific one
+>             //   T<Int> <: T<in Int>
+>             //   T<Int> <: T<out Int>
+>         }
+>         4 -> {
+>             inInt = outInt    // ERROR
+>             inInt = outNumber // ERROR
+>             // types with co- and contravariant type parameters
+>             // are not connected by subtyping
+>             //   T<in Int> <:> T<out Int>
+>         }
+>     }
+> }
 > ```
 
 ##### Type capturing
