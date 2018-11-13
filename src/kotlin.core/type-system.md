@@ -288,23 +288,23 @@ To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$
 To implement subtyping between parameterized types, Kotlin uses *mixed-site variance* --- a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java.
 Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).
 
-> Info: variance is a way of describing how [subtyping][Subtyping] works for parameterized types.
-> With declaration-site variance, for two types $A <: B$, subtyping between $T<A>$ and $T<B>$ depends on the variance of type parameter $F$ of some paraneterized type $T$.
+> Info: *variance* is a way of describing how [subtyping][Subtyping] works for *variant* parameterized types.
+> With declaration-site variance, for two types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some paraneterized type $T$.
 > 
-> * if $F$ is covariant, $T<A> <: T<B>$
-> * if $F$ is contravariant, $T<A> :> T<B>$
-> * if $F$ is invariant, $T<A> <:> T<B>$
+> * if $F$ is covariant, `T<A> <: T<B>`
+> * if $F$ is contravariant, `T<A> :> T<B>`
+> * if $F$ is invariant, `T<A> <:> T<B>`
 > 
 > Use-site variance allows the user to change the type variance of an *invariant* type parameter by specifying it on the corresponding type argument.
 > `out A` means covariant type argument, `in A` means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some parameterized type $T$, subtyping for use-site variance has the following rules.
 > 
-> * $T<out A> <: T<out B>$
-> * $T<in A> :> T<in B>$
-> * $T<A> <: T<out A>$
-> * $T<A> <: T<in A>$
-> * $T<in A> <:> T<out A>$
+> * `T<out A> <: T<out B>`
+> * `T<in A> :> T<in B>`
+> * `T<A> <: T<out A>`
+> * `T<A> <: T<in A>`
+> * `T<in A> <:> T<out A>`
 
-> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have T<in A out B>.
+> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>`.
 
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
 
@@ -316,7 +316,8 @@ To represent a valid invariant type parameter of PACT $T$, $F$ should satisfy th
 
 * $F$ is a type parameter available in the current type context $\Gamma$
 
-Projected type parameters are abstract types which are used to declare a type parameter as *covariant* or *contravariant*. The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
+Projected type parameters are abstract types which are used to declare a type parameter as *covariant* or *contravariant*.
+The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
 
 To represent a valid covariant type parameter $\triangleleft F$ of PACT $T$, $\triangleleft F$ should satisfy the following conditions.
 
@@ -379,7 +380,8 @@ To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$
 
 ###### Use-site variance
 
-Kotlin also supports use-site variance, by specifying the variance for type arguments. Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.
+Kotlin also supports use-site variance, by specifying the variance for type arguments.
+Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.
 
 To represent a valid invariant type argument $A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
 
@@ -403,7 +405,7 @@ To represent a valid contravariant type argument $\triangleright A$, correspondi
 
 > Note: these rules mean it is impossible to have a type parameter or argument in both co- and contravariant positions at the same time.
 
-In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *star-projected* type argument, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
+In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *bivariant* type argument $\star A$, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
 
 TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)
 
@@ -458,23 +460,33 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 
 ##### Type capturing
 
-Type capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
+Type capturing (similarly to Java capture conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
+
+The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . \texttt{A<X>}$.
+Informally, a bounded existential type describes a *set* of possible types, which satisfy its bound constraints.
+Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
+We call these type variables *captured* types.
 
 For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the type parameter $F_i$ and type argument $A_i$.
 
-TODO(Does this set describe a type universe?)
+> Note: **All** applicable rules are used to create the resulting constraint set.
 
-TODO(Blah-blah about existential types?)
+* For a covariant type parameter $\triangleleft  F_i$, if $A_i$ is an ill-formed type or a contravariant type argument, $C_i$ is an ill-formed type.
+  Otherwise, $C_i <: A_i$.
+* For a contravariant type parameter $\triangleright F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $C_i$ is an ill-formed type.
+  Otherwise, $C_i :> A_i$.
+* For a bounded type parameter $F_i <: B_1, \ldots, B_n$, $C_i <: B_i[C_1, \ldots, C_n]$.
+* For a covariant type argument $\triangleleft A_i$, if $F_i$ is a contravariant type parameter, $C_i$ is an ill-formed type.
+  Otherwise, $C_i <: A_i$.
+* For a contravariant type argument $\triangleright A_i$, if $F_i$ is a covariant type parameter, $C_i$ is an ill-formed type.
+  Otherwise, $C_i :> A_i$.
+* For a bivariant type argument $\star A_i$, $kotlin.Nothing <: C_i <: kotlin.Any?$.
+* Otherwise, $C_i = A_i$.
 
-> NB: A captured type $C$ may be viewed as a set of its type constraints $\mathbb{C}$. **All** applicable rules are used to create the resulting constraint set.
+> Note: as every captured type corresponds to a fresh type variable, two different captured types $C_i$ and $C_j$ which describe the same set of possible types (i.e., their constraint sets are equals) are *not* considered equal.
+> However, in some cases [type inference][Type inference] may approximate (or close) a captured type $C$ to a concrete type $C^{\approx}$; in our case, $C_i^{\approx} \equiv C_j^{approx}$.
 
-* If $\triangleleft  F_i$ is a covariant type parameter and $A_i$ is not a concrete type, covariant or star-projected type argument, it is an error. Otherwise, $C_i <: A_i$.
-* If $\triangleright F_i$ is a contravariant type parameter and $A_i$ is not a concrete type, contravariant or star-projected type argument, it is an error. Otherwise, $C_i :> A_i$.
-* If $F_i <: B_1, \ldots, B_n$ is a bounded type parameter, $C_i <: B_i[C_1, \ldots, C_n]$
-* If $\triangleleft A_i$ is a covariant type argument, $C_i <: A_i$
-* If $\triangleright A_i$ is a contravariant type argument, $C_i :> A_i$
-* If $\star A_i$ is a star-projected type argument, $kotlin.Nothing <: C_i <: kotlin.Any?$
-* Otherwise, $C_i = A_i$
+TODO(Need to think more about this part)
 
 #### Function types
 
@@ -737,6 +749,7 @@ The _greatest lower bound_ of types $A$ and $B$ is a lower bound $L$ of $A$ and 
 
 ### References
 
-1. Tate, Ross. "Mixed-site variance." FOOL, 2013.
+1. Ross Tate. "Mixed-site variance." FOOL, 2013.
+2. Ross Tate, Alan Leung, and Sorin Lerner. "Taming wildcards in Java's type system." PLDI, 2011.
 
 TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. An example of the second distinction would be difference between $(A?)!!$ and $((A!!)?)!!$. Are they the same type? Are they different, but equivalent? Same goes for $(A..B)?$ vs $(A?..B?)$ and such.)
