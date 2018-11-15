@@ -503,7 +503,7 @@ consists of
 
 and may be considered the following instantiation of a special parameterized abstract classifier type $FunctionN$
 
-$$FunctionN(\triangleleft P_1, \ldots, \triangleleft P_n, \triangleright RT)$$
+$$FunctionN(\triangleright P_1, \ldots, \triangleright P_n, \triangleleft RT)$$
 
 $$FT(A_1, \ldots, A_n) \rightarrow R \equiv FunctionN[A_1, \ldots, A_n, R]$$
 
@@ -530,11 +530,29 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
-TODO(The relation between function types and classifier types (every function is actually an interface, `kotlin.Function` is also an interface))
+> Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is neccessary.
+> For example, all function types $FunctionN$ may be subtypes of a general argument-agnostic type $Function$ for the purpose of unification.
 
-TODO(The variance of arguments for function types)
-
-TODO(Make the decision about notation (right now it is shaky a.f.))
+> Example:
+> 
+> ```kotlin
+> // A function of type Function1<Number, Number>
+> //   or (Number) -> Number
+> fun foo(i: Number): Number = ...
+> 
+> // A valid assignment w.r.t. function type variance
+> // Function1<in Int, out Any> :> Function1<in Number, out Number>
+> val fooRef: (Int) -> Any = ::foo
+> 
+> // A function with receiver of type Function1<Number, Number>
+> //   or Number.() -> Number
+> fun Number.bar(): Number = ...
+> 
+> // A valid assignment w.r.t. function type variance
+> // Receiver is just yet another function argument
+> // Function1<in Int, out Any> :> Function1<in Number, out Number>
+> val barRef: (Int) -> Any = Number::bar
+> ```
 
 #### Array types
 
