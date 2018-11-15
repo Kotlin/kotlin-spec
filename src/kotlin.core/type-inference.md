@@ -47,8 +47,8 @@ Nullability and type conditions are derived in the following way.
 
 - $x$` is `$T$ where $x$ is an applicable expression implies a type condition for $x$ with assumed type $T$;
 - $x$` !is `$T$ where $x$ is an applicable expression implies a negated type condition for $x$ with assumed type $T$;
-- $x$` == null` or `null == `$x$ where $x$ is an applicable expression implies a nullability condition for $x$;
-- $x$` != null` or `null != `$x$ where $x$ is an applicable expression implies a negated nullability condition for $x$;
+- $x$` != null` or `null != `$x$ where $x$ is an applicable expression implies a nullability condition for $x$;
+- $x$` == null` or `null == `$x$ where $x$ is an applicable expression implies a negated nullability condition for $x$;
 - `!`$x$ implies all the conditions implied by $x$, but in negated form;
 - $x$` && `$y$ implies all the non-negated conditions implied by $x$ and $y$ and the intersection of all the negated conditions implied by $x$ and $y$;
 - $x$` || `$y$ implies all the negated conditions implied by $x$ and $y$ and the intersection of all the non-negated conditions implied by $x$ and $y$;
