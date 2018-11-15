@@ -378,14 +378,18 @@ Missing arguments are bound to their default values, if they exist.
 
 #### Variable length parameters
 
-One of the parameters may be designated as being variable length (aka *vararg*). 
-A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position. 
-These arguments are represented inside function body $b$ as an [array of type $P_i$][Array types].
+One of the parameters may be designated as being variable length (aka *vararg*).
+A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position.
+These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
 
-If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. 
-If a variable length parameter has a default value, it should be an expression which evaluates to an [array of type $P_i$][Array types].
+If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.
 
-An array of type $Q <: P_i$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position. 
+If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
+
+An array of type `Array<Q>`$\: <: \:$`ATS(Array<out `$P_i$`>)` may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position.
+
+> Note: this means that, for variable length parameters corresponding to specialized array types, unpacking is possible only for these specialized versions; for a variable length parameter of type `Int`, for example, unpacking is valid only for `IntArray`, and not for `Array<Int>`.
+
 A function invocation may include several spread operator expressions corresponding to the vararg parameter.
 
 #### Extension function declaration

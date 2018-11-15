@@ -556,9 +556,33 @@ i.e., receiver is considered as yet another argument of its function type.
 
 #### Array types
 
-TODO(Everything...)
+Kotlin arrays are represented as a parameterized type `Array<T>`, where `T` is the type of the stored elements, which supports `get`/`set` operations.
+The `Array<T>` type follows the rules of regular PACTs w.r.t. subtyping.
 
-TODO(Primitive type array coercion)
+> Note: unlike Java, arrays in Kotlin are declared as invariant. To use them in a co- or contravariant way, one should use [use-site variance][Use-site variance].
+
+In addition to the general `Array<T>` type, Kotlin also has the following specialized array types:
+
+* `DoubleArray` (for `Array<Double>`)
+* `FloatArray` (for `Array<Float>`)
+* `LongArray` (for `Array<Long>`)
+* `IntArray` (for `Array<Int>`)
+* `ShortArray` (for `Array<Short>`)
+* `ByteArray` (for `Array<Byte>`)
+* `CharArray` (for `Array<Char>`)
+* `BooleanArray` (for `Array<Boolean>`)
+
+These array types structurally match the corresponding `Array<T>` type; i.e., `IntArray` has the same methods and properties as `Array<Int>`.
+However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an `Array<Boolean>`.
+
+> Note: the presense of such specialized types allows the compiler to perform additional array-related optimizations.
+
+*Array type specialization* `ATS(T)` is a transformation of a generic `Array<T>` type to a corresponding specialized version, which works as follows.
+
+* If `Array<T>` has a specialized version `TArray`, `ATS(Array<T>) = TArray`
+* If `Array<T>` does not have a specialized version, `ATS(Array<T>) = Array<T>`
+
+$ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
 #### Flexible types
 
