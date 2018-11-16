@@ -803,7 +803,7 @@ $GLB(A, B)$ has the following properties, which may be used to *normalize* or *s
 comment: |
     The properties of $GLB$ have several important implications:
 
-    - $\forall A, B, C : C <: (A \times C) <: B \implies C <: (A \times B)$
+    - $\forall A, B, C : C <: GLB(A, C) <: B \implies C <: GLB(A, B)$
 
 ---
 
