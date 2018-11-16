@@ -90,6 +90,7 @@ For the purposes of this section, we establish the following type kinds --- diff
 * [Flexible types][Flexible types]
 * [Nullable types][Nullable types]
 * [Intersection types][Intersection types]
+* [Union types][Union types]
 * TODO(GLB, LUB)
 * TODO(Error / invalid types)
 
@@ -586,9 +587,12 @@ $ATS$ takes an important part in how [variable length parameters][Variable lengt
 
 #### Flexible types
 
-Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. However, this presents a problem in that some platforms may not support null safety the way Kotlin does. To deal with this, Kotlin supports *gradual typing* in the form of flexible types.
+Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code.
+However, this presents a problem in that some platforms may not support null safety the way Kotlin does.
+To deal with this, Kotlin supports *gradual typing* in the form of flexible types.
 
-A flexible type represents a range of possible types between type $L$ (lower bound) and type $U$ (upper bound), written as $(L..U)$. One should note flexible types are abstract and *non-denotable*, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
+A flexible type represents a range of possible types between type $L$ (lower bound) and type $U$ (upper bound), written as $(L..U)$.
+One should note flexible types are *non-denotable*, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.
 
 To represent a well-formed flexible type, $(L..U)$ should satisfy the following conditions.
 
@@ -597,29 +601,43 @@ To represent a well-formed flexible type, $(L..U)$ should satisfy the following 
 * $\neg (L <: U)$
 * $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
 
-As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping]). However, the actual type will be a specific type between $L$ and $U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
+As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping for flexible types]).
+However, the actual type will be a specific type between $L$ and $U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
 
 TODO(Details of assertion generation?)
 
+##### Dynamic type
+
+Kotlin includes a special *dynamic* type, which is a flexible type $(\texttt{kotlin.Nothing}..\texttt{kotlin.Any?})$.
+By definition, this type represents *any* possible Kotlin type, and may be used to support interoperability with dynamically typed libraries, platforms or languages.
+
 ##### Platform types
 
-TODO(Platform types as flexible types)
+The main use cases for flexible types are *platform types* --- types which the Kotlin compiler uses, when interoperating with code written for another platform (e.g., Java).
+In this case all types on the interoperability boundary are subject to *flexibilization* --- the process of converting a platform-specific type to a Kotlin-compatible flexible type.
 
-TODO(Reference for different platforms)
+For further details on how *flexibilization* is done, see:
+
+* [Platform types for Java][TODO(need a way to have same section names in different parts of the spec)]
+
+> Important: platform types should not be confused with *multi-platform projects* --- another Kotlin feature targeted at supporting platform interop.
 
 #### Nullable types
 
-Kotlin supports null safety by having two type universes --- nullable and non-nullable. All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
+Kotlin supports null safety by having two type universes --- nullable and non-nullable.
+All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
-To specify a nullable version of type `T`, one needs to use `T?` as a type. Redundant nullability specifiers are ignored --- `T???` is equivalent to `T?`.
+To specify a nullable version of type `T`, one needs to use `T?` as a type.
+Redundant nullability specifiers are ignored --- `T???` is equivalent to `T?`.
 
-> Informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
+> Note: informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
 
 To represent a well-formed nullable type, $T?$ should satisfy the following conditions.
 
 * $T$ is a well-formed type
 
-If an operation is safe regardless of absence or presence of `null`, i.e., assignment of one nullable value to another, it can be used as-is for nullable types. For operations on $T?$ which may violate null safety, one has the following null-safe options:
+If an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
+For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
 
 1. Use safe operations
     * [safe call][Safe call expression]
@@ -633,39 +651,20 @@ If an operation is safe regardless of absence or presence of `null`, i.e., assig
 
 #### Intersection types
 
-Intersection types are special non-denotable types that are used to express (loosely) that a value has two or more types to choose from.
-Intersection type of two non-nullable types $A$ and $B$ is denoted $A \amp B$. Intersection types are used for [smart casting][Smart casts].
-Intersection types are commutative and associative, meaning that $A \amp B$ is the same type as $B \amp A$ and $A \amp (B \amp C)$
-is the same type as $A \amp B \amp C$.
+Intersection types are special *non-denotable* types used to express the fact that a value belongs to *several* types at the same time.
 
-For presentation purposes, we will normalize intersection type operands lexicographically based on their notation.
+Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is defined as the [greatest lower bound][Greatest lower bound] of its components $GLB(A, B)$.
+Thus, the procedure to calculate GLB may be used to *normalize* an intersection type.
 
-##### Type intersection
+This also means intersection types are commutative and associative, meaning that $A \amp B$ is the same type as $B \amp A$, and $A \amp (B \amp C)$ is the same type as $A \amp B \amp C$.
 
-The primary operation on types that is used to construct intersection types is called type intersection (do not confuse the two).
-Type intersection $A \times B$ of types $A$ and $B$ has the following properties:
+> Note: for presentation purposes, we will order intersection type operands lexicographically based on their notation.
 
-- it is commutative and associative, just like set intersection (for simplicity, all other properties will be shown for only one order of operands, meaning they hold under both commutativity and associativity)
-- it is idempotent, meaning that $A \times A = A$
-- if $A <: B$ then $A \times B = A$
-    - $\times$ has identity at `kotlin.Any`: $\forall T . T \times \mathtt{kotlin.Any} = T$
-- if $A$ is non-nullable, than $A \times B$ is also non-nullable
-- if both $A$ and $B$ are nullable, $A \times B = (A!! \times B!!)?$
-- if type $A$ is nullable and type $B$ is not, $A \times B = A!! \times B$
-- if both $A$ and $B$ are non-nullable and no other rules apply, $A \times B = A \amp B$
+One of the main uses of intersection types are [smart casts][Smart casts].
 
-These properties have several important implications:
+#### Union types
 
-- $\forall A, B : (A \times B) <: A \land (A \times B) <: B$
-- $\forall A, B, C : C <: (A \times C) <: B \implies C <: (A \times B)$.
-
-TODO(Prove the implications??)
-
-TODO(Intersection of flexible types)
-
-TODO(Intersection of generics)
-
-TODO(If $A <: B$ and $B <: A$, what is $A \times B$???)
+TODO(Everything)
 
 ### Type context
 
@@ -673,6 +672,8 @@ TODO(Type contexts and their relation to scopes)
 TODO(Inner vs nested type contexts)
 
 ### Subtyping
+
+TODO(Need to change the way we think about subtyping)
 
 Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected. The subtyping relation $<:$ is:
 
@@ -764,11 +765,12 @@ TODO(How is generics different from type parameters? Or are we going to get into
 
 TODO(Here be a lot of dragons...)
 
-TODO(Type parameters are considered to be non-nullable, even if they are not such...)
-
 ### Upper and lower bounds
 
-A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$. A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$. As the type system of Kotlin is bounded by definition (the upper bound of all types being $\text{kotlin.Any}?$, while the lower bound of all types being $\text{kotlin.Nothing}$, see the rest of this section for details), any two types have at least one lower bound and at least one upper bound.
+A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$.
+A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$.
+
+> Note: as the type system of Kotlin is bounded by definition (the upper bound of all types is $\text{kotlin.Any}?$, and the lower bound of all types is $\text{kotlin.Nothing}$), any two types have at least one lower bound and at least one upper bound.
 
 #### Least upper bound
 
@@ -778,16 +780,38 @@ The _least upper bound_ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B
 - TODO(check this for shady cases)
 - TODO(actual algorithm for computing LUB)
 - TODO(generics, especially contravariant TP, make the enumeration impossible, but GLB saves the day)
+- TODO(LUB for flexible types)
 
 #### Greatest lower bound
 
-The _greatest lower bound_ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types that is greater by subtyping relation than $L$. Enumerating all subtypes of a given type is impossible in general, but may easily be show that, in the presense of intersection types ([again, see type intersection section][Type intersection]), an intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
+The _greatest lower bound_ $GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
+Enumerating all subtypes of a given type is impossible in general, but in the presense of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
 
-> Note: let's assume that there is a type $C$ that is not an intersection of types $A$ and $B$, but is the greatest lower bound of $A$ and $B$. This, by definition of type intersection, means that it is a subtype of $A \times B$, which is also a lower bound of $A$ and $B$, and is greater. This is a contradiction to the definition of greatest lower bound, meaning that our assumption was wrong. Hence, the intersection of any given types $A$ and $B$ is always the greatest lower bound of $A$ and $B$.
+$GLB(A, B)$ has the following properties, which may be used to *normalize* or *simplify* it.
 
-- TODO(maybe throw out the whole concept of $\times$ and just make that the GLB?)
+- it is commutative and associative: $GLB(A, B) = GLB(B, A)$
+- it is idempotent: $GLB(A, A) = A$
+- if $A <: B$, $GLB(A, B) = A$
+- if $A$ is non-nullable, $GLB(A, B)$ is also non-nullable
+- if both $A$ and $B$ are nullable, $GLB(A, B) = GLB(A!!, B!!)?$
+- if $A$ is nullable and $B$ is not, $GLB(A, B) = GLB(A!!, B)$
+- if no other rules apply, $GLB(A, B) = A \amp B$
+
+> Note: these properties follow from the [subtyping relation][Subtyping] and the definition of greatest lower bound.
+
+---
+comment: |
+    The properties of $GLB$ have several important implications:
+
+    - $\forall A, B, C : C <: (A \times C) <: B \implies C <: (A \times B)$
+
+---
+
 - TODO(relation between LUB and GLB in contravariant cases)
 - TODO(again, what to do with equivalent types?)
+- TODO(GLB for flexible types)
+- TODO(GLB for parameterized types)
+- TODO(If $A <: B$ and $B <: A$, what is GLB($A, B)$???)
 
 ### References
 
