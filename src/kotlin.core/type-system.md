@@ -38,6 +38,15 @@ $T\lbrack S_1, \ldots, S_n\rbrack$
 $A \amp B$
 ~ Intersection type of $A$ and $B$
 
+$A | B$
+~ Union type of $A$ and $B$
+
+$\GLB$
+~ Greatest lower bound
+
+$\LUB$
+~ Least upper bound
+
 Type parameter
 ~ Formal type argument of a parameterized type
 
@@ -91,7 +100,6 @@ For the purposes of this section, we establish the following type kinds --- diff
 * [Nullable types][Nullable types]
 * [Intersection types][Intersection types]
 * [Union types][Union types]
-* TODO(GLB, LUB)
 * TODO(Error / invalid types)
 
 We distinguish between *concrete* and *abstract* types.
@@ -463,7 +471,7 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 
 Type capturing (similarly to Java capture conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
 
-The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . \texttt{A<X>}$.
+The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . \mathtt{A<X>}$.
 Informally, a bounded existential type describes a *set* of possible types, which satisfy its bound constraints.
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
@@ -651,14 +659,16 @@ For operations on $T?$ which may violate null safety, e.g., access to a property
 
 #### Intersection types
 
-Intersection types are special *non-denotable* types used to express the fact that a value belongs to *several* types at the same time.
+Intersection types are special *non-denotable* types used to express the fact that a value belongs to *all* of *several* types at the same time.
 
-Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is defined as the [greatest lower bound][Greatest lower bound] of its components $GLB(A, B)$.
-Thus, the procedure to calculate GLB may be used to *normalize* an intersection type.
+Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is equivalent to the [greatest lower bound][Greatest lower bound] of its components $GLB(A, B)$.
+Thus, the normalization procedure for GLB may be used to *normalize* an intersection type.
 
-This also means intersection types are commutative and associative, meaning that $A \amp B$ is the same type as $B \amp A$, and $A \amp (B \amp C)$ is the same type as $A \amp B \amp C$.
+> Note: this means intersection types are commutative and associative (following the GLB properties); e.g., $A \amp B$ is the same type as $B \amp A$, and $A \amp (B \amp C)$ is the same type as $A \amp B \amp C$.
 
-> Note: for presentation purposes, we will order intersection type operands lexicographically based on their notation.
+> Note: for presentation purposes, we will henceforth order intersection type operands lexicographically based on their notation.
+
+When needed, the compiler may *approximate* an intersection type to a *denotable concrete* type using [type approximation][Type approximation].
 
 One of the main uses of intersection types are [smart casts][Smart casts].
 
@@ -761,7 +771,7 @@ TODO(How the existence check works)
 
 ### Generics
 
-TODO(How is generics different from type parameters? Or are we going to get into deep technical detail?)
+TODO(How are generics different from type parameters? Or are we going to get into deep technical detail?)
 
 TODO(Here be a lot of dragons...)
 
@@ -774,13 +784,47 @@ A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$.
 
 #### Least upper bound
 
-The _least upper bound_ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types that is less (by subtyping relation) than $U$. Note that among the supertypes of $A$ and $B$ there may be several types that adhere to these properties and are not related by subtyping. In such situation, an intersection of these types is the least upper bound of $A$ and $B$, as, by definition, the intersection $I$ of types $X$ and $Y$ is less than both $X$ and $Y$.
+The _least upper bound_ $\LUB(A, B)$ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types which is less by subtyping relation than $U$.
 
-- TODO(but what if there are equivalent types arising?)
-- TODO(check this for shady cases)
-- TODO(actual algorithm for computing LUB)
-- TODO(generics, especially contravariant TP, make the enumeration impossible, but GLB saves the day)
-- TODO(LUB for flexible types)
+$\LUB(A, B)$ has the following properties, which may be used to *normalize* it.
+This normalization procedure, if finite, creates a *canonical* representation of LUB.
+
+> Note: the same procedure may be used to normalize [union types][Union types].
+
+- $\LUB(A, B) = \LUB(B, A)$
+- $\LUB(A, A) = A$
+
+&nbsp;
+
+- if $A <: B$, $\LUB(A, B) = B$
+
+&nbsp;
+
+- if $A$ is nullable, $\LUB(A, B)$ is also nullable
+- if both $A$ and $B$ are nullable, $\LUB(A, B) = \LUB(A!!, B!!)?$
+- if $A$ is nullable and $B$ is not, $\LUB(A, B) = \LUB(A!!, B)?$
+
+&nbsp;
+
+- if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\LUB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
+    + $\phi(out X, out Y) = X | Y = \LUB(X, Y)$
+    + $\phi(in X, in Y) = \GLB(X, Y) = X \amp Y$
+    + $\phi(out X, in Y) = \star$
+    + $\phi(in X, out Y) = \star$
+    + $\phi(inv X, inv X) = X$
+    + $\phi(inv X, inv Y) = \phi(out X, out Y)$
+    + TODO(we may also choose the `in` projection here, do we wanna do it though?)
+
+&nbsp;
+
+- if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
+- if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
+
+&nbsp;
+
+- if no other rules apply, $\LUB(A, B) = A | B$
+
+TODO(actual algorithm for computing LUB)
 
 #### Greatest lower bound
 
