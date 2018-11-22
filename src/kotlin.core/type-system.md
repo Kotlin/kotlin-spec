@@ -661,7 +661,7 @@ For operations on $T?$ which may violate null safety, e.g., access to a property
 
 Intersection types are special *non-denotable* types used to express the fact that a value belongs to *all* of *several* types at the same time.
 
-Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is equivalent to the [greatest lower bound][Greatest lower bound] of its components $GLB(A, B)$.
+Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is equivalent to the [greatest lower bound][Greatest lower bound] of its components $\GLB(A, B)$.
 Thus, the normalization procedure for GLB may be used to *normalize* an intersection type.
 
 > Note: this means intersection types are commutative and associative (following the GLB properties); e.g., $A \amp B$ is the same type as $B \amp A$, and $A \amp (B \amp C)$ is the same type as $A \amp B \amp C$.
@@ -674,7 +674,16 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 
 #### Union types
 
-TODO(Everything)
+> Important: Kotlin does **not** have union types in its type system.
+> However, they make reasoning about several type system features easier.
+> Therefore, we decided to include a brief intro to the union types here.
+
+Union types are special *non-denotable* types used to express the fact that a value belongs to *one* of *several* possible types.
+
+Union type of two types $A$ and $B$ is denoted $A | B$ and is equivalent to the [least upper bound][Least upper bound] of its components $\LUB(A, B)$.
+Thus, the normalization procedure for LUB may be used to *normalize* a union type.
+
+Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type approximation][Type approximation].
 
 ### Type context
 
@@ -825,37 +834,54 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if no other rules apply, $\LUB(A, B) = A | B$
 
 TODO(actual algorithm for computing LUB)
+TODO(what do we do if this procedure loops?)
 
 #### Greatest lower bound
 
-The _greatest lower bound_ $GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
+The _greatest lower bound_ $\GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
 Enumerating all subtypes of a given type is impossible in general, but in the presense of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
 
-$GLB(A, B)$ has the following properties, which may be used to *normalize* or *simplify* it.
+$\GLB(A, B)$ has the following properties, which may be used to *normalize* it.
+This normalization procedure, if finite, creates a *canonical* representation of GLB.
 
-- it is commutative and associative: $GLB(A, B) = GLB(B, A)$
-- it is idempotent: $GLB(A, A) = A$
-- if $A <: B$, $GLB(A, B) = A$
-- if $A$ is non-nullable, $GLB(A, B)$ is also non-nullable
-- if both $A$ and $B$ are nullable, $GLB(A, B) = GLB(A!!, B!!)?$
-- if $A$ is nullable and $B$ is not, $GLB(A, B) = GLB(A!!, B)$
+- $\GLB(A, B) = \GLB(B, A)$
+- $\GLB(A, A) = A$
+
+&nbsp;
+
+- if $A <: B$, $\GLB(A, B) = A$
+
+&nbsp;
+
+- if $A$ is non-nullable, $\GLB(A, B)$ is also non-nullable
+- if both $A$ and $B$ are nullable, $\GLB(A, B) = \GLB(A!!, B!!)?$
+- if $A$ is nullable and $B$ is not, $\GLB(A, B) = \GLB(A!!, B)$
+
+&nbsp;
+
+- if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\GLB(A, B) = (\GLB(L_A, L_B)..\GLB(U_A, U_B))$
+- if $A = (L_A..U_A)$ and $B$ is not flexible, $\GLB(A, B) = (\GLB(L_A, B)..\GLB(U_A, B))$
+
+&nbsp;
+
 - if no other rules apply, $GLB(A, B) = A \amp B$
-
-> Note: these properties follow from the [subtyping relation][Subtyping] and the definition of greatest lower bound.
 
 ---
 comment: |
-    The properties of $GLB$ have several important implications:
+    The properties of $\GLB$ have several important implications:
 
-    - $\forall A, B, C : C <: GLB(A, C) <: B \implies C <: GLB(A, B)$
+    - $\forall A, B, C : C <: \GLB(A, C) <: B \implies C <: \GLB(A, B)$
 
 ---
 
-- TODO(relation between LUB and GLB in contravariant cases)
-- TODO(again, what to do with equivalent types?)
-- TODO(GLB for flexible types)
 - TODO(GLB for parameterized types)
 - TODO(If $A <: B$ and $B <: A$, what is GLB($A, B)$???)
+- TODO(actual algorithm for computing GLB)
+- TODO(what do we do if this procedure loops?)
+
+### Type approximation
+
+TODO()
 
 ### References
 
@@ -863,3 +889,5 @@ comment: |
 2. Ross Tate, Alan Leung, and Sorin Lerner. "Taming wildcards in Java's type system." PLDI, 2011.
 
 TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. An example of the second distinction would be difference between $(A?)!!$ and $((A!!)?)!!$. Are they the same type? Are they different, but equivalent? Same goes for $(A..B)?$ vs $(A?..B?)$ and such.)
+
+TODO(another big question is: do we want to formally prove all the different thing here?)
