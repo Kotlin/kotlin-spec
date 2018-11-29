@@ -542,6 +542,8 @@ i.e., receiver is considered as yet another argument of its function type.
 > Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is neccessary.
 > For example, all function types $FunctionN$ may be subtypes of a general argument-agnostic type $Function$ for the purpose of unification.
 
+TODO(We already have `kotlin.Function` settled in this spec earlier. The reason for this is that overloading needs it)
+
 > Example:
 > 
 > ```kotlin
@@ -581,6 +583,8 @@ In addition to the general `Array<T>` type, Kotlin also has the following specia
 * `CharArray` (for `Array<Char>`)
 * `BooleanArray` (for `Array<Boolean>`)
 
+TODO(We need to make a stand on whether we prefix builtins with `kotlin.` or not)
+
 These array types structurally match the corresponding `Array<T>` type; i.e., `IntArray` has the same methods and properties as `Array<Int>`.
 However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an `Array<Boolean>`.
 
@@ -619,6 +623,8 @@ TODO(Details of assertion generation?)
 Kotlin includes a special *dynamic* type, which is a flexible type $(\texttt{kotlin.Nothing}..\texttt{kotlin.Any?})$.
 By definition, this type represents *any* possible Kotlin type, and may be used to support interoperability with dynamically typed libraries, platforms or languages.
 
+TODO(We should reconsider defining `dynamic` as a flexible type, cause it doesn't behave like one in many situations)
+
 ##### Platform types
 
 The main use cases for flexible types are *platform types* --- types which the Kotlin compiler uses, when interoperating with code written for another platform (e.g., Java).
@@ -636,7 +642,9 @@ Kotlin supports null safety by having two type universes --- nullable and non-nu
 All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
 To specify a nullable version of type `T`, one needs to use `T?` as a type.
-Redundant nullability specifiers are ignored --- `T???` is equivalent to `T?`.
+Redundant nullability specifiers are ignored --- `T???` is the same as `T?`.
+
+TODO(Equivalent or the same? These are two very different things as we have a-little-bit-broken equivalence)
 
 > Note: informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
 
@@ -800,7 +808,7 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Note: the same procedure may be used to normalize [union types][Union types].
 
-- $\LUB(A, B) = \LUB(B, A)$
+- $\LUB(A, B) = \LUB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\LUB(A, A) = A$
 
 &nbsp;
@@ -816,12 +824,12 @@ This normalization procedure, if finite, creates a *canonical* representation of
 &nbsp;
 
 - if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\LUB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
-    + $\phi(out X, out Y) = X | Y = \LUB(X, Y)$
-    + $\phi(in X, in Y) = \GLB(X, Y) = X \amp Y$
+    + $\phi(out X, out Y) = X | Y = \LUB(X, Y)$ TODO(Why the union here? Does it add anything?)
+    + $\phi(in X, in Y) = \GLB(X, Y) = X \amp Y$ TODO(Why an intersection here? Does it add anything?)
     + $\phi(out X, in Y) = \star$
     + $\phi(in X, out Y) = \star$
-    + $\phi(inv X, inv X) = X$
-    + $\phi(inv X, inv Y) = \phi(out X, out Y)$
+    + $\phi(inv X, inv X) = X$ TODO(Why this case at all? It is directly implied from the case below and ones above)
+    + $\phi(inv X, inv Y) = \phi(out X, out Y)$ TODO(It is not the same as invariant case)
     + TODO(we may also choose the `in` projection here, do we wanna do it though?)
 
 &nbsp;
@@ -836,15 +844,19 @@ This normalization procedure, if finite, creates a *canonical* representation of
 TODO(actual algorithm for computing LUB)
 TODO(what do we do if this procedure loops?)
 
+TODO(Why do we need union types again?)
+
 #### Greatest lower bound
 
 The _greatest lower bound_ $\GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
 Enumerating all subtypes of a given type is impossible in general, but in the presense of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
 
+TODO(It's not if types are related)
+
 $\GLB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of GLB.
 
-- $\GLB(A, B) = \GLB(B, A)$
+- $\GLB(A, B) = \GLB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\GLB(A, A) = A$
 
 &nbsp;
@@ -878,6 +890,8 @@ comment: |
 - TODO(If $A <: B$ and $B <: A$, what is GLB($A, B)$???)
 - TODO(actual algorithm for computing GLB)
 - TODO(what do we do if this procedure loops?)
+
+- TODO(GLB for more than two types)
 
 ### Type approximation
 
