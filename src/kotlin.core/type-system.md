@@ -680,6 +680,19 @@ When needed, the compiler may *approximate* an intersection type to a *denotable
 
 One of the main uses of intersection types are [smart casts][Smart casts].
 
+#### Integer literal types
+
+TODO(Think this through)
+
+An integer literal type containing types $T_0, \ldots, T_N$, denoted $LTS(T_0, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
+It is similar to an intersection type of types $T_0, \ldots, T_N$, but has several differences:
+
+- Each type $T_0, \ldots, T_N$ may only be one of the [built-in integer types][Built-in integer types];
+- It constitutes a *biased* intersection, having a different semantics for [type inference][Type inference] and [overloading][Function overloading].
+
+TODO(Make this a special kind of intersection? As of now, only overloading seems to differ)
+TODO(Consult with the team)
+
 #### Union types
 
 > Important: Kotlin does **not** have union types in its type system.

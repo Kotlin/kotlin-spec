@@ -90,6 +90,8 @@ TODO(describe this context dependency somewhere)
 
 TODO(ranges for integer literals)
 
+TODO(When [Integer literal types] are ready, rewrite the whole typing business)
+
 #### Real literals
 
 **_RealLiteral_:**  

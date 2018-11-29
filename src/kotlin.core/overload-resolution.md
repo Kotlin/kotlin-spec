@@ -36,7 +36,7 @@ The implicit receiver having the highest priority is also called the _default im
 The default implicit receiver is available in the scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
-If an implicit receiver is available in a given scope, it may be used to call functions implicitely in that scope without using the navigation operator.
+If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.
 
 ### The forms of call-expression
 
@@ -276,6 +276,8 @@ For every two distinct members of the candidate set $F_1$ and $F_2$, the followi
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
 The check is then repeated with $F_1$ and $F_2$ swapped.
 If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and an additional decision step is needed to choose the most specific overload candidate.
+
+TODO(Integer literal business wrecks this all up a little bit)
 
 TODO(Can we have two callables incomparable w.r.t. applicability criteria? What do we do then?)
 
