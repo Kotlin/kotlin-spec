@@ -808,6 +808,8 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Note: the same procedure may be used to normalize [union types][Union types].
 
+TODO(This is not a procedure. You cannot use it to implement an algorithm.)
+
 - $\LUB(A, B) = \LUB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\LUB(A, A) = A$
 
@@ -855,6 +857,8 @@ TODO(It's not if types are related)
 
 $\GLB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of GLB.
+
+TODO(This is not a procedure. You cannot use it to implement an algorithm.)
 
 - $\GLB(A, B) = \GLB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\GLB(A, A) = A$
