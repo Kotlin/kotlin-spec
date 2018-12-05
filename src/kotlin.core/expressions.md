@@ -406,8 +406,8 @@ Type-checking expression always has type `kotlin.Boolean`.
 A *containment-checking expression* is a binary expression which uses a containment operator `in` or `!in`.
 These operators are [overloadable][Overloadable operators] with the following expansion:
 
-- `A in B` is exactly the same as `A.contains(B)`;
-- `A !in B` is exactly the same as `!(A.contains(B))`.
+- `A in B` is exactly the same as `B.contains(A)`;
+- `A !in B` is exactly the same as `!(B.contains(A))`.
 
 where `contains` is a valid operator function available in the current scope.
 

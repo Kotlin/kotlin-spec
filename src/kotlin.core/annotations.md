@@ -51,6 +51,7 @@ The *targets* of a particular type of annotations is the kind of entity which th
 ### Annotation declarations
 
 Annotations are declared using [annotation class declarations][Annotation class declaration].
+See the corresponding section for details.
 
 TODO()
 

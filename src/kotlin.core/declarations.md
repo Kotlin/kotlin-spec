@@ -147,6 +147,7 @@ TODO(...)
 
 A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. 
 As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
+Each one of these functions is generated if and only if a matching signature function is not present in the class body.
 
 * `equals() / hashCode() / toString()` functions compliant with their contracts:
     - `equals(that)` returns true iff:
@@ -166,7 +167,10 @@ As such, it allows Kotlin to reduce the boilerplate and generate a number of add
 
 These generated declarations of `equals`, `hashCode` and `toString` may be overriden the same way they may be overriden in normal classes.
 The overriding version is preferred, as normally.
-The other generated functions may be [overloaded][Function overloading], but not overriden.
+In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an `override` modifier.
+
+> Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name.
+> As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.
 
 All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
 
