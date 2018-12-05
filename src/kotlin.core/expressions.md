@@ -411,6 +411,8 @@ These operators are [overloadable][Overloadable operators] with the following ex
 
 where `contains` is a valid operator function available in the current scope.
 
+> Note: this means that, contrary to the order of appearance in the code, the right-hand side expression of a containment-checking expression is evaluated before its left-hand side expression
+
 The `contains` function must have a return type `kotlin.Boolean`, otherwise it is a compile-time error.
 Containment-checking expressions always have type `kotlin.Boolean`.
 
@@ -656,7 +658,7 @@ An *indexing expression* is a suffix expression which uses one or more subexpres
 
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-- $A[I_0,I_1,\ldots,I_N]$ is exactly the same as $A\text{.get}(I_0,I_1,\ldots,I_N)$, where `get` is a valid operator function available in the current scope.
+- `A[I_0,I_1,...,I_N]` is exactly the same as `A.get(I_0,I_1,...,I_N)`, where `get` is a valid operator function available in the current scope.
 
 An indexing expression has the same type as the corresponding `get` expression.
 
