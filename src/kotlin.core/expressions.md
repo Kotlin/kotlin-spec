@@ -759,7 +759,38 @@ The type of an anonymous function declaration is the function type constructed s
 :::{.paste target=grammar-rule-lambdaParameter}
 :::
 
-TODO(This funking section)
+Lambda literals are similar to anonymous function declarations in that they define a function with no name.
+Lambda also use very different syntax, similar to control structure bodies of other expressions.
+
+Every lambda literal consists of an optional lambda parameter list, specified before the arrow (`->`) operator and a body, which is everything after the arrow operator.
+Lambda body introduces a new statement scope.
+
+Lambda literals has the same restrictions as anonymous function declarations, but also cannot have `vararg` parameters.
+They can, however, introduce destructuring parameters similar to destructuring property declarations.
+
+TODO(destructuring lambda parameters)
+
+If a lambda expression has no parameter list, it can actually be defining an anonymous function with either zero or one parameter, the exact case dependent on the context of the usage of this expression.
+The selection of number of parameters in this case is performed during [type inference][Type inference].
+Any lambda may also define either a normal function or an expansion function, the exact case also dependent on the context of the usage of lambda expression.
+
+If the lambda expression has no parameter list, but has one parameter, this parameter can be accessed inside the lambda body using a special property called `it`.
+If the lambda expression defines an expansion function, the expansion receiver may be accessed using standard `this` syntax inside the lambda body.
+
+> Note: having no parameter list (and no arrow operator) in a lambda is very different from having zero parameters (nothing preceding the arrow operator).
+
+Lambda literals are different from other forms of function definition in that the `return` expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself.
+Such returns are only allowed if the function defined by the lambda is guaranteed to be [inlined][Inlining] and are not allowed at all otherwise.
+
+If the lambda expression is labeled, it can also be returned from using the [labeled return expression][Labeled return expression].
+In addition to this, if the lambda expression is used as a trailing lambda parameter to a function call, the name of the function used in the call may be used instead of the label.
+If a particular labeled `return` expression is used inside multiple lambda bodies invoked during the call of the same function, this is an ambiguity and should be reported as a compile-time error.
+
+TODO(Typing)
+
+Any properties used in any way inside the lambda body are **captured** by the lambda expression and, dependending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
+
+TODO(Rules of capturing)
 
 ### Object literals
 
