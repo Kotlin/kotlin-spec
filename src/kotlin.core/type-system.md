@@ -598,12 +598,12 @@ However, they are **not** related by subtyping; meaning one cannot pass a `Boole
 
 > Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.
 
-*Array type specialization* `ATS(T)` is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
+*Array type specialization* $\ATS(T)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
 
-* if $\Array(T)$ has a specialized version `TArray`, $ATS(\Array(T)) = TArray$
-* if $\Array(T)$ does not have a specialized version, $ATS(\Array(T)) = \Array(T)$
+* if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = TArray$
+* if $\Array(T)$ does not have a specialized version, $\ATS(\Array(T)) = \Array(T)$
 
-$ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
+$\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
 #### Flexible types
 

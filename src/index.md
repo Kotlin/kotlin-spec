@@ -27,6 +27,7 @@ title: Kotlin language specification
 
 \newcommand{\Array}{\mathtt{kotlin.Array}}
 
+\newcommand{\ATS}{\mathtt{ATS}}
 \newcommand{\LTS}{\mathtt{LTS}}
 
 # Glossary
