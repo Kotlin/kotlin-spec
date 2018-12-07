@@ -1,6 +1,7 @@
 ## Type system
 
 TODO(Add examples)
+
 TODO(Add grammar snippets?)
 
 ### Glossary
@@ -14,6 +15,9 @@ $T!!$
 $T?$
 ~ Nullable type
 
+$\{T\}$
+~ Universe of all possible types
+
 $\{T!!\}$
 ~ Universe of non-nullable types
 
@@ -23,17 +27,38 @@ $\{T?\}$
 $\Gamma$
 ~ Type context
 
-$K_T(F, A)$
-~ Captured type from the [type capturing][Type capturing] of type parameter $F$ and type argument $A$ in parameterized type $T$
-
 $A <: B$
 ~ A is a subtype of B
 
 $A <:> B$
 ~ A and B are not related w.r.t. subtyping
 
-$T\lbrack S_1, \ldots, S_n\rbrack$
-~ The result of type argument substitution for type $T$ with types $S_i$
+Type constructor
+~ An abstract type with one or more type parameters, which must be instantiated before use
+
+Parameterized type
+~ A concrete type, which is the result of type constructor instantiation
+
+Type parameter
+~ Formal type argument of a type constructor
+
+Type argument
+~ Actual type argument in a parameterized type
+
+$T[A_1, \ldots, A_n]$
+~ The result of type constructor $T$ instantiation with type arguments $A_i$
+
+$T[\sigma]$
+~ The result of type constructor $T(F_1, \ldots, F_n)$ instantiation with the assumed substitution $\sigma : F_1 = A_1, \ldots, F_n = A_n$
+
+$\sigma T$
+~ The result of type substitution in type $T$ w.r.t. substitution $\sigma$
+
+$K_T(F, A)$
+~ Captured type from the [type capturing][Type capturing] of type parameter $F$ and type argument $A$ in parameterized type $T$
+
+$T\lbrack K_1, \ldots, K_n\rbrack$
+~ The result of type capturing for parameterized type $T$ with *captured* types $K_i$
 
 $A \amp B$
 ~ Intersection type of $A$ and $B$
@@ -47,19 +72,8 @@ $\GLB$
 $\LUB$
 ~ Least upper bound
 
-Type parameter
-~ Formal type argument of a parameterized type
-
-Type argument
-~ Actual type argument in a parameterized type constructor application
-
-PACT
-~ Parameterized abstract classifier type
-
-iPACT
-~ Instantiated parameterized concrete classifier type
-
 TODO(Not everything is in the glossary, make some criteria of what goes where)
+
 TODO(Cleanup glossary)
 
 ### Introduction
@@ -72,18 +86,19 @@ Kotlin has a type system with the following main properties.
 * Hybrid static and gradual type checking
 * Null safety
 * No unsafe implicit conversions
-* Unified root type
+* Unified top and bottom types
 * Nominal subtyping with bounded parametric polymorphism and mixed-site variance
 
 TODO(static type checking, gradual type checking)
 
-Null safety is enforced by having two type universes --- _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
-A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe, i.e., should never cause a runtime error.
+Null safety is enforced by having two type universes: _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
+A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by `null`.
 
 Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression].
 However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
-The unified supertype type for all types in Kotlin is `kotlin.Any?`, a nullable version of [kotlin.Any][`kotlin.Any`].
+The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][$\Any$].
+The unified subtype type for all types in Kotlin is [$\Nothing$][$\Nothing$].
 
 Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
 Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
@@ -94,6 +109,7 @@ For the purposes of this section, we establish the following type kinds --- diff
 
 * [Built-in types][Built-in types]
 * [Classifier types][Classifier types]
+* [Type parameters][Type parameters]
 * [Function types][Function types]
 * [Array types][Array types]
 * [Flexible types][Flexible types]
@@ -103,43 +119,52 @@ For the purposes of this section, we establish the following type kinds --- diff
 * TODO(Error / invalid types)
 
 We distinguish between *concrete* and *abstract* types.
-Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as types for values, or are used internally by the type system and are not directly denotable.
+Concrete types are types which are assignable to values.
+Abstract types need to be instantiated as concrete types before they can be used as types for values.
 
-We also may further distinguish *concrete* types between *class* and *interface* types; as Kotlin is a language with single inheritance, sometimes it is important to discriminate between these kinds of types.
+> Note: for brevity, we omit specifying that a type is concrete.
+> All types not described as abstract are implicitly concrete.
+
+We further distinguish *concrete* types between *class* and *interface* types; as Kotlin is a language with single inheritance, sometimes it is important to discriminate between these kinds of types.
 Any given concrete type may be either a class or an interface type, but never both.
+
+We also distinguish between *denotable* and *non-denotable* types.
+The former are types which are expressible in Kotlin and can be written by the end-user.
+The latter are special types which are *not* expressible in Kotlin and are used internally by the compiler.
 
 #### Built-in types
 
 Kotlin type system uses the following built-in types, which have special semantics and representation (or lack thereof).
 
-##### `kotlin.Any`
+##### $\Any$
 
-`kotlin.Any` is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of `kotlin.Any`, either explicitly, implicitly, or by [subtyping relation][Subtyping].
+$\Any$ is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of $\Any$, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
-TODO(`kotlin.Any` members?)
+TODO($\Any$ members?)
 
-##### `kotlin.Nothing`
+##### $\Nothing$
 
-`kotlin.Nothing` is the unified [subtype][Subtyping] ($\bot$) for $\{T!!\}$, i.e., `kotlin.Nothing` is a subtype of all non-nullable types, including user-defined ones.
-This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of `kotlin.Nothing` in Kotlin.
+$\Nothing$ is the unified [subtype][Subtyping] ($\bot$) for $\{T\}$, i.e., $\Nothing$ is a subtype of all well-formed Kotlin types, including user-defined ones.
+This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of $\Nothing$ in Kotlin.
 
-As the evaluation of an expression with `kotlin.Nothing` type can never complete normally, it is used to mark special situations, such as:
+As the evaluation of an expression with $\Nothing$ type can never complete normally, it is used to mark special situations, such as
 
 * non-terminating expressions
 * exceptional control flow
 * control flow transfer
 
-Additional details about how `kotlin.Nothing` should be processed are available [here][Control- and data-flow analysis].
+Additional details about how $\Nothing$ should be processed are available [here][Control- and data-flow analysis].
 
-##### `kotlin.Unit`
+##### $\Unit$
 
-`kotlin.Unit` is a unit type, i.e., a type with only one value `kotlin.Unit`; all values of type `kotlin.Unit` should reference the same underlying `kotlin.Unit` object.
+$\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
 
 TODO(Compare to `void`?)
 
-##### `kotlin.Function`
+##### $\Function$
 
-`kotlin.Function<R>` is the unified supertype of all [function types][Function types]. It is parameterized over function return type `R`.
+$\Function(R)$ is the unified supertype of all [function types][Function types].
+It is parameterized over function return type `R`.
 
 #### Classifier types
 
@@ -148,7 +173,7 @@ As Kotlin supports [generics][Generics], there are two variants of classifier ty
 
 ##### Simple classifier types
 
-A simple concrete classifier type
+A simple classifier type
 
 $$T : S_1, \ldots, S_m$$
 
@@ -157,7 +182,7 @@ consists of
 * type name $T$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
-To represent a well-formed simple concrete classifier type, $T : S_1, \ldots, S_m$ should satisfy the following conditions.
+To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $T$ is a valid type name
 * $\forall i \in [1,m]: S_i$ must be concrete, [non-nullable][Nullable types], well-formed type
@@ -185,41 +210,35 @@ To represent a well-formed simple concrete classifier type, $T : S_1, \ldots, S_
 
 ##### Parameterized classifier types
 
-A parameterized *abstract* classifier type (PACT)
+A classifier type constructor
 
 $$T(F_1, \ldots, F_n) : S_1, \ldots, S_m$$
 
-consists of
+describes an abstract type and consists of
 
-* type constructor $T$ which takes type arguments and returns an instantiated type
+* type name $T$
 * type parameters $F_1, \ldots, F_n$
 * (optional) list of supertypes $S_1, \ldots, S_m$
 
-To represent a well-formed PACT, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
+To represent a well-formed type constructor, $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ should satisfy the following conditions.
 
 * $T$ is a valid type name
-* $\forall i \in [1,n]: F_i$ must be one of the following kinds
-    - [unbounded type parameter][Type parameters]
-    - [bounded type parameter][Type parameters]
-    - [projected type parameter][Declaration-site variance]
-* $\forall j \in [1,m]: S_j[F_1, \ldots, F_n]$ must be concrete, non-nullable, well-formed type
+* $\forall i \in [1,n]: F_i$ must be well-formed [type parameter][Type parameters]
+* $\forall j \in [1,m]: S_j$ must be concrete, [non-nullable][Nullable types], well-formed type
 
-An instantiated parameterized *concrete* classifier type (iPACT)
+To instantiate a type constructor, one provides it with type arguments, creating a concrete parameterized classifier type
 
 $$T[A_1, \ldots, A_n]$$
 
-consists of
+which consists of
 
-* PACT $T$
+* type constructor $T$
 * type arguments $A_1, \ldots, A_n$
 
-To represent a well-formed iPACT, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
+To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should satisfy the following conditions.
 
-* $T$ is a valid PACT with $n$ type parameters
-* $\forall i \in [1,n]: A_i$ must be one of the following kinds
-    - well-formed concrete type
-    - well-formed [projected type][Use-site variance]
-    - type parameter available in the current [type context][Type context] $\Gamma$  
+* $T$ is a well-formed type constructor with $n$ type parameters
+* $\forall i \in [1,n]: A_i$ must be well-formed concrete type
 * $\forall i \in [1,n]: K_T(F_i, A_i)$ is a well-formed captured type, where $K$ is a [type capturing][Type capturing] operator
 
 > Example:
@@ -234,7 +253,7 @@ To represent a well-formed iPACT, $T[A_1, \ldots, A_n]$ should satisfy the follo
 > interface ConcreteDerived<P, Q> : Generic<Int, String>
 > 
 > // A well-formed PACT with a single iPACT supertype
-> // P and Q are type parameters of Derived2,
+> // P and Q are type parameters of GenericDerived,
 > //   used as type arguments of Generic
 > interface GenericDerived<P, Q> : Generic<P, Q>
 > 
@@ -265,47 +284,49 @@ To represent a well-formed iPACT, $T[A_1, \ldots, A_n]$ should satisfy the follo
 > interface InvalidWrapper : NumberWrapper<String>
 >```
 
-##### Type parameters
+#### Type parameters
 
-Type parameters are a special kind of abstract types, which are introduced by PACTs.
-They are valid only in the type context of their declaring PACT.
+Type parameters are a special kind of types, which are introduced by type constructors.
+They are considered well-formed concrete types only in the type context of their declaring type constructor.
 
-When creating an iPACT from PACT, type parameters with their respective type arguments go through [capturing][Type capturing] and create *captured* type arguments, which follow special rules described in more detail below.
+When creating a parameterized type from a type constructor, its type parameters with their respective type arguments go through [capturing][Type capturing] and create *captured* types, which follow special rules described in more detail below.
 
 Type parameters may be either unbounded or bounded.
-By default, a type parameter $F$ is unbounded, which is the same as saying it is a bounded type parameter of the form $F <: kotlin.Any?$.
+By default, a type parameter $F$ is unbounded, which is the same as saying it is a bounded type parameter of the form $F <: \AnyQ$.
 
-A bounded type parameter is an abstract type which is used to specify upper type bounds for type parameters and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
+A bounded type parameter additionally specify upper type bounds for the type parameter and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
 
-To represent a valid bounded type parameter of PACT $T$, $F <: B_1, \ldots, B_n$ should satisfy either of the following sets of conditions.
+To represent a well-formed bounded type parameter of type constructor $T$, $F <: B_1, \ldots, B_n$ should satisfy either of the following sets of conditions.
 
-* Bounded type parameter with concrete bounds:
+* Bounded type parameter with regular bounds:
     * $F$ is a type parameter of PACT $T$
-    * $\forall i \in [1,n]: B_i$ must be a well-formed concrete type
+    * $\forall i \in [1,n]: B_i$ must be concrete, non-type-parameter, well-formed type
     * No more than one of $B_i$ may be a class type
 
 > Note: the last condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds.
 > For any two class types, either these types are in a subtyping relation (and you should use the more specific type in the bounded type parameter), or they are unrelated (and the bounded type parameter is empty).
 
-* Bounded type parameter with abstract bounds:
+* Bounded type parameter with type parameter bound:
     * $F$ is a type parameter of PACT $T$
     * $i = 1$ (i.e., there is a single upper bound)
-    * $B_1$ is a type parameter available in the current type context $\Gamma$
+    * $B_1$ must be well-formed [type parameter][Type parameters]
 
-###### Mixed-site variance
+From the definition, it follows $F <: B_1, \ldots, B_n$ can be represented as $K <: U$ where $U = B_1 \amp \ldots \amp B_n$.
+
+##### Mixed-site variance
 
 To implement subtyping between parameterized types, Kotlin uses *mixed-site variance* --- a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java.
 Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).
 
 > Info: *variance* is a way of describing how [subtyping][Subtyping] works for *variant* parameterized types.
-> With declaration-site variance, for two types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some paraneterized type $T$.
+> With declaration-site variance, for two types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some type constructor $T$.
 > 
-> * if $F$ is covariant, `T<A> <: T<B>`
-> * if $F$ is contravariant, `T<A> :> T<B>`
-> * if $F$ is invariant, `T<A> <:> T<B>`
+> * if $F$ is covariant ($\outV F$), `T<A> <: T<B>`
+> * if $F$ is contravariant($\inV F$), `T<A> :> T<B>`
+> * if $F$ is invariant (default), `T<A> <:> T<B>`
 > 
 > Use-site variance allows the user to change the type variance of an *invariant* type parameter by specifying it on the corresponding type argument.
-> `out A` means covariant type argument, `in A` means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some parameterized type $T$, subtyping for use-site variance has the following rules.
+> $\outV A$ means covariant type argument, $\inV A$ means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some type constructor $T$, subtyping for use-site variance has the following rules.
 > 
 > * `T<out A> <: T<out B>`
 > * `T<in A> :> T<in B>`
@@ -313,41 +334,31 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > * `T<A> <: T<in A>`
 > * `T<in A> <:> T<out A>`
 
-> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>`.
+> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
 
-###### Declaration-site variance
+##### Declaration-site variance
 
-An invariant type parameter $F$ is an abstract type which may capture any well-formed type (see [subtyping][Subtyping] for more details on variance); if one needs co- or contravariant type parameter, they need to use projected type parameters.
+A type parameter $F$ may be invariant, covariant or contravariant.
 
-To represent a valid invariant type parameter of PACT $T$, $F$ should satisfy the following conditions.
+By default, all type parameters are invariant.
 
-* $F$ is a type parameter available in the current type context $\Gamma$
+To specify a covariant type parameter, it is marked as $\outV F$.
+To specify a contravariant type parameter, it is marked as $\inV F$.
 
-Projected type parameters are abstract types which are used to declare a type parameter as *covariant* or *contravariant*.
 The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
-
-To represent a valid covariant type parameter $\triangleleft F$ of PACT $T$, $\triangleleft F$ should satisfy the following conditions.
-
-* $F$ is a type parameter available in the current type context $\Gamma$
-
-To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$, $\triangleright F$ should satisfy the following conditions.
-
-* $F$ is a type parameter available in the current type context $\Gamma$
-
-> Note: a mnemonic to remember co- and contravariant type parameter notation is as follows: $\triangleleft F$ allows to covariantly get the value *out* of $F$, $\triangleright F$ allows to contravariantly put the value *in* to $F$.
 
 > Important: declaration-site variance can be used only when declaring types, e.g., type parameters of functions cannot be variant.
 
 > Example:
 > 
 > ```kotlin
-> // A parameterized type with an invariant type parameter
+> // A type constructor with an invariant type parameter
 > interface Invariant<A>
-> // A parameterized type with a covariant type parameter
+> // A type constructor with a covariant type parameter
 > interface Out<out A>
-> // A parameterized type with a contravariant type parameter
+> // A type constructor with a contravariant type parameter
 > interface In<in A>
 > 
 > fun testInvariant() {
@@ -387,34 +398,20 @@ To represent a valid contravariant type parameter $\triangleright F$ of PACT $T$
 > }
 > ```
 
-###### Use-site variance
+##### Use-site variance
 
 Kotlin also supports use-site variance, by specifying the variance for type arguments.
-Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.
+Similarly to type parameters, one can have type arguments being co-, contra- or invariant.
 
-To represent a valid invariant type argument $A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
+By default, all type arguments are invariant.
 
-* $A$ must be one of the following kinds
-    - a well-formed concrete type
-    - a type parameter available in the current type context $\Gamma$
+To specify a covariant type argument, it is marked as $\outV A$.
+To specify a contravariant type argument, it is marked as $\inV A$.
 
-To represent a valid covariant type argument $\triangleleft A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
+> Note: in some cases, Kotlin prohibits certain combinations of declaration- and use-site variance, i.e., which type arguments can be used in which type parameters.
+> These rules are covered in more detail [here][TODO()].
 
-* $A$ must be one of the following kinds
-    - a well-formed concrete type
-    - a non-contravariant type parameter available in the current type context $\Gamma$
-* $F$ must *not* be a contravariant type parameter
-
-To represent a valid contravariant type argument $\triangleright A$, corresponding to a type parameter $F$ of iPACT $T$, it should satisfy the following conditions.
-
-* $A$ must be one of the following kinds
-    - a well-formed concrete type
-    - a non-covariant type parameter available in the current type context $\Gamma$
-* $F$ must *not* be a covariant type parameter
-
-> Note: these rules mean it is impossible to have a type parameter or argument in both co- and contravariant positions at the same time.
-
-In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use *bivariant* type argument $\star A$, which is roughly equivalent to a combination of $\triangleleft \texttt{kotlin.Any?}$ and $\triangleright \texttt{kotlin.Nothing}$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
+In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, one may use *bivariant* type argument $\star$, which is roughly equivalent to a combination of $\outV \AnyQ$ and $\inV \Nothing$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
 
 TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)
 
@@ -422,7 +419,7 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 
 > Example:
 > ```kotlin
-> // A parameterized type with an invariant type parameter
+> // A type constructor with an invariant type parameter
 > interface Inv<A>
 > 
 > fun test() {
@@ -467,33 +464,47 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 > }
 > ```
 
-##### Type capturing
+#### Type capturing
 
-Type capturing (similarly to Java capture conversion) is used when instantiating parameterized types; it creates *captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
+Type capturing (similarly to Java capture conversion) is used when instantiating type constructors; it creates *abstract captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
 
 The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . \mathtt{A<X>}$.
 Informally, a bounded existential type describes a *set* of possible types, which satisfy its bound constraints.
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
 
-For a given PACT $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its iPACT $T[A_1, \ldots, A_n]$ uses the following rules to create captured type $C_i$ from the type parameter $F_i$ and type argument $A_i$.
+For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma]$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$.
 
 > Note: **All** applicable rules are used to create the resulting constraint set.
 
-* For a covariant type parameter $\triangleleft  F_i$, if $A_i$ is an ill-formed type or a contravariant type argument, $C_i$ is an ill-formed type.
-  Otherwise, $C_i <: A_i$.
-* For a contravariant type parameter $\triangleright F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $C_i$ is an ill-formed type.
-  Otherwise, $C_i :> A_i$.
-* For a bounded type parameter $F_i <: B_1, \ldots, B_n$, $C_i <: B_i[C_1, \ldots, C_n]$.
-* For a covariant type argument $\triangleleft A_i$, if $F_i$ is a contravariant type parameter, $C_i$ is an ill-formed type.
-  Otherwise, $C_i <: A_i$.
-* For a contravariant type argument $\triangleright A_i$, if $F_i$ is a covariant type parameter, $C_i$ is an ill-formed type.
-  Otherwise, $C_i :> A_i$.
-* For a bivariant type argument $\star A_i$, $kotlin.Nothing <: C_i <: kotlin.Any?$.
-* Otherwise, $C_i = A_i$.
+* For a covariant type parameter $\outV  F_i$, if $A_i$ is an ill-formed type or a contravariant type argument, $K_i$ is an ill-formed type.
+  Otherwise, $K_i <: A_i$.
+* For a contravariant type parameter $\inV F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $K_i$ is an ill-formed type.
+  Otherwise, $K_i :> A_i$.
+* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: B_j)$, $K_i$ is an ill-formed type.
+  Otherwise, $\forall j \in [1,m]: K_i <: \sigma B_j$.
 
-> Note: as every captured type corresponds to a fresh type variable, two different captured types $C_i$ and $C_j$ which describe the same set of possible types (i.e., their constraint sets are equals) are *not* considered equal.
-> However, in some cases [type inference][Type inference] may approximate (or close) a captured type $C$ to a concrete type $C^{\approx}$; in our case, $C_i^{\approx} \equiv C_j^{approx}$.
+* For a covariant type argument $\outV A_i$, if $F_i$ is a contravariant type parameter, $K_i$ is an ill-formed type.
+  Otherwise, $K_i <: A_i$.
+* For a contravariant type argument $\inV A_i$, if $F_i$ is a covariant type parameter, $K_i$ is an ill-formed type.
+  Otherwise, $K_i :> A_i$.
+
+* For a bivariant type argument $\star$, $\Nothing <: K_i <: \AnyQ$.
+
+* Otherwise, $K_i \equiv A_i$.
+
+By construction, every captured type $K$ has the following form:
+
+$$\{L_1 <: K, \ldots, L_p <: K, K <: U_1, \ldots, K <: U_q\}$$
+
+which can be represented as
+
+$$L <: K <: U$$
+
+where $L = L_1 | \ldots | L_p$ and $U = U_1 \amp \ldots \amp U_q$.
+
+> Note: as every captured type corresponds to a fresh type variable, two different captured types $K_i$ and $K_j$ which describe the same set of possible types (i.e., their constraint sets are equal) are *not* considered equal.
+> However, in some cases [type inference][Type inference] may approximate a captured type $K$ to a concrete type $K^{\approx}$; in our case, it would be that $K_i^{\approx} \equiv K_j^{\approx}$.
 
 TODO(Need to think more about this part)
 
@@ -510,13 +521,11 @@ consists of
 * argument types $A_i$
 * return type $R$
 
-and may be considered the following instantiation of a special parameterized abstract classifier type $FunctionN$
-
-$$FunctionN(\triangleright P_1, \ldots, \triangleright P_n, \triangleleft RT)$$
+and may be considered the following instantiation of a special type constructor $FunctionN(\inV P_1, \ldots, \inV P_n, \outV RT)$
 
 $$FT(A_1, \ldots, A_n) \rightarrow R \equiv FunctionN[A_1, \ldots, A_n, R]$$
 
-These $FunctionN$ types follow the rules of regular PACTs w.r.t. subtyping.
+These $FunctionN$ types follow the rules of regular type constructors and parameterized types w.r.t. subtyping.
 
 A function type with receiver FTR
 
@@ -539,8 +548,9 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
-> Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is neccessary.
-> For example, all function types $FunctionN$ may be subtypes of a general argument-agnostic type $Function$ for the purpose of unification.
+Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][$\Function$] for the purpose of unification.
+
+> Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is necessary.
 
 TODO(We already have `kotlin.Function` settled in this spec earlier. The reason for this is that overloading needs it)
 
@@ -567,33 +577,31 @@ TODO(We already have `kotlin.Function` settled in this spec earlier. The reason 
 
 #### Array types
 
-Kotlin arrays are represented as a parameterized type `Array<T>`, where `T` is the type of the stored elements, which supports `get`/`set` operations.
-The `Array<T>` type follows the rules of regular PACTs w.r.t. subtyping.
+Kotlin arrays are represented as a parameterized type $\Array(T)$, where $T$ is the type of the stored elements, which supports `get`/`set` operations.
+The $\Array(T)$ type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.
 
 > Note: unlike Java, arrays in Kotlin are declared as invariant. To use them in a co- or contravariant way, one should use [use-site variance][Use-site variance].
 
-In addition to the general `Array<T>` type, Kotlin also has the following specialized array types:
+In addition to the general $\Array(T)$ type, Kotlin also has the following specialized array types:
 
-* `DoubleArray` (for `Array<Double>`)
-* `FloatArray` (for `Array<Float>`)
-* `LongArray` (for `Array<Long>`)
-* `IntArray` (for `Array<Int>`)
-* `ShortArray` (for `Array<Short>`)
-* `ByteArray` (for `Array<Byte>`)
-* `CharArray` (for `Array<Char>`)
-* `BooleanArray` (for `Array<Boolean>`)
+* `DoubleArray` (for $\Array(Double)$)
+* `FloatArray` (for $\Array(Float)$)
+* `LongArray` (for $\Array(Long)$)
+* `IntArray` (for $\Array(Int)$)
+* `ShortArray` (for $\Array(Short)$)
+* `ByteArray` (for $\Array(Byte)$)
+* `CharArray` (for $\Array(Char)$)
+* `BooleanArray` (for $\Array(Boolean)$)
 
-TODO(We need to make a stand on whether we prefix builtins with `kotlin.` or not)
+These array types structurally match the corresponding $\Array(T)$ type; i.e., `IntArray` has the same methods and properties as $\Array(Int)$.
+However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an $\Array(Boolean)$.
 
-These array types structurally match the corresponding `Array<T>` type; i.e., `IntArray` has the same methods and properties as `Array<Int>`.
-However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an `Array<Boolean>`.
+> Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.
 
-> Note: the presense of such specialized types allows the compiler to perform additional array-related optimizations.
+*Array type specialization* `ATS(T)` is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
 
-*Array type specialization* `ATS(T)` is a transformation of a generic `Array<T>` type to a corresponding specialized version, which works as follows.
-
-* If `Array<T>` has a specialized version `TArray`, `ATS(Array<T>) = TArray`
-* If `Array<T>` does not have a specialized version, `ATS(Array<T>) = Array<T>`
+* if $\Array(T)$ has a specialized version `TArray`, $ATS(\Array(T)) = TArray$
+* if $\Array(T)$ does not have a specialized version, $ATS(\Array(T)) = \Array(T)$
 
 $ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
@@ -611,7 +619,7 @@ To represent a well-formed flexible type, $(L..U)$ should satisfy the following 
 * $L$ and $U$ are well-formed concrete types
 * $L <: U$
 * $\neg (L <: U)$
-* $L$ and $U$ are **not** flexible types (but may contains other flexible types as part of their type signature)
+* $L$ and $U$ are **not** flexible types (but may contain other flexible types as some of their type arguments)
 
 As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping for flexible types]).
 However, the actual type will be a specific type between $L$ and $U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
@@ -620,7 +628,7 @@ TODO(Details of assertion generation?)
 
 ##### Dynamic type
 
-Kotlin includes a special *dynamic* type, which is a flexible type $(\texttt{kotlin.Nothing}..\texttt{kotlin.Any?})$.
+Kotlin includes a special *dynamic* type, which is a flexible type $(\Nothing..\AnyQ)$.
 By definition, this type represents *any* possible Kotlin type, and may be used to support interoperability with dynamically typed libraries, platforms or languages.
 
 TODO(We should reconsider defining `dynamic` as a flexible type, cause it doesn't behave like one in many situations)
@@ -641,16 +649,14 @@ For further details on how *flexibilization* is done, see:
 Kotlin supports null safety by having two type universes --- nullable and non-nullable.
 All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
-To specify a nullable version of type `T`, one needs to use `T?` as a type.
-Redundant nullability specifiers are ignored --- `T???` is the same as `T?`.
-
-TODO(Equivalent or the same? These are two very different things as we have a-little-bit-broken equivalence)
+To specify a nullable version of type $T$, one needs to use $T?$ as a type.
+Redundant nullability specifiers are ignored --- $T?? \equiv T?$.
 
 > Note: informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
 
 To represent a well-formed nullable type, $T?$ should satisfy the following conditions.
 
-* $T$ is a well-formed type
+* $T$ is a well-formed concrete type
 
 If an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
 For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
@@ -662,7 +668,7 @@ For operations on $T?$ which may violate null safety, e.g., access to a property
     * [type check][Type check expression] combined with [smart casts][Smart casts]
     * null check combined with [smart casts][Smart casts]
     * [not-null assertion operator][Not-null assertion operator expression]
-3. Supply a default value to use instead of `null`
+3. Supply a default value to use if `null` is present
     * [elvis operator][Elvis operator expression]
 
 #### Intersection types
@@ -670,7 +676,7 @@ For operations on $T?$ which may violate null safety, e.g., access to a property
 Intersection types are special *non-denotable* types used to express the fact that a value belongs to *all* of *several* types at the same time.
 
 Intersection type of two types $A$ and $B$ is denoted $A \amp B$ and is equivalent to the [greatest lower bound][Greatest lower bound] of its components $\GLB(A, B)$.
-Thus, the normalization procedure for GLB may be used to *normalize* an intersection type.
+Thus, the normalization procedure for $\GLB$ may be used to *normalize* an intersection type.
 
 > Note: this means intersection types are commutative and associative (following the GLB properties); e.g., $A \amp B$ is the same type as $B \amp A$, and $A \amp (B \amp C)$ is the same type as $A \amp B \amp C$.
 
@@ -684,13 +690,14 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 
 TODO(Think this through)
 
-An integer literal type containing types $T_0, \ldots, T_N$, denoted $LTS(T_0, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
-It is similar to an intersection type of types $T_0, \ldots, T_N$, but has several differences:
+An integer literal type containing types $T_1, \ldots, T_N$, denoted $\LTS(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
+It is similar to an intersection type $T_1 \amp \ldots \amp T_N$, but has several important differences:
 
-- Each type $T_0, \ldots, T_N$ may only be one of the [built-in integer types][Built-in integer types];
-- It constitutes a *biased* intersection, having a different semantics for [type inference][Type inference] and [overloading][Function overloading].
+- Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types]
+- It constitutes a *biased* intersection, having different semantics for [type inference][Type inference] and [overloading][Function overloading]
 
-TODO(Make this a special kind of intersection? As of now, only overloading seems to differ)
+TODO(Make this a special kind of intersection? As of now, only overloading seems to behave differently)
+
 TODO(Consult with the team)
 
 #### Union types
@@ -702,7 +709,7 @@ TODO(Consult with the team)
 Union types are special *non-denotable* types used to express the fact that a value belongs to *one* of *several* possible types.
 
 Union type of two types $A$ and $B$ is denoted $A | B$ and is equivalent to the [least upper bound][Least upper bound] of its components $\LUB(A, B)$.
-Thus, the normalization procedure for LUB may be used to *normalize* a union type.
+Thus, the normalization procedure for $\LUB$ may be used to *normalize* a union type.
 
 Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type approximation][Type approximation].
 
@@ -715,12 +722,14 @@ TODO(Inner vs nested type contexts)
 
 TODO(Need to change the way we think about subtyping)
 
-Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected. The subtyping relation $<:$ is:
+Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected.
+The subtyping relation $<:$ is:
 
 * reflexive ($A <: A$)
 * transitive ($A <: B \land B <: C \Rightarrow A <: C$)
 
-Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$. Due to the presence of flexible types, this relation is **not** transitive (see [here][Subtyping for flexible types] for more details).
+Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$.
+Due to the presence of flexible types, this relation is **not** transitive (see [here][Subtyping for flexible types] for more details).
 
 #### Subtyping rules
 
@@ -728,43 +737,48 @@ Subtyping for non-nullable, concrete types uses the following rules.
 
 * $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
-* For any iPACT $\widehat{T} = T(F_1, \ldots, F_n)[A_1, \ldots, A_n] : S_1, \ldots, S_m$ with captured type arguments $C_1, \ldots, C_n$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i[C_1, \ldots, C_n]$
-* For any two iPACTs $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $C_i$ and $C_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: C_i <: C_i^\prime$
+* For any parameterized type $\widehat{T} = T[\sigma]: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \sigma S_i$
+* For any two parameterized types $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
 
 Subtyping for non-nullable, abstract types uses the following rules.
 
 * $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
-* For any PACT $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
+* For any type constructor $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
+* For any two type constructors $\widehat{T}$ and $\widehat{T^\prime}$ with type parameters $F_i$ and $F_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
 
-TODO(Subtyping for type parameters)
+Subtyping for type parameters uses the following rules.
 
----
-comment: |
-    * For any covariant type argument $\triangleleft T$ it is true that $\forall U : T <: U \Rightarrow \triangleleft T <: U$
-    * For any contravariant type argument $\triangleright T$ it is true that $\forall L : L <: T \Rightarrow L <: \triangleright T$
-    * For any star type argument $\star T$, $kotlin.Nothing <: T <: kotlin.Any?$
-    * For any bounded type argument $T <: B_1, \ldots, B_n$ it is true that $\forall i \in [1,n]: T <: B_i$
----
+* $\forall F : \text{kotlin.Nothing} <: F <: \text{kotlin.Any?}$
+* For any two type parameters $F$ and $F^\prime$, it is true that $F <: F^\prime$, if all of the following hold
+    - variance of $F$ matches variance of $F^\prime$
+        + $\outV$ matches $\outV$
+        + $\inV$ matches $\inV$
+        + $\invV$ matches any variance
+    - for $F <: B$ and $F^\prime <: B^\prime$, $B <: B^\prime$
 
-Subtyping for non-nullable, captured types uses rules of different kind, as captured type $C$ describes not one, but a set of types which satisfy its type constraints $\mathbb{C}$. Therefore, we use the following subtyping rules for captured types.
+Subtyping for captured types uses the following rules.
 
-* $\forall C : \text{kotlin.Nothing} <: C <: \text{kotlin.Any}$
-* For any two captured types $C$ and $C^\prime$, $C <: C^\prime$ if $\forall T : \mathbb{C}(T) \Rightarrow \mathbb{C^\prime}(T)$ (i.e., a set of types for $C$ is a subset of a set of types for $C^\prime$)
+* $\forall K : \text{kotlin.Nothing} <: K <: \text{kotlin.Any?}$
+* For any two captured types $L <: K <: U$ and $L^\prime <: K^\prime <: U^\prime$, it is true that $K <: K^\prime$ if $L^\prime <: L$ and $U <: U^\prime$
 
 Subtyping for nullable types is checked separately and uses a special set of rules which are described [here][Subtyping for nullable types].
 
 #### Subtyping for flexible types
 
-Flexible types (being flexible) follow a simple subtyping relation with other inflexible types. Let $T, A, B, L, U$ be inflexible types.
+Flexible types (being flexible) follow a simple subtyping relation with other inflexible types.
+Let $T, A, B, L, U$ be inflexible types.
 
 * $L <: T \Rightarrow (L..U) <: T$
 * $T <: U \Rightarrow T <: (L..U)$
 
-This captures the notion of flexible type $(L..U)$ as something which may be used in place of any type in between $L$ and $U$. If we are to extend this idea to subtyping between *two* flexible types, we get the following definition.
+This captures the notion of flexible type $(L..U)$ as something which may be used in place of any type in between $L$ and $U$.
+If we are to extend this idea to subtyping between *two* flexible types, we get the following definition.
 
 * $L <: B \Rightarrow (L..U) <: (A..B)$
 
-This is the most extensive definition possible, which, unfortunately, makes the type equivalence relation non-transitive. Let $A, B$ be two *different* types, for which $A <: B$. The following relations hold:
+This is the most extensive definition possible, which, unfortunately, makes the type equivalence relation non-transitive.
+Let $A, B$ be two *different* types, for which $A <: B$.
+The following relations hold:
 
 * $A <: (A..B) \land (A..B) <: A \Rightarrow A \equiv (A..B)$
 * $B <: (A..B) \land (A..B) <: B \Rightarrow B \equiv (A..B)$
@@ -773,13 +787,14 @@ However, $A \not \equiv B$.
 
 #### Subtyping for intersection types
 
-Intersection types introduce several new rules for subtyping. Let $A, B, C, D$ be non-nullable types:
+Intersection types introduce several new rules for subtyping.
+Let $A, B, C, D$ be non-nullable types.
 
 - $A \amp B <: A$
 - $A \amp B <: B$
 - $A <: C \land B <: D \Rightarrow A \amp B <: C \amp D$
 
-More, any type $T$ with supertypes $S_1, S_2, S_3, \ldots, S_N$ is also a subtype of $S_1 \amp S_2 \amp S_3 \amp \ldots \amp S_N$.
+Moreover, any type $T$ with supertypes $S_1, \ldots, S_N$ is also a subtype of $S_1 \amp \ldots \amp S_N$.
 
 #### Subtyping for nullable types
 
@@ -803,60 +818,56 @@ TODO(How the existence check works)
 
 TODO(How are generics different from type parameters? Or are we going to get into deep technical detail?)
 
-TODO(Here be a lot of dragons...)
-
 ### Upper and lower bounds
 
 A type $U$ is an _upper bound_ of types $A$ and $B$ if $A <: U$ and $B <: U$.
 A type $L$ is a _lower bound_ of types $A$ and $B$ if $L <: A$ and $L <: B$.
 
-> Note: as the type system of Kotlin is bounded by definition (the upper bound of all types is $\text{kotlin.Any}?$, and the lower bound of all types is $\text{kotlin.Nothing}$), any two types have at least one lower bound and at least one upper bound.
+> Note: as the type system of Kotlin is bounded by definition (the upper bound of all types is $\AnyQ$, and the lower bound of all types is $\Nothing$), any two types have at least one lower bound and at least one upper bound.
 
 #### Least upper bound
 
 The _least upper bound_ $\LUB(A, B)$ of types $A$ and $B$ is an upper bound $U$ of $A$ and $B$ such that there is no other upper bound of these types which is less by subtyping relation than $U$.
 
+> Note: $\LUB$ is commutative, i.e., $\LUB(A, B) = \LUB(B, A)$.
+> This property is used in the subsequent description, e.g., other properties of $\LUB$ are defined only for a specific order of the arguments.
+> Definitions following from commutativity of $\LUB$ are implied.
+
 $\LUB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of LUB.
 
-> Note: the same procedure may be used to normalize [union types][Union types].
-
-TODO(This is not a procedure. You cannot use it to implement an algorithm.)
-
-- $\LUB(A, B) = \LUB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\LUB(A, A) = A$
 
-&nbsp;
-
 - if $A <: B$, $\LUB(A, B) = B$
-
-&nbsp;
 
 - if $A$ is nullable, $\LUB(A, B)$ is also nullable
 - if both $A$ and $B$ are nullable, $\LUB(A, B) = \LUB(A!!, B!!)?$
 - if $A$ is nullable and $B$ is not, $\LUB(A, B) = \LUB(A!!, B)?$
 
-&nbsp;
-
 - if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\LUB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
-    + $\phi(out X, out Y) = X | Y = \LUB(X, Y)$ TODO(Why the union here? Does it add anything?)
-    + $\phi(in X, in Y) = \GLB(X, Y) = X \amp Y$ TODO(Why an intersection here? Does it add anything?)
-    + $\phi(out X, in Y) = \star$
-    + $\phi(in X, out Y) = \star$
-    + $\phi(inv X, inv X) = X$ TODO(Why this case at all? It is directly implied from the case below and ones above)
-    + $\phi(inv X, inv Y) = \phi(out X, out Y)$ TODO(It is not the same as invariant case)
-    + TODO(we may also choose the `in` projection here, do we wanna do it though?)
 
-&nbsp;
+    + $\phi(\invV X, \invV X) = X$
+
+    + $\phi(\outV X, \outV Y) = \outV \LUB(X, Y)$
+    + $\phi(\outV X, \invV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\outV X,  \inV Y) = \star$
+
+    + $\phi(\invV X, \outV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\invV X, \invV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\invV X,  \inV Y) = \phi(\outV X, \outV \AnyQ) = \outV \AnyQ$
+
+    + $\phi( \inV X, \outV Y) = \star$
+    + $\phi( \inV X, \invV Y) = \phi(\outV \AnyQ, \outV Y) = \outV \AnyQ$
+    + $\phi( \inV X,  \inV Y) = \inV \GLB(X, Y)$
+
+    + TODO(we may also choose the `in` projection for `inv` parameters, do we wanna do it though?)
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
 
-&nbsp;
-
-- if no other rules apply, $\LUB(A, B) = A | B$
-
+TODO(prettify formatting)
 TODO(actual algorithm for computing LUB)
+TODO(LUB for 3+ types)
 TODO(what do we do if this procedure loops?)
 
 TODO(Why do we need union types again?)
@@ -864,51 +875,51 @@ TODO(Why do we need union types again?)
 #### Greatest lower bound
 
 The _greatest lower bound_ $\GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
-Enumerating all subtypes of a given type is impossible in general, but in the presense of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
+
+> Note: enumerating all subtypes of a given type is impossible in general, but in the presence of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
 
 TODO(It's not if types are related)
+
+> Note: $\GLB$ is commutative, i.e., $\GLB(A, B) = \GLB(B, A)$.
+> This property is used in the subsequent description, e.g., other properties of $\GLB$ are defined only for a specific order of the arguments.
+> Definitions following from commutativity of $\GLB$ are implied.
 
 $\GLB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of GLB.
 
-TODO(This is not a procedure. You cannot use it to implement an algorithm.)
-
-- $\GLB(A, B) = \GLB(B, A)$ TODO(This is **not a valid step** if we call it a normalization procedure)
 - $\GLB(A, A) = A$
 
-&nbsp;
-
 - if $A <: B$, $\GLB(A, B) = A$
-
-&nbsp;
 
 - if $A$ is non-nullable, $\GLB(A, B)$ is also non-nullable
 - if both $A$ and $B$ are nullable, $\GLB(A, B) = \GLB(A!!, B!!)?$
 - if $A$ is nullable and $B$ is not, $\GLB(A, B) = \GLB(A!!, B)$
 
-&nbsp;
+- if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\GLB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
+
+    + $\phi(\invV X, \invV X) = X$
+
+    + $\phi(\outV X, \outV Y) = \outV \GLB(X, Y)$
+    + $\phi(\outV X, \invV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\outV X,  \inV Y) = \star$
+
+    + $\phi(\invV X, \outV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\invV X, \invV Y) = \phi(\outV X, \outV Y)$
+    + $\phi(\invV X,  \inV Y) = \phi(\outV X, \outV \AnyQ) = \outV \AnyQ$
+
+    + $\phi( \inV X, \outV Y) = \star$
+    + $\phi( \inV X, \invV Y) = \phi(\outV \AnyQ, \outV Y) = \outV \AnyQ$
+    + $\phi( \inV X,  \inV Y) = \inV \LUB(X, Y)$
+
+    + TODO(we may also choose the `in` projection for `inv` parameters, do we wanna do it though?)
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\GLB(A, B) = (\GLB(L_A, L_B)..\GLB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\GLB(A, B) = (\GLB(L_A, B)..\GLB(U_A, B))$
 
-&nbsp;
-
-- if no other rules apply, $GLB(A, B) = A \amp B$
-
----
-comment: |
-    The properties of $\GLB$ have several important implications:
-
-    - $\forall A, B, C : C <: \GLB(A, C) <: B \implies C <: \GLB(A, B)$
-
----
-
-- TODO(GLB for parameterized types)
-- TODO(If $A <: B$ and $B <: A$, what is GLB($A, B)$???)
-- TODO(actual algorithm for computing GLB)
-- TODO(what do we do if this procedure loops?)
-
-- TODO(GLB for more than two types)
+TODO(prettify formatting)
+TODO(actual algorithm for computing GLB)
+TODO(GLB for 3+ types)
+TODO(what do we do if this procedure loops?)
 
 ### Type approximation
 
