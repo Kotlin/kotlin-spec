@@ -45,10 +45,10 @@ Type parameter
 Type argument
 ~ Actual type argument in a parameterized type
 
-$T[A_1, \ldots, A_n]$
+$T\lbrack A_1, \ldots, A_n\rbrack$
 ~ The result of type constructor $T$ instantiation with type arguments $A_i$
 
-$T[\sigma]$
+$T\lbrack\sigma\rbrack$
 ~ The result of type constructor $T(F_1, \ldots, F_n)$ instantiation with the assumed substitution $\sigma : F_1 = A_1, \ldots, F_n = A_n$
 
 $\sigma T$
@@ -57,7 +57,7 @@ $\sigma T$
 $K_T(F, A)$
 ~ Captured type from the [type capturing][Type capturing] of type parameter $F$ and type argument $A$ in parameterized type $T$
 
-$T\lbrack K_1, \ldots, K_n\rbrack$
+$T\langle K_1, \ldots, K_n\rangle$
 ~ The result of type capturing for parameterized type $T$ with *captured* types $K_i$
 
 $A \amp B$
@@ -844,7 +844,7 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if both $A$ and $B$ are nullable, $\LUB(A, B) = \LUB(A!!, B!!)?$
 - if $A$ is nullable and $B$ is not, $\LUB(A, B) = \LUB(A!!, B)?$
 
-- if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\LUB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
+- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\LUB(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle$, where $\phi(X, Y)$ is defined as follows:
 
     + $\phi(\invV X, \invV X) = X$
 
@@ -895,7 +895,7 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if both $A$ and $B$ are nullable, $\GLB(A, B) = \GLB(A!!, B!!)?$
 - if $A$ is nullable and $B$ is not, $\GLB(A, B) = \GLB(A!!, B)$
 
-- if $A = T\lbrack K_{A,1}, \ldots, K_{A,n}\rbrack$ and $B = T\lbrack K_{B,1}, \ldots, K_{B,n}\rbrack$, $\GLB(A, B) = T\lbrack \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rbrack$, where $\phi(X, Y)$ is defined as follows:
+- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\GLB(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle$, where $\phi(X, Y)$ is defined as follows:
 
     + $\phi(\invV X, \invV X) = X$
 
