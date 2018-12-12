@@ -141,6 +141,18 @@ TODO(...)
 
 ##### Inheritance delegation
 
+In a classifier (an object or a class) $C$ declaration any supertype $I$ inheritance may be *delegated to* an arbitrary value $v$ if:
+
+- The supertype $I$ is an interface type;
+- $v$ has type $T$ such that $T <: I$.
+
+The inheritance delegation uses a syntax similar to [property delegation][Property delegation] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
+If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the method overriding (TODO: link) section).
+
+The particular means on how $v$ is stored inside the classifier object is platform-defined.
+
+Due to the [initialization order of a classifier object][Classifier initialization], the expression used to construct $v$ can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.
+
 TODO(...)
 
 #### Data class declaration
@@ -292,7 +304,22 @@ First, a supertype constructor corresponding to $ctor$ is called with its respec
 After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. 
 If any initialization step creates a loop, it is considered an undefined behavior.
 
-TODO(Need to define order between supertype constructor, primary constructor, init blocks and secondary constructors)
+When a classifier type is initialized using a particular secondary constructor $ctor$ delegated to primary constructor $pctor$ which, in turn, is delegated to the superclass constructor $sctor$, the following happens, in this order:
+
+- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters in the order they appear in the constructor declaration;
+- The superclass object (if any) is initialized as if created by invoking $sctor$ with the specified parameters;
+- Interface delegation expressions (if any) are invoked and the result of each is stored in the object to allow for interface delegation, in the order of appearance of delegation declarations in the classifier header;
+- All the properties' initialization code as well as all the initialization blocks in the class body get initialized in the order of appearance in the class body;
+- $ctor$ body is invoked using the specified parameters.
+
+> Note: this means that if an `init`-block appears between two property declarations in the class body, its body is invoked between the initialization code of these two properties.
+
+This order stays the same if any of the entities involved are omitted, omitting the corresponding step (e.g. if there is no primary constructor, it is not invoked, and if the object is created using primary constructor, the body of the secondary one is not invoked, etc.), but performing all others.
+If any of the properties of the object are accessed before they are initialized in this order (for example, if a method called in an initialization block accesses a property that is mention after the block), the value of the property is undefined.
+
+> Note: this can happen if a property is captured in a lambda expression that is used in some way during other initialization phases
+
+TODO(This needs thorough testing)
 
 ### Function declaration
 
@@ -544,7 +571,7 @@ Local property declarations also support *destructive* declaration in the form o
 val (a: T, b: U, c: V, ...) = e
 ```
 
-which is a syntactic sygar for the following expansion
+which is a syntactic sugar for the following expansion
 
 ```kotlin
 val a: T = e.component1()
