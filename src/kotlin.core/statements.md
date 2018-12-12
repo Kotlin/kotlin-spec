@@ -43,6 +43,21 @@ If the left-hand side of an assignment refers to a mutable property, a value of 
 - If a property has a [setter][Getters and setters], it is called using the right-hand side expression as its argument;
 - Otherwise, if a property is a [mutable property][Mutable property declaration], its value is changed to the evaluation result of the right-hand side expression.
 
+If the left-hand side of an assignment refers to a mutable property through the usage of safe navigation operator (`?.`), the same rules apply to it, but only if the left-hand side of the navigation operator is not referentially equal to `null` reference, e.g.:
+
+```kotlin
+a?.b?.z?.x = y 
+```
+
+is semantically the same as
+
+```kotlin
+val __tmp = a?.b?.z
+if(__tmp !== null) __tmp.x = y
+```
+
+TODO(just use setters for everything?)
+
 If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Overloadable operators] with the following expansion:
 
 $A[B_1,B_2,B_3,\ldots,B_N] = C$ is the same as calling $A\text{.set}(B_1,B_2,B_3,\ldots,B_N,C)$ where `set` is a suitable operator function.
@@ -129,12 +144,13 @@ with the following expansion:
 ```kotlin
 val __iterator = C.iterator()
 while (__iterator.hasNext()) {
-    VarDecl = __iterator.next()
+    val VarDecl = __iterator.next()
     <... all the statements from Body>
 }
 ```
 
 where `iterator`, `hasNext`, `next` are all suitable operator functions available in the current scope.
+`VarDecl` here may be a variable name or a set of variable name as per [destructuring variable declarations][Destructuring declarations].
 
 > Note: the expansion is hygenic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
 
@@ -148,9 +164,9 @@ TODO(What about iterator value life-time and such?)
 :::
 
 A *code block* is a sequence of zero or more statements between curly braces separated by newlines or/and semicolons.
-Evaluating a code block means evaluating all its statements in the order they are given inside of it.
+Evaluating a code block means evaluating all its statements in the order they appear inside of it.
 
-> Note: Unlike some other languages, Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is, in fact, a [lambda literal][Lambda literals].
+> Note: Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is, in fact, a [lambda literal][Lambda literals].
 
 A *last expression* of a code block is the last statement in it (if any) if and only if this statement is also an expression.
 The last expressions are important when defining functions and control structure expressions.

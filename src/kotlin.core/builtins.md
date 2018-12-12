@@ -15,7 +15,10 @@ As well as the types defined in the [type system section][Built-in types], Kotli
 
 ### Built-in integer types
 
-There are several built-in class types that represent signed integer numbers of different bit size. Unlike some other languages, Kotlin does not have a built-in infinite-length integer number class. Kotlin also does not currently define any built-in unsigned integer number types. The signed integer number types are:
+There are several built-in class types that represent signed integer numbers of different bit size. 
+Kotlin does not have a built-in infinite-length integer number class. 
+Kotlin also does not currently define any built-in unsigned integer number types (TODO: Kotlin 1.3 does). 
+The signed integer number types are:
 
 * `kotlin.Int`
 * `kotlin.Short`
@@ -35,6 +38,17 @@ These types may or may not have different runtime representation. See your platf
 For other traits of these types (such as the classes they inherit from, interfaces they may inherit from and their member functions) please refer to the standard library specification.
 
 ### Built-in floating point arithmetic types
+
+There are two built-in class types that represent floating-point numbers: `kotlin.Float` and `kotlin.Double`.
+These types may or may not have different runtime representations. See your platform reference for details.
+
+`kotlin.Float` is the type of floating-point number that is able to contain all the numbers as a IEEE754 (TODO: link) single-precision binary floating number with the same precision.
+`kotlin.Double` is the type of floating-point number that is able to contain all the numbers as a IEEE754 (TODO: link) double-precision binary floating number with the same precision.
+
+TODO: or do they?
+
+Platform specification may give a more thorough information on how these types are represented on a particular platform.
+For other traits of these types (such as the classes they inherit from, interfaces they may inherit from and their member functions) please refer to the standard library specification.
 
 TODO: FP semantics are pretty hard, how much of that we want to put here?
 

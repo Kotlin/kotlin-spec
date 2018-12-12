@@ -886,7 +886,7 @@ There are two forms of continue expressions:
 - A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
 - A labeled continue expression, denoted `continue@Loop`, where `Loop` is a   label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-> Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside when expressions.
+> Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside `when` expressions.
 
 #### Break expression
 
