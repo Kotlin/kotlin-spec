@@ -71,6 +71,15 @@ tasks.create("removeCompilerTestData") {
     }
 }
 
+tasks.create("removeNewTests") {
+    doFirst {
+        File("testData").walkTopDown().forEach {
+            if (it.extension == "kt" && !File("${it.parent}/${it.nameWithoutExtension}.antlrtree.txt").exists())
+                it.delete()
+        }
+    }
+}
+
 tasks.create("prepareDiagnosticsCompilerTests") {
     doFirst {
         val individualDiagnostic = """(\w+;)?(\w+:)?(\w+)(?:\(.*?[^\\]\))?"""
