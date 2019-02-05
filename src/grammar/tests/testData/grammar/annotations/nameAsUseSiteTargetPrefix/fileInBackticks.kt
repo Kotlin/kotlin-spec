@@ -1,0 +1,2 @@
+@`file`
+fun main() {}

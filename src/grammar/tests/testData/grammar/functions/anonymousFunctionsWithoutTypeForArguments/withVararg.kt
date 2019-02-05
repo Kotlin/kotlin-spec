@@ -1,0 +1,1 @@
+val bar: (Any) -> Unit = fun (vararg a) {}
