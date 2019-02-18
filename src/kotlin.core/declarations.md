@@ -355,6 +355,8 @@ Function body $b$ is optional; if it is ommited, a function declaration creates 
 This is allowed only inside an [abstract classifier declaration][Classifier declaration].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
+TODO: `expect` and `external` functions also do not have implementations
+
 A parameterized function declaration consists of five main parts.
 
 * name $f$
@@ -466,11 +468,6 @@ Properties may also have custom getter or setter --- functions which are used to
 #### Read-only property declaration
 
 A read-only property declaration `val x: T = e` introduces `x` as a name of the result of `e`. 
-Both the right-hand value `e` and the type `T` are optional, however, at least one of them must be specified. 
-More so, if the type of `e` cannot be [inferred][Type inference], the type `T` must be specified explicitly. 
-In case both are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
-
-TODO(it's wrong, the type may also be inferred from getter)
 
 A read-only property declaration may include a custom [getter][Getters and setters] in the form of
 
@@ -479,7 +476,17 @@ val x: T = e
     get() { ... }
 ```
 
-in which case `x` is used as a synonym to the getter invocation.
+in which case `x` is used as a synonym to the getter invocation. 
+Both the right-hand value `e`, the type `T` and the getter are optional, however, at least one of them must be specified. 
+More so, if both the type of `e` and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitely), the type `T` must be specified explicitly. 
+In case both `e` and `T` are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
+
+TODO: we never actually say how getters are similar/different to normal functions and, henceworth, how the inference works
+
+The initializer expression `e`, if given, serves as the starting value for the property backing field (see [getters and setters section][Getters and setters] for details) and is evaluated when the property is created.
+Properties that are not allowed to have backing fields (see [getters and setters section][Getters and setters] for details) are also not allowed to have initializer expressions.
+
+> Note: although a property with an initializer expression looks similar to an [assignment][Assignments], it is different in several key ways: first, a read-only property cannot be assigned, but may have an initializer expression; second, the initializer expression never invokes the property setter, but assigns the property backing field value directly.
 
 #### Mutable property declaration
 
@@ -631,6 +638,7 @@ However, the backing field is created for a property only in the following cases
 * A mutable property has a custom getter or setter, but not both/
 
 In all other cases a property has no backing field.
+Properties without backing fields are not allowed to have initializer expressions.
 
 Read/write access to the property is replaced with getter/setter invocation respectively.
 
@@ -684,6 +692,21 @@ All non-abstract properties must be definitely initialized before their first us
 To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
 
 TODO(maybe it makes more sense to write all the initialization business right here)
+
+#### Constant properties
+
+A property may be declared **constant**, meaning that its value is known during compilation, by using the special `const` modifier. 
+In order to be declared `const`, a property must meet the following requirements:
+
+- Its type is one of the following:
+    - One of the [the built-in integral types][Built-in integer types];
+    - `kotlin.Boolean`;
+    - `kotlin.Char`;
+    - `kotlin.String`;
+- It is declared in the top-level scope or inside [an object declaration][Object declarations];
+- It has an initializer expression and this initializer expression may be evaluated in the compile-time.
+  Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
+- It does not have getters, setters or delegation specifiers.
 
 ### Type alias
 

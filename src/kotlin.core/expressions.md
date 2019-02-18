@@ -81,16 +81,18 @@ Digits may be separated by an underscore symbol, but no underscore can be placed
 A sequence of binary digit symbols (`0` or `1`) prefixed by `0b` or `0B` is a binary integer literal.
 Digits may be separated by an underscore symbol, but no underscore can be placed before the first digit or after the last one.
 
-##### Long integer literals
+#### The types for integer literals
 
 Any of the decimal, hexadecimal or binary literals may be suffixed by the long literal mark (symbol `L`).
-An integer literal with the long literal mark has type `kotlin.Long`; an integer literal without it has one of the types `kotlin.Int`/`kotlin.Short`/`kotlin.Byte` (the selected type is dependent on the context), if its value is in range of the corresponding type, or type `kotlin.Long` otherwise.
+An integer literal with the long literal mark has type `kotlin.Long`.
+A literal without the mark has a special [integer literal type][Integer literal types] dependent on the value of the literal:
 
-TODO(describe this context dependency somewhere)
+- If the value is greater than maximum `kotlin.Long` value (see [built-in integer types][Built-in integer types]), it is an illegal integer literal and a compiler error;
+- Otherwise, if the value is greater than maximum `kotlin.Int` value (see [built-in integer types][Built-in integer types]), it has type `kotlin.Long`;
+- Otherwise, it has an integer literal type containing all the built-in integer types that are guaranteed to be able to represent this value.
 
-TODO(ranges for integer literals)
-
-TODO(When [Integer literal types] are ready, rewrite the whole typing business)
+> Note: for example, integer literal `0x01` has value $1$ and therefore has type $\LTS(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})$.
+> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\LTS(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})$.
 
 #### Real literals
 

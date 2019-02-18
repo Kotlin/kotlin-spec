@@ -691,12 +691,9 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 TODO(Think this through)
 
 An integer literal type containing types $T_1, \ldots, T_N$, denoted $\LTS(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
-It is similar to an intersection type $T_1 \amp \ldots \amp T_N$, but has several important differences:
+Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types]
 
-- Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types]
-- It constitutes a *biased* intersection, having different semantics for [type inference][Type inference] and [overloading][Function overloading]
-
-TODO(Make this a special kind of intersection? As of now, only overloading seems to behave differently)
+Integer literal types are the types of [integer literals][Integer literals].
 
 TODO(Consult with the team)
 
@@ -795,6 +792,15 @@ Let $A, B, C, D$ be non-nullable types.
 - $A <: C \land B <: D \Rightarrow A \amp B <: C \amp D$
 
 Moreover, any type $T$ with supertypes $S_1, \ldots, S_N$ is also a subtype of $S_1 \amp \ldots \amp S_N$.
+
+#### Subtyping for integer literal types
+
+Every integer literal type is equivalent with w.r.t. subtyping, meaning that for any sets $T_1, \ldots, T_K$ and $U_1, \ldots, U_N$ of builtin integer types:
+
+- $\LTS(T_1, \ldots, T_K) <: \LTS(U_1, \ldots, U_N)$
+- $\LTS(U_1, \ldots, U_K) <: \LTS(T_1, \ldots, T_K)$
+- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp T_i <: \LTS(T_1, \ldots, T_K)$
+- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp \LTS(T_1, \ldots, T_K) <: T_i$
 
 #### Subtyping for nullable types
 

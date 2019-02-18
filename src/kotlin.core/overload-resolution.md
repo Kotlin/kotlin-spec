@@ -269,24 +269,29 @@ Otherwise, we consider the generic subset.
 The selection process uses the [type constraint][Type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
-- For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built.
+- For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
   During construction of these constraints, all type parameters $T_1, T_2, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, T^{\sim}_2, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
 - All declaration-site type constraints of $X_1, X_2, X_3, \ldots, X_N$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ are also added to the constraint system.
 
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
 The check is then repeated with $F_1$ and $F_2$ swapped.
-If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and an additional decision step is needed to choose the most specific overload candidate.
+If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and additional decision steps are needed to choose the most specific overload candidate.
+If neither $F_1$ nor $F_2$ is equally or more applicable than its counterpart, it also means that $F_1$ and $F_2$ are equally applicable and additional decision steps are needed.
 
 TODO(Integer literal business wrecks this all up a little bit)
-
-TODO(Can we have two callables incomparable w.r.t. applicability criteria? What do we do then?)
 
 All members of the overload candidate set are ranked according to the applicability criteria.
 If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.
 
+- For every non-default argument of the call consider the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$.
+  If, for any $K$, both $X_K$ and $Y_K$ are different built-in integer types and one of them is `kotlin.Int`, then this parameter is preferred over the other parameter of the call. 
+  If all such parameters of $F_1$ are preferred based on this criteria over the parameters of $F_2$, then $F_1$ is a more specific candidate than $F_2$, and vice versa.
 - For each candidate, we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value);
 - The candidate with the least number of non-specified default parameters is a more specific candidate;
 - If the number of non-specified default parameters is equal for several candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
+
+> Note: it may seem strange to process built-in integer types in a way different from other types, but it is important in cases where the actual call argument is an integer literal having an [integer literal type][Integer literal types].
+> In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and it is preferred to have the `kotlin.Int` overload as the most specific.
 
 If after this additional step there are still several candidates that are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
 
