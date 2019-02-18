@@ -230,7 +230,7 @@ TODO(Examples?)
 
 The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is an error.
 
-> Note: when used as expressions, conditional expressions are special w.r.t. of operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority.
+> Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority.
 > For details, see Kotlin [grammar][Syntax grammar].
 
 ### When expression
@@ -495,7 +495,7 @@ A multiplicative expression has the same type as the return type of the correspo
 
 A *cast expression* is a binary expression which uses the cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
 
-An **`as` cast expression** `E as T` is called *a unsafe cast* expression.
+An **`as` cast expression** `E as T` is called *a unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
 If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
 
@@ -503,10 +503,10 @@ TODO(We need to sort out undefined/implementation-defined/platform-defined)
 
 > Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.
 
-An unsafe cast expression result always has the same type as the type $T$ specified in the expression.
+An unchecked cast expression result always has the same type as the type $T$ specified in the expression.
 
 An **`as?` cast expression** `E as? T` is called *a checked cast* expression.
-This expression is similar to the unsafe cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns `null` instead.
+This expression is similar to the unchecked cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns `null` instead.
 If type $T$ is not a [runtime-available][Runtime-available types] type, then the check is not performed and `null` is never returned, leading to potential runtime errors later in the program execution.
 This situation should be reported as a compile-time warning.
 
@@ -816,6 +816,24 @@ When a value of an anonymous object type escapes current scope:
 
 > Note: in this context "escaping" current scope is performed immediately if the corresponding value is declared as a global- or classifier-scope property, as those are a part of package interface.
 
+TODO: This is more complex. From D.Petrov's comment:
+> This is a bit more complex for anonymous object return types of private functions and properties:
+> ```
+> class M {
+> private fun foo() = object {
+> fun bar() { println("foo.bar") }
+> }
+> 
+> fun test1() = foo().bar()
+> fun test2() = foo()
+> }
+> 
+> fun main() {
+> M().test1() // OK, prints "foo.bar"
+> M().test2().bar() // Error: Unresolved reference: bar
+> }
+> ```
+
 ### This-expressions
 
 :::{.paste target=grammar-rule-thisExpression}
@@ -827,7 +845,8 @@ In order to access other receivers, labeled `this` expressions are used.
 These may be any of the following:
 
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;
-- `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function.
+- `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;
+- `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
 
 Any other form of this-expression is illegal and must be a compile-time error.
 
