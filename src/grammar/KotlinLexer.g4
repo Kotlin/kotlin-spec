@@ -1,5 +1,5 @@
 /**
- * Kotlin Lexer Grammar for ANTLR v4
+ * Kotlin lexical grammar in ANTLR4 notation
  */
 
 lexer grammar KotlinLexer;

@@ -1,5 +1,5 @@
 /**
- * Kotlin Parser Grammar for ANTLR v4
+ * Kotlin syntax grammar in ANTLR4 notation
  */
 
 parser grammar KotlinParser;
