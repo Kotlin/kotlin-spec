@@ -1,25 +1,25 @@
 /**
- * Kotlin Grammar for ANTLR v4
+ * Kotlin syntax grammar in ANTLR4 notation
  *
- * Based on:
- * http://jetbrains.github.io/kotlin-spec/#_grammars_and_parsing
- * and
- * http://kotlinlang.org/docs/reference/grammar.html
- *
- * Tested on
- * https://github.com/JetBrains/kotlin/tree/master/compiler/testData/psi
+ * The grammar corresponds to Kotlin version 1.2.41
  */
 
 parser grammar KotlinParser;
 
 options { tokenVocab = KotlinLexer; }
 
+// SECTION: general
+
 kotlinFile
-    : shebangLine? NL* fileAnnotation* packageHeader? importList topLevelObject* EOF
+    : shebangLine? NL* fileAnnotation* packageHeader importList topLevelObject* EOF
     ;
 
 script
-    : shebangLine? NL* fileAnnotation* packageHeader? importList (statement semi)* EOF
+    : shebangLine? NL* fileAnnotation* packageHeader importList (statement semi)* EOF
+    ;
+
+shebangLine
+    : ShebangLine NL+
     ;
 
 fileAnnotation
@@ -27,7 +27,7 @@ fileAnnotation
     ;
 
 packageHeader
-    : 'package' identifier semi?
+    : ('package' identifier semi?)?
     ;
 
 importList
@@ -46,6 +46,20 @@ topLevelObject
     : declaration semis?
     ;
 
+typeAlias
+    : modifiers? 'typealias' NL* simpleIdentifier (NL* typeParameters)? NL* '=' NL* type
+    ;
+
+declaration
+    : classDeclaration
+    | objectDeclaration
+    | functionDeclaration
+    | propertyDeclaration
+    | typeAlias
+    ;
+
+// SECTION: classes
+
 classDeclaration
     : modifiers? ('class' | 'interface') NL* simpleIdentifier
     (NL* typeParameters)? (NL* primaryConstructor)?
@@ -56,6 +70,10 @@ classDeclaration
 
 primaryConstructor
     : (modifiers? 'constructor' NL*)? classParameters
+    ;
+
+classBody
+    : '{' NL* classMemberDeclarations NL* '}'
     ;
 
 classParameters
@@ -70,10 +88,6 @@ delegationSpecifiers
     : annotatedDelegationSpecifier (NL* ',' NL* annotatedDelegationSpecifier)*
     ;
 
-annotatedDelegationSpecifier
-    : annotation* NL* delegationSpecifier
-    ;
-
 delegationSpecifier
     : constructorInvocation
     | explicitDelegation
@@ -85,13 +99,31 @@ constructorInvocation
     : userType valueArguments
     ;
 
+annotatedDelegationSpecifier
+    : annotation* NL* delegationSpecifier
+    ;
+
 explicitDelegation
     : (userType | functionType) NL* 'by' NL* expression
     ;
 
-classBody
-    : '{' NL* classMemberDeclarations? NL* '}'
+typeParameters
+    : '<' NL* typeParameter (NL* ',' NL* typeParameter)* NL* '>'
     ;
+
+typeParameter
+    : typeParameterModifiers? NL* simpleIdentifier (NL* ':' NL* type)?
+    ;
+
+typeConstraints
+    : 'where' NL* typeConstraint (NL* ',' NL* typeConstraint)*
+    ;
+
+typeConstraint
+    : annotation* simpleIdentifier NL* ':' NL* type
+    ;
+
+// SECTION: classMembers
 
 classMemberDeclarations
     : (classMemberDeclaration semis?)*
@@ -108,38 +140,11 @@ anonymousInitializer
     : 'init' NL* block
     ;
 
-secondaryConstructor
-    : modifiers? 'constructor' NL* functionValueParameters (NL* ':' NL* constructorDelegationCall)? NL* block?
-    ;
-
-constructorDelegationCall
-    : 'this' NL* valueArguments
-    | 'super' NL* valueArguments
-    ;
-
-enumClassBody
-    : '{' NL* enumEntries? (NL* ';' NL* classMemberDeclarations?)? NL* '}'
-    ;
-
-enumEntries
-    : enumEntry (NL* ',' NL* enumEntry)* NL* ','?
-    ;
-
-enumEntry
-    : (modifiers NL*)? simpleIdentifier (NL* valueArguments)? (NL* classBody)?
-    ;
-
-functionDeclaration
-    : modifiers?
-    functionHeader
-    NL* functionValueParameters
-    (NL* ':' NL* type)?
-    (NL* typeConstraints)?
-    (NL* functionBody)?
-    ;
-
-functionHeader
-    : 'fun' (NL* typeParameters)? (NL* receiverType NL* '.')? NL* simpleIdentifier
+companionObject
+    : modifiers? 'companion' NL* 'object'
+    (NL* simpleIdentifier)?
+    (NL* ':' NL* delegationSpecifiers)?
+    (NL* classBody)?
     ;
 
 functionValueParameters
@@ -150,12 +155,13 @@ functionValueParameter
     : modifiers? parameter (NL* '=' NL* expression)?
     ;
 
-parameter
-    : simpleIdentifier NL* ':' NL* type
-    ;
-
-setterParameter
-    : simpleIdentifier NL* (':' NL* type)?
+functionDeclaration
+    : modifiers?
+    'fun' (NL* typeParameters)? (NL* receiverType NL* '.')? NL* simpleIdentifier
+    NL* functionValueParameters
+    (NL* ':' NL* type)?
+    (NL* typeConstraints)?
+    (NL* functionBody)?
     ;
 
 functionBody
@@ -163,18 +169,12 @@ functionBody
     | '=' NL* expression
     ;
 
-objectDeclaration
-    : modifiers? 'object'
-    NL* simpleIdentifier
-    (NL* ':' NL* delegationSpecifiers)?
-    (NL* classBody)?
+variableDeclaration
+    : annotation* NL* simpleIdentifier (NL* ':' NL* type)?
     ;
 
-companionObject
-    : modifiers? 'companion' NL* 'object'
-    (NL* simpleIdentifier)?
-    (NL* ':' NL* delegationSpecifiers)?
-    (NL* classBody)?
+multiVariableDeclaration
+    : '(' NL* variableDeclaration (NL* ',' NL* variableDeclaration)* NL* ')'
     ;
 
 propertyDeclaration
@@ -185,19 +185,6 @@ propertyDeclaration
     (NL* typeConstraints)?
     (NL* ('=' NL* expression | propertyDelegate))?
     (NL+ ';')? NL* (getter? (NL* semi? setter)? | setter? (NL* semi? getter)?)
-    /*
-        XXX: actually, it's not that simple. You can put semi only on the same line as getter, but any other semicolons
-        between property and getter are forbidden
-        Is this a bug in kotlin parser? Who knows.
-    */
-    ;
-
-multiVariableDeclaration
-    : '(' NL* variableDeclaration (NL* ',' NL* variableDeclaration)* NL* ')'
-    ;
-
-variableDeclaration
-    : annotation* NL* simpleIdentifier (NL* ':' NL* type)?
     ;
 
 propertyDelegate
@@ -214,27 +201,45 @@ setter
     | modifiers? 'set' NL* '(' (annotation | parameterModifier)* setterParameter ')' (NL* ':' NL* type)? NL* functionBody
     ;
 
-typeAlias
-    : modifiers? 'typealias' NL* simpleIdentifier (NL* typeParameters)? NL* '=' NL* type
+setterParameter
+    : simpleIdentifier NL* (':' NL* type)?
     ;
 
-typeParameters
-    : '<' NL* typeParameter (NL* ',' NL* typeParameter)* NL* '>'
+parameter
+    : simpleIdentifier NL* ':' NL* type
     ;
 
-typeParameter
-    : typeParameterModifiers? NL* simpleIdentifier (NL* ':' NL* type)?
+objectDeclaration
+    : modifiers? 'object'
+    NL* simpleIdentifier
+    (NL* ':' NL* delegationSpecifiers)?
+    (NL* classBody)?
     ;
 
-typeParameterModifiers
-    : typeParameterModifier+
+secondaryConstructor
+    : modifiers? 'constructor' NL* functionValueParameters (NL* ':' NL* constructorDelegationCall)? NL* block?
     ;
 
-typeParameterModifier
-    : reificationModifier NL*
-    | varianceModifier NL*
-    | annotation
+constructorDelegationCall
+    : 'this' NL* valueArguments
+    | 'super' NL* valueArguments
     ;
+
+// SECTION: enumClasses
+
+enumClassBody
+    : '{' NL* enumEntries? (NL* ';' NL* classMemberDeclarations)? NL* '}'
+    ;
+
+enumEntries
+    : enumEntry (NL* ',' NL* enumEntry)* NL* ','?
+    ;
+
+enumEntry
+    : (modifiers NL*)? simpleIdentifier (NL* valueArguments)? (NL* classBody)?
+    ;
+
+// SECTION: types
 
 type
     : typeModifiers?
@@ -244,29 +249,51 @@ type
     | functionType)
     ;
 
-typeModifiers
-    : typeModifier+
-    ;
-
-typeModifier
-    : annotation | 'suspend' NL*
-    ;
-
-parenthesizedType
-    : '(' NL* type NL* ')'
+typeReference
+    : userType
+    | 'dynamic'
     ;
 
 nullableType
     : (typeReference | parenthesizedType) NL* quest+
     ;
 
-typeReference
-    : userType
-    | 'dynamic' // do we need a separate dynamic support here?
+quest
+    : QUEST_NO_WS
+    | QUEST_WS
+    ;
+
+userType
+    : simpleUserType (NL* '.' NL* simpleUserType)*
+    ;
+
+simpleUserType
+    : simpleIdentifier (NL* typeArguments)?
+    ;
+
+typeProjection
+    : typeProjectionModifiers? type | '*'
+    ;
+
+typeProjectionModifiers
+    : typeProjectionModifier+
+    ;
+
+typeProjectionModifier
+    : varianceModifier NL*
+    | annotation
     ;
 
 functionType
     : (receiverType NL* '.' NL*)? functionTypeParameters NL* '->' NL* type
+    ;
+
+functionTypeParameters
+    : '(' NL* (parameter | type)? (NL* ',' NL* (parameter | type))* NL* ')'
+    ;
+
+parenthesizedType
+    : '(' NL* type NL* ')'
     ;
 
 receiverType
@@ -276,34 +303,12 @@ receiverType
     | typeReference)
     ;
 
-userType
-    : simpleUserType (NL* '.' NL* simpleUserType)*
-    ;
-
 parenthesizedUserType
     : '(' NL* userType NL* ')'
     | '(' NL* parenthesizedUserType NL* ')'
     ;
 
-simpleUserType
-    : simpleIdentifier (NL* typeArguments)?
-    ;
-
-functionTypeParameters
-    : '(' NL* (parameter | type)? (NL* ',' NL* (parameter | type))* NL* ')'
-    ;
-
-typeConstraints
-    : 'where' NL* typeConstraint (NL* ',' NL* typeConstraint)*
-    ;
-
-typeConstraint
-    : annotation* simpleIdentifier NL* ':' NL* type
-    ;
-
-block
-    : '{' NL* statements NL* '}'
-    ;
+// SECTION: statements
 
 statements
     : (statement (semis statement)* semis?)?
@@ -317,18 +322,53 @@ statement
     | expression)
     ;
 
-declaration
-    : classDeclaration
-    | objectDeclaration
-    | functionDeclaration
-    | propertyDeclaration
-    | typeAlias
+label
+    : IdentifierAt NL*
+    ;
+
+controlStructureBody
+    : block
+    | statement
+    ;
+
+block
+    : '{' NL* statements NL* '}'
+    ;
+
+loopStatement
+    : forStatement
+    | whileStatement
+    | doWhileStatement
+    ;
+
+forStatement
+    : 'for' NL* '(' annotation* (variableDeclaration | multiVariableDeclaration) IN expression ')' NL* controlStructureBody?
+    ;
+
+whileStatement
+    : 'while' NL* '(' expression ')' NL* controlStructureBody
+    | 'while' NL* '(' expression ')' NL* ';'
+    ;
+
+doWhileStatement
+    : 'do' NL* controlStructureBody? NL* 'while' NL* '(' expression ')'
     ;
 
 assignment
     : directlyAssignableExpression '=' NL* expression
     | assignableExpression assignmentAndOperator NL* expression
     ;
+
+semi
+    : (';' | NL) NL*
+    | EOF;
+
+semis
+    : (';' | NL)+
+    | EOF
+    ;
+
+// SECTION: expressions
 
 expression
     : disjunction
@@ -343,35 +383,39 @@ conjunction
     ;
 
 equality
-    : comparison (/* NO NL! */ equalityOperator NL* comparison)*
+    : comparison (equalityOperator NL* comparison)*
     ;
 
 comparison
-    : infixOperation (/* NO NL! */ comparisonOperator NL* infixOperation)?
+    : infixOperation (comparisonOperator NL* infixOperation)?
     ;
 
 infixOperation
-    : elvisExpression (/* NO NL! */ inOperator NL* elvisExpression | isOperator NL* type)*
+    : elvisExpression (inOperator NL* elvisExpression | isOperator NL* type)*
     ;
 
 elvisExpression
     : infixFunctionCall (NL* elvis NL* infixFunctionCall)*
     ;
 
+elvis
+    : QUEST_NO_WS ':'
+    ;
+
 infixFunctionCall
-    : rangeExpression (/* NO NL! */ simpleIdentifier NL* rangeExpression)*
+    : rangeExpression (simpleIdentifier NL* rangeExpression)*
     ;
 
 rangeExpression
-    : additiveExpression (/* NO NL! */ '..' NL* additiveExpression)*
+    : additiveExpression ('..' NL* additiveExpression)*
     ;
 
 additiveExpression
-    : multiplicativeExpression (/* NO NL! */ additiveOperator NL* multiplicativeExpression)*
+    : multiplicativeExpression (additiveOperator NL* multiplicativeExpression)*
     ;
 
 multiplicativeExpression
-    : asExpression (/* NO NL! */ multiplicativeOperator NL* asExpression)*
+    : asExpression (multiplicativeOperator NL* asExpression)*
     ;
 
 asExpression
@@ -433,26 +477,13 @@ annotatedLambda
     : annotation* label? NL* lambdaLiteral
     ;
 
-valueArguments
-    : '(' NL* ')'
-    | '(' NL* valueArgument (NL* ',' NL* valueArgument)* NL* ')'
-    ;
-
 typeArguments
     : '<' NL* typeProjection (NL* ',' NL* typeProjection)* NL* '>'
     ;
 
-typeProjection
-    : typeProjectionModifiers? type | '*'
-    ;
-
-typeProjectionModifiers
-    : typeProjectionModifier+
-    ;
-
-typeProjectionModifier
-    : varianceModifier NL*
-    | annotation
+valueArguments
+    : '(' NL* ')'
+    | '(' NL* valueArgument (NL* ',' NL* valueArgument)* NL* ')'
     ;
 
 valueArgument
@@ -461,9 +492,9 @@ valueArgument
 
 primaryExpression
     : parenthesizedExpression
+    | simpleIdentifier
     | literalConstant
     | stringLiteral
-    | simpleIdentifier
     | callableReference
     | functionLiteral
     | objectLiteral
@@ -494,6 +525,7 @@ literalConstant
     | RealLiteral
     | NullLiteral
     | LongLiteral
+    | UnsignedLiteral
     ;
 
 stringLiteral
@@ -505,7 +537,7 @@ lineStringLiteral
     : QUOTE_OPEN (lineStringContent | lineStringExpression)* QUOTE_CLOSE
     ;
 
-multiLineStringLiteral // why is lineStringLiteral here? there is no escaping in multiline strings
+multiLineStringLiteral
     : TRIPLE_QUOTE_OPEN (multiLineStringContent | multiLineStringExpression | MultiLineStringQuote)* TRIPLE_QUOTE_CLOSE
     ;
 
@@ -529,18 +561,18 @@ multiLineStringExpression
     : MultiLineStrExprStart NL* expression NL* '}'
     ;
 
-lambdaLiteral // anonymous functions?
-    : LCURL NL* statements NL* RCURL
-    | LCURL NL* lambdaParameters? NL* ARROW NL* statements NL* '}'
+lambdaLiteral
+    : '{' NL* statements NL* '}'
+    | '{' NL* lambdaParameters? NL* '->' NL* statements NL* '}'
     ;
 
 lambdaParameters
-    : lambdaParameter (NL* COMMA NL* lambdaParameter)*
+    : lambdaParameter (NL* ',' NL* lambdaParameter)*
     ;
 
 lambdaParameter
     : variableDeclaration
-    | multiVariableDeclaration (NL* COLON NL* type)?
+    | multiVariableDeclaration (NL* ':' NL* type)?
     ;
 
 anonymousFunction
@@ -558,7 +590,7 @@ functionLiteral
     ;
 
 objectLiteral
-    : 'object' NL* ':' NL* delegationSpecifiers (NL* classBody)?
+    : 'object' NL* ':' NL* delegationSpecifiers NL* classBody
     | 'object' NL* classBody
     ;
 
@@ -572,14 +604,9 @@ superExpression
     | SUPER_AT
     ;
 
-controlStructureBody
-    : block
-    | statement
-    ;
-
 ifExpression
-    : 'if' NL* '(' NL* expression NL* ')' NL* controlStructureBody (';'? NL* 'else' NL* controlStructureBody)?
-    | 'if' NL* '(' NL* expression NL* ')' NL* (';' NL*)? 'else' NL* controlStructureBody
+    : 'if' NL* '(' NL* expression NL* ')' NL* (controlStructureBody | ';')
+    | 'if' NL* '(' NL* expression NL* ')' NL* controlStructureBody? NL* ';'? NL* 'else' NL* (controlStructureBody | ';')
     ;
 
 whenExpression
@@ -610,30 +637,11 @@ tryExpression
     ;
 
 catchBlock
-    : 'catch' NL* '(' annotation* simpleIdentifier ':' userType ')' NL* block
+    : 'catch' NL* '(' annotation* simpleIdentifier ':' type ')' NL* block
     ;
 
 finallyBlock
     : 'finally' NL* block
-    ;
-
-loopStatement
-    : forStatement
-    | whileStatement
-    | doWhileStatement
-    ;
-
-forStatement
-    : 'for' NL* '(' annotation* (variableDeclaration | multiVariableDeclaration) 'in' expression ')' NL* controlStructureBody?
-    ;
-
-whileStatement
-    : 'while' NL* '(' expression ')' NL* controlStructureBody
-    | 'while' NL* '(' expression ')' NL* ';'
-    ;
-
-doWhileStatement
-    : 'do' NL* controlStructureBody? NL* 'while' NL* '(' expression ')'
     ;
 
 jumpExpression
@@ -643,7 +651,7 @@ jumpExpression
     | 'break' | BREAK_AT
     ;
 
-callableReference // ?:: here is not an actual operator, it's just a lexer hack to avoid (?: + :) vs (? + ::) ambiguity
+callableReference
     : (receiverType? NL* '::' NL* (simpleIdentifier | 'class'))
     ;
 
@@ -706,9 +714,20 @@ postfixUnaryOperator
     | EXCL_NO_WS excl
     ;
 
+excl
+    : EXCL_NO_WS
+    | EXCL_WS
+    ;
+
 memberAccessOperator
     : '.' | safeNav | '::'
     ;
+
+safeNav
+    : QUEST_NO_WS '.'
+    ;
+
+// SECTION: modifiers
 
 modifiers
     : (annotation | modifier)+
@@ -723,6 +742,14 @@ modifier
     | inheritanceModifier
     | parameterModifier
     | platformModifier) NL*
+    ;
+
+typeModifiers
+    : typeModifier+
+    ;
+
+typeModifier
+    : annotation | 'suspend' NL*
     ;
 
 classModifier
@@ -748,6 +775,16 @@ visibilityModifier
 varianceModifier
     : 'in'
     | 'out'
+    ;
+
+typeParameterModifiers
+    : typeParameterModifier+
+    ;
+
+typeParameterModifier
+    : reificationModifier NL*
+    | varianceModifier NL*
+    | annotation
     ;
 
 functionModifier
@@ -784,33 +821,24 @@ platformModifier
     | 'actual'
     ;
 
-label
-    : IdentifierAt NL*
-    ;
+// SECTION: annotations
 
 annotation
     : (singleAnnotation | multiAnnotation) NL*
     ;
 
 singleAnnotation
-    : annotationUseSiteTarget NL* ':' NL* unescapedAnnotation
+    : annotationUseSiteTarget NL* unescapedAnnotation
     | '@' unescapedAnnotation
     ;
 
 multiAnnotation
-    : annotationUseSiteTarget NL* ':' NL* '[' unescapedAnnotation+ ']'
+    : annotationUseSiteTarget NL* '[' unescapedAnnotation+ ']'
     | '@' '[' unescapedAnnotation+ ']'
     ;
 
 annotationUseSiteTarget
-    : '@field'
-    | '@property'
-    | '@get'
-    | '@set'
-    | '@receiver'
-    | '@param'
-    | '@setparam'
-    | '@delegate'
+    : '@' ('field' | 'property' | 'get' | 'set' | 'receiver' | 'param' | 'setparam' | 'delegate') NL* ':'
     ;
 
 unescapedAnnotation
@@ -818,8 +846,9 @@ unescapedAnnotation
     | userType
     ;
 
-simpleIdentifier
-    : Identifier //soft keywords:
+// SECTION: identifiers
+
+simpleIdentifier: Identifier
     | 'abstract'
     | 'annotation'
     | 'by'
@@ -863,34 +892,4 @@ simpleIdentifier
 
 identifier
     : simpleIdentifier (NL* '.' simpleIdentifier)*
-    ;
-
-shebangLine
-    : ShebangLine
-    ;
-
-quest
-    : QUEST_NO_WS
-    | QUEST_WS
-    ;
-
-elvis
-    : QUEST_NO_WS ':'
-    ;
-
-safeNav
-    : QUEST_NO_WS '.'
-    ;
-
-excl
-    : EXCL_NO_WS
-    | EXCL_WS
-    ;
-
-semi
-    : (';' | NL) NL* // actually, it's WS or comment between ';', here it's handled in lexer (see ;; token)
-    | EOF;
-semis // writing this as "semi+" sends antlr into infinite loop or smth
-    : (';' | NL)+
-    | EOF
     ;
