@@ -56,15 +56,24 @@ For each of these cases, a compiler should first pick a number of _overload cand
 
 A *callable* $X$ for the purpose of this section is one of the following:
 
-- A function named $X$ at its declaration site;
-- A property named $X$ at its declaration site with an operator function called
-  `invoke` available as member or extension in the current scope.
+- Function-like callables:
+    - A function named $X$ at its declaration site;
+    - A function named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$;
+    - A constructor of the type named $X$ at its declaration site;
+- Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
+    - A property named $X$ at its declaration site;
+    - [An object][Object declarations] named $X$ at its declaration site;
+    - [A companion object][Companion objects] of a classifier type named $X$ at its declaration site;
+    - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$;
 
 In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-A *member callable* is either a member function or a member property with a member operator `invoke`.
-An *extension callable* is either an extension function, a member property with an extension operator `invoke` or an extension property with an extension operator `invoke`.
+The set of explicit receivers itself (denoted by the [`this`][This-expression] expression) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
+As with normal property-like callables, $\mathtt{this}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\mathtt{this.invoke}(Y_0,Y_1,\ldots,Y_N)$.
+
+A *member callable* is either a member function-like callable or a member property-like callable with a member operator `invoke`.
+An *extension callable* is either an extension function-like callable, a member property-like callable with an extension operator `invoke` or an extension property-like callable with an extension operator `invoke`.
 
 When calculating overload candidate sets, member callables produce the following separate sets (ordered by higher priority first):
 
@@ -126,8 +135,6 @@ TODO(Sync with scopes and stuff when we have them)
 6. The sets of implicitly imported extension callables named `f`, whose receiver type conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
-
-TODO(all these X-imported things need to be defined somewhere)
 
 When analyzing these sets, the **first** set that contains **any** callable with the corresponding name and conforming types is picked.
 This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.
@@ -306,12 +313,13 @@ Due to the complexity of the process, type inference may not affect the way over
 
 - Property business
 - Function types (type system section?)
-- Definition of an "applicable function"
 - Definition of "type parameter level"
-- Calls with named parameters `f(x = 2)`
 - Calls with trailing lambda without parameter type
     * Lambdas with parameter types seem to be covered (**nope, they are not**)
 - Calls with specified type parameters `f<Double>(3)`
-- ! Constructors and companion object `invoke` (clash with functions)
-- ! Singleton objects (clash with properties)
-- ! Enum constants (clash with properties)
+- Widen the notion of "function" and "property" during overloading
+    - Constructors and companion object `invoke` (clash with functions)
+    - Singleton objects (clash with properties)
+    - Enum constants (clash with properties)
+    - Explicit `this` cannot clash with properties, but can clash with other explicit `this`, meaning it effectively overloads over all the available receivers in the scope
+    - Can `super` be overloaded? I suppose
