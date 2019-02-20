@@ -1,0 +1,1 @@
+cd .. && ./gradlew -PmainClass="org.jetbrains.kotlin.spec.CopyPasteFilterKt" execute -q
