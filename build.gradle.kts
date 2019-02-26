@@ -100,9 +100,15 @@ tasks.create<ShellExec>("buildPdfBySections") {
 }
 
 tasks.create<JavaExec>("convertGrammar") {
+    val inputFile = "docs/kotlin.core/Grammar.g4"
+    val outputFile = "docs/kotlin.core/grammar.generated.md"
+
+    inputs.file(inputFile)
+    outputs.file(outputFile)
+
     classpath = java.sourceSets["main"].runtimeClasspath
     main = "org.jetbrains.kotlin.spec.ConvertGrammarKt"
-    args = listOf("-i", "docs/kotlin.core/Grammar.g4", "-o", "docs/kotlin.core/grammar.generated.md")
+    args = listOf("-i", inputFile, "-o", outputFile)
 }
 
 tasks.create<JavaExec>("execute") {
