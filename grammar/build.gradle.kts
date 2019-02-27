@@ -13,6 +13,9 @@ version = "0.1"
 
 apply(plugin = "kotlin")
 
+val jar: Jar by tasks
+val archivePrefix = "kotlin-grammar-parser"
+
 repositories {
     maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
     mavenCentral()
@@ -23,7 +26,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = group as String
-            artifactId = "kotlin-grammar-parser"
+            artifactId = archivePrefix
             version = version as String
 
             from(components["java"])
@@ -123,3 +126,15 @@ tasks.create("prepareDiagnosticsCompilerTests") {
         }
     }
 }
+
+jar.archiveName = "$archivePrefix-$version.jar"
+
+jar.manifest {
+    attributes(
+        mapOf(
+            "Class-Path" to configurations.runtime.files.joinToString(" ") { it.name }
+        )
+    )
+}
+
+jar.from(configurations.runtime.map { if (it.isDirectory) it else zipTree(it) })
