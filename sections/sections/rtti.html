@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Untitled</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../assets/js/tests-integration.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+<h2 id="runtime-type-information">Runtime type information</h2>
+<div class="paragraph">
+<p><span class="sentence">The <em>runtime type information</em> (RTTI) is the information about Kotlin types of values available from these values at runtime. </span><span class="sentence">RTTI affects the semantics of certain expressions, changing their evaluation depending on the amount of RTTI available for particular values, implementation, and platform:</span></p>
+</div>
+<ul>
+<li><span class="sentence">[The type checking operator][Type-checking expression]</span></li>
+<li><span class="sentence">[The cast expression][cast expression], expecially the <code>as?</code> operator</span></li>
+<li><span class="sentence">[Class literals][class literal] and the values they evaluate to</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><em>Runtime types</em> are particular instances of RTTI for a particular value at runtime. </span><span class="sentence">These model a subset of the Kotlin [type system][Type system]. </span><span class="sentence">Namely, the runtime types are limited to [classifier types][Classifier types], [function types][Function types] and a special case of <code>kotlin.Nothing?</code> which is the type of [<code>null</code> reference][Null literal] and the only nullable runtime type. </span><span class="sentence">This includes the classifier types created by [anonymous object literals][Object literals]. </span><span class="sentence">There is a slight distinction between a Kotlin type system type and its runtime counterpart:</span></p>
+</div>
+<ul>
+<li><span class="sentence">On some platforms, some particular types may have the same runtime type representation. </span><span class="sentence">This means that checking or casting values of these types works the same way as if they were the same type</span></li>
+<li><span class="sentence">Generic types with the same classifier are not required to have different runtime representations. </span><span class="sentence">One cannot generally rely on them having the same representation outside of a particular platform. </span><span class="sentence">Platform specifications must clarify whether some or all types on these platforms have this feature.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">RTTI is also the source of information for platform-specific <em>reflection</em> facilities in the standard library.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The types actual values may have are limited to [class and object types][Classifier types] and [function types][Function types] as well as <code>kotlin.Nothing?</code> for the <code>null</code> reference. </span><span class="sentence"><code>kotlin.Nothing</code> (not to be confused with its nullable variant <code>kotlin.Nothing?</code>) is special in the way that this type is never encountered as a runtime type even though it may have a platform-specific representation. </span><span class="sentence">The reason for this is that this type is used to signify non-existent values.</span></p>
+</div>
+<h3 id="runtime-available-types">Runtime-available types</h3>
+<div class="paragraph">
+<p><span class="sentence"><em>Runtime-available types</em> are the types that can be guaranteed (during compilation) to have a concrete <em>runtime</em> counterpart. </span><span class="sentence">These include all the runtime types, their nullable variants as well as [<code>reified</code> type parameters][Reified type parameters], that are guaranteed to inline to a runtime type during type parameter substitution. </span><span class="sentence">Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. </span><span class="sentence">During these operations, the nullability of the type is checked using reference-equality to <code>null</code>, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For all generic types that are not expected to have RTTI for their generic arguments, only “raw” variants of generic types (denoted in code using the star-projected type notation or a special parameter-less notation <span><span class="TODO">(TODO: link?)</span><span class="TODO-marker">*</span></span>) are runtime-available.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: one may say that classifier generics are <em>partially</em> runtime available due to them having information about only the classifier part of the type</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">[Exception types][Exceptions] must be runtime-available to enable type checks that the <code>catch</code> clause of [<code>try</code>-expression][Try-expression] performs.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Only non-nullable runtime types may be used in <code>class</code> literal expressions. </span><span class="sentence">These include reified type parameters with non-nullable upper bounds, as well as all classifier and function types.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Anything else?)</span></p>
+</div>
+</div>
+</body>
+</html>

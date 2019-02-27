@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Untitled</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../assets/js/tests-integration.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+<h2 id="kotlin-type-constraints">Kotlin type constraints</h2>
+<div class="paragraph">
+<p><span class="sentence">Some complex tasks that need to be solved when compiling Kotlin code are formulated best using <em>constraint systems</em> on Kotlin types. </span><span class="sentence">These are solved using constraint solvers.</span></p>
+</div>
+<h3 id="type-constraint-definition">Type constraint definition</h3>
+<div class="paragraph">
+<p><span class="sentence">A <em>type constraint</em> in general is an inequation of the following form: <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> are Kotlin types (see [type system][Type system]). </span><span class="sentence">It is important, however, that Kotlin has parameterized types and type parameters of <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> (or type parameters of their parameters, or <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> themselves) may be <em>type variables</em>, that are unknown types that may be substituted by any other type in Kotlin.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Please note that, in general, type variables of the constraint system are not the same as type parameters of a type or a callable. </span><span class="sentence">Some type parameters may be <em>bound</em> in the constraint system, meaning that, although they are not known yet in Kotlin code, they are not type variables and are not to be substituted.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When such an ambiguity arises, we will use the notation <span class="math inline">\(T_i\)</span> for a type variable and <span class="math inline">\(\tilde{T_i}\)</span> for a bound type parameter. </span><span class="sentence">The main difference between bound parameters and concrete types is that different concrete types may not be equal, but a bound parameter may be equal to another bound parameter or a concrete type.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Several examples of valid type constraints:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: Y\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: \mathtt{List}\left&lt;\mathtt{List}\left&lt;\mathtt{Int}\right&gt;\right&gt;\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\widetilde{X} &lt;: Y\)</span></span></li>
+</ul>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\mathtt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \mathtt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
+</div>
+<h3 id="type-constraint-solving">Type constraint solving</h3>
+<div class="paragraph">
+<p><span class="sentence">There are two tasks that a type constraint solver may perform: checking constraint system for soundness and solving the system, e.g. inferring viable values for all the type variables that have themselves no type variables in them.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Checking a constraint system for soundness can be viewed as a simpler case of solving a constraint, as if there is a solution, then the system is sound. </span><span class="sentence">It is, however, a much simpler task with only two possible outcomes. </span><span class="sentence">Solving a constraint system, on the other hand, may have several different results as there may be several valid solutions.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Constraint examples that are sound yet no relevant solutions exist:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(X &lt;: Y\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;X\right&gt; &lt;: \mathtt{Collection}\left&lt;X\right&gt;\)</span></span></li>
+</ul>
+</blockquote>
+<h4 id="checking-constraint-system-soundness">Checking constraint system soundness</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<h4 id="finding-optimal-solution">Finding optimal solution</h4>
+<div class="paragraph">
+<p><span class="sentence">As any constraint system may have several valid solutions, finding one that is “optimal” in some sense is not possible in general, because the notion of the best solution for a task depends on a particular use-case. </span><span class="sentence">To solve this problem, the constraint system allows two additional types of constraints:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A pull-up constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\uparrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the least one according to subtyping relation;</span></li>
+<li><span class="sentence">A push-down constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\downarrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the biggest one according to subtyping relation.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">If a variable have no constraints of these two kinds associated with it, it is assumed to have a pull-up constraint, that is, in an ambigious situation, the biggest possible type is chosen.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<h4 id="the-relations-on-types-as-constraints">The relations on types as constraints</h4>
+<div class="paragraph">
+<p><span class="sentence">In the other chapters (see [expressions] and [statements] for example) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document. </span><span class="sentence">Not all of these relations are easily converted into their constraint form.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The greatest lower bound of two types is converted directly, as the greatest lower bound is always an intersection type. </span><span class="sentence">The least upper bound, however, is a little bit tricky. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is defined to be the least upper bound of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> with all these types being either known, unknown or containing type variables, the following constraints are produced:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A &lt;: T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B &lt;: T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\downarrow T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\uparrow A\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\uparrow B\)</span></span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:<br />
+Let’s assume we have the following code:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">e</span> = <span class="cf">if</span>(c) a <span class="cf">else</span> b</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besided the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to [the conditional expression chapter][Conditional expression], produces the following relations:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E = LUB(A, B)\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with <code>kotlin.Any?</code> and <code>kotlin.Nothing</code>):</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A &lt;: E\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B &lt;: E\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\downarrow E\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\uparrow A\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\uparrow B\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Which, according to the semantics of additional constraints (and the default pull-up constraint for <span class="math inline">\(C\)</span>), produce the following solution:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(C \rightarrow \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
+</ul>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(prove that these constraints are equivalent to LUB from type system?)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(are they actually?)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(does that matter?)</span></p>
+</div>
+</div>
+</body>
+</html>
