@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Untitled</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../assets/js/tests-integration.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+<h2 id="type-inference">Type inference</h2>
+<div class="paragraph">
+<p><span class="sentence">Kotlin has a concept of <em>type inference</em> for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler. </span><span class="sentence">There are two kinds of type inference supported by Kotlin.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Local type inference, for inferring types of expressions locally, in statement/expression scope;</span></li>
+<li><span class="sentence">Function signature type inference, for inferring types of function return values and/or parameters.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
+</div>
+</blockquote>
+<h3 id="smart-casts">Smart casts</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin introduces a limited form of flow-dependent typing called <em>smart casting</em>. </span><span class="sentence">Flow-dependent typing means some expressions in the program may introduce changes to the compile-time types of variables. </span><span class="sentence">This allows one to avoid unneeded explicit casting of values in cases where their runtime types are guaranteed to conform to the expected compile-time types.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Smart casts are dependent on two main things: <em>smart cast sources</em> and <em>value stability</em>.</span></p>
+</div>
+<h4 id="smart-cast-sources">Smart cast sources</h4>
+<div class="paragraph">
+<p><span class="sentence">There are two kinds of smart cast sources: <em>nullability conditions</em> and <em>type conditions</em>. </span><span class="sentence">Nullability conditions specify that some value is not nullable, i.e., its value is guaranteed to not be <code>null</code>. </span><span class="sentence">Type conditions specify that some value’s runtime type conforms to a constraint <span class="math inline">\(RT &lt;: T\)</span>, where <span class="math inline">\(T\)</span> is the assumed type and <span class="math inline">\(RT\)</span> is the runtime type.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: nullability conditions may be viewed as a special case of type conditions with assumed type <code>kotlin.Any</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">These sources influence the compile-time type of a value in some expression (called <em>smart cast sink</em>) only if the value is <a href="#value-stability"><em>stable</em></a> and if the source <a href="#source-sink-domination">dominates</a> the sink. </span><span class="sentence">The actual compile-time type of a smart casted value for any purpose (including, but not limited to, function overloading and type inference of other values) is as follows.</span></p>
+</div>
+<ul>
+<li><span class="sentence">If the smart cast source is a nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type <code>kotlin.Any</code> TODO(Does it actually work like that, or nullability is still somewhat funky?);</span></li>
+<li><span class="sentence">If the smart cast source is a type condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and the assumed type of the condition.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Smart cast sources are introduced by:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Conditional expressions (<code>if</code> and <code>when</code>);</span></li>
+<li><span class="sentence">Elvis operator (operator <code>?:</code>);</span></li>
+<li><span class="sentence">Safe navigation operator (operator <code>?.</code>);</span></li>
+<li><span class="sentence">Logical conjunction expressions (operator <code>&amp;&amp;</code>);</span></li>
+<li><span class="sentence">Logical disjunction expressions (operator <code>||</code>);</span></li>
+<li><span class="sentence">Not-null assertion expressions (operator <code>!!</code>);</span></li>
+<li><span class="sentence">Direct casting expression (operator <code>as</code>);</span></li>
+<li><span class="sentence">Direct assignments;</span></li>
+<li><span class="sentence">Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: property declarations are not listed here, as their types are derived from initializers.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Nullability and type conditions are derived in the following way.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>is</code><span class="math inline">\(T\)</span> where <span class="math inline">\(x\)</span> is an applicable expression implies a type condition for <span class="math inline">\(x\)</span> with assumed type <span class="math inline">\(T\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>!is</code><span class="math inline">\(T\)</span> where <span class="math inline">\(x\)</span> is an applicable expression implies a negated type condition for <span class="math inline">\(x\)</span> with assumed type <span class="math inline">\(T\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>!= null</code> or <code>null !=</code><span class="math inline">\(x\)</span> where <span class="math inline">\(x\)</span> is an applicable expression implies a nullability condition for <span class="math inline">\(x\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>== null</code> or <code>null ==</code><span class="math inline">\(x\)</span> where <span class="math inline">\(x\)</span> is an applicable expression implies a negated nullability condition for <span class="math inline">\(x\)</span>;</span></li>
+<li><span class="sentence"><code>!</code><span class="math inline">\(x\)</span> implies all the conditions implied by <span class="math inline">\(x\)</span>, but in negated form;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>&amp;&amp;</code><span class="math inline">\(y\)</span> implies all the non-negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and the intersection of all the negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>||</code><span class="math inline">\(y\)</span> implies all the negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and the intersection of all the non-negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>===</code><span class="math inline">\(y\)</span> or <span class="math inline">\(y\)</span><code>===</code><span class="math inline">\(x\)</span> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for <span class="math inline">\(x\)</span>;</span></li>
+<li><span class="sentence"><span class="math inline">\(x\)</span><code>==</code><span class="math inline">\(y\)</span> or <span class="math inline">\(y\)</span><code>==</code><span class="math inline">\(x\)</span> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for <span class="math inline">\(x\)</span>, but only if the corresponding [<code>equals</code> implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].</span>
+<ul>
+<li><div class="TODO">
+<span class="sentence">TODO(examples of when this equivalence is true)</span>
+</div></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Additionally, any type condition with assumed <em>non-null</em> type also creates a nullability condition for its value. </span><span class="sentence">This is used in <a href="#bound-smart-casts">bound smart casts</a>.</span></p>
+</div>
+<h4 id="value-stability">Value stability</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Everything…)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A value is <em>stable</em> for smart casting if its value cannot be changed from the smart cast source to the smart cast sink; this guarantees the smart cast conditions still hold at the sink. </span><span class="sentence">Value stability breaks in the presence of the following aspects.</span></p>
+</div>
+<ul>
+<li><span class="sentence">concurrent writes</span></li>
+<li><span class="sentence">separate module compilation</span></li>
+<li><span class="sentence">custom getters</span></li>
+<li><span class="sentence">delegation</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Also, value stability is <em>very</em> complicated for local variables.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The following values are considered stable w.r.t. smart casts.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Immutable local or classifier-scope properties without delegation or custom getters;</span></li>
+<li><span class="sentence">Immutable properties of stable properties without delegation or custom getters;</span></li>
+<li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are effectively immutable, i.e., cannot be changed by external means from the smart cast source to the smart cast sink.</span>
+<ul>
+<li><blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: any properties which are captured in non-inlining lambda expressions or anonymous objects are not effectively immutable after their capture.</span></p>
+</div>
+</blockquote></li>
+</ul></li>
+</ul>
+<h4 id="source-sink-domination">Source-sink domination</h4>
+<div class="paragraph">
+<p><span class="sentence">A smart cast source <span class="math inline">\(SO\)</span> dominates a smart cast sink <span class="math inline">\(SI\)</span>, if <span class="math inline">\(SO\)</span> is a control-flow dominator of <span class="math inline">\(SI\)</span>. </span><span class="sentence">This means the following for different smart cast sources.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Conditional expressions (<code>if</code> and <code>when</code>):</span>
+<ul>
+<li><span class="sentence">Smart cast conditions derived from expression condition are active inside the true branch scope;</span></li>
+<li><span class="sentence">Smart cast conditions derived from negated expression condition are active inside the false branch scope;</span></li>
+<li><span class="sentence">If a branch is statically known to be definitely evaluated, that branch’s condition is also propagated over to the containing scope after the conditional expression;</span></li>
+</ul></li>
+<li><span class="sentence">Elvis operator (operator <code>?:</code>): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;</span></li>
+<li><span class="sentence">Safe navigation operator (operator <code>?.</code>) TODO()</span></li>
+<li><span class="sentence">Logical conjunction expressions (operator <code>&amp;&amp;</code>): all conditions derived from the left-hand expression are applied to the right-hand expression;</span></li>
+<li><span class="sentence">Logical disjunction expressions (operator <code>||</code>): all condtions derived from the left-hand expression are applied <em>negated</em> to the right-hand expression;</span></li>
+<li><span class="sentence">Not-null assertion expressions (operator <code>!!</code>): a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;</span></li>
+<li><span class="sentence">Unsafe cast expression (operator <code>as</code>): a type condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope; the assumed type is the same as the right-hand side type of the cast expression;</span></li>
+<li><span class="sentence">Direct assignment: if both sides of the assignment are applicable expressions, all the conditions currently applying to the right-hand side are also applied to the left-hand side of the assignment for the rest of the containing scope.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Source-sink domination rules also mean that smart cast sources from the loop bodies and conditions are <strong>not</strong> propagated to the upper scope, as the loop body may be evaluated zero or more times, and the corresponding condition may or may not be true. </span><span class="sentence">However, some loop configurations, for which we can have static guarantees about source-sink domination, are handled differently.</span></p>
+</div>
+<ul>
+<li><span class="sentence">do-while loops (as their body is evaluated at least once) propagate the following to the rest of the containing scope:</span>
+<ul>
+<li><span class="sentence">smart cast sources from the loop body, which definitely dominate their sinks <span><span class="TODO">(TODO(example with break/continue))</span><span class="TODO-marker">*</span></span></span></li>
+<li><span class="sentence">smart cast conditions arising from the <em>negated</em> loop condition, if the loop body does not contain any <code>break</code> expressions</span></li>
+</ul></li>
+<li><span class="sentence"><code>while (true)</code> loops propagate the following to the rest of the containing scope:</span>
+<ul>
+<li><span class="sentence">smart cast sources from the loop body, which definitely dominate their sinks <span><span class="TODO">(TODO(example with break/continue))</span><span class="TODO-marker">*</span></span></span></li>
+</ul></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in the second case, only the exact <code>while (true)</code> form is handled as described; e.g., <code>while (true == true)</code> does not work.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: one may extend the number of loop configurations, which are handled by smart casting, if the implementation can statically guarantee the source-sink domination.</span></p>
+</div>
+</blockquote>
+<h4 id="bound-smart-casts">Bound smart casts</h4>
+<div class="paragraph">
+<p><span class="sentence">Smart casting propagates information forward on the control flow, as by the source-sink domination. </span><span class="sentence">However, in some cases it is beneficial to propagate information <em>backwards</em>, to reduce boilerplate code. </span><span class="sentence">Kotlin supports this feature by bound smart casts.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Bound smart casts apply in the following case. </span><span class="sentence">Assume we have two inter-dependent or bound values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. </span><span class="sentence">Bound smart casts allow to apply smart cast sources for <span class="math inline">\(a\)</span> to <span class="math inline">\(b\)</span> or vice versa, if both values are stable.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports the following bound smart casts (BSC).</span></p>
+</div>
+<ul>
+<li><span class="sentence">Nullability-by-equality BSC. </span><span class="sentence">If two values are known to be equal, nullability conditions for one are applied to the other.</span></li>
+<li><span class="sentence">Nullability-by-safe-call BSC. </span><span class="sentence">For a safe-call property <code>o?.p</code> of a non-null type <span class="math inline">\(T\)</span>, nullability conditions for <code>o?.p</code> are applied to <code>o</code>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Two values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are considered equals in the following cases.</span></p>
+</div>
+<ul>
+<li><span class="sentence">there is a known equality or referential-equality condition between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(a\)</span> is definitely assigned <span class="math inline">\(b\)</span></span>
+<ul>
+<li><span class="sentence">however, in this case bound smart casts are applied only to <span class="math inline">\(b\)</span></span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(Why?)</span>
+</div></li>
+</ul></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Do we need additional condition kinds?)</span></p>
+</div>
+</div>
+<h3 id="local-type-inference">Local type inference</h3>
+<div class="paragraph">
+<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned above, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression. </span><span class="sentence">You can use the [Expressions][Expressions] part of this specification as a reference point on how the types for different expressions are constructed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="#smart-casts">smart casting</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
+</div>
+<ul>
+<li><span class="sentence">If a type <span class="math inline">\(T\)</span> is described as the least upper bound of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it is represented as a pair of constraints <span class="math inline">\(A &lt;: T\)</span> and <span class="math inline">\(B &lt;: T\)</span>;</span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(are there other cases?)</span>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well. </span><span class="sentence">Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement <span class="math inline">\(S_1\)</span> that goes before statement <span class="math inline">\(S_2\)</span> cannot be inferred based on how <span class="math inline">\(S_1\)</span> is used in <span class="math inline">\(S_2\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference in general may have several valid solutions. </span><span class="sentence">In particular, one may always derive a system <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solution types. </span><span class="sentence">One of these types is always the solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available), but choosing between them is done according to the following rules:</span></p>
+</div>
+<ul>
+<li><div class="TODO">
+<span class="sentence">TODO(what are the rules?)</span>
+</div></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this is valid even if <span class="math inline">\(T\)</span> is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint <span class="math inline">\(\mathtt{kotlin.Nothing} &lt;: T &lt;: \mathtt{kotlin.Any?}\)</span>.</span></p>
+</div>
+</blockquote>
+<h3 id="todo">TODO</h3>
+<ul>
+<li><span class="sentence">Type approximation for public usage</span></li>
+<li><span class="sentence">Ordering of lambdas (and ordering of overloading vs type inference in general)</span></li>
+</ul>
+</body>
+</html>

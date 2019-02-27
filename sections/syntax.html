@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Untitled</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../assets/js/tests-integration.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+<h2 id="syntax">Syntax</h2>
+<h3 id="grammar">Grammar</h3>
+<h4 id="lexical-grammar">Lexical grammar</h4>
+<h5 id="character-classes">Character classes</h5>
+<div id="grammar-rule-LF" class="grammar-rule">
+<dl>
+<dt><strong><em>LF</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;unicode character Line Feed U+000A&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-CR" class="grammar-tule">
+<dl>
+<dt><strong><em>CR</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;unicode character Carriage Return U+000D&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-WS" class="grammar-tule">
+<dl>
+<dt><strong><em>WS</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;one of the following characters: SPACE U+0020, TAB U+0009, Form Feed U+000C&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-Underscore" class="grammar-tule">
+<dl>
+<dt><strong><em>Underscore</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;unicode character Low Line U+005F&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-Letter" class="grammar-tule">
+<dl>
+<dt><strong><em>Letter</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;any unicode character from classes Ll, Lm, Lo, Lt, Lu or Nl&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-UnicodeDigit" class="grammar-tule">
+<dl>
+<dt><strong><em>UnicodeDigit</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;any unicode character from class Nd&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LineCharacter" class="grammar-tule">
+<dl>
+<dt><strong><em>LineCharacter</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;any unicode character excluding LF and CR&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BinaryDigit" class="grammar-tule">
+<dl>
+<dt><strong><em>BinaryDigit</em>:</strong></dt>
+<dd><span class="sentence"><code>'0'</code> | <code>'1'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecimalDigit" class="grammar-tule">
+<dl>
+<dt><strong><em>DecimalDigit</em>:</strong></dt>
+<dd><span class="sentence"><code>'0'</code> | <code>'1'</code> | <code>'2'</code> | <code>'3'</code> | <code>'4'</code> | <code>'5'</code> | <code>'6'</code> | <code>'7'</code> | <code>'8'</code> | <code>'9'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-HexDigit" class="grammar-tule">
+<dl>
+<dt><strong><em>HexDigit</em>:</strong></dt>
+<dd><span class="sentence"><em>DecimalDigit</em><br />
+| <code>'A'</code> | <code>'B'</code> | <code>'C'</code> | <code>'D'</code> | <code>'E'</code> | <code>'F'</code><br />
+| <code>'a'</code> | <code>'b'</code> | <code>'c'</code> | <code>'d'</code> | <code>'e'</code> | <code>'f'</code></span>
+</dd>
+</dl>
+</div>
+<h5 id="keywords-and-operators">Keywords and operators</h5>
+<dl>
+<dt><strong><em>Operator</em>:</strong></dt>
+<dd><span class="sentence"><code>'.'</code> | <code>','</code> | <code>'('</code> | <code>')'</code> | <code>'['</code> | <code>']'</code> | <code>'@['</code> | <code>'{'</code> | <code>'}'</code> | <code>'*'</code> | <code>'%'</code> | <code>'/'</code> | <code>'+'</code> | <code>'-'</code> | <code>'++'</code> | <code>'--'</code><br />
+| <code>'&amp;&amp;'</code> | <code>'||'</code> | <code>'!'</code> | <code>'!!'</code> | <code>':'</code> | <code>';'</code> | <code>'='</code> | <code>'+='</code> | <code>'-='</code> | <code>'*='</code> | <code>'/='</code> | <code>'%='</code> | <code>'-&gt;'</code> | <code>'=&gt;'</code><br />
+| <code>'..'</code> | <code>'::'</code> | <code>'?::'</code> | <code>';;'</code> | <code>'#'</code> | <code>'@'</code> | <code>'?'</code> | <code>'?:'</code> | <code>'&lt;'</code> | <code>'&gt;'</code> | <code>'\m'</code> | <code>'&gt;='</code> | <code>'!='</code> | <code>'!=='</code><br />
+| <code>'=='</code> | <code>'==='</code> | <code>'''</code> | <code>'&quot;'</code> | <code>'&quot;&quot;&quot;'</code></span>
+</dd>
+<dt><strong><em>SoftKeyword</em>:</strong></dt>
+<dd><span class="sentence"><code>'public'</code> | <code>'private'</code> | <code>'protected'</code> | <code>'internal'</code><br />
+| <code>'enum'</code> | <code>'sealed'</code> | <code>'annotation'</code> | <code>'data'</code> | <code>'inner'</code><br />
+| <code>'tailrec'</code> | <code>'operator'</code> | <code>'inline'</code> | <code>'infix'</code> | <code>'external'</code><br />
+| <code>'suspend'</code> | <code>'override'</code> | <code>'abstract'</code> | <code>'final'</code> | <code>'open'</code><br />
+| <code>'const'</code> | <code>'lateinit'</code> | <code>'vararg'</code> | <code>'noinline'</code> | <code>'crossinline'</code><br />
+| <code>'reified'</code> | <code>'expect'</code> | <code>'actual'</code></span>
+</dd>
+<dt><strong><em>Keyword</em>:</strong></dt>
+<dd><span class="sentence"><code>'package'</code> | <code>'import'</code> | <code>'class'</code> | <code>'interface'</code><br />
+| <code>'fun'</code> | <code>'object'</code> | <code>'val'</code> | <code>'var'</code> | <code>'typealias'</code><br />
+| <code>'constructor'</code> | <code>'by'</code> | <code>'companion'</code> | <code>'init'</code><br />
+| <code>'this'</code> | <code>'super'</code> | <code>'typeof'</code> | <code>'where'</code><br />
+| <code>'if'</code> | <code>'else'</code> | <code>'when'</code> | <code>'try'</code> | <code>'catch'</code><br />
+| <code>'finally'</code> | <code>'for'</code> | <code>'do'</code> | <code>'while'</code> | <code>'throw'</code><br />
+| <code>'return'</code> | <code>'continue'</code> | <code>'break'</code> | <code>'as'</code><br />
+| <code>'is'</code> | <code>'in'</code> | <code>'!is'</code> | <code>'!in'</code> | <code>'out'</code><br />
+| <code>'get'</code> | <code>'set'</code> | <code>'dynamic'</code> | <code>'@file'</code><br />
+| <code>'@field'</code> | <code>'@property'</code> | <code>'@get'</code> | <code>'@set'</code><br />
+| <code>'@receiver'</code> | <code>'@param'</code> | <code>'@setparam'</code> | <code>'@delegate'</code></span>
+</dd>
+</dl>
+<h5 id="whitespace-and-comments">Whitespace and comments</h5>
+<div id="grammar-rule-NL" class="grammar-tule">
+<dl>
+<dt><strong><em>NL</em>:</strong></dt>
+<dd><span class="sentence"><em>LF</em> | <em>CR</em> [<em>LF</em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-ShebangLine" class="grammar-tule">
+<dl>
+<dt><strong><em>ShebangLine</em>:</strong></dt>
+<dd><span class="sentence"><code>'#!'</code> {<em>LineCharacter</em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LineComment" class="grammar-tule">
+<dl>
+<dt><strong><em>LineComment</em>:</strong></dt>
+<dd><span class="sentence"><code>'//'</code> {<em>LineCharacter</em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DelimitedComment" class="grammar-tule">
+<dl>
+<dt><strong><em>DelimitedComment</em>:</strong></dt>
+<dd><span class="sentence"><code>'/*'</code> {<em>DelimitedComment</em> | &lt;any character&gt;} <code>'*/'</code></span>
+</dd>
+</dl>
+</div>
+<h5 id="number-literals">Number literals</h5>
+<div id="grammar-rule-RealLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>RealLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em>FloatLiteral</em> | <em>DoubleLiteral</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-FloatLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>FloatLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em>DoubleLiteral</em> (<code>'f'</code> | <code>'F'</code>) | <em>DecDigits</em> (<code>'f'</code> | <code>'F'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DoubleLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>DoubleLiteral</em>:</strong></dt>
+<dd><span class="sentence">[<em>DecDigits</em>] <code>'.'</code> <em>DecDigits</em> [<em>DoubleExponent</em>] | <em>DecDigits</em> <em>DoubleExponent</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LongLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>LongLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<em>IntegerLiteral</em> | <em>HexLiteral</em> | <em>BinLiteral</em>) <code>'L'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-IntegerLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>IntegerLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em>DecDigitNoZero</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-HexLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>HexLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'0'</code> (<code>'x'</code>|<code>'X'</code>) <em>HexDigit</em> {<em>HexDigitOrSeparator</em>} <em>HexDigit</em><br />
+| <code>'0'</code> (<code>'x'</code>|<code>'X'</code>) <em>HexDigit</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BinLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>BinLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'0'</code> (<code>'b'</code>|<code>'B'</code>) <em>BinDigit</em> {<em>BinDigitOrSeparator</em>} <em>BinDigit</em><br />
+| <code>'0'</code> (<code>'b'</code>|<code>'B'</code>) <em>BinDigit</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DegDigitNoZero" class="grammar-tule">
+<dl>
+<dt><strong><em>DecDigitNoZero</em>:</strong></dt>
+<dd><span class="sentence"><em>DecDigit</em> - <code>'0'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigitOrSeparator" class="grammar-tule">
+<dl>
+<dt><strong><em>DecDigitOrSeparator</em>:</strong></dt>
+<dd><span class="sentence"><em>DecDigit</em> | <em>Underscore</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-HexDigitOrSeparator" class="grammar-tule">
+<dl>
+<dt><strong><em>HexDigitOrSeparator</em>:</strong></dt>
+<dd><span class="sentence"><em>HexDigit</em> | <em>Underscore</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BinDigitOrSeparator" class="grammar-tule">
+<dl>
+<dt><strong><em>BinDigitOrSeparator</em>:</strong></dt>
+<dd><span class="sentence"><em>BinDigit</em> | <em>Underscore</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigits" class="grammar-tule">
+<dl>
+<dt><strong><em>DecDigits</em>:</strong></dt>
+<dd><span class="sentence"><em>DecDigit</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BooleanLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>BooleanLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'true'</code> | <code>'false'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-NullLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>NullLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'null'</code></span>
+</dd>
+</dl>
+</div>
+<h5 id="identifiers">Identifiers</h5>
+<div id="grammar-rule-Identifier" class="grammar-tule">
+<dl>
+<dt><strong><em>Identifier</em>:</strong></dt>
+<dd><span class="sentence">(<em>Letter</em> | <em>Underscore</em>) {<em>Letter</em> | <em>Underscore</em> | <em>UnicodeDigit</em>}<br />
+| <code>'`'</code> {<em>EscapedIdentifierCharacter</em>} <code>'`'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-EscapedIdentifierCharacter" class="grammar-tule">
+<dl>
+<dt><strong><em>EscapedIdentifierCharacter</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;any character except CR, LF, <code>'`''</code>, <code>'['</code>, <code>']'</code>, <code>'&lt;'</code> or <code>'&gt;'</code>&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-IdentifierOrSoftKey" class="grammar-tule">
+<dl>
+<dt><strong><em>IdentifierOrSoftKey</em>:</strong></dt>
+<dd><span class="sentence"><em>Identifier</em> | <em>SoftKeyword</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-AtIdentifier" class="grammar-tule">
+<dl>
+<dt><strong><em>AtIdentifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'@'</code> <em>IdentifierOrSoftKey</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-IdentifierAt" class="grammar-tule">
+<dl>
+<dt><strong><em>IdentifierAt</em>:</strong></dt>
+<dd><span class="sentence"><em>IdentifierOrSoftKey</em> <code>'@'</code></span>
+</dd>
+</dl>
+</div>
+<h5 id="string-literals">String literals</h5>
+<div class="paragraph">
+<p><span class="sentence">Syntax literals are fully defined in syntax grammar due to the complex nature of string interpolation</span></p>
+</div>
+<div id="grammar-rule-CharacterLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>CharacterLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'''</code> (<em>EscapeSeq</em> | <em>&lt;any character except CR, LF, <code>'''</code> and <code>'\'</code>&gt;</em>) <code>'''</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-EscapeSeq" class="grammar-tule">
+<dl>
+<dt><strong><em>EscapeSeq</em>:</strong></dt>
+<dd><span class="sentence"><em>UnicodeCharacterLiteral</em> | <em>EscapedCharacter</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-UnicodeCharacterLiteral" class="grammar-tule">
+<dl>
+<dt><strong><em>UnicodeCharacterLiteral</em>:</strong></dt>
+<dd><span class="sentence"><code>'\'</code> <code>'u'</code> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-EscapedCharacter" class="grammar-tule">
+<dl>
+<dt><strong><em>EscapedCharacter</em>:</strong></dt>
+<dd><span class="sentence"><code>'\'</code> (<code>'t'</code> | <code>'b'</code> | <code>'r'</code> | <code>'n'</code> | <code>'</code> | <code>'&quot;'</code> | <code>'\'</code> | <code>'$'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-FieldIdentifier" class="grammar-tule">
+<dl>
+<dt><strong><em>FieldIdentifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'$'</code> <em>IdentifierOrSoftKey</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LineStrRef" class="grammar-tule">
+<dl>
+<dt><strong><em>LineStrRef</em>:</strong></dt>
+<dd><span class="sentence"><em>FieldIdentifier</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LineStrEscapedChar" class="grammar-tule">
+<dl>
+<dt><strong><em>LineStrEscapedChar</em>:</strong></dt>
+<dd><span class="sentence"><em>EscapedCharacter</em> | <em>UnicodeCharacterLiteral</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-LineStrExprStart" class="grammar-tule">
+<dl>
+<dt><strong><em>LineStrExprStart</em>:</strong></dt>
+<dd><span class="sentence"><code>'${'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-MultiLineStringQuote" class="grammar-tule">
+<dl>
+<dt><strong><em>MultiLineStringQuote</em>:</strong></dt>
+<dd><span class="sentence"><code>'&quot;'</code> {<code>'&quot;'</code>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-MultiLineStrRef" class="grammar-tule">
+<dl>
+<dt><strong><em>MultiLineStrRef</em>:</strong></dt>
+<dd><span class="sentence"><em>FieldIdentifier</em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-MultiLineStrText" class="grammar-tule">
+<dl>
+<dt><strong><em>MultiLineStrText</em>:</strong></dt>
+<dd><span class="sentence">{&lt;any character except <code>'&quot;'</code> and <code>'$'</code>} | <code>'$'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-MultiLineStrExprStart" class="grammar-tule">
+<dl>
+<dt><strong><em>MultiLineStrExprStart</em>:</strong></dt>
+<dd><span class="sentence"><code>'${'</code></span>
+</dd>
+</dl>
+</div>
+<h5 id="misc">Misc</h5>
+<div id="grammar-rule-EOF" class="grammar-tule">
+<dl>
+<dt><strong><em>EOF</em>:</strong></dt>
+<dd><span class="sentence"><em>&lt;end of input&gt;</em></span>
+</dd>
+</dl>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: redo all the lexical grammar, right now it is a hand-written mess</span></p>
+</div>
+</div>
+<h4 id="syntax-grammar">Syntax grammar</h4>
+<div id="grammar-rule-kotlinFile" class="grammar-rule">
+<dl>
+<dt><strong><em>kotlinFile</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-shebangLine">shebangLine</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="#grammar-rule-fileAnnotation">fileAnnotation</a></em>}<br />
+<em><a href="#grammar-rule-packageHeader">packageHeader</a></em><br />
+<em><a href="#grammar-rule-importList">importList</a></em><br />
+{<em><a href="#grammar-rule-topLevelObject">topLevelObject</a></em>}<br />
+<em><a href="#grammar-rule-EOF">EOF</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-script" class="grammar-rule">
+<dl>
+<dt><strong><em>script</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-shebangLine">shebangLine</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="#grammar-rule-fileAnnotation">fileAnnotation</a></em>}<br />
+<em><a href="#grammar-rule-packageHeader">packageHeader</a></em><br />
+<em><a href="#grammar-rule-importList">importList</a></em><br />
+{<em><a href="#grammar-rule-statement">statement</a></em> <em><a href="#grammar-rule-semi">semi</a></em>}<br />
+<em><a href="#grammar-rule-EOF">EOF</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-shebangLine" class="grammar-rule">
+<dl>
+<dt><strong><em>shebangLine</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-ShebangLine">ShebangLine</a></em> (<em><a href="#grammar-rule-NL">NL</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>})</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-fileAnnotation" class="grammar-rule">
+<dl>
+<dt><strong><em>fileAnnotation</em>:</strong></dt>
+<dd><span class="sentence"><code>'@file'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>':'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+((<code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>) | <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-packageHeader" class="grammar-rule">
+<dl>
+<dt><strong><em>packageHeader</em>:</strong></dt>
+<dd><span class="sentence">[<code>'package'</code> <em><a href="#grammar-rule-identifier">identifier</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>]]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-importList" class="grammar-rule">
+<dl>
+<dt><strong><em>importList</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-importHeader">importHeader</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-importHeader" class="grammar-rule">
+<dl>
+<dt><strong><em>importHeader</em>:</strong></dt>
+<dd><span class="sentence"><code>'import'</code> <em><a href="#grammar-rule-identifier">identifier</a></em> [(<code>'.'</code> <code>'*'</code>) | <em><a href="#grammar-rule-importAlias">importAlias</a></em>] [<em><a href="#grammar-rule-semi">semi</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-importAlias" class="grammar-rule">
+<dl>
+<dt><strong><em>importAlias</em>:</strong></dt>
+<dd><span class="sentence"><code>'as'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-topLevelObject" class="grammar-rule">
+<dl>
+<dt><strong><em>topLevelObject</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-declaration">declaration</a></em> [<em><a href="#grammar-rule-semis">semis</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeAlias" class="grammar-rule">
+<dl>
+<dt><strong><em>typeAlias</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'typealias'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'='</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-declaration" class="grammar-rule">
+<dl>
+<dt><strong><em>declaration</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-classDeclaration">classDeclaration</a></em><br />
+| <em><a href="#grammar-rule-objectDeclaration">objectDeclaration</a></em><br />
+| <em><a href="#grammar-rule-functionDeclaration">functionDeclaration</a></em><br />
+| <em><a href="#grammar-rule-propertyDeclaration">propertyDeclaration</a></em><br />
+| <em><a href="#grammar-rule-typeAlias">typeAlias</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>classDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+(<code>'class'</code> | <code>'interface'</code>)<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-primaryConstructor">primaryConstructor</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>) | ({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-enumClassBody">enumClassBody</a></em>)]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-primaryConstructor" class="grammar-rule">
+<dl>
+<dt><strong><em>primaryConstructor</em>:</strong></dt>
+<dd><span class="sentence">[[<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'constructor'</code> {<em><a href="#grammar-rule-NL">NL</a></em>}] <em><a href="#grammar-rule-classParameters">classParameters</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classBody" class="grammar-rule">
+<dl>
+<dt><strong><em>classBody</em>:</strong></dt>
+<dd><span class="sentence"><code>'{'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-classMemberDeclarations">classMemberDeclarations</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classParameters" class="grammar-rule">
+<dl>
+<dt><strong><em>classParameters</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-classParameter">classParameter</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classParameter">classParameter</a></em>}]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classParameter" class="grammar-rule">
+<dl>
+<dt><strong><em>classParameter</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+[<code>'val'</code> | <code>'var'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+<code>':'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-delegationSpecifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>delegationSpecifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotatedDelegationSpecifier">annotatedDelegationSpecifier</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-annotatedDelegationSpecifier">annotatedDelegationSpecifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-delegationSpecifier" class="grammar-rule">
+<dl>
+<dt><strong><em>delegationSpecifier</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-constructorInvocation">constructorInvocation</a></em><br />
+| <em><a href="#grammar-rule-explicitDelegation">explicitDelegation</a></em><br />
+| <em><a href="#grammar-rule-userType">userType</a></em><br />
+| <em><a href="#grammar-rule-functionType">functionType</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-constructorInvocation" class="grammar-rule">
+<dl>
+<dt><strong><em>constructorInvocation</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-userType">userType</a></em> <em><a href="#grammar-rule-valueArguments">valueArguments</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-annotatedDelegationSpecifier" class="grammar-rule">
+<dl>
+<dt><strong><em>annotatedDelegationSpecifier</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-annotation">annotation</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifier">delegationSpecifier</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-explicitDelegation" class="grammar-rule">
+<dl>
+<dt><strong><em>explicitDelegation</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-userType">userType</a></em> | <em><a href="#grammar-rule-functionType">functionType</a></em>)<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'by'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-expression">expression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeParameters" class="grammar-rule">
+<dl>
+<dt><strong><em>typeParameters</em>:</strong></dt>
+<dd><span class="sentence"><code>'&lt;'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-typeParameter">typeParameter</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeParameter">typeParameter</a></em>}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'&gt;'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeParameter" class="grammar-rule">
+<dl>
+<dt><strong><em>typeParameter</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-typeParameterModifiers">typeParameterModifiers</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeConstraints" class="grammar-rule">
+<dl>
+<dt><strong><em>typeConstraints</em>:</strong></dt>
+<dd><span class="sentence"><code>'where'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraint">typeConstraint</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraint">typeConstraint</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeConstraint" class="grammar-rule">
+<dl>
+<dt><strong><em>typeConstraint</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-annotation">annotation</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>':'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classMemberDeclarations" class="grammar-rule">
+<dl>
+<dt><strong><em>classMemberDeclarations</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-classMemberDeclaration">classMemberDeclaration</a></em> [<em><a href="#grammar-rule-semis">semis</a></em>]}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classMemberDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>classMemberDeclaration</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-declaration">declaration</a></em><br />
+| <em><a href="#grammar-rule-companionObject">companionObject</a></em><br />
+| <em><a href="#grammar-rule-anonymousInitializer">anonymousInitializer</a></em><br />
+| <em><a href="#grammar-rule-secondaryConstructor">secondaryConstructor</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-anonymousInitializer" class="grammar-rule">
+<dl>
+<dt><strong><em>anonymousInitializer</em>:</strong></dt>
+<dd><span class="sentence"><code>'init'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-block">block</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-companionObject" class="grammar-rule">
+<dl>
+<dt><strong><em>companionObject</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'companion'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'object'</code><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionValueParameters" class="grammar-rule">
+<dl>
+<dt><strong><em>functionValueParameters</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-functionValueParameter">functionValueParameter</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionValueParameter">functionValueParameter</a></em>}]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionValueParameter" class="grammar-rule">
+<dl>
+<dt><strong><em>functionValueParameter</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <em><a href="#grammar-rule-parameter">parameter</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>functionDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'fun'</code><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-receiverType">receiverType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionBody" class="grammar-rule">
+<dl>
+<dt><strong><em>functionBody</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-block">block</a></em><br />
+| (<code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-variableDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>variableDeclaration</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-annotation">annotation</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiVariableDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>multiVariableDeclaration</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em>}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-propertyDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>propertyDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+(<code>'val'</code> | <code>'var'</code>)<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-receiverType">receiverType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+({<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em> | <em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em>))<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} ((<code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>) | <em><a href="#grammar-rule-propertyDelegate">propertyDelegate</a></em>)]<br />
+[(<em><a href="#grammar-rule-NL">NL</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}) <code>';'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+(([<em><a href="#grammar-rule-getter">getter</a></em>] [{<em><a href="#grammar-rule-NL">NL</a></em>} [<em><a href="#grammar-rule-semi">semi</a></em>] <em><a href="#grammar-rule-setter">setter</a></em>]) | ([<em><a href="#grammar-rule-setter">setter</a></em>] [{<em><a href="#grammar-rule-NL">NL</a></em>} [<em><a href="#grammar-rule-semi">semi</a></em>] <em><a href="#grammar-rule-getter">getter</a></em>]))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-propertyDelegate" class="grammar-rule">
+<dl>
+<dt><strong><em>propertyDelegate</em>:</strong></dt>
+<dd><span class="sentence"><code>'by'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-getter" class="grammar-rule">
+<dl>
+<dt><strong><em>getter</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'get'</code>)<br />
+| ([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'get'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-setter" class="grammar-rule">
+<dl>
+<dt><strong><em>setter</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code>)<br />
+| ([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-parameterModifier">parameterModifier</a></em>} <em><a href="#grammar-rule-setterParameter">setterParameter</a></em> <code>')'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-setterParameter" class="grammar-rule">
+<dl>
+<dt><strong><em>setterParameter</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} [<code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parameter" class="grammar-rule">
+<dl>
+<dt><strong><em>parameter</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>':'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-objectDeclaration" class="grammar-rule">
+<dl>
+<dt><strong><em>objectDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'object'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-secondaryConstructor" class="grammar-rule">
+<dl>
+<dt><strong><em>secondaryConstructor</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'constructor'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-constructorDelegationCall">constructorDelegationCall</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-block">block</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-constructorDelegationCall" class="grammar-rule">
+<dl>
+<dt><strong><em>constructorDelegationCall</em>:</strong></dt>
+<dd><span class="sentence">(<code>'this'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-valueArguments">valueArguments</a></em>)<br />
+| (<code>'super'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-valueArguments">valueArguments</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-enumClassBody" class="grammar-rule">
+<dl>
+<dt><strong><em>enumClassBody</em>:</strong></dt>
+<dd><span class="sentence"><code>'{'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-enumEntries">enumEntries</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>';'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classMemberDeclarations">classMemberDeclarations</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-enumEntries" class="grammar-rule">
+<dl>
+<dt><strong><em>enumEntries</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-enumEntry">enumEntry</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-enumEntry">enumEntry</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} [<code>','</code>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-enumEntry" class="grammar-rule">
+<dl>
+<dt><strong><em>enumEntry</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}] <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-valueArguments">valueArguments</a></em>] [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-type" class="grammar-rule">
+<dl>
+<dt><strong><em>type</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-typeModifiers">typeModifiers</a></em>] (<em><a href="#grammar-rule-parenthesizedType">parenthesizedType</a></em> | <em><a href="#grammar-rule-nullableType">nullableType</a></em> | <em><a href="#grammar-rule-typeReference">typeReference</a></em> | <em><a href="#grammar-rule-functionType">functionType</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeReference" class="grammar-rule">
+<dl>
+<dt><strong><em>typeReference</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-userType">userType</a></em><br />
+| <code>'dynamic'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-nullableType" class="grammar-rule">
+<dl>
+<dt><strong><em>nullableType</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-typeReference">typeReference</a></em> | <em><a href="#grammar-rule-parenthesizedType">parenthesizedType</a></em>) {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-quest">quest</a></em> {<em><a href="#grammar-rule-quest">quest</a></em>})</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-quest" class="grammar-rule">
+<dl>
+<dt><strong><em>quest</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-QUEST_NO_WS">QUEST_NO_WS</a></em><br />
+| <em><a href="#grammar-rule-QUEST_WS">QUEST_WS</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-userType" class="grammar-rule">
+<dl>
+<dt><strong><em>userType</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleUserType">simpleUserType</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-simpleUserType">simpleUserType</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-simpleUserType" class="grammar-rule">
+<dl>
+<dt><strong><em>simpleUserType</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeArguments">typeArguments</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeProjection" class="grammar-rule">
+<dl>
+<dt><strong><em>typeProjection</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="#grammar-rule-typeProjectionModifiers">typeProjectionModifiers</a></em>] <em><a href="#grammar-rule-type">type</a></em>)<br />
+| <code>'*'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeProjectionModifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>typeProjectionModifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em> {<em><a href="#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeProjectionModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>typeProjectionModifier</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-varianceModifier">varianceModifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>})<br />
+| <em><a href="#grammar-rule-annotation">annotation</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionType" class="grammar-rule">
+<dl>
+<dt><strong><em>functionType</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-receiverType">receiverType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+<em><a href="#grammar-rule-functionTypeParameters">functionTypeParameters</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'-&gt;'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionTypeParameters" class="grammar-rule">
+<dl>
+<dt><strong><em>functionTypeParameters</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-parameter">parameter</a></em> | <em><a href="#grammar-rule-type">type</a></em>]<br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-parameter">parameter</a></em> | <em><a href="#grammar-rule-type">type</a></em>)}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parenthesizedType" class="grammar-rule">
+<dl>
+<dt><strong><em>parenthesizedType</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-receiverType" class="grammar-rule">
+<dl>
+<dt><strong><em>receiverType</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-typeModifiers">typeModifiers</a></em>] (<em><a href="#grammar-rule-parenthesizedType">parenthesizedType</a></em> | <em><a href="#grammar-rule-nullableType">nullableType</a></em> | <em><a href="#grammar-rule-typeReference">typeReference</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parenthesizedUserType" class="grammar-rule">
+<dl>
+<dt><strong><em>parenthesizedUserType</em>:</strong></dt>
+<dd><span class="sentence">(<code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-userType">userType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
+| (<code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-parenthesizedUserType">parenthesizedUserType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-statements" class="grammar-rule">
+<dl>
+<dt><strong><em>statements</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-statement">statement</a></em> {<em><a href="#grammar-rule-semis">semis</a></em> <em><a href="#grammar-rule-statement">statement</a></em>} [<em><a href="#grammar-rule-semis">semis</a></em>]]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-statement" class="grammar-rule">
+<dl>
+<dt><strong><em>statement</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-label">label</a></em> | <em><a href="#grammar-rule-annotation">annotation</a></em>} (<em><a href="#grammar-rule-declaration">declaration</a></em> | <em><a href="#grammar-rule-assignment">assignment</a></em> | <em><a href="#grammar-rule-loopStatement">loopStatement</a></em> | <em><a href="#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-label" class="grammar-rule">
+<dl>
+<dt><strong><em>label</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-IdentifierAt">IdentifierAt</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-controlStructureBody" class="grammar-rule">
+<dl>
+<dt><strong><em>controlStructureBody</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-block">block</a></em><br />
+| <em><a href="#grammar-rule-statement">statement</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-block" class="grammar-rule">
+<dl>
+<dt><strong><em>block</em>:</strong></dt>
+<dd><span class="sentence"><code>'{'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-statements">statements</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-loopStatement" class="grammar-rule">
+<dl>
+<dt><strong><em>loopStatement</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-forStatement">forStatement</a></em><br />
+| <em><a href="#grammar-rule-whileStatement">whileStatement</a></em><br />
+| <em><a href="#grammar-rule-doWhileStatement">doWhileStatement</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-forStatement" class="grammar-rule">
+<dl>
+<dt><strong><em>forStatement</em>:</strong></dt>
+<dd><span class="sentence"><code>'for'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="#grammar-rule-annotation">annotation</a></em>}<br />
+(<em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em> | <em><a href="#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em>)<br />
+<em><a href="#grammar-rule-IN">IN</a></em><br />
+<em><a href="#grammar-rule-expression">expression</a></em><br />
+<code>')'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whileStatement" class="grammar-rule">
+<dl>
+<dt><strong><em>whileStatement</em>:</strong></dt>
+<dd><span class="sentence">(<code>'while'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em>)<br />
+| (<code>'while'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>';'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-doWhileStatement" class="grammar-rule">
+<dl>
+<dt><strong><em>doWhileStatement</em>:</strong></dt>
+<dd><span class="sentence"><code>'do'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'while'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+<em><a href="#grammar-rule-expression">expression</a></em><br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-assignment" class="grammar-rule">
+<dl>
+<dt><strong><em>assignment</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-directlyAssignableExpression">directlyAssignableExpression</a></em> <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)<br />
+| (<em><a href="#grammar-rule-assignableExpression">assignableExpression</a></em> <em><a href="#grammar-rule-assignmentAndOperator">assignmentAndOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-semi" class="grammar-rule">
+<dl>
+<dt><strong><em>semi</em>:</strong></dt>
+<dd><span class="sentence">((<code>';'</code> | <em><a href="#grammar-rule-NL">NL</a></em>) {<em><a href="#grammar-rule-NL">NL</a></em>})<br />
+| <em><a href="#grammar-rule-EOF">EOF</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-semis" class="grammar-rule">
+<dl>
+<dt><strong><em>semis</em>:</strong></dt>
+<dd><span class="sentence">(<code>';'</code> | <em><a href="#grammar-rule-NL">NL</a></em> {<code>';'</code> | <em><a href="#grammar-rule-NL">NL</a></em>})<br />
+| <em><a href="#grammar-rule-EOF">EOF</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-expression" class="grammar-rule">
+<dl>
+<dt><strong><em>expression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-disjunction">disjunction</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-disjunction" class="grammar-rule">
+<dl>
+<dt><strong><em>disjunction</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-conjunction">conjunction</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'||'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-conjunction">conjunction</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-conjunction" class="grammar-rule">
+<dl>
+<dt><strong><em>conjunction</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-equality">equality</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&amp;&amp;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-equality">equality</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-equality" class="grammar-rule">
+<dl>
+<dt><strong><em>equality</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-comparison">comparison</a></em> {<em><a href="#grammar-rule-equalityOperator">equalityOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-comparison">comparison</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-comparison" class="grammar-rule">
+<dl>
+<dt><strong><em>comparison</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-infixOperation">infixOperation</a></em> [<em><a href="#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-infixOperation">infixOperation</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-infixOperation" class="grammar-rule">
+<dl>
+<dt><strong><em>infixOperation</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-elvisExpression">elvisExpression</a></em> {(<em><a href="#grammar-rule-inOperator">inOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-elvisExpression">elvisExpression</a></em>) | (<em><a href="#grammar-rule-isOperator">isOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>)}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-elvisExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>elvisExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-infixFunctionCall">infixFunctionCall</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-elvis">elvis</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-infixFunctionCall">infixFunctionCall</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-elvis" class="grammar-rule">
+<dl>
+<dt><strong><em>elvis</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-QUEST_NO_WS">QUEST_NO_WS</a></em> <code>':'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-infixFunctionCall" class="grammar-rule">
+<dl>
+<dt><strong><em>infixFunctionCall</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-rangeExpression">rangeExpression</a></em> {<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-rangeExpression">rangeExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-rangeExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>rangeExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-additiveExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>additiveExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em> {<em><a href="#grammar-rule-additiveOperator">additiveOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiplicativeExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>multiplicativeExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-asExpression">asExpression</a></em> {<em><a href="#grammar-rule-multiplicativeOperator">multiplicativeOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-asExpression">asExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-asExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>asExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-asOperator">asOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-prefixUnaryExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>prefixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-unaryPrefix">unaryPrefix</a></em>} <em><a href="#grammar-rule-postfixUnaryExpression">postfixUnaryExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-unaryPrefix" class="grammar-rule">
+<dl>
+<dt><strong><em>unaryPrefix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em><br />
+| <em><a href="#grammar-rule-label">label</a></em><br />
+| (<em><a href="#grammar-rule-prefixUnaryOperator">prefixUnaryOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>})</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnaryExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em><br />
+| (<em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em> (<em><a href="#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em> {<em><a href="#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em>}))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnarySuffix" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
+| <em><a href="#grammar-rule-typeArguments">typeArguments</a></em><br />
+| <em><a href="#grammar-rule-callSuffix">callSuffix</a></em><br />
+| <em><a href="#grammar-rule-indexingSuffix">indexingSuffix</a></em><br />
+| <em><a href="#grammar-rule-navigationSuffix">navigationSuffix</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-directlyAssignableExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>directlyAssignableExpression</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-postfixUnaryExpression">postfixUnaryExpression</a></em> <em><a href="#grammar-rule-assignableSuffix">assignableSuffix</a></em>)<br />
+| <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-assignableExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>assignableExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-assignableSuffix" class="grammar-rule">
+<dl>
+<dt><strong><em>assignableSuffix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-typeArguments">typeArguments</a></em><br />
+| <em><a href="#grammar-rule-indexingSuffix">indexingSuffix</a></em><br />
+| <em><a href="#grammar-rule-navigationSuffix">navigationSuffix</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-indexingSuffix" class="grammar-rule">
+<dl>
+<dt><strong><em>indexingSuffix</em>:</strong></dt>
+<dd><span class="sentence"><code>'['</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-expression">expression</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>']'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-navigationSuffix" class="grammar-rule">
+<dl>
+<dt><strong><em>navigationSuffix</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-memberAccessOperator">memberAccessOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> | <em><a href="#grammar-rule-parenthesizedExpression">parenthesizedExpression</a></em> | <code>'class'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-callSuffix" class="grammar-rule">
+<dl>
+<dt><strong><em>callSuffix</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="#grammar-rule-typeArguments">typeArguments</a></em>] [<em><a href="#grammar-rule-valueArguments">valueArguments</a></em>] <em><a href="#grammar-rule-annotatedLambda">annotatedLambda</a></em>)<br />
+| ([<em><a href="#grammar-rule-typeArguments">typeArguments</a></em>] <em><a href="#grammar-rule-valueArguments">valueArguments</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-annotatedLambda" class="grammar-rule">
+<dl>
+<dt><strong><em>annotatedLambda</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="#grammar-rule-annotation">annotation</a></em>} [<em><a href="#grammar-rule-label">label</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-lambdaLiteral">lambdaLiteral</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeArguments" class="grammar-rule">
+<dl>
+<dt><strong><em>typeArguments</em>:</strong></dt>
+<dd><span class="sentence"><code>'&lt;'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-typeProjection">typeProjection</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeProjection">typeProjection</a></em>}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'&gt;'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-valueArguments" class="grammar-rule">
+<dl>
+<dt><strong><em>valueArguments</em>:</strong></dt>
+<dd><span class="sentence">(<code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
+| (<code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-valueArgument">valueArgument</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-valueArgument" class="grammar-rule">
+<dl>
+<dt><strong><em>valueArgument</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-annotation">annotation</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+[<code>'*'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-expression">expression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-primaryExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>primaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-parenthesizedExpression">parenthesizedExpression</a></em><br />
+| <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+| <em><a href="#grammar-rule-literalConstant">literalConstant</a></em><br />
+| <em><a href="#grammar-rule-stringLiteral">stringLiteral</a></em><br />
+| <em><a href="#grammar-rule-callableReference">callableReference</a></em><br />
+| <em><a href="#grammar-rule-functionLiteral">functionLiteral</a></em><br />
+| <em><a href="#grammar-rule-objectLiteral">objectLiteral</a></em><br />
+| <em><a href="#grammar-rule-collectionLiteral">collectionLiteral</a></em><br />
+| <em><a href="#grammar-rule-thisExpression">thisExpression</a></em><br />
+| <em><a href="#grammar-rule-superExpression">superExpression</a></em><br />
+| <em><a href="#grammar-rule-ifExpression">ifExpression</a></em><br />
+| <em><a href="#grammar-rule-whenExpression">whenExpression</a></em><br />
+| <em><a href="#grammar-rule-tryExpression">tryExpression</a></em><br />
+| <em><a href="#grammar-rule-jumpExpression">jumpExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parenthesizedExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>parenthesizedExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-expression">expression</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-collectionLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>collectionLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<code>'['</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <code>']'</code>)<br />
+| (<code>'['</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>']'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-literalConstant" class="grammar-rule">
+<dl>
+<dt><strong><em>literalConstant</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-BooleanLiteral">BooleanLiteral</a></em><br />
+| <em><a href="#grammar-rule-IntegerLiteral">IntegerLiteral</a></em><br />
+| <em><a href="#grammar-rule-HexLiteral">HexLiteral</a></em><br />
+| <em><a href="#grammar-rule-BinLiteral">BinLiteral</a></em><br />
+| <em><a href="#grammar-rule-CharacterLiteral">CharacterLiteral</a></em><br />
+| <em><a href="#grammar-rule-RealLiteral">RealLiteral</a></em><br />
+| <em><a href="#grammar-rule-NullLiteral">NullLiteral</a></em><br />
+| <em><a href="#grammar-rule-LongLiteral">LongLiteral</a></em><br />
+| <em><a href="#grammar-rule-UnsignedLiteral">UnsignedLiteral</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-stringLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>stringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-lineStringLiteral">lineStringLiteral</a></em><br />
+| <em><a href="#grammar-rule-multiLineStringLiteral">multiLineStringLiteral</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringContent" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringContent</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-LineStrText">LineStrText</a></em><br />
+| <em><a href="#grammar-rule-LineStrEscapedChar">LineStrEscapedChar</a></em><br />
+| <em><a href="#grammar-rule-LineStrRef">LineStrRef</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringContent" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringContent</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
+| <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em><br />
+| <em><a href="#grammar-rule-MultiLineStrRef">MultiLineStrRef</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-expression">expression</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lambdaLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<code>'{'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-statements">statements</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'}'</code>)<br />
+| (<code>'{'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} [<em><a href="#grammar-rule-lambdaParameters">lambdaParameters</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-statements">statements</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'}'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lambdaParameters" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaParameters</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lambdaParameter" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaParameter</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
+| (<em><a href="#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>])</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-anonymousFunction" class="grammar-rule">
+<dl>
+<dt><strong><em>anonymousFunction</em>:</strong></dt>
+<dd><span class="sentence"><code>'fun'</code><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>functionLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-lambdaLiteral">lambdaLiteral</a></em><br />
+| <em><a href="#grammar-rule-anonymousFunction">anonymousFunction</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-objectLiteral" class="grammar-rule">
+<dl>
+<dt><strong><em>objectLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<code>'object'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>)<br />
+| (<code>'object'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-thisExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>thisExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'this'</code><br />
+| <em><a href="#grammar-rule-THIS_AT">THIS_AT</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-superExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>superExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<code>'@'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
+| <em><a href="#grammar-rule-SUPER_AT">SUPER_AT</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-ifExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>ifExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'if'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> | <code>';'</code>))<br />
+| (<code>'if'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} [<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} [<code>';'</code>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'else'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> | <code>';'</code>))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>whenExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'when'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<code>'('</code> <em><a href="#grammar-rule-expression">expression</a></em> <code>')'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'{'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="#grammar-rule-whenEntry">whenEntry</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}}<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenEntry" class="grammar-rule">
+<dl>
+<dt><strong><em>whenEntry</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenCondition" class="grammar-rule">
+<dl>
+<dt><strong><em>whenCondition</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-expression">expression</a></em><br />
+| <em><a href="#grammar-rule-rangeTest">rangeTest</a></em><br />
+| <em><a href="#grammar-rule-typeTest">typeTest</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-rangeTest" class="grammar-rule">
+<dl>
+<dt><strong><em>rangeTest</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-inOperator">inOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeTest" class="grammar-rule">
+<dl>
+<dt><strong><em>typeTest</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-isOperator">isOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-tryExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>tryExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'try'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-block">block</a></em> ((({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-catchBlock">catchBlock</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-catchBlock">catchBlock</a></em>}) [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-finallyBlock">finallyBlock</a></em>]) | ({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-finallyBlock">finallyBlock</a></em>))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-catchBlock" class="grammar-rule">
+<dl>
+<dt><strong><em>catchBlock</em>:</strong></dt>
+<dd><span class="sentence"><code>'catch'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="#grammar-rule-annotation">annotation</a></em>}<br />
+<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+<code>':'</code><br />
+<em><a href="#grammar-rule-type">type</a></em><br />
+<code>')'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-block">block</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-finallyBlock" class="grammar-rule">
+<dl>
+<dt><strong><em>finallyBlock</em>:</strong></dt>
+<dd><span class="sentence"><code>'finally'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-block">block</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-jumpExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>jumpExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'throw'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)<br />
+| ((<code>'return'</code> | <em><a href="#grammar-rule-RETURN_AT">RETURN_AT</a></em>) [<em><a href="#grammar-rule-expression">expression</a></em>])<br />
+| <code>'continue'</code><br />
+| <em><a href="#grammar-rule-CONTINUE_AT">CONTINUE_AT</a></em><br />
+| <code>'break'</code><br />
+| <em><a href="#grammar-rule-BREAK_AT">BREAK_AT</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-callableReference" class="grammar-rule">
+<dl>
+<dt><strong><em>callableReference</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-receiverType">receiverType</a></em>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'::'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+(<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> | <code>'class'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-assignmentAndOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>assignmentAndOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'+='</code><br />
+| <code>'-='</code><br />
+| <code>'*='</code><br />
+| <code>'/='</code><br />
+| <code>'%='</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-equalityOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>equalityOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'!='</code><br />
+| <code>'!=='</code><br />
+| <code>'=='</code><br />
+| <code>'==='</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-comparisonOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>comparisonOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'&lt;'</code><br />
+| <code>'&gt;'</code><br />
+| <code>'&lt;='</code><br />
+| <code>'&gt;='</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-inOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>inOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'in'</code><br />
+| <em><a href="#grammar-rule-NOT_IN">NOT_IN</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-isOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>isOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'is'</code><br />
+| <em><a href="#grammar-rule-NOT_IS">NOT_IS</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-additiveOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>additiveOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'+'</code><br />
+| <code>'-'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiplicativeOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>multiplicativeOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'*'</code><br />
+| <code>'/'</code><br />
+| <code>'%'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-asOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>asOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'as'</code><br />
+| <code>'as?'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-prefixUnaryOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>prefixUnaryOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'++'</code><br />
+| <code>'--'</code><br />
+| <code>'-'</code><br />
+| <code>'+'</code><br />
+| <em><a href="#grammar-rule-excl">excl</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnaryOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'++'</code><br />
+| <code>'--'</code><br />
+| (<em><a href="#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em> <em><a href="#grammar-rule-excl">excl</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-excl" class="grammar-rule">
+<dl>
+<dt><strong><em>excl</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em><br />
+| <em><a href="#grammar-rule-EXCL_WS">EXCL_WS</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-memberAccessOperator" class="grammar-rule">
+<dl>
+<dt><strong><em>memberAccessOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'.'</code><br />
+| <em><a href="#grammar-rule-safeNav">safeNav</a></em><br />
+| <code>'::'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-safeNav" class="grammar-rule">
+<dl>
+<dt><strong><em>safeNav</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-QUEST_NO_WS">QUEST_NO_WS</a></em> <code>'.'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-modifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>modifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-modifier" class="grammar-rule">
+<dl>
+<dt><strong><em>modifier</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-classModifier">classModifier</a></em> | <em><a href="#grammar-rule-memberModifier">memberModifier</a></em> | <em><a href="#grammar-rule-visibilityModifier">visibilityModifier</a></em> | <em><a href="#grammar-rule-functionModifier">functionModifier</a></em> | <em><a href="#grammar-rule-propertyModifier">propertyModifier</a></em> | <em><a href="#grammar-rule-inheritanceModifier">inheritanceModifier</a></em> | <em><a href="#grammar-rule-parameterModifier">parameterModifier</a></em> | <em><a href="#grammar-rule-platformModifier">platformModifier</a></em>) {<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeModifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>typeModifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-typeModifier">typeModifier</a></em> {<em><a href="#grammar-rule-typeModifier">typeModifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>typeModifier</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em><br />
+| (<code>'suspend'</code> {<em><a href="#grammar-rule-NL">NL</a></em>})</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-classModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>classModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'enum'</code><br />
+| <code>'sealed'</code><br />
+| <code>'annotation'</code><br />
+| <code>'data'</code><br />
+| <code>'inner'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-memberModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>memberModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'override'</code><br />
+| <code>'lateinit'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-visibilityModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>visibilityModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'public'</code><br />
+| <code>'private'</code><br />
+| <code>'internal'</code><br />
+| <code>'protected'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-varianceModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>varianceModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'in'</code><br />
+| <code>'out'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeParameterModifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>typeParameterModifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-typeParameterModifier">typeParameterModifier</a></em> {<em><a href="#grammar-rule-typeParameterModifier">typeParameterModifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeParameterModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>typeParameterModifier</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-reificationModifier">reificationModifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>})<br />
+| (<em><a href="#grammar-rule-varianceModifier">varianceModifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>})<br />
+| <em><a href="#grammar-rule-annotation">annotation</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>functionModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'tailrec'</code><br />
+| <code>'operator'</code><br />
+| <code>'infix'</code><br />
+| <code>'inline'</code><br />
+| <code>'external'</code><br />
+| <code>'suspend'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-propertyModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>propertyModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'const'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-inheritanceModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>inheritanceModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'abstract'</code><br />
+| <code>'final'</code><br />
+| <code>'open'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parameterModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>parameterModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'vararg'</code><br />
+| <code>'noinline'</code><br />
+| <code>'crossinline'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-reificationModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>reificationModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'reified'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-platformModifier" class="grammar-rule">
+<dl>
+<dt><strong><em>platformModifier</em>:</strong></dt>
+<dd><span class="sentence"><code>'expect'</code><br />
+| <code>'actual'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-annotation" class="grammar-rule">
+<dl>
+<dt><strong><em>annotation</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-singleAnnotation">singleAnnotation</a></em> | <em><a href="#grammar-rule-multiAnnotation">multiAnnotation</a></em>) {<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-singleAnnotation" class="grammar-rule">
+<dl>
+<dt><strong><em>singleAnnotation</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-annotationUseSiteTarget">annotationUseSiteTarget</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)<br />
+| (<code>'@'</code> <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiAnnotation" class="grammar-rule">
+<dl>
+<dt><strong><em>multiAnnotation</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="#grammar-rule-annotationUseSiteTarget">annotationUseSiteTarget</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>)<br />
+| (<code>'@'</code> <code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-annotationUseSiteTarget" class="grammar-rule">
+<dl>
+<dt><strong><em>annotationUseSiteTarget</em>:</strong></dt>
+<dd><span class="sentence"><code>'@'</code> (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-unescapedAnnotation" class="grammar-rule">
+<dl>
+<dt><strong><em>unescapedAnnotation</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-constructorInvocation">constructorInvocation</a></em><br />
+| <em><a href="#grammar-rule-userType">userType</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-simpleIdentifier" class="grammar-rule">
+<dl>
+<dt><strong><em>simpleIdentifier</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-Identifier">Identifier</a></em><br />
+| <code>'abstract'</code><br />
+| <code>'annotation'</code><br />
+| <code>'by'</code><br />
+| <code>'catch'</code><br />
+| <code>'companion'</code><br />
+| <code>'constructor'</code><br />
+| <code>'crossinline'</code><br />
+| <code>'data'</code><br />
+| <code>'dynamic'</code><br />
+| <code>'enum'</code><br />
+| <code>'external'</code><br />
+| <code>'final'</code><br />
+| <code>'finally'</code><br />
+| <code>'get'</code><br />
+| <code>'import'</code><br />
+| <code>'infix'</code><br />
+| <code>'init'</code><br />
+| <code>'inline'</code><br />
+| <code>'inner'</code><br />
+| <code>'internal'</code><br />
+| <code>'lateinit'</code><br />
+| <code>'noinline'</code><br />
+| <code>'open'</code><br />
+| <code>'operator'</code><br />
+| <code>'out'</code><br />
+| <code>'override'</code><br />
+| <code>'private'</code><br />
+| <code>'protected'</code><br />
+| <code>'public'</code><br />
+| <code>'reified'</code><br />
+| <code>'sealed'</code><br />
+| <code>'tailrec'</code><br />
+| <code>'set'</code><br />
+| <code>'vararg'</code><br />
+| <code>'where'</code><br />
+| <code>'expect'</code><br />
+| <code>'actual'</code><br />
+| <code>'const'</code><br />
+| <code>'suspend'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-identifier" class="grammar-rule">
+<dl>
+<dt><strong><em>identifier</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+</body>
+</html>
