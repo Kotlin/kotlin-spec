@@ -30,6 +30,28 @@ dependencies {
     compile("com.xenomachina:kotlin-argparser:2.0.4")
 }
 
+fun ShellExec.buildBySections(format: String, wrapper: String) {
+    val ls = System.lineSeparator()
+    val excludeFiles = setOf("grammar.generated", "index")
+    val commands = mutableListOf("PROJECT_DIR=$projectDir")
+    val buildScriptsDir = "./build-utils/scripts/build"
+    val buildTemplate = File("$buildScriptsDir/$wrapper").readText()
+
+    File("docs/kotlin.core").listFiles().forEach {
+        val section = it.nameWithoutExtension
+
+        if (it.extension != "md" || excludeFiles.contains(section))
+            return@forEach
+
+        commands.add(buildTemplate.replace("<section>", section))
+    }
+
+    workingDir = File(buildScriptsDir)
+    command = commands.joinToString(ls)
+
+    File("./build/spec/$format/sections").mkdirs()
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -75,28 +97,12 @@ tasks.create<ShellExec>("buildPdf") {
 
 tasks.create<ShellExec>("buildPdfBySections") {
     dependsOn("convertGrammar")
+    doFirst { buildBySections("pdf", "buildPdfBySections.sh") }
+}
 
-    doFirst {
-        val ls = System.lineSeparator()
-        val excludeFiles = setOf("grammar.generated", "index")
-        val commands = mutableListOf("PROJECT_DIR=$projectDir")
-        val buildScriptsDir = "./build-utils/scripts/build"
-        val buildTemplate = File("$buildScriptsDir/buildPdfBySections.sh").readText()
-
-        File("docs/kotlin.core").listFiles().forEach {
-            val section = it.nameWithoutExtension
-
-            if (it.extension != "md" || excludeFiles.contains(section))
-                return@forEach
-
-            commands.add(buildTemplate.replace("<section>", section))
-        }
-
-        workingDir = File(buildScriptsDir)
-        command = commands.joinToString(ls)
-
-        File("./build/spec/pdf/sections").mkdirs()
-    }
+tasks.create<ShellExec>("buildHtmlBySections") {
+    dependsOn("convertGrammar")
+    doFirst { buildBySections("html", "buildHtmlBySections.sh") }
 }
 
 tasks.create<JavaExec>("convertGrammar") {
