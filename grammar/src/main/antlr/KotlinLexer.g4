@@ -241,7 +241,7 @@ fragment UnicodeDigit: UNICODE_CLASS_ND;
 
 Identifier
     : (Letter | '_') (Letter | '_' | UnicodeDigit)*
-    | '`' ~([\r\n] | '`' | '.' | ';' | ':' | '\\' | '/' | '[' | ']' | '<' | '>')+ '`'
+    | '`' ~([\r\n] | '`')+ '`'
     ;
 
 IdentifierOrSoftKey
