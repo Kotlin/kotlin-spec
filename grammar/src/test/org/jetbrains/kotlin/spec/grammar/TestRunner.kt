@@ -1,16 +1,18 @@
 package org.jetbrains.kotlin.spec.grammar
 
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
-import org.jetbrains.kotlin.spec.grammar.psi.PsiTextParser
 import org.jetbrains.kotlin.spec.grammar.parsetree.ParseTreeUtil
+import org.jetbrains.kotlin.spec.grammar.psi.PsiTextParser
 import org.jetbrains.kotlin.spec.grammar.util.DiagnosticTestData
 import org.jetbrains.kotlin.spec.grammar.util.PsiTestData
+import org.jetbrains.kotlin.spec.grammar.util.TestDataFileHeader
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil.assertEqualsToFile
+import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeFalse
 import java.util.regex.Pattern
 
 @RunWith(Parameterized::class)
@@ -23,7 +25,7 @@ class TestRunner {
         private const val MUTE_MARKER = "MUTE"
 
         private val antlrTreeFileHeaderPattern =
-                Pattern.compile("""^File: .*?.kts?(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER)\))?$""")
+                Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER)\))?$""")
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -36,19 +38,25 @@ class TestRunner {
     fun doTest() {
         val testFile = File(filename)
         val testData = TestUtil.getTestData(testFile)
-        val marker = if (testData.antlrParseTreeText.exists())
+        val header = if (testData.antlrParseTreeText.exists())
                 antlrTreeFileHeaderPattern.matcher(testData.antlrParseTreeText.readText().lines().first()).run {
-                    if (find() && group("markers") != null) group("marker") else null
+                    if (!find())
+                        return@run null
+
+                    val marker = group("marker")
+                    val hash = group("hash")
+
+                    TestDataFileHeader(marker, hash)
                 }
             else null
 
-        if (marker == MUTE_MARKER)
-            return
+        if (header != null)
+            assumeFalse(header.marker == MUTE_MARKER || header.hash != testData.sourceCodeHash)
 
         val (parseTree, errors) = ParseTreeUtil.parse(testData.sourceCode)
         val (lexerErrors, parserErrors) = errors
-        val errorExpected = marker == ERROR_EXPECTED_MARKER
-        val dumpParseTree = parseTree.stringifyTree("File: ${testFile.name}" + (if (errorExpected) " ($ERROR_EXPECTED_MARKER)" else ""))
+        val errorExpected = header?.marker == ERROR_EXPECTED_MARKER
+        val dumpParseTree = parseTree.stringifyTree("File: ${testFile.name} - ${testData.sourceCodeHash}" + (if (errorExpected) " ($ERROR_EXPECTED_MARKER)" else ""))
 
         assertEqualsToFile("Expected and actual ANTLR parsetree are not equals.", testData.antlrParseTreeText, dumpParseTree)
 
