@@ -1,33 +1,41 @@
 ## Type inference
 
-Kotlin has a concept of *type inference* for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler. There are two kinds of type inference supported by Kotlin.
+Kotlin has a concept of *type inference* for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler.
+There are two kinds of type inference supported by Kotlin.
 
 - Local type inference, for inferring types of expressions locally, in statement/expression scope;
 - Function signature type inference, for inferring types of function return values and/or parameters.
 
 > Note: type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
 
+TODO(write about when type inference works and when it does not)
+
 ### Smart casts
 
 Kotlin introduces a limited form of flow-dependent typing called *smart casting*.
 Flow-dependent typing means some expressions in the program may introduce changes to the compile-time types of variables.
-This allows one to avoid unneeded explicit casting of values in cases where their runtime types are guaranteed to conform to the expected compile-time types.
+This allows one to avoid unneeded explicit casting of values in cases when their runtime types are guaranteed to conform to the expected compile-time types.
 
-Smart casts are dependent on two main things: *smart cast sources* and *value stability*.
+Smart casts are dependent on two main things: *smart cast sources* and *smart cast sink stability*.
 
 #### Smart cast sources
 
-There are two kinds of smart cast sources: *nullability conditions* and *type conditions*.
-Nullability conditions specify that some value is not nullable, i.e., its value is guaranteed to not be `null`.
+There are two kinds of smart cast sources: *non-nullability conditions* and *type conditions*.
+Non-nullability conditions specify that some value is not nullable, i.e., its value is guaranteed to not be `null`.
 Type conditions specify that some value's runtime type conforms to a constraint $RT <: T$, where $T$ is the assumed type and $RT$ is the runtime type.
+A smart cast source may be *negated*, meaning it reverses its interpretation.
 
-> Note: nullability conditions may be viewed as a special case of type conditions with assumed type `kotlin.Any`.
+> Note: non-nullability conditions may be viewed as a special case of type conditions with assumed type `kotlin.Any`.
 
-These sources influence the compile-time type of a value in some expression (called *smart cast sink*) only if the value is [*stable*][Value stability] and if the source [dominates][Source-sink domination] the sink.
+These sources influence the compile-time type of a value in some expression (called *smart cast sink*) only if the sink is [*stable*][Smart cast sink stability] and if the source [dominates][Source-sink domination] the sink.
 The actual compile-time type of a smart casted value for any purpose (including, but not limited to, function overloading and type inference of other values) is as follows.
 
-- If the smart cast source is a nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Any` TODO(Does it actually work like that, or nullability is still somewhat funky?);
+- If the smart cast source is a non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Any`;
+- If the smart cast source is a negated non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Nothing?`;
 - If the smart cast source is a type condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and the assumed type of the condition.
+- If the smart cast source is a negated type condition, the type does not change.
+
+> Note: we may use the terms "negated non-nullability condition" and "nullability condition" interchangeably.
 
 Smart cast sources are introduced by:
 
@@ -45,40 +53,136 @@ Smart cast sources are introduced by:
 
 Nullability and type conditions are derived in the following way.
 
-- $x$` is `$T$ where $x$ is an applicable expression implies a type condition for $x$ with assumed type $T$;
-- $x$` !is `$T$ where $x$ is an applicable expression implies a negated type condition for $x$ with assumed type $T$;
-- $x$` != null` or `null != `$x$ where $x$ is an applicable expression implies a nullability condition for $x$;
-- $x$` == null` or `null == `$x$ where $x$ is an applicable expression implies a negated nullability condition for $x$;
-- `!`$x$ implies all the conditions implied by $x$, but in negated form;
-- $x$` && `$y$ implies all the non-negated conditions implied by $x$ and $y$ and the intersection of all the negated conditions implied by $x$ and $y$;
-- $x$` || `$y$ implies all the negated conditions implied by $x$ and $y$ and the intersection of all the non-negated conditions implied by $x$ and $y$;
-- $x$` === `$y$ or $y$` === `$x$ where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for $x$;
-- $x$` == `$y$ or $y$` == `$x$ where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
-    + TODO(examples of when this equivalence is true)
+- `x is T` where $x$ is an applicable expression implies a type condition for $x$ with assumed type $T$;
+- `x !is T` where $x$ is an applicable expression implies a negated type condition for $x$ with assumed type $T$;
+- `x != null` or `null != x` where $x$ is an applicable expression implies a non-nullability condition for $x$;
+- `x == null` or `null == x` where $x$ is an applicable expression implies a nullability condition for $x$;
+- `!x` implies all the conditions implied by $x$, but in negated form;
+- `x && y` implies the union of all non-negated conditions implied by $x$ and $y$ and the intersection of all negated conditions implied by $x$ and $y$;
+- `x || y` implies the union of all negated conditions implied by $x$ and $y$ and the intersection of all non-negated conditions implied by $x$ and $y$;
+- `x === y` or `y === x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$;
+- `x === y` or `y === x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the nullability condition for $x$;
+- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
+- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the non-nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
 
-Additionally, any type condition with assumed *non-null* type also creates a nullability condition for its value.
-This is used in [bound smart casts][Bound smart casts].
+> Note: for example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
 
-#### Value stability
+TODO(A complete list of when `equals` is OK?)
 
-TODO(Everything...)
+Additionally, any type condition with assumed *non-null* type also creates a non-nullability condition for its value.
+This property is used in [bound smart casts][Bound smart casts].
 
-A value is *stable* for smart casting if its value cannot be changed from the smart cast source to the smart cast sink; this guarantees the smart cast conditions still hold at the sink.
-Value stability breaks in the presence of the following aspects.
+#### Smart cast sink stability
 
-* concurrent writes
-* separate module compilation
-* custom getters
-* delegation
+A smart cast sink is *stable* for smart casting if its value cannot be changed from the smart cast source to itself; this guarantees the smart cast conditions still hold at the sink.
+Smart cast sink stability breaks in the presence of the following aspects.
 
-Also, value stability is *very* complicated for local variables.
+* concurrent writes;
+* separate module compilation;
+* custom getters;
+* delegation.
 
-The following values are considered stable w.r.t. smart casts.
+> Note: despite what it may seem at first sight, sink stability is *very* complicated for local variables.
 
-- Immutable local or classifier-scope properties without delegation or custom getters;
-- Immutable properties of stable properties without delegation or custom getters;
-- Mutable local properties without delegation or custom getters, if the compiler can prove that they are effectively immutable, i.e., cannot be changed by external means from the smart cast source to the smart cast sink.
-    - > Example: any properties which are captured in non-inlining lambda expressions or anonymous objects are not effectively immutable after their capture.
+The following smart cast sinks are considered stable.
+
+1. Immutable local or classifier-scope properties without delegation or custom getters;
+1. Immutable properties of stable properties without delegation or custom getters;
+1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means from the smart cast source to the smart cast sink.
+
+##### Effectively immutable smart cast sinks
+
+We will call redefinition of $P$ ***direct*** redefinition, if it happens in the same declaration scope as the definition of $P$.
+If $P$ is redefined in a nested declaration scope (w.r.t. its definition), this is a ***nested*** redefinition.
+
+> Note: informally, a nested redefinition means the property has been captured in another scope and may be changed from that scope in a concurrent fashion.
+
+We define ***direct*** and ***nested*** smart cast sinks in a similar way.
+
+> Example:
+> ```kotlin
+> fun example() {
+>     // definition
+>     var x: Int? = null
+> 
+>     if (x != null) {
+>         run {
+>             // nested smart cast sink
+>             x.inc()
+> 
+>             // nested redefinition
+>             x = ...
+>         }
+>         // direct smart cast sink
+>         x.inc()
+>     }
+> 
+>     // direct redefinition
+>     x = ...
+> }
+> ```
+
+A mutable local property $P$ defined at $D$ is considered effectively immutable for a given pair of smart cast source $SO$ and smart cast sink $SI$, if the following properties hold.
+
+- There are no redefinitions of $P$ on any path between $SO$ and $SI$
+- If $SI$ is a direct sink, there must be no nested redefinitions on any path between $D$ and $SI$
+- If $SI$ is a nested sink, then
+    + there must be no nested redefinitions of $P$
+    + all direct redefinitions of $P$ must precede $SI$
+
+> Example:
+> ```kotlin
+> fun directSinkOk() {
+>     var x: Int? = 42 // definition
+>     if (x != null)   // smart cast source
+>         x.inc()      // direct sink
+>     run {
+>         x = null     // nested redefinition
+>     }
+> }
+> 
+> fun directSinkBad() {
+>     var x: Int? = 42 // definition
+>     run {
+>         x = null     // nested redefinition
+>                      //   between a definition
+>                      //   and a sink
+>     }
+>     if (x != null)   // smart cast source
+>         x.inc()      // direct sink
+> }
+> 
+> fun nestedSinkOk() {
+>     var x: Int? = 42     // definition
+>     x = getNullableInt() // direct redefinition
+>     run {
+>         if (x != null)   // smart cast source
+>             x.inc()      // nested sink
+>     }
+> }
+> 
+> fun nestedSinkBad01() {
+>     var x: Int? = 42     // definition
+>     run {
+>         if (x != null)   // smart cast source
+>             x.inc()      // nested sink
+>     }
+>     x = getNullableInt() // direct redefinition
+>                          //   after the nested sunk
+> }
+> 
+> fun nestedSinkBad02() {
+>     var x: Int? = 42     // definition
+>     run {
+>         x = null         // nested redefinition
+>                          //   of a nested sink
+>     }
+>     run {
+>         if (x != null)   // smart cast source
+>             x.inc()      // nested sink
+>     }
+> }
+> ```
 
 #### Source-sink domination
 
@@ -88,7 +192,7 @@ This means the following for different smart cast sources.
 - Conditional expressions (`if` and `when`):
     - Smart cast conditions derived from expression condition are active inside the true branch scope;
     - Smart cast conditions derived from negated expression condition are active inside the false branch scope;
-    - If a branch is statically known to be definitely evaluated, that branch's condition is also propagated over to the containing scope after the conditional expression;
+    - If a branch is statically known to be definitely evaluated, that branch's condition is also propagated over to its containing scope after the conditional expression;
 - Elvis operator (operator `?:`): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
 - Safe navigation operator (operator `?.`) TODO()
 - Logical conjunction expressions (operator `&&`): all conditions derived from the left-hand expression are applied to the right-hand expression;
