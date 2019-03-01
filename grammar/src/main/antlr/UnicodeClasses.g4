@@ -1,5 +1,5 @@
 /**
- * Kotlin Lexer Grammar for ANTLR v4 (Unicode classes)
+ * Kotlin lexical grammar in ANTLR4 notation (Unicode classes)
  *
  * Taken from http://www.antlr3.org/grammar/1345144569663/AntlrUnicode.txt
  */
