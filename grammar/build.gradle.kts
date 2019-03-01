@@ -1,3 +1,4 @@
+import at.phatbl.shellexec.ShellExec
 import java.io.File
 import java.util.regex.Pattern
 
@@ -81,10 +82,15 @@ tasks.create("removeCompilerTestData") {
     }
 }
 
-tasks.create("removeNewTests") {
+tasks.create<ShellExec>("downloadCompilerTests") {
+    command = """svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/psi ../testData/psi --force
+        |svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/diagnostics/tests ../testData/diagnostics --force""".trimMargin()
+}
+
+tasks.create("syncWithCompilerTests") {
     doFirst {
         File("${project.rootDir}/grammar/testData").walkTopDown().forEach {
-            if (it.extension == "kt" && !File("${it.parent}/${it.nameWithoutExtension}.antlrtree.txt").exists())
+            if (it.name.endsWith("antlrtree.txt") && !File("${it.parent}/${it.name.substringBefore(".antlrtree.txt")}.kt").exists())
                 it.delete()
         }
     }
