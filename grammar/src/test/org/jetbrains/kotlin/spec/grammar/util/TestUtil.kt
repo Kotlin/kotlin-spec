@@ -5,14 +5,34 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.CharsetToolkit
 import com.intellij.rt.execution.junit.FileComparisonFailure
-import org.junit.Assert
+import org.apache.commons.codec.digest.DigestUtils
+import org.junit.Assume.assumeTrue
 import java.io.File
+import java.nio.file.Files
 
-sealed class TestData(val sourceCode: String, val antlrParseTreeText: File)
+data class TestDataFileHeader(
+        val marker: String?,
+        val hash: String
+)
 
-class PsiTestData(sourceCode: String, antlrParseTreeText: File, val psiParseTreeText: String) : TestData(sourceCode, antlrParseTreeText)
+sealed class TestData(
+        val sourceCode: String,
+        val sourceCodeHash: String,
+        val antlrParseTreeText: File
+)
 
-class DiagnosticTestData(sourceCode: String, antlrParseTreeText: File) : TestData(sourceCode, antlrParseTreeText)
+class PsiTestData(
+        sourceCode: String,
+        sourceCodeHash: String,
+        antlrParseTreeText: File,
+        val psiParseTreeText: String
+) : TestData(sourceCode, sourceCodeHash, antlrParseTreeText)
+
+class DiagnosticTestData(
+        sourceCode: String,
+        sourceCodeHash: String,
+        antlrParseTreeText: File
+) : TestData(sourceCode, sourceCodeHash, antlrParseTreeText)
 
 object TestUtil {
     const val TESTS_DIR = "./grammar/testData"
@@ -29,7 +49,8 @@ object TestUtil {
 
         if (!expectedFile.exists()) {
             FileUtil.writeToFile(expectedFile, actualText)
-            Assert.fail("Expected data file did not exist. Generating: $expectedFile")
+            println("Expected data file did not exist. Generating: $expectedFile")
+            assumeTrue(false)
         }
         val expected = FileUtil.loadFile(expectedFile, CharsetToolkit.UTF8, true)
         val expectedText = StringUtil.convertLineSeparators(expected.trim { it <= ' ' }).trimTrailingWhitespacesAndAddNewlineAtEOF()
@@ -45,13 +66,14 @@ object TestUtil {
         val sourceCode = sourceCodeFile.readText()
         val antlrTreeFile = File("$testPathPrefix.antlrtree.txt")
         val isPsiTest = File("$testPathPrefix.txt").exists()
+        val fileContentHash = Files.newInputStream(sourceCodeFile.toPath()).use { DigestUtils.md5Hex(it) }
 
         println("Source code path: ${sourceCodeFile.absolutePath}")
         println("ANTLR tree path: ${antlrTreeFile.absolutePath}")
 
         return if (isPsiTest)
-            PsiTestData(sourceCode, antlrTreeFile, File("$testPathPrefix.txt").readText())
+            PsiTestData(sourceCode, fileContentHash, antlrTreeFile, File("$testPathPrefix.txt").readText())
         else
-            DiagnosticTestData(sourceCode, antlrTreeFile)
+            DiagnosticTestData(sourceCode, fileContentHash, antlrTreeFile)
     }
 }
