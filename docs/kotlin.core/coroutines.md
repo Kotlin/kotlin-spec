@@ -6,7 +6,7 @@ TODO(everything: state machine, context, etc.)
 
 ### Suspending functions
 
-Any [function declaration][Function declarations] or a getter/setter declaration in Kotlin may be marked *suspending* using the special `suspend` modifier.
+Any [function declaration][Function declaration] or a getter/setter declaration in Kotlin may be marked *suspending* using the special `suspend` modifier.
 A function type for a particular value may also be marked suspending using the `suspend` modifier.
 Both normal functions and extension functions, top-level and member, anonymous and named, may be marked as suspending.
 

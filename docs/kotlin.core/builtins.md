@@ -27,13 +27,13 @@ The signed integer number types are:
 
 These types may or may not have different runtime representation. See your platform reference for details.
 
-`kotlin.Int` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^31$ to $2^31 - 1$. If an arithmetic operation on `kotlin.Int` results in arithmetic overflow or underflow, the result is undefined.
+`kotlin.Int` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^{31}$ to $2^{31} - 1$. If an arithmetic operation on `kotlin.Int` results in arithmetic overflow or underflow, the result is undefined.
 
-`kotlin.Short` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^15$ to $2^15 - 1$. If an arithmetic operation on `kotlin.Short` results in arithmetic overflow or underflow, the result is undefined.
+`kotlin.Short` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^{15}$ to $2^{15} - 1$. If an arithmetic operation on `kotlin.Short` results in arithmetic overflow or underflow, the result is undefined.
 
-`kotlin.Byte` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^7$ to $2^7 - 1$. If an arithmetic operation on `kotlin.Byte` results in arithmetic overflow or underflow, the result is undefined.
+`kotlin.Byte` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^{7}$ to $2^{7} - 1$. If an arithmetic operation on `kotlin.Byte` results in arithmetic overflow or underflow, the result is undefined.
 
-`kotlin.Long` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^63$ to $2^63 - 1$. If an arithmetic operation on `kotlin.Long` results in arithmetic overflow or underflow, the result is undefined.
+`kotlin.Long` is the type of integer numbers that is required to be able to hold at least the values in the range from $-2^{63}$ to $2^{63} - 1$. If an arithmetic operation on `kotlin.Long` results in arithmetic overflow or underflow, the result is undefined.
 
 For other traits of these types (such as the classes they inherit from, interfaces they may inherit from and their member functions) please refer to the standard library specification.
 

@@ -9,10 +9,10 @@ Values of annotation types cannot be created directly, but can be operated when 
 An annotation value is a value of a special [Annotation type][Annotation types]. 
 An annotation type is a special kind of class type that is allowed to include properties of the following types:
 
-- [Integer types][Builtin types];
+- [Integer types][Built-in integer types];
 - String type;
 - Other annotation types;
-- [Arrays][Array type] of any type listed above.
+- [Arrays][Array types] of any type listed above.
 
 Annotation classes are not allowed to have any member functions, constructors or mutable properties.
 They are also not allowed to have base classes besides `kotlin.Annotation`.
@@ -34,19 +34,19 @@ The *targets* of a particular type of annotations is the kind of entity which th
 
 - A [class declaration][Class declaration] (including annotation classes);
 - An [annotation class declaration][Annotation class declaration];
-- A [type][Type] parameter;
-- A [property declaration][Property declarations];
+- A [type][Type system] parameter;
+- A [property declaration][Property declaration];
 - A property backing field;
 - A property getter;
 - A property setter;
 - A local property declaration;
-- A value parameter ([function][Function declaration] or [constructor][Constructor declarations] declaration);
-- A [constructor][Constructor declarations];
-- A [function declaration][Function declarations];
+- A value parameter ([function][Function declaration] or [constructor][Constructor declaration] declaration);
+- A [constructor][Constructor declaration];
+- A [function declaration][Function declaration];
 - A type usage;
 - An [expression][Expression];
 - A [Kotlin file][Kotlin file scope];
-- A [type alias declaration][Type alias declarations].
+- A [type alias declaration][Type alias declaration].
 
 ### Annotation declarations
 

@@ -97,8 +97,8 @@ A value of any non-nullable type cannot contain `null`, meaning all operations w
 Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression].
 However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
-The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][$\Any$].
-The unified subtype type for all types in Kotlin is [$\Nothing$][$\Nothing$].
+The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][kotlin.Any].
+The unified subtype type for all types in Kotlin is [$\Nothing$][kotlin.Nothing].
 
 Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
 Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
@@ -136,13 +136,13 @@ The latter are special types which are *not* expressible in Kotlin and are used 
 
 Kotlin type system uses the following built-in types, which have special semantics and representation (or lack thereof).
 
-##### $\Any$
+##### `kotlin.Any`
 
 $\Any$ is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of $\Any$, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
 TODO($\Any$ members?)
 
-##### $\Nothing$
+##### `kotlin.Nothing`
 
 $\Nothing$ is the unified [subtype][Subtyping] ($\bot$) for $\{T\}$, i.e., $\Nothing$ is a subtype of all well-formed Kotlin types, including user-defined ones.
 This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of $\Nothing$ in Kotlin.
@@ -155,13 +155,13 @@ As the evaluation of an expression with $\Nothing$ type can never complete norma
 
 Additional details about how $\Nothing$ should be processed are available [here][Control- and data-flow analysis].
 
-##### $\Unit$
+##### `kotlin.Unit`
 
 $\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
 
 TODO(Compare to `void`?)
 
-##### $\Function$
+##### `kotlin.Function`
 
 $\Function(R)$ is the unified supertype of all [function types][Function types].
 It is parameterized over function return type `R`.
@@ -337,6 +337,8 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
+
+TODO(Fix formatting here)
 
 ##### Declaration-site variance
 
@@ -548,7 +550,7 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
-Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][$\Function$] for the purpose of unification.
+Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][kotlin.Function] for the purpose of unification.
 
 > Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is necessary.
 
@@ -662,12 +664,12 @@ If an operation is safe regardless of absence or presence of `null`, e.g., assig
 For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
 
 1. Use safe operations
-    * [safe call][Safe call expression]
+    * [safe call][Navigation operators]
 2. Downcast from $T?$ to $T!!$
     * [unsafe cast][Cast expression]
-    * [type check][Type check expression] combined with [smart casts][Smart casts]
+    * [type check][Type-checking expression] combined with [smart casts][Smart casts]
     * null check combined with [smart casts][Smart casts]
-    * [not-null assertion operator][Not-null assertion operator expression]
+    * [not-null assertion operator][Not-null assertion expression]
 3. Supply a default value to use if `null` is present
     * [elvis operator][Elvis operator expression]
 
@@ -732,20 +734,20 @@ Due to the presence of flexible types, this relation is **not** transitive (see 
 
 Subtyping for non-nullable, concrete types uses the following rules.
 
-* $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
+* $\forall T : \Nothing <: T <: \Any$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
 * For any parameterized type $\widehat{T} = T[\sigma]: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \sigma S_i$
 * For any two parameterized types $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
 
 Subtyping for non-nullable, abstract types uses the following rules.
 
-* $\forall T : \text{kotlin.Nothing} <: T <: \text{kotlin.Any}$
+* $\forall T : \Nothing <: T <: \Any$
 * For any type constructor $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
 * For any two type constructors $\widehat{T}$ and $\widehat{T^\prime}$ with type parameters $F_i$ and $F_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
 
 Subtyping for type parameters uses the following rules.
 
-* $\forall F : \text{kotlin.Nothing} <: F <: \text{kotlin.Any?}$
+* $\forall F : \Nothing <: F <: \AnyQ$
 * For any two type parameters $F$ and $F^\prime$, it is true that $F <: F^\prime$, if all of the following hold
     - variance of $F$ matches variance of $F^\prime$
         + $\outV$ matches $\outV$
@@ -872,8 +874,11 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
 
 TODO(prettify formatting)
+
 TODO(actual algorithm for computing LUB)
+
 TODO(LUB for 3+ types)
+
 TODO(what do we do if this procedure loops?)
 
 TODO(Why do we need union types again?)
@@ -923,8 +928,11 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\GLB(A, B) = (\GLB(L_A, B)..\GLB(U_A, B))$
 
 TODO(prettify formatting)
+
 TODO(actual algorithm for computing GLB)
+
 TODO(GLB for 3+ types)
+
 TODO(what do we do if this procedure loops?)
 
 ### Type approximation

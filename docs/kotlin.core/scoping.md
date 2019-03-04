@@ -8,7 +8,7 @@ Declaration scopes include:
 
 - The top level scope of a normal Kotlin file (not script file);
 - The bodies of [classifier declarations][Classifier declaration];
-- The bodies of [object literals][Object literal];
+- The bodies of [object literals][Object literals];
 - TODO(Anything else?)
 
 Statement scopes include:

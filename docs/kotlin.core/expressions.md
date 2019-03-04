@@ -163,7 +163,7 @@ All character literals have type `kotlin.Char`.
 
 #### String literals
 
-Kotlin supports [string interpolation][String interpolation expression] which supersedes traditional string literals.
+Kotlin supports [string interpolation][String interpolation expressions] which supersedes traditional string literals.
 For further details, please refer to the corresponding section.
 
 #### Null literal
@@ -250,7 +250,7 @@ The type of the condition expression must be a subtype of `kotlin.Boolean`, othe
 The key difference is exactly that a when expressions may include several different conditions with their corresponding control structure bodies.
 When expression has two different forms: with bound value and without it.
 
-**When expression without bound value** (the form where the expression enclosed in parantheses after the `when` keyword is absent) evaluates one of the different CSBs based on its condition from the *when entry*.
+**When expression without bound value** (the form where the expression enclosed in parentheses after the `when` keyword is absent) evaluates one of the different CSBs based on its condition from the *when entry*.
 Each when entry consists of a boolean *condition* (or a special `else` condition) and its corresponding CSB.
 When entries are checked and evaluated in their order of appearance.
 If the condition evaluates to `true`, the corresponding CSB is evaluated and the value of when expression is the same as the value of the CSB.
@@ -261,7 +261,7 @@ The `else` condition **must** also be in the last when entry of when expression,
 
 > Note: informally, you can always replace the `else` condition with an always-`true` condition (e.g., boolean literal `true`) with no change to the resulting semantics.
 
-**When expression with bound value** (the form where the expression enclosed in parantheses after the `when` keyword is present) are similar to the form without bound value, but use a different syntax for conditions.
+**When expression with bound value** (the form where the expression enclosed in parentheses after the `when` keyword is present) are similar to the form without bound value, but use a different syntax for conditions.
 In fact, it supports three different condition forms:
 
 - *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T`).
@@ -292,7 +292,7 @@ A when expression is called **_exhaustive_** if at least one of the following is
     - The bound expression is of a [`sealed class`][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression.
       This should include checks for all direct subtypes of this sealed class.
       If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
-    - The bound expression is of an [`enum class`][Enum classes] type and all its enumerated values are checked for equality using constant expression;
+    - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
 TODO(Equality check with object behaves kinda like a type check. Or not.)
@@ -336,7 +336,7 @@ There are two kinds of equality operators: *reference equality operators* and *v
 #### Reference equality expressions
 
 *Reference equality expressions* are binary expressions which use reference equality operators: `===` and `!==`.
-These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference* --- two values are equal by reference if and only if they represent the same runtime value.
+These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference*: two values are equal by reference if and only if they represent the same runtime value.
 
 For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:
 
@@ -540,7 +540,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 > Note: informally, `++A` assigns the result of `A.inc()` to `A` and then returns `A` as the result.
 
-For a prefix increment expression `++A` expression `A` must be [assignable expressions][Assignments].
+For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
 
 A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
@@ -556,7 +556,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 > Note: informally, `--A` assigns the result of `A.dec()` to `A` and then returns `A` as the result.
 
-For a prefix decrement expression `--A` expression `A` must be [assignable expressions][Assignments].
+For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
 
 A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
@@ -731,7 +731,7 @@ This is implemented using *function literals*.
 There are two types of function literals in Kotlin: *lambda literals* and *anonymous function declarations*.
 Both of these provide a way of defining a function in-place, but have subtle differences.
 
-> Note: as some may consider function literals to be closely related to function declarations, [here][Function declarations] is the corresponding section of the specification.
+> Note: as some may consider function literals to be closely related to function declarations, [here][Function declaration] is the corresponding section of the specification.
 
 #### Anonymous function declarations
 
@@ -750,7 +750,7 @@ Anonymous function declaration may declare an anonymous extension function.
 
 > Note: as anonymous functions may not have type parameters, you cannot declare an anonymous extension function on a parameterized receiver type.
 
-The type of an anonymous function declaration is the function type constructed similarly to a [named function declaration][Function declarations].
+The type of an anonymous function declaration is the function type constructed similarly to a [named function declaration][Function declaration].
 
 #### Lambda literals
 
@@ -779,7 +779,7 @@ Any lambda may also define either a normal function or an expansion function, th
 If the lambda expression has no parameter list, but has one parameter, this parameter can be accessed inside the lambda body using a special property called `it`.
 If the lambda expression defines an expansion function, the expansion receiver may be accessed using standard `this` syntax inside the lambda body.
 
-> Note: having no parameter list (and no arrow operator) in a lambda is very different from having zero parameters (nothing preceding the arrow operator).
+> Note: having no parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).
 
 Lambda literals are different from other forms of function definition in that the `return` expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself.
 Such returns are only allowed if the function defined by the lambda is guaranteed to be [inlined][Inlining] and are not allowed at all otherwise.
@@ -790,7 +790,7 @@ If a particular labeled `return` expression is used inside multiple lambda bodie
 
 TODO(Typing)
 
-Any properties used in any way inside the lambda body are **captured** by the lambda expression and, dependending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
+Any properties used in any way inside the lambda body are **captured** by the lambda expression and, depending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
 
 TODO(Rules of capturing)
 
@@ -817,6 +817,7 @@ When a value of an anonymous object type escapes current scope:
 > Note: in this context "escaping" current scope is performed immediately if the corresponding value is declared as a global- or classifier-scope property, as those are a part of package interface.
 
 TODO: This is more complex. From D.Petrov's comment:
+
 > This is a bit more complex for anonymous object return types of private functions and properties:
 > ```
 > class M {
@@ -883,7 +884,7 @@ A *return expression*, when used inside a function body, immediately
 stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
 A return expression with no value implicitly returns the `kotlin.Unit` object.
 
-There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function expression][Anonymous function expression]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
+There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [Anonymous function declaration][Anonymous function declarations]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
 
 - The name of one of the enclosing function declarations, which refers to this function.
   If several declarations match one name, it is a compile-time error;
@@ -961,12 +962,9 @@ TODO(define this using actual `kotlin.StringBuilder` business?)
 
 TODO(list all the allowed escapes here?)
 
-### Operator expressions
-
-TODO()
-
 ## TODOs()
 
+- Class literals
 - String interpolation
 - Overloadable operators && operator expansion
 - Smart casts vs compile-time types
