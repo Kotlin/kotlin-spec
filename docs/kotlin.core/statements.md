@@ -166,7 +166,7 @@ TODO(What about iterator value life-time and such?)
 A *code block* is a sequence of zero or more statements between curly braces separated by newlines or/and semicolons.
 Evaluating a code block means evaluating all its statements in the order they appear inside of it.
 
-> Note: Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is, in fact, a [lambda literal][Lambda literals].
+> Note: Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is a [lambda literal][Lambda literals].
 
 A *last expression* of a code block is the last statement in it (if any) if and only if this statement is also an expression.
 The last expressions are important when defining functions and control structure expressions.
@@ -191,6 +191,7 @@ The type of a control structure body is the type of its value.
 
 ### TODO
 
+- Labels
 - Are declarations statements or not?
     - In the current grammar, they are
 - How expansions with new variables actually work

@@ -96,8 +96,8 @@ $$ptor : (p_1, \ldots, p_n)$$
 where each of $p_i$ may be one of the following:
 
 * regular constructor parameter $name: type$;
-* read-only property constructor parameter $val name: type$;
-* mutable property constructor parameter $var name: type$.
+* read-only property constructor parameter $\mathtt{val} name: type$;
+* mutable property constructor parameter $\mathtt{val} name: type$.
 
 Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. 
 One can consider them to have the following syntactic expansion.
@@ -661,7 +661,7 @@ Also, unlike regular properties, the type of the receiver must be a subtype of t
 For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].
 
 The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. 
-It may also be accessed inside nested scopes using [labeled `this` syntax][] using the name of the property declared as the label. 
+It may also be accessed inside nested scopes using [labeled `this` syntax][This-expressions] using the name of the property declared as the label. 
 For delegated properties, the value passed into the operator functions `getValue` and `setValue` as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. 
 This is also true for local extension properties: while regular local properties are passed `null` as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.
 

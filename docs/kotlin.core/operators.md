@@ -43,14 +43,17 @@ object C {
 The expression `C[0][0]++` is expanded (see the [Expressions][expressions] section for details) using the following rules:
 
 - First, the [increment operator][Postfix increment expression] is expanded, resulting in:
+    
     ```kotlin
     C[0][0] = C[0][0].inc()
     ```
 - Second, the [assigment][Assignments] to an indexing expression (produced by the previous expansion) is expanded, resulting in:
+    
     ```kotlin
     C[0].set(C[0].get(0).inc())
     ```
 - Third, the [indexing expression][Indexing expression] is expanded, resulting in:
+    
     ```kotlin
     C.get(0).set(C.get(0).get(0).inc())
     ```

@@ -62,8 +62,8 @@ A *callable* $X$ for the purpose of this section is one of the following:
     - A constructor of the type named $X$ at its declaration site;
 - Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
     - A property named $X$ at its declaration site;
-    - [An object][Object declarations] named $X$ at its declaration site;
-    - [A companion object][Companion objects] of a classifier type named $X$ at its declaration site;
+    - [An object][Object declaration] named $X$ at its declaration site;
+    - [A companion object][Class declaration] of a classifier type named $X$ at its declaration site;
     - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$;
 
 In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
