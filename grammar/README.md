@@ -1,6 +1,6 @@
 # Kotlin grammar
 
-[![TeamCity (simple build status)](https://img.shields.io/teamcity/https/teamcity.jetbrains.com/e/Kotlin_spec_GrammarTests.svg?style=flat)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_Spec_GrammarTests&branch_Kotlin_dev=%3Cdefault%3E&tab=buildTypeStatusDiv)
+[![TeamCity (simple build status)](https://img.shields.io/teamcity/https/teamcity.jetbrains.com/e/Kotlin_Spec_GrammarMaster.svg?style=flat)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_Spec_GrammarMaster&branch_Kotlin_dev=%3Cdefault%3E&tab=buildTypeStatusDiv)
 
 ## Description
 
