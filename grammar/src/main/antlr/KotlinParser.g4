@@ -446,10 +446,19 @@ postfixUnarySuffix
 directlyAssignableExpression
     : postfixUnaryExpression assignableSuffix
     | simpleIdentifier
+    | parenthesizedDirectlyAssignableExpression
+    ;
+
+parenthesizedDirectlyAssignableExpression
+    : LPAREN NL* directlyAssignableExpression NL* RPAREN
     ;
 
 assignableExpression
-    : prefixUnaryExpression
+    : prefixUnaryExpression | parenthesizedAssignableExpression
+    ;
+
+parenthesizedAssignableExpression
+    : LPAREN NL* assignableExpression NL* RPAREN
     ;
 
 assignableSuffix
