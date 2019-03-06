@@ -3,3 +3,5 @@ fun case_1(x: Int?, y: Int) {
         x.inv()
     }
 }
+
+val x = @Anno !y

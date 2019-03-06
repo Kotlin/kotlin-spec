@@ -7,9 +7,9 @@ class Foo {
 class Foo(@param @ann protected val field: Int) {}
 
 class Foo {
-    @ann@param var field: Int = 10
+    @ann @param var field: Int = 10
 }
 
 class Foo {
-    @param@ann var field: Int = 10
+    @param @ann var field: Int = 10
 }

@@ -1,4 +1,4 @@
-File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
+File: setInBackticks.kt - e82677ada56d4f0eb4ed1f647d624003
   packageHeader
   importList
   topLevelObject
@@ -25,7 +25,7 @@ File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
                     PRIVATE("private")
               VAL("val")
               simpleIdentifier
-                Identifier("field")
+                FIELD("field")
               COLON(":")
               type
                 typeReference
@@ -74,7 +74,7 @@ File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
                   VAR("var")
                   variableDeclaration
                     simpleIdentifier
-                      Identifier("field")
+                      FIELD("field")
                     COLON(":")
                     type
                       typeReference
@@ -137,7 +137,7 @@ File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
                     PROTECTED("protected")
               VAL("val")
               simpleIdentifier
-                Identifier("field")
+                FIELD("field")
               COLON(":")
               type
                 typeReference
@@ -159,83 +159,61 @@ File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
         CLASS("class")
         simpleIdentifier
           Identifier("Foo")
-  LCURL("{")
-  NL("\n")
-  topLevelObject
-    declaration
-  topLevelObject
-    declaration
-      AT("@")
-      IdentifierAt("ann@")
-      Identifier("`set`")
-  topLevelObject
-    declaration
-      propertyDeclaration
-        VAR("var")
-        variableDeclaration
-          simpleIdentifier
-            Identifier("field")
-          COLON(":")
-          type
-            typeReference
-              userType
-                simpleUserType
-                  simpleIdentifier
-                    Identifier("Int")
-        ASSIGNMENT("=")
-        expression
-          disjunction
-            conjunction
-              equality
-                comparison
-                  infixOperation
-                    elvisExpression
-                      infixFunctionCall
-                        rangeExpression
-                          additiveExpression
-                            multiplicativeExpression
-                              asExpression
-                                prefixUnaryExpression
-                                  postfixUnaryExpression
-                                    primaryExpression
-                                      literalConstant
-                                        IntegerLiteral("10")
-    semis
-      NL("\n")
-  RCURL("}")
-  NL("\n")
-  NL("\n")
-  topLevelObject
-    declaration
-      classDeclaration
-        CLASS("class")
-        simpleIdentifier
-          Identifier("Foo")
-  LPAREN("(")
-  topLevelObject
-    declaration
-  topLevelObject
-    declaration
-      AT("@")
-      IdentifierAt("ann@")
-      Identifier("`set`")
-  topLevelObject
-    declaration
-      propertyDeclaration
-        VAL("val")
-        variableDeclaration
-          simpleIdentifier
-            Identifier("field")
-          COLON(":")
-          type
-            typeReference
-              userType
-                simpleUserType
-                  simpleIdentifier
-                    Identifier("Int")
-        RPAREN(")")
-        LCURL("{")
-        RCURL("}")
+        classBody
+          LCURL("{")
+          NL("\n")
+          classMemberDeclarations
+            classMemberDeclaration
+              declaration
+                propertyDeclaration
+                  modifiers
+                    annotation
+                      singleAnnotation
+                        AT("@")
+                        unescapedAnnotation
+                          userType
+                            simpleUserType
+                              simpleIdentifier
+                                Identifier("ann")
+                    annotation
+                      singleAnnotation
+                        AT("@")
+                        unescapedAnnotation
+                          userType
+                            simpleUserType
+                              simpleIdentifier
+                                Identifier("`set`")
+                  VAR("var")
+                  variableDeclaration
+                    simpleIdentifier
+                      FIELD("field")
+                    COLON(":")
+                    type
+                      typeReference
+                        userType
+                          simpleUserType
+                            simpleIdentifier
+                              Identifier("Int")
+                  ASSIGNMENT("=")
+                  expression
+                    disjunction
+                      conjunction
+                        equality
+                          comparison
+                            infixOperation
+                              elvisExpression
+                                infixFunctionCall
+                                  rangeExpression
+                                    additiveExpression
+                                      multiplicativeExpression
+                                        asExpression
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                literalConstant
+                                                  IntegerLiteral("10")
+                  NL("\n")
+          RCURL("}")
     semis
       NL("\n")
       NL("\n")
@@ -245,31 +223,87 @@ File: setInBackticks.kt - c7de6ba03605dbaacc31df02c5e4fe1e
         CLASS("class")
         simpleIdentifier
           Identifier("Foo")
-  LPAREN("(")
+        primaryConstructor
+          classParameters
+            LPAREN("(")
+            classParameter
+              modifiers
+                annotation
+                  singleAnnotation
+                    AT("@")
+                    unescapedAnnotation
+                      userType
+                        simpleUserType
+                          simpleIdentifier
+                            Identifier("ann")
+                annotation
+                  singleAnnotation
+                    AT("@")
+                    unescapedAnnotation
+                      userType
+                        simpleUserType
+                          simpleIdentifier
+                            Identifier("`set`")
+              VAL("val")
+              simpleIdentifier
+                FIELD("field")
+              COLON(":")
+              type
+                typeReference
+                  userType
+                    simpleUserType
+                      simpleIdentifier
+                        Identifier("Int")
+            RPAREN(")")
+        classBody
+          LCURL("{")
+          classMemberDeclarations
+          RCURL("}")
+    semis
+      NL("\n")
+      NL("\n")
   topLevelObject
     declaration
-  topLevelObject
-    declaration
-      AT("@")
-      IdentifierAt("`set`@")
-      Identifier("ann")
-  topLevelObject
-    declaration
-      propertyDeclaration
-        VAL("val")
-        variableDeclaration
-          simpleIdentifier
-            Identifier("field")
-          COLON(":")
-          type
-            typeReference
-              userType
-                simpleUserType
-                  simpleIdentifier
-                    Identifier("Int")
-        RPAREN(")")
-        LCURL("{")
-        RCURL("}")
+      classDeclaration
+        CLASS("class")
+        simpleIdentifier
+          Identifier("Foo")
+        primaryConstructor
+          classParameters
+            LPAREN("(")
+            classParameter
+              modifiers
+                annotation
+                  singleAnnotation
+                    AT("@")
+                    unescapedAnnotation
+                      userType
+                        simpleUserType
+                          simpleIdentifier
+                            Identifier("`set`")
+                annotation
+                  singleAnnotation
+                    AT("@")
+                    unescapedAnnotation
+                      userType
+                        simpleUserType
+                          simpleIdentifier
+                            Identifier("ann")
+              VAL("val")
+              simpleIdentifier
+                FIELD("field")
+              COLON(":")
+              type
+                typeReference
+                  userType
+                    simpleUserType
+                      simpleIdentifier
+                        Identifier("Int")
+            RPAREN(")")
+        classBody
+          LCURL("{")
+          classMemberDeclarations
+          RCURL("}")
     semis
       NL("\n")
   EOF("<EOF>")

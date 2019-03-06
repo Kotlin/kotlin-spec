@@ -21,7 +21,7 @@ shebangLine
     ;
 
 fileAnnotation
-    : ANNOTATION_USE_SITE_TARGET_FILE NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
+    : AT FILE NL* COLON NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
     ;
 
 packageHeader
@@ -190,13 +190,13 @@ propertyDelegate
     ;
 
 getter
-    : modifiers? GETTER
-    | modifiers? GETTER NL* LPAREN NL* RPAREN (NL* COLON NL* type)? NL* functionBody
+    : modifiers? GET
+    | modifiers? GET NL* LPAREN NL* RPAREN (NL* COLON NL* type)? NL* functionBody
     ;
 
 setter
-    : modifiers? SETTER
-    | modifiers? SETTER NL* LPAREN NL* parameterWithOptionalType NL* RPAREN (NL* COLON NL* type)? NL* functionBody
+    : modifiers? SET
+    | modifiers? SET NL* LPAREN NL* parameterWithOptionalType NL* RPAREN (NL* COLON NL* type)? NL* functionBody
     ;
 
 parametersWithOptionalType
@@ -857,14 +857,7 @@ multiAnnotation
     ;
 
 annotationUseSiteTarget
-    : ANNOTATION_USE_SITE_TARGET_FIELD
-    | ANNOTATION_USE_SITE_TARGET_PROPERTY
-    | ANNOTATION_USE_SITE_TARGET_GET
-    | ANNOTATION_USE_SITE_TARGET_SET
-    | ANNOTATION_USE_SITE_TARGET_RECEIVER
-    | ANNOTATION_USE_SITE_TARGET_PARAM
-    | ANNOTATION_USE_SITE_TARGET_SETPARAM
-    | ANNOTATION_USE_SITE_TARGET_DELEGATE
+    : AT (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE) NL* COLON
     ;
 
 unescapedAnnotation
@@ -888,7 +881,7 @@ simpleIdentifier: Identifier
     | EXTERNAL
     | FINAL
     | FINALLY
-    | GETTER
+    | GET
     | IMPORT
     | INFIX
     | INIT
@@ -907,9 +900,16 @@ simpleIdentifier: Identifier
     | REIFIED
     | SEALED
     | TAILREC
-    | SETTER
+    | SET
     | VARARG
     | WHERE
+    | FIELD
+    | PROPERTY
+    | RECEIVER
+    | PARAM
+    | SETPARAM
+    | DELEGATE
+    | FILE
     | EXPECT
     | ACTUAL
     | CONST
