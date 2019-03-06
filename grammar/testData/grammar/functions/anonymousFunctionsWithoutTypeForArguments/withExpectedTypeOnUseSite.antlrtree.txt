@@ -10,34 +10,53 @@ File: withExpectedTypeOnUseSite.kt - a1da86122234b8d6ab789ae2dc926f55
             Identifier("bar")
           COLON(":")
           type
-            parenthesizedType
-              LPAREN("(")
+            functionType
+              functionTypeParameters
+                LPAREN("(")
+                type
+                  typeReference
+                    userType
+                      simpleUserType
+                        simpleIdentifier
+                          Identifier("Int")
+                RPAREN(")")
+              ARROW("->")
               type
                 typeReference
                   userType
                     simpleUserType
                       simpleIdentifier
-                        Identifier("Int")
-              RPAREN(")")
-        ARROW("->")
-        Identifier("Unit")
+                        Identifier("Unit")
         ASSIGNMENT("=")
-  topLevelObject
-    declaration
-      functionDeclaration
-        FUN("fun")
-        receiverType
-          parenthesizedType
-            LPAREN("(")
-            type
-              typeReference
-                userType
-                  simpleUserType
-                    simpleIdentifier
-                      Identifier("a")
-            RPAREN(")")
-        LCURL("{")
-        RCURL("}")
+        expression
+          disjunction
+            conjunction
+              equality
+                comparison
+                  infixOperation
+                    elvisExpression
+                      infixFunctionCall
+                        rangeExpression
+                          additiveExpression
+                            multiplicativeExpression
+                              asExpression
+                                prefixUnaryExpression
+                                  postfixUnaryExpression
+                                    primaryExpression
+                                      functionLiteral
+                                        anonymousFunction
+                                          FUN("fun")
+                                          parametersWithOptionalType
+                                            LPAREN("(")
+                                            parameterWithOptionalType
+                                              simpleIdentifier
+                                                Identifier("a")
+                                            RPAREN(")")
+                                          functionBody
+                                            block
+                                              LCURL("{")
+                                              statements
+                                              RCURL("}")
     semis
       EOF("<EOF>")
   EOF("<EOF>")

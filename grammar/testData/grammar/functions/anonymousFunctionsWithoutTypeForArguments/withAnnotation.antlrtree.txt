@@ -10,44 +10,62 @@ File: withAnnotation.kt - 479c35f8233ed3a69aadb6d9876b1811
             Identifier("bar")
           COLON(":")
           type
-            parenthesizedType
-              LPAREN("(")
+            functionType
+              functionTypeParameters
+                LPAREN("(")
+                type
+                  typeReference
+                    userType
+                      simpleUserType
+                        simpleIdentifier
+                          Identifier("Any")
+                RPAREN(")")
+              ARROW("->")
               type
                 typeReference
                   userType
                     simpleUserType
                       simpleIdentifier
-                        Identifier("Any")
-              RPAREN(")")
-        ARROW("->")
-        Identifier("Unit")
+                        Identifier("Unit")
         ASSIGNMENT("=")
-  topLevelObject
-    declaration
-      functionDeclaration
-        FUN("fun")
-        receiverType
-          parenthesizedType
-            LPAREN("(")
-            type
-              typeModifiers
-                typeModifier
-                  annotation
-                    singleAnnotation
-                      AT("@")
-                      unescapedAnnotation
-                        userType
-                          simpleUserType
-                            simpleIdentifier
-                              Identifier("Anno")
-              typeReference
-                userType
-                  simpleUserType
-                    simpleIdentifier
-                      Identifier("a")
-            RPAREN(")")
-        LCURL("{")
-        RCURL("}")
+        expression
+          disjunction
+            conjunction
+              equality
+                comparison
+                  infixOperation
+                    elvisExpression
+                      infixFunctionCall
+                        rangeExpression
+                          additiveExpression
+                            multiplicativeExpression
+                              asExpression
+                                prefixUnaryExpression
+                                  postfixUnaryExpression
+                                    primaryExpression
+                                      functionLiteral
+                                        anonymousFunction
+                                          FUN("fun")
+                                          parametersWithOptionalType
+                                            LPAREN("(")
+                                            parameterWithOptionalType
+                                              parameterModifiers
+                                                annotation
+                                                  singleAnnotation
+                                                    AT("@")
+                                                    unescapedAnnotation
+                                                      userType
+                                                        simpleUserType
+                                                          simpleIdentifier
+                                                            Identifier("Anno")
+                                              simpleIdentifier
+                                                Identifier("a")
+                                            RPAREN(")")
+                                          functionBody
+                                            block
+                                              LCURL("{")
+                                              statements
+                                              RCURL("}")
     semis
       EOF("<EOF>")
   EOF("<EOF>")
