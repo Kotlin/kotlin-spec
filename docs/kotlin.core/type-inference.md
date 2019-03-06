@@ -63,7 +63,9 @@ Nullability and type conditions are derived in the following way.
 - `x === y` or `y === x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$;
 - `x === y` or `y === x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the nullability condition for $x$;
 - `x == y` or `y == x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
-- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the non-nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
+- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
+
+TODO(x != Nothing? / x !== Nothing?)
 
 > Note: for example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
 
@@ -75,6 +77,8 @@ This property is used in [bound smart casts][Bound smart casts].
 #### Smart cast sink stability
 
 A smart cast sink is *stable* for smart casting if its value cannot be changed from the smart cast source to itself; this guarantees the smart cast conditions still hold at the sink.
+This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.
+
 Smart cast sink stability breaks in the presence of the following aspects.
 
 * concurrent writes;
@@ -187,32 +191,71 @@ A mutable local property $P$ defined at $D$ is considered effectively immutable 
 #### Source-sink domination
 
 A smart cast source $SO$ dominates a smart cast sink $SI$, if $SO$ is a control-flow dominator of $SI$.
+This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.
+
+In the most basic case, smart cast conditions propagate as-is from sources to sinks.
+However, as a number of expressions have additional semantics, which may influence smart cast conditions, in some cases these conditions are modified along the sink-source chain.
 This means the following for different smart cast sources.
 
 - Conditional expressions (`if` and `when`):
     - Smart cast conditions derived from expression condition are active inside the true branch scope;
-    - Smart cast conditions derived from negated expression condition are active inside the false branch scope;
+    - Smart cast conditions derived from *negated* expression condition are active inside the false branch scope;
     - If a branch is statically known to be definitely evaluated, that branch's condition is also propagated over to its containing scope after the conditional expression;
 - Elvis operator (operator `?:`): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
 - Safe navigation operator (operator `?.`) TODO()
 - Logical conjunction expressions (operator `&&`): all conditions derived from the left-hand expression are applied to the right-hand expression;
-- Logical disjunction expressions (operator `||`): all condtions derived from the left-hand expression are applied *negated* to the right-hand expression;
+- Logical disjunction expressions (operator `||`): all conditions derived from the left-hand expression are applied *negated* to the right-hand expression;
 - Not-null assertion expressions (operator `!!`): a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
 - Unsafe cast expression (operator `as`): a type condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope; the assumed type is the same as the right-hand side type of the cast expression;
 - Direct assignment: if both sides of the assignment are applicable expressions, all the conditions currently applying to the right-hand side are also applied to the left-hand side of the assignment for the rest of the containing scope.
 
-Source-sink domination rules also mean that smart cast sources from the loop bodies and conditions are **not** propagated to the upper scope, as the loop body may be evaluated zero or more times, and the corresponding condition may or may not be true.
-However, some loop configurations, for which we can have static guarantees about source-sink domination, are handled differently.
+The necessity of source-sink domination also mean that smart cast sources from the loop bodies and conditions are **not** propagated to the containing scope, as the loop body may be evaluated zero or more times, and the corresponding conditions may or may not be true.
+However, some loop configurations, for which we can have static guarantees about source-sink domination w.r.t. the containing scope, are handled differently.
 
 * do-while loops (as their body is evaluated at least once) propagate the following to the rest of the containing scope:
-    * smart cast sources from the loop body, which definitely dominate their sinks (TODO(example with break/continue))
+    * smart cast sources from the loop body, which definitely dominate their sinks
     * smart cast conditions arising from the *negated* loop condition, if the loop body does not contain any `break` expressions
 * `while (true)` loops propagate the following to the rest of the containing scope:
-    * smart cast sources from the loop body, which definitely dominate their sinks (TODO(example with break/continue))
+    * smart cast sources from the loop body, which definitely dominate their sinks
 
 > Note: in the second case, only the exact `while (true)` form is handled as described; e.g., `while (true == true)` does not work.
 
 > Note: one may extend the number of loop configurations, which are handled by smart casting, if the implementation can statically guarantee the source-sink domination.
+
+> Example:
+> ```
+> fun breakFromInfiniteLoop() {
+>     var a: Any? = null
+>
+>     while (true) {
+>         if (a == null) continue
+>
+>         if (randomBoolean()) break
+>     }
+>
+>     a // Smart cast to Any
+> }
+>
+> fun doWhileAndSmartCasts() {
+>     var a: Any? = null
+> 
+>     do {
+>         if (a == null) continue
+>     } while (randomBoolean())
+>     
+>     a // Smart cast to Any
+> }
+> 
+> fun doWhileAndSmartCasts2() {
+>     var a: Any? = null
+> 
+>     do {
+>         sink(a)
+>     } while (a == null)
+> 
+>     a // Smart cast to Any
+> }
+> ```
 
 #### Bound smart casts
 
@@ -226,8 +269,8 @@ Bound smart casts allow to apply smart cast sources for $a$ to $b$ or vice versa
 
 Kotlin supports the following bound smart casts (BSC).
 
-- Nullability-by-equality BSC. If two values are known to be equal, nullability conditions for one are applied to the other.
-- Nullability-by-safe-call BSC. For a safe-call property `o?.p` of a non-null type $T$, nullability conditions for `o?.p` are applied to `o`.
+- Non-nullability-by-equality BSC. If two values are known to be equal, non-nullability conditions for one are applied to the other.
+- Non-nullability-by-safe-call BSC. For a safe-call property `o?.p` of a non-null type $T$, non-nullability conditions for `o?.p` are applied to `o`.
 
 Two values $a$ and $b$ are considered equals in the following cases.
 

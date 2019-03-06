@@ -711,7 +711,7 @@ Expressions which use the navigation binary operators (`.`, `.?` or `::`) are sy
 - A [property reference][Callable references].
   Here `a` may be either a value available in the current scope or a type name, and `c` is a property name.
 - A [function reference][Callable references].
-    Here `a` may be either a value available in the current scope or a type name, and `c` is a function name.
+  Here `a` may be either a value available in the current scope or a type name, and `c` is a function name.
 
 `a?.c` is a *safe navigation* operator, which has the following expansion:
 
