@@ -150,7 +150,7 @@ functionValueParameters
     ;
 
 functionValueParameter
-    : modifiers? parameter (NL* ASSIGNMENT NL* expression)?
+    : parameterModifiers? parameter (NL* ASSIGNMENT NL* expression)?
     ;
 
 functionDeclaration
@@ -196,11 +196,15 @@ getter
 
 setter
     : modifiers? SETTER
-    | modifiers? SETTER NL* LPAREN (annotation | parameterModifier)* setterParameter RPAREN (NL* COLON NL* type)? NL* functionBody
+    | modifiers? SETTER NL* LPAREN NL* parameterWithOptionalType NL* RPAREN (NL* COLON NL* type)? NL* functionBody
     ;
 
-setterParameter
-    : simpleIdentifier NL* (COLON NL* type)?
+parametersWithOptionalType
+    : LPAREN NL* (parameterWithOptionalType (NL* COMMA NL* parameterWithOptionalType)*)? NL* RPAREN
+    ;
+
+parameterWithOptionalType
+    : parameterModifiers? simpleIdentifier NL* (COLON NL* type)?
     ;
 
 parameter
@@ -585,7 +589,7 @@ lambdaParameter
 anonymousFunction
     : FUN
     (NL* type NL* DOT)?
-    NL* functionValueParameters
+    NL* parametersWithOptionalType
     (NL* COLON NL* type)?
     (NL* typeConstraints)?
     (NL* functionBody)?
@@ -742,6 +746,10 @@ safeNav
 
 modifiers
     : (annotation | modifier)+
+    ;
+
+parameterModifiers
+    : (annotation | parameterModifier)+
     ;
 
 modifier
