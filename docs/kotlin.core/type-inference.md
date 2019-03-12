@@ -27,15 +27,41 @@ A smart cast source may be *negated*, meaning it reverses its interpretation.
 
 > Note: non-nullability conditions may be viewed as a special case of type conditions with assumed type `kotlin.Any`.
 
+> Note: we may use the terms "negated non-nullability condition" and "nullability condition" interchangeably.
+
 These sources influence the compile-time type of a value in some expression (called *smart cast sink*) only if the sink is [*stable*][Smart cast sink stability] and if the source [dominates][Source-sink domination] the sink.
-The actual compile-time type of a smart casted value for any purpose (including, but not limited to, function overloading and type inference of other values) is as follows.
+The actual compile-time type of a smart casted value for most purposes (including, but not limited to, function overloading and type inference of other values) is as follows.
 
 - If the smart cast source is a non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Any`;
 - If the smart cast source is a negated non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Nothing?`;
 - If the smart cast source is a type condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and the assumed type of the condition.
 - If the smart cast source is a negated type condition, the type does not change.
 
-> Note: we may use the terms "negated non-nullability condition" and "nullability condition" interchangeably.
+> Note: the most important exception to when smart casts are used in type inference is direct property declaration.
+> ```
+> fun noSmartCastInInference() {
+>     var a: Any? = null
+> 
+>     if (a == null) return
+> 
+>     var c = a // Direct property declaration
+> 
+>     c // Declared type of `c` is Any?
+>       // However, here it's smart casted to Any
+> }
+> 
+> fun <T> id(a: T): T = a
+> 
+> fun smartCastInInference() {
+>     var a: Any? = null
+> 
+>     if (a == null) return
+> 
+>     var c = id(a)
+> 
+>     c // Declared type of `c` is Any
+> }
+> ```
 
 Smart cast sources are introduced by:
 
