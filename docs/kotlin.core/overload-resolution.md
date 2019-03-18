@@ -62,30 +62,30 @@ A *callable* $X$ for the purpose of this section is one of the following:
     - A constructor of the type named $X$ at its declaration site;
 - Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
     - A property named $X$ at its declaration site;
-    - [An object][Object declaration] named $X$ at its declaration site;
-    - [A companion object][Class declaration] of a classifier type named $X$ at its declaration site;
-    - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$;
+    - [An object][Object declarations] named $X$ at its declaration site;
+    - [A companion object][Companion objects] of a classifier type named $X$ at its declaration site;
+    - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
 
 In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-The set of explicit receivers itself (denoted by the [`this`][This-expression] expression) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
-As with normal property-like callables, $\mathtt{this}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\mathtt{this.invoke}(Y_0,Y_1,\ldots,Y_N)$.
+The set of explicit receivers itself (denoted by a [`this`][This-expression] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
+As with normal property-like callables, $\mathtt{this@A}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\mathtt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 
 A *member callable* is either a member function-like callable or a member property-like callable with a member operator `invoke`.
 An *extension callable* is either an extension function-like callable, a member property-like callable with an extension operator `invoke` or an extension property-like callable with an extension operator `invoke`.
 
 When calculating overload candidate sets, member callables produce the following separate sets (ordered by higher priority first):
 
-- Member functions;
-- Member properties.
+- Member function-like callables;
+- Member property-like callables.
 
 Extension callables produce the following separate sets (ordered by higher priority first):
 
 - Extension functions;
-- Member properties with extension invoke;
-- Extension properties with member invoke;
-- Extension properties with extension invoke.
+- Member property-like callables with extension invoke;
+- Extension property-like callables with member invoke;
+- Extension property-like callables with extension invoke.
 
 Let us define this partition as c-level partition (callable-level partition).
 As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed last, after all other applicable steps.
@@ -153,8 +153,8 @@ Different platform implementations may extend the set of functions considered as
 
 ### Operator calls
 
-According to TODO(), some operator expressions in Kotlin can be overloaded using specially-named functions.
-This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used (see TODO()).
+According to [the overloadable operators section][Overloadable operators], some operator expressions in Kotlin can be overloaded using specially-named functions.
+This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used.
 The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with `operator` modifier are considered for inclusion when building overload candidate sets.
 Any properties are never considered for the overload candidate sets of operator calls.
 
@@ -170,9 +170,12 @@ Different platform implementations may extend the set of functions considered as
 A call which is performed with unqualified function name and without using a navigation operator is a call without an explicit receiver.
 It may have one or more implicit receivers or reference a top-level function.
 
+> Note: this does not include calls using the `invoke` operator function where the left side of the call operator is not an identifier, but some other kind of expression.
+> These cases are handled the same way as covered in the [previous section][Operator calls] and need no special treatment
+
 As with function calls with explicit receiver, we should first pick a valid overload candidate set and then search this set for the _most specific function_ to match the call.
 
-For a function named `f` the following sets are analyzed (in the given order):
+For an idenitifer named `f` the following sets are analyzed (in the given order):
 
 1. The sets of local non-extension functions named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
 2. The overload candidate sets for each implicit receiver `r` and `f`, calculated as if `r` is the explicit receiver, in order of the receiver priority (see the [corresponding section][A call with an explicit receiver]);
@@ -269,10 +272,6 @@ The rest of this section will try to clarify this mechanism in more detail.
 
 When an overload resolution set $S$ is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.
 
-Firts, $S$ is divided into two subsets: callables with type parameters (generic callables) and callables without such (non-generic callables).
-If there are any non-generic applicable candidates, the choice is limited only to the non-generic subset.
-Otherwise, we consider the generic subset.
-
 The selection process uses the [type constraint][Type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
@@ -285,11 +284,11 @@ The check is then repeated with $F_1$ and $F_2$ swapped.
 If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and additional decision steps are needed to choose the most specific overload candidate.
 If neither $F_1$ nor $F_2$ is equally or more applicable than its counterpart, it also means that $F_1$ and $F_2$ are equally applicable and additional decision steps are needed.
 
-TODO(Integer literal business wrecks this all up a little bit)
-
 All members of the overload candidate set are ranked according to the applicability criteria.
 If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.
 
+- Any non-generic (meaning that it does not have type parameters in its declaration) callable is a more specific candidate than any generic (containing type parameters in its declaration) callable.
+  If there are several non-generic candidates, further steps are limited to those candidates;
 - For every non-default argument of the call consider the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$.
   If, for any $K$, both $X_K$ and $Y_K$ are different built-in integer types and one of them is `kotlin.Int`, then this parameter is preferred over the other parameter of the call. 
   If all such parameters of $F_1$ are preferred based on this criteria over the parameters of $F_2$, then $F_1$ is a more specific candidate than $F_2$, and vice versa.
