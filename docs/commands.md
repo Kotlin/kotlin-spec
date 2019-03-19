@@ -1,5 +1,8 @@
 <#mode quote>
 
+\newcommand{\llbracket}{\left[\!\left[}
+\newcommand{\rrbracket}{\right]\!\right]}
+
 \newcommand{\sbn}{\stackrel{null}{<:}}
 \newcommand{\sbnn}{\stackrel{!}{<:}}
 
@@ -26,3 +29,9 @@
 
 \newcommand{\ATS}{\mathtt{ATS}}
 \newcommand{\LTS}{\mathtt{LTS}}
+
+\newcommand{\SmartCastData}{\mathtt{SmartCastData}}
+\newcommand{\Expression}{\mathtt{Expression}}
+\newcommand{\SmartCastType}{\mathtt{SmartCastType}}
+\newcommand{\Type}{\mathtt{Type}}
+\newcommand{\Nullability}{\mathtt{Nullability}}

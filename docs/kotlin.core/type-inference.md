@@ -12,9 +12,45 @@ TODO(write about when type inference works and when it does not)
 
 ### Smart casts
 
-Kotlin introduces a limited form of flow-dependent typing called *smart casting*.
-Flow-dependent typing means some expressions in the program may introduce changes to the compile-time types of variables.
+Kotlin introduces a limited form of flow-sensitive typing called *smart casts*.
+Flow-sensitive typing means some expressions in the program may introduce changes to the compile-time types of variables.
 This allows one to avoid unneeded explicit casting of values in cases when their runtime types are guaranteed to conform to the expected compile-time types.
+
+Flow-sensitive typing may be considered a specific instance of traditional data-flow analysis.
+Therefore, before we discuss it further, we need to establish the data-flow framework, which we will use for smart casts.
+
+#### Smart cast data-flow framework
+
+We assume our data-flow analysis is run on a classic control-flow graph structure, where most non-trivial expressions and statements are simplified and/or desugared.
+
+TODO(Explain how this simplification is done?)
+
+Our data-flow domain is a map lattice $\SmartCastData = \Expression \rightarrow \SmartCastType$, where $\Expression$ is any Kotlin expression and $\SmartCastType = \Type \times \Type$ is a product lattice of smart cast data-flow facts of the following kind.
+
+* First component describes the type, which an expression definitely **has**
+* Second component describes the type, which an expression definitely **does not have**
+
+Join and meet are defined as follows.
+
+* $\llbracket P_1 \times N_1 \rrbracket \sqcup \llbracket P_2 \times N_2 \rrbracket = \llbracket \LUB(P_1, P_2) \times \GLB(N_1, N_2)\rrbracket$
+* $\llbracket P_1 \times N_1 \rrbracket \sqcap \llbracket P_2 \times N_2 \rrbracket = \llbracket \GLB(P_1, P_2) \times \LUB(N_1, N_2)\rrbracket$
+
+> Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
+> 
+> \begin{align*}
+> (P_1 \amp \neg N_1) | (P_2 \amp \neg N_2)
+>   &\sqsupseteq (P_1 | P_2) \amp      (\neg N_1 | \neg N_2)
+>   &=           (P_1 | P_2) \amp \neg (N_1 \amp N_2)
+>   \\
+> (P_1 \amp \neg N_1) \amp (P_2 \amp \neg N_2)
+>   &= (P_1 \amp P_2) \amp      (\neg N_1 \amp \neg N_2) 
+>   &= (P_1 \amp P_2) \amp \neg (N_1 | N_2)
+> \end{align*}
+> 
+> This is as intended, as "type which an expression definitely does not have" is exactly a negation type.
+> In smart casts, as Kotlin [type system][Type system] does not have negation types, we overapproximate them when needed.
+
+#### Smart cast rules
 
 Smart casts are dependent on two main things: *smart cast sources* and *smart cast sink stability*.
 
