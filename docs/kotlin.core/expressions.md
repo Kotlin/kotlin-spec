@@ -708,6 +708,7 @@ Expressions which use the navigation binary operators (`.`, `.?` or `::`) are sy
 
 `a::c` may have one of the following semantics when used as an expression:
 
+- A [class literal expression][Class literals] if, instead of an identifier, `c` is the keyword `class`;
 - A [property reference][Callable references].
   Here `a` may be either a value available in the current scope or a type name, and `c` is a property name.
 - A [function reference][Callable references].
@@ -718,6 +719,33 @@ Expressions which use the navigation binary operators (`.`, `.?` or `::`) are sy
 - `a?.c` is exactly the same as `if (a != null) a.c else null`.
 
 > Note: this means the type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
+
+#### Callable references
+
+TODO(this is a stub)
+
+Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them.
+It is not to be confused with [class literals][Class literals] that use similar syntax, but with the keyword `class` used instead of the identifier.
+
+A callable reference `A::c` where `A` is a type name and `c` is a name of a callable available for type `A` is a *callable reference* for a type.
+A callable reference `e::c` where `e` is another expression and `c` is a name of a callable available for type `A` is a *callable reference* for expression `e`.
+The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the usual navigation syntax. 
+
+Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:
+
+- If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a property of the type on the left-hand side, then the expression is a type-property reference;
+- If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a function available for a receiver of the type on the left-hand side, then the expression is a type-function reference;
+- If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a property of the value on the left-hand side, then the expression is a value-property reference;
+- If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a function for the receiver being th value on the left-hand side, then the expression is a value-function reference.
+
+The types of these expressions are implementation-defined, but the following constraints must hold:
+
+TODO(this is pretty complex, actually. Do we need all the K(Mutable)PropertyN business defined in the specification???)
+TODO(we need to update overload resolution section with these guys)
+
+#### Class literals
+
+TODO(this is a stub)
 
 TODO(Identifiers, paths, that kinda stuff)
 
@@ -939,7 +967,7 @@ There are two forms of break expressions:
 :::{.paste target=grammar-rule-multiLineStringExpression}
 :::
 
-_String interpolation expressions_ replace the traditional string literals found in some other languages and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol. 
+_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol. 
 This syntax allows to specify such fragments by directly following the `$` symbol with either a single identifier (if the expression is a single identifier) or a control structure body. 
 In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
 The resulting value of a string interpolation expression is the joining of all fragments in the expression.
@@ -947,7 +975,7 @@ The resulting value of a string interpolation expression is the joining of all f
 An interpolated value $v$ is converted to `kotlin.String` according to the following convention:
 
 - If it is equal to the [null reference][Null literal], the result is `"null"`;
-- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function.
+- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
 
 There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions. 
 The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see [grammar][Grammar] for details). 
@@ -965,8 +993,6 @@ TODO(list all the allowed escapes here?)
 ## TODOs()
 
 - Class literals
-- String interpolation
-- Overloadable operators && operator expansion
 - Smart casts vs compile-time types
 - What does `decaying` for vararg actually mean?
 - Where to define spread operator?
