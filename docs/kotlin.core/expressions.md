@@ -740,10 +740,30 @@ Depending on the meaning of the left-hand and right-hand sides of the expression
 
 The types of these expressions are implementation-defined, but the following constraints must hold:
 
+- The type of any kind of property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
+- The type of any kind of callable reference is a subtype of [function type][Function types] that allows the corresponding callable to be accessed/called accordingly:
+    - For a type-callable reference, it is an extension function type `O.(Arg0 ... ArgN) -> R`, where `O` is a receiver type same as the left-hand type of the expression, `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable;
+    - For a value-callable reference, it is a normal function type `(Args) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable.
+    The receiver is bound to the left-hand side expression of the reference expression.
+
+Being of an appropriate function type also means that the values defined by these references are valid callables themselves, with an appropriate `operator invoke` overload, that allows using call syntax to evaluate the value of the callable with the appropriate arguments.
+
+> Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.
+
 TODO(this is pretty complex, actually. Do we need all the K(Mutable)PropertyN business defined in the specification???)
 TODO(we need to update overload resolution section with these guys)
 
 #### Class literals
+
+A class literal is very similar in syntax to a callable reference, with the difference being that it uses the keyword `class` instead of the referenced identifier.
+Similar to callable references, there are two forms of class literals: with a type used as the left-hand side argument of the expression and with another expression used as such.
+This is also one of the few cases where a parameterized type may (**and must**) be used without its type parameters.
+
+All class literals have type `kotlin.KClass<T>` and produce a platform-defined object associated with type `T`, which, in turn, is either the type given as the left-hand side of the expression or the [runtime type][Runtime type information] of the value given as the left-hand side of the expression.
+In both cases, `T` must be a [runtime-available type][Runtime type information] in the current scope.
+As the runtime type of the expression is not known at compile time, the compile-time type of the expression is `kotlin.KClass<U>` where $T <: U$ and `U` is the compile-time of the expression.
+
+The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.
 
 TODO(this is a stub)
 
