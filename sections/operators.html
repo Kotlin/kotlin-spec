@@ -140,15 +140,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The expression <code>C[0][0]++</code> is expanded (see the [Expressions][expressions] section for details) using the following rules:</span></p>
 </div>
 <ul>
-<li><span class="sentence">First, the [increment operator][Postfix increment expression] is expanded, resulting in: <code>kotlin   C[0][0] = C[0][0].inc()</code></span></li>
-<li><span class="sentence">Second, the [assigment][Assignments] to an indexing expression (produced by the previous expansion) is expanded, resulting in: <code>kotlin   C[0].set(C[0].get(0).inc())</code></span></li>
-<li><span class="sentence">Third, the [indexing expression][Indexing expression] is expanded, resulting in: <code>kotlin   C.get(0).set(C.get(0).get(0).inc())</code></span></li>
+<li><div class="paragraph">
+<p><span class="sentence">First, the [increment operator][Postfix increment expression] is expanded, resulting in:</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1">C[<span class="dv">0</span>][<span class="dv">0</span>] = C[<span class="dv">0</span>][<span class="dv">0</span>].inc()</a></code></pre></div></li>
+<li><div class="paragraph">
+<p><span class="sentence">Second, the [assigment][Assignments] to an indexing expression (produced by the previous expansion) is expanded, resulting in:</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span>(C[<span class="dv">0</span>].<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
+<li><div class="paragraph">
+<p><span class="sentence">Third, the [indexing expression][Indexing expression] is expanded, resulting in:</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1">C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">set</span>(C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Although the resulting expression contains several invocations of the subexpression <code>C.get(0)</code>, it is evaluated only once, making this code roughly equivalent to:</span></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = C.<span class="kw">get</span>(<span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb2-2" title="2">$tmp.<span class="kw">set</span>($tmp.<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = C.<span class="kw">get</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb5-2" title="2">$tmp.<span class="kw">set</span>($tmp.<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO()</span></p>
