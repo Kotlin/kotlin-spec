@@ -788,7 +788,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-fileAnnotation" class="grammar-rule">
 <dl>
 <dt><strong><em>fileAnnotation</em>:</strong></dt>
-<dd><span class="sentence"><code>'@file'</code><br />
+<dd><span class="sentence">(<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>)<br />
+<code>'file'</code><br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
 <code>':'</code><br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
@@ -1047,7 +1048,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-functionValueParameter" class="grammar-rule">
 <dl>
 <dt><strong><em>functionValueParameter</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <em><a href="#grammar-rule-parameter">parameter</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>]</span>
+<dd><span class="sentence">[<em><a href="#grammar-rule-parameterModifiers">parameterModifiers</a></em>] <em><a href="#grammar-rule-parameter">parameter</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -1130,14 +1131,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>setter</em>:</strong></dt>
 <dd><span class="sentence">([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code>)<br />
-| ([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-parameterModifier">parameterModifier</a></em>} <em><a href="#grammar-rule-setterParameter">setterParameter</a></em> <code>')'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>)</span>
+| ([<em><a href="#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>)</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-setterParameter" class="grammar-rule">
+<div id="grammar-rule-parametersWithOptionalType" class="grammar-rule">
 <dl>
-<dt><strong><em>setterParameter</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} [<code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
+<dt><strong><em>parametersWithOptionalType</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em>}]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parameterWithOptionalType" class="grammar-rule">
+<dl>
+<dt><strong><em>parameterWithOptionalType</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="#grammar-rule-parameterModifiers">parameterModifiers</a></em>] <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} [<code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -1345,7 +1357,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-label" class="grammar-rule">
 <dl>
 <dt><strong><em>label</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-IdentifierAt">IdentifierAt</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+<dd><span class="sentence"><em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> (<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_POST_WS">AT_POST_WS</a></em>) {<em><a href="#grammar-rule-NL">NL</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -1570,14 +1582,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>directlyAssignableExpression</em>:</strong></dt>
 <dd><span class="sentence">(<em><a href="#grammar-rule-postfixUnaryExpression">postfixUnaryExpression</a></em> <em><a href="#grammar-rule-assignableSuffix">assignableSuffix</a></em>)<br />
-| <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em></span>
+| <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+| <em><a href="#grammar-rule-parenthesizedDirectlyAssignableExpression">parenthesizedDirectlyAssignableExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parenthesizedDirectlyAssignableExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>parenthesizedDirectlyAssignableExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-directlyAssignableExpression">directlyAssignableExpression</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-assignableExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>assignableExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em></span>
+<dd><span class="sentence"><em><a href="#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em><br />
+| <em><a href="#grammar-rule-parenthesizedAssignableExpression">parenthesizedAssignableExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-parenthesizedAssignableExpression" class="grammar-rule">
+<dl>
+<dt><strong><em>parenthesizedAssignableExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-assignableExpression">assignableExpression</a></em><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
 </dd>
 </dl>
 </div>
@@ -1797,7 +1833,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dd><span class="sentence"><code>'fun'</code><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
-<em><a href="#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+<em><a href="#grammar-rule-parametersWithOptionalType">parametersWithOptionalType</a></em><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]<br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>]</span>
@@ -1831,7 +1867,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-superExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>superExpression</em>:</strong></dt>
-<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<code>'@'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
+<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
 | <em><a href="#grammar-rule-SUPER_AT">SUPER_AT</a></em></span>
 </dd>
 </dl>
@@ -2066,6 +2102,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-parameterModifiers" class="grammar-rule">
+<dl>
+<dt><strong><em>parameterModifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-parameterModifier">parameterModifier</a></em> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-parameterModifier">parameterModifier</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-modifier" class="grammar-rule">
 <dl>
 <dt><strong><em>modifier</em>:</strong></dt>
@@ -2204,7 +2247,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>singleAnnotation</em>:</strong></dt>
 <dd><span class="sentence">(<em><a href="#grammar-rule-annotationUseSiteTarget">annotationUseSiteTarget</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)<br />
-| (<code>'@'</code> <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)</span>
+| ((<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) <em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>)</span>
 </dd>
 </dl>
 </div>
@@ -2212,14 +2255,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>multiAnnotation</em>:</strong></dt>
 <dd><span class="sentence">(<em><a href="#grammar-rule-annotationUseSiteTarget">annotationUseSiteTarget</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>)<br />
-| (<code>'@'</code> <code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>)</span>
+| ((<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) <code>'['</code> (<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em> {<em><a href="#grammar-rule-unescapedAnnotation">unescapedAnnotation</a></em>}) <code>']'</code>)</span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-annotationUseSiteTarget" class="grammar-rule">
 <dl>
 <dt><strong><em>annotationUseSiteTarget</em>:</strong></dt>
-<dd><span class="sentence"><code>'@'</code> (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
+<dd><span class="sentence">(<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
 </dd>
 </dl>
 </div>
@@ -2270,6 +2313,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 | <code>'set'</code><br />
 | <code>'vararg'</code><br />
 | <code>'where'</code><br />
+| <code>'field'</code><br />
+| <code>'property'</code><br />
+| <code>'receiver'</code><br />
+| <code>'param'</code><br />
+| <code>'setparam'</code><br />
+| <code>'delegate'</code><br />
+| <code>'file'</code><br />
 | <code>'expect'</code><br />
 | <code>'actual'</code><br />
 | <code>'const'</code><br />
@@ -6383,7 +6433,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dd><span class="sentence"><code>'fun'</code><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
-<em><a href="#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+<em><a href="#grammar-rule-parametersWithOptionalType">parametersWithOptionalType</a></em><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]<br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionBody">functionBody</a></em>]</span>
@@ -6557,7 +6607,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <div id="grammar-rule-superExpression-pasted-71" class="grammar-rule">
 <dl>
 <dt><strong><em>superExpression</em>:</strong></dt>
-<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<code>'@'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
+<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
 | <em><a href="#grammar-rule-SUPER_AT">SUPER_AT</a></em></span>
 </dd>
 </dl>
