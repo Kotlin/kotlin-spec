@@ -67,7 +67,10 @@ RANGE: '..';
 COLONCOLON: '::';
 DOUBLE_SEMICOLON: ';;';
 HASH: '#';
-AT: '@';
+AT_NO_WS: '@';
+AT_POST_WS: '@' (Hidden | NL);
+AT_PRE_WS: (Hidden | NL) '@' ;
+AT_BOTH_WS: (Hidden | NL) '@' (Hidden | NL);
 QUEST_WS: '?' Hidden;
 QUEST_NO_WS: '?';
 LANGLE: '<';
@@ -294,10 +297,6 @@ IdentifierOrSoftKey
     | SUSPEND
     ;
 
-IdentifierAt
-    : IdentifierOrSoftKey '@'
-    ;
-
 FieldIdentifier
     : '$' IdentifierOrSoftKey
     ;
@@ -416,7 +415,10 @@ Inside_RESERVED: RESERVED -> type(RESERVED);
 Inside_COLONCOLON: COLONCOLON  -> type(COLONCOLON);
 Inside_DOUBLE_SEMICOLON: DOUBLE_SEMICOLON  -> type(DOUBLE_SEMICOLON);
 Inside_HASH: HASH  -> type(HASH);
-Inside_AT: AT  -> type(AT);
+Inside_AT_NO_WS: AT_NO_WS  -> type(AT_NO_WS);
+Inside_AT_POST_WS: AT_POST_WS  -> type(AT_POST_WS);
+Inside_AT_PRE_WS: AT_PRE_WS  -> type(AT_PRE_WS);
+Inside_AT_BOTH_WS: AT_BOTH_WS  -> type(AT_BOTH_WS);
 Inside_QUEST_WS: '?' (Hidden | NL) -> type(QUEST_WS);
 Inside_QUEST_NO_WS: QUEST_NO_WS -> type(QUEST_NO_WS);
 Inside_LANGLE: LANGLE  -> type(LANGLE);
@@ -508,7 +510,6 @@ Inside_LongLiteral: LongLiteral -> type(LongLiteral);
 Inside_UnsignedLiteral: UnsignedLiteral -> type(UnsignedLiteral);
 
 Inside_Identifier: Identifier -> type(Identifier);
-Inside_IdentifierAt: IdentifierAt -> type(IdentifierAt);
 Inside_Comment: (LineComment | DelimitedComment) -> channel(HIDDEN);
 Inside_WS: WS -> channel(HIDDEN);
 Inside_NL: NL -> channel(HIDDEN);
