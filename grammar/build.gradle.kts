@@ -44,12 +44,6 @@ java.sourceSets {
     }
 }
 
-idea {
-    module {
-        excludeDirs = File("${project.rootDir}/grammar/testData").walkTopDown().filter { !it.name.endsWith("antlrtree.txt") }.toSet()
-    }
-}
-
 buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21")
@@ -69,13 +63,13 @@ tasks.withType<AntlrTask> {
 }
 
 tasks.withType<Test> {
-    workingDir = project.rootDir
+    workingDir = File("${project.rootDir}/${project.name}")
     ignoreFailures = project.hasProperty("teamcity")
 }
 
 tasks.create("removeCompilerTestData") {
     doFirst {
-        File("${project.rootDir}/grammar/testData").walkTopDown().forEach {
+        File("${project.rootDir}/${project.name}/testData").walkTopDown().forEach {
             if (!it.name.endsWith("antlrtree.txt"))
                 it.delete()
         }
@@ -89,7 +83,7 @@ tasks.create<ShellExec>("downloadCompilerTests") {
 
 tasks.create("syncWithCompilerTests") {
     doFirst {
-        File("${project.rootDir}/grammar/testData").walkTopDown().forEach {
+        File("${project.rootDir}/${project.name}/testData").walkTopDown().forEach {
             if (it.name.endsWith("antlrtree.txt") && !File("${it.parent}/${it.name.substringBefore(".antlrtree.txt")}.kt").exists())
                 it.delete()
         }
@@ -104,7 +98,7 @@ tasks.create("prepareDiagnosticsCompilerTests") {
         val ls = System.lineSeparator()
         val sourceCodeByFilePattern = Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
 
-        File("${project.rootDir}/grammar/testData/diagnostics").walkTopDown().forEach {
+        File("${project.rootDir}/${project.name}/testData/diagnostics").walkTopDown().forEach {
             if (it.extension == "kt") {
                 val sourceCode = it.readText()
                 val sourceCodeByFiles = sourceCode.split(filePattern)
