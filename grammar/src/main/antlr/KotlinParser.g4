@@ -21,7 +21,7 @@ shebangLine
     ;
 
 fileAnnotation
-    : AT FILE NL* COLON NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
+    : (AT_NO_WS | AT_PRE_WS) FILE NL* COLON NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
     ;
 
 packageHeader
@@ -325,7 +325,7 @@ statement
     ;
 
 label
-    : IdentifierAt NL*
+    : simpleIdentifier (AT_NO_WS | AT_POST_WS) NL*
     ;
 
 controlStructureBody
@@ -611,7 +611,7 @@ thisExpression
     ;
 
 superExpression
-    : SUPER (LANGLE NL* type NL* RANGLE)? (AT simpleIdentifier)?
+    : SUPER (LANGLE NL* type NL* RANGLE)? (AT_NO_WS simpleIdentifier)?
     | SUPER_AT
     ;
 
@@ -848,16 +848,16 @@ annotation
 
 singleAnnotation
     : annotationUseSiteTarget NL* unescapedAnnotation
-    | AT unescapedAnnotation
+    | (AT_NO_WS | AT_PRE_WS) unescapedAnnotation
     ;
 
 multiAnnotation
     : annotationUseSiteTarget NL* LSQUARE unescapedAnnotation+ RSQUARE
-    | AT LSQUARE unescapedAnnotation+ RSQUARE
+    | (AT_NO_WS | AT_PRE_WS) LSQUARE unescapedAnnotation+ RSQUARE
     ;
 
 annotationUseSiteTarget
-    : AT (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE) NL* COLON
+    : (AT_NO_WS | AT_PRE_WS) (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE) NL* COLON
     ;
 
 unescapedAnnotation
