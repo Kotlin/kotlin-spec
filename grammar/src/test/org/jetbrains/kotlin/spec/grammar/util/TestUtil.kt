@@ -35,7 +35,7 @@ class DiagnosticTestData(
 ) : TestData(sourceCode, sourceCodeHash, antlrParseTreeText)
 
 object TestUtil {
-    const val TESTS_DIR = "./grammar/testData"
+    const val TESTS_DIR = "./testData"
 
     val ls: String = System.lineSeparator()
 
@@ -44,7 +44,7 @@ object TestUtil {
                 result -> if (result.endsWith(ls)) result else result + ls
             }
 
-    fun assertEqualsToFile(message: String, expectedFile: File, actual: String) {
+    fun assertEqualsToFile(message: String, expectedFile: File, actual: String, forceApplyChanges: Boolean) {
         val actualText = StringUtil.convertLineSeparators(actual.trim { it <= ' ' }).trimTrailingWhitespacesAndAddNewlineAtEOF()
 
         if (!expectedFile.exists()) {
@@ -55,8 +55,15 @@ object TestUtil {
         val expected = FileUtil.loadFile(expectedFile, CharsetToolkit.UTF8, true)
         val expectedText = StringUtil.convertLineSeparators(expected.trim { it <= ' ' }).trimTrailingWhitespacesAndAddNewlineAtEOF()
 
-        if (!Comparing.equal(expectedText, actualText))
-            throw FileComparisonFailure(message + ": " + expectedFile.name, expected, actual, expectedFile.absolutePath)
+        if (!Comparing.equal(expectedText, actualText)) {
+            if (forceApplyChanges) {
+                FileUtil.writeToFile(expectedFile, actualText)
+                println("Changes are forced applied for $expectedFile")
+                assumeTrue(false)
+            } else {
+                throw FileComparisonFailure(message + ": " + expectedFile.name, expected, actual, expectedFile.absolutePath)
+            }
+        }
     }
 
     fun getTestData(testFile: File): TestData {

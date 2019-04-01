@@ -1,8 +1,8 @@
 package org.jetbrains.kotlin.spec.grammar
 
+import com.intellij.testFramework.TestDataPath
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 import java.io.File
 import org.jetbrains.kotlin.spec.grammar.parsetree.ParseTreeUtil
 import org.jetbrains.kotlin.spec.grammar.psi.PsiTextParser
@@ -15,10 +15,11 @@ import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeFalse
 import java.util.regex.Pattern
 
-@RunWith(Parameterized::class)
+@TestDataPath("\$PROJECT_ROOT/grammar/testData/")
+@RunWith(com.intellij.testFramework.Parameterized::class)
 class TestRunner {
-    @Parameterized.Parameter
-    lateinit var filename: String
+    @org.junit.runners.Parameterized.Parameter
+    lateinit var testFilePath: String
 
     companion object {
         private const val ERROR_EXPECTED_MARKER = "WITH_ERRORS"
@@ -27,16 +28,22 @@ class TestRunner {
         private val antlrTreeFileHeaderPattern =
                 Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER)\))?$""")
 
+        @org.junit.runners.Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        @Parameterized.Parameters(name = "{0}")
-        fun getTestFiles() = File(TestUtil.TESTS_DIR).let { testsDir ->
-            testsDir.walkTopDown().filter { it.extension == "kt" }.map { arrayOf(it.relativeTo(testsDir).path) }.toList()
+        fun getTestFiles() = emptyList<Array<Any>>()
+
+        @com.intellij.testFramework.Parameterized.Parameters(name = "{0}")
+        @JvmStatic
+        fun getTestFiles(klass: Class<*>) = File("./testData").let { testsDir ->
+            testsDir.walkTopDown().filter { it.extension == "kt" }.map {
+                arrayOf(it.relativeTo(testsDir).path.replace("/", "$"))
+            }.toList()
         }
     }
 
     @Test
     fun doTest() {
-        val testFile = File(filename)
+        val testFile = File(testFilePath.replace("$", "/"))
         val testData = TestUtil.getTestData(testFile)
         val header = if (testData.antlrParseTreeText.exists())
                 antlrTreeFileHeaderPattern.matcher(testData.antlrParseTreeText.readText().lines().first()).run {
@@ -58,7 +65,12 @@ class TestRunner {
         val errorExpected = header?.marker == ERROR_EXPECTED_MARKER
         val dumpParseTree = parseTree.stringifyTree("File: ${testFile.name} - ${testData.sourceCodeHash}" + (if (errorExpected) " ($ERROR_EXPECTED_MARKER)" else ""))
 
-        assertEqualsToFile("Expected and actual ANTLR parsetree are not equals.", testData.antlrParseTreeText, dumpParseTree)
+        assertEqualsToFile(
+                "Expected and actual ANTLR parsetree are not equals",
+                testData.antlrParseTreeText,
+                dumpParseTree,
+                false
+        )
 
         val lexerHasErrors = lexerErrors.isNotEmpty()
         val parserHasErrors = parserErrors.isNotEmpty()
