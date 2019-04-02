@@ -9,6 +9,7 @@
 <#include "packages.md">
 <#include "operators.md">
 <#include "declarations.md">
+<#include "inheritance.md">
 <#include "statements.md">
 <#include "expressions.md">
 <#include "order-of-evaluation.md">
