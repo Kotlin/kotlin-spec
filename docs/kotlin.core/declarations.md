@@ -704,7 +704,7 @@ In order to be declared `const`, a property must meet the following requirements
     - `kotlin.Char`;
     - `kotlin.String`;
 - It is declared in the top-level scope or inside [an object declaration][Object declarations];
-- It has an initializer expression and this initializer expression may be evaluated in the compile-time.
+- It has an initializer expression and this initializer expression may be evaluated at compile-time.
   Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.
 
@@ -722,20 +722,50 @@ The scope where it is accessible is defined by its [*visibility modifiers*][Visi
 
 ### Declarations with type parameters
 
-TODO()
+TODO(this is a stub)
+
+Most declarations may be introduced as *generic*, introducing type parameters that must be explicitly specified or [inferred][Type inference] when the corresponding declaration is used.
+For declarations that introduce new types this mechanism provides the means of introducing a [parameterized type][Parameterized classifier types].
+Please refer to the corresponding section for details.
+
+Type parameters may be used as types inside the scope introduced by the declaration.
+When such a declaration is used, the parameters are substituted by types available inside the scope the declaration is used in.
+
+The following declarations are not allowed to have type parameters:
+
+- Non-extension property declarations;
+- Object declarations (including companion object declarations);
+- Constructor declarations;
+- Getters and setters of property declarations;
+- TODO: anything else?
+
+Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
+These either are written directly at the parameter placement syntax or using a special `where` syntax.
+Any number of restrictions is allowed on a single type.
+These restrictions are turned into corresponding [type constraints][Kotlin type constraints] when the type parameters are substituted with types and are employed during [type inference][Type inference] and [overload resolution][Overload resolution] of any usage of the corresponding declaration.
+See the corresponding sections for details.
+
+Type parameters do not introduce [runtime-available types][Runtime-available types] unless declared `reified`.
+
+#### Type parameter variance
+
+The [declaration-site variance][Mixed-site variance] of a particular type parameter for a type is specified using special keywords `in` (for covariant parameters) and `out` (for contravariant parameters).
+If the variance is not specified, the parameter is implicitly declared invariant.
+See [the type system section][Mixed-site variance] for details.
+
+#### Reified type parameters
+
+Type parameters of inline function declarations (and only those) can be declared `reified` using the corresponding keyword.
+A reified type parameter is a [runtime-available][Runtime-available types] type inside the function scope, see the corresponding section for details.
+Reified type parameters can only be substitued by other [runtime-available types][Runtime-available types] when using such functions.
 
 ### Declaration modifiers
 
-TODO(declaration scope)
+TODO(this is a stub)
 
-TODO(`open`)
-
-TODO(`abstract`)
+A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the [inheritance section][Overriding] for details).
 
 TODO(`lateinit`)
 
-TODO(`const`)
-
 TODO(overriding vs overloading vs shadowing)
 
-TODO(visibility)
