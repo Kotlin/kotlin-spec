@@ -21,7 +21,7 @@ shebangLine
     ;
 
 fileAnnotation
-    : ANNOTATION_USE_SITE_TARGET_FILE NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
+    : (AT_NO_WS | AT_PRE_WS) FILE NL* COLON NL* (LSQUARE unescapedAnnotation+ RSQUARE | unescapedAnnotation) NL*
     ;
 
 packageHeader
@@ -190,13 +190,13 @@ propertyDelegate
     ;
 
 getter
-    : modifiers? GETTER
-    | modifiers? GETTER NL* LPAREN NL* RPAREN (NL* COLON NL* type)? NL* functionBody
+    : modifiers? GET
+    | modifiers? GET NL* LPAREN NL* RPAREN (NL* COLON NL* type)? NL* functionBody
     ;
 
 setter
-    : modifiers? SETTER
-    | modifiers? SETTER NL* LPAREN NL* parameterWithOptionalType NL* RPAREN (NL* COLON NL* type)? NL* functionBody
+    : modifiers? SET
+    | modifiers? SET NL* LPAREN NL* parameterWithOptionalType NL* RPAREN (NL* COLON NL* type)? NL* functionBody
     ;
 
 parametersWithOptionalType
@@ -325,7 +325,7 @@ statement
     ;
 
 label
-    : IdentifierAt NL*
+    : simpleIdentifier (AT_NO_WS | AT_POST_WS) NL*
     ;
 
 controlStructureBody
@@ -611,7 +611,7 @@ thisExpression
     ;
 
 superExpression
-    : SUPER (LANGLE NL* type NL* RANGLE)? (AT simpleIdentifier)?
+    : SUPER (LANGLE NL* type NL* RANGLE)? (AT_NO_WS simpleIdentifier)?
     | SUPER_AT
     ;
 
@@ -848,23 +848,16 @@ annotation
 
 singleAnnotation
     : annotationUseSiteTarget NL* unescapedAnnotation
-    | AT unescapedAnnotation
+    | (AT_NO_WS | AT_PRE_WS) unescapedAnnotation
     ;
 
 multiAnnotation
     : annotationUseSiteTarget NL* LSQUARE unescapedAnnotation+ RSQUARE
-    | AT LSQUARE unescapedAnnotation+ RSQUARE
+    | (AT_NO_WS | AT_PRE_WS) LSQUARE unescapedAnnotation+ RSQUARE
     ;
 
 annotationUseSiteTarget
-    : ANNOTATION_USE_SITE_TARGET_FIELD
-    | ANNOTATION_USE_SITE_TARGET_PROPERTY
-    | ANNOTATION_USE_SITE_TARGET_GET
-    | ANNOTATION_USE_SITE_TARGET_SET
-    | ANNOTATION_USE_SITE_TARGET_RECEIVER
-    | ANNOTATION_USE_SITE_TARGET_PARAM
-    | ANNOTATION_USE_SITE_TARGET_SETPARAM
-    | ANNOTATION_USE_SITE_TARGET_DELEGATE
+    : (AT_NO_WS | AT_PRE_WS) (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE) NL* COLON
     ;
 
 unescapedAnnotation
@@ -888,7 +881,7 @@ simpleIdentifier: Identifier
     | EXTERNAL
     | FINAL
     | FINALLY
-    | GETTER
+    | GET
     | IMPORT
     | INFIX
     | INIT
@@ -907,9 +900,16 @@ simpleIdentifier: Identifier
     | REIFIED
     | SEALED
     | TAILREC
-    | SETTER
+    | SET
     | VARARG
     | WHERE
+    | FIELD
+    | PROPERTY
+    | RECEIVER
+    | PARAM
+    | SETPARAM
+    | DELEGATE
+    | FILE
     | EXPECT
     | ACTUAL
     | CONST

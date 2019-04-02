@@ -41,6 +41,10 @@ RPAREN: ')';
 LSQUARE: '[' -> pushMode(Inside);
 RSQUARE: ']';
 LCURL: '{' -> pushMode(DEFAULT_MODE);
+/*
+ * When using another programming language (not Java) to generate a parser,
+ * please replace this code with the corresponding code of a programming language you are using.
+ */
 RCURL: '}' { if (!_modeStack.isEmpty()) { popMode(); } };
 MULT: '*';
 MOD: '%';
@@ -67,7 +71,10 @@ RANGE: '..';
 COLONCOLON: '::';
 DOUBLE_SEMICOLON: ';;';
 HASH: '#';
-AT: '@';
+AT_NO_WS: '@';
+AT_POST_WS: '@' (Hidden | NL);
+AT_PRE_WS: (Hidden | NL) '@' ;
+AT_BOTH_WS: (Hidden | NL) '@' (Hidden | NL);
 QUEST_WS: '?' Hidden;
 QUEST_NO_WS: '?';
 LANGLE: '<';
@@ -90,15 +97,15 @@ BREAK_AT: 'break@' Identifier;
 THIS_AT: 'this@' Identifier;
 SUPER_AT: 'super@' Identifier;
 
-ANNOTATION_USE_SITE_TARGET_FILE: '@file' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_FIELD: '@field' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_PROPERTY: '@property' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_GET: '@get' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_SET: '@set' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_RECEIVER: '@receiver' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_PARAM: '@param' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_SETPARAM: '@setparam' NL* COLON;
-ANNOTATION_USE_SITE_TARGET_DELEGATE: '@delegate' NL* COLON;
+FILE: 'file';
+FIELD: 'field';
+PROPERTY: 'property';
+GET: 'get';
+SET: 'set';
+RECEIVER: 'receiver';
+PARAM: 'param';
+SETPARAM: 'setparam';
+DELEGATE: 'delegate';
 
 PACKAGE: 'package';
 IMPORT: 'import';
@@ -136,8 +143,6 @@ IN: 'in';
 NOT_IS: '!is' (Hidden | NL);
 NOT_IN: '!in' (Hidden | NL);
 OUT: 'out';
-GETTER: 'get';
-SETTER: 'set';
 DYNAMIC: 'dynamic';
 
 // SECTION: lexicalModifiers
@@ -260,7 +265,6 @@ IdentifierOrSoftKey
     | EXTERNAL
     | FINAL
     | FINALLY
-    | GETTER
     | IMPORT
     | INFIX
     | INIT
@@ -279,18 +283,22 @@ IdentifierOrSoftKey
     | REIFIED
     | SEALED
     | TAILREC
-    | SETTER
     | VARARG
     | WHERE
+    | GET
+    | SET
+    | FIELD
+    | PROPERTY
+    | RECEIVER
+    | PARAM
+    | SETPARAM
+    | DELEGATE
+    | FILE
     | EXPECT
     | ACTUAL
     /* Strong keywords */
     | CONST
     | SUSPEND
-    ;
-
-IdentifierAt
-    : IdentifierOrSoftKey '@'
     ;
 
 FieldIdentifier
@@ -411,7 +419,10 @@ Inside_RESERVED: RESERVED -> type(RESERVED);
 Inside_COLONCOLON: COLONCOLON  -> type(COLONCOLON);
 Inside_DOUBLE_SEMICOLON: DOUBLE_SEMICOLON  -> type(DOUBLE_SEMICOLON);
 Inside_HASH: HASH  -> type(HASH);
-Inside_AT: AT  -> type(AT);
+Inside_AT_NO_WS: AT_NO_WS  -> type(AT_NO_WS);
+Inside_AT_POST_WS: AT_POST_WS  -> type(AT_POST_WS);
+Inside_AT_PRE_WS: AT_PRE_WS  -> type(AT_PRE_WS);
+Inside_AT_BOTH_WS: AT_BOTH_WS  -> type(AT_BOTH_WS);
 Inside_QUEST_WS: '?' (Hidden | NL) -> type(QUEST_WS);
 Inside_QUEST_NO_WS: QUEST_NO_WS -> type(QUEST_NO_WS);
 Inside_LANGLE: LANGLE  -> type(LANGLE);
@@ -438,15 +449,15 @@ Inside_OBJECT: OBJECT -> type(OBJECT);
 Inside_SUPER: SUPER -> type(SUPER);
 Inside_IN: IN -> type(IN);
 Inside_OUT: OUT -> type(OUT);
-Inside_ANNOTATION_USE_SITE_TARGET_FIELD: ANNOTATION_USE_SITE_TARGET_FIELD -> type(ANNOTATION_USE_SITE_TARGET_FIELD);
-Inside_ANNOTATION_USE_SITE_TARGET_FILE: ANNOTATION_USE_SITE_TARGET_FILE -> type(ANNOTATION_USE_SITE_TARGET_FILE);
-Inside_ANNOTATION_USE_SITE_TARGET_PROPERTY: ANNOTATION_USE_SITE_TARGET_PROPERTY -> type(ANNOTATION_USE_SITE_TARGET_PROPERTY);
-Inside_ANNOTATION_USE_SITE_TARGET_GET: ANNOTATION_USE_SITE_TARGET_GET -> type(ANNOTATION_USE_SITE_TARGET_GET);
-Inside_ANNOTATION_USE_SITE_TARGET_SET: ANNOTATION_USE_SITE_TARGET_SET -> type(ANNOTATION_USE_SITE_TARGET_SET);
-Inside_ANNOTATION_USE_SITE_TARGET_RECEIVER: ANNOTATION_USE_SITE_TARGET_RECEIVER -> type(ANNOTATION_USE_SITE_TARGET_RECEIVER);
-Inside_ANNOTATION_USE_SITE_TARGET_PARAM: ANNOTATION_USE_SITE_TARGET_PARAM -> type(ANNOTATION_USE_SITE_TARGET_PARAM);
-Inside_ANNOTATION_USE_SITE_TARGET_SETPARAM: ANNOTATION_USE_SITE_TARGET_SETPARAM -> type(ANNOTATION_USE_SITE_TARGET_SETPARAM);
-Inside_ANNOTATION_USE_SITE_TARGET_DELEGATE: ANNOTATION_USE_SITE_TARGET_DELEGATE -> type(ANNOTATION_USE_SITE_TARGET_DELEGATE);
+Inside_FIELD: FIELD -> type(FIELD);
+Inside_FILE: FILE -> type(FILE);
+Inside_PROPERTY: PROPERTY -> type(PROPERTY);
+Inside_GET: GET -> type(GET);
+Inside_SET: SET -> type(SET);
+Inside_RECEIVER: RECEIVER -> type(RECEIVER);
+Inside_PARAM: PARAM -> type(PARAM);
+Inside_SETPARAM: SETPARAM -> type(SETPARAM);
+Inside_DELEGATE: DELEGATE -> type(DELEGATE);
 Inside_THROW: THROW -> type(THROW);
 Inside_RETURN: RETURN -> type(RETURN);
 Inside_CONTINUE: CONTINUE -> type(CONTINUE);
@@ -503,7 +514,6 @@ Inside_LongLiteral: LongLiteral -> type(LongLiteral);
 Inside_UnsignedLiteral: UnsignedLiteral -> type(UnsignedLiteral);
 
 Inside_Identifier: Identifier -> type(Identifier);
-Inside_IdentifierAt: IdentifierAt -> type(IdentifierAt);
 Inside_Comment: (LineComment | DelimitedComment) -> channel(HIDDEN);
 Inside_WS: WS -> channel(HIDDEN);
 Inside_NL: NL -> channel(HIDDEN);

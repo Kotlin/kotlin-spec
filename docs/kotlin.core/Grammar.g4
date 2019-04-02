@@ -23,7 +23,7 @@ shebangLine
     ;
 
 fileAnnotation
-    : '@file' NL* ':' NL* ('[' unescapedAnnotation+ ']' | unescapedAnnotation) NL*
+    : (AT_NO_WS | AT_PRE_WS) 'file' NL* ':' NL* ('[' unescapedAnnotation+ ']' | unescapedAnnotation) NL*
     ;
 
 packageHeader
@@ -152,7 +152,7 @@ functionValueParameters
     ;
 
 functionValueParameter
-    : modifiers? parameter (NL* '=' NL* expression)?
+    : parameterModifiers? parameter (NL* '=' NL* expression)?
     ;
 
 functionDeclaration
@@ -198,11 +198,15 @@ getter
 
 setter
     : modifiers? 'set'
-    | modifiers? 'set' NL* '(' (annotation | parameterModifier)* setterParameter ')' (NL* ':' NL* type)? NL* functionBody
+    | modifiers? 'set' NL* '(' NL* parameterWithOptionalType NL* ')' (NL* ':' NL* type)? NL* functionBody
     ;
 
-setterParameter
-    : simpleIdentifier NL* (':' NL* type)?
+parametersWithOptionalType
+    : '(' NL* (parameterWithOptionalType (NL* ',' NL* parameterWithOptionalType)*)? NL* ')'
+    ;
+
+parameterWithOptionalType
+    : parameterModifiers? simpleIdentifier NL* (':' NL* type)?
     ;
 
 parameter
@@ -323,7 +327,7 @@ statement
     ;
 
 label
-    : IdentifierAt NL*
+    : simpleIdentifier (AT_NO_WS | AT_POST_WS) NL*
     ;
 
 controlStructureBody
@@ -448,10 +452,19 @@ postfixUnarySuffix
 directlyAssignableExpression
     : postfixUnaryExpression assignableSuffix
     | simpleIdentifier
+    | parenthesizedDirectlyAssignableExpression
+    ;
+
+parenthesizedDirectlyAssignableExpression
+    : '(' NL* directlyAssignableExpression NL* ')'
     ;
 
 assignableExpression
-    : prefixUnaryExpression
+    : prefixUnaryExpression | parenthesizedAssignableExpression
+    ;
+
+parenthesizedAssignableExpression
+    : '(' NL* assignableExpression NL* ')'
     ;
 
 assignableSuffix
@@ -578,7 +591,7 @@ lambdaParameter
 anonymousFunction
     : 'fun'
     (NL* type NL* '.')?
-    NL* functionValueParameters
+    NL* parametersWithOptionalType
     (NL* ':' NL* type)?
     (NL* typeConstraints)?
     (NL* functionBody)?
@@ -600,7 +613,7 @@ thisExpression
     ;
 
 superExpression
-    : 'super' ('<' NL* type NL* '>')? ('@' simpleIdentifier)?
+    : 'super' ('<' NL* type NL* '>')? (AT_NO_WS simpleIdentifier)?
     | SUPER_AT
     ;
 
@@ -733,6 +746,10 @@ modifiers
     : (annotation | modifier)+
     ;
 
+parameterModifiers
+    : (annotation | parameterModifier)+
+    ;
+
 modifier
     : (classModifier
     | memberModifier
@@ -829,16 +846,16 @@ annotation
 
 singleAnnotation
     : annotationUseSiteTarget NL* unescapedAnnotation
-    | '@' unescapedAnnotation
+    | (AT_NO_WS | AT_PRE_WS) unescapedAnnotation
     ;
 
 multiAnnotation
     : annotationUseSiteTarget NL* '[' unescapedAnnotation+ ']'
-    | '@' '[' unescapedAnnotation+ ']'
+    | (AT_NO_WS | AT_PRE_WS) '[' unescapedAnnotation+ ']'
     ;
 
 annotationUseSiteTarget
-    : '@' ('field' | 'property' | 'get' | 'set' | 'receiver' | 'param' | 'setparam' | 'delegate') NL* ':'
+    : (AT_NO_WS | AT_PRE_WS) ('field' | 'property' | 'get' | 'set' | 'receiver' | 'param' | 'setparam' | 'delegate') NL* ':'
     ;
 
 unescapedAnnotation
@@ -884,6 +901,13 @@ simpleIdentifier: Identifier
     | 'set'
     | 'vararg'
     | 'where'
+    | 'field'
+    | 'property'
+    | 'receiver'
+    | 'param'
+    | 'setparam'
+    | 'delegate'
+    | 'file'
     | 'expect'
     | 'actual'
     | 'const'

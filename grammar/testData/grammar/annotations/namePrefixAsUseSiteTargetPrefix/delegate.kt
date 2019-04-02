@@ -11,13 +11,13 @@ class Foo {
 class Foo(@delegateann @ann protected val field: Int) {}
 
 class Foo {
-    @ann@delegateann var field: Int = 10
+    @ann @delegateann var field: Int = 10
 }
 
 class Foo {
-    @ann@`delegateann` var field: Int = 10
+    @ann @`delegateann` var field: Int = 10
 }
 
-class Foo(@`delegate-`@`ann` protected val field: Int) {}
+class Foo(@`delegate-` @`ann` protected val field: Int) {}
 
-class Foo(@`ann`@`delegate)` protected val field: Int) {}
+class Foo(@`ann` @`delegate)` protected val field: Int) {}
