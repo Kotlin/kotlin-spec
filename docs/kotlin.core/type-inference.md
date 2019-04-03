@@ -19,59 +19,160 @@ This allows one to avoid unneeded explicit casting of values in cases when their
 Flow-sensitive typing may be considered a specific instance of traditional data-flow analysis.
 Therefore, before we discuss it further, we need to establish the data-flow framework, which we will use for smart casts.
 
-#### Smart cast data-flow framework
+#### Data-flow framework
 
-We assume our data-flow analysis is run on a classic control-flow graph structure, where most non-trivial expressions and statements are simplified and/or desugared.
+##### Smart cast lattices
+
+We assume our data-flow analysis is run on a classic control-flow graph (CFG) structure, where most non-trivial expressions and statements are simplified and/or desugared.
 
 TODO(Explain how this simplification is done?)
 
-Our data-flow domain is a map lattice $\SmartCastData = \Expression \rightarrow \SmartCastType$, where $\Expression$ is any Kotlin expression and $\SmartCastType = \Type \times \Type$ is a product lattice of smart cast data-flow facts of the following kind.
+Our data-flow domain is a map lattice $\SmartCastData = \Expression \rightarrow \SmartCastType$, where $\Expression$ is any Kotlin expression and $\SmartCastType = \Type \times \Type$ sublattice is a product lattice of smart cast data-flow facts of the following kind.
 
 * First component describes the type, which an expression definitely **has**
 * Second component describes the type, which an expression definitely **does not have**
 
-Join and meet are defined as follows.
+The sublattice order, join and meet are defined as follows.
 
-* $\llbracket P_1 \times N_1 \rrbracket \sqcup \llbracket P_2 \times N_2 \rrbracket = \llbracket \LUB(P_1, P_2) \times \GLB(N_1, N_2)\rrbracket$
-* $\llbracket P_1 \times N_1 \rrbracket \sqcap \llbracket P_2 \times N_2 \rrbracket = \llbracket \GLB(P_1, P_2) \times \LUB(N_1, N_2)\rrbracket$
+$$
+P_1 \times N_1 \sqsubseteq
+P_2 \times N_2
+  \Leftrightarrow P_1 <: P_2 \land N_1 :> N_2
+$$
+
+\begin{align*}
+P_1 \times N_1 \join
+P_2 \times N_2
+ &= \LUB(P_1, P_2) \times \GLB(N_1, N_2) \\
+P_1 \times N_1 \meet
+P_2 \times N_2
+ &= \GLB(P_1, P_2) \times \LUB(N_1, N_2)
+\end{align*}
 
 > Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
 > 
-> \begin{align*}
+> \begin{alignat*}{2}
 > (P_1 \amp \neg N_1) | (P_2 \amp \neg N_2)
->   &\sqsupseteq (P_1 | P_2) \amp      (\neg N_1 | \neg N_2)
->   &=           (P_1 | P_2) \amp \neg (N_1 \amp N_2)
+>   &\sqsubseteq (P_1 | P_2) \amp (\neg N_1 | \neg N_2)
+>   &&= (P_1 | P_2) \amp \neg (N_1 \amp N_2)
 >   \\
 > (P_1 \amp \neg N_1) \amp (P_2 \amp \neg N_2)
->   &= (P_1 \amp P_2) \amp      (\neg N_1 \amp \neg N_2) 
->   &= (P_1 \amp P_2) \amp \neg (N_1 | N_2)
-> \end{align*}
+>   &= (P_1 \amp P_2) \amp (\neg N_1 \amp \neg N_2) 
+>   &&= (P_1 \amp P_2) \amp \neg (N_1 | N_2)
+> \end{alignat*}
 > 
 > This is as intended, as "type which an expression definitely does not have" is exactly a negation type.
 > In smart casts, as Kotlin [type system][Type system] does not have negation types, we overapproximate them when needed.
 
-#### Smart cast rules
+##### Smart cast transfer functions
 
-Smart casts are dependent on two main things: *smart cast sources* and *smart cast sink stability*.
+The data-flow information uses the following transfer functions.
 
-#### Smart cast sources
+TODO(Add compile-time types of expressions to the transfer functions)
 
-There are two kinds of smart cast sources: *non-nullability conditions* and *type conditions*.
-Non-nullability conditions specify that some value is not nullable, i.e., its value is guaranteed to not be `null`.
-Type conditions specify that some value's runtime type conforms to a constraint $RT <: T$, where $T$ is the assumed type and $RT$ is the runtime type.
-A smart cast source may be *negated*, meaning it reverses its interpretation.
+\begin{alignat*}{2}
+&\llbracket \assume(x \is T) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (T \times \top)]
+\\
+&\llbracket \assume(x \notIs T) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\top \times T)]
+\\
+&\llbracket x \as T \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (T \times \top)]
+\\
+&\llbracket x \notAs T) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\top \times T)]
+\\
+&\llbracket \assume(x \eqq null) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
+\\
+&\llbracket \assume(x \notEqq null) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
+\\
+&\llbracket \assume(x \refEqq null) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
+\\
+&\llbracket \assume(x \notRefEqq null) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
+\\
+&\llbracket \assume(x \eqq y) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet s(y),
+      y \rightarrow s(x) \meet s(y)]
+\\
+&\llbracket \assume(x \notEqq y) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
+      y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
+\\
+&\llbracket \assume(x \refEqq y) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet s(y),
+      y \rightarrow s(x) \meet s(y)]
+\\
+&\llbracket \assume(x \notRefEqq y) \rrbracket(s)
+&&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
+      y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
+\\
+&\llbracket x = y \rrbracket(s)
+&&= s[x \rightarrow s(y)]
+\\
+&\llbracket \killDataFlow(x) \rrbracket(s)
+&&= s[x \rightarrow (\top \times \top)]
+\\
+&\llbracket l \rrbracket(s)
+&&= \bigsqcup_{p \in predecessor(l)} \llbracket p \rrbracket(s)
+\end{alignat*}
 
-> Note: non-nullability conditions may be viewed as a special case of type conditions with assumed type `kotlin.Any`.
+where
 
-> Note: we may use the terms "negated non-nullability condition" and "nullability condition" interchangeably.
+\begin{alignat*}{1}
+\swap(P \times N) &= N \times P
+\\
+\isNullable(s) &=
+\left.
+  \begin{cases}
+    (\NothingQ \times \top) & \text{if } s \sqsubseteq (\NothingQ \times \top) \\
+    (\top \times \top)      & \text{otherwise}
+  \end{cases}
+\right.
+\end{alignat*}
 
-These sources influence the compile-time type of a value in some expression (called *smart cast sink*) only if the sink is [*stable*][Smart cast sink stability] and if the source [dominates][Source-sink domination] the sink.
-The actual compile-time type of a smart casted value for most purposes (including, but not limited to, function overloading and type inference of other values) is as follows.
+> Important: transfer function for `==` and `!=` are used only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
+> For example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
 
-- If the smart cast source is a non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Any`;
-- If the smart cast source is a negated non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type `kotlin.Nothing?`;
-- If the smart cast source is a type condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and the assumed type of the condition.
-- If the smart cast source is a negated type condition, the type does not change.
+TODO(A complete list of when `equals` is OK?)
+
+> Note: in some cases, after the CFG simplification a program location $l$ may be duplicated and associated with several locations $l_1, \ldots, l_N$ in the resulting CFG.
+> If so, the data-flow information for $l$ is calculated as
+> 
+> $$\llbracket l \rrbracket = \bigsqcup_{i=1}^N \llbracket l_i \rrbracket$$
+
+> Note: a $\killDataFlow$ instruction is used to reset the data-flow information in cases, when a compiler deems necessary to stop its propagation.
+> For example, it may be used in loops to speed up data-flow analysis convergence.
+> This is the current behaviour of the Kotlin compiler.
+
+After the data-flow analysis is done, for a program location $l$ we have its data-flow information $\llbracket l \rrbracket$, which contains data-flow facts $\llbracket l \rrbracket[e] = (P \times N)$ for an expression $e$.
+
+#### Smart cast types
+
+The data-flow information is used to produce the smart cast type as follows.
+
+First, smart casts may influence the compile-time type of an expression $e$ (called *smart cast sink*) only if the sink is [*stable*][Smart cast sink stability].
+
+Second, for a stable smart cast sink $e$ we calculate the overapproximation of its possible type.
+
+$$\llbracket l \rrbracket[e] = (P \times N)
+\Rightarrow
+\smartCastTypeOf(e) = \typeOf(e) \amp P \amp \approxNegationType(N)
+\\
+\approxNegationType(N) =
+\left.
+  \begin{cases}
+    \Any      & \text{if } \NothingQ <: N \\
+    \AnyQ     & \text{otherwise}
+  \end{cases}
+\right.
+$$
+
+As a result, $\smartCastTypeOf(e)$ is used as a compile-time type of $e$ for most purposes (including, but not limited to, function overloading and type inference of other values).
 
 > Note: the most important exception to when smart casts are used in type inference is direct property declaration.
 > ```
@@ -99,7 +200,7 @@ The actual compile-time type of a smart casted value for most purposes (includin
 > }
 > ```
 
-Smart cast sources are introduced by:
+Smart casts are introduced by the following Kotlin constructions.
 
 - Conditional expressions (`if` and `when`);
 - Elvis operator (operator `?:`);
@@ -113,33 +214,13 @@ Smart cast sources are introduced by:
 
 > Note: property declarations are not listed here, as their types are derived from initializers.
 
-Nullability and type conditions are derived in the following way.
-
-- `x is T` where $x$ is an applicable expression implies a type condition for $x$ with assumed type $T$;
-- `x !is T` where $x$ is an applicable expression implies a negated type condition for $x$ with assumed type $T$;
-- `x != null` or `null != x` where $x$ is an applicable expression implies a non-nullability condition for $x$;
-- `x == null` or `null == x` where $x$ is an applicable expression implies a nullability condition for $x$;
-- `!x` implies all the conditions implied by $x$, but in negated form;
-- `x && y` implies the union of all non-negated conditions implied by $x$ and $y$ and the intersection of all negated conditions implied by $x$ and $y$;
-- `x || y` implies the union of all negated conditions implied by $x$ and $y$ and the intersection of all non-negated conditions implied by $x$ and $y$;
-- `x === y` or `y === x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$;
-- `x === y` or `y === x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the nullability condition for $x$;
-- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
-- `x == y` or `y == x` where $x$ is an applicable expression and $y$ is known to be null (that is, has `Nothing?` type) implies the nullability condition for $x$, but only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
-
-TODO(x != Nothing? / x !== Nothing?)
-
-> Note: for example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
-
-TODO(A complete list of when `equals` is OK?)
-
-Additionally, any type condition with assumed *non-null* type also creates a non-nullability condition for its value.
-This property is used in [bound smart casts][Bound smart casts].
+> Note: for the purposes of smart casts, most of these constructions are simplified and/or desugared, when we are building the program CFG for the data-flow analysis.
+> We informally call these constructions *smart cast sources*, as they are responsible for creating smart cast specific instructions.
 
 #### Smart cast sink stability
 
-A smart cast sink is *stable* for smart casting if its value cannot be changed from the smart cast source to itself; this guarantees the smart cast conditions still hold at the sink.
-This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.
+A smart cast sink is *stable* for smart casting if its value cannot be changed via means external to the CFG; this guarantees the smart cast conditions calculated by the data-flow analysis still hold at the sink.
+This is one of the necessary conditions for smart cast to be applicable to an expression.
 
 Smart cast sink stability breaks in the presence of the following aspects.
 
@@ -148,18 +229,16 @@ Smart cast sink stability breaks in the presence of the following aspects.
 * custom getters;
 * delegation.
 
-> Note: despite what it may seem at first sight, sink stability is *very* complicated for local variables.
-
 The following smart cast sinks are considered stable.
 
 1. Immutable local or classifier-scope properties without delegation or custom getters;
 1. Immutable properties of stable properties without delegation or custom getters;
-1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means from the smart cast source to the smart cast sink.
+1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means.
 
 ##### Effectively immutable smart cast sinks
 
-We will call redefinition of $P$ ***direct*** redefinition, if it happens in the same declaration scope as the definition of $P$.
-If $P$ is redefined in a nested declaration scope (w.r.t. its definition), this is a ***nested*** redefinition.
+We will call redefinition of $e$ ***direct*** redefinition, if it happens in the same declaration scope as the definition of $e$.
+If $e$ is redefined in a nested declaration scope (w.r.t. its definition), this is a ***nested*** redefinition.
 
 > Note: informally, a nested redefinition means the property has been captured in another scope and may be changed from that scope in a concurrent fashion.
 
@@ -188,13 +267,9 @@ We define ***direct*** and ***nested*** smart cast sinks in a similar way.
 > }
 > ```
 
-A mutable local property $P$ defined at $D$ is considered effectively immutable for a given pair of smart cast source $SO$ and smart cast sink $SI$, if the following properties hold.
+A mutable local property $P$ defined at $D$ is considered effectively immutable at a direct sink $S$, if there are no nested redefinitions on any CFG path between $D$ and $S$.
 
-- There are no redefinitions of $P$ on any path between $SO$ and $SI$
-- If $SI$ is a direct sink, there must be no nested redefinitions on any path between $D$ and $SI$
-- If $SI$ is a nested sink, then
-    + there must be no nested redefinitions of $P$
-    + all direct redefinitions of $P$ must precede $SI$
+A mutable local property $P$ defined at $D$ is considered effectively immutable at an indirect sink $S$, if there are no nested redefinitions of $P$ and all direct redefinitions of $P$ precede $S$ in the CFG.
 
 > Example:
 > ```kotlin
@@ -234,14 +309,13 @@ A mutable local property $P$ defined at $D$ is considered effectively immutable 
 >             x.inc()      // nested sink
 >     }
 >     x = getNullableInt() // direct redefinition
->                          //   after the nested sunk
+>                          //   after the nested sink
 > }
 > 
 > fun nestedSinkBad02() {
 >     var x: Int? = 42     // definition
 >     run {
 >         x = null         // nested redefinition
->                          //   of a nested sink
 >     }
 >     run {
 >         if (x != null)   // smart cast source
@@ -250,42 +324,22 @@ A mutable local property $P$ defined at $D$ is considered effectively immutable 
 > }
 > ```
 
-#### Source-sink domination
+#### Loop handling
 
-A smart cast source $SO$ dominates a smart cast sink $SI$, if $SO$ is a control-flow dominator of $SI$.
-This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.
+As mentioned before, a compiler may use $\killDataFlow$ instructions in loops to avoid slow data-flow analysis convergence.
+In the general case, a loop body may be evaluated zero or more times, which, combined with $\killDataFlow$ instructions, causes the smart cast sources from the loop body to *not* propagate to the containing scope.
+However, some loops, for which we can have static guarantees about how their body is evaluated, may be handled differently.
+For the following loop configurations, we consider their bodies to be evaluated *one or more* times.
 
-In the most basic case, smart cast conditions propagate as-is from sources to sinks.
-However, as a number of expressions have additional semantics, which may influence smart cast conditions, in some cases these conditions are modified along the sink-source chain.
-This means the following for different smart cast sources.
+* `while (true) { ... }`
+* `do { ... } while (condition)`
 
-- Conditional expressions (`if` and `when`):
-    - Smart cast conditions derived from expression condition are active inside the true branch scope;
-    - Smart cast conditions derived from *negated* expression condition are active inside the false branch scope;
-    - If a branch is statically known to be definitely evaluated, that branch's condition is also propagated over to its containing scope after the conditional expression;
-- Elvis operator (operator `?:`): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
-- Safe navigation operator (operator `?.`) TODO()
-- Logical conjunction expressions (operator `&&`): all conditions derived from the left-hand expression are applied to the right-hand expression;
-- Logical disjunction expressions (operator `||`): all conditions derived from the left-hand expression are applied *negated* to the right-hand expression;
-- Not-null assertion expressions (operator `!!`): a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;
-- Unsafe cast expression (operator `as`): a type condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope; the assumed type is the same as the right-hand side type of the cast expression;
-- Direct assignment: if both sides of the assignment are applicable expressions, all the conditions currently applying to the right-hand side are also applied to the left-hand side of the assignment for the rest of the containing scope.
+> Note: in the current implementation, only the exact `while (true)` form is handled as described; e.g., `while (true == true)` does not work.
 
-The necessity of source-sink domination also mean that smart cast sources from the loop bodies and conditions are **not** propagated to the containing scope, as the loop body may be evaluated zero or more times, and the corresponding conditions may or may not be true.
-However, some loop configurations, for which we can have static guarantees about source-sink domination w.r.t. the containing scope, are handled differently.
-
-* do-while loops (as their body is evaluated at least once) propagate the following to the rest of the containing scope:
-    * smart cast sources from the loop body, which definitely dominate their sinks
-    * smart cast conditions arising from the *negated* loop condition, if the loop body does not contain any `break` expressions
-* `while (true)` loops propagate the following to the rest of the containing scope:
-    * smart cast sources from the loop body, which definitely dominate their sinks
-
-> Note: in the second case, only the exact `while (true)` form is handled as described; e.g., `while (true == true)` does not work.
-
-> Note: one may extend the number of loop configurations, which are handled by smart casting, if the implementation can statically guarantee the source-sink domination.
+> Note: one may extend the number of loop configurations, which are handled by smart casts, if the compiler implementation deems it necessary.
 
 > Example:
-> ```
+> ```kotlin
 > fun breakFromInfiniteLoop() {
 >     var a: Any? = null
 >
