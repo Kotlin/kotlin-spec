@@ -353,7 +353,7 @@ For the following loop configurations, we consider their bodies to be definitely
 >     var a: Any? = null
 >
 >     while (true) {
->         if (a == null) continue
+>         if (a == null) return
 >
 >         if (randomBoolean()) break
 >     }
@@ -365,7 +365,7 @@ For the following loop configurations, we consider their bodies to be definitely
 >     var a: Any? = null
 > 
 >     do {
->         if (a == null) continue
+>         if (a == null) return
 >     } while (randomBoolean())
 >     
 >     a // Smart cast to Any
