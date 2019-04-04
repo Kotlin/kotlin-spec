@@ -43,10 +43,10 @@ $$
 \begin{align*}
 P_1 \times N_1 \join
 P_2 \times N_2
- &= \LUB(P_1, P_2) \times \GLB(N_1, N_2) \\
+  &= \LUB(P_1, P_2) \times \GLB(N_1, N_2) \\
 P_1 \times N_1 \meet
 P_2 \times N_2
- &= \GLB(P_1, P_2) \times \LUB(N_1, N_2)
+  &= \GLB(P_1, P_2) \times \LUB(N_1, N_2)
 \end{align*}
 
 > Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
@@ -77,11 +77,13 @@ TODO(Add compile-time types of expressions to the transfer functions)
 &\llbracket \assume(x \notIs T) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\top \times T)]
 \\
+\\
 &\llbracket x \as T \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (T \times \top)]
 \\
 &\llbracket x \notAs T) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\top \times T)]
+\\
 \\
 &\llbracket \assume(x \eqq null) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
@@ -89,11 +91,13 @@ TODO(Add compile-time types of expressions to the transfer functions)
 &\llbracket \assume(x \notEqq null) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
 \\
+\\
 &\llbracket \assume(x \refEqq null) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
 \\
 &\llbracket \assume(x \notRefEqq null) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
+\\
 \\
 &\llbracket \assume(x \eqq y) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet s(y),
@@ -103,6 +107,7 @@ TODO(Add compile-time types of expressions to the transfer functions)
 &&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
       y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
 \\
+\\
 &\llbracket \assume(x \refEqq y) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet s(y),
       y \rightarrow s(x) \meet s(y)]
@@ -111,11 +116,14 @@ TODO(Add compile-time types of expressions to the transfer functions)
 &&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
       y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
 \\
+\\
 &\llbracket x = y \rrbracket(s)
 &&= s[x \rightarrow s(y)]
 \\
+\\
 &\llbracket \killDataFlow(x) \rrbracket(s)
 &&= s[x \rightarrow (\top \times \top)]
+\\
 \\
 &\llbracket l \rrbracket(s)
 &&= \bigsqcup_{p \in predecessor(l)} \llbracket p \rrbracket(s)
@@ -159,9 +167,10 @@ First, smart casts may influence the compile-time type of an expression $e$ (cal
 
 Second, for a stable smart cast sink $e$ we calculate the overapproximation of its possible type.
 
-$$\llbracket l \rrbracket[e] = (P \times N)
-\Rightarrow
-\smartCastTypeOf(e) = \typeOf(e) \amp P \amp \approxNegationType(N)
+$$
+\llbracket l \rrbracket[e] = (P \times N)
+  \Rightarrow
+  \smartCastTypeOf(e) = \typeOf(e) \amp P \amp \approxNegationType(N)
 \\
 \approxNegationType(N) =
 \left.
@@ -215,7 +224,7 @@ Smart casts are introduced by the following Kotlin constructions.
 > Note: property declarations are not listed here, as their types are derived from initializers.
 
 > Note: for the purposes of smart casts, most of these constructions are simplified and/or desugared, when we are building the program CFG for the data-flow analysis.
-> We informally call these constructions *smart cast sources*, as they are responsible for creating smart cast specific instructions.
+> We informally call such constructions *smart cast sources*, as they are responsible for creating smart cast specific instructions.
 
 #### Smart cast sink stability
 
@@ -269,7 +278,7 @@ We define ***direct*** and ***nested*** smart cast sinks in a similar way.
 
 A mutable local property $P$ defined at $D$ is considered effectively immutable at a direct sink $S$, if there are no nested redefinitions on any CFG path between $D$ and $S$.
 
-A mutable local property $P$ defined at $D$ is considered effectively immutable at an indirect sink $S$, if there are no nested redefinitions of $P$ and all direct redefinitions of $P$ precede $S$ in the CFG.
+A mutable local property $P$ defined at $D$ is considered effectively immutable at a nested sink $S$, if there are no nested redefinitions of $P$ and all direct redefinitions of $P$ precede $S$ in the CFG.
 
 > Example:
 > ```kotlin
@@ -329,7 +338,7 @@ A mutable local property $P$ defined at $D$ is considered effectively immutable 
 As mentioned before, a compiler may use $\killDataFlow$ instructions in loops to avoid slow data-flow analysis convergence.
 In the general case, a loop body may be evaluated zero or more times, which, combined with $\killDataFlow$ instructions, causes the smart cast sources from the loop body to *not* propagate to the containing scope.
 However, some loops, for which we can have static guarantees about how their body is evaluated, may be handled differently.
-For the following loop configurations, we consider their bodies to be evaluated *one or more* times.
+For the following loop configurations, we consider their bodies to be definitely evaluated *one or more* times.
 
 * `while (true) { ... }`
 * `do { ... } while (condition)`
@@ -375,55 +384,35 @@ For the following loop configurations, we consider their bodies to be evaluated 
 
 #### Bound smart casts
 
-Smart casting propagates information forward on the control flow, as by the source-sink domination.
-However, in some cases it is beneficial to propagate information *backwards*, to reduce boilerplate code.
-Kotlin supports this feature by bound smart casts.
-
-Bound smart casts apply in the following case.
-Assume we have two inter-dependent or bound values $a$ and $b$.
-Bound smart casts allow to apply smart cast sources for $a$ to $b$ or vice versa, if both values are stable.
-
-Kotlin supports the following bound smart casts (BSC).
-
-- Non-nullability-by-equality BSC. If two values are known to be equal, non-nullability conditions for one are applied to the other.
-- Non-nullability-by-safe-call BSC. For a safe-call property `o?.p` of a non-null type $T$, non-nullability conditions for `o?.p` are applied to `o`.
-
-Two values $a$ and $b$ are considered equals in the following cases.
-
-- there is a known equality or referential-equality condition between $a$ and $b$
-- $a$ is definitely assigned $b$
-    + however, in this case bound smart casts are applied only to $b$
-    + TODO(Why?)
-
-TODO(Do we need additional condition kinds?)
+TODO(Everything)
 
 ### Local type inference
 
 Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties.
-As mentioned above, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
+As mentioned before, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
 
 In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression.
 You can use the [Expressions][Expressions] part of this specification as a reference point on how the types for different expressions are constructed.
 
 However, there are some additional clarifications on how these types are constructed.
-First, the additional effects of [smart casting][Smart casts] are considered in local type inference, if applicable.
+First, the additional effects of [smart casts][Smart casts] are considered in local type inference, if applicable.
 Second, there are several special cases.
 
 - If a type $T$ is described as the least upper bound of types $A$ and $B$, it is represented as a pair of constraints $A <: T$ and $B <: T$;
-- TODO(are there other cases?)
+- TODO(Are there other special cases?)
 
 Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well.
 Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement $S_1$ that goes before statement $S_2$ cannot be inferred based on how $S_1$ is used in $S_2$.
 
-As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference in general may have several valid solutions.
-In particular, one may always derive a system $A <: T <: B$ for every type variable $T$, where $A$ and $B$ are both valid solution types.
-One of these types is always the solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available), but choosing between them is done according to the following rules:
+As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference may create several valid solutions.
+In particular, one may always derive a constraint $A <: T <: B$ for every type variable $T$, where types $A$ and $B$ are both valid solutions.
+One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:
 
-- TODO(what are the rules?)
+- TODO(What are the rules?)
 
 > Note: this is valid even if $T$ is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint $\mathtt{kotlin.Nothing} <: T <: \mathtt{kotlin.Any?}$.
 
 ### TODO
 
-- Type approximation for public usage
-- Ordering of lambdas (and ordering of overloading vs type inference in general)
+- Type approximation for public API
+- Lambda analysis order (and the order of overloading vs type inference in general)
