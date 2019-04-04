@@ -241,8 +241,8 @@ Smart cast sink stability breaks in the presence of the following aspects.
 The following smart cast sinks are considered stable.
 
 1. Immutable local or classifier-scope properties without delegation or custom getters;
-1. Immutable properties of stable properties without delegation or custom getters;
-1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means.
+1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means;
+1. Immutable properties of immutable stable properties without delegation or custom getters.
 
 ##### Effectively immutable smart cast sinks
 
