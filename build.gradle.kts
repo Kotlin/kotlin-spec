@@ -13,6 +13,7 @@ group = "org.jetbrains.kotlin.spec"
 version = "0.1"
 
 repositories {
+    maven { setUrl("https://jitpack.io") }
     maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
     mavenCentral()
 }
@@ -27,7 +28,8 @@ dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("ru.spbstu:g4toEBNF:0.0.0.2")
     compile("ru.spbstu:kotlin-pandoc:0.0.5")
-    compile("com.xenomachina:kotlin-argparser:2.0.4")
+    compile("ru.spbstu:simple-diagrammer:0.0.0.2")
+    compile("com.github.ajalt:clikt:1.7.0")
 }
 
 fun ShellExec.buildBySections(format: String, wrapper: String) {
@@ -121,7 +123,7 @@ tasks.create<JavaExec>("execute") {
     classpath = java.sourceSets["main"].runtimeClasspath
     main = if (project.hasProperty("mainClass")) project.property("mainClass") as String else ""
     if (project.hasProperty("args")) {
-        args = listOf(project.property("args") as String)
+        args = (project.property("args") as String).split(" ")
     }
     standardInput = System.`in`
     standardOutput = System.out

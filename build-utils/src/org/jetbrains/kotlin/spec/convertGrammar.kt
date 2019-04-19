@@ -1,11 +1,13 @@
 package org.jetbrains.kotlin.spec
 
-import com.xenomachina.argparser.ArgParser
-import ru.spbstu.grammarConverter.*
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
+import ru.spbstu.grammarConverter.parseRules
+import ru.spbstu.grammarConverter.toMarkdown
 import java.io.File
 
 private fun convertGrammar(grammarFilePath: String, outputMarkdownFilePath: String) {
-    val z = File(grammarFilePath).absolutePath
     val grammarFile = File(grammarFilePath).inputStream()
     val outputMarkdownFile = File(outputMarkdownFilePath).outputStream()
 
@@ -17,10 +19,10 @@ private fun convertGrammar(grammarFilePath: String, outputMarkdownFilePath: Stri
     }
 }
 
-fun main(args: Array<String>) {
-    val parser = ArgParser(args)
-    val inputFilePath by parser.storing("-i", "--input", help="path to grammar file in ANTLR format (.g4)")
-    val outputFilePath by parser.storing("-o", "--output", help="path to output file in markdown format (.md)")
-
-    convertGrammar(inputFilePath, outputFilePath)
+private object Driver : CliktCommand() {
+    val inputFilePath by option("-i", "--input", help="path to grammar file in ANTLR format (.g4)").required()
+    val outputFilePath by option("-o", "--output", help="path to output file in markdown format (.md)").required()
+    override fun run() = convertGrammar(inputFilePath, outputFilePath)
 }
+
+fun main(args: Array<String>) = Driver.main(args)
