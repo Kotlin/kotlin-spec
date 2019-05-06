@@ -4,7 +4,45 @@ TODO(Unreachable code w.r.t. Nothing)
 
 ### Control flow graph
 
+We define all kinds of control-flow analysis on a classic model of the kotlin program called a control-flow graph (TODO: link?).
+A control-flow graph of a program is a graph that loosely defines all feasible paths the flow of a particular program can take during execution.
+All the control-flow graphs given in this section are *intraprocedural*, meaning that they describe the flow inside a single function, not taking function calls into account.
+It may, however, include multiple function bodies if said functions are *declared* inside each other.
+
+The following sections describe control-flow graph *fragments* associated with a particular kotlin code construct.
+These fragments are introduced using visual notation rather than relational notation to simplify the understanding of the graph structure.
+To represent intermediate values arising during computation, we use *implicit registers*, denoted `$1`, `$2`, `$3`, etc. 
+These are unique in each fragment (assigning the same register twice in the same graph may only occur in unrelated program paths) and are assumed to be unique in the whole graph, too.
+The numbers given are only notational.
+
+TODO(register reduction ($1 = $2 should be removed))
+TODO(maybe we do need phi-nodes in the end?)
+
+We use a special kind of nodes (`eval` nodes), represented in dashed lines, to introduce sub-fragments into bigger fragments.
+`eval x` here means that this node must be replaced with a whole fragment associated with `x`.
+When this replacement is performed, the value produced by `eval` is the same value that the metaregister `$result` holds in the corresponding fragment.
+All incoming edges of a fragment are connected to the incoming edges of the `eval` node, while all the outgoing edges of a fragment are connected to
+the outgoing edges of the `eval` node.
+It is important, however, that, if such edges are absent either in the fragment or near the `eval` node, they are removed from the graph.
+Sometimes we also use the `eval b` notation where `b` is not a single statement, but rather a control-flow structure body.
+The fragment for a control-flow structure body is the sequence of its statements, connected in order of appearance.
+
+For some types of analysis, it is important which boolean conditions hold on each path.
+We use special `assume` nodes to introduce these conditions.
+`assume x` means that boolean condition `x` is always `true` when program flow passes through this particular node.
+
+Some nodes are *labeled*, similarly to how statements may be labeled in kotlin.
+These are special in the sense that if a fragment mentions a particular labeled node, this node is the same as any other node with this label in the whole graph.
+This is important when building graphs representing loops.
+
 #### Expressions
+
+Simple expressions, like literals and references, do not affect the control-flow of the program in any way and are not given here.
+
+##### Function calls and operators
+
+We do not consider operator calls as something different from function calls, as these are just special types of function calls.
+Henceforth, they are not treated specially.
 
 ```kotlin
 x.f(arg1,..., argN)
@@ -79,6 +117,11 @@ f(arg1,..., argN)
               v
 ```
 
+##### Conditional expressions
+
+To simplify our notation, we consider only `if`-expressions with both branches present.
+Any `if`-statement in kotlin may be trivially turned into such an expression by replacing the missing branch with a `kotlin.Unit` object expression.
+
 ```kotlin
 if(c) t else f
 ```
@@ -117,6 +160,75 @@ if(c) t else f
                     |
                     v
 ```
+
+```kotlin
+when { 
+    c1 -> b1
+    else -> bE
+}
+```
+
+```diagram
+                    +
+                    v
+          +~~~~~~~~~+~~~~~~~~+
+          :                  :
+          :   $1 = eval c1   :
+          :                  :
+          +~~~~~~+~~~~~+~~~~~+
+                 |     |
+         +-------+     +-------+
+         v                     v
+ +-------+-------+     +-------+--------+
+ |               |     |                |
+ |   assume $1   |     |   assume !$1   |
+ |               |     |                |
+ +-------+-------+     +-------+--------+
+         |                     |
+         v                     v
++~~~~~~~~+~~~~~~~~~+  +~~~~~~~~+~~~~~~~~~+
+:                  :  :                  :
+:   $2 = eval b1   :  :   $2 = eval bE   :
+:                  :  :                  :
++~~~~~~~~+~~~~~~~~~+  +~~~~~~~+~~~~~~~~~~+
+         |                    |
+         +-------+     +------+
+                 v     v
+           +-----+-----+------+
+           |                  |
+           |   $result = $2   |
+           |                  |
+           +--------+---------+
+                    |
+                    v
+```
+
+We only consider when expressions having exactly two branches for simplicity.
+A when expression with more than two branches may be trivially desugared into a series of nested when expression as follows:
+
+```kotlin
+when { 
+    <entry1>
+    <entries...>
+    else -> bE
+}
+```
+
+is the same as
+
+```kotlin
+when { 
+    <entry1>
+    else -> {
+        when {
+            <entries...>
+            else -> bE
+        }
+    }
+}
+```
+
+##### Boolean operators
 
 ```kotlin
 x || y
@@ -319,67 +431,7 @@ try { a... } catch (e1: T1) { b1... } ... catch (eN: TN) { bN... }
                                  v
 ```
 
-```kotlin
-when { 
-    c1 -> b1
-    else -> bE
-}
-```
 
-```diagram
-                    +
-                    v
-          +~~~~~~~~~+~~~~~~~~+
-          :                  :
-          :   $1 = eval c1   :
-          :                  :
-          +~~~~~~+~~~~~+~~~~~+
-                 |     |
-         +-------+     +-------+
-         v                     v
- +-------+-------+     +-------+--------+
- |               |     |                |
- |   assume $1   |     |   assume !$1   |
- |               |     |                |
- +-------+-------+     +-------+--------+
-         |                     |
-         v                     v
-+~~~~~~~~+~~~~~~~~~+  +~~~~~~~~+~~~~~~~~~+
-:                  :  :                  :
-:   $2 = eval b1   :  :   $2 = eval bE   :
-:                  :  :                  :
-+~~~~~~~~+~~~~~~~~~+  +~~~~~~~+~~~~~~~~~~+
-         |                    |
-         +-------+     +------+
-                 v     v
-           +-----+-----+------+
-           |                  |
-           |   $result = $2   |
-           |                  |
-           +--------+---------+
-                    |
-                    v
-```
-
-```kotlin
-when { 
-    <entry1>
-    <entries...>
-    else -> bE
-}
-```
-
-```kotlin
-when { 
-    <entry1>
-    else -> {
-        when {
-            <entries...>
-            else -> bE
-        }
-    }
-}
-```
 
 ```kotlin
 a!!
@@ -564,6 +616,8 @@ continue@loop
 +~~~~~~~~~~~~~~~~~+
 ```
 
+TODO(an example of a complex expression full graph)
+
 #### Statements
 
 ```kotlin
@@ -656,3 +710,30 @@ loop@ do { b... } while(c)
 ```
 
 #### Declarations
+
+```kotlin
+var a = b
+var a by b
+val a = b
+val a by b
+```
+
+```diagram
+TODO
+```
+
+```kotlin
+fun f() { body... }
+```
+
+```diagram
+TODO
+```
+
+```kotlin
+class A() { ... }
+```
+
+```diagram
+TODO???
+```
