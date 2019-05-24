@@ -9,7 +9,7 @@ For user documentation please refer to the [Kotlin Website](https://kotlinlang.o
 
 ## Artifacts
 
-Html version of the specification is available on the [GitHub pages](http://jetbrains.github.io/kotlin-spec/).
+Html version of the specification is available on the [GitHub pages](https://kotlin.github.io/kotlin-spec/).
 
 Pdf version (full and by sections) can be downloaded from the [TeamCity builds page](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_Spec_DocsMaster).
 
