@@ -27,8 +27,8 @@ All constant literals are evaluated immediately.
 
 #### Boolean literals
 
-**_BooleanLiteral_:**  
-  ~  `true` | `false`
+:::{.paste target=grammar-rule-BooleanLiteral}
+:::
 
 Keywords `true` and `false` denote boolean literals of the same values.
 These are strong keywords which cannot be used as identifiers unless [escaped][Escaped identifiers].
@@ -36,32 +36,22 @@ Values `true` and `false` always have the type `kotlin.Boolean`.
 
 #### Integer literals
 
-**_IntegerLiteral_:**  
-  ~  _DecDigitNoZero_ {_DecDigitOrSeparator_} _DecDigit_
-      | _DecDigit_
-
-**_HexLiteral_:**  
-  ~  `0` (`x`|`X`) _HexDigit_ {_HexDigitOrSeparator_} _HexDigit_   
-      | `0` (`x`|`X`) _HexDigit_
-
-**_BinLiteral_:**  
-  ~  `0` (`b`|`B`) _BinDigit_ {_BinDigitOrSeparator_} _BinDigit_   
-      | `0` (`b`|`B`) _BinDigit_
-
-**_DecDigitNoZero_:**  
-  ~  _DecDigit_ - `0`
-
-**_DecDigitOrSeparator_:**  
-  ~  _DecDigit_ | _Underscore_
-
-**_HexDigitOrSeparator_:**  
-  ~  _HexDigit_ | _Underscore_
-
-**_BinDigitOrSeparator_:**  
-  ~  _BinDigit_ | _Underscore_
-
-**_DecDigits_:**  
-  ~  _DecDigit_ {_DecDigitOrSeparator_} _DecDigit_ | _DecDigit_
+:::{.paste target=grammar-rule-IntegerLiteral}
+:::
+:::{.paste target=grammar-rule-HexLiteral}
+:::
+:::{.paste target=grammar-rule-BinLiteral}
+:::
+:::{.paste target=grammar-rule-DecDigitNoZero}
+:::
+:::{.paste target=grammar-rule-DecDigitOrSeparator}
+:::
+:::{.paste target=grammar-rule-HexDigitOrSeparator}
+:::
+:::{.paste target=grammar-rule-BinDigitOrSeparator}
+:::
+:::{.paste target=grammar-rule-DecDigits}
+:::
 
 ##### Decimal integer literals
 
@@ -96,16 +86,12 @@ A literal without the mark has a special [integer literal type][Integer literal 
 
 #### Real literals
 
-**_RealLiteral_:**  
-  ~  _FloatLiteral_ | _DoubleLiteral_
-
-**_FloatLiteral_:**  
-  ~  _DoubleLiteral_ (`f` | `F`)
-      | _DecDigits_ (`f` | `F`)
-
-**_DoubleLiteral_:**  
-  ~  [_DecDigits_] `.` _DecDigits_ [_DoubleExponent_]
-      | _DecDigits_ _DoubleExponent_
+:::{.paste target=grammar-rule-RealLiteral}
+:::
+:::{.paste target=grammar-rule-FloatLiteral}
+:::
+:::{.paste target=grammar-rule-DoubleLiteral}
+:::
 
 A *real literal* consists of the following parts: the whole-number part, the decimal point (ASCII period character `.`), the fraction part and the exponent.
 Unlike other languages, Kotlin real literals may only be expressed in decimal numbers.
@@ -127,17 +113,14 @@ with the type suffix has type `kotlin.Float`.
 
 #### Character literals
 
-**_CharacterLiteral_:**  
-  ~  `'` (_EscapeSeq_ | _<any character except CR, LF, `'` and `\`>_) `'`
-
-**_EscapeSeq_:**  
-  ~  _UnicodeCharacterLiteral_ | _EscapedCharacter_
-
-**_UnicodeCharacterLiteral_:**  
-  ~  `\` `u` _HexDigit_ _HexDigit_ _HexDigit_ _HexDigit_
-
-**_EscapedCharacter_:**  
-  ~  `\` (`t` | `b` | `r` | `n` | `'` | `"` | `\` | `$`)
+:::{.paste target=grammar-rule-CharacterLiteral}
+:::
+:::{.paste target=grammar-rule-EscapeSeq}
+:::
+:::{.paste target=grammar-rule-UnicodeCharacterLiteral}
+:::
+:::{.paste target=grammar-rule-EscapedCharacter}
+:::
 
 A *character literal* defines a constant holding a unicode character value.
 A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character `'`), excluding newline symbols (*CR* and *LF*), the single quotation mark itself and the escaping mark (ASCII backslash character `\`).
