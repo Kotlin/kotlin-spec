@@ -1,1 +1,11 @@
-<script src="./assets/js/tests-integration.js"></script>
+<script src="./assets/js/jquery-3.4.1.min.js"></script>
+<script src="./assets/js/lodash.js"></script>
+<script src="https://unpkg.com/kotlin-playground@1"></script>
+<script src="./assets/js/helpers.js"></script>
+<script src="./assets/js/Popup.js"></script>
+<script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
+<script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
+<script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
+<script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
+<script src="./assets/js/compiler-tests-integration/handlers.js"></script>
+<script src="./assets/js/sentenceHighlighter.js"></script>
