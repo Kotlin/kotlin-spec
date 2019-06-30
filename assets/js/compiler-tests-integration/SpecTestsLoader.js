@@ -5,6 +5,7 @@ var SpecTestsLoader = new (function() {
     this.linkedSpecTestsFolder = "linked";
 
     this.paragraphSelector = [".paragraph", "DL", "UL", "OL"].join(",");
+    this.todoSelector = ["div.TODO"];
     this.sectionTagNames = ["H1", "H2", "H3", "H4", "H5"];
     this.exceptedSelectors = [".grammar-rule"].join(",");
     this.testTypes = ["pos", "neg"];
@@ -41,6 +42,7 @@ var SpecTestsLoader = new (function() {
                 break;
 
             var isParagraph = nextSibling.matches(this.paragraphSelector);
+            var isTodoBox = nextSibling.matches(this.todoSelector);
             var childParagraph = nextSibling.querySelector(".paragraph");
 
             if ((isParagraph || childParagraph) && !$(nextSibling).is(this.exceptedSelectors)) {
@@ -48,14 +50,17 @@ var SpecTestsLoader = new (function() {
                 paragraphsMap.push({
                     paragraphElement: nextParagraph,
                     sentenceCount: $(nextParagraph).find(".sentence").length
-                })
+                });
                 paragraphCounter++;
+            }
+            if (isTodoBox) {
+                nextSibling.classList.add("todo-with-tests");
             }
             nextSibling = nextSibling.nextElementSibling;
         }
 
         return paragraphsMap;
-    }
+    };
 
     this.getNestedSections = function($sectionElement) {
         var placeCurrentSectionLevel = this.sectionTagNames.indexOf($sectionElement.prop("tagName").toUpperCase());
