@@ -79,7 +79,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="./assets/js/tests-integration.js"></script>
+  <script src="./assets/js/jquery-3.4.1.min.js"></script>
+  <script src="./assets/js/lodash.js"></script>
+  <script src="https://unpkg.com/kotlin-playground@1"></script>
+  <script src="./assets/js/helpers.js"></script>
+  <script src="./assets/js/Popup.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
+  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
+  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
+  <script src="./assets/js/sentenceHighlighter.js"></script>
 </head>
 <body>
 <header>
@@ -395,63 +405,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-CR" class="grammar-tule">
+<div id="grammar-rule-CR" class="grammar-rule">
 <dl>
 <dt><strong><em>CR</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;unicode character Carriage Return U+000D&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-WS" class="grammar-tule">
+<div id="grammar-rule-WS" class="grammar-rule">
 <dl>
 <dt><strong><em>WS</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;one of the following characters: SPACE U+0020, TAB U+0009, Form Feed U+000C&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-Underscore" class="grammar-tule">
+<div id="grammar-rule-Underscore" class="grammar-rule">
 <dl>
 <dt><strong><em>Underscore</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;unicode character Low Line U+005F&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-Letter" class="grammar-tule">
+<div id="grammar-rule-Letter" class="grammar-rule">
 <dl>
 <dt><strong><em>Letter</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;any unicode character from classes Ll, Lm, Lo, Lt, Lu or Nl&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-UnicodeDigit" class="grammar-tule">
+<div id="grammar-rule-UnicodeDigit" class="grammar-rule">
 <dl>
 <dt><strong><em>UnicodeDigit</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;any unicode character from class Nd&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LineCharacter" class="grammar-tule">
+<div id="grammar-rule-LineCharacter" class="grammar-rule">
 <dl>
 <dt><strong><em>LineCharacter</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;any unicode character excluding LF and CR&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-BinaryDigit" class="grammar-tule">
+<div id="grammar-rule-BinaryDigit" class="grammar-rule">
 <dl>
 <dt><strong><em>BinaryDigit</em>:</strong></dt>
 <dd><span class="sentence"><code>'0'</code> | <code>'1'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DecimalDigit" class="grammar-tule">
+<div id="grammar-rule-DecimalDigit" class="grammar-rule">
 <dl>
 <dt><strong><em>DecimalDigit</em>:</strong></dt>
 <dd><span class="sentence"><code>'0'</code> | <code>'1'</code> | <code>'2'</code> | <code>'3'</code> | <code>'4'</code> | <code>'5'</code> | <code>'6'</code> | <code>'7'</code> | <code>'8'</code> | <code>'9'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-HexDigit" class="grammar-tule">
+<div id="grammar-rule-HexDigit" class="grammar-rule">
 <dl>
 <dt><strong><em>HexDigit</em>:</strong></dt>
 <dd><span class="sentence"><em>DecimalDigit</em><br />
@@ -491,28 +501,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 <h5 id="whitespace-and-comments">Whitespace and comments</h5>
-<div id="grammar-rule-NL" class="grammar-tule">
+<div id="grammar-rule-NL" class="grammar-rule">
 <dl>
 <dt><strong><em>NL</em>:</strong></dt>
 <dd><span class="sentence"><em>LF</em> | <em>CR</em> [<em>LF</em>]</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-ShebangLine" class="grammar-tule">
+<div id="grammar-rule-ShebangLine" class="grammar-rule">
 <dl>
 <dt><strong><em>ShebangLine</em>:</strong></dt>
 <dd><span class="sentence"><code>'#!'</code> {<em>LineCharacter</em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LineComment" class="grammar-tule">
+<div id="grammar-rule-LineComment" class="grammar-rule">
 <dl>
 <dt><strong><em>LineComment</em>:</strong></dt>
 <dd><span class="sentence"><code>'//'</code> {<em>LineCharacter</em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DelimitedComment" class="grammar-tule">
+<div id="grammar-rule-DelimitedComment" class="grammar-rule">
 <dl>
 <dt><strong><em>DelimitedComment</em>:</strong></dt>
 <dd><span class="sentence"><code>'/*'</code> {<em>DelimitedComment</em> | &lt;any character&gt;} <code>'*/'</code></span>
@@ -520,42 +530,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <h5 id="number-literals">Number literals</h5>
-<div id="grammar-rule-RealLiteral" class="grammar-tule">
+<div id="grammar-rule-RealLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>RealLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em>FloatLiteral</em> | <em>DoubleLiteral</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-FloatLiteral" class="grammar-tule">
+<div id="grammar-rule-FloatLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>FloatLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em>DoubleLiteral</em> (<code>'f'</code> | <code>'F'</code>) | <em>DecDigits</em> (<code>'f'</code> | <code>'F'</code>)</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DoubleLiteral" class="grammar-tule">
+<div id="grammar-rule-DoubleLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>DoubleLiteral</em>:</strong></dt>
 <dd><span class="sentence">[<em>DecDigits</em>] <code>'.'</code> <em>DecDigits</em> [<em>DoubleExponent</em>] | <em>DecDigits</em> <em>DoubleExponent</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LongLiteral" class="grammar-tule">
+<div id="grammar-rule-LongLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>LongLiteral</em>:</strong></dt>
 <dd><span class="sentence">(<em>IntegerLiteral</em> | <em>HexLiteral</em> | <em>BinLiteral</em>) <code>'L'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-IntegerLiteral" class="grammar-tule">
+<div id="grammar-rule-IntegerLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>IntegerLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigitNoZero</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-HexLiteral" class="grammar-tule">
+<div id="grammar-rule-HexLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>HexLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'0'</code> (<code>'x'</code>|<code>'X'</code>) <em>HexDigit</em> {<em>HexDigitOrSeparator</em>} <em>HexDigit</em><br />
@@ -563,7 +573,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-BinLiteral" class="grammar-tule">
+<div id="grammar-rule-BinLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>BinLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'0'</code> (<code>'b'</code>|<code>'B'</code>) <em>BinDigit</em> {<em>BinDigitOrSeparator</em>} <em>BinDigit</em><br />
@@ -571,49 +581,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DegDigitNoZero" class="grammar-tule">
+<div id="grammar-rule-DegDigitNoZero" class="grammar-rule">
 <dl>
 <dt><strong><em>DecDigitNoZero</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigit</em> - <code>'0'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DecDigitOrSeparator" class="grammar-tule">
+<div id="grammar-rule-DecDigitOrSeparator" class="grammar-rule">
 <dl>
 <dt><strong><em>DecDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigit</em> | <em>Underscore</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-HexDigitOrSeparator" class="grammar-tule">
+<div id="grammar-rule-HexDigitOrSeparator" class="grammar-rule">
 <dl>
 <dt><strong><em>HexDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>HexDigit</em> | <em>Underscore</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-BinDigitOrSeparator" class="grammar-tule">
+<div id="grammar-rule-BinDigitOrSeparator" class="grammar-rule">
 <dl>
 <dt><strong><em>BinDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>BinDigit</em> | <em>Underscore</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-DecDigits" class="grammar-tule">
+<div id="grammar-rule-DecDigits" class="grammar-rule">
 <dl>
 <dt><strong><em>DecDigits</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigit</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-BooleanLiteral" class="grammar-tule">
+<div id="grammar-rule-BooleanLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>BooleanLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'true'</code> | <code>'false'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-NullLiteral" class="grammar-tule">
+<div id="grammar-rule-NullLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>NullLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'null'</code></span>
@@ -621,7 +631,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <h5 id="identifiers">Identifiers</h5>
-<div id="grammar-rule-Identifier" class="grammar-tule">
+<div id="grammar-rule-Identifier" class="grammar-rule">
 <dl>
 <dt><strong><em>Identifier</em>:</strong></dt>
 <dd><span class="sentence">(<em>Letter</em> | <em>Underscore</em>) {<em>Letter</em> | <em>Underscore</em> | <em>UnicodeDigit</em>}<br />
@@ -629,28 +639,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-EscapedIdentifierCharacter" class="grammar-tule">
+<div id="grammar-rule-EscapedIdentifierCharacter" class="grammar-rule">
 <dl>
 <dt><strong><em>EscapedIdentifierCharacter</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;any character except CR, LF, <code>'`''</code>, <code>'['</code>, <code>']'</code>, <code>'&lt;'</code> or <code>'&gt;'</code>&gt;</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-IdentifierOrSoftKey" class="grammar-tule">
+<div id="grammar-rule-IdentifierOrSoftKey" class="grammar-rule">
 <dl>
 <dt><strong><em>IdentifierOrSoftKey</em>:</strong></dt>
 <dd><span class="sentence"><em>Identifier</em> | <em>SoftKeyword</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-AtIdentifier" class="grammar-tule">
+<div id="grammar-rule-AtIdentifier" class="grammar-rule">
 <dl>
 <dt><strong><em>AtIdentifier</em>:</strong></dt>
 <dd><span class="sentence"><code>'@'</code> <em>IdentifierOrSoftKey</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-IdentifierAt" class="grammar-tule">
+<div id="grammar-rule-IdentifierAt" class="grammar-rule">
 <dl>
 <dt><strong><em>IdentifierAt</em>:</strong></dt>
 <dd><span class="sentence"><em>IdentifierOrSoftKey</em> <code>'@'</code></span>
@@ -661,84 +671,84 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Syntax literals are fully defined in syntax grammar due to the complex nature of string interpolation</span></p>
 </div>
-<div id="grammar-rule-CharacterLiteral" class="grammar-tule">
+<div id="grammar-rule-CharacterLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>CharacterLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'''</code> (<em>EscapeSeq</em> | <em>&lt;any character except CR, LF, <code>'''</code> and <code>'\'</code>&gt;</em>) <code>'''</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-EscapeSeq" class="grammar-tule">
+<div id="grammar-rule-EscapeSeq" class="grammar-rule">
 <dl>
 <dt><strong><em>EscapeSeq</em>:</strong></dt>
 <dd><span class="sentence"><em>UnicodeCharacterLiteral</em> | <em>EscapedCharacter</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-UnicodeCharacterLiteral" class="grammar-tule">
+<div id="grammar-rule-UnicodeCharacterLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>UnicodeCharacterLiteral</em>:</strong></dt>
 <dd><span class="sentence"><code>'\'</code> <code>'u'</code> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-EscapedCharacter" class="grammar-tule">
+<div id="grammar-rule-EscapedCharacter" class="grammar-rule">
 <dl>
 <dt><strong><em>EscapedCharacter</em>:</strong></dt>
 <dd><span class="sentence"><code>'\'</code> (<code>'t'</code> | <code>'b'</code> | <code>'r'</code> | <code>'n'</code> | <code>'</code> | <code>'&quot;'</code> | <code>'\'</code> | <code>'$'</code>)</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-FieldIdentifier" class="grammar-tule">
+<div id="grammar-rule-FieldIdentifier" class="grammar-rule">
 <dl>
 <dt><strong><em>FieldIdentifier</em>:</strong></dt>
 <dd><span class="sentence"><code>'$'</code> <em>IdentifierOrSoftKey</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LineStrRef" class="grammar-tule">
+<div id="grammar-rule-LineStrRef" class="grammar-rule">
 <dl>
 <dt><strong><em>LineStrRef</em>:</strong></dt>
 <dd><span class="sentence"><em>FieldIdentifier</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LineStrEscapedChar" class="grammar-tule">
+<div id="grammar-rule-LineStrEscapedChar" class="grammar-rule">
 <dl>
 <dt><strong><em>LineStrEscapedChar</em>:</strong></dt>
 <dd><span class="sentence"><em>EscapedCharacter</em> | <em>UnicodeCharacterLiteral</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-LineStrExprStart" class="grammar-tule">
+<div id="grammar-rule-LineStrExprStart" class="grammar-rule">
 <dl>
 <dt><strong><em>LineStrExprStart</em>:</strong></dt>
 <dd><span class="sentence"><code>'${'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-MultiLineStringQuote" class="grammar-tule">
+<div id="grammar-rule-MultiLineStringQuote" class="grammar-rule">
 <dl>
 <dt><strong><em>MultiLineStringQuote</em>:</strong></dt>
 <dd><span class="sentence"><code>'&quot;'</code> {<code>'&quot;'</code>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-MultiLineStrRef" class="grammar-tule">
+<div id="grammar-rule-MultiLineStrRef" class="grammar-rule">
 <dl>
 <dt><strong><em>MultiLineStrRef</em>:</strong></dt>
 <dd><span class="sentence"><em>FieldIdentifier</em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-MultiLineStrText" class="grammar-tule">
+<div id="grammar-rule-MultiLineStrText" class="grammar-rule">
 <dl>
 <dt><strong><em>MultiLineStrText</em>:</strong></dt>
 <dd><span class="sentence">{&lt;any character except <code>'&quot;'</code> and <code>'$'</code>} | <code>'$'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-MultiLineStrExprStart" class="grammar-tule">
+<div id="grammar-rule-MultiLineStrExprStart" class="grammar-rule">
 <dl>
 <dt><strong><em>MultiLineStrExprStart</em>:</strong></dt>
 <dd><span class="sentence"><code>'${'</code></span>
@@ -746,7 +756,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <h5 id="misc">Misc</h5>
-<div id="grammar-rule-EOF" class="grammar-tule">
+<div id="grammar-rule-EOF" class="grammar-rule">
 <dl>
 <dt><strong><em>EOF</em>:</strong></dt>
 <dd><span class="sentence"><em>&lt;end of input&gt;</em></span>
@@ -5349,43 +5359,69 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Constant literals are expressions which describe constant values. </span><span class="sentence">Every constant literal is defined to have a single standard library type, whichever it is defined to be on current platform. </span><span class="sentence">All constant literals are evaluated immediately.</span></p>
 </div>
 <h4 id="boolean-literals">Boolean literals</h4>
+<div id="grammar-rule-BooleanLiteral-pasted-20" class="grammar-rule">
 <dl>
 <dt><strong><em>BooleanLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>true</code> | <code>false</code></span>
+<dd><span class="sentence"><code>'true'</code> | <code>'false'</code></span>
 </dd>
 </dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Keywords <code>true</code> and <code>false</code> denote boolean literals of the same values. </span><span class="sentence">These are strong keywords which cannot be used as identifiers unless [escaped][Escaped identifiers]. </span><span class="sentence">Values <code>true</code> and <code>false</code> always have the type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h4 id="integer-literals">Integer literals</h4>
+<div id="grammar-rule-IntegerLiteral-pasted-21" class="grammar-rule">
 <dl>
 <dt><strong><em>IntegerLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigitNoZero</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-HexLiteral-pasted-22" class="grammar-rule">
+<dl>
 <dt><strong><em>HexLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>0</code> (<code>x</code>|<code>X</code>) <em>HexDigit</em> {<em>HexDigitOrSeparator</em>} <em>HexDigit</em><br />
-| <code>0</code> (<code>x</code>|<code>X</code>) <em>HexDigit</em></span>
+<dd><span class="sentence"><code>'0'</code> (<code>'x'</code>|<code>'X'</code>) <em>HexDigit</em> {<em>HexDigitOrSeparator</em>} <em>HexDigit</em><br />
+| <code>'0'</code> (<code>'x'</code>|<code>'X'</code>) <em>HexDigit</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-BinLiteral-pasted-23" class="grammar-rule">
+<dl>
 <dt><strong><em>BinLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>0</code> (<code>b</code>|<code>B</code>) <em>BinDigit</em> {<em>BinDigitOrSeparator</em>} <em>BinDigit</em><br />
-| <code>0</code> (<code>b</code>|<code>B</code>) <em>BinDigit</em></span>
+<dd><span class="sentence"><code>'0'</code> (<code>'b'</code>|<code>'B'</code>) <em>BinDigit</em> {<em>BinDigitOrSeparator</em>} <em>BinDigit</em><br />
+| <code>'0'</code> (<code>'b'</code>|<code>'B'</code>) <em>BinDigit</em></span>
 </dd>
-<dt><strong><em>DecDigitNoZero</em>:</strong></dt>
-<dd><span class="sentence"><em>DecDigit</em> - <code>0</code></span>
-</dd>
+</dl>
+</div>
+<strong>Id grammar-rule-DecDigitNoZero not found</strong>
+<div id="grammar-rule-DecDigitOrSeparator-pasted-24" class="grammar-rule">
+<dl>
 <dt><strong><em>DecDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigit</em> | <em>Underscore</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-HexDigitOrSeparator-pasted-25" class="grammar-rule">
+<dl>
 <dt><strong><em>HexDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>HexDigit</em> | <em>Underscore</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-BinDigitOrSeparator-pasted-26" class="grammar-rule">
+<dl>
 <dt><strong><em>BinDigitOrSeparator</em>:</strong></dt>
 <dd><span class="sentence"><em>BinDigit</em> | <em>Underscore</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigits-pasted-27" class="grammar-rule">
+<dl>
 <dt><strong><em>DecDigits</em>:</strong></dt>
 <dd><span class="sentence"><em>DecDigit</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
 </dd>
 </dl>
+</div>
 <h5 id="decimal-integer-literals">Decimal integer literals</h5>
 <div class="paragraph">
 <p><span class="sentence">A sequence of decimal digit symbols (<code>0</code> though <code>9</code>) is a decimal integer literal. </span><span class="sentence">Digits may be separated by an underscore symbol, but no underscore can be placed before the first digit or after the last one.</span></p>
@@ -5418,17 +5454,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="real-literals">Real literals</h4>
+<div id="grammar-rule-RealLiteral-pasted-28" class="grammar-rule">
 <dl>
 <dt><strong><em>RealLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em>FloatLiteral</em> | <em>DoubleLiteral</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-FloatLiteral-pasted-29" class="grammar-rule">
+<dl>
 <dt><strong><em>FloatLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em>DoubleLiteral</em> (<code>f</code> | <code>F</code>) | <em>DecDigits</em> (<code>f</code> | <code>F</code>)</span>
-</dd>
-<dt><strong><em>DoubleLiteral</em>:</strong></dt>
-<dd><span class="sentence">[<em>DecDigits</em>] <code>.</code> <em>DecDigits</em> [<em>DoubleExponent</em>] | <em>DecDigits</em> <em>DoubleExponent</em></span>
+<dd><span class="sentence"><em>DoubleLiteral</em> (<code>'f'</code> | <code>'F'</code>) | <em>DecDigits</em> (<code>'f'</code> | <code>'F'</code>)</span>
 </dd>
 </dl>
+</div>
+<div id="grammar-rule-DoubleLiteral-pasted-30" class="grammar-rule">
+<dl>
+<dt><strong><em>DoubleLiteral</em>:</strong></dt>
+<dd><span class="sentence">[<em>DecDigits</em>] <code>'.'</code> <em>DecDigits</em> [<em>DoubleExponent</em>] | <em>DecDigits</em> <em>DoubleExponent</em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">A <em>real literal</em> consists of the following parts: the whole-number part, the decimal point (ASCII period character <code>.</code>), the fraction part and the exponent. </span><span class="sentence">Unlike other languages, Kotlin real literals may only be expressed in decimal numbers. </span><span class="sentence">A real literal may also be followed by a type suffix (<code>f</code> or <code>F</code>).</span></p>
 </div>
@@ -5450,20 +5496,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="character-literals">Character literals</h4>
+<div id="grammar-rule-CharacterLiteral-pasted-31" class="grammar-rule">
 <dl>
 <dt><strong><em>CharacterLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'</code> (<em>EscapeSeq</em> | <em>&lt;any character except CR, LF, <code>'</code> and <code>\</code>&gt;</em>) <code>'</code></span>
+<dd><span class="sentence"><code>'''</code> (<em>EscapeSeq</em> | <em>&lt;any character except CR, LF, <code>'''</code> and <code>'\'</code>&gt;</em>) <code>'''</code></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-EscapeSeq-pasted-32" class="grammar-rule">
+<dl>
 <dt><strong><em>EscapeSeq</em>:</strong></dt>
 <dd><span class="sentence"><em>UnicodeCharacterLiteral</em> | <em>EscapedCharacter</em></span>
 </dd>
+</dl>
+</div>
+<div id="grammar-rule-UnicodeCharacterLiteral-pasted-33" class="grammar-rule">
+<dl>
 <dt><strong><em>UnicodeCharacterLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>\</code> <code>u</code> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em></span>
-</dd>
-<dt><strong><em>EscapedCharacter</em>:</strong></dt>
-<dd><span class="sentence"><code>\</code> (<code>t</code> | <code>b</code> | <code>r</code> | <code>n</code> | <code>'</code> | <code>&quot;</code> | <code>\</code> | <code>$</code>)</span>
+<dd><span class="sentence"><code>'\'</code> <code>'u'</code> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em></span>
 </dd>
 </dl>
+</div>
+<div id="grammar-rule-EscapedCharacter-pasted-34" class="grammar-rule">
+<dl>
+<dt><strong><em>EscapedCharacter</em>:</strong></dt>
+<dd><span class="sentence"><code>'\'</code> (<code>'t'</code> | <code>'b'</code> | <code>'r'</code> | <code>'n'</code> | <code>'</code> | <code>'&quot;'</code> | <code>'\'</code> | <code>'$'</code>)</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">A <em>character literal</em> defines a constant holding a unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
 </div>
@@ -5505,14 +5565,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="try-expression">Try-expression</h3>
-<div id="grammar-rule-tryExpression-pasted-20" class="grammar-rule">
+<div id="grammar-rule-tryExpression-pasted-35" class="grammar-rule">
 <dl>
 <dt><strong><em>tryExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'try'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-block">block</a></em> ((({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-catchBlock">catchBlock</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-catchBlock">catchBlock</a></em>}) [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-finallyBlock">finallyBlock</a></em>]) | ({<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-finallyBlock">finallyBlock</a></em>))</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-catchBlock-pasted-21" class="grammar-rule">
+<div id="grammar-rule-catchBlock-pasted-36" class="grammar-rule">
 <dl>
 <dt><strong><em>catchBlock</em>:</strong></dt>
 <dd><span class="sentence"><code>'catch'</code><br />
@@ -5528,7 +5588,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-finallyBlock-pasted-22" class="grammar-rule">
+<div id="grammar-rule-finallyBlock-pasted-37" class="grammar-rule">
 <dl>
 <dt><strong><em>finallyBlock</em>:</strong></dt>
 <dd><span class="sentence"><code>'finally'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-block">block</a></em></span>
@@ -5571,7 +5631,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="conditional-expression">Conditional expression</h3>
-<div id="grammar-rule-ifExpression-pasted-23" class="grammar-rule">
+<div id="grammar-rule-ifExpression-pasted-38" class="grammar-rule">
 <dl>
 <dt><strong><em>ifExpression</em>:</strong></dt>
 <dd><span class="sentence">(<code>'if'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> | <code>';'</code>))<br />
@@ -5608,7 +5668,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="when-expression">When expression</h3>
-<div id="grammar-rule-whenExpression-pasted-24" class="grammar-rule">
+<div id="grammar-rule-whenExpression-pasted-39" class="grammar-rule">
 <dl>
 <dt><strong><em>whenExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'when'</code><br />
@@ -5623,7 +5683,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-whenEntry-pasted-25" class="grammar-rule">
+<div id="grammar-rule-whenEntry-pasted-40" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
 <dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
@@ -5631,7 +5691,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-whenCondition-pasted-26" class="grammar-rule">
+<div id="grammar-rule-whenCondition-pasted-41" class="grammar-rule">
 <dl>
 <dt><strong><em>whenCondition</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-expression">expression</a></em><br />
@@ -5640,14 +5700,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-rangeTest-pasted-27" class="grammar-rule">
+<div id="grammar-rule-rangeTest-pasted-42" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeTest</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-inOperator">inOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-typeTest-pasted-28" class="grammar-rule">
+<div id="grammar-rule-typeTest-pasted-43" class="grammar-rule">
 <dl>
 <dt><strong><em>typeTest</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-isOperator">isOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em></span>
@@ -5719,7 +5779,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="logical-disjunction-expression">Logical disjunction expression</h3>
-<div id="grammar-rule-disjunction-pasted-29" class="grammar-rule">
+<div id="grammar-rule-disjunction-pasted-44" class="grammar-rule">
 <dl>
 <dt><strong><em>disjunction</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-conjunction">conjunction</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'||'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-conjunction">conjunction</a></em>}</span>
@@ -5738,7 +5798,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="logical-conjunction-expression">Logical conjunction expression</h3>
-<div id="grammar-rule-conjunction-pasted-30" class="grammar-rule">
+<div id="grammar-rule-conjunction-pasted-45" class="grammar-rule">
 <dl>
 <dt><strong><em>conjunction</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-equality">equality</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&amp;&amp;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-equality">equality</a></em>}</span>
@@ -5752,14 +5812,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Both operands of a logical conjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="equality-expressions">Equality expressions</h3>
-<div id="grammar-rule-equality-pasted-31" class="grammar-rule">
+<div id="grammar-rule-equality-pasted-46" class="grammar-rule">
 <dl>
 <dt><strong><em>equality</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-comparison">comparison</a></em> {<em><a href="#grammar-rule-equalityOperator">equalityOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-comparison">comparison</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-equalityOperator-pasted-32" class="grammar-rule">
+<div id="grammar-rule-equalityOperator-pasted-47" class="grammar-rule">
 <dl>
 <dt><strong><em>equalityOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'!='</code><br />
@@ -5804,14 +5864,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code>. </span><span class="sentence">If the corresponding operator function <code>equals</code> has a different return type, it is a compile-time error.</span></p>
 </div>
 <h3 id="comparison-expressions">Comparison expressions</h3>
-<div id="grammar-rule-comparison-pasted-33" class="grammar-rule">
+<div id="grammar-rule-comparison-pasted-48" class="grammar-rule">
 <dl>
 <dt><strong><em>comparison</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-infixOperation">infixOperation</a></em> [<em><a href="#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-infixOperation">infixOperation</a></em>]</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-comparisonOperator-pasted-34" class="grammar-rule">
+<div id="grammar-rule-comparisonOperator-pasted-49" class="grammar-rule">
 <dl>
 <dt><strong><em>comparisonOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'&lt;'</code><br />
@@ -5840,14 +5900,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">All comparison expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="type-checking-and-containment-checking-expressions">Type-checking and containment-checking expressions</h3>
-<div id="grammar-rule-infixOperation-pasted-35" class="grammar-rule">
+<div id="grammar-rule-infixOperation-pasted-50" class="grammar-rule">
 <dl>
 <dt><strong><em>infixOperation</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-elvisExpression">elvisExpression</a></em> {(<em><a href="#grammar-rule-inOperator">inOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-elvisExpression">elvisExpression</a></em>) | (<em><a href="#grammar-rule-isOperator">isOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>)}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-inOperator-pasted-36" class="grammar-rule">
+<div id="grammar-rule-inOperator-pasted-51" class="grammar-rule">
 <dl>
 <dt><strong><em>inOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'in'</code><br />
@@ -5855,7 +5915,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-isOperator-pasted-37" class="grammar-rule">
+<div id="grammar-rule-isOperator-pasted-52" class="grammar-rule">
 <dl>
 <dt><strong><em>isOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'is'</code><br />
@@ -5900,7 +5960,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The <code>contains</code> function must have a return type <code>kotlin.Boolean</code>, otherwise it is a compile-time error. </span><span class="sentence">Containment-checking expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="elvis-operator-expression">Elvis operator expression</h3>
-<div id="grammar-rule-elvisExpression-pasted-38" class="grammar-rule">
+<div id="grammar-rule-elvisExpression-pasted-53" class="grammar-rule">
 <dl>
 <dt><strong><em>elvisExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-infixFunctionCall">infixFunctionCall</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-elvis">elvis</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-infixFunctionCall">infixFunctionCall</a></em>}</span>
@@ -5922,7 +5982,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="range-expression">Range expression</h3>
-<div id="grammar-rule-rangeExpression-pasted-39" class="grammar-rule">
+<div id="grammar-rule-rangeExpression-pasted-54" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
@@ -5942,14 +6002,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of this function is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding <code>rangeTo</code> overload variant.</span></p>
 </div>
 <h3 id="additive-expression">Additive expression</h3>
-<div id="grammar-rule-additiveExpression-pasted-40" class="grammar-rule">
+<div id="grammar-rule-additiveExpression-pasted-55" class="grammar-rule">
 <dl>
 <dt><strong><em>additiveExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em> {<em><a href="#grammar-rule-additiveOperator">additiveOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-additiveOperator-pasted-41" class="grammar-rule">
+<div id="grammar-rule-additiveOperator-pasted-56" class="grammar-rule">
 <dl>
 <dt><strong><em>additiveOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'+'</code><br />
@@ -5971,14 +6031,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">An additive expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="multiplicative-expression">Multiplicative expression</h3>
-<div id="grammar-rule-multiplicativeExpression-pasted-42" class="grammar-rule">
+<div id="grammar-rule-multiplicativeExpression-pasted-57" class="grammar-rule">
 <dl>
 <dt><strong><em>multiplicativeExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-asExpression">asExpression</a></em> {<em><a href="#grammar-rule-multiplicativeOperator">multiplicativeOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-asExpression">asExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiplicativeOperator-pasted-43" class="grammar-rule">
+<div id="grammar-rule-multiplicativeOperator-pasted-58" class="grammar-rule">
 <dl>
 <dt><strong><em>multiplicativeOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'*'</code><br />
@@ -6007,14 +6067,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="cast-expression">Cast expression</h3>
-<div id="grammar-rule-asExpression-pasted-44" class="grammar-rule">
+<div id="grammar-rule-asExpression-pasted-59" class="grammar-rule">
 <dl>
 <dt><strong><em>asExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-asOperator">asOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>]</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-asOperator-pasted-45" class="grammar-rule">
+<div id="grammar-rule-asOperator-pasted-60" class="grammar-rule">
 <dl>
 <dt><strong><em>asOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'as'</code><br />
@@ -6058,14 +6118,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="prefix-expressions">Prefix expressions</h3>
-<div id="grammar-rule-prefixUnaryExpression-pasted-46" class="grammar-rule">
+<div id="grammar-rule-prefixUnaryExpression-pasted-61" class="grammar-rule">
 <dl>
 <dt><strong><em>prefixUnaryExpression</em>:</strong></dt>
 <dd><span class="sentence">{<em><a href="#grammar-rule-unaryPrefix">unaryPrefix</a></em>} <em><a href="#grammar-rule-postfixUnaryExpression">postfixUnaryExpression</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-unaryPrefix-pasted-47" class="grammar-rule">
+<div id="grammar-rule-unaryPrefix-pasted-62" class="grammar-rule">
 <dl>
 <dt><strong><em>unaryPrefix</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em><br />
@@ -6074,7 +6134,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-prefixUnaryOperator-pasted-48" class="grammar-rule">
+<div id="grammar-rule-prefixUnaryOperator-pasted-63" class="grammar-rule">
 <dl>
 <dt><strong><em>prefixUnaryOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'++'</code><br />
@@ -6166,7 +6226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">No additional restrictions apply.</span></p>
 </div>
 <h3 id="postfix-operator-expressions">Postfix operator expressions</h3>
-<div id="grammar-rule-postfixUnaryExpression-pasted-49" class="grammar-rule">
+<div id="grammar-rule-postfixUnaryExpression-pasted-64" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em><br />
@@ -6174,7 +6234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-postfixUnarySuffix-pasted-50" class="grammar-rule">
+<div id="grammar-rule-postfixUnarySuffix-pasted-65" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
@@ -6185,7 +6245,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-postfixUnaryOperator-pasted-51" class="grammar-rule">
+<div id="grammar-rule-postfixUnaryOperator-pasted-66" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnaryOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'++'</code><br />
@@ -6266,7 +6326,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="indexing-expressions">Indexing expressions</h3>
-<div id="grammar-rule-postfixUnaryExpression-pasted-52" class="grammar-rule">
+<div id="grammar-rule-postfixUnaryExpression-pasted-67" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em><br />
@@ -6274,7 +6334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-postfixUnarySuffix-pasted-53" class="grammar-rule">
+<div id="grammar-rule-postfixUnarySuffix-pasted-68" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
@@ -6285,7 +6345,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-indexingSuffix-pasted-54" class="grammar-rule">
+<div id="grammar-rule-indexingSuffix-pasted-69" class="grammar-rule">
 <dl>
 <dt><strong><em>indexingSuffix</em>:</strong></dt>
 <dd><span class="sentence"><code>'['</code><br />
@@ -6313,7 +6373,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Indexing expressions are [assignable][Assignable expressions]. </span><span class="sentence">For a corresponding assignment form, see [indexing assignment][Indexing assignment].</span></p>
 </div>
 <h3 id="call-and-property-access-expressions">Call and property access expressions</h3>
-<div id="grammar-rule-postfixUnaryExpression-pasted-55" class="grammar-rule">
+<div id="grammar-rule-postfixUnaryExpression-pasted-70" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em><br />
@@ -6321,7 +6381,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-postfixUnarySuffix-pasted-56" class="grammar-rule">
+<div id="grammar-rule-postfixUnarySuffix-pasted-71" class="grammar-rule">
 <dl>
 <dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
@@ -6332,14 +6392,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-navigationSuffix-pasted-57" class="grammar-rule">
+<div id="grammar-rule-navigationSuffix-pasted-72" class="grammar-rule">
 <dl>
 <dt><strong><em>navigationSuffix</em>:</strong></dt>
 <dd><span class="sentence">{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-memberAccessOperator">memberAccessOperator</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} (<em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> | <em><a href="#grammar-rule-parenthesizedExpression">parenthesizedExpression</a></em> | <code>'class'</code>)</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-callSuffix-pasted-58" class="grammar-rule">
+<div id="grammar-rule-callSuffix-pasted-73" class="grammar-rule">
 <dl>
 <dt><strong><em>callSuffix</em>:</strong></dt>
 <dd><span class="sentence">([<em><a href="#grammar-rule-typeArguments">typeArguments</a></em>] [<em><a href="#grammar-rule-valueArguments">valueArguments</a></em>] <em><a href="#grammar-rule-annotatedLambda">annotatedLambda</a></em>)<br />
@@ -6347,14 +6407,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-annotatedLambda-pasted-59" class="grammar-rule">
+<div id="grammar-rule-annotatedLambda-pasted-74" class="grammar-rule">
 <dl>
 <dt><strong><em>annotatedLambda</em>:</strong></dt>
 <dd><span class="sentence">{<em><a href="#grammar-rule-annotation">annotation</a></em>} [<em><a href="#grammar-rule-label">label</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-lambdaLiteral">lambdaLiteral</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-valueArguments-pasted-60" class="grammar-rule">
+<div id="grammar-rule-valueArguments-pasted-75" class="grammar-rule">
 <dl>
 <dt><strong><em>valueArguments</em>:</strong></dt>
 <dd><span class="sentence">(<code>'('</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
@@ -6362,7 +6422,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-typeArguments-pasted-61" class="grammar-rule">
+<div id="grammar-rule-typeArguments-pasted-76" class="grammar-rule">
 <dl>
 <dt><strong><em>typeArguments</em>:</strong></dt>
 <dd><span class="sentence"><code>'&lt;'</code><br />
@@ -6374,7 +6434,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-typeProjection-pasted-62" class="grammar-rule">
+<div id="grammar-rule-typeProjection-pasted-77" class="grammar-rule">
 <dl>
 <dt><strong><em>typeProjection</em>:</strong></dt>
 <dd><span class="sentence">([<em><a href="#grammar-rule-typeProjectionModifiers">typeProjectionModifiers</a></em>] <em><a href="#grammar-rule-type">type</a></em>)<br />
@@ -6382,14 +6442,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-typeProjectionModifiers-pasted-63" class="grammar-rule">
+<div id="grammar-rule-typeProjectionModifiers-pasted-78" class="grammar-rule">
 <dl>
 <dt><strong><em>typeProjectionModifiers</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em> {<em><a href="#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-memberAccessOperator-pasted-64" class="grammar-rule">
+<div id="grammar-rule-memberAccessOperator-pasted-79" class="grammar-rule">
 <dl>
 <dt><strong><em>memberAccessOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'.'</code><br />
@@ -6516,7 +6576,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="anonymous-function-declarations">Anonymous function declarations</h4>
-<div id="grammar-rule-anonymousFunction-pasted-65" class="grammar-rule">
+<div id="grammar-rule-anonymousFunction-pasted-80" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
 <dd><span class="sentence"><code>'fun'</code><br />
@@ -6550,7 +6610,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The type of an anonymous function declaration is the function type constructed similarly to a <a href="#function-declaration">named function declaration</a>.</span></p>
 </div>
 <h4 id="lambda-literals">Lambda literals</h4>
-<div id="grammar-rule-lambdaLiteral-pasted-66" class="grammar-rule">
+<div id="grammar-rule-lambdaLiteral-pasted-81" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaLiteral</em>:</strong></dt>
 <dd><span class="sentence">(<code>'{'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-statements">statements</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'}'</code>)<br />
@@ -6558,14 +6618,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lambdaParameters-pasted-67" class="grammar-rule">
+<div id="grammar-rule-lambdaParameters-pasted-82" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameters</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lambdaParameter-pasted-68" class="grammar-rule">
+<div id="grammar-rule-lambdaParameter-pasted-83" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameter</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
@@ -6618,7 +6678,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="object-literals">Object literals</h3>
-<div id="grammar-rule-objectLiteral-pasted-69" class="grammar-rule">
+<div id="grammar-rule-objectLiteral-pasted-84" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
 <dd><span class="sentence">(<code>'object'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>)<br />
@@ -6673,7 +6733,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 }</code></pre>
 </blockquote>
 <h3 id="this-expressions">This-expressions</h3>
-<div id="grammar-rule-thisExpression-pasted-70" class="grammar-rule">
+<div id="grammar-rule-thisExpression-pasted-85" class="grammar-rule">
 <dl>
 <dt><strong><em>thisExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'this'</code><br />
@@ -6693,7 +6753,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">Any other form of this-expression is illegal and must be a compile-time error.</span></p>
 </div>
 <h3 id="super-forms">Super-forms</h3>
-<div id="grammar-rule-superExpression-pasted-71" class="grammar-rule">
+<div id="grammar-rule-superExpression-pasted-86" class="grammar-rule">
 <dl>
 <dt><strong><em>superExpression</em>:</strong></dt>
 <dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
@@ -6713,7 +6773,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 </div>
 </div>
 <h3 id="jump-expressions">Jump expressions</h3>
-<div id="grammar-rule-jumpExpression-pasted-72" class="grammar-rule">
+<div id="grammar-rule-jumpExpression-pasted-87" class="grammar-rule">
 <dl>
 <dt><strong><em>jumpExpression</em>:</strong></dt>
 <dd><span class="sentence">(<code>'throw'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)<br />
@@ -6798,7 +6858,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 </div>
 </blockquote>
 <h3 id="string-interpolation-expressions">String interpolation expressions</h3>
-<div id="grammar-rule-stringLiteral-pasted-73" class="grammar-rule">
+<div id="grammar-rule-stringLiteral-pasted-88" class="grammar-rule">
 <dl>
 <dt><strong><em>stringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-lineStringLiteral">lineStringLiteral</a></em><br />
@@ -6806,21 +6866,21 @@ M().test2().bar() // Error: Unresolved reference: bar
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringLiteral-pasted-74" class="grammar-rule">
+<div id="grammar-rule-lineStringLiteral-pasted-89" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringLiteral-pasted-75" class="grammar-rule">
+<div id="grammar-rule-multiLineStringLiteral-pasted-90" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringContent-pasted-76" class="grammar-rule">
+<div id="grammar-rule-lineStringContent-pasted-91" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-LineStrText">LineStrText</a></em><br />
@@ -6829,14 +6889,14 @@ M().test2().bar() // Error: Unresolved reference: bar
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringExpression-pasted-77" class="grammar-rule">
+<div id="grammar-rule-lineStringExpression-pasted-92" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringContent-pasted-78" class="grammar-rule">
+<div id="grammar-rule-multiLineStringContent-pasted-93" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
@@ -6845,7 +6905,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringExpression-pasted-79" class="grammar-rule">
+<div id="grammar-rule-multiLineStringExpression-pasted-94" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />

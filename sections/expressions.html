@@ -79,7 +79,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="../assets/js/tests-integration.js"></script>
+  <script src="./assets/js/jquery-3.4.1.min.js"></script>
+  <script src="./assets/js/lodash.js"></script>
+  <script src="https://unpkg.com/kotlin-playground@1"></script>
+  <script src="./assets/js/helpers.js"></script>
+  <script src="./assets/js/Popup.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
+  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
+  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
+  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
+  <script src="./assets/js/sentenceHighlighter.js"></script>
 </head>
 <body>
 
@@ -124,43 +134,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Constant literals are expressions which describe constant values. </span><span class="sentence">Every constant literal is defined to have a single standard library type, whichever it is defined to be on current platform. </span><span class="sentence">All constant literals are evaluated immediately.</span></p>
 </div>
 <h4 id="boolean-literals">Boolean literals</h4>
-<dl>
-<dt><strong><em>BooleanLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>true</code> | <code>false</code></span>
-</dd>
-</dl>
+<strong>Id grammar-rule-BooleanLiteral not found</strong>
 <div class="paragraph">
 <p><span class="sentence">Keywords <code>true</code> and <code>false</code> denote boolean literals of the same values. </span><span class="sentence">These are strong keywords which cannot be used as identifiers unless [escaped][Escaped identifiers]. </span><span class="sentence">Values <code>true</code> and <code>false</code> always have the type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h4 id="integer-literals">Integer literals</h4>
-<dl>
-<dt><strong><em>IntegerLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em>DecDigitNoZero</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
-</dd>
-<dt><strong><em>HexLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>0</code> (<code>x</code>|<code>X</code>) <em>HexDigit</em> {<em>HexDigitOrSeparator</em>} <em>HexDigit</em><br />
-| <code>0</code> (<code>x</code>|<code>X</code>) <em>HexDigit</em></span>
-</dd>
-<dt><strong><em>BinLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>0</code> (<code>b</code>|<code>B</code>) <em>BinDigit</em> {<em>BinDigitOrSeparator</em>} <em>BinDigit</em><br />
-| <code>0</code> (<code>b</code>|<code>B</code>) <em>BinDigit</em></span>
-</dd>
-<dt><strong><em>DecDigitNoZero</em>:</strong></dt>
-<dd><span class="sentence"><em>DecDigit</em> - <code>0</code></span>
-</dd>
-<dt><strong><em>DecDigitOrSeparator</em>:</strong></dt>
-<dd><span class="sentence"><em>DecDigit</em> | <em>Underscore</em></span>
-</dd>
-<dt><strong><em>HexDigitOrSeparator</em>:</strong></dt>
-<dd><span class="sentence"><em>HexDigit</em> | <em>Underscore</em></span>
-</dd>
-<dt><strong><em>BinDigitOrSeparator</em>:</strong></dt>
-<dd><span class="sentence"><em>BinDigit</em> | <em>Underscore</em></span>
-</dd>
-<dt><strong><em>DecDigits</em>:</strong></dt>
-<dd><span class="sentence"><em>DecDigit</em> {<em>DecDigitOrSeparator</em>} <em>DecDigit</em> | <em>DecDigit</em></span>
-</dd>
-</dl>
+<strong>Id grammar-rule-IntegerLiteral not found</strong>
+<strong>Id grammar-rule-HexLiteral not found</strong>
+<strong>Id grammar-rule-BinLiteral not found</strong>
+<strong>Id grammar-rule-DecDigitNoZero not found</strong>
+<strong>Id grammar-rule-DecDigitOrSeparator not found</strong>
+<strong>Id grammar-rule-HexDigitOrSeparator not found</strong>
+<strong>Id grammar-rule-BinDigitOrSeparator not found</strong>
+<strong>Id grammar-rule-DecDigits not found</strong>
 <h5 id="decimal-integer-literals">Decimal integer literals</h5>
 <div class="paragraph">
 <p><span class="sentence">A sequence of decimal digit symbols (<code>0</code> though <code>9</code>) is a decimal integer literal. </span><span class="sentence">Digits may be separated by an underscore symbol, but no underscore can be placed before the first digit or after the last one.</span></p>
@@ -193,17 +179,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="real-literals">Real literals</h4>
-<dl>
-<dt><strong><em>RealLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em>FloatLiteral</em> | <em>DoubleLiteral</em></span>
-</dd>
-<dt><strong><em>FloatLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em>DoubleLiteral</em> (<code>f</code> | <code>F</code>) | <em>DecDigits</em> (<code>f</code> | <code>F</code>)</span>
-</dd>
-<dt><strong><em>DoubleLiteral</em>:</strong></dt>
-<dd><span class="sentence">[<em>DecDigits</em>] <code>.</code> <em>DecDigits</em> [<em>DoubleExponent</em>] | <em>DecDigits</em> <em>DoubleExponent</em></span>
-</dd>
-</dl>
+<strong>Id grammar-rule-RealLiteral not found</strong>
+<strong>Id grammar-rule-FloatLiteral not found</strong>
+<strong>Id grammar-rule-DoubleLiteral not found</strong>
 <div class="paragraph">
 <p><span class="sentence">A <em>real literal</em> consists of the following parts: the whole-number part, the decimal point (ASCII period character <code>.</code>), the fraction part and the exponent. </span><span class="sentence">Unlike other languages, Kotlin real literals may only be expressed in decimal numbers. </span><span class="sentence">A real literal may also be followed by a type suffix (<code>f</code> or <code>F</code>).</span></p>
 </div>
@@ -225,20 +203,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="character-literals">Character literals</h4>
-<dl>
-<dt><strong><em>CharacterLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'</code> (<em>EscapeSeq</em> | <em>&lt;any character except CR, LF, <code>'</code> and <code>\</code>&gt;</em>) <code>'</code></span>
-</dd>
-<dt><strong><em>EscapeSeq</em>:</strong></dt>
-<dd><span class="sentence"><em>UnicodeCharacterLiteral</em> | <em>EscapedCharacter</em></span>
-</dd>
-<dt><strong><em>UnicodeCharacterLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>\</code> <code>u</code> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em> <em>HexDigit</em></span>
-</dd>
-<dt><strong><em>EscapedCharacter</em>:</strong></dt>
-<dd><span class="sentence"><code>\</code> (<code>t</code> | <code>b</code> | <code>r</code> | <code>n</code> | <code>'</code> | <code>&quot;</code> | <code>\</code> | <code>$</code>)</span>
-</dd>
-</dl>
+<strong>Id grammar-rule-CharacterLiteral not found</strong>
+<strong>Id grammar-rule-EscapeSeq not found</strong>
+<strong>Id grammar-rule-UnicodeCharacterLiteral not found</strong>
+<strong>Id grammar-rule-EscapedCharacter not found</strong>
 <div class="paragraph">
 <p><span class="sentence">A <em>character literal</em> defines a constant holding a unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
 </div>
