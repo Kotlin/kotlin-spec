@@ -189,12 +189,103 @@ function showCoverage(specTestsMap) {
     })
 }
 
-window.addEventListener("DOMContentLoaded", function() {
+$(document).ready(function () {
     if (location.hash)
         highlightSentence(location.hash.split(':'));
+
+    $("h3, h4, h5").each(function() {
+        var $this = $(this);
+        $this.before(
+            '<a href="#" data-id="' + $this.attr("id") + '" data-type="' + $this.prop("tagName").toLowerCase() + '" class="load-tests-info" title="Show tests coverage"><img src="./assets/images/test.png" />'
+        );
+    })
 
     if (getQueryParam("mode") === "tests_linking") {
         loadJSON(testInfoMapPath, showCoverage);
         document.body.classList.add("tests-linking");
     }
-});
+})
+
+String.format = function() {
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {
+        var reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i + 1]);
+    }
+    return s;
+}
+
+var testCasePatterns = {
+    TEST_CASE_CODE_REGEX: "(?{1}[\s\S]*?)",
+    testCaseInfoElementsRegex: "(?{1}{2}${SpecTestCaseInfoElementType.TESTCASE_NUMBER.name.withSpaces()}:{3}*?\n)",
+    testCaseInfoRegex: "$TEST_CASE_CODE_REGEX(?<{1}>(?:$directiveRegex)|$)",
+    testCaseInfoSingleLineRegex:
+        SINGLE_LINE_COMMENT_REGEX.format(
+            testCaseInfoElementsRegex.format("infoElementsSL", "", "\s*.")
+        ) + testCaseInfoRegex.format("codeSL", "nextDirectiveSL"),
+    testCaseInfoMultilineRegex =
+    MULTILINE_COMMENT_REGEX.format(
+        testCaseInfoElementsRegex.format("infoElementsML", " $ASTERISK_REGEX ", "[\s\S]")
+    ) + testCaseInfoRegex.format("codeML", "nextDirectiveML"),
+    testCaseInfoPattern: "(?:$testCaseInfoSingleLineRegex)|(?:$testCaseInfoMultilineRegex)",
+    testCaseNumberPattern: "([1-9]\d*)(,\s*[1-9]\d*)*"
+}
+
+function parseTest(data) {
+    var matcher = testCaseInfoPattern.matcher(fileContent);
+    while (matcher.find(startFind)) {
+        var nextDirective = matcher.group("nextDirectiveSL") ?: matcher.group("nextDirectiveML");
+        var range = matcher.start()..matcher.end() - nextDirective.length;
+        var code = matcher.group("codeSL") ?: matcher.group("codeML");
+    }
+}
+
+$(document.body).on("click", ".load-tests-info", function () {
+    var $this = $(this);
+    var path = [$this.prevAll('h2').first().attr("id")];
+
+    if ($this.data("type") == "h4" || $this.data("type") == "h5") {
+        path.push($this.prevAll('h3').first().attr("id"));
+    }
+    if ($this.data("type") == "h5") {
+        path.push($this.prevAll('h4').first().attr("id"));
+    }
+    var currentSection = $this.data("id");
+    var pathAsString = path.join("/");
+
+    // var tryQ = function (paragraph, type, sentense, number) {
+    //     $.get({
+    //         url: 'https://raw.githubusercontent.com/JetBrains/kotlin/spec-tests-draft/compiler/tests-spec/testData/diagnostics/linked/' + pathAsString + '/p-' + paragraph + '/' + type + '/' + sentense + '.' + number + '.kt',
+    //         success: function (data) {
+    //             console.log(data);
+    //         }
+    //     })
+    // }
+    //
+    // tryQ(1, "pos", 1, 1);
+
+    $.get({
+        url: "https://api.github.com/repos/JetBrains/Kotlin/contents/compiler/tests-spec/testData/diagnostics/linked/" + pathAsString + "?ref=spec-tests-draft",
+        success: function (data) {
+            var url = _.result(_.find(data, function(obj) {
+                return obj.name === currentSection;
+            }), 'git_url');
+            $.get({
+                url: url + "?recursive=1",
+                success: function (data) {
+                    data.tree.forEach(function (element) {
+                        if (RegExp('^p-[1-9]\d*\/(pos|neg)\/[1-9]\d*\.[1-9]\d*\.kt$').test(element.path)) {
+                            $.get({
+                                url: 'https://raw.githubusercontent.com/JetBrains/kotlin/spec-tests-draft/compiler/tests-spec/testData/diagnostics/linked/' + pathAsString + '/' + currentSection + '/' + element.path,
+                                success: function (data) {
+                                    console.log(data);
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    })
+    return false
+})

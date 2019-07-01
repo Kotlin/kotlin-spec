@@ -172,7 +172,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#runtime-available-types">Runtime-available types</a></li>
 </ul></li>
 <li><a href="#scopes-and-identifiers">Scopes and identifiers</a></li>
-<li><a href="#visibility">Visibility</a></li>
 <li><a href="#packages-and-imports">Packages and imports</a><ul>
 <li><a href="#importing">Importing</a></li>
 <li><a href="#modules">Modules</a></li>
@@ -213,14 +212,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#constant-properties">Constant properties</a></li>
 </ul></li>
 <li><a href="#type-alias">Type alias</a></li>
-<li><a href="#declarations-with-type-parameters">Declarations with type parameters</a><ul>
-<li><a href="#type-parameter-variance">Type parameter variance</a></li>
-<li><a href="#reified-type-parameters">Reified type parameters</a></li>
-</ul></li>
+<li><a href="#declarations-with-type-parameters">Declarations with type parameters</a></li>
 <li><a href="#declaration-modifiers">Declaration modifiers</a></li>
-</ul></li>
-<li><a href="#inheritance">Inheritance</a><ul>
-<li><a href="#overriding">Overriding</a></li>
 </ul></li>
 <li><a href="#statements">Statements</a><ul>
 <li><a href="#assignments">Assignments</a><ul>
@@ -3691,7 +3684,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="runtime-available-types">Runtime-available types</h3>
 <div class="paragraph">
-<p><span class="sentence"><em>Runtime-available types</em> are the types that can be guaranteed (during compilation) to have a concrete <em>runtime</em> counterpart. </span><span class="sentence">These include all the runtime types, their nullable variants as well as <a href="#reified-type-parameters"><code>reified</code> type parameters</a>, that are guaranteed to inline to a runtime type during type parameter substitution. </span><span class="sentence">Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. </span><span class="sentence">During these operations, the nullability of the type is checked using reference-equality to <code>null</code>, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.</span></p>
+<p><span class="sentence"><em>Runtime-available types</em> are the types that can be guaranteed (during compilation) to have a concrete <em>runtime</em> counterpart. </span><span class="sentence">These include all the runtime types, their nullable variants as well as [<code>reified</code> type parameters][Reified type parameters], that are guaranteed to inline to a runtime type during type parameter substitution. </span><span class="sentence">Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. </span><span class="sentence">During these operations, the nullability of the type is checked using reference-equality to <code>null</code>, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For all generic types that are not expected to have RTTI for their generic arguments, only “raw” variants of generic types (denoted in code using the star-projected type notation or a special parameter-less notation <span><span class="TODO">(TODO: link?)</span><span class="TODO-marker">*</span></span>) are runtime-available.</span></p>
@@ -3795,13 +3788,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span class="sentence">TODO(identifier lifetime &amp; such)</span>
 </div></li>
 </ul>
-<h2 id="visibility">Visibility</h2>
-<div class="paragraph">
-<p><span class="sentence">Any entity declared in a declaration scope has an implicitly or explicitly defined <em>visibility</em>. </span><span class="sentence">The visibility of a declaration denotes whether the entity is <em>accessible</em> in other scopes of the program. </span><span class="sentence">If the entity declared in scope <code>A</code> is not accessible in scope <code>B</code>, it cannot be referred to in that scope, making such reference a compiler error. </span><span class="sentence">There are four basic types of visibility in kotlin: <code>public</code>, <code>private</code>, <code>internal</code> and <code>protected</code>, denoted by the corresponding visibility modifier keywords.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Entities that have <code>public</code> visibility are generally accessible anywhere outside or inside the scope they are declared in, by using imports or qualification when necessary. </span><span class="sentence">Entities that have <code>private</code> visibility are only accessible inside the scope they are declared in or any nested scopes. </span><span class="sentence">For top-level scopes (i.e. kotlin files) it means that such entities are only accessible in the same file. </span><span class="sentence">Entities with <code>internal</code> visibility are accessible inside the same <a href="#modules">module</a> just like if the visibility was <code>public</code> and are inaccessible (as if the visibility was <code>private</code>) in any other scope. </span><span class="sentence">Entities with <code>protected</code> visibility are only allowed in the body scope of class declarations and are used as a means of encapsulation: such entities are accessible inside any scope as if the visibility was <code>private</code>, but are also accessible by any derived classes’ scopes as if they were declared <code>private</code> in the body scope of the derived class.</span></p>
-</div>
 <h2 id="packages-and-imports">Packages and imports</h2>
 <div class="paragraph">
 <p><span class="sentence">Any Kotlin project is structured into <strong>packages</strong>. </span><span class="sentence">A package may contain one or more Kotlin files and each file is related to the corresponding package using the <em>package header</em>. </span><span class="sentence">A file may contain only one (or zero) package headers, meaning that each file belongs to exactly one package.</span></p>
@@ -3885,7 +3871,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Importing certain entities may be disallowed by their <a href="#visibility">visibility modifiers</a>.</span></p>
+<p><span class="sentence">Importing certain entities may be disallowed by their [visibility modifiers][Visibility].</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -4866,7 +4852,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 </ul></li>
 <li><span class="sentence">It is declared in the top-level scope or inside [an object declaration][Object declarations];</span></li>
-<li><span class="sentence">It has an initializer expression and this initializer expression may be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
+<li><span class="sentence">It has an initializer expression and this initializer expression may be evaluated in the compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
 <h3 id="type-alias">Type alias</h3>
@@ -4889,54 +4875,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="#visibility"><em>visibility modifiers</em></a>.</span></p>
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its [<em>visibility modifiers</em>][Visibility].</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(this is a stub)</span></p>
+<p><span class="sentence">TODO()</span></p>
 </div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Most declarations may be introduced as <em>generic</em>, introducing type parameters that must be explicitly specified or <a href="#type-inference">inferred</a> when the corresponding declaration is used. </span><span class="sentence">For declarations that introduce new types this mechanism provides the means of introducing a <a href="#parameterized-classifier-types">parameterized type</a>. </span><span class="sentence">Please refer to the corresponding section for details.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Type parameters may be used as types inside the scope introduced by the declaration. </span><span class="sentence">When such a declaration is used, the parameters are substituted by types available inside the scope the declaration is used in.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">The following declarations are not allowed to have type parameters:</span></p>
-</div>
-<ul>
-<li><span class="sentence">Non-extension property declarations;</span></li>
-<li><span class="sentence">Object declarations (including companion object declarations);</span></li>
-<li><span class="sentence">Constructor declarations;</span></li>
-<li><span class="sentence">Getters and setters of property declarations;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO: anything else?</span>
-</div></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type. </span><span class="sentence">These restrictions are turned into corresponding <a href="#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="#type-inference">type inference</a> and <a href="#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Type parameters do not introduce <a href="#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>.</span></p>
-</div>
-<h4 id="type-parameter-variance">Type parameter variance</h4>
-<div class="paragraph">
-<p><span class="sentence">The <a href="#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a type is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="#mixed-site-variance">the type system section</a> for details.</span></p>
-</div>
-<h4 id="reified-type-parameters">Reified type parameters</h4>
-<div class="paragraph">
-<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
 </div>
 <h3 id="declaration-modifiers">Declaration modifiers</h3>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(this is a stub)</span></p>
+<p><span class="sentence">TODO(declaration scope)</span></p>
 </div>
 </div>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the <a href="#overriding">inheritance section</a> for details).</span></p>
+<p><span class="sentence">TODO(<code>open</code>)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(<code>abstract</code>)</span></p>
+</div>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -4945,67 +4906,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
+<p><span class="sentence">TODO(<code>const</code>)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
 <p><span class="sentence">TODO(overriding vs overloading vs shadowing)</span></p>
 </div>
 </div>
-<h2 id="inheritance">Inheritance</h2>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Kotlin uses virtual inheritance as the main mechanism of runtime polymorphism. </span><span class="sentence">This means that classes, objects and interfaces may derive from other classes and interfaces, which are specified in its declaration.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A class or an object is allowed to be derived from exactly one class (if there is no base class given in its declaration, it is implicitly derived from class <code>kotlin.Any</code>) and from zero or more interfaces. </span><span class="sentence">An interface may be derived only from other interfaces.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Inheritance introduces a <a href="#type-system">subtyping relation</a> <span class="math inline">\(D &lt;: B\)</span> where <span class="math inline">\(D\)</span> is the derived classifier type and <span class="math inline">\(B\)</span> is the base classifier type.</span></p>
-</div>
-<h3 id="overriding">Overriding</h3>
-<div class="paragraph">
-<p><span class="sentence">A callable declaration (that is, a property or member function declaration) inside a classifier declaration is said to be <em>overridable</em> if:</span></p>
-</div>
-<ul>
-<li><span class="sentence">Its visibility (and the visibility of its getter and/or setter) is not <code>private</code>;</span></li>
-<li><span class="sentence">It is declared as <code>open</code>, <code>abstract</code> or <code>override</code> (interface methods and properties are implicitly <code>abstract</code>).</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">A callable declaration inside a classifier declaration <em>subsumes</em> a corresponding declaration of the base classifier type if:</span></p>
-</div>
-<ul>
-<li><span class="sentence">Its return type is a subtype of the return type of the corresponding declaration;</span></li>
-<li><span class="sentence">Its formal parameter types are supertypes of the types of corresponding parameters from the corresponding declaration;</span></li>
-<li><span class="sentence">Its name is the same as the name of the corresponding declaration.</span></li>
-</ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(visibility games)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the declaration of the base classifier type is overridable and the declaration of the derived classifier type subsumes it and it has an <code>override</code> modifier, it is <code>overriding</code> the base declaration.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: Kotlin does not have a concept of full shadowing of declarations.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">Platforms may introduce additional cases of both <em>overridability</em> and <em>subsumption</em> of declarations, as well as limit the overriding mechanism due to internal representation limitations.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but does not subsume it, it is neither a compiler error nor an overriding declaration. </span><span class="sentence">In this case these two declarations just follow the normal rules of [function overloading][Overloading resolution].</span></p>
-</div>
-</blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
+<p><span class="sentence">TODO(visibility)</span></p>
 </div>
 </div>
 <h2 id="statements">Statements</h2>
