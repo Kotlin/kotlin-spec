@@ -6758,10 +6758,16 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">We use a special kind of nodes (<code>eval</code> nodes), represented in dashed lines, to introduce sub-fragments into bigger fragments. </span><span class="sentence"><code>eval x</code> here means that this node must be replaced with a whole fragment associated with <code>x</code>. </span><span class="sentence">When this replacement is performed, the value produced by <code>eval</code> is the same value that the metaregister <code>$result</code> holds in the corresponding fragment. </span><span class="sentence">All incoming edges of a fragment are connected to the incoming edges of the <code>eval</code> node, while all the outgoing edges of a fragment are connected to the outgoing edges of the <code>eval</code> node. </span><span class="sentence">It is important, however, that, if such edges are absent either in the fragment or near the <code>eval</code> node, they are removed from the graph. </span><span class="sentence">Sometimes we also use the <code>eval b</code> notation where <code>b</code> is not a single statement, but rather a control-flow structure body. </span><span class="sentence">The fragment for a control-flow structure body is the sequence of its statements, connected in order of appearance.</span></p>
 </div>
 <div class="paragraph">
+<p><span class="sentence">Some of the fragments have two kinds of outgoing edges, labeled <code>t</code> and <code>f</code> on the pictures. </span><span class="sentence">In a similar way, some <code>eval</code> nodes have two outgoing edges with the same labels. </span><span class="sentence">If a such a fragment is inserted into such a node, only edges with corresponding labels are merged into each other. </span><span class="sentence">If either the fragment or the node have only unlabeled outgoing edges, the process is performed same as above.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">For some types of analysis, it is important which boolean conditions hold on each path. </span><span class="sentence">We use special <code>assume</code> nodes to introduce these conditions. </span><span class="sentence"><code>assume x</code> means that boolean condition <code>x</code> is always <code>true</code> when program flow passes through this particular node.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Some nodes are <em>labeled</em>, similarly to how statements may be labeled in kotlin. </span><span class="sentence">These are special in the sense that if a fragment mentions a particular labeled node, this node is the same as any other node with this label in the whole graph. </span><span class="sentence">This is important when building graphs representing loops.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">There are two other special kinds of nodes: <code>unreachable</code> nodes, signifying unreachable code, and <code>backedge</code> nodes, important for some kinds of analyses.</span></p>
 </div>
 <h4 id="expressions-1">Expressions</h4>
 <div class="paragraph">
