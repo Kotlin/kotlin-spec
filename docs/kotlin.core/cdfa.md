@@ -27,6 +27,11 @@ It is important, however, that, if such edges are absent either in the fragment 
 Sometimes we also use the `eval b` notation where `b` is not a single statement, but rather a control-flow structure body.
 The fragment for a control-flow structure body is the sequence of its statements, connected in order of appearance.
 
+Some of the fragments have two kinds of outgoing edges, labeled `t` and `f` on the pictures.
+In a similar way, some `eval` nodes have two outgoing edges with the same labels.
+If a such a fragment is inserted into such a node, only edges with corresponding labels are merged into each other.
+If either the fragment or the node have only unlabeled outgoing edges, the process is performed same as above.
+
 For some types of analysis, it is important which boolean conditions hold on each path.
 We use special `assume` nodes to introduce these conditions.
 `assume x` means that boolean condition `x` is always `true` when program flow passes through this particular node.
@@ -34,6 +39,8 @@ We use special `assume` nodes to introduce these conditions.
 Some nodes are *labeled*, similarly to how statements may be labeled in kotlin.
 These are special in the sense that if a fragment mentions a particular labeled node, this node is the same as any other node with this label in the whole graph.
 This is important when building graphs representing loops.
+
+There are two other special kinds of nodes: `unreachable` nodes, signifying unreachable code, and `backedge` nodes, important for some kinds of analyses.
 
 #### Expressions
 
