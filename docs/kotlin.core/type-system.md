@@ -205,8 +205,8 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 > 
 > * class `String`
 > * interface `Number`
-> * class `Int` <: `Number`
-> * class `Double` <: `Number`
+> * class `Int` $<:$ `Number`
+> * class `Double` $<:$ `Number`
 
 ##### Parameterized classifier types
 
@@ -321,18 +321,18 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > Info: *variance* is a way of describing how [subtyping][Subtyping] works for *variant* parameterized types.
 > With declaration-site variance, for two types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some type constructor $T$.
 > 
-> * if $F$ is covariant ($\outV F$), `T<A> <: T<B>`
-> * if $F$ is contravariant($\inV F$), `T<A> :> T<B>`
-> * if $F$ is invariant (default), `T<A> <:> T<B>`
+> * if $F$ is covariant ($\outV F$), `T<A>` $<:$ `T<B>`
+> * if $F$ is contravariant($\inV F$), `T<A>` $:>$ `T<B>`
+> * if $F$ is invariant (default), `T<A>` $<:>$ `T<B>`
 > 
 > Use-site variance allows the user to change the type variance of an *invariant* type parameter by specifying it on the corresponding type argument.
 > $\outV A$ means covariant type argument, $\inV A$ means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some type constructor $T$, subtyping for use-site variance has the following rules.
 > 
-> * `T<out A> <: T<out B>`
-> * `T<in A> :> T<in B>`
-> * `T<A> <: T<out A>`
-> * `T<A> <: T<in A>`
-> * `T<in A> <:> T<out A>`
+> * `T<out A>` $<:$ `T<out B>`
+> * `T<in A>` $:>$ `T<in B>`
+> * `T<A>` $<:$ `T<out A>`
+> * `T<A>` $<:$ `T<in A>`
+> * `T<in A>` $<:>$ `T<out A>`
 
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
