@@ -59,9 +59,11 @@ private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText
     if ((Main.format.startsWith("html") || Main.format in setOf("slideous", "slidy", "dzslides", "revealjs", "s5") ) &&
             Main.embed) {
         when(format) {
-            ImgFormat.SVG -> rawInline(format = Format("html")) { exportAsInlineSVG(diag) }
+            ImgFormat.SVG -> rawInline(format = Format("html")) {
+                "<img src='${ exportAsInlineSVG(diag) }' />"
+            }
             ImgFormat.PNG -> rawInline(format = Format("html")) {
-                "<img src=${ exportAsInlinePNG(diag) } />"
+                "<img src='${ exportAsInlinePNG(diag) }' />"
             }
         }
         return
