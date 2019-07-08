@@ -151,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">body <span class="math inline">\(b\)</span>, which may include the following:</span>
 <ul>
 <li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span>;</span></li>
-<li><span class="sentence">instance initialization block <span class="math inline">\(init\)</span>;</span></li>
+<li><span class="sentence">instance initialization blocks <span class="math inline">\(init_1, \ldots, init_i\)</span>;</span></li>
 <li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span>;</span></li>
 <li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span>;</span></li>
 <li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span>;</span></li>
@@ -188,18 +188,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A parameterized class declaration consists of the following parts.</span></p>
 </div>
 <ul>
-<li><span class="sentence">name <span class="math inline">\(c\)</span></span></li>
-<li><span class="sentence">type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span></span></li>
-<li><span class="sentence">primary constructor declaration <span class="math inline">\(ptor\)</span></span></li>
-<li><span class="sentence">supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span></span></li>
+<li><span class="sentence">name <span class="math inline">\(c\)</span>;</span></li>
+<li><span class="sentence">type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span>;</span></li>
+<li><span class="sentence">primary constructor declaration <span class="math inline">\(ptor\)</span>;</span></li>
+<li><span class="sentence">supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span>;</span></li>
 <li><span class="sentence">body <span class="math inline">\(b\)</span>, which may include the following</span>
 <ul>
-<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span></span></li>
-<li><span class="sentence">instance initialization block <span class="math inline">\(init\)</span></span></li>
-<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span></span></li>
-<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span></span></li>
-<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span></span></li>
-<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span></span></li>
+<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span>;</span></li>
+<li><span class="sentence">instance initialization blocks <span class="math inline">\(init_1, \ldots, init_i\)</span>;</span></li>
+<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p;\)</span></span></li>
+<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span>;</span></li>
+<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj;\)</span></span></li>
+<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span>.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
@@ -220,8 +220,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">regular constructor parameter <span class="math inline">\(name: type\)</span>;</span></li>
-<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\mathtt{val} name: type\)</span>;</span></li>
-<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\mathtt{val} name: type\)</span>.</span></li>
+<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\mathtt{val}\ name: type\)</span>;</span></li>
+<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\mathtt{var}\ name: type\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. </span><span class="sentence">One can consider them to have the following syntactic expansion.</span></p>
@@ -252,10 +252,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(elaborate this <code>this(...)</code> and <code>super(...)</code> business)</span></p>
 </div>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(default values in constructors???)</span></p>
-</div>
+<p><span class="sentence">Class constructors (both secondary and primary) may have variable-argument parameters and default parameter values, just as regular functions. </span><span class="sentence">Please refer to the [function declaration reference][Function declarations] for details.</span></p>
 </div>
 <h5 id="nested-and-inner-classifiers">Nested and inner classifiers</h5>
 <div class="paragraph">
@@ -296,7 +294,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="data-class-declaration">Data class declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">A data class <span class="math inline">\(dataClass\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((dp_1, \ldots, dp_m)\)</span>, described in its primary constructor. </span><span class="sentence">As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions. </span><span class="sentence">Each one of these functions is generated if and only if a matching signature function is not present in the class body.</span></p>
+<p><span class="sentence">A data class <span class="math inline">\(dataClass\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((dp_1, \ldots, dp_m)\)</span>, described in its primary constructor. </span><span class="sentence">Non-property constructor parameters are not allowed in the primary constructor of a data class. </span><span class="sentence">As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions. </span><span class="sentence">Each one of these functions is generated if and only if a matching signature function is not present in the class body.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with their contracts:</span>
@@ -544,20 +542,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">and creates a function type <span class="math inline">\(f : (P_1, \ldots, P_n) \rightarrow R\)</span>.</span></p>
+<p><span class="sentence">and has a function type <span class="math inline">\(f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R\)</span>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span> describes function parameters — inputs needed to execute the declared function. </span><span class="sentence">Each parameter <span class="math inline">\(p_i: P_i = v_i\)</span> introduces <span class="math inline">\(p_i\)</span> as a name of value with type <span class="math inline">\(P_i\)</span> available inside function body <span class="math inline">\(b\)</span>; therefore, parameters are final and cannot be changed inside the function. </span><span class="sentence">A function may have zero or more parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A parameter may include a default value <span class="math inline">\(v_i\)</span>, which is used if the corresponding argument is not specified in function invocation; <span class="math inline">\(v_i\)</span> should be an expression which evaluates to type <span class="math inline">\(V &lt;: P_i\)</span>.</span></p>
+<p><span class="sentence">A parameter may include a default value <span class="math inline">\(v_i\)</span>, which is used if the corresponding argument is not specified in function invocation; <span class="math inline">\(v_i\)</span> must be an expression which evaluates to type <span class="math inline">\(V &lt;: P_i\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Return type <span class="math inline">\(R\)</span> is optional, if function body <span class="math inline">\(b\)</span> is present and may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv kotlin.Nothing\)</span>, in which case <span class="math inline">\(R \equiv B\)</span>. </span><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> must be specified explicitly.</span></p>
+<p><span class="sentence">Return type <span class="math inline">\(R\)</span> is optional, if function body <span class="math inline">\(b\)</span> is present and may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv \mathtt{kotlin.Nothing}\)</span>, in which case <span class="math inline">\(R \equiv B\)</span>. </span><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> must be specified explicitly.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">As type <span class="math inline">\(kotlin.Nothing\)</span> has a [special meaning][<code>kotlin.Nothing</code>] in Kotlin type system, it must be specified explicitly, to avoid spurious <span class="math inline">\(kotlin.Nothing\)</span> function return types.</span></p>
+<p><span class="sentence">As type <code>kotlin.Nothing</code> has a [special meaning][<code>kotlin.Nothing</code>] in Kotlin type system, it must be specified explicitly, to avoid spurious <code>kotlin.Nothing</code> function return types.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -720,67 +718,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation when read from and to the setter invocation when written to.</span></p>
 </div>
-<h4 id="delegated-property-declaration">Delegated property declaration</h4>
-<div class="paragraph">
-<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="#getters-and-setters">getters</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">In case of a delegated read-only property, every access to such property (<code>x</code> in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:</span></p>
-</div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" title="1">e<span class="op">.</span>getValue(thisRef, property)</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">where</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
-<li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
-<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
-<li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details).</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="#getters-and-setters">getters and setters</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
-</div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb8-1" title="1">e<span class="op">.</span>setValue(thisRef, property, y)</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">where</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
-<li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
-<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
-<li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details);</span></li>
-<li><span class="sentence"><code>y</code> is the value <code>x</code> is assigned to. </span><span class="sentence">In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">An example on how the delegation expansion may be actually implemented by the compiler is as follows.</span></p>
-</div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="co">/*</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="co"> * Actual code</span></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="co"> */</span></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="kw">class</span> C {</a>
-<a class="sourceLine" id="cb9-5" title="5">    <span class="kw">var</span> <span class="va">prop</span>: Type <span class="kw">by</span> DelegateExpression</a>
-<a class="sourceLine" id="cb9-6" title="6">}</a>
-<a class="sourceLine" id="cb9-7" title="7"></a>
-<a class="sourceLine" id="cb9-8" title="8"><span class="co">/*</span></a>
-<a class="sourceLine" id="cb9-9" title="9"><span class="co"> * Expanded code</span></a>
-<a class="sourceLine" id="cb9-10" title="10"><span class="co"> */</span></a>
-<a class="sourceLine" id="cb9-11" title="11"><span class="kw">class</span> C {</a>
-<a class="sourceLine" id="cb9-12" title="12">    <span class="kw">private</span> <span class="kw">val</span> <span class="va">prop</span>$delegate = DelegateExpression</a>
-<a class="sourceLine" id="cb9-13" title="13">    <span class="kw">var</span> <span class="va">prop</span>: Type</a>
-<a class="sourceLine" id="cb9-14" title="14">        <span class="kw">get</span>() = prop$delegate.getValue(<span class="kw">this</span>, <span class="kw">this</span>::prop)</a>
-<a class="sourceLine" id="cb9-15" title="15">        <span class="kw">set</span>(value: Type) = prop$delegate.setValue(<span class="kw">this</span>, <span class="kw">this</span>::prop, value)</a>
-<a class="sourceLine" id="cb9-16" title="16">}</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(provideDelegate)</span></p>
-</div>
-</div>
 <h4 id="local-property-declaration">Local property declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. </span><span class="sentence">However, local property declarations cannot have custom getters or setters.</span></p>
@@ -788,14 +725,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Local property declarations also support <em>destructive</em> declaration in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">which is a syntactic sugar for the following expansion</span></p>
 </div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">a</span>: T = e.component1()</a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="kw">val</span> <span class="va">b</span>: U = e.component2()</a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
-<a class="sourceLine" id="cb11-4" title="4">...</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">a</span>: T = e.component1()</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="kw">val</span> <span class="va">b</span>: U = e.component2()</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
+<a class="sourceLine" id="cb8-4" title="4">...</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Each individual component property follows the rules for regular local property declaration.</span></p>
 </div>
@@ -803,9 +740,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">As mentioned before, a property declaration may include a custom getter and/or custom setter (together called <em>accessors</em>) in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb12-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
-<a class="sourceLine" id="cb12-3" title="3">    <span class="kw">set</span>(anyValidArgumentName: TS): RT { ... }</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb9-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
+<a class="sourceLine" id="cb9-3" title="3">    <span class="kw">set</span>(anyValidArgumentName: TS): RT { ... }</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">These functions have the following requirements</span></p>
 </div>
@@ -832,9 +769,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">One can also ommit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb13-2" title="2">    <span class="kw">get</span></a>
-<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">set</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb10-2" title="2">    <span class="kw">get</span></a>
+<a class="sourceLine" id="cb10-3" title="3">    <span class="kw">set</span></a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.</span></p>
@@ -865,6 +802,87 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="paragraph">
 <p><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details).</span></p>
+</div>
+<h4 id="delegated-property-declaration">Delegated property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="#getters-and-setters">getters</a>:</span></p>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb12-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:</span></p>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb13-1" title="1">e<span class="op">.</span>getValue(thisRef, property)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
+<li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
+<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
+<li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details).</span></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">var</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb15-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb15-4" title="4">    <span class="kw">set</span>(value: T) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="#getters-and-setters">getters and setters</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
+</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb16-1" title="1">e<span class="op">.</span>setValue(thisRef, property, y)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
+<li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
+<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
+<li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details);</span></li>
+<li><span class="sentence"><code>y</code> is the value <code>x</code> is assigned to. </span><span class="sentence">In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself, as it is with regular getters and setters. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If there are no operator functions <code>getValue()</code>/<code>setValue</code> on the delegate expression, another possibility is considered: a <em>provided</em> delegate. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
+</div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb18-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">and</span></p>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb20-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb20-4" title="4">    <span class="kw">set</span>(value) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: actually, it’s still not that simple. </span><span class="sentence">Delegated extension properties do not save the object, but rather re-run the expression every single time</span></p>
+</div>
 </div>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
@@ -897,16 +915,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">val</span> <span class="va">Int</span>.foo: <span class="kw">Int</span> <span class="kw">get</span>() = <span class="kw">this</span> + <span class="dv">1</span></a>
-<a class="sourceLine" id="cb14-2" title="2"></a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
-<a class="sourceLine" id="cb14-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
-<a class="sourceLine" id="cb14-5" title="5">}</a>
-<a class="sourceLine" id="cb14-6" title="6"></a>
-<a class="sourceLine" id="cb14-7" title="7"><span class="kw">class</span> Bar {</a>
-<a class="sourceLine" id="cb14-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
-<a class="sourceLine" id="cb14-9" title="9">    <span class="kw">val</span> <span class="va">Int</span>.foo <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
-<a class="sourceLine" id="cb14-10" title="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">val</span> <span class="va">Int</span>.foo: <span class="kw">Int</span> <span class="kw">get</span>() = <span class="kw">this</span> + <span class="dv">1</span></a>
+<a class="sourceLine" id="cb21-2" title="2"></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
+<a class="sourceLine" id="cb21-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
+<a class="sourceLine" id="cb21-5" title="5">}</a>
+<a class="sourceLine" id="cb21-6" title="6"></a>
+<a class="sourceLine" id="cb21-7" title="7"><span class="kw">class</span> Bar {</a>
+<a class="sourceLine" id="cb21-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
+<a class="sourceLine" id="cb21-9" title="9">    <span class="kw">val</span> <span class="va">Int</span>.foo <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
+<a class="sourceLine" id="cb21-10" title="10">}</a></code></pre></div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(More examples (delegation, at least))</span></p>
