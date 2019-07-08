@@ -27,7 +27,8 @@ Every declaration is accessible in a particular *scope*, which is dependent both
 :::{.paste target=grammar-rule-objectDeclaration}
 :::
 
-Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. There are three kinds of classifier declarations:
+Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. 
+There are three kinds of classifier declarations:
 
 * class declarations;
 * interface declarations;
@@ -42,7 +43,7 @@ A simple class declaration consists of the following parts.
 * supertype specifiers $S_1, \ldots, S_s$;
 * body $b$, which may include the following:
   - secondary constructor declarations $stor_1, \ldots, stor_c$;
-  - instance initialization block $init$;
+  - instance initialization blocks $init_1, \ldots, init_i$;
   - property declarations $prop_1, \ldots, prop_p$;
   - function declarations $md_1, \ldots, md_m$;
   - companion object declaration $companionObj$;
@@ -70,17 +71,17 @@ TODO(Examples)
 
 A parameterized class declaration consists of the following parts.
 
-* name $c$
-* type parameter list $T_1, \ldots, T_m$
-* primary constructor declaration $ptor$
-* supertype specifiers $S_1, \ldots, S_s$
+* name $c$;
+* type parameter list $T_1, \ldots, T_m$;
+* primary constructor declaration $ptor$;
+* supertype specifiers $S_1, \ldots, S_s$;
 * body $b$, which may include the following
-  - secondary constructor declarations $stor_1, \ldots, stor_c$
-  - instance initialization block $init$
-  - property declarations $prop_1, \ldots, prop_p$
-  - function declarations $md_1, \ldots, md_m$
-  - companion object declaration $companionObj$
-  - nested classifier declarations $nested$
+  - secondary constructor declarations $stor_1, \ldots, stor_c$;
+  - instance initialization blocks $init_1, \ldots, init_i$;
+  - property declarations $prop_1, \ldots, prop_p;$
+  - function declarations $md_1, \ldots, md_m$;
+  - companion object declaration $companionObj;$
+  - nested classifier declarations $nested$.
 
 and extends the rules for a simple class declaration w.r.t. type parameter list. 
 Further details are described [here][Declarations with type parameters].
@@ -96,8 +97,8 @@ $$ptor : (p_1, \ldots, p_n)$$
 where each of $p_i$ may be one of the following:
 
 * regular constructor parameter $name: type$;
-* read-only property constructor parameter $\mathtt{val} name: type$;
-* mutable property constructor parameter $\mathtt{val} name: type$.
+* read-only property constructor parameter $\mathtt{val}\ name: type$;
+* mutable property constructor parameter $\mathtt{var}\ name: type$.
 
 Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. 
 One can consider them to have the following syntactic expansion.
@@ -125,7 +126,8 @@ In all cases, it is forbidden if two or more secondary constructors form a deleg
 
 TODO(elaborate this `this(...)` and `super(...)` business)
 
-TODO(default values in constructors???)
+Class constructors (both secondary and primary) may have variable-argument parameters and default parameter values, just as regular functions.
+Please refer to the [function declaration reference][Function declarations] for details.
 
 ##### Nested and inner classifiers
 
@@ -158,6 +160,7 @@ TODO(...)
 #### Data class declaration
 
 A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. 
+Non-property constructor parameters are not allowed in the primary constructor of a data class.
 As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 Each one of these functions is generated if and only if a matching signature function is not present in the class body.
 
@@ -338,18 +341,18 @@ A simple function declaration consists of four main parts:
 * return type $R$
 * body $b$
 
-and creates a function type $f : (P_1, \ldots, P_n) \rightarrow R$.
+and has a function type $f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R$.
 
 Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. 
 Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
 A function may have zero or more parameters.
 
-A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ should be an expression which evaluates to type $V <: P_i$.
+A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ must be an expression which evaluates to type $V <: P_i$.
 
-Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv kotlin.Nothing$, in which case $R \equiv B$.
+Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv \mathtt{kotlin.Nothing}$, in which case $R \equiv B$.
 In other cases return type $R$ must be specified explicitly.
 
-> As type $kotlin.Nothing$ has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious $kotlin.Nothing$ function return types.
+> As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
 Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation.
 This is allowed only inside an [abstract classifier declaration][Classifier declaration].
@@ -503,71 +506,6 @@ var x: T = e
 
 in which case `x` is used as a synonym to the getter invocation when read from and to the setter invocation when written to.
 
-#### Delegated property declaration
-
-A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. 
-One may view these properties as regular properties with a special *delegating* [getters][Getters and setters].
-
-In case of a delegated read-only property, every access to such property (`x` in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:
-
-```haskell
-e.getValue(thisRef, property)
-```
-
-where 
-
-* `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
-* `getValue` is a suitable operator function available on `e`;
-* `thisRef` is the [receiver][Receivers] object for the property.
-  This argument is `null` for local properties;
-* `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details).
-
-A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. 
-As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
-
-Read access is handled the same way as for a delegated read-only property. 
-Any write access to `x` (using, for example, an assignment operator `x = y`) becomes an overloadable form with the following expansion:
-```haskell
-e.setValue(thisRef, property, y)
-```
-
-where 
-
-* `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
-* `getValue` is a suitable operator function available on `e`;
-* `thisRef` is the [receiver][Receivers] object for the property.
-  This argument is `null` for local properties;
-* `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details);
-* `y` is the value `x` is assigned to.
-  In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.
-
-An example on how the delegation expansion may be actually implemented by the compiler is as follows.
-
-```kotlin
-/*
- * Actual code
- */
-class C {
-    var prop: Type by DelegateExpression
-}
-
-/*
- * Expanded code
- */
-class C {
-    private val prop$delegate = DelegateExpression
-    var prop: Type
-        get() = prop$delegate.getValue(this, this::prop)
-        set(value: Type) = prop$delegate.setValue(this, this::prop, value)
-}
-```
-
-The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself.
-If this type is omitted, it is inferred as if it was assigned the value of its expansion.
-If this inference fails, it is a compile-time error.
-
-TODO(provideDelegate)
-
 #### Local property declaration
 
 If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. However, local property declarations cannot have custom getters or setters.
@@ -643,6 +581,110 @@ Properties without backing fields are not allowed to have initializer expression
 Read/write access to the property is replaced with getter/setter invocation respectively.
 
 Getters and setters allow for some modifiers available for function declarations (for example, they may be declared `inline`, see grammar for details).
+
+#### Delegated property declaration
+
+A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. 
+One may view these properties as regular properties with a special *delegating* [getters][Getters and setters]:
+
+```kotlin
+val x: T by e
+```
+
+is the same as
+
+```kotlin
+val x$delegate = e
+val x: T
+    get(): T = x$delegate.getValue(thisRef, ::x)
+```
+
+Here every access to such property (`x` in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:
+
+```haskell
+e.getValue(thisRef, property)
+```
+
+where 
+
+- `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
+- `getValue` is a suitable operator function available on `e`;
+- `thisRef` is the [receiver][Receivers] object for the property.
+  This argument is `null` for local properties;
+- `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details).
+
+```kotlin
+var x: T by e
+```
+
+is the same as
+
+```kotlin
+val x$delegate = e
+var x: T
+    get(): T = x$delegate.getValue(thisRef, ::x)
+    set(value: T) { x$delegate.setValue(thisRef, ::x, value) }
+```
+
+A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. 
+As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
+
+Read access is handled the same way as for a delegated read-only property. 
+Any write access to `x` (using, for example, an assignment operator `x = y`) becomes an overloadable form with the following expansion:
+
+```haskell
+e.setValue(thisRef, property, y)
+```
+
+where 
+
+- `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
+- `getValue` is a suitable operator function available on `e`;
+- `thisRef` is the [receiver][Receivers] object for the property.
+  This argument is `null` for local properties;
+- `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details);
+- `y` is the value `x` is assigned to.
+  In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.
+
+The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself, as it is with regular getters and setters.
+If this type is omitted, it is inferred as if it was assigned the value of its expansion.
+If this inference fails, it is a compile-time error.
+
+If there are no operator functions `getValue()`/`setValue` on the delegate expression, another possibility is considered: a *provided* delegate.
+The provided delegate is accessed using the following expansion:
+
+```kotlin
+val x: T by e
+```
+
+is the same as
+
+```kotlin
+val x$delegate = e.provideDelegate(thisRef, ::x)
+val x: T
+    get(): T = x$delegate.getValue(thisRef, ::x)
+```
+
+and
+
+```kotlin
+var x: T by e
+```
+
+is the same as
+
+```kotlin
+val x$delegate = e.provideDelegate(thisRef, ::x)
+val x: T
+    get(): T = x$delegate.getValue(thisRef, ::x)
+    set(value) { x$delegate.setValue(thisRef, ::x, value) }
+```
+
+where `provideDelegate` is a suitable operator function available using the receiver `e`, while `getValue` and `setValue` work the same way they do with normal property delegation.
+As is the case with`setValue` and `getValue`,  `thisRef`  is a reference to the receiver of the property or `null` for local properties, but there is also a special case: for extension properties `thisRef` supplied to `provideDelegate` is `null`, while `thisRef` provided to `getValue` and `setValue` is the actual receiver.
+This is due to the fact that, during the creation of the property, no receiver is available.
+
+TODO: actually, it's still not that simple. Delegated extension properties do not save the object, but rather re-run the expression every single time
 
 #### Extension property declaration
 
