@@ -15,7 +15,7 @@ To represent intermediate values arising during computation, we use *implicit re
 These are unique in each fragment (assigning the same register twice in the same graph may only occur in unrelated program paths) and are assumed to be unique in the whole graph, too.
 The numbers given are only notational.
 
-TODO(register reduction ($1 = $2 should be removed))
+TODO(register reduction (`$1` = `$2` should be removed))
 TODO(maybe we do need phi-nodes in the end?)
 
 We use a special kind of nodes (`eval` nodes), represented in dashed lines, to introduce sub-fragments into bigger fragments.

@@ -191,7 +191,7 @@ All these functions consider only data properties $\{dp_i\}$; e.g., your data cl
 
 Data classes have the following restrictions:
 
-* Data classes are final and cannot be inherited from;
+* Data classes are closed and cannot be [inherited][Inheritance] from;
 * Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;
 * There must be at least one data property in the primary constructor.
 
@@ -650,7 +650,7 @@ The type of a delegated property may be omitted at the declaration site, meaning
 If this type is omitted, it is inferred as if it was assigned the value of its expansion.
 If this inference fails, it is a compile-time error.
 
-If there are no operator functions `getValue()`/`setValue` on the delegate expression, another possibility is considered: a *provided* delegate.
+If the delegate expression has a suitable operator function called `provideDelegate`, a *provided* delegate is used instead.
 The provided delegate is accessed using the following expansion:
 
 ```kotlin
@@ -684,7 +684,9 @@ where `provideDelegate` is a suitable operator function available using the rece
 As is the case with`setValue` and `getValue`,  `thisRef`  is a reference to the receiver of the property or `null` for local properties, but there is also a special case: for extension properties `thisRef` supplied to `provideDelegate` is `null`, while `thisRef` provided to `getValue` and `setValue` is the actual receiver.
 This is due to the fact that, during the creation of the property, no receiver is available.
 
-TODO: actually, it's still not that simple. Delegated extension properties do not save the object, but rather re-run the expression every single time
+For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property.
+This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value.
+This affects this value's lifetime in the same way normal value lifetime works.
 
 #### Extension property declaration
 
@@ -766,6 +768,23 @@ The scope where it is accessible is defined by its [*visibility modifiers*][Visi
 
 TODO()
 
+### Declaration visibility
+
+Each declaration has a visibility property relative to the scope it is declared in.
+By default, all the declarations are `public`, meaning that they can be accessed from any other scope their outer scope can be accessed from.
+Declarations may be also marked `public` explicitly.
+
+Declarations marked as `private` can only be accessed from the same scope they are declared in.
+For example, all `private` top-level declarations in a file may only be accessed by code from the same file.
+
+Declarations marked as `internal` may only be accessed from the same [module][Modules], treated as `public` from inside the module and as `private` from outside the module.
+
+Declarations in classifier declaration scope can also be declared `protected`, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.
+
+> There is a certain restriction regarding `inline` functions that have a different visibility from entities they access.
+> In particular, an `inline` function cannot access entities with a less permitting visibility (i.e. `public inline` function accessing a `private` property).
+> There is one exception to this: a `public inline` function can access `internal` entities which are marked with a special builtin [annotation][Annotations] `@PublishedApi`.
+
 ### Declaration modifiers
 
 TODO(declaration scope)
@@ -775,9 +794,5 @@ TODO(`open`)
 TODO(`abstract`)
 
 TODO(`lateinit`)
-
-TODO(`const`)
-
-TODO(overriding vs overloading vs shadowing)
 
 TODO(visibility)
