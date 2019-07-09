@@ -338,7 +338,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Data classes have the following restrictions:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Data classes are final and cannot be inherited from;</span></li>
+<li><span class="sentence">Data classes are closed and cannot be [inherited][Inheritance] from;</span></li>
 <li><span class="sentence">Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;</span></li>
 <li><span class="sentence">There must be at least one data property in the primary constructor.</span></li>
 </ul>
@@ -856,7 +856,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself, as it is with regular getters and setters. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If there are no operator functions <code>getValue()</code>/<code>setValue</code> on the delegate expression, another possibility is considered: a <em>provided</em> delegate. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
+<p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
 </div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
@@ -879,10 +879,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: actually, it’s still not that simple. </span><span class="sentence">Delegated extension properties do not save the object, but rather re-run the expression every single time</span></p>
-</div>
+<p><span class="sentence">For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property. </span><span class="sentence">This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value. </span><span class="sentence">This affects this value’s lifetime in the same way normal value lifetime works.</span></p>
 </div>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
@@ -969,6 +967,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO()</span></p>
 </div>
 </div>
+<h3 id="declaration-visibility">Declaration visibility</h3>
+<div class="paragraph">
+<p><span class="sentence">Each declaration has a visibility property relative to the scope it is declared in. </span><span class="sentence">By default, all the declarations are <code>public</code>, meaning that they can be accessed from any other scope their outer scope can be accessed from. </span><span class="sentence">Declarations may be also marked <code>public</code> explicitly.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declarations marked as <code>private</code> can only be accessed from the same scope they are declared in. </span><span class="sentence">For example, all <code>private</code> top-level declarations in a file may only be accessed by code from the same file.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declarations marked as <code>internal</code> may only be accessed from the same [module][Modules], treated as <code>public</code> from inside the module and as <code>private</code> from outside the module.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declarations in classifier declaration scope can also be declared <code>protected</code>, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">There is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a less permitting visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin [annotation][Annotations] <code>@PublishedApi</code>.</span></p>
+</div>
+</blockquote>
 <h3 id="declaration-modifiers">Declaration modifiers</h3>
 <div class="TODO">
 <div class="paragraph">
@@ -988,16 +1004,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(<code>lateinit</code>)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(<code>const</code>)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(overriding vs overloading vs shadowing)</span></p>
 </div>
 </div>
 <div class="TODO">
