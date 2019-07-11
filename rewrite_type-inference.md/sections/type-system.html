@@ -199,16 +199,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin has a type system with the following main properties.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Hybrid static and gradual type checking</span></li>
+<li><span class="sentence">Hybrid static, gradual and flow type checking</span></li>
 <li><span class="sentence">Null safety</span></li>
 <li><span class="sentence">No unsafe implicit conversions</span></li>
 <li><span class="sentence">Unified top and bottom types</span></li>
 <li><span class="sentence">Nominal subtyping with bounded parametric polymorphism and mixed-site variance</span></li>
 </ul>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(static type checking, gradual type checking)</span></p>
-</div>
+<p><span class="sentence">Type safety (consistency between compile and runtime types) is verified <em>statically</em>, at compile time, for the majority of Kotlin types. </span><span class="sentence">However, for better interoperability with platform-dependent code Kotlin also support a variant of <em>gradual types</em> in the form of <a href="#flexible-types">flexible types</a>. </span><span class="sentence">Even more so, in some cases the compile-time type of a value may <em>change</em> depending on the control- and data-flow of the program; a feature usually known as <em>flow typing</em>, represented in Kotlin as [smart casts][Smart casts].</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Null safety is enforced by having two type universes: <em>nullable</em> (with nullable types <span class="math inline">\(T?\)</span>) and <em>non-nullable</em> (with non-nullable types <span class="math inline">\(T!!\)</span>). </span><span class="sentence">A value of any non-nullable type cannot contain <code>null</code>, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by <code>null</code>.</span></p>
@@ -262,11 +260,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\mathtt{kotlin.Any}\)</span> is the unified <a href="#subtyping">supertype</a> (<span class="math inline">\(\top\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., all non-nullable types are subtypes of <span class="math inline">\(\mathtt{kotlin.Any}\)</span>, either explicitly, implicitly, or by <a href="#subtyping">subtyping relation</a>.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(<span class="math inline">\(\mathtt{kotlin.Any}\)</span> members?)</span></p>
+<p><span class="sentence">It must provide the following methods.</span></p>
 </div>
-</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
+</div></li>
+</ul>
 <h5 id="kotlin.nothing"><code>kotlin.Nothing</code></h5>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\mathtt{kotlin.Nothing}\)</span> is the unified <a href="#subtyping">subtype</a> (<span class="math inline">\(\bot\)</span>) for <span class="math inline">\(\{T\}\)</span>, i.e., <span class="math inline">\(\mathtt{kotlin.Nothing}\)</span> is a subtype of all well-formed Kotlin types, including user-defined ones. </span><span class="sentence">This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of <span class="math inline">\(\mathtt{kotlin.Nothing}\)</span> in Kotlin.</span></p>
@@ -284,12 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="kotlin.unit"><code>kotlin.Unit</code></h5>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\mathtt{kotlin.Unit}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\mathtt{kotlin.Unit}\)</span>; all values of type <span class="math inline">\(\mathtt{kotlin.Unit}\)</span> should reference the same underlying <span class="math inline">\(\mathtt{kotlin.Unit}\)</span> object.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Compare to <code>void</code>?)</span></p>
-</div>
+<p><span class="sentence"><span class="math inline">\(\mathtt{kotlin.Unit}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\mathtt{kotlin.Unit}\)</span>; all values of type <span class="math inline">\(\mathtt{kotlin.Unit}\)</span> should reference the same underlying <span class="math inline">\(\mathtt{kotlin.Unit}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
 </div>
 <h5 id="kotlin.function"><code>kotlin.Function</code></h5>
 <div class="paragraph">
@@ -766,18 +768,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Furthermore, all function types <span class="math inline">\(FunctionN\)</span> are subtypes of a general argument-agnostic type [<span class="math inline">\(\mathtt{kotlin.Function}\)</span>][kotlin.Function] for the purpose of unification.</span></p>
+<p><span class="sentence">Furthermore, all function types <span class="math inline">\(FunctionN\)</span> are subtypes of a general argument-agnostic type <a href="#kotlin.function"><span class="math inline">\(\mathtt{kotlin.Function}\)</span></a> for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: a compiler implementation may consider a function type <span class="math inline">\(FunctionN\)</span> to have additional supertypes, if it is necessary.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We already have <code>kotlin.Function</code> settled in this spec earlier. </span><span class="sentence">The reason for this is that overloading needs it)</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
