@@ -29,6 +29,13 @@ The exception for this rule are inlined lambda parameters that, if the inlined h
 The implementation of suspending functions on a particular platform is platform-dependent.
 Please refer to the platform documentation for details.
 
+### Coroutines
+
+A *coroutine* is a concept similar to a thread of concurrent programming, but representing cooperating multitasking, e.g. the switching between different contexts of execution is done by the coroutines themselves rather than operating system or language virtual machine.
+Coroutines run suspending functions and can only switch contexts at suspension points.
+
+TODO(Write this)
+
 ### Coroutine intrinsics
 
 TODO(Do we need them?)

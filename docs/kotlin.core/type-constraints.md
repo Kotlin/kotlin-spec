@@ -16,11 +16,11 @@ The main difference between bound parameters and concrete types is that differen
 
 > Several examples of valid type constraints:
 >
-> - $\mathtt{List}\left<\tilde{X}\right> <: Y$
-> - $\mathtt{List}\left<\tilde{X}\right> <: \mathtt{List}\left<\mathtt{List}\left<\mathtt{Int}\right>\right>$
+> - $\texttt{List<}\widetilde{X}\texttt{>} <: Y$
+> - $\texttt{List<}\widetilde{X}\texttt> <: \texttt{List<}\texttt{List<}\texttt{Int}\texttt>\texttt>$
 > - $\widetilde{X} <: Y$
 
-Every constraint system has implicit constraints $\mathtt{Any} <: T_j$ and $T_j <: \mathtt{Nothing?}$ for every type $T_j$ mentioned in constraint, including type variables.
+Every constraint system has implicit constraints $\texttt{Any} <: T_j$ and $T_j <: \texttt{Nothing?}$ for every type $T_j$ mentioned in constraint, including type variables.
 
 ### Type constraint solving
 
@@ -33,7 +33,7 @@ Solving a constraint system, on the other hand, may have several different resul
 > Constraint examples that are sound yet no relevant solutions exist:
 >
 > - $X <: Y$
-> - $\mathtt{List}\left<X\right> <: \mathtt{Collection}\left<X\right>$
+> - $\texttt{List<}X\texttt> <: \texttt{Collection}\texttt<X\texttt>$
 
 #### Checking constraint system soundness
 
@@ -75,12 +75,12 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 > Let's assume the type variables generated for them to be $A$, $B$ and $C$ respectively and the type variable for `e` being $E$.
 > This, according to [the conditional expression chapter][Conditional expression], produces the following relations:
 >
-> - $C <: \mathtt{kotlin.Boolean}$
+> - $C <: \texttt{kotlin.Boolean}$
 > - $E = LUB(A, B)$
 > 
 > These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with `kotlin.Any?` and `kotlin.Nothing`):
 > 
-> - $C <: \mathtt{kotlin.Boolean}$
+> - $C <: \texttt{kotlin.Boolean}$
 > - $A <: E$
 > - $B <: E$
 > - $\downarrow E$
@@ -89,10 +89,10 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 >
 > Which, according to the semantics of additional constraints (and the default pull-up constraint for $C$), produce the following solution:
 >
-> - $C \rightarrow \mathtt{kotlin.Boolean}$
-> - $A \rightarrow \mathtt{kotlin.Any?}$
-> - $B \rightarrow \mathtt{kotlin.Any?}$
-> - $E \rightarrow \mathtt{kotlin.Any?}$
+> - $C \rightarrow \texttt{kotlin.Boolean}$
+> - $A \rightarrow \texttt{kotlin.Any?}$
+> - $B \rightarrow \texttt{kotlin.Any?}$
+> - $E \rightarrow \texttt{kotlin.Any?}$
 
 TODO(prove that these constraints are equivalent to LUB from type system?)
 

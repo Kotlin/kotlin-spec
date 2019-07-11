@@ -60,28 +60,28 @@ TODO(just use setters for everything?)
 
 If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Overloadable operators] with the following expansion:
 
-$A[B_1,B_2,B_3,\ldots,B_N] = C$ is the same as calling $A\text{.set}(B_1,B_2,B_3,\ldots,B_N,C)$ where `set` is a suitable operator function.
+$A[B_1,B_2,B_3,\ldots,B_N] = C$ is the same as calling $A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)$ where `set` is a suitable operator function.
 
 #### Operator assignments
 
 An *operator assignment* is a combined-form assignment which involves one of the following operators: `+=`, `-=`, `*=`, `/=`, `%=`.
 All of these operators are overloadable operator functions with the following expansions (applied in order):
 
-- $A$`+=`$B$ is exactly the same as one of the following:
-    - $A$`.plusAssign(`$B$`)` if a suitable `plusAssign` operator function exists and is available;
-    - $A$` = `$A$`.plus(`$B$`)` if a suitable `plus` operator function exists and is available.
-- $A$`-=`$B$ is exactly the same as one of the following:
-    - $A$`.minusAssign(`$B$`)` if a suitable `minusAssign` operator function exists and is available;
-    - $A$` = `$A$`.minus(`$B$`)` if a suitable `minus` operator function exists and is available.
-- $A$`*=`$B$ is exactly the same as one of the following:
-    - $A$`.timesAssign(`$B$`)` if a suitable `timesAssign` operator function exists and is available;
-    - $A$` = `$A$`.times(`$B$`)` if a suitable `times` operator function exists and is available.
-- $A$`/=`$B$ is exactly the same as one of the following:
-    - $A$`.divAssign(`$B$`)` if a suitable `divAssign` operator function exists and is available;
-    - $A$` = `$A$`.div(`$B$`)` if a suitable `div` operator function exists and is available;
-- $A$`%=`$B$ is exactly the same as one of the following:
-    - $A$`.remAssign(`$B$`)` if a suitable `remAssign` operator function exists and is available;
-    - $A$` = `$A$`.rem(`$B$`)` if a suitable `rem` operator function exists and is available.
+- $A\ \texttt{+=}\ B$ is exactly the same as one of the following:
+    - $A\texttt{.plusAssign(}B\texttt{)}$ if a suitable `plusAssign` operator function exists and is available;
+    - $A\ \texttt{=}\ A\texttt{.plus(}B\texttt{)}$ if a suitable `plus` operator function exists and is available.
+- $A\ \texttt{-=}\ B$ is exactly the same as one of the following:
+    - $A\texttt{.minusAssign(}B\texttt{)}$ if a suitable `minusAssign` operator function exists and is available;
+    - $A\ \texttt{=}\ A\texttt{.minus(}B\texttt{)}$ if a suitable `minus` operator function exists and is available.
+- $A\ \texttt{*=}\ B$ is exactly the same as one of the following:
+    - $A\texttt{.timesAssign(}B\texttt{)}$ if a suitable `timesAssign` operator function exists and is available;
+    - $A\ \texttt{=}\ A\texttt{.times(}B\texttt{)}$ if a suitable `times` operator function exists and is available.
+- $A\ \texttt{/=}\ B$ is exactly the same as one of the following:
+    - $A\texttt{.divAssign(}B\texttt{)}$ if a suitable `divAssign` operator function exists and is available;
+    - $A\ \texttt{=}\ A\texttt{.div(}B\texttt{)}$ if a suitable `div` operator function exists and is available;
+- $A\ \texttt{%=}\ B$ is exactly the same as one of the following:
+    - $A\texttt{.remAssign(}B\texttt{)}$ if a suitable `remAssign` operator function exists and is available;
+    - $A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}$ if a suitable `rem` operator function exists and is available.
 
 > Note: as of Kotlin version 1.2.31, there are additional overloadable functions for `%` called `mod`/`modAssign`, which are deprecated.
 
