@@ -227,7 +227,7 @@ Second, the following constraint system is built:
 - For every non-lambda parameter inferred to have type $T_i$, corresponding to the function argument of type $U_j$, a constraint $T_i <: U_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
 - For every lambda parameter with the number of lambda arguments known to be $K$, corresponding to the function argument of type $U_m$, a special constraint of the form $R(L_1, \ldots, L_K) <: U_m$ is added to the constraint system, where $R, L_1, \ldots, L_K$ are fresh variables;
-- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $kotlin.Function <: U_m$ is added to the constraint system, where $kotlin.Function$ is the common base of all functional types (TODO(what's the spec name?)).
+- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $\Function <: U_m$ is added to the constraint system, where [$\Function$][`kotlin.Function`] is the common supertype of all [function types][Function types].
 
 If this constraint system is sound, the function is applicable for the call.
 Only applicable functions are considered for the next step: finding the most

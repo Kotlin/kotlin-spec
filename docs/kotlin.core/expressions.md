@@ -278,7 +278,21 @@ A when expression is called **_exhaustive_** if at least one of the following is
     - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
-TODO(Equality check with object behaves kinda like a type check. Or not.)
+For object types, the type test condition may be replaced with equality check with the object value:
+
+```kotlin
+sealed class Base
+class Derived1(): Base()
+object Derived2(): Base
+
+...
+val b: Base = ...
+... = when(b) {
+    is Derived1 -> ...
+    Derived2 -> ...
+    // no else needed here
+}
+```
 
 > Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
@@ -292,8 +306,6 @@ This operator is **lazy**, meaning that it does not evaluate the right hand side
 
 Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
 The type of logical disjunction expression is `kotlin.Boolean`.
-
-TODO(Types of errors? Compile-time, type, run-time, whatever?)
 
 ### Logical conjunction expression
 
@@ -326,20 +338,19 @@ For special values created without explicit constructor calls, notably, the cons
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
   instance of the null reference;
-- Otherwise, equality by reference is implementation-defined and must not be used as a means of comparing such values.
+- Otherwise, equality by reference is implementation-defined and should not be used as a means of comparing such values.
 
 Reference equality expressions always have type `kotlin.Boolean`.
 
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are [overloadable][Overloadable operators] with the following
-expansion:
+These operators are [overloadable][Overloadable operators] with the following expansion:
 
 - `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid operator function available in the current scope;
 - `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid operator function available in the current scope.
 
-> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always at least one available overloading candidate for any value equality expression.
+> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always one available overloading candidate for any value equality expression.
 
 Value equality expressions always have type `kotlin.Boolean`.
 If the corresponding operator function `equals` has a different return type, it is a compile-time error.
@@ -354,12 +365,12 @@ If the corresponding operator function `equals` has a different return type, it 
 *Comparison expressions* are binary expressions which use the comparison operators: `<`, `>`, `<=` and `>=`.
 These operators are [overloadable][Overloadable operators] with the following expansion:
 
-- `A < B` is exactly the same as `A.compareTo(B) [<] 0`
-- `A > B` is exactly the same as `0 [<] A.compareTo(B)`
-- `A <= B` is exactly the same as `!(A.compareTo(B) [<] 0)`
-- `A >= B` is exactly the same as `!(0 [<] A.compareTo(B))`
+- `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
+- `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
+- `A <= B` is exactly the same as `!integerLess(A.compareTo(B),0)`
+- `A >= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
 
-where `compareTo` is a valid operator function available in the current scope and `[<]` (read "boxed less") is a special operator unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
+where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
 
 The `compareTo` operator function must have a return type `kotlin.Int`, otherwise it is a compile-time error.
 
@@ -681,7 +692,7 @@ Expressions which use the navigation binary operators (`.`, `.?` or `::`) are sy
 
 - A fully-qualified type, property or object name.
   The left side of `.` must be a package name, while the right side corresponds to a declaration in that package.
-    
+  
     > Note: qualification uses operator `.` only.
 - A property access.
   Here `a` is a value available in the current scope and `c` is a property name.
