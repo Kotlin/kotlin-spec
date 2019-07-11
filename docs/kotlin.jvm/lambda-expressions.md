@@ -1,16 +1,19 @@
 ## Lambda expressions
 
-On the JVM, there is an optimization: to avoid potential memory leaks, 
-lambda expressions that do not capture any properties are created as singleton classes.
-Thus, all returned instances of such a lambda actually are references to a single object.
+TODO(Everything)
 
->Example:
+> Note: creating excessive lambda instances may potentially lead to logical memory leaks.
+> To avoid this problem, lambda expressions which do not capture any properties are implemented as singleton classes.
+> Thus, all instances of such lambdas actually reference the same singleton object.
 > ```kotlin
 > fun example() {
 >     val lambdaProvider = {
->         { Unit }  // returns a stateless lambda
+>         { Unit } // stateless lambda
 >     }
->     val lambda1 = lambdaProvider.invoke()
->     val lambda2 = lambdaProvider.invoke() // the same exact instance as `lambda1`
+>     val lambda1 = lambdaProvider()
+>     val lambda2 = lambdaProvider()
+>     
+>     // Both references are the same
+>     assert(lambda1 === lambda2)
 > }
-> ```  
+> ```
