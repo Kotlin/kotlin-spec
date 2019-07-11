@@ -359,6 +359,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#concurrency">Concurrency</a></li>
 <li><a href="#coroutines">Coroutines</a><ul>
 <li><a href="#suspending-functions">Suspending functions</a></li>
+<li><a href="#coroutines-1">Coroutines</a></li>
 <li><a href="#coroutine-intrinsics">Coroutine intrinsics</a></li>
 </ul></li>
 <li><a href="#annotations">Annotations</a><ul>
@@ -5006,37 +5007,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="#overloadable-operators">overloaded operator</a> with the following expansion:</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(A[B_1,B_2,B_3,\ldots,B_N] = C\)</span> is the same as calling <span class="math inline">\(A\text{.set}(B_1,B_2,B_3,\ldots,B_N,C)\)</span> where <code>set</code> is a suitable operator function.</span></p>
+<p><span class="sentence"><span class="math inline">\(A[B_1,B_2,B_3,\ldots,B_N] = C\)</span> is the same as calling <span class="math inline">\(A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)\)</span> where <code>set</code> is a suitable operator function.</span></p>
 </div>
 <h4 id="operator-assignments">Operator assignments</h4>
 <div class="paragraph">
 <p><span class="sentence">An <em>operator assignment</em> is a combined-form assignment which involves one of the following operators: <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>. </span><span class="sentence">All of these operators are overloadable operator functions with the following expansions (applied in order):</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>+=</code><span class="math inline">\(B\)</span> is exactly the same as one of the following:</span>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{+=}\ B\)</span> is exactly the same as one of the following:</span>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>.plusAssign(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>plusAssign</code> operator function exists and is available;</span></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>=</code><span class="math inline">\(A\)</span><code>.plus(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>plus</code> operator function exists and is available.</span></li>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.plusAssign(}B\texttt{)}\)</span> if a suitable <code>plusAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.plus(}B\texttt{)}\)</span> if a suitable <code>plus</code> operator function exists and is available.</span></li>
 </ul></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>-=</code><span class="math inline">\(B\)</span> is exactly the same as one of the following:</span>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{-=}\ B\)</span> is exactly the same as one of the following:</span>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>.minusAssign(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>minusAssign</code> operator function exists and is available;</span></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>=</code><span class="math inline">\(A\)</span><code>.minus(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>minus</code> operator function exists and is available.</span></li>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.minusAssign(}B\texttt{)}\)</span> if a suitable <code>minusAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.minus(}B\texttt{)}\)</span> if a suitable <code>minus</code> operator function exists and is available.</span></li>
 </ul></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>*=</code><span class="math inline">\(B\)</span> is exactly the same as one of the following:</span>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{*=}\ B\)</span> is exactly the same as one of the following:</span>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>.timesAssign(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>timesAssign</code> operator function exists and is available;</span></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>=</code><span class="math inline">\(A\)</span><code>.times(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>times</code> operator function exists and is available.</span></li>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.timesAssign(}B\texttt{)}\)</span> if a suitable <code>timesAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.times(}B\texttt{)}\)</span> if a suitable <code>times</code> operator function exists and is available.</span></li>
 </ul></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>/=</code><span class="math inline">\(B\)</span> is exactly the same as one of the following:</span>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{/=}\ B\)</span> is exactly the same as one of the following:</span>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>.divAssign(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>divAssign</code> operator function exists and is available;</span></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>=</code><span class="math inline">\(A\)</span><code>.div(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>div</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.divAssign(}B\texttt{)}\)</span> if a suitable <code>divAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.div(}B\texttt{)}\)</span> if a suitable <code>div</code> operator function exists and is available;</span></li>
 </ul></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>%=</code><span class="math inline">\(B\)</span> is exactly the same as one of the following:</span>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{%=}\ B\)</span> is exactly the same as one of the following:</span>
 <ul>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>.remAssign(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>remAssign</code> operator function exists and is available;</span></li>
-<li><span class="sentence"><span class="math inline">\(A\)</span><code>=</code><span class="math inline">\(A\)</span><code>.rem(</code><span class="math inline">\(B\)</span><code>)</code> if a suitable <code>rem</code> operator function exists and is available.</span></li>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.remAssign(}B\texttt{)}\)</span> if a suitable <code>remAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}\)</span> if a suitable <code>rem</code> operator function exists and is available.</span></li>
 </ul></li>
 </ul>
 <blockquote>
@@ -7152,13 +7153,13 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">Several examples of valid type constraints:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: Y\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: \mathtt{List}\left&lt;\mathtt{List}\left&lt;\mathtt{Int}\right&gt;\right&gt;\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}\widetilde{X}\texttt{&gt;} &lt;: Y\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}\widetilde{X}\texttt&gt; &lt;: \texttt{List&lt;}\texttt{List&lt;}\texttt{Int}\texttt&gt;\texttt&gt;\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\widetilde{X} &lt;: Y\)</span></span></li>
 </ul>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\mathtt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \mathtt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
+<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\texttt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \texttt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
 </div>
 <h3 id="type-constraint-solving">Type constraint solving</h3>
 <div class="paragraph">
@@ -7173,7 +7174,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(X &lt;: Y\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;X\right&gt; &lt;: \mathtt{Collection}\left&lt;X\right&gt;\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}X\texttt&gt; &lt;: \texttt{Collection}\texttt&lt;X\texttt&gt;\)</span></span></li>
 </ul>
 </blockquote>
 <h4 id="checking-constraint-system-soundness">Checking constraint system soundness</h4>
@@ -7222,14 +7223,14 @@ Let’s assume we have the following code:</span></p>
 <p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besided the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to <a href="#conditional-expression">the conditional expression chapter</a>, produces the following relations:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(E = LUB(A, B)\)</span></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with <code>kotlin.Any?</code> and <code>kotlin.Nothing</code>):</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(A &lt;: E\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(B &lt;: E\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\downarrow E\)</span></span></li>
@@ -7240,10 +7241,10 @@ Let’s assume we have the following code:</span></p>
 <p><span class="sentence">Which, according to the semantics of additional constraints (and the default pull-up constraint for <span class="math inline">\(C\)</span>), produce the following solution:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C \rightarrow \mathtt{kotlin.Boolean}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(B \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(E \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C \rightarrow \texttt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
 </ul>
 </blockquote>
 <div class="TODO">
@@ -8163,6 +8164,15 @@ fun smartCastInInference() {
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">The implementation of suspending functions on a particular platform is platform-dependent. </span><span class="sentence">Please refer to the platform documentation for details.</span></p>
+</div>
+<h3 id="coroutines-1">Coroutines</h3>
+<div class="paragraph">
+<p><span class="sentence">A <em>coroutine</em> is a concept similar to a thread of concurrent programming, but representing cooperating multitasking, e.g. the switching between different contexts of execution is done by the coroutines themselves rather than operating system or language virtual machine. </span><span class="sentence">Coroutines run suspending functions and can only switch contexts at suspension points.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Write this)</span></p>
+</div>
 </div>
 <h3 id="coroutine-intrinsics">Coroutine intrinsics</h3>
 <div class="TODO">

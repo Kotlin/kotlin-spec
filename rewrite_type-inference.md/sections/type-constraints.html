@@ -120,13 +120,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Several examples of valid type constraints:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: Y\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;\tilde{X}\right&gt; &lt;: \mathtt{List}\left&lt;\mathtt{List}\left&lt;\mathtt{Int}\right&gt;\right&gt;\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}\widetilde{X}\texttt{&gt;} &lt;: Y\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}\widetilde{X}\texttt&gt; &lt;: \texttt{List&lt;}\texttt{List&lt;}\texttt{Int}\texttt&gt;\texttt&gt;\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\widetilde{X} &lt;: Y\)</span></span></li>
 </ul>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\mathtt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \mathtt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
+<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\texttt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \texttt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
 </div>
 <h3 id="type-constraint-solving">Type constraint solving</h3>
 <div class="paragraph">
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(X &lt;: Y\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\mathtt{List}\left&lt;X\right&gt; &lt;: \mathtt{Collection}\left&lt;X\right&gt;\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}X\texttt&gt; &lt;: \texttt{Collection}\texttt&lt;X\texttt&gt;\)</span></span></li>
 </ul>
 </blockquote>
 <h4 id="checking-constraint-system-soundness">Checking constraint system soundness</h4>
@@ -190,14 +190,14 @@ Let’s assume we have the following code:</span></p>
 <p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besided the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to [the conditional expression chapter][Conditional expression], produces the following relations:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(E = LUB(A, B)\)</span></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with <code>kotlin.Any?</code> and <code>kotlin.Nothing</code>):</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C &lt;: \mathtt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(A &lt;: E\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(B &lt;: E\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\downarrow E\)</span></span></li>
@@ -208,10 +208,10 @@ Let’s assume we have the following code:</span></p>
 <p><span class="sentence">Which, according to the semantics of additional constraints (and the default pull-up constraint for <span class="math inline">\(C\)</span>), produce the following solution:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(C \rightarrow \mathtt{kotlin.Boolean}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(B \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(E \rightarrow \mathtt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(C \rightarrow \texttt{kotlin.Boolean}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
 </ul>
 </blockquote>
 <div class="TODO">
