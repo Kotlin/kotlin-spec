@@ -1,5 +1,17 @@
 <#mode quote>
 
+\newcommand{\opMathTT}[2]{%
+  \expandafter\newcommand{#1}{\operatorname{\mathtt{#2}}}%
+}
+
+\newcommand{\opMathIT}[2]{%
+  \expandafter\newcommand{#1}{\operatorname{\mathit{#2}}}%
+}
+
+\newcommand{\opMathTEXT}[2]{%
+  \expandafter\newcommand{#1}{\operatorname{\text{#2}}}%
+}
+
 \newcommand{\llbracket}{\left[\!\left[}
 \newcommand{\rrbracket}{\right]\!\right]}
 
@@ -8,59 +20,54 @@
 
 \newcommand{\amp}{\operatorname{\&}}
 
-\newcommand{\LUB}{\mathtt{LUB}}
-\newcommand{\GLB}{\mathtt{GLB}}
+\opMathTEXT{\LUB}{LUB}
+\opMathTEXT{\GLB}{GLB}
 
-\newcommand{\outV}{\mathtt{out\ }}
-\newcommand{\invV}{\mathtt{inv\ }}
-\newcommand{\inV}{\mathtt{in\ }}
+\opMathTT{\outV}{out\ }
+\opMathTT{\invV}{inv\ }
+\opMathTT{\inV}{in\ }
 
-\newcommand{\Any}{\mathtt{kotlin.Any}}
-\newcommand{\AnyQ}{\mathtt{kotlin.Any?}}
+\opMathTT{\Any}{kotlin.Any}
+\opMathTT{\AnyQ}{kotlin.Any?}
 
-\newcommand{\Nothing}{\mathtt{kotlin.Nothing}}
-\newcommand{\NothingQ}{\mathtt{kotlin.Nothing?}}
+\opMathTT{\Nothing}{kotlin.Nothing}
+\opMathTT{\NothingQ}{kotlin.Nothing?}
 
-\newcommand{\Unit}{\mathtt{kotlin.Unit}}
+\opMathTT{\Unit}{kotlin.Unit}
 
-\newcommand{\Function}{\mathtt{kotlin.Function}}
+\opMathTT{\Function}{kotlin.Function}
+\opMathTEXT{\FunctionN}{FunctionN}
+\opMathTEXT{\FT}{FT}
+\opMathTEXT{\FTR}{FTR}
+\opMathTEXT{\RT}{RT}
 
-\newcommand{\FunctionN}{\operatorname{FunctionN}}
-\newcommand{\FT}{\operatorname{FT}}
-\newcommand{\FTR}{\operatorname{FTR}}
-\newcommand{\RT}{\operatorname{RT}}
+\opMathTT{\Array}{kotlin.Array}
 
-\newcommand{\Array}{\mathtt{kotlin.Array}}
+\opMathTEXT{\ATS}{ATS}
+\opMathTEXT{\LTS}{LTS}
 
-\newcommand{\ATS}{\mathtt{ATS}}
-\newcommand{\LTS}{\mathtt{LTS}}
-
-\newcommand{\SmartCastData}{\mathtt{SmartCastData}}
-\newcommand{\Expression}{\mathtt{Expression}}
-\newcommand{\SmartCastType}{\mathtt{SmartCastType}}
-\newcommand{\Type}{\mathtt{Type}}
-\newcommand{\Nullability}{\mathtt{Nullability}}
+\opMathTEXT{\SmartCastData}{SmartCastData}
+\opMathTEXT{\Expression}{Expression}
+\opMathTEXT{\SmartCastType}{SmartCastType}
+\opMathTEXT{\Type}{Type}
+\opMathTEXT{\Nullability}{Nullability}
 
 \newcommand{\join}{\sqcup}
 \newcommand{\meet}{\sqcap}
 
-\newcommand{\assume}{\mathtt{assume}}
-\newcommand{\killDataFlow}{\mathtt{killDataFlow}}
+\opMathTT{\is}{is}
+\opMathTT{\notIs}{!is}
+\opMathTT{\as}{as}
+\opMathTT{\notAs}{!as}
+\opMathTT{\eqq}{==}
+\opMathTT{\notEqq}{!\!\!=}
+\opMathTT{\refEqq}{===}
+\opMathTT{\notRefEqq}{!\!\!==}
 
-\newcommand{\is}{\operatorname{is}}
-\newcommand{\notIs}{\operatorname{!is}}
-
-\newcommand{\as}{\operatorname{as}}
-\newcommand{\notAs}{\operatorname{!as}}
-
-\newcommand{\eqq}{\operatorname{\mathtt{==}}}
-\newcommand{\notEqq}{\operatorname{\mathtt{!\!\!=}}}
-
-\newcommand{\refEqq}{\operatorname{\mathtt{===}}}
-\newcommand{\notRefEqq}{\operatorname{\mathtt{!\!\!==}}}
-
-\newcommand{\swap}{\operatorname{\mathit{swap}}}
-\newcommand{\isNullable}{\operatorname{\mathit{isNullable}}}
-\newcommand{\smartCastTypeOf}{\operatorname{\mathit{smartCastTypeOf}}}
-\newcommand{\typeOf}{\operatorname{\mathit{typeOf}}}
-\newcommand{\approxNegationType}{\operatorname{\mathit{approxNegationType}}}
+\opMathIT{\assume}{assume}
+\opMathIT{\killDataFlow}{killDataFlow}
+\opMathIT{\swap}{swap}
+\opMathIT{\isNullable}{isNullable}
+\opMathIT{\smartCastTypeOf}{smartCastTypeOf}
+\opMathIT{\typeOf}{typeOf}
+\opMathIT{\approxNegationType}{approxNegationType}

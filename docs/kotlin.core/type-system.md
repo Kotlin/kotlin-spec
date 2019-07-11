@@ -640,10 +640,11 @@ TODO(Details of assertion generation?)
 
 ##### Dynamic type
 
-Kotlin includes a special *dynamic* type, which is a flexible type $(\Nothing..\AnyQ)$.
+Kotlin includes a special `dynamic` type, which in many contexts can be viewed as a flexible type $(\Nothing..\AnyQ)$.
 By definition, this type represents *any* possible Kotlin type, and may be used to support interoperability with dynamically typed libraries, platforms or languages.
 
-TODO(We should reconsider defining `dynamic` as a flexible type, cause it doesn't behave like one in many situations)
+However, as a platform may assign special meaning to the values of `dynamic` type, it may be handled differently from the regular flexible type.
+These differences are to be explained in the corresponding platform-dependent sections of this specification.
 
 ##### Platform types
 
