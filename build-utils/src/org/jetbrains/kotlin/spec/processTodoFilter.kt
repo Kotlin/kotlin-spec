@@ -4,14 +4,14 @@ import ru.spbstu.pandoc.*
 
 private fun String.splitAt(index: Int) = substring(0, minOf(index, length)) to substring(minOf(index, length))
 
-private class SpecTodoFilterVisitor(val format: String) : PandocVisitor() {
-    fun makeInlineTODO(contents: List<Inline>): Inline = when(format) {
-        "latex", "beamer" -> {
+private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
+    fun makeInlineTODO(contents: List<Inline>): Inline = when {
+        format.isLaTeX() -> {
             Inline.Span(
                     Attr(classes = listOf("TODO")),
-                    listOf(Inline.RawInline(Format(format), """\todo{""")) +
+                    listOf(Inline.RawInline(Format.TeX, """\todo{""")) +
                             contents +
-                            Inline.RawInline(Format(format), "}")
+                            Inline.RawInline(Format.TeX, "}")
             )
         }
         else -> Inline.Span(Attr(), listOf(
@@ -20,14 +20,14 @@ private class SpecTodoFilterVisitor(val format: String) : PandocVisitor() {
         ))
     }
 
-    fun makeBlockTODO(contents: Block): Block = when(format) {
-        "html" -> Block.Div(Attr(classes = listOf("TODO")), listOf(contents))
-        "latex", "beamer" ->
+    fun makeBlockTODO(contents: Block): Block = when {
+        format.isHTML() -> Block.Div(Attr(classes = listOf("TODO")), listOf(contents))
+        format.isLaTeX() ->
             Block.Div(Attr(classes = listOf("TODO")),
                     listOf(
-                            Block.RawBlock(Format(format), """\todo[inline]{"""),
+                            Block.RawBlock(Format.TeX, """\todo[inline]{"""),
                             contents,
-                            Block.RawBlock(Format(format), """}""")
+                            Block.RawBlock(Format.TeX, """}""")
                     )
             )
         else -> contents
@@ -91,4 +91,4 @@ private class SpecTodoFilterVisitor(val format: String) : PandocVisitor() {
     }
 }
 
-fun main(args: Array<String>) = makeFilter(SpecTodoFilterVisitor(args[0]))
+fun main(args: Array<String>) = makeFilter(SpecTodoFilterVisitor(Format(args[0])))

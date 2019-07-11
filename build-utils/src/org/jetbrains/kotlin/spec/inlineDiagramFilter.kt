@@ -2,10 +2,13 @@ package org.jetbrains.kotlin.spec
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import ru.spbstu.diagrams.*
+import ru.spbstu.diagrams.CharMatrix
+import ru.spbstu.diagrams.Diagram
+import ru.spbstu.diagrams.DiagramProperties
 import ru.spbstu.diagrams.export.exportAsInlinePNG
 import ru.spbstu.diagrams.export.exportAsInlineSVG
 import ru.spbstu.diagrams.export.exportAsPNG
@@ -14,7 +17,6 @@ import ru.spbstu.pandoc.*
 import ru.spbstu.pandoc.builder.InlineBuilder
 import ru.spbstu.pandoc.builder.blocks
 import java.io.File
-import java.lang.IllegalArgumentException
 
 private enum class ImgFormat(val suffix: String) { PNG(".png"), SVG(".svg");
 
@@ -55,9 +57,10 @@ private val visitor = object : PandocVisitor() {
     }
 }
 
+private val htmlFormats = setOf("html", "html4", "html5", "revealjs", "s5", "slideous", "slidy")
+
 private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText: String?) {
-    if ((Main.format.startsWith("html") || Main.format in setOf("slideous", "slidy", "dzslides", "revealjs", "s5") ) &&
-            Main.embed) {
+    if (Main.format.isHTML() && Main.embed) {
         when(format) {
             ImgFormat.SVG -> rawInline(format = Format("html")) {
                 "<img src='${ exportAsInlineSVG(diag) }' />"
@@ -79,7 +82,7 @@ private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText
 }
 
 private object Main : CliktCommand() {
-    val format: String by argument("Pandoc output format")
+    val format: Format by argument("Pandoc output format").convert { Format(it) }
     val imageDirectory: File? by option().convert { File(it) }
     val embed: Boolean by option().flag()
     val defaultFormat: String? by option()

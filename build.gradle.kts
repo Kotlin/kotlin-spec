@@ -27,7 +27,7 @@ java.sourceSets {
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("ru.spbstu:g4toEBNF:0.0.0.2")
-    compile("ru.spbstu:kotlin-pandoc:0.0.5")
+    compile("ru.spbstu:kotlin-pandoc:0.0.7")
     compile("ru.spbstu:simple-diagrammer:0.0.0.4")
     compile("com.github.ajalt:clikt:1.7.0")
 }
