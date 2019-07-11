@@ -25,6 +25,11 @@
 
 \newcommand{\Function}{\mathtt{kotlin.Function}}
 
+\newcommand{\FunctionN}{\operatorname{FunctionN}}
+\newcommand{\FT}{\operatorname{FT}}
+\newcommand{\FTR}{\operatorname{FTR}}
+\newcommand{\RT}{\operatorname{RT}}
+
 \newcommand{\Array}{\mathtt{kotlin.Array}}
 
 \newcommand{\ATS}{\mathtt{ATS}}
@@ -54,8 +59,8 @@
 \newcommand{\refEqq}{\operatorname{\mathtt{===}}}
 \newcommand{\notRefEqq}{\operatorname{\mathtt{!\!\!==}}}
 
-\newcommand{\swap}{\mathit{swap}}
-\newcommand{\isNullable}{\mathit{isNullable}}
-\newcommand{\smartCastTypeOf}{\mathit{smartCastTypeOf}}
-\newcommand{\typeOf}{\mathit{typeOf}}
-\newcommand{\approxNegationType}{\mathit{approxNegationType}}
+\newcommand{\swap}{\operatorname{\mathit{swap}}}
+\newcommand{\isNullable}{\operatorname{\mathit{isNullable}}}
+\newcommand{\smartCastTypeOf}{\operatorname{\mathit{smartCastTypeOf}}}
+\newcommand{\typeOf}{\operatorname{\mathit{typeOf}}}
+\newcommand{\approxNegationType}{\operatorname{\mathit{approxNegationType}}}

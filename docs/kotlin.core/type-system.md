@@ -527,34 +527,34 @@ TODO(Need to think more about this part)
 
 Kotlin has first-order functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.
 
-A function type FT
+A function type $\FT$
 
-$$FT(A_1, \ldots, A_n) \rightarrow R$$
+$$\FT(A_1, \ldots, A_n) \rightarrow R$$
 
 consists of
 
 * argument types $A_i$
 * return type $R$
 
-and may be considered the following instantiation of a special type constructor $FunctionN(\inV P_1, \ldots, \inV P_n, \outV RT)$
+and may be considered the following instantiation of a special type constructor $\FunctionN(\inV P_1, \ldots, \inV P_n, \outV R)$
 
-$$FT(A_1, \ldots, A_n) \rightarrow R \equiv FunctionN[A_1, \ldots, A_n, R]$$
+$$\FT(A_1, \ldots, A_n) \rightarrow R \equiv \FunctionN[A_1, \ldots, A_n, R]$$
 
-These $FunctionN$ types follow the rules of regular type constructors and parameterized types w.r.t. subtyping.
+These $\FunctionN$ types follow the rules of regular type constructors and parameterized types w.r.t. subtyping.
 
-A function type with receiver FTR
+A function type with receiver $\FTR$
 
-$$FTR(TH, A_1, \ldots, A_n) \rightarrow R$$
+$$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R$$
 
 consists of
 
-* receiver type $TH$
+* receiver type $\RT$
 * argument types $A_i$
 * return type $R$
 
 From the type system's point of view, it is equivalent to the following function type
 
-$$FTR(TH, A_1, \ldots, A_n) \rightarrow R \equiv FT(TH, A_1, \ldots, A_n) \rightarrow R$$
+$$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(\RT, A_1, \ldots, A_n) \rightarrow R$$
 
 i.e., receiver is considered as yet another argument of its function type.
 
@@ -563,9 +563,9 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
-Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
+Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
 
-> Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is necessary.
+> Note: a compiler implementation may consider a function type $\FunctionN$ to have additional supertypes, if it is necessary.
 
 > Example:
 > ```kotlin
