@@ -83,13 +83,15 @@ An empty value is represented by a special `null` object; most operations with i
 
 Kotlin has a type system with the following main properties.
 
-* Hybrid static and gradual type checking
+* Hybrid static, gradual and flow type checking
 * Null safety
 * No unsafe implicit conversions
 * Unified top and bottom types
 * Nominal subtyping with bounded parametric polymorphism and mixed-site variance
 
-TODO(static type checking, gradual type checking)
+Type safety (consistency between compile and runtime types) is verified *statically*, at compile time, for the majority of Kotlin types.
+However, for better interoperability with platform-dependent code Kotlin also support a variant of *gradual types* in the form of [flexible types][Flexible types].
+Even more so, in some cases the compile-time type of a value may *change* depending on the control- and data-flow of the program; a feature usually known as *flow typing*, represented in Kotlin as [smart casts][Smart casts].
 
 Null safety is enforced by having two type universes: _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
 A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by `null`.
@@ -140,7 +142,19 @@ Kotlin type system uses the following built-in types, which have special semanti
 
 $\Any$ is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of $\Any$, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
-TODO($\Any$ members?)
+It must provide the following methods.
+
+- `public open operator fun equals(other: Any?): Boolean`
+  Returns `true` iff a value is equal to some other value.
+  Implementations of `equals` must satisfy the properties of reflexivity (`x.equals(x)` is always true), symmetry (`x.equals(y) == y.equals(x)`), transitivity (if `x.equals(y)` and `y.equals(z)`, `x.equals(z)`) and consistency (`x.equals(y)` should not change between multiple invocations).
+  A non-null value also must never be considered equal to `null`, i.e. `x.equals(null)` must be `false`.
+
+- `public open fun hashCode(): Int`
+  Returns a hash code for a value.
+  Implementations of `hashCode` must satisfy the following property: if two values are equals w.r.t. `equals`, `hashCode` must produce the same result consistently.
+
+- `public open fun toString(): String`
+  Returns a string representation of a value.
 
 ##### `kotlin.Nothing`
 
@@ -158,8 +172,7 @@ Additional details about how $\Nothing$ should be processed are available [here]
 ##### `kotlin.Unit`
 
 $\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
-
-TODO(Compare to `void`?)
+It is somewhat similar in purpose to `void` return type in Java, but has several minor differences, which fall outside the scope of this specification.
 
 ##### `kotlin.Function`
 
@@ -550,14 +563,11 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
-Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][kotlin.Function] for the purpose of unification.
+Furthermore, all function types $FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
 
 > Note: a compiler implementation may consider a function type $FunctionN$ to have additional supertypes, if it is necessary.
 
-TODO(We already have `kotlin.Function` settled in this spec earlier. The reason for this is that overloading needs it)
-
 > Example:
-> 
 > ```kotlin
 > // A function of type Function1<Number, Number>
 > //   or (Number) -> Number

@@ -79,7 +79,7 @@ All of these operators are overloadable operator functions with the following ex
 - $A\ \texttt{/=}\ B$ is exactly the same as one of the following:
     - $A\texttt{.divAssign(}B\texttt{)}$ if a suitable `divAssign` operator function exists and is available;
     - $A\ \texttt{=}\ A\texttt{.div(}B\texttt{)}$ if a suitable `div` operator function exists and is available;
-- $A\ \texttt{%=}\ B$ is exactly the same as one of the following:
+- $A\ \texttt{\%=}\ B$ is exactly the same as one of the following:
     - $A\texttt{.remAssign(}B\texttt{)}$ if a suitable `remAssign` operator function exists and is available;
     - $A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}$ if a suitable `rem` operator function exists and is available.
 
