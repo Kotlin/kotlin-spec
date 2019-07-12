@@ -855,8 +855,6 @@ All integer literal type are equivalent w.r.t. subtyping, meaning that for any s
 
 #### Subtyping for nullable types
 
-TODO(Why can't we just say that $\forall T : T <: T?$ and $\forall T : T!! <: T$ and be done with it?)
-
 Subtyping for two possibly nullable types $A$ and $B$ is defined via *two* relations, both of which must hold.
 
 * Regular subtyping $<:$ for non-nullable types $A!!$ and $B!!$
@@ -869,7 +867,16 @@ Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses
 * $A \sbn B?$
 * $A \sbn B$ if $\not \exists T!! : B <: T!!$
 
-TODO(How the existence check works)
+> Example:
+> ```diagram
+>     A    B?   C!!           A
+>     |    |     |            |
+>     |    +--+--+     -->    |
+>     |       |               |
+>     v       v               v
+>     B       T               T
+> ```
+> This example shows a situation, when the subtyping by nullability relation from $T <: C!!$ is used to prove $T <: A$.
 
 ### Upper and lower bounds
 
