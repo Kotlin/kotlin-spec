@@ -1,8 +1,8 @@
 ## Type system
 
-TODO(Add examples)
-
 TODO(Add grammar snippets?)
+
+TODO(Decide on the formatting style and fix it)
 
 ### Glossary
 
@@ -179,10 +179,23 @@ It is somewhat similar in purpose to `void` return type in Java, but has several
 $\Function(R)$ is the unified supertype of all [function types][Function types].
 It is parameterized over function return type `R`.
 
+##### Built-in integer types
+
+Kotlin supports the following signed integer types.
+
+- `Byte` (bit width 8)
+- `Short` (bit width 16)
+- `Int` (bit width 32)
+- `Long` (bit width 64)
+
+A value with signed integer type of bit width $N$ is guaranteed to be able to hold integer values in range $[-2^{N-1}, 2^{N-1}-1]$.
+
+TODO(Add unsigned types?)
+
 #### Classifier types
 
-Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects].
-As Kotlin supports [generics][Generics], there are two variants of classifier types: simple and parameterized.
+Classifier types represent regular types which are declared as [classes][Class declaration], [interfaces][Interface declaration] or [objects][Object declaration].
+As Kotlin supports parametric polymorphism, there are two variants of classifier types: simple and parameterized.
 
 ##### Simple classifier types
 
@@ -350,8 +363,6 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
-
-TODO(Fix formatting here)
 
 ##### Declaration-site variance
 
@@ -701,14 +712,10 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 
 #### Integer literal types
 
-TODO(Think this through)
-
 An integer literal type containing types $T_1, \ldots, T_N$, denoted $\LTS(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
-Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types]
+Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types].
 
 Integer literal types are the types of [integer literals][Integer literals].
-
-TODO(Consult with the team)
 
 #### Union types
 
@@ -729,8 +736,6 @@ TODO(Type contexts and their relation to scopes)
 TODO(Inner vs nested type contexts)
 
 ### Subtyping
-
-TODO(Need to change the way we think about subtyping)
 
 Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ is a subtype of $T$ (denoted as $S <: T$), values of type $S$ can be safely used where values of type $T$ are expected.
 The subtyping relation $<:$ is:
@@ -808,12 +813,45 @@ Moreover, any type $T$ with supertypes $S_1, \ldots, S_N$ is also a subtype of $
 
 #### Subtyping for integer literal types
 
-Every integer literal type is equivalent with w.r.t. subtyping, meaning that for any sets $T_1, \ldots, T_K$ and $U_1, \ldots, U_N$ of builtin integer types:
+All integer literal type are equivalent w.r.t. subtyping, meaning that for any sets $T_1, \ldots, T_K$ and $U_1, \ldots, U_N$ of built-in integer types:
 
 - $\LTS(T_1, \ldots, T_K) <: \LTS(U_1, \ldots, U_N)$
-- $\LTS(U_1, \ldots, U_K) <: \LTS(T_1, \ldots, T_K)$
-- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp T_i <: \LTS(T_1, \ldots, T_K)$
+- $\LTS(U_1, \ldots, U_N) <: \LTS(T_1, \ldots, T_K)$
 - $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp \LTS(T_1, \ldots, T_K) <: T_i$
+- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp T_i <: \LTS(T_1, \ldots, T_K)$
+
+> Note: the last two rules mean $\LTS(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 | \ldots | T_K$, depending on the context.
+> Viewing $\LTS$ as intersection type allows us to use integer literals where built-in integer types are expected.
+> Making $\LTS$ behave as union type is needed to support cases when they appear in contravariant position.
+
+> Example:
+> ```kotlin
+> interface In<in T>
+> 
+> fun <T> T.asIn(): In<T> = ...
+>
+> fun <S> select(a: S, b: In<S>): S = ...
+> 
+> fun ltsAsIntersection() {
+>     val a: Int = 42 // LTS(Byte, Short, Int, Long) <: Int
+>     
+>     fun foo(a: Short) {}
+>     
+>     foo(1377) // LTS(Short, Int, Long) <: Short
+> }
+> 
+> fun ltsAsUnion() {
+>     val a: Short = 42
+>     
+>     select(a, 1337.asIn())
+>         // For argument a:
+>         //   Short <: S
+>         // For argument b:
+>         //   In<LTS(Short, Int, Long)> <: In<S> =>
+>         //     S <: LTS(Short, Int, Long)
+>         // Solution: S =:= Short
+> }
+> ```
 
 #### Subtyping for nullable types
 
@@ -832,10 +870,6 @@ Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses
 * $A \sbn B$ if $\not \exists T!! : B <: T!!$
 
 TODO(How the existence check works)
-
-### Generics
-
-TODO(How are generics different from type parameters? Or are we going to get into deep technical detail?)
 
 ### Upper and lower bounds
 
