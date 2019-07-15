@@ -102,6 +102,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
+
+
 <h2 id="expressions">Expressions</h2>
 <h3 id="glossary">Glossary</h3>
 <dl>
@@ -175,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: for example, integer literal <code>0x01</code> has value <span class="math inline">\(1\)</span> and therefore has type <span class="math inline">\(\mathtt{LTS}(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>. </span><span class="sentence">Integer literal <code>70000</code> has value <span class="math inline">\(70000\)</span>, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="math inline">\(\mathtt{LTS}(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>.</span></p>
+<p><span class="sentence">Note: for example, integer literal <code>0x01</code> has value <span class="math inline">\(1\)</span> and therefore has type <span class="math inline">\(\operatorname{\text{LTS}}(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>. </span><span class="sentence">Integer literal <code>70000</code> has value <span class="math inline">\(70000\)</span>, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="math inline">\(\operatorname{\text{LTS}}(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>.</span></p>
 </div>
 </blockquote>
 <h4 id="real-literals">Real literals</h4>
@@ -376,11 +384,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The bound expression is of a [nullable type][Nullable types] <span class="math inline">\(T?\)</span> and one of the cases above is met for its non-nullable counterpart <span class="math inline">\(T\)</span> together with another condition which checks the bound value for equality with <code>null</code>.</span></li>
 </ul></li>
 </ul>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Equality check with object behaves kinda like a type check. </span><span class="sentence">Or not.)</span></p>
+<p><span class="sentence">For object types, the type test condition may be replaced with equality check with the object value:</span></p>
 </div>
-</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">sealed</span> <span class="kw">class</span> Base</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">class</span> Derived1(): <span class="dt">Base</span>()</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">object</span> Derived2(): <span class="dt">Base</span></a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5">...</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">b</span>: Base = ...</a>
+<a class="sourceLine" id="cb2-7" title="7">... = <span class="cf">when</span>(b) {</a>
+<a class="sourceLine" id="cb2-8" title="8">    <span class="kw">is</span> Derived1 -&gt; ...</a>
+<a class="sourceLine" id="cb2-9" title="9">    Derived2 -&gt; ...</a>
+<a class="sourceLine" id="cb2-10" title="10">    <span class="co">// no else needed here</span></a>
+<a class="sourceLine" id="cb2-11" title="11">}</a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.</span></p>
@@ -393,11 +410,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="paragraph">
 <p><span class="sentence">Both operands of a logical disjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Types of errors? </span><span class="sentence">Compile-time, type, run-time, whatever?)</span></p>
-</div>
 </div>
 <h3 id="logical-conjunction-expression">Logical conjunction expression</h3>
 <strong>Id grammar-rule-conjunction not found</strong>
@@ -423,7 +435,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">If these values are <a href="#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>
 <li><span class="sentence">Any instance of the null reference <code>null</code> is equal by reference to any other instance of the null reference;</span></li>
-<li><span class="sentence">Otherwise, equality by reference is implementation-defined and must not be used as a means of comparing such values.</span></li>
+<li><span class="sentence">Otherwise, equality by reference is implementation-defined and should not be used as a means of comparing such values.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Reference equality expressions always have type <code>kotlin.Boolean</code>.</span></p>
@@ -438,7 +450,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always at least one available overloading candidate for any value equality expression.</span></p>
+<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always one available overloading candidate for any value equality expression.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -451,13 +463,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are [overloadable][Overloadable operators] with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>A.compareTo(B) [&lt;] 0</code></span></li>
-<li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>0 [&lt;] A.compareTo(B)</code></span></li>
-<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!(A.compareTo(B) [&lt;] 0)</code></span></li>
-<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!(0 [&lt;] A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
+<li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>integerLess(0, A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B),0)</code></span></li>
+<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>[&lt;]</code> (read “boxed less”) is a special operator unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
+<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The <code>compareTo</code> operator function must have a return type <code>kotlin.Int</code>, otherwise it is a compile-time error.</span></p>

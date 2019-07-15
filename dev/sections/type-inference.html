@@ -102,6 +102,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
+
+
 <h2 id="type-inference">Type inference</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has a concept of <em>type inference</em> for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler. </span><span class="sentence">There are two kinds of type inference supported by Kotlin.</span></p>
@@ -122,34 +130,206 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="smart-casts">Smart casts</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin introduces a limited form of flow-dependent typing called <em>smart casting</em>. </span><span class="sentence">Flow-dependent typing means some expressions in the program may introduce changes to the compile-time types of variables. </span><span class="sentence">This allows one to avoid unneeded explicit casting of values in cases when their runtime types are guaranteed to conform to the expected compile-time types.</span></p>
+<p><span class="sentence">Kotlin introduces a limited form of flow-sensitive typing called <em>smart casts</em>. </span><span class="sentence">Flow-sensitive typing means some expressions in the program may introduce changes to the compile-time types of variables. </span><span class="sentence">This allows one to avoid unneeded explicit casting of values in cases when their runtime types are guaranteed to conform to the expected compile-time types.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Smart casts are dependent on two main things: <em>smart cast sources</em> and <em>smart cast sink stability</em>.</span></p>
+<p><span class="sentence">Flow-sensitive typing may be considered a specific instance of traditional data-flow analysis. </span><span class="sentence">Therefore, before we discuss it further, we need to establish the data-flow framework, which we will use for smart casts.</span></p>
 </div>
-<h4 id="smart-cast-sources">Smart cast sources</h4>
+<h4 id="data-flow-framework">Data-flow framework</h4>
+<h5 id="smart-cast-lattices">Smart cast lattices</h5>
 <div class="paragraph">
-<p><span class="sentence">There are two kinds of smart cast sources: <em>non-nullability conditions</em> and <em>type conditions</em>. </span><span class="sentence">Non-nullability conditions specify that some value is not nullable, i.e., its value is guaranteed to not be <code>null</code>. </span><span class="sentence">Type conditions specify that some value’s runtime type conforms to a constraint <span class="math inline">\(RT &lt;: T\)</span>, where <span class="math inline">\(T\)</span> is the assumed type and <span class="math inline">\(RT\)</span> is the runtime type. </span><span class="sentence">A smart cast source may be <em>negated</em>, meaning it reverses its interpretation.</span></p>
+<p><span class="sentence">We assume our data-flow analysis is run on a classic control-flow graph (CFG) structure, where most non-trivial expressions and statements are simplified and/or desugared.</span></p>
 </div>
-<blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Note: non-nullability conditions may be viewed as a special case of type conditions with assumed type <code>kotlin.Any</code>.</span></p>
+<p><span class="sentence">TODO(Explain how this simplification is done?)</span></p>
 </div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: we may use the terms “negated non-nullability condition” and “nullability condition” interchangeably.</span></p>
 </div>
-</blockquote>
 <div class="paragraph">
-<p><span class="sentence">These sources influence the compile-time type of a value in some expression (called <em>smart cast sink</em>) only if the sink is <a href="#smart-cast-sink-stability"><em>stable</em></a> and if the source <a href="#source-sink-domination">dominates</a> the sink. </span><span class="sentence">The actual compile-time type of a smart casted value for most purposes (including, but not limited to, function overloading and type inference of other values) is as follows.</span></p>
+<p><span class="sentence">Our data-flow domain is a map lattice <span class="math inline">\(\operatorname{\text{SmartCastData}}= \operatorname{\text{Expression}}\rightarrow \operatorname{\text{SmartCastType}}\)</span>, where <span class="math inline">\(\operatorname{\text{Expression}}\)</span> is any Kotlin expression and <span class="math inline">\(\operatorname{\text{SmartCastType}}= \operatorname{\text{Type}}\times \operatorname{\text{Type}}\)</span> sublattice is a product lattice of smart cast data-flow facts of the following kind.</span></p>
 </div>
 <ul>
-<li><span class="sentence">If the smart cast source is a non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type <code>kotlin.Any</code>;</span></li>
-<li><span class="sentence">If the smart cast source is a negated non-nullability condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and type <code>kotlin.Nothing?</code>;</span></li>
-<li><span class="sentence">If the smart cast source is a type condition, the type is the [intersection][Type intersection] of the type it had before (including the results of smart casting performed for other conditions) and the assumed type of the condition.</span></li>
-<li><span class="sentence">If the smart cast source is a negated type condition, the type does not change.</span></li>
+<li><span class="sentence">First component describes the type, which an expression definitely <strong>has</strong></span></li>
+<li><span class="sentence">Second component describes the type, which an expression definitely <strong>does not have</strong></span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">The sublattice order, join and meet are defined as follows.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+P_1 \times N_1 \sqsubseteq
+P_2 \times N_2
+  \Leftrightarrow P_1 &lt;: P_2 \land N_1 :&gt; N_2
+\]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[\begin{align*}
+P_1 \times N_1 \sqcup
+P_2 \times N_2
+  &amp;= \operatorname{\text{LUB}}(P_1, P_2) \times \operatorname{\text{GLB}}(N_1, N_2) \\
+P_1 \times N_1 \sqcap
+P_2 \times N_2
+  &amp;= \operatorname{\text{GLB}}(P_1, P_2) \times \operatorname{\text{LUB}}(N_1, N_2)
+\end{align*}\]</span></span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
+(P_1 \operatorname{\&amp;}\neg N_1) | (P_2 \operatorname{\&amp;}\neg N_2)
+  &amp;\sqsubseteq (P_1 | P_2) \operatorname{\&amp;}(\neg N_1 | \neg N_2)
+  &amp;&amp;= (P_1 | P_2) \operatorname{\&amp;}\neg (N_1 \operatorname{\&amp;}N_2)
+  \\
+(P_1 \operatorname{\&amp;}\neg N_1) \operatorname{\&amp;}(P_2 \operatorname{\&amp;}\neg N_2)
+  &amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}(\neg N_1 \operatorname{\&amp;}\neg N_2) 
+  &amp;&amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}\neg (N_1 | N_2)
+\end{alignat*}\]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin [type system][Type system] does not have negation types, we overapproximate them when needed.</span></p>
+</div>
+</blockquote>
+<h5 id="smart-cast-transfer-functions">Smart cast transfer functions</h5>
+<div class="paragraph">
+<p><span class="sentence">The data-flow information uses the following transfer functions.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Add compile-time types of expressions to the transfer functions)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{as}}T \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{!as}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[x = y \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(y)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{killDataFlow}}(x) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow (\top \times \top)]
+\\
+\\
+&amp;\left[\!\left[l \right]\!\right](s)
+&amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
+\end{alignat*}\]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">where</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[\begin{alignat*}{1}
+\operatorname{\mathit{swap}}(P \times N) &amp;= N \times P
+\\
+\operatorname{\mathit{isNullable}}(s) &amp;=
+\left.
+  \begin{cases}
+    (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) &amp; \text{if } s \sqsubseteq (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) \\
+    (\top \times \top)      &amp; \text{otherwise}
+  \end{cases}
+\right.
+\end{alignat*}\]</span></span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: transfer function for <code>==</code> and <code>!=</code> are used only if the corresponding [<code>equals</code> implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions]. </span><span class="sentence">For example, generated <code>equals</code> implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(A complete list of when <code>equals</code> is OK?)</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in some cases, after the CFG simplification a program location <span class="math inline">\(l\)</span> may be duplicated and associated with several locations <span class="math inline">\(l_1, \ldots, l_N\)</span> in the resulting CFG. </span><span class="sentence">If so, the data-flow information for <span class="math inline">\(l\)</span> is calculated as</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[\left[\!\left[l \right]\!\right]= \bigsqcup_{i=1}^N \left[\!\left[l_i \right]\!\right]\]</span></span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a <span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> instruction is used to reset the data-flow information in cases, when a compiler deems necessary to stop its propagation. </span><span class="sentence">For example, it may be used in loops to speed up data-flow analysis convergence. </span><span class="sentence">This is the current behaviour of the Kotlin compiler.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">After the data-flow analysis is done, for a program location <span class="math inline">\(l\)</span> we have its data-flow information <span class="math inline">\(\left[\!\left[l \right]\!\right]\)</span>, which contains data-flow facts <span class="math inline">\(\left[\!\left[l \right]\!\right][e] = (P \times N)\)</span> for an expression <span class="math inline">\(e\)</span>.</span></p>
+</div>
+<h4 id="smart-cast-types">Smart cast types</h4>
+<div class="paragraph">
+<p><span class="sentence">The data-flow information is used to produce the smart cast type as follows.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, smart casts may influence the compile-time type of an expression <span class="math inline">\(e\)</span> (called <em>smart cast sink</em>) only if the sink is <a href="#smart-cast-sink-stability"><em>stable</em></a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Second, for a stable smart cast sink <span class="math inline">\(e\)</span> we calculate the overapproximation of its possible type.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+\left[\!\left[l \right]\!\right][e] = (P \times N)
+  \Rightarrow
+  \operatorname{\mathit{smartCastTypeOf}}(e) = \operatorname{\mathit{typeOf}}(e) \operatorname{\&amp;}P \operatorname{\&amp;}\operatorname{\mathit{approxNegationType}}(N)
+\\
+\operatorname{\mathit{approxNegationType}}(N) =
+\left.
+  \begin{cases}
+    \operatorname{\mathtt{kotlin.Any}}&amp; \text{if } \operatorname{\mathtt{kotlin.Nothing?}}&lt;: N \\
+    \operatorname{\mathtt{kotlin.Any?}}&amp; \text{otherwise}
+  \end{cases}
+\right.
+\]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">As a result, <span class="math inline">\(\operatorname{\mathit{smartCastTypeOf}}(e)\)</span> is used as a compile-time type of <span class="math inline">\(e\)</span> for most purposes (including, but not limited to, function overloading and type inference of other values).</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: the most important exception to when smart casts are used in type inference is direct property declaration.</span></p>
@@ -178,7 +358,7 @@ fun smartCastInInference() {
 }</code></pre>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Smart cast sources are introduced by:</span></p>
+<p><span class="sentence">Smart casts are introduced by the following Kotlin constructions.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Conditional expressions (<code>if</code> and <code>when</code>);</span></li>
@@ -196,43 +376,14 @@ fun smartCastInInference() {
 <p><span class="sentence">Note: property declarations are not listed here, as their types are derived from initializers.</span></p>
 </div>
 </blockquote>
-<div class="paragraph">
-<p><span class="sentence">Nullability and type conditions are derived in the following way.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>x is T</code> where <span class="math inline">\(x\)</span> is an applicable expression implies a type condition for <span class="math inline">\(x\)</span> with assumed type <span class="math inline">\(T\)</span>;</span></li>
-<li><span class="sentence"><code>x !is T</code> where <span class="math inline">\(x\)</span> is an applicable expression implies a negated type condition for <span class="math inline">\(x\)</span> with assumed type <span class="math inline">\(T\)</span>;</span></li>
-<li><span class="sentence"><code>x != null</code> or <code>null != x</code> where <span class="math inline">\(x\)</span> is an applicable expression implies a non-nullability condition for <span class="math inline">\(x\)</span>;</span></li>
-<li><span class="sentence"><code>x == null</code> or <code>null == x</code> where <span class="math inline">\(x\)</span> is an applicable expression implies a nullability condition for <span class="math inline">\(x\)</span>;</span></li>
-<li><span class="sentence"><code>!x</code> implies all the conditions implied by <span class="math inline">\(x\)</span>, but in negated form;</span></li>
-<li><span class="sentence"><code>x &amp;&amp; y</code> implies the union of all non-negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and the intersection of all negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>;</span></li>
-<li><span class="sentence"><code>x || y</code> implies the union of all negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and the intersection of all non-negated conditions implied by <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>;</span></li>
-<li><span class="sentence"><code>x === y</code> or <code>y === x</code> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for <span class="math inline">\(x\)</span>;</span></li>
-<li><span class="sentence"><code>x === y</code> or <code>y === x</code> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is known to be null (that is, has <code>Nothing?</code> type) implies the nullability condition for <span class="math inline">\(x\)</span>;</span></li>
-<li><span class="sentence"><code>x == y</code> or <code>y == x</code> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is a known non-nullable value (that is, has a non-nullable compile-time type) implies the non-nullability condition for <span class="math inline">\(x\)</span>, but only if the corresponding [<code>equals</code> implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].</span></li>
-<li><span class="sentence"><code>x == y</code> or <code>y == x</code> where <span class="math inline">\(x\)</span> is an applicable expression and <span class="math inline">\(y\)</span> is known to be null (that is, has <code>Nothing?</code> type) implies the nullability condition for <span class="math inline">\(x\)</span>, but only if the corresponding [<code>equals</code> implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].</span></li>
-</ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(x != Nothing? </span><span class="sentence">/ x !== Nothing?)</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: for example, generated <code>equals</code> implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.</span></p>
+<p><span class="sentence">Note: for the purposes of smart casts, most of these constructions are simplified and/or desugared, when we are building the program CFG for the data-flow analysis. </span><span class="sentence">We informally call such constructions <em>smart cast sources</em>, as they are responsible for creating smart cast specific instructions.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(A complete list of when <code>equals</code> is OK?)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Additionally, any type condition with assumed <em>non-null</em> type also creates a non-nullability condition for its value. </span><span class="sentence">This property is used in <a href="#bound-smart-casts">bound smart casts</a>.</span></p>
-</div>
 <h4 id="smart-cast-sink-stability">Smart cast sink stability</h4>
 <div class="paragraph">
-<p><span class="sentence">A smart cast sink is <em>stable</em> for smart casting if its value cannot be changed from the smart cast source to itself; this guarantees the smart cast conditions still hold at the sink. </span><span class="sentence">This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.</span></p>
+<p><span class="sentence">A smart cast sink is <em>stable</em> for smart casting if its value cannot be changed via means external to the CFG; this guarantees the smart cast conditions calculated by the data-flow analysis still hold at the sink. </span><span class="sentence">This is one of the necessary conditions for smart cast to be applicable to an expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Smart cast sink stability breaks in the presence of the following aspects.</span></p>
@@ -243,22 +394,17 @@ fun smartCastInInference() {
 <li><span class="sentence">custom getters;</span></li>
 <li><span class="sentence">delegation.</span></li>
 </ul>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: despite what it may seem at first sight, sink stability is <em>very</em> complicated for local variables.</span></p>
-</div>
-</blockquote>
 <div class="paragraph">
 <p><span class="sentence">The following smart cast sinks are considered stable.</span></p>
 </div>
 <ol type="1">
 <li><span class="sentence">Immutable local or classifier-scope properties without delegation or custom getters;</span></li>
-<li><span class="sentence">Immutable properties of stable properties without delegation or custom getters;</span></li>
-<li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are <a href="#effectively-immutable-smart-cast-sinks">effectively immutable</a>, i.e., cannot be changed by external means from the smart cast source to the smart cast sink.</span></li>
+<li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are <a href="#effectively-immutable-smart-cast-sinks">effectively immutable</a>, i.e., cannot be changed by external means;</span></li>
+<li><span class="sentence">Immutable properties of immutable stable properties without delegation or custom getters.</span></li>
 </ol>
 <h5 id="effectively-immutable-smart-cast-sinks">Effectively immutable smart cast sinks</h5>
 <div class="paragraph">
-<p><span class="sentence">We will call redefinition of <span class="math inline">\(P\)</span> <strong><em>direct</em></strong> redefinition, if it happens in the same declaration scope as the definition of <span class="math inline">\(P\)</span>. </span><span class="sentence">If <span class="math inline">\(P\)</span> is redefined in a nested declaration scope (w.r.t. </span><span class="sentence">its definition), this is a <strong><em>nested</em></strong> redefinition.</span></p>
+<p><span class="sentence">We will call redefinition of <span class="math inline">\(e\)</span> <strong><em>direct</em></strong> redefinition, if it happens in the same declaration scope as the definition of <span class="math inline">\(e\)</span>. </span><span class="sentence">If <span class="math inline">\(e\)</span> is redefined in a nested declaration scope (w.r.t. </span><span class="sentence">its definition), this is a <strong><em>nested</em></strong> redefinition.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -293,17 +439,11 @@ fun smartCastInInference() {
 <a class="sourceLine" id="cb2-19" title="19">}</a></code></pre></div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">A mutable local property <span class="math inline">\(P\)</span> defined at <span class="math inline">\(D\)</span> is considered effectively immutable for a given pair of smart cast source <span class="math inline">\(SO\)</span> and smart cast sink <span class="math inline">\(SI\)</span>, if the following properties hold.</span></p>
+<p><span class="sentence">A mutable local property <span class="math inline">\(P\)</span> defined at <span class="math inline">\(D\)</span> is considered effectively immutable at a direct sink <span class="math inline">\(S\)</span>, if there are no nested redefinitions on any CFG path between <span class="math inline">\(D\)</span> and <span class="math inline">\(S\)</span>.</span></p>
 </div>
-<ul>
-<li><span class="sentence">There are no redefinitions of <span class="math inline">\(P\)</span> on any path between <span class="math inline">\(SO\)</span> and <span class="math inline">\(SI\)</span></span></li>
-<li><span class="sentence">If <span class="math inline">\(SI\)</span> is a direct sink, there must be no nested redefinitions on any path between <span class="math inline">\(D\)</span> and <span class="math inline">\(SI\)</span></span></li>
-<li><span class="sentence">If <span class="math inline">\(SI\)</span> is a nested sink, then</span>
-<ul>
-<li><span class="sentence">there must be no nested redefinitions of <span class="math inline">\(P\)</span></span></li>
-<li><span class="sentence">all direct redefinitions of <span class="math inline">\(P\)</span> must precede <span class="math inline">\(SI\)</span></span></li>
-</ul></li>
-</ul>
+<div class="paragraph">
+<p><span class="sentence">A mutable local property <span class="math inline">\(P\)</span> defined at <span class="math inline">\(D\)</span> is considered effectively immutable at a nested sink <span class="math inline">\(S\)</span>, if there are no nested redefinitions of <span class="math inline">\(P\)</span> and all direct redefinitions of <span class="math inline">\(P\)</span> precede <span class="math inline">\(S\)</span> in the CFG.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
@@ -344,160 +484,105 @@ fun smartCastInInference() {
 <a class="sourceLine" id="cb3-34" title="34">            x.inc()      <span class="co">// nested sink</span></a>
 <a class="sourceLine" id="cb3-35" title="35">    }</a>
 <a class="sourceLine" id="cb3-36" title="36">    x = getNullableInt() <span class="co">// direct redefinition</span></a>
-<a class="sourceLine" id="cb3-37" title="37">                         <span class="co">//   after the nested sunk</span></a>
+<a class="sourceLine" id="cb3-37" title="37">                         <span class="co">//   after the nested sink</span></a>
 <a class="sourceLine" id="cb3-38" title="38">}</a>
 <a class="sourceLine" id="cb3-39" title="39"></a>
 <a class="sourceLine" id="cb3-40" title="40"><span class="kw">fun</span> <span class="fu">nestedSinkBad02</span>() {</a>
 <a class="sourceLine" id="cb3-41" title="41">    <span class="kw">var</span> <span class="va">x</span>: <span class="kw">Int</span>? = <span class="dv">42</span>     <span class="co">// definition</span></a>
 <a class="sourceLine" id="cb3-42" title="42">    run {</a>
 <a class="sourceLine" id="cb3-43" title="43">        x = <span class="kw">null</span>         <span class="co">// nested redefinition</span></a>
-<a class="sourceLine" id="cb3-44" title="44">                         <span class="co">//   of a nested sink</span></a>
-<a class="sourceLine" id="cb3-45" title="45">    }</a>
-<a class="sourceLine" id="cb3-46" title="46">    run {</a>
-<a class="sourceLine" id="cb3-47" title="47">        <span class="cf">if</span> (x != <span class="kw">null</span>)   <span class="co">// smart cast source</span></a>
-<a class="sourceLine" id="cb3-48" title="48">            x.inc()      <span class="co">// nested sink</span></a>
-<a class="sourceLine" id="cb3-49" title="49">    }</a>
-<a class="sourceLine" id="cb3-50" title="50">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-44" title="44">    }</a>
+<a class="sourceLine" id="cb3-45" title="45">    run {</a>
+<a class="sourceLine" id="cb3-46" title="46">        <span class="cf">if</span> (x != <span class="kw">null</span>)   <span class="co">// smart cast source</span></a>
+<a class="sourceLine" id="cb3-47" title="47">            x.inc()      <span class="co">// nested sink</span></a>
+<a class="sourceLine" id="cb3-48" title="48">    }</a>
+<a class="sourceLine" id="cb3-49" title="49">}</a></code></pre></div>
 </blockquote>
-<h4 id="source-sink-domination">Source-sink domination</h4>
+<h4 id="loop-handling">Loop handling</h4>
 <div class="paragraph">
-<p><span class="sentence">A smart cast source <span class="math inline">\(SO\)</span> dominates a smart cast sink <span class="math inline">\(SI\)</span>, if <span class="math inline">\(SO\)</span> is a control-flow dominator of <span class="math inline">\(SI\)</span>. </span><span class="sentence">This is one of the necessary conditions for smart cast to be applicable for a given source-sink pair.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">In the most basic case, smart cast conditions propagate as-is from sources to sinks. </span><span class="sentence">However, as a number of expressions have additional semantics, which may influence smart cast conditions, in some cases these conditions are modified along the sink-source chain. </span><span class="sentence">This means the following for different smart cast sources.</span></p>
+<p><span class="sentence">As mentioned before, a compiler may use <span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> instructions in loops to avoid slow data-flow analysis convergence. </span><span class="sentence">In the general case, a loop body may be evaluated zero or more times, which, combined with <span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> instructions, causes the smart cast sources from the loop body to <em>not</em> propagate to the containing scope. </span><span class="sentence">However, some loops, for which we can have static guarantees about how their body is evaluated, may be handled differently. </span><span class="sentence">For the following loop configurations, we consider their bodies to be definitely evaluated <em>one or more</em> times.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Conditional expressions (<code>if</code> and <code>when</code>):</span>
-<ul>
-<li><span class="sentence">Smart cast conditions derived from expression condition are active inside the true branch scope;</span></li>
-<li><span class="sentence">Smart cast conditions derived from <em>negated</em> expression condition are active inside the false branch scope;</span></li>
-<li><span class="sentence">If a branch is statically known to be definitely evaluated, that branch’s condition is also propagated over to its containing scope after the conditional expression;</span></li>
-</ul></li>
-<li><span class="sentence">Elvis operator (operator <code>?:</code>): if the right-hand side of elvis operator is unreachable, a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;</span></li>
-<li><span class="sentence">Safe navigation operator (operator <code>?.</code>) TODO()</span></li>
-<li><span class="sentence">Logical conjunction expressions (operator <code>&amp;&amp;</code>): all conditions derived from the left-hand expression are applied to the right-hand expression;</span></li>
-<li><span class="sentence">Logical disjunction expressions (operator <code>||</code>): all conditions derived from the left-hand expression are applied <em>negated</em> to the right-hand expression;</span></li>
-<li><span class="sentence">Not-null assertion expressions (operator <code>!!</code>): a nullability condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope;</span></li>
-<li><span class="sentence">Unsafe cast expression (operator <code>as</code>): a type condition for the left-hand side expression (if applicable) is introduced for the rest of the containing scope; the assumed type is the same as the right-hand side type of the cast expression;</span></li>
-<li><span class="sentence">Direct assignment: if both sides of the assignment are applicable expressions, all the conditions currently applying to the right-hand side are also applied to the left-hand side of the assignment for the rest of the containing scope.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">The necessity of source-sink domination also mean that smart cast sources from the loop bodies and conditions are <strong>not</strong> propagated to the containing scope, as the loop body may be evaluated zero or more times, and the corresponding conditions may or may not be true. </span><span class="sentence">However, some loop configurations, for which we can have static guarantees about source-sink domination w.r.t. the containing scope, are handled differently.</span></p>
-</div>
-<ul>
-<li><span class="sentence">do-while loops (as their body is evaluated at least once) propagate the following to the rest of the containing scope:</span>
-<ul>
-<li><span class="sentence">smart cast sources from the loop body, which definitely dominate their sinks</span></li>
-<li><span class="sentence">smart cast conditions arising from the <em>negated</em> loop condition, if the loop body does not contain any <code>break</code> expressions</span></li>
-</ul></li>
-<li><span class="sentence"><code>while (true)</code> loops propagate the following to the rest of the containing scope:</span>
-<ul>
-<li><span class="sentence">smart cast sources from the loop body, which definitely dominate their sinks</span></li>
-</ul></li>
+<li><span class="sentence"><code>while (true) { ... }</code></span></li>
+<li><span class="sentence"><code>do { ... } while (condition)</code></span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: in the second case, only the exact <code>while (true)</code> form is handled as described; e.g., <code>while (true == true)</code> does not work.</span></p>
+<p><span class="sentence">Note: in the current implementation, only the exact <code>while (true)</code> form is handled as described; e.g., <code>while (true == true)</code> does not work.</span></p>
 </div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: one may extend the number of loop configurations, which are handled by smart casting, if the implementation can statically guarantee the source-sink domination.</span></p>
+<p><span class="sentence">Note: one may extend the number of loop configurations, which are handled by smart casts, if the compiler implementation deems it necessary.</span></p>
 </div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<pre><code>fun breakFromInfiniteLoop() {
-    var a: Any? = null
-
-    while (true) {
-        if (a == null) continue
-
-        if (randomBoolean()) break
-    }
-
-    a // Smart cast to Any
-}
-
-fun doWhileAndSmartCasts() {
-    var a: Any? = null
-
-    do {
-        if (a == null) continue
-    } while (randomBoolean())
-    
-    a // Smart cast to Any
-}
-
-fun doWhileAndSmartCasts2() {
-    var a: Any? = null
-
-    do {
-        sink(a)
-    } while (a == null)
-
-    a // Smart cast to Any
-}</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">breakFromInfiniteLoop</span>() {</a>
+<a class="sourceLine" id="cb4-2" title="2">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4">    <span class="cf">while</span> (<span class="kw">true</span>) {</a>
+<a class="sourceLine" id="cb4-5" title="5">        <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7">        <span class="cf">if</span> (randomBoolean()) <span class="cf">break</span></a>
+<a class="sourceLine" id="cb4-8" title="8">    }</a>
+<a class="sourceLine" id="cb4-9" title="9"></a>
+<a class="sourceLine" id="cb4-10" title="10">    a <span class="co">// Smart cast to Any</span></a>
+<a class="sourceLine" id="cb4-11" title="11">}</a>
+<a class="sourceLine" id="cb4-12" title="12"></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="kw">fun</span> <span class="fu">doWhileAndSmartCasts</span>() {</a>
+<a class="sourceLine" id="cb4-14" title="14">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-15" title="15"></a>
+<a class="sourceLine" id="cb4-16" title="16">    <span class="cf">do</span> {</a>
+<a class="sourceLine" id="cb4-17" title="17">        <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb4-18" title="18">    } <span class="cf">while</span> (randomBoolean())</a>
+<a class="sourceLine" id="cb4-19" title="19">    </a>
+<a class="sourceLine" id="cb4-20" title="20">    a <span class="co">// Smart cast to Any</span></a>
+<a class="sourceLine" id="cb4-21" title="21">}</a>
+<a class="sourceLine" id="cb4-22" title="22"></a>
+<a class="sourceLine" id="cb4-23" title="23"><span class="kw">fun</span> <span class="fu">doWhileAndSmartCasts2</span>() {</a>
+<a class="sourceLine" id="cb4-24" title="24">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-25" title="25"></a>
+<a class="sourceLine" id="cb4-26" title="26">    <span class="cf">do</span> {</a>
+<a class="sourceLine" id="cb4-27" title="27">        sink(a)</a>
+<a class="sourceLine" id="cb4-28" title="28">    } <span class="cf">while</span> (a == <span class="kw">null</span>)</a>
+<a class="sourceLine" id="cb4-29" title="29"></a>
+<a class="sourceLine" id="cb4-30" title="30">    a <span class="co">// Smart cast to Any</span></a>
+<a class="sourceLine" id="cb4-31" title="31">}</a></code></pre></div>
 </blockquote>
 <h4 id="bound-smart-casts">Bound smart casts</h4>
-<div class="paragraph">
-<p><span class="sentence">Smart casting propagates information forward on the control flow, as by the source-sink domination. </span><span class="sentence">However, in some cases it is beneficial to propagate information <em>backwards</em>, to reduce boilerplate code. </span><span class="sentence">Kotlin supports this feature by bound smart casts.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Bound smart casts apply in the following case. </span><span class="sentence">Assume we have two inter-dependent or bound values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. </span><span class="sentence">Bound smart casts allow to apply smart cast sources for <span class="math inline">\(a\)</span> to <span class="math inline">\(b\)</span> or vice versa, if both values are stable.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Kotlin supports the following bound smart casts (BSC).</span></p>
-</div>
-<ul>
-<li><span class="sentence">Non-nullability-by-equality BSC. </span><span class="sentence">If two values are known to be equal, non-nullability conditions for one are applied to the other.</span></li>
-<li><span class="sentence">Non-nullability-by-safe-call BSC. </span><span class="sentence">For a safe-call property <code>o?.p</code> of a non-null type <span class="math inline">\(T\)</span>, non-nullability conditions for <code>o?.p</code> are applied to <code>o</code>.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Two values <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are considered equals in the following cases.</span></p>
-</div>
-<ul>
-<li><span class="sentence">there is a known equality or referential-equality condition between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(a\)</span> is definitely assigned <span class="math inline">\(b\)</span></span>
-<ul>
-<li><span class="sentence">however, in this case bound smart casts are applied only to <span class="math inline">\(b\)</span></span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Why?)</span>
-</div></li>
-</ul></li>
-</ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Do we need additional condition kinds?)</span></p>
+<p><span class="sentence">TODO(Everything)</span></p>
 </div>
 </div>
 <h3 id="local-type-inference">Local type inference</h3>
 <div class="paragraph">
-<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned above, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
+<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned before, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression. </span><span class="sentence">You can use the [Expressions][Expressions] part of this specification as a reference point on how the types for different expressions are constructed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="#smart-casts">smart casting</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
+<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="#smart-casts">smart casts</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
 </div>
 <ul>
 <li><span class="sentence">If a type <span class="math inline">\(T\)</span> is described as the least upper bound of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it is represented as a pair of constraints <span class="math inline">\(A &lt;: T\)</span> and <span class="math inline">\(B &lt;: T\)</span>;</span></li>
 <li><div class="TODO">
-<span class="sentence">TODO(are there other cases?)</span>
+<span class="sentence">TODO(Are there other special cases?)</span>
 </div></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well. </span><span class="sentence">Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement <span class="math inline">\(S_1\)</span> that goes before statement <span class="math inline">\(S_2\)</span> cannot be inferred based on how <span class="math inline">\(S_1\)</span> is used in <span class="math inline">\(S_2\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference in general may have several valid solutions. </span><span class="sentence">In particular, one may always derive a system <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solution types. </span><span class="sentence">One of these types is always the solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available), but choosing between them is done according to the following rules:</span></p>
+<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference may create several valid solutions. </span><span class="sentence">In particular, one may always derive a constraint <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solutions. </span><span class="sentence">One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:</span></p>
 </div>
 <ul>
 <li><div class="TODO">
-<span class="sentence">TODO(what are the rules?)</span>
+<span class="sentence">TODO(What are the rules?)</span>
 </div></li>
 </ul>
 <blockquote>
@@ -507,8 +592,8 @@ fun doWhileAndSmartCasts2() {
 </blockquote>
 <h3 id="todo">TODO</h3>
 <ul>
-<li><span class="sentence">Type approximation for public usage</span></li>
-<li><span class="sentence">Ordering of lambdas (and ordering of overloading vs type inference in general)</span></li>
+<li><span class="sentence">Type approximation for public API</span></li>
+<li><span class="sentence">Lambda analysis order (and the order of overloading vs type inference in general)</span></li>
 </ul>
 </body>
 </html>

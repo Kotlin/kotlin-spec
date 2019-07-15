@@ -101,6 +101,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
+
+
 <h2 id="scopes-and-identifiers">Scopes and identifiers</h2>
 <div class="paragraph">
 <p><span class="sentence">All the program code in Kotlin is logically divided into <em>scopes</em>. </span><span class="sentence">A scope is a syntactically-delimited region of code that constitutes a context in which entities and their names can be introduced. </span><span class="sentence">Scopes are nested, with entities introduced in outer scopes also available in the inner scopes. </span><span class="sentence">The top level of a Kotlin file is also a scope, containing all the scopes within the file.</span></p>
@@ -184,5 +192,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span class="sentence">TODO(identifier lifetime &amp; such)</span>
 </div></li>
 </ul>
+<h2 id="visibility">Visibility</h2>
+<div class="paragraph">
+<p><span class="sentence">Any entity declared in a declaration scope has an implicitly or explicitly defined <em>visibility</em>. </span><span class="sentence">The visibility of a declaration denotes whether the entity is <em>accessible</em> in other scopes of the program. </span><span class="sentence">If the entity declared in scope <code>A</code> is not accessible in scope <code>B</code>, it cannot be referred to in that scope, making such reference a compiler error. </span><span class="sentence">There are four basic types of visibility in kotlin: <code>public</code>, <code>private</code>, <code>internal</code> and <code>protected</code>, denoted by the corresponding visibility modifier keywords.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Entities that have <code>public</code> visibility are generally accessible anywhere outside or inside the scope they are declared in, by using imports or qualification when necessary. </span><span class="sentence">Entities that have <code>private</code> visibility are only accessible inside the scope they are declared in or any nested scopes. </span><span class="sentence">For top-level scopes (i.e. kotlin files) it means that such entities are only accessible in the same file. </span><span class="sentence">Entities with <code>internal</code> visibility are accessible inside the same [module][Modules] just like if the visibility was <code>public</code> and are inaccessible (as if the visibility was <code>private</code>) in any other scope. </span><span class="sentence">Entities with <code>protected</code> visibility are only allowed in the body scope of class declarations and are used as a means of encapsulation: such entities are accessible inside any scope as if the visibility was <code>private</code>, but are also accessible by any derived classes’ scopes as if they were declared <code>private</code> in the body scope of the derived class.</span></p>
+</div>
 </body>
 </html>
