@@ -4,19 +4,25 @@ export PROJECT_DIR
 
 cd ${PROJECT_DIR}/docs
 
-cat ./commands.md ./${SECTIONS_DIRECTORY}/<section>.md >> ./~temp.md
+TMP_DIR=$(pwd)/../${BUILD_DIRECTORY}/~tmp
 
-gpp -H ./~temp.md | pandoc \
---filter ../${HELPERS_DIRECTORY}/processTodoFilter.sh \
---filter ../${HELPERS_DIRECTORY}/markSentencesFilter.sh \
---filter ../${HELPERS_DIRECTORY}/copyPasteFilter.sh \
---filter ../${HELPERS_DIRECTORY}/inlineDiagramFilter.sh \
---filter ../${HELPERS_DIRECTORY}/inlineCodeIndentFilter.sh \
---filter ../${HELPERS_DIRECTORY}/mathCleanUpFilter.sh \
--c ../${ASSETS_DIRECTORY}/css/main.css --mathjax \
--H ./sectionPreamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash \
--o ../${BUILD_DIRECTORY}/html/sections/<section>.html
+mkdir -p $TMP_DIR
 
-rm ./~temp.md
+gpp -H ./index.md \
+| pandoc -H ./preamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash -t json \
+| bash ../${HELPERS_DIRECTORY}/processTodoFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/markSentencesFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/copyPasteFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/inlineDiagramFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/inlineCodeIndentFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/mathCleanUpFilter.sh html \
+| bash ../${HELPERS_DIRECTORY}/splitSections.sh --output-directory=$TMP_DIR
 
-cd $OLDPWD
+mkdir -p ../${BUILD_DIRECTORY}/html/sections
+
+for f in $TMP_DIR/*.json;
+do \
+pandoc $f -c ../${ASSETS_DIRECTORY}/css/main.css --katex=https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/ -s -o ../${BUILD_DIRECTORY}/html/sections/"$(basename "$f" .json).html";
+done
+
+rm -rf $TMP_DIR

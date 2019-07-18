@@ -104,7 +104,28 @@ tasks.create<ShellExec>("buildPdfBySections") {
 
 tasks.create<ShellExec>("buildHtmlBySections") {
     dependsOn("convertGrammar")
-    doFirst { buildBySections("html", "buildHtmlBySections.sh") }
+
+    doFirst {
+        val ls = System.lineSeparator()
+        val buildScriptsDir = "./build-utils/scripts/build"
+        val buildTemplate = File("$buildScriptsDir/buildHtmlBySections.sh").readText()
+        val buildDirectory = "./build/spec/html"
+
+        workingDir = File(buildScriptsDir)
+        command = "PROJECT_DIR=$projectDir$ls$buildTemplate"
+
+        File(buildDirectory).mkdirs()
+
+        val assetsSourceDirectory = Paths.get("./assets")
+        val assetsDestinationDirectory = Paths.get("$buildDirectory/assets").apply { toFile().deleteRecursively() }
+
+        Files.walk(assetsSourceDirectory).forEach { source ->
+            if (source.toFile().extension != "md")
+                Files.copy(source, assetsDestinationDirectory.resolve(assetsSourceDirectory.relativize(source)))
+        }
+
+        Paths.get("$buildDirectory/sections").toFile().apply { deleteRecursively(); mkdirs() }
+    }
 }
 
 tasks.create<JavaExec>("convertGrammar") {
