@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Untitled</title>
+  <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -75,23 +75,17 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../assets/css/main.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="./assets/js/jquery-3.4.1.min.js"></script>
-  <script src="./assets/js/lodash.js"></script>
-  <script src="https://unpkg.com/kotlin-playground@1"></script>
-  <script src="./assets/js/helpers.js"></script>
-  <script src="./assets/js/Popup.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
-  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
-  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
-  <script src="./assets/js/sentenceHighlighter.js"></script>
 </head>
 <body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
 
 
 
@@ -120,7 +114,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
+<p><span class="sentence">Note: type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
@@ -163,32 +157,17 @@ P_2 \times N_2
 \]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{align*}
-P_1 \times N_1 \sqcup
-P_2 \times N_2
-  &amp;= \operatorname{\text{LUB}}(P_1, P_2) \times \operatorname{\text{GLB}}(N_1, N_2) \\
-P_1 \times N_1 \sqcap
-P_2 \times N_2
-  &amp;= \operatorname{\text{GLB}}(P_1, P_2) \times \operatorname{\text{LUB}}(N_1, N_2)
-\end{align*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
-(P_1 \operatorname{\&amp;}\neg N_1) | (P_2 \operatorname{\&amp;}\neg N_2)
-  &amp;\sqsubseteq (P_1 | P_2) \operatorname{\&amp;}(\neg N_1 | \neg N_2)
-  &amp;&amp;= (P_1 | P_2) \operatorname{\&amp;}\neg (N_1 \operatorname{\&amp;}N_2)
-  \\
-(P_1 \operatorname{\&amp;}\neg N_1) \operatorname{\&amp;}(P_2 \operatorname{\&amp;}\neg N_2)
-  &amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}(\neg N_1 \operatorname{\&amp;}\neg N_2) 
-  &amp;&amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}\neg (N_1 | N_2)
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin [type system][Type system] does not have negation types, we overapproximate them when needed.</span></p>
+<p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin <a href="type-system.html#type-system">type system</a> does not have negation types, we overapproximate them when needed.</span></p>
 </div>
 </blockquote>
 <h5 id="smart-cast-transfer-functions">Smart cast transfer functions</h5>
@@ -201,84 +180,17 @@ P_2 \times N_2
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{is}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!is}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
-\\
-\\
-&amp;\left[\!\left[x \operatorname{\mathtt{as}}T \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
-\\
-&amp;\left[\!\left[x \operatorname{\mathtt{!as}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
-      y \rightarrow s(x) \sqcap s(y)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
-      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
-      y \rightarrow s(x) \sqcap s(y)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
-      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
-\\
-\\
-&amp;\left[\!\left[x = y \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(y)]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{killDataFlow}}(x) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow (\top \times \top)]
-\\
-\\
-&amp;\left[\!\left[l \right]\!\right](s)
-&amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{1}
-\operatorname{\mathit{swap}}(P \times N) &amp;= N \times P
-\\
-\operatorname{\mathit{isNullable}}(s) &amp;=
-\left.
-  \begin{cases}
-    (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) &amp; \text{if } s \sqsubseteq (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) \\
-    (\top \times \top)      &amp; \text{otherwise}
-  \end{cases}
-\right.
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: transfer function for <code>==</code> and <code>!=</code> are used only if the corresponding [<code>equals</code> implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions]. </span><span class="sentence">For example, generated <code>equals</code> implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.</span></p>
+<p><span class="sentence">Important: transfer function for <code>==</code> and <code>!=</code> are used only if the corresponding <a href="expressions.html#value-equality-expressions"><code>equals</code> implementation</a> is known to be equivalent to <a href="expressions.html#reference-equality-expressions">reference equality check</a>. </span><span class="sentence">For example, generated <code>equals</code> implementation for <a href="declarations.html#data-class-declaration">data classes</a> is considered to be equivalent to reference equality check.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
@@ -307,7 +219,7 @@ P_2 \times N_2
 <p><span class="sentence">The data-flow information is used to produce the smart cast type as follows.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">First, smart casts may influence the compile-time type of an expression <span class="math inline">\(e\)</span> (called <em>smart cast sink</em>) only if the sink is <a href="#smart-cast-sink-stability"><em>stable</em></a>.</span></p>
+<p><span class="sentence">First, smart casts may influence the compile-time type of an expression <span class="math inline">\(e\)</span> (called <em>smart cast sink</em>) only if the sink is <a href="type-inference.html#smart-cast-sink-stability"><em>stable</em></a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Second, for a stable smart cast sink <span class="math inline">\(e\)</span> we calculate the overapproximation of its possible type.</span></p>
@@ -399,7 +311,7 @@ fun smartCastInInference() {
 </div>
 <ol type="1">
 <li><span class="sentence">Immutable local or classifier-scope properties without delegation or custom getters;</span></li>
-<li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are <a href="#effectively-immutable-smart-cast-sinks">effectively immutable</a>, i.e., cannot be changed by external means;</span></li>
+<li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are <a href="type-inference.html#effectively-immutable-smart-cast-sinks">effectively immutable</a>, i.e., cannot be changed by external means;</span></li>
 <li><span class="sentence">Immutable properties of immutable stable properties without delegation or custom getters.</span></li>
 </ol>
 <h5 id="effectively-immutable-smart-cast-sinks">Effectively immutable smart cast sinks</h5>
@@ -560,13 +472,13 @@ fun smartCastInInference() {
 </div>
 <h3 id="local-type-inference">Local type inference</h3>
 <div class="paragraph">
-<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned before, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.</span></p>
+<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned before, type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression. </span><span class="sentence">You can use the [Expressions][Expressions] part of this specification as a reference point on how the types for different expressions are constructed.</span></p>
+<p><span class="sentence">In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression. </span><span class="sentence">You can use the <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> part of this specification as a reference point on how the types for different expressions are constructed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="#smart-casts">smart casts</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
+<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="type-inference.html#smart-casts">smart casts</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
 </div>
 <ul>
 <li><span class="sentence">If a type <span class="math inline">\(T\)</span> is described as the least upper bound of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it is represented as a pair of constraints <span class="math inline">\(A &lt;: T\)</span> and <span class="math inline">\(B &lt;: T\)</span>;</span></li>
@@ -578,7 +490,7 @@ fun smartCastInInference() {
 <p><span class="sentence">Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well. </span><span class="sentence">Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement <span class="math inline">\(S_1\)</span> that goes before statement <span class="math inline">\(S_2\)</span> cannot be inferred based on how <span class="math inline">\(S_1\)</span> is used in <span class="math inline">\(S_2\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference may create several valid solutions. </span><span class="sentence">In particular, one may always derive a constraint <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solutions. </span><span class="sentence">One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:</span></p>
+<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given <a href="kotlin-type-constraints.html#type-constraint-solving">constraint system</a>), type inference may create several valid solutions. </span><span class="sentence">In particular, one may always derive a constraint <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solutions. </span><span class="sentence">One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:</span></p>
 </div>
 <ul>
 <li><div class="TODO">
@@ -590,7 +502,7 @@ fun smartCastInInference() {
 <p><span class="sentence">Note: this is valid even if <span class="math inline">\(T\)</span> is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint <span class="math inline">\(\mathtt{kotlin.Nothing} &lt;: T &lt;: \mathtt{kotlin.Any?}\)</span>.</span></p>
 </div>
 </blockquote>
-<h3 id="todo">TODO</h3>
+<h3 id="todo-1">TODO</h3>
 <ul>
 <li><span class="sentence">Type approximation for public API</span></li>
 <li><span class="sentence">Lambda analysis order (and the order of overloading vs type inference in general)</span></li>

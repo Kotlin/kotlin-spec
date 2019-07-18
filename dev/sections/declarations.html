@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Untitled</title>
+  <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -75,23 +75,17 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../assets/css/main.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="./assets/js/jquery-3.4.1.min.js"></script>
-  <script src="./assets/js/lodash.js"></script>
-  <script src="https://unpkg.com/kotlin-playground@1"></script>
-  <script src="./assets/js/helpers.js"></script>
-  <script src="./assets/js/Popup.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
-  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
-  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
-  <script src="./assets/js/sentenceHighlighter.js"></script>
 </head>
 <body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
 
 
 
@@ -111,7 +105,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <h2 id="declarations">Declarations</h2>
-<h3 id="glossary">Glossary</h3>
+<h3 id="glossary-2">Glossary</h3>
 <dl>
 <dt>Entity</dt>
 <dd><span class="sentence">A distinguishable part of a program</span>
@@ -126,7 +120,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(Explain paths)</span></p>
 </div>
 </div>
-<h3 id="introduction">Introduction</h3>
+<h3 id="introduction-2">Introduction</h3>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Examples)</span></p>
@@ -139,10 +133,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Every declaration is accessible in a particular <em>scope</em>, which is dependent both on where the declaration is located and on the declaration itself.</span></p>
 </div>
 <h3 id="classifier-declaration">Classifier declaration</h3>
-<strong>Id grammar-rule-classDeclaration not found</strong>
-<strong>Id grammar-rule-objectDeclaration not found</strong>
+<div id="grammar-rule-classDeclaration-pasted-4" class="grammar-rule">
+<dl>
+<dt><strong><em>classDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-modifiers">modifiers</a></em>]<br />
+(<code>'class'</code> | <code>'interface'</code>)<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-primaryConstructor">primaryConstructor</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[({<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-classBody">classBody</a></em>) | ({<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-enumClassBody">enumClassBody</a></em>)]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-objectDeclaration-pasted-5" class="grammar-rule">
+<dl>
+<dt><strong><em>objectDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'object'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-classBody">classBody</a></em>]</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">Classifier declarations introduce new types to the program, of the forms described [here][Classifier types]. </span><span class="sentence">There are three kinds of classifier declarations:</span></p>
+<p><span class="sentence">Classifier declarations introduce new types to the program, of the forms described <a href="type-system.html#classifier-types">here</a>. </span><span class="sentence">There are three kinds of classifier declarations:</span></p>
 </div>
 <ul>
 <li><span class="sentence">class declarations;</span></li>
@@ -177,7 +196,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. </span><span class="sentence">Multiple interface inheritance is allowed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Instance initialization block describes a block of code which should be executed during <a href="#classifier-initialization">object creation</a>.</span></p>
+<p><span class="sentence">Instance initialization block describes a block of code which should be executed during <a href="declarations.html#classifier-initialization">object creation</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Property and function declarations in the class body introduce their respective entities in this class’ scope, meaning they are available only on an entity of the corresponding class.</span></p>
@@ -212,7 +231,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">and extends the rules for a simple class declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="#declarations-with-type-parameters">here</a>.</span></p>
+<p><span class="sentence">and extends the rules for a simple class declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
 </div>
 <h5 id="constructor-declaration">Constructor declaration</h5>
 <div class="paragraph">
@@ -294,7 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The particular means on how <span class="math inline">\(v\)</span> is stored inside the classifier object is platform-defined.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Due to the <a href="#classifier-initialization">initialization order of a classifier object</a>, the expression used to construct <span class="math inline">\(v\)</span> can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.</span></p>
+<p><span class="sentence">Due to the <a href="declarations.html#classifier-initialization">initialization order of a classifier object</a>, the expression used to construct <span class="math inline">\(v\)</span> can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -347,7 +366,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Data classes have the following restrictions:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Data classes are closed and cannot be [inherited][Inheritance] from;</span></li>
+<li><span class="sentence">Data classes are closed and cannot be <a href="inheritance.html#inheritance">inherited</a> from;</span></li>
 <li><span class="sentence">Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;</span></li>
 <li><span class="sentence">There must be at least one data property in the primary constructor.</span></li>
 </ul>
@@ -384,7 +403,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">It has special syntax to accommodate for the properties described above.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body. </span><span class="sentence">Enum entries have their own bodies that may contain their own declarations, similar to <a href="#object-declaration">object declarations</a>.</span></p>
+<p><span class="sentence">Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body. </span><span class="sentence">Enum entries have their own bodies that may contain their own declarations, similar to <a href="declarations.html#object-declaration">object declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -396,7 +415,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence"><code>valueOf(value: String)</code> returning an object corresponding to the entry with the name equal to <code>value</code> parameter of the call;</span></li>
-<li><span class="sentence"><code>values()</code> returning an [array][Array types] of all the possible enum values. </span><span class="sentence">Every invocation of this function returns a new array to disallow changing its contents.</span></li>
+<li><span class="sentence"><code>values()</code> returning an <a href="type-system.html#array-types">array</a> of all the possible enum values. </span><span class="sentence">Every invocation of this function returns a new array to disallow changing its contents.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -415,7 +434,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="annotation-class-declaration">Annotation class declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">Annotations class is a special kind of class that is used to declare [annotations][Annotations]. </span><span class="sentence">Annotation classes have the following properties:</span></p>
+<p><span class="sentence">Annotations class is a special kind of class that is used to declare <a href="annotations.html#annotations">annotations</a>. </span><span class="sentence">Annotation classes have the following properties:</span></p>
 </div>
 <ul>
 <li><span class="sentence">They cannot have any secondary constructors;</span></li>
@@ -430,13 +449,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 <li><span class="sentence"><code>kotlin.KClass</code>;</span></li>
-<li><span class="sentence">[Built-in number types][Built-in types];</span></li>
+<li><span class="sentence"><a href="type-system.html#built-in-types">Built-in number types</a>;</span></li>
 <li><span class="sentence">Other annotation types;</span></li>
 <li><span class="sentence">Arrays of any other allowed type.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.</span></p>
+<p><span class="sentence">Annotation classes cannot be constructed directly, but their primary constructors are used when specifying <a href="annotations.html#annotations">code annotations</a> for other entities.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -489,7 +508,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this section is about declaration of <em>named</em> objects. </span><span class="sentence">Kotlin also has a concept of <em>anonymous</em> objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].</span></p>
+<p><span class="sentence">Note: this section is about declaration of <em>named</em> objects. </span><span class="sentence">Kotlin also has a concept of <em>anonymous</em> objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the <a href="expressions.html#object-literals">corresponding section</a>.</span></p>
 </div>
 </blockquote>
 <h4 id="classifier-initialization">Classifier initialization</h4>
@@ -536,10 +555,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="function-declaration">Function declaration</h3>
-<strong>Id grammar-rule-functionDeclaration not found</strong>
-<strong>Id grammar-rule-functionBody not found</strong>
+<div id="grammar-rule-functionDeclaration-pasted-6" class="grammar-rule">
+<dl>
+<dt><strong><em>functionDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'fun'</code><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-receiverType">receiverType</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-functionValueParameters">functionValueParameters</a></em><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-functionBody">functionBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-functionBody-pasted-7" class="grammar-rule">
+<dl>
+<dt><strong><em>functionBody</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-block">block</a></em><br />
+| (<code>'='</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">Function declarations assign names to functions — blocks of code which may be called by passing them a number of arguments. </span><span class="sentence">Functions have special <em>function types</em> which are covered in more detail [here][Function types].</span></p>
+<p><span class="sentence">Function declarations assign names to functions — blocks of code which may be called by passing them a number of arguments. </span><span class="sentence">Functions have special <em>function types</em> which are covered in more detail <a href="type-system.html#function-types">here</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A simple function declaration consists of four main parts:</span></p>
@@ -564,11 +606,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">As type <code>kotlin.Nothing</code> has a [special meaning][<code>kotlin.Nothing</code>] in Kotlin type system, it must be specified explicitly, to avoid spurious <code>kotlin.Nothing</code> function return types.</span></p>
+<p><span class="sentence">As type <code>kotlin.Nothing</code> has a <a href="type-system.html#kotlin.nothing">special meaning</a> in Kotlin type system, it must be specified explicitly, to avoid spurious <code>kotlin.Nothing</code> function return types.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="#classifier-declaration">abstract classifier declaration</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
+<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="declarations.html#classifier-declaration">abstract classifier declaration</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -586,7 +628,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="#declarations-with-type-parameters">here</a>.</span></p>
+<p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
 </div>
 <h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
 <div class="paragraph">
@@ -634,13 +676,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="variable-length-parameters">Variable length parameters</h4>
 <div class="paragraph">
-<p><span class="sentence">One of the parameters may be designated as being variable length (aka <em>vararg</em>). </span><span class="sentence">A parameter list <span class="math inline">\((p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)\)</span> means a function may be called with any number of arguments in the i-th position. </span><span class="sentence">These arguments are represented inside function body <span class="math inline">\(b\)</span> as a value <span class="math inline">\(p_i\)</span> of type, which is the result of [<em>array type specialization</em>][Array types] of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
+<p><span class="sentence">One of the parameters may be designated as being variable length (aka <em>vararg</em>). </span><span class="sentence">A parameter list <span class="math inline">\((p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)\)</span> means a function may be called with any number of arguments in the i-th position. </span><span class="sentence">These arguments are represented inside function body <span class="math inline">\(b\)</span> as a value <span class="math inline">\(p_i\)</span> of type, which is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [<em>array type specialization</em>][Array types] of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
+<p><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An array of type <code>Array&lt;Q&gt;</code><span class="math inline">\(\: &lt;: \:\)</span><code>ATS(Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;)</code> may be <em>unpacked</em> to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position.</span></p>
@@ -658,10 +700,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">An <em>extension function declaration</em> is similar to a standard function declaration, but introduces an additional special function parameter, the <em>receiver parameter</em>. </span><span class="sentence">This parameter is designated by specifying the receiver type (the type before <code>.</code> in function name), which becomes the type of this receiver parameter. </span><span class="sentence">This parameter is not named and must always be supplied (either explicitly or implicitly), e.g. it cannot be a variable-argument parameter, have a default value, etc.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the [<em>receiver</em>][Receivers] of the call, be it implicit or explicit. </span><span class="sentence">This parameter is available inside the scope of the function as the implicit receiver or <code>this</code>-expression, while nested scopes may introduce additional receivers that take precedence over this one. </span><span class="sentence">See [the receiver section][Receivers] for details. </span><span class="sentence">This receiver is also available (as usual) in nested scope using labeled <code>this</code> syntax using the name of the declared function as the label.</span></p>
+<p><span class="sentence">Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the <a href="overload-resolution.html#receivers"><em>receiver</em></a> of the call, be it implicit or explicit. </span><span class="sentence">This parameter is available inside the scope of the function as the implicit receiver or <code>this</code>-expression, while nested scopes may introduce additional receivers that take precedence over this one. </span><span class="sentence">See <a href="overload-resolution.html#receivers">the receiver section</a> for details. </span><span class="sentence">This receiver is also available (as usual) in nested scope using labeled <code>this</code> syntax using the name of the declared function as the label.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For more information on how a particular receiver for each call is chosen, please refer to the [overloading section][Overload resolution].</span></p>
+<p><span class="sentence">For more information on how a particular receiver for each call is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -685,7 +727,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-9" title="9">    <span class="kw">fun</span> <span class="fu">Int</span>.<span class="fu">foo</span>() { println(<span class="kw">this</span>) } <span class="co">// this has type Int</span></a>
 <a class="sourceLine" id="cb4-10" title="10">}</a></code></pre></div>
 <h3 id="property-declaration">Property declaration</h3>
-<strong>Id grammar-rule-propertyDeclaration not found</strong>
+<div id="grammar-rule-propertyDeclaration-pasted-8" class="grammar-rule">
+<dl>
+<dt><strong><em>propertyDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-modifiers">modifiers</a></em>]<br />
+(<code>'val'</code> | <code>'var'</code>)<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-receiverType">receiverType</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+({<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em> | <em><a href="syntax.html#grammar-rule-variableDeclaration">variableDeclaration</a></em>))<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} ((<code>'='</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>) | <em><a href="syntax.html#grammar-rule-propertyDelegate">propertyDelegate</a></em>)]<br />
+[(<em><a href="syntax.html#grammar-rule-NL">NL</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}) <code>';'</code>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+(([<em><a href="syntax.html#grammar-rule-getter">getter</a></em>] [{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax.html#grammar-rule-semi">semi</a></em>] <em><a href="syntax.html#grammar-rule-setter">setter</a></em>]) | ([<em><a href="syntax.html#grammar-rule-setter">setter</a></em>] [{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax.html#grammar-rule-semi">semi</a></em>] <em><a href="syntax.html#grammar-rule-getter">getter</a></em>]))</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — functions which are used to read or write the property value.</span></p>
 </div>
@@ -694,12 +751,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A read-only property declaration <code>val x: T = e</code> introduces <code>x</code> as a name of the result of <code>e</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A read-only property declaration may include a custom <a href="#getters-and-setters">getter</a> in the form of</span></p>
+<p><span class="sentence">A read-only property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> in the form of</span></p>
 </div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T = e</a>
 <a class="sourceLine" id="cb5-2" title="2">    <span class="kw">get</span>() { ... }</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitely), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see [subtyping][Subtyping] for more details).</span></p>
+<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be <a href="type-inference.html#type-inference">inferred</a> (or, in case of the getter, specified explicitely), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -707,11 +764,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The initializer expression <code>e</code>, if given, serves as the starting value for the property backing field (see <a href="#getters-and-setters">getters and setters section</a> for details) and is evaluated when the property is created. </span><span class="sentence">Properties that are not allowed to have backing fields (see <a href="#getters-and-setters">getters and setters section</a> for details) are also not allowed to have initializer expressions.</span></p>
+<p><span class="sentence">The initializer expression <code>e</code>, if given, serves as the starting value for the property backing field (see <a href="declarations.html#getters-and-setters">getters and setters section</a> for details) and is evaluated when the property is created. </span><span class="sentence">Properties that are not allowed to have backing fields (see <a href="declarations.html#getters-and-setters">getters and setters section</a> for details) are also not allowed to have initializer expressions.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: although a property with an initializer expression looks similar to an [assignment][Assignments], it is different in several key ways: first, a read-only property cannot be assigned, but may have an initializer expression; second, the initializer expression never invokes the property setter, but assigns the property backing field value directly.</span></p>
+<p><span class="sentence">Note: although a property with an initializer expression looks similar to an <a href="statements.html#assignments">assignment</a>, it is different in several key ways: first, a read-only property cannot be assigned, but may have an initializer expression; second, the initializer expression never invokes the property setter, but assigns the property backing field value directly.</span></p>
 </div>
 </blockquote>
 <h4 id="mutable-property-declaration">Mutable property declaration</h4>
@@ -719,7 +776,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A mutable property declaration <code>var x: T = e</code> introduces <code>x</code> as a name of a mutable variable with type <code>T</code> and initial value equals to the result of <code>e</code>. </span><span class="sentence">The rules regarding the right-hand value <code>e</code> and the type <code>T</code> match those of a read-only property declaration.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A mutable property declaration may include a custom <a href="#getters-and-setters">getter</a> and/or custom <a href="#getters-and-setters">setter</a> in the form of</span></p>
+<p><span class="sentence">A mutable property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> and/or custom <a href="declarations.html#getters-and-setters">setter</a> in the form of</span></p>
 </div>
 <div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
 <a class="sourceLine" id="cb6-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
@@ -814,7 +871,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="delegated-property-declaration">Delegated property declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="#getters-and-setters">getters</a>:</span></p>
+<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
 </div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
@@ -833,7 +890,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
 <li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
-<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
+<li><span class="sentence"><code>thisRef</code> is the <a href="overload-resolution.html#receivers">receiver</a> object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
 <li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details).</span></li>
 </ul>
 <div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
@@ -845,7 +902,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb15-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
 <a class="sourceLine" id="cb15-4" title="4">    <span class="kw">set</span>(value: T) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="#getters-and-setters">getters and setters</a>.</span></p>
+<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
@@ -857,12 +914,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><code>e</code> is the delegating entity; the compiler needs to make sure that this is accessible in any place <code>x</code> is accessible;</span></li>
 <li><span class="sentence"><code>getValue</code> is a suitable operator function available on <code>e</code>;</span></li>
-<li><span class="sentence"><code>thisRef</code> is the [receiver][Receivers] object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
+<li><span class="sentence"><code>thisRef</code> is the <a href="overload-resolution.html#receivers">receiver</a> object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
 <li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details);</span></li>
-<li><span class="sentence"><code>y</code> is the value <code>x</code> is assigned to. </span><span class="sentence">In case of complex assignments (see the [assignment][Assignments] section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.</span></li>
+<li><span class="sentence"><code>y</code> is the value <code>x</code> is assigned to. </span><span class="sentence">In case of complex assignments (see the <a href="statements.html#assignments">assignment</a> section), as they are all overloadable forms, first the assignment expansion is performed, and after that, the expansion of the delegated property using normal assignment.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be [inferred][Type inference] from the delegating function itself, as it is with regular getters and setters. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
+<p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be <a href="type-inference.html#type-inference">inferred</a> from the delegating function itself, as it is with regular getters and setters. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
@@ -893,7 +950,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">An <em>extension property declaration</em> is similar to a standard property declaration, but, very much alike an <a href="#extension-function-declaration">extension function</a>, introduces an additional parameter to the property called <em>the receiver parameter</em>. </span><span class="sentence">This is different from usual property declarations, that do not have any parameters. </span><span class="sentence">There are other differences from standard property declarations:</span></p>
+<p><span class="sentence">An <em>extension property declaration</em> is similar to a standard property declaration, but, very much alike an <a href="declarations.html#extension-function-declaration">extension function</a>, introduces an additional parameter to the property called <em>the receiver parameter</em>. </span><span class="sentence">This is different from usual property declarations, that do not have any parameters. </span><span class="sentence">There are other differences from standard property declarations:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Extension properties cannot have initializers;</span></li>
@@ -906,10 +963,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [<em>receiver</em>][Receivers], implicit or explicit. </span><span class="sentence">Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. </span><span class="sentence">For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].</span></p>
+<p><span class="sentence">Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a <a href="overload-resolution.html#receivers"><em>receiver</em></a>, implicit or explicit. </span><span class="sentence">Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. </span><span class="sentence">For more information on how a particular receiver for each access is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or <code>this</code>. </span><span class="sentence">It may also be accessed inside nested scopes using [labeled <code>this</code> syntax][This-expressions] using the name of the property declared as the label. </span><span class="sentence">For delegated properties, the value passed into the operator functions <code>getValue</code> and <code>setValue</code> as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. </span><span class="sentence">This is also true for local extension properties: while regular local properties are passed <code>null</code> as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.</span></p>
+<p><span class="sentence">The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or <code>this</code>. </span><span class="sentence">It may also be accessed inside nested scopes using <a href="expressions.html#this-expressions">labeled <code>this</code> syntax</a> using the name of the property declared as the label. </span><span class="sentence">For delegated properties, the value passed into the operator functions <code>getValue</code> and <code>setValue</code> as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. </span><span class="sentence">This is also true for local extension properties: while regular local properties are passed <code>null</code> as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -939,7 +996,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
-<p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].</span></p>
+<p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -953,7 +1010,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">Its type is one of the following:</span>
 <ul>
-<li><span class="sentence">One of the [the built-in integral types][Built-in integer types];</span></li>
+<li><span class="sentence">One of the <a href="built-in-classifier-types.html#built-in-integer-types-1">the built-in integral types</a>;</span></li>
 <li><span class="sentence"><code>kotlin.Boolean</code>;</span></li>
 <li><span class="sentence"><code>kotlin.Char</code>;</span></li>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
@@ -963,12 +1020,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
 <h3 id="type-alias">Type alias</h3>
-<strong>Id grammar-rule-typeAlias not found</strong>
-<div class="paragraph">
-<p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
+<div id="grammar-rule-typeAlias-pasted-9" class="grammar-rule">
+<dl>
+<dt><strong><em>typeAlias</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-modifiers">modifiers</a></em>]<br />
+<code>'typealias'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeParameters">typeParameters</a></em>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'='</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its [<em>visibility modifiers</em>][Visibility].</span></p>
+<p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="visibility.html#visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="TODO">
@@ -977,7 +1048,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Most declarations may be introduced as <em>generic</em>, introducing type parameters that must be explicitly specified or [inferred][Type inference] when the corresponding declaration is used. </span><span class="sentence">For declarations that introduce new types this mechanism provides the means of introducing a [parameterized type][Parameterized classifier types]. </span><span class="sentence">Please refer to the corresponding section for details.</span></p>
+<p><span class="sentence">Most declarations may be introduced as <em>generic</em>, introducing type parameters that must be explicitly specified or <a href="type-inference.html#type-inference">inferred</a> when the corresponding declaration is used. </span><span class="sentence">For declarations that introduce new types this mechanism provides the means of introducing a <a href="type-system.html#parameterized-classifier-types">parameterized type</a>. </span><span class="sentence">Please refer to the corresponding section for details.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Type parameters may be used as types inside the scope introduced by the declaration. </span><span class="sentence">When such a declaration is used, the parameters are substituted by types available inside the scope the declaration is used in.</span></p>
@@ -995,18 +1066,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type. </span><span class="sentence">These restrictions are turned into corresponding [type constraints][Kotlin type constraints] when the type parameters are substituted with types and are employed during [type inference][Type inference] and [overload resolution][Overload resolution] of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
+<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type. </span><span class="sentence">These restrictions are turned into corresponding <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="type-inference.html#type-inference">type inference</a> and <a href="overload-resolution.html#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Type parameters do not introduce [runtime-available types][Runtime-available types] unless declared <code>reified</code>.</span></p>
+<p><span class="sentence">Type parameters do not introduce <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>.</span></p>
 </div>
 <h4 id="type-parameter-variance">Type parameter variance</h4>
 <div class="paragraph">
-<p><span class="sentence">The [declaration-site variance][Mixed-site variance] of a particular type parameter for a type is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See [the type system section][Mixed-site variance] for details.</span></p>
+<p><span class="sentence">The <a href="type-system.html#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a type is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="type-system.html#mixed-site-variance">the type system section</a> for details.</span></p>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
-<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a [runtime-available][Runtime-available types] type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other [runtime-available types][Runtime-available types] when using such functions.</span></p>
+<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
 </div>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">
@@ -1016,14 +1087,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Declarations marked as <code>private</code> can only be accessed from the same scope they are declared in. </span><span class="sentence">For example, all <code>private</code> top-level declarations in a file may only be accessed by code from the same file.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Declarations marked as <code>internal</code> may only be accessed from the same [module][Modules], treated as <code>public</code> from inside the module and as <code>private</code> from outside the module.</span></p>
+<p><span class="sentence">Declarations marked as <code>internal</code> may only be accessed from the same <a href="packages-and-imports.html#modules">module</a>, treated as <code>public</code> from inside the module and as <code>private</code> from outside the module.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Declarations in classifier declaration scope can also be declared <code>protected</code>, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.</span></p>
+<p><span class="sentence">Declarations in classifier declaration scope can also be declared <code>protected</code>, meaning that they can only be accessed from the same classifier type as well as any types <a href="inheritance.html#inheritance">inheriting</a> from this type regardless of the scope they are declared in.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">There is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a less permitting visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin [annotation][Annotations] <code>@PublishedApi</code>.</span></p>
+<p><span class="sentence">There is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a less permitting visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin <a href="annotations.html#annotations">annotation</a> <code>@PublishedApi</code>.</span></p>
 </div>
 </blockquote>
 <h3 id="declaration-modifiers">Declaration modifiers</h3>
@@ -1033,7 +1104,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the [inheritance section][Overriding] for details).</span></p>
+<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the <a href="inheritance.html#overriding">inheritance section</a> for details).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
