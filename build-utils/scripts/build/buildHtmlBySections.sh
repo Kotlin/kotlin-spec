@@ -22,7 +22,7 @@ mkdir -p ../${BUILD_DIRECTORY}/html/sections
 
 for f in $TMP_DIR/*.json;
 do \
-pandoc $f -c ../${ASSETS_DIRECTORY}/css/main.css --katex=https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/ -s -o ../${BUILD_DIRECTORY}/html/sections/"$(basename "$f" .json).html";
+pandoc $f -c ../${ASSETS_DIRECTORY}/css/main.css --katex=../${ASSETS_DIRECTORY}/js/katex/ -s -o ../${BUILD_DIRECTORY}/html/sections/"$(basename "$f" .json).html";
 done
 
 rm -rf $TMP_DIR
