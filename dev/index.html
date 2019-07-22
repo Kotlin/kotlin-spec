@@ -75,7 +75,9 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="./assets/css/main.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <script src="./assets/js/katex/katex.min.js"></script><script src="./assets/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="./assets/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -7708,29 +7710,14 @@ P_2 \times N_2
 \]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{align*}
-P_1 \times N_1 \sqcup
-P_2 \times N_2
-  &amp;= \operatorname{\text{LUB}}(P_1, P_2) \times \operatorname{\text{GLB}}(N_1, N_2) \\
-P_1 \times N_1 \sqcap
-P_2 \times N_2
-  &amp;= \operatorname{\text{GLB}}(P_1, P_2) \times \operatorname{\text{LUB}}(N_1, N_2)
-\end{align*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
-(P_1 \operatorname{\&amp;}\neg N_1) | (P_2 \operatorname{\&amp;}\neg N_2)
-  &amp;\sqsubseteq (P_1 | P_2) \operatorname{\&amp;}(\neg N_1 | \neg N_2)
-  &amp;&amp;= (P_1 | P_2) \operatorname{\&amp;}\neg (N_1 \operatorname{\&amp;}N_2)
-  \\
-(P_1 \operatorname{\&amp;}\neg N_1) \operatorname{\&amp;}(P_2 \operatorname{\&amp;}\neg N_2)
-  &amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}(\neg N_1 \operatorname{\&amp;}\neg N_2) 
-  &amp;&amp;= (P_1 \operatorname{\&amp;}P_2) \operatorname{\&amp;}\neg (N_1 | N_2)
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin <a href="#type-system">type system</a> does not have negation types, we overapproximate them when needed.</span></p>
@@ -7746,80 +7733,13 @@ P_2 \times N_2
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{2}
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{is}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!is}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
-\\
-\\
-&amp;\left[\!\left[x \operatorname{\mathtt{as}}T \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
-\\
-&amp;\left[\!\left[x \operatorname{\mathtt{!as}}T) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}null) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
-      y \rightarrow s(x) \sqcap s(y)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
-      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
-      y \rightarrow s(x) \sqcap s(y)]
-\\
-&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}y) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
-      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
-\\
-\\
-&amp;\left[\!\left[x = y \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow s(y)]
-\\
-\\
-&amp;\left[\!\left[\operatorname{\mathit{killDataFlow}}(x) \right]\!\right](s)
-&amp;&amp;= s[x \rightarrow (\top \times \top)]
-\\
-\\
-&amp;\left[\!\left[l \right]\!\right](s)
-&amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\begin{alignat*}{1}
-\operatorname{\mathit{swap}}(P \times N) &amp;= N \times P
-\\
-\operatorname{\mathit{isNullable}}(s) &amp;=
-\left.
-  \begin{cases}
-    (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) &amp; \text{if } s \sqsubseteq (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) \\
-    (\top \times \top)      &amp; \text{otherwise}
-  \end{cases}
-\right.
-\end{alignat*}\]</span></span></p>
+<p><span class="sentence"></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
