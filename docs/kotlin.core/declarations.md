@@ -753,6 +753,19 @@ In order to be declared `const`, a property must meet the following requirements
   Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.
 
+#### Late-initialized properties
+
+A mutable member property can be declared with a special `lateinit` modifier, effectively turning off the [property initialization checks][Property initialization] for it.
+Such a property is called late-initialized and may be used for values that are supposed to be initialized not during object construction, but during some other time (for example, a special initialization function).
+This means, among other things, that it is the responsibility of the programmer to guarantee that the property is initialized before its usage.
+
+A property may be declared late-initialized if:
+
+- It has no custom getters, setters or delegation;
+- It is a member property;
+- It is mutable;
+- It has declared non-nullable type.
+
 ### Type alias
 
 :::{.paste target=grammar-rule-typeAlias}
@@ -828,8 +841,6 @@ TODO(this is a stub)
 A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the [inheritance section][Overriding] for details).
 
 TODO(declaration scope)
-
-TODO(`lateinit`)
 
 TODO(overriding vs overloading vs shadowing)
 
