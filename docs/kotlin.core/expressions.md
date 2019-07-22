@@ -174,7 +174,8 @@ The try-expression evaluation evaluates its body; if any statement in the try bo
 If a catch block of this try-expression has an exception parameter of type $T :> E$, this catch block is evaluated immediately after the exception is thrown and the exception itself is passed inside the catch block as the corresponding parameter.
 If there are several catch blocks which match the exception type, the first one is picked.
 
-TODO(Exception handling?)
+For an in-detail explanation on how exceptions and catch-blocks work, please refer to the [Exceptions][Exceptions] section.
+For a low-level explanation, please refer to platform-specific parts of this document.
 
 If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:
 
@@ -209,12 +210,52 @@ The value of the resulting expression is the same as the value of the chosen bra
 The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches (TODO(not that simple)), if both branches are present.
 If either of the branches are omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
 
-TODO(Examples?)
+Let's illustrate it with some examples:
+
+```kotlin
+val x = if(true) 1 else 2 // x has type kotlin.Int and value 1
+val y = if(true) 1 // illegal, if expression withour false branch cannot be used as an expression
+```
 
 The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is an error.
 
 > Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority.
 > For details, see Kotlin [grammar][Syntax grammar].
+>
+> For example:
+> 
+> :::::::::::::{.columns}
+> :::{.column width=45%}
+> ```kotlin
+> x = if(true) 1 else 2
+> ```
+> ::::::::::::::::::::::
+> :::{.column width=10%}
+> $=$
+> :::
+> :::{.column width=45%}
+> ```kotlin
+> x = (if(true) 1 else 2)
+> ```
+> ::::::::::::::::::::::
+> :::::::::::::::::::::::
+> 
+> :::::::::::::{.columns}
+> :::{.column width=45%}
+> ```kotlin
+> if(true) x = 1 else x = 2
+> ```
+> ::::::::::::::::::::::
+> :::{.column width=10%}
+> $=$
+> :::
+> :::{.column width=45%}
+> ```kotlin
+> if(true) (x = 1) else (x = 2)
+> ```
+> ::::::::::::::::::::::
+> :::::::::::::::::::::::
+>
 
 ### When expression
 
@@ -260,8 +301,8 @@ In fact, it supports three different condition forms:
 
 TODO(Examples)
 
-The type of the resulting expression is the [least upper bound][Least upper bound] of the types of all its entries (TODO(not that simple)).
-If the when expression is not [exhaustive][Exhaustive when expressions], it has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
+The type of the resulting expression is the [least upper bound][Least upper bound] of the types of all its entries.
+If the when expression is not [exhaustive][Exhaustive when expressions], it has type [`kotlin.Unit`][`kotlin.Unit`] and may only be used as a statement.
 
 #### Exhaustive when expressions
 
@@ -350,7 +391,7 @@ These operators are [overloadable][Overloadable operators] with the following ex
 - `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid operator function available in the current scope;
 - `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid operator function available in the current scope.
 
-> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always one available overloading candidate for any value equality expression.
+> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always only one available overloading candidate for any value equality expression.
 
 Value equality expressions always have type `kotlin.Boolean`.
 If the corresponding operator function `equals` has a different return type, it is a compile-time error.
@@ -754,7 +795,7 @@ Similar to callable references, there are two forms of class literals: with a ty
 This is also one of the few cases where a parameterized type may (**and must**) be used without its type parameters.
 
 All class literals have type `kotlin.KClass<T>` and produce a platform-defined object associated with type `T`, which, in turn, is either the type given as the left-hand side of the expression or the [runtime type][Runtime type information] of the value given as the left-hand side of the expression.
-In both cases, `T` must be a [runtime-available type][Runtime type information] in the current scope.
+In both cases, `T` must be a [runtime-available non-nullable type][Runtime type information] in the current scope.
 As the runtime type of the expression is not known at compile time, the compile-time type of the expression is `kotlin.KClass<U>` where $T <: U$ and `U` is the compile-time of the expression.
 
 The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.
@@ -762,6 +803,53 @@ The produced object can be used to allow access to platform-specific capabilitie
 TODO(this is a stub)
 
 TODO(Identifiers, paths, that kinda stuff)
+
+#### Function calls and property access
+
+Function call expression is the expression used to invoke functions.
+Property access expression is the expression used to access properties.
+There are two kinds of both: with and without explicit receiver (the left-hand side of the `.` operator).
+For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the [overloading][Overload resolution] section.
+Please note that in some cases function calls are indistinguishable from property access with `invoke`-convention call suffix. 
+
+From this point on in this section we well refer to both as function calls.
+As described in [the function declaration section][Function declarations], function calls receive arguments of several different kinds:
+
+- Explicit receiver argument, used in calls with explicit receivers;
+- Normal arguments, provided directly inside the parentheses part of the call;
+- Named arguments in the form $identifier\ \texttt{=}\ value$, where $identifier$ is a parameter name used at declaration-site of the function;
+- Variable-argument arguments, provided the same way as normal arguments;
+- A trailing lambda literal argument, specified outside the parentheses (see [lambda literal section][Lambda literals]) for details.
+
+In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.
+
+The evaluation of the function arguments is performed **before** the function itself is invoked **in the order of appearance of the arguments** left-to-right, with no consideration on how the parameters of the function were specified during function declaration.
+This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given.
+Default arguments not specified in the call are all evaluated **after** all the provided arguments, in the order of their appearance in function declaration.
+
+Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):
+
+```kotlin
+fun f(x: Int = h(), y: Int = g())
+...
+f() // $1 = h(); $2 = g(); $result = f($1, $2)
+f(m(), n()) // $1 = m(); $2 = n(); $result = f($1, $2)
+f(y = n(), x = m()) // $1 = n(); $2 = m(); $result = f($2, $1)
+f(y = n()) // $1 = n(); $2 = h(); $result = f($2, $1)
+```
+
+```kotlin
+fun f(x: Int = h(), y: () -> Int)
+...
+f(y = {2}) // $1 = {2}; $2 = h(); $result = f($2, $1)
+f { 2 } // $1 = {2}; $2 = h(); $result = f($2, $1)
+f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
+```
+
+[Operator calls][Overloadable operators] work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.
+
+> Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments.
+> See [corresponding section for details][Containment-checking expression]
 
 ### Function literals
 

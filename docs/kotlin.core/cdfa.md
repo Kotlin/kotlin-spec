@@ -16,6 +16,7 @@ These are unique in each fragment (assigning the same register twice in the same
 The numbers given are only notational.
 
 TODO(register reduction (`$1` = `$2` should be removed))
+
 TODO(maybe we do need phi-nodes in the end?)
 
 We use a special kind of nodes (`eval` nodes), represented in dashed lines, to introduce sub-fragments into bigger fragments.

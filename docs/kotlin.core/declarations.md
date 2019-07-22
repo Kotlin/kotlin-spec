@@ -243,10 +243,11 @@ Annotation classes have the following properties:
 - All the primary constructor parameters must use the property syntax;
 - They implicitly inherit `kotlin.Annotation` class (and cannot have any other base classes);
 - They cannot implement interfaces;
-- They are implicitly final and cannot be inherited from;
+- They are implicitly closed and cannot be inherited from;
 - They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
 - They cannot have companion objects;
 - They cannot have nested classes;
+- They cannot have type parameters;
 - The types of primary constructor parameters are limited to:
     - `kotlin.String`;
     - `kotlin.KClass`;
@@ -336,10 +337,10 @@ Functions have special *function types* which are covered in more detail [here][
 
 A simple function declaration consists of four main parts:
 
-* name $f$
-* parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$
-* return type $R$
-* body $b$
+* Name $f$;
+* Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$;
+* Return type $R$;
+* Body $b$.
 
 and has a function type $f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R$.
 
@@ -362,11 +363,11 @@ TODO: `expect` and `external` functions also do not have implementations
 
 A parameterized function declaration consists of five main parts.
 
-* name $f$
-* type parameter list $T_1, \ldots, T_m$
-* parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$
-* return type $R$
-* body $b$
+* Name $f$;
+* Type parameter list $T_1, \ldots, T_m$;
+* Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$;
+* Return type $R$;
+* Body $b$.
 
 and extends the rules for a simple function declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
 
@@ -382,7 +383,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-TODO(Argument names are resolved in compile time)
+All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compiler error.
 
 If one wants to mix named and positional arguments, the argument list must conform to the following form: $P_1, \ldots, P_M, N_1, \ldots, N_Q$, where $P_i$ is a positional argument, $N_j$ is a named argument; i.e., positional arguments must precede all of the named ones.
 
