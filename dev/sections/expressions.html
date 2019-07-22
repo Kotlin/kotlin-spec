@@ -378,10 +378,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The try-expression evaluation evaluates its body; if any statement in the try body throws an exception (of type <span class="math inline">\(E\)</span>), this exception, rather than being immediately propagated up the call stack, is checked for a matching catch block. </span><span class="sentence">If a catch block of this try-expression has an exception parameter of type <span class="math inline">\(T :&gt; E\)</span>, this catch block is evaluated immediately after the exception is thrown and the exception itself is passed inside the catch block as the corresponding parameter. </span><span class="sentence">If there are several catch blocks which match the exception type, the first one is picked.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Exception handling?)</span></p>
-</div>
+<p><span class="sentence">For an in-detail explanation on how exceptions and catch-blocks work, please refer to the <a href="exceptions.html#exceptions">Exceptions</a> section. </span><span class="sentence">For a low-level explanation, please refer to platform-specific parts of this document.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:</span></p>
@@ -431,17 +429,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of two branches <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>, if both branches are present. </span><span class="sentence">If either of the branches are omitted, the resulting conditional expression has type <a href="type-system.html#kotlin.unit"><code>kotlin.Unit</code></a> and may used only as a statement.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Examples?)</span></p>
+<p><span class="sentence">Let’s illustrate it with some examples:</span></p>
 </div>
-</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">val</span> <span class="va">x</span> = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span> <span class="co">// x has type kotlin.Int and value 1</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">val</span> <span class="va">y</span> = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="co">// illegal, if expression withour false branch cannot be used as an expression</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The type of the condition expression must be a subtype of <code>kotlin.Boolean</code>, otherwise it is an error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority. </span><span class="sentence">For details, see Kotlin <a href="syntax.html#syntax-grammar">grammar</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For example:</span></p>
+</div>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1">x = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span></a></code></pre></div>
+</div><div class="column" style="width:10%;">
+<div class="paragraph">
+<p><span class="sentence"><span class="math inline">\(=\)</span></span></p>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1">x = (<span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span>)</a></code></pre></div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">if</span>(<span class="kw">true</span>) x = <span class="dv">1</span> <span class="cf">else</span> x = <span class="dv">2</span></a></code></pre></div>
+</div><div class="column" style="width:10%;">
+<div class="paragraph">
+<p><span class="sentence"><span class="math inline">\(=\)</span></span></p>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="cf">if</span>(<span class="kw">true</span>) (x = <span class="dv">1</span>) <span class="cf">else</span> (x = <span class="dv">2</span>)</a></code></pre></div>
+</div>
 </div>
 </blockquote>
 <h3 id="when-expression">When expression</h3>
@@ -525,7 +548,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of all its entries <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>. </span><span class="sentence">If the when expression is not <a href="expressions.html#exhaustive-when-expressions">exhaustive</a>, it has type <a href="type-system.html#kotlin.unit"><code>kotlin.Unit</code></a> and may used only as a statement.</span></p>
+<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of all its entries. </span><span class="sentence">If the when expression is not <a href="expressions.html#exhaustive-when-expressions">exhaustive</a>, it has type <a href="type-system.html#kotlin.unit"><code>kotlin.Unit</code></a> and may only be used as a statement.</span></p>
 </div>
 <h4 id="exhaustive-when-expressions">Exhaustive when expressions</h4>
 <div class="paragraph">
@@ -548,17 +571,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For object types, the type test condition may be replaced with equality check with the object value:</span></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">sealed</span> <span class="kw">class</span> Base</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">class</span> Derived1(): <span class="dt">Base</span>()</a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">object</span> Derived2(): <span class="dt">Base</span></a>
-<a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5">...</a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">b</span>: Base = ...</a>
-<a class="sourceLine" id="cb2-7" title="7">... = <span class="cf">when</span>(b) {</a>
-<a class="sourceLine" id="cb2-8" title="8">    <span class="kw">is</span> Derived1 -&gt; ...</a>
-<a class="sourceLine" id="cb2-9" title="9">    Derived2 -&gt; ...</a>
-<a class="sourceLine" id="cb2-10" title="10">    <span class="co">// no else needed here</span></a>
-<a class="sourceLine" id="cb2-11" title="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">sealed</span> <span class="kw">class</span> Base</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">class</span> Derived1(): <span class="dt">Base</span>()</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">object</span> Derived2(): <span class="dt">Base</span></a>
+<a class="sourceLine" id="cb7-4" title="4"></a>
+<a class="sourceLine" id="cb7-5" title="5">...</a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="kw">val</span> <span class="va">b</span>: Base = ...</a>
+<a class="sourceLine" id="cb7-7" title="7">... = <span class="cf">when</span>(b) {</a>
+<a class="sourceLine" id="cb7-8" title="8">    <span class="kw">is</span> Derived1 -&gt; ...</a>
+<a class="sourceLine" id="cb7-9" title="9">    Derived2 -&gt; ...</a>
+<a class="sourceLine" id="cb7-10" title="10">    <span class="co">// no else needed here</span></a>
+<a class="sourceLine" id="cb7-11" title="11">}</a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.</span></p>
@@ -638,7 +661,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always one available overloading candidate for any value equality expression.</span></p>
+<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always only one available overloading candidate for any value equality expression.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1329,7 +1352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A class literal is very similar in syntax to a callable reference, with the difference being that it uses the keyword <code>class</code> instead of the referenced identifier. </span><span class="sentence">Similar to callable references, there are two forms of class literals: with a type used as the left-hand side argument of the expression and with another expression used as such. </span><span class="sentence">This is also one of the few cases where a parameterized type may (<strong>and must</strong>) be used without its type parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">All class literals have type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the type given as the left-hand side of the expression or the <a href="runtime-type-information.html#runtime-type-information">runtime type</a> of the value given as the left-hand side of the expression. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="runtime-type-information.html#runtime-type-information">runtime-available type</a> in the current scope. </span><span class="sentence">As the runtime type of the expression is not known at compile time, the compile-time type of the expression is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time of the expression.</span></p>
+<p><span class="sentence">All class literals have type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the type given as the left-hand side of the expression or the <a href="runtime-type-information.html#runtime-type-information">runtime type</a> of the value given as the left-hand side of the expression. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="runtime-type-information.html#runtime-type-information">runtime-available non-nullable type</a> in the current scope. </span><span class="sentence">As the runtime type of the expression is not known at compile time, the compile-time type of the expression is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time of the expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.</span></p>
@@ -1344,6 +1367,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(Identifiers, paths, that kinda stuff)</span></p>
 </div>
 </div>
+<h4 id="function-calls-and-property-access">Function calls and property access</h4>
+<div class="paragraph">
+<p><span class="sentence">Function call expression is the expression used to invoke functions. </span><span class="sentence">Property access expression is the expression used to access properties. </span><span class="sentence">There are two kinds of both: with and without explicit receiver (the left-hand side of the <code>.</code> operator). </span><span class="sentence">For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading</a> section. </span><span class="sentence">Please note that in some cases function calls are indistinguishable from property access with <code>invoke</code>-convention call suffix.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">From this point on in this section we well refer to both as function calls. </span><span class="sentence">As described in [the function declaration section][Function declarations], function calls receive arguments of several different kinds:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
+<li><span class="sentence">Normal arguments, provided directly inside the parentheses part of the call;</span></li>
+<li><span class="sentence">Named arguments in the form <span class="math inline">\(identifier\ \texttt{=}\ value\)</span>, where <span class="math inline">\(identifier\)</span> is a parameter name used at declaration-site of the function;</span></li>
+<li><span class="sentence">Variable-argument arguments, provided the same way as normal arguments;</span></li>
+<li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="expressions.html#lambda-literals">lambda literal section</a>) for details.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The evaluation of the function arguments is performed <strong>before</strong> the function itself is invoked <strong>in the order of appearance of the arguments</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Some examples (here we use notation similar to the <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
+<a class="sourceLine" id="cb8-2" title="2">...</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="fu">f</span>() // $<span class="fu">1</span> = h(); $<span class="dv">2</span> = g(); $result = f($<span class="dv">1</span>, $<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb8-4" title="4">f(m(), n()) <span class="co">// $1 = m(); $2 = n(); $result = f($1, $2)</span></a>
+<a class="sourceLine" id="cb8-5" title="5">f(y = n(), x = m()) <span class="co">// $1 = n(); $2 = m(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb8-6" title="6">f(y = n()) <span class="co">// $1 = n(); $2 = h(); $result = f($2, $1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: () -&gt; <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2">...</a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="fu">f</span>(<span class="va">y</span> = {2}) // $<span class="fu">1</span> = {<span class="dv">2</span>}; $<span class="dv">2</span> = h(); $result = f($<span class="dv">2</span>, $<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-4" title="4">f { <span class="dv">2</span> } <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb9-5" title="5">f(m()) { <span class="dv">2</span> } <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence"><a href="overloadable-operators.html#overloadable-operators">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments. </span><span class="sentence">See <a href="expressions.html#containment-checking-expression">corresponding section for details</a></span></p>
+</div>
+</blockquote>
 <h3 id="function-literals">Function literals</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="expressions.html#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>

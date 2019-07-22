@@ -441,10 +441,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">All the primary constructor parameters must use the property syntax;</span></li>
 <li><span class="sentence">They implicitly inherit <code>kotlin.Annotation</code> class (and cannot have any other base classes);</span></li>
 <li><span class="sentence">They cannot implement interfaces;</span></li>
-<li><span class="sentence">They are implicitly final and cannot be inherited from;</span></li>
+<li><span class="sentence">They are implicitly closed and cannot be inherited from;</span></li>
 <li><span class="sentence">They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;</span></li>
 <li><span class="sentence">They cannot have companion objects;</span></li>
 <li><span class="sentence">They cannot have nested classes;</span></li>
+<li><span class="sentence">They cannot have type parameters;</span></li>
 <li><span class="sentence">The types of primary constructor parameters are limited to:</span>
 <ul>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
@@ -587,10 +588,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A simple function declaration consists of four main parts:</span></p>
 </div>
 <ul>
-<li><span class="sentence">name <span class="math inline">\(f\)</span></span></li>
-<li><span class="sentence">parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span></span></li>
-<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
-<li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
+<li><span class="sentence">Name <span class="math inline">\(f\)</span>;</span></li>
+<li><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span>;</span></li>
+<li><span class="sentence">Return type <span class="math inline">\(R\)</span>;</span></li>
+<li><span class="sentence">Body <span class="math inline">\(b\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">and has a function type <span class="math inline">\(f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R\)</span>.</span></p>
@@ -621,11 +622,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A parameterized function declaration consists of five main parts.</span></p>
 </div>
 <ul>
-<li><span class="sentence">name <span class="math inline">\(f\)</span></span></li>
-<li><span class="sentence">type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span></span></li>
-<li><span class="sentence">parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span></span></li>
-<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
-<li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
+<li><span class="sentence">Name <span class="math inline">\(f\)</span>;</span></li>
+<li><span class="sentence">Type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span>;</span></li>
+<li><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span>;</span></li>
+<li><span class="sentence">Return type <span class="math inline">\(R\)</span>;</span></li>
+<li><span class="sentence">Body <span class="math inline">\(b\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
@@ -639,10 +640,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
 <a class="sourceLine" id="cb2-4" title="4">    println(bar(b = <span class="fl">42.0</span>, a = <span class="dv">5</span>, s = <span class="st">&quot;13&quot;</span>))</a>
 <a class="sourceLine" id="cb2-5" title="5">}</a></code></pre></div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Argument names are resolved in compile time)</span></p>
-</div>
+<p><span class="sentence">All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compiler error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If one wants to mix named and positional arguments, the argument list must conform to the following form: <span class="math inline">\(P_1, \ldots, P_M, N_1, \ldots, N_Q\)</span>, where <span class="math inline">\(P_i\)</span> is a positional argument, <span class="math inline">\(N_j\)</span> is a named argument; i.e., positional arguments must precede all of the named ones.</span></p>
