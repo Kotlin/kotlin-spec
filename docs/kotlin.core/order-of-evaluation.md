@@ -1,3 +1,0 @@
-## Order of evaluation
-
-TODO()
