@@ -250,3 +250,7 @@ TODO: redo all the lexical grammar, right now it is a hand-written mess
 #### Syntax grammar
 
 <#include "kotlin.core/grammar.generated.md">
+
+#### Documentation comments
+
+TODO(KDoc goes here)
