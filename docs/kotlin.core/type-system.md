@@ -869,12 +869,12 @@ Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses
 
 > Example:
 > ```diagram
->     A    B?   C!!           A
->     |    |     |            |
->     |    +--+--+     -->    |
->     |       |               |
->     v       v               v
->     B       T               T
+>     A    B?   C!!          A
+>     |    |     |           |
+>     |    +--+--+    -->    |
+>     |       |              |
+>     v       v              v
+>     B       T              T
 > ```
 > This example shows a situation, when the subtyping by nullability relation from $T <: C!!$ is used to prove $T <: A$.
 
