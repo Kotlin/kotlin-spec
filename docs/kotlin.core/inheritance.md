@@ -57,6 +57,6 @@ If the base declaration is not overridable and/or the deriving declaration does 
 Platforms may introduce additional cases of both *overridability* and *subsumption* of declarations, as well as limit the overriding mechanism due to internal representation limitations.
 
 > Note: if a declaration binds a new function to the same name as was introduced in the base class, but does not subsume it, it is neither a compiler error nor an overriding declaration.
-> In this case these two declarations just follow the normal rules of [function overloading][Overloading resolution].
+> In this case these two declarations just follow the normal rules of [function overloading][Overload resolution].
 
 TODO(...)

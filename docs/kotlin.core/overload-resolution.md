@@ -62,14 +62,14 @@ A *callable* $X$ for the purpose of this section is one of the following:
     - A constructor of the type named $X$ at its declaration site;
 - Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
     - A property named $X$ at its declaration site;
-    - [An object][Object declarations] named $X$ at its declaration site;
+    - [An object][Object declaration] named $X$ at its declaration site;
     - [A companion object][Companion objects] of a classifier type named $X$ at its declaration site;
     - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
 
 In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-The set of explicit receivers itself (denoted by a [`this`][This-expression] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
+The set of explicit receivers itself (denoted by a [`this`][This-expressions] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression.
 As with normal property-like callables, $\mathtt{this@A}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\mathtt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 
 A *member callable* is either a member function-like callable or a member property-like callable with a member operator `invoke`.
@@ -218,7 +218,7 @@ A function is *applicable* for a specific call if and only if the function param
 
 #### Description
 
-Determining function applicability for a specific call is a [type constraint][Type constraints] problem.
+Determining function applicability for a specific call is a [type constraint][Kotlin type constraints] problem.
 First, for every non-lambda argument of the function supplied in the call, type inference is performed.
 Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
@@ -272,7 +272,7 @@ The rest of this section will try to clarify this mechanism in more detail.
 
 When an overload resolution set $S$ is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.
 
-The selection process uses the [type constraint][Type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
+The selection process uses the [type constraint][Kotlin type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**

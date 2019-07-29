@@ -631,7 +631,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 > Note: informally, `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
 
-For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignable expressions].
+For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
 
 A postfix increment expression has the same type as the return type of the corresponding `inc` overload variant.
@@ -647,7 +647,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 > Note: informally, `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
 
-For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignable expressions].
+For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
 
 A postfix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
@@ -687,7 +687,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 An indexing expression has the same type as the corresponding `get` expression.
 
-Indexing expressions are [assignable][Assignable expressions].
+Indexing expressions are [assignable][Assignments].
 For a corresponding assignment form, see [indexing assignment][Indexing assignment].
 
 ### Call and property access expressions

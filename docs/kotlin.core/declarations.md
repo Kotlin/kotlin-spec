@@ -148,7 +148,7 @@ In a classifier (an object or a class) $C$ declaration any supertype $I$ inherit
 - The supertype $I$ is an interface type;
 - $v$ has type $T$ such that $T <: I$.
 
-The inheritance delegation uses a syntax similar to [property delegation][Property delegation] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
+The inheritance delegation uses a syntax similar to [property delegation][Delegated property declaration] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
 If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the method overriding (TODO: link) section).
 
 The particular means on how $v$ is stored inside the classifier object is platform-defined.
@@ -748,7 +748,7 @@ In order to be declared `const`, a property must meet the following requirements
     - `kotlin.Boolean`;
     - `kotlin.Char`;
     - `kotlin.String`;
-- It is declared in the top-level scope or inside [an object declaration][Object declarations];
+- It is declared in the top-level scope or inside [an object declaration][Object declaration];
 - It has an initializer expression and this initializer expression may be evaluated at compile-time.
   Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.

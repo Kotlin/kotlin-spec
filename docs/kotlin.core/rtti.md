@@ -5,7 +5,7 @@ RTTI affects the semantics of certain expressions, changing their evaluation dep
 
 - [The type checking operator][Type-checking expression]
 - [The cast expression][cast expression], expecially the `as?` operator
-- [Class literals][class literal] and the values they evaluate to
+- [Class literals][Class literals] and the values they evaluate to
 
 _Runtime types_ are particular instances of RTTI for a particular value at runtime. 
 These model a subset of the Kotlin [type system][Type system]. 
