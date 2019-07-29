@@ -224,37 +224,21 @@ The type of the condition expression must be a subtype of `kotlin.Boolean`, othe
 >
 > For example:
 > 
-> :::::::::::::{.columns}
-> :::{.column width=45%}
 > ```kotlin
 > x = if(true) 1 else 2
 > ```
-> ::::::::::::::::::::::
-> :::{.column width=10%}
-> $=$
-> :::
-> :::{.column width=45%}
+> is the same as
 > ```kotlin
 > x = (if(true) 1 else 2)
 > ```
-> ::::::::::::::::::::::
-> :::::::::::::::::::::::
-> 
-> :::::::::::::{.columns}
-> :::{.column width=45%}
+> while
 > ```kotlin
 > if(true) x = 1 else x = 2
 > ```
-> ::::::::::::::::::::::
-> :::{.column width=10%}
-> $=$
-> :::
-> :::{.column width=45%}
+> is the same as
 > ```kotlin
 > if(true) (x = 1) else (x = 2)
 > ```
-> ::::::::::::::::::::::
-> :::::::::::::::::::::::
 >
 
 ### When expression
