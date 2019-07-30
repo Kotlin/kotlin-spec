@@ -171,7 +171,9 @@ $$
 \llbracket l \rrbracket[e] = (P \times N)
   \Rightarrow
   \smartCastTypeOf(e) = \typeOf(e) \amp P \amp \approxNegationType(N)
-\\
+$$
+
+$$
 \approxNegationType(N) =
 \left.
   \begin{cases}
