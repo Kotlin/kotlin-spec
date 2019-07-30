@@ -13,7 +13,7 @@ To testing, Kotlin compiler [PSI](https://github.com/JetBrains/kotlin/tree/maste
 To run the grammar tests, do the following:
 1) Download compiler tests using gradle task: `./gradlew :grammar:downloadCompilerTests` (you must have `svn` installed for this);
 2) Prepare compiler diagnostics tests using gradle task: `./gradlew :grammar:prepareDiagnosticsCompilerTests`;
-3) Remove not yet included tests if you want: `./gradlew :grammar:removeNewTests` (otherwise, those compiler tests for which the ANTLR parse tree has not yet been built and pushed will be used; therefore such tests will fail **on first run**);
+3) Remove not yet included tests if you want: `./gradlew :grammar:syncWithCompilerTests` (otherwise, those compiler tests for which the ANTLR parse tree has not yet been built and pushed will be used; therefore such tests will fail **on first run**);
 4) Run tests: `./gradlew :grammar:test` (at this step, the grammar files are also automatically copied to `src/main/antlr` and a parser and lexer is generated to `src/main/java/{org.jetbrains.kotlin.grammar.parser}`).
 
 ## Artifacts
