@@ -276,7 +276,11 @@ In fact, it supports three different condition forms:
   The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
 - *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
   The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
-- *Any other expression* (`Expr`).
+- *Any other expression* (`Expr`) besides the following.
+    + [Simple continue expression][Continue expression]
+    + [Simple break expression][Break expression]
+    + [Spread operator expression][Spread operator expression]
+
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
   The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
