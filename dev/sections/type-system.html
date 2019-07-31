@@ -107,15 +107,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="type-system">Type system</h2>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Add grammar snippets?)</span></p>
+<p><span class="sentence">TODO(Add examples)</span></p>
 </div>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Decide on the formatting style and fix it)</span></p>
+<p><span class="sentence">TODO(Add grammar snippets?)</span></p>
 </div>
 </div>
 <h3 id="glossary-1">Glossary</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Cleanup)</span></p>
+</div>
+</div>
 <dl>
 <dt><span class="math inline">\(T\)</span></dt>
 <dd><span class="sentence">Type</span>
@@ -126,9 +131,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><span class="math inline">\(T?\)</span></dt>
 <dd><span class="sentence">Nullable type</span>
 </dd>
-<dt><span class="math inline">\(\{T\}\)</span></dt>
-<dd><span class="sentence">Universe of all possible types</span>
-</dd>
 <dt><span class="math inline">\(\{T!!\}\)</span></dt>
 <dd><span class="sentence">Universe of non-nullable types</span>
 </dd>
@@ -138,90 +140,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><span class="math inline">\(\Gamma\)</span></dt>
 <dd><span class="sentence">Type context</span>
 </dd>
-<dt><span class="math inline">\(A &lt;: B\)</span></dt>
-<dd><span class="sentence">A is a subtype of B</span>
-</dd>
-<dt><span class="math inline">\(A &lt;:&gt; B\)</span></dt>
-<dd><span class="sentence">A and B are not related w.r.t. subtyping</span>
-</dd>
-<dt>Type constructor</dt>
-<dd><span class="sentence">An abstract type with one or more type parameters, which must be instantiated before use</span>
-</dd>
-<dt>Parameterized type</dt>
-<dd><span class="sentence">A concrete type, which is the result of type constructor instantiation</span>
+<dt><span class="math inline">\(T\lbrack S_1, \ldots, S_n\rbrack\)</span></dt>
+<dd><span class="sentence">The result of type argument substitution for type <span class="math inline">\(T\)</span> with types <span class="math inline">\(S_i\)</span></span>
 </dd>
 <dt>Type parameter</dt>
-<dd><span class="sentence">Formal type argument of a type constructor</span>
+<dd><span class="sentence">Formal type argument of parameterized type</span>
 </dd>
 <dt>Type argument</dt>
-<dd><span class="sentence">Actual type argument in a parameterized type</span>
+<dd><span class="sentence">Actual type argument in parameterized type constructor application</span>
 </dd>
-<dt><span class="math inline">\(T\lbrack A_1, \ldots, A_n\rbrack\)</span></dt>
-<dd><span class="sentence">The result of type constructor <span class="math inline">\(T\)</span> instantiation with type arguments <span class="math inline">\(A_i\)</span></span>
+<dt>PACT</dt>
+<dd><span class="sentence">Parameterized abstract classifier type</span>
 </dd>
-<dt><span class="math inline">\(T\lbrack\sigma\rbrack\)</span></dt>
-<dd><span class="sentence">The result of type constructor <span class="math inline">\(T(F_1, \ldots, F_n)\)</span> instantiation with the assumed substitution <span class="math inline">\(\sigma : F_1 = A_1, \ldots, F_n = A_n\)</span></span>
-</dd>
-<dt><span class="math inline">\(\sigma T\)</span></dt>
-<dd><span class="sentence">The result of type substitution in type <span class="math inline">\(T\)</span> w.r.t. substitution <span class="math inline">\(\sigma\)</span></span>
-</dd>
-<dt><span class="math inline">\(K_T(F, A)\)</span></dt>
-<dd><span class="sentence">Captured type from the <a href="type-system.html#type-capturing">type capturing</a> of type parameter <span class="math inline">\(F\)</span> and type argument <span class="math inline">\(A\)</span> in parameterized type <span class="math inline">\(T\)</span></span>
-</dd>
-<dt><span class="math inline">\(T\langle K_1, \ldots, K_n\rangle\)</span></dt>
-<dd><span class="sentence">The result of type capturing for parameterized type <span class="math inline">\(T\)</span> with <em>captured</em> types <span class="math inline">\(K_i\)</span></span>
-</dd>
-<dt><span class="math inline">\(A \operatorname{\&amp;}B\)</span></dt>
-<dd><span class="sentence">Intersection type of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></span>
-</dd>
-<dt><span class="math inline">\(A | B\)</span></dt>
-<dd><span class="sentence">Union type of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></span>
-</dd>
-<dt><span class="math inline">\(\operatorname{\text{GLB}}\)</span></dt>
-<dd><span class="sentence">Greatest lower bound</span>
-</dd>
-<dt><span class="math inline">\(\operatorname{\text{LUB}}\)</span></dt>
-<dd><span class="sentence">Least upper bound</span>
+<dt>iPACT</dt>
+<dd><span class="sentence">Instantiated parameterized concrete classifier type</span>
 </dd>
 </dl>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Not everything is in the glossary, make some criteria of what goes where)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Cleanup glossary)</span></p>
-</div>
-</div>
 <h3 id="introduction-1">Introduction</h3>
-<div class="paragraph">
-<p><span class="sentence">Similarly to most other programming languages, Kotlin operates on data in the form of <em>values</em> or <em>objects</em>, which have <em>types</em> — descriptions of what is the expected behaviour and possible values for their datum. </span><span class="sentence">An empty value is represented by a special <code>null</code> object; most operations with it result in runtime <a href="exceptions.html#exceptions">errors or exceptions</a>.</span></p>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has a type system with the following main properties.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Hybrid static, gradual and flow type checking</span></li>
+<li><span class="sentence">Hybrid static and gradual type checking</span></li>
 <li><span class="sentence">Null safety</span></li>
 <li><span class="sentence">No unsafe implicit conversions</span></li>
-<li><span class="sentence">Unified top and bottom types</span></li>
+<li><span class="sentence">Unified root type</span></li>
 <li><span class="sentence">Nominal subtyping with bounded parametric polymorphism and mixed-site variance</span></li>
 </ul>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Type safety (consistency between compile and runtime types) is verified <em>statically</em>, at compile time, for the majority of Kotlin types. </span><span class="sentence">However, for better interoperability with platform-dependent code Kotlin also support a variant of <em>gradual types</em> in the form of <a href="type-system.html#flexible-types">flexible types</a>. </span><span class="sentence">Even more so, in some cases the compile-time type of a value may <em>change</em> depending on the control- and data-flow of the program; a feature usually known as <em>flow typing</em>, represented in Kotlin as <a href="type-inference.html#smart-casts">smart casts</a>.</span></p>
+<p><span class="sentence">TODO(static type checking, gradual type checking)</span></p>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Null safety is enforced by having two type universes: <em>nullable</em> (with nullable types <span class="math inline">\(T?\)</span>) and <em>non-nullable</em> (with non-nullable types <span class="math inline">\(T!!\)</span>). </span><span class="sentence">A value of any non-nullable type cannot contain <code>null</code>, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by <code>null</code>.</span></p>
+<p><span class="sentence">Null safety is enforced by having two type universes — <em>nullable</em> (with nullable types <span class="math inline">\(T?\)</span>) and <em>non-nullable</em> (with non-nullable types <span class="math inline">\(T!!\)</span>). </span><span class="sentence">All operations within the non-nullable type universe are safe, i.e., should never cause a runtime null pointer error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an <a href="expressions.html#cast-expression">explicit cast</a>. </span><span class="sentence">However, Kotlin also supports smart casts — a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail <a href="type-inference.html#smart-casts">here</a>.</span></p>
+<p><span class="sentence">Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an <a href="expressions.html#cast-expression-1">explicit cast</a>. </span><span class="sentence">However, Kotlin also supports smart casts — a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail <a href="overload-resolution.html#smart-casts">here</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The unified supertype type for all types in Kotlin is <span class="math inline">\(\operatorname{\mathtt{kotlin.Any?}}\)</span>, a <a href="type-system.html#nullable-types">nullable</a> version of [<span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span>][kotlin.Any]. </span><span class="sentence">The unified subtype type for all types in Kotlin is [<span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span>][kotlin.Nothing].</span></p>
+<p><span class="sentence">The unified supertype type for all types in Kotlin is <code>kotlin.Any?</code>, a nullable version of <a href="type-system.html#kotlin.any">kotlin.Any</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via <a href="type-system.html#parameterized-classifier-types">parameterized types</a>. </span><span class="sentence">Subtyping between these parameterized types is defined through <a href="type-system.html#mixed-site-variance">mixed-site variance</a>.</span></p>
+<p><span class="sentence">Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as <a href="type-system.html#generics">generics</a> via <a href="type-system.html#parameterized-classifier-types">parameterized types</a>. </span><span class="sentence">Subtyping between these parameterized types is defined through <a href="type-system.html#mixed-site-variance">mixed-site variance</a>.</span></p>
 </div>
 <h3 id="type-kinds">Type kinds</h3>
 <div class="paragraph">
@@ -230,30 +191,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><a href="type-system.html#built-in-types">Built-in types</a></span></li>
 <li><span class="sentence"><a href="type-system.html#classifier-types">Classifier types</a></span></li>
-<li><span class="sentence"><a href="type-system.html#type-parameters">Type parameters</a></span></li>
 <li><span class="sentence"><a href="type-system.html#function-types">Function types</a></span></li>
 <li><span class="sentence"><a href="type-system.html#array-types">Array types</a></span></li>
 <li><span class="sentence"><a href="type-system.html#flexible-types">Flexible types</a></span></li>
 <li><span class="sentence"><a href="type-system.html#nullable-types">Nullable types</a></span></li>
-<li><span class="sentence"><a href="type-system.html#intersection-types">Intersection types</a></span></li>
-<li><span class="sentence"><a href="type-system.html#union-types">Union types</a></span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(Intersection and union types)</span>
+</div></li>
 <li><div class="TODO">
 <span class="sentence">TODO(Error / invalid types)</span>
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">We distinguish between <em>concrete</em> and <em>abstract</em> types. </span><span class="sentence">Concrete types are types which are assignable to values. </span><span class="sentence">Abstract types need to be instantiated as concrete types before they can be used as types for values.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: for brevity, we omit specifying that a type is concrete. </span><span class="sentence">All types not described as abstract are implicitly concrete.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">We further distinguish <em>concrete</em> types between <em>class</em> and <em>interface</em> types; as Kotlin is a language with single inheritance, sometimes it is important to discriminate between these kinds of types. </span><span class="sentence">Any given concrete type may be either a class or an interface type, but never both.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">We also distinguish between <em>denotable</em> and <em>non-denotable</em> types. </span><span class="sentence">The former are types which are expressible in Kotlin and can be written by the end-user. </span><span class="sentence">The latter are special types which are <em>not</em> expressible in Kotlin and are used internally by the compiler.</span></p>
+<p><span class="sentence">We distinguish between <em>concrete</em> and <em>abstract</em> types. </span><span class="sentence">Concrete types are types which are assignable to values; abstract types either need to be instantiated as concrete types before they can be used as value types, or are used internally by the type system and are not directly denotable.</span></p>
 </div>
 <h4 id="built-in-types">Built-in types</h4>
 <div class="paragraph">
@@ -261,28 +211,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="kotlin.any"><code>kotlin.Any</code></h5>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> is the unified <a href="type-system.html#subtyping">supertype</a> (<span class="math inline">\(\top\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., all non-nullable types are subtypes of <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span>, either explicitly, implicitly, or by <a href="type-system.html#subtyping">subtyping relation</a>.</span></p>
+<p><span class="sentence"><code>kotlin.Any</code> is the unified supertype (<span class="math inline">\(\top\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., all non-nullable types are subtypes of <code>kotlin.Any</code>, either explicitly, implicitly, or by subtyping relation.</span></p>
 </div>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">It must provide the following methods.</span></p>
+<p><span class="sentence">TODO(<code>kotlin.Any</code> members?)</span></p>
 </div>
-<ul>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
-</div></li>
-</ul>
+</div>
 <h5 id="kotlin.nothing"><code>kotlin.Nothing</code></h5>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is the unified <a href="type-system.html#subtyping">subtype</a> (<span class="math inline">\(\bot\)</span>) for <span class="math inline">\(\{T\}\)</span>, i.e., <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is a subtype of all well-formed Kotlin types, including user-defined ones. </span><span class="sentence">This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> in Kotlin.</span></p>
+<p><span class="sentence"><code>kotlin.Nothing</code> is the unified subtype (<span class="math inline">\(\bot\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., <code>kotlin.Nothing</code> is a subtype of all non-nullable types, including user-defined ones. </span><span class="sentence">This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of <code>kotlin.Nothing</code> in Kotlin.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">As the evaluation of an expression with <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> type can never complete normally, it is used to mark special situations, such as</span></p>
+<p><span class="sentence">As the evaluation of an expression with <code>kotlin.Nothing</code> type can never complete normally, it is used to mark special situations, such as:</span></p>
 </div>
 <ul>
 <li><span class="sentence">non-terminating expressions</span></li>
@@ -290,41 +231,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">control flow transfer</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Additional details about how <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> should be processed are available <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a>.</span></p>
+<p><span class="sentence">Additional details about how <code>kotlin.Nothing</code> should be processed are available [here][Control- and data-flow analysis].</span></p>
 </div>
 <h5 id="kotlin.unit"><code>kotlin.Unit</code></h5>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
-</div>
-<h5 id="kotlin.function"><code>kotlin.Function</code></h5>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}(R)\)</span> is the unified supertype of all <a href="type-system.html#function-types">function types</a>. </span><span class="sentence">It is parameterized over function return type <code>R</code>.</span></p>
-</div>
-<h5 id="built-in-integer-types">Built-in integer types</h5>
-<div class="paragraph">
-<p><span class="sentence">Kotlin supports the following signed integer types.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>Byte</code> (bit width 8)</span></li>
-<li><span class="sentence"><code>Short</code> (bit width 16)</span></li>
-<li><span class="sentence"><code>Int</code> (bit width 32)</span></li>
-<li><span class="sentence"><code>Long</code> (bit width 64)</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">A value with signed integer type of bit width <span class="math inline">\(N\)</span> is guaranteed to be able to hold integer values in range <span class="math inline">\([-2^{N-1}, 2^{N-1}-1]\)</span>.</span></p>
+<p><span class="sentence"><code>kotlin.Unit</code> is a unit type, i.e., a type with only one value <code>kotlin.Unit</code>; all values of type <code>kotlin.Unit</code> should reference the same underlying <code>kotlin.Unit</code> object.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Add unsigned types?)</span></p>
+<p><span class="sentence">TODO(Compare to <code>void</code>?)</span></p>
 </div>
 </div>
 <h4 id="classifier-types">Classifier types</h4>
 <div class="paragraph">
-<p><span class="sentence">Classifier types represent regular types which are declared as <a href="declarations.html#class-declaration">classes</a>, <a href="declarations.html#interface-declaration">interfaces</a> or <a href="declarations.html#object-declaration">objects</a>. </span><span class="sentence">As Kotlin supports parametric polymorphism, there are two variants of classifier types: simple and parameterized.</span></p>
+<p><span class="sentence">Classifier types represent regular types which are declared as [classes][Classes], [interfaces][Interfaces] or [objects][Objects]. </span><span class="sentence">As Kotlin supports <a href="type-system.html#generics">generics</a>, there are two variants of classifier types: simple and parameterized.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(No objects as supertypes?)</span></p>
+</div>
 </div>
 <h5 id="simple-classifier-types">Simple classifier types</h5>
 <div class="paragraph">
-<p><span class="sentence">A simple classifier type</span></p>
+<p><span class="sentence">A simple concrete classifier type</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math display">\[T : S_1, \ldots, S_m\]</span></span></p>
@@ -337,656 +266,307 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">(optional) list of supertypes <span class="math inline">\(S_1, \ldots, S_m\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">To represent a well-formed simple classifier type, <span class="math inline">\(T : S_1, \ldots, S_m\)</span> should satisfy the following conditions.</span></p>
+<p><span class="sentence">To represent a valid simple concrete classifier type, <span class="math inline">\(T : S_1, \ldots, S_m\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(T\)</span> is a valid type name</span></li>
-<li><span class="sentence"><span class="math inline">\(\forall i \in [1,m]: S_i\)</span> must be concrete, <a href="type-system.html#nullable-types">non-nullable</a>, well-formed type</span></li>
+<li><span class="sentence"><span class="math inline">\(\forall i \in [1,m]: S_i\)</span> must be concrete, non-nullable, valid type</span></li>
 </ul>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="co">// A well-formed type with no supertypes</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">interface</span> Base</a>
-<a class="sourceLine" id="cb1-3" title="3"></a>
-<a class="sourceLine" id="cb1-4" title="4">// A well-formed type with a single supertype Base</a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">interface</span> Derived : <span class="dt">Base</span></a>
-<a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7">// <span class="dt">An</span> <span class="dt">ill</span>-<span class="dt">formed</span> <span class="dt">type</span>,</a>
-<a class="sourceLine" id="cb1-8" title="8">// <span class="kw">as</span> nullable type cannot be a supertype</a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="kw">interface</span> Invalid : <span class="dt">Base</span>?</a></code></pre></div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: for the purpose of different type system examples, we assume the presence of the following well-formed concrete types:</span></p>
-</div>
-<ul>
-<li><span class="sentence">class <code>String</code></span></li>
-<li><span class="sentence">interface <code>Number</code></span></li>
-<li><span class="sentence">class <code>Int</code> <span class="math inline">\(&lt;:\)</span> <code>Number</code></span></li>
-<li><span class="sentence">class <code>Double</code> <span class="math inline">\(&lt;:\)</span> <code>Number</code></span></li>
-</ul>
-</blockquote>
 <h5 id="parameterized-classifier-types">Parameterized classifier types</h5>
 <div class="paragraph">
-<p><span class="sentence">A classifier type constructor</span></p>
+<p><span class="sentence">A parameterized abstract classifier type (PACT)</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math display">\[T(F_1, \ldots, F_n) : S_1, \ldots, S_m\]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">describes an abstract type and consists of</span></p>
+<p><span class="sentence">consists of</span></p>
 </div>
 <ul>
-<li><span class="sentence">type name <span class="math inline">\(T\)</span></span></li>
+<li><span class="sentence">type constructor <span class="math inline">\(T\)</span> which takes type arguments and returns an instantiated type</span></li>
 <li><span class="sentence">type parameters <span class="math inline">\(F_1, \ldots, F_n\)</span></span></li>
 <li><span class="sentence">(optional) list of supertypes <span class="math inline">\(S_1, \ldots, S_m\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">To represent a well-formed type constructor, <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span> should satisfy the following conditions.</span></p>
+<p><span class="sentence">To represent a valid PACT, <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(T\)</span> is a valid type name</span></li>
-<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: F_i\)</span> must be well-formed <a href="type-system.html#type-parameters">type parameter</a></span></li>
-<li><span class="sentence"><span class="math inline">\(\forall j \in [1,m]: S_j\)</span> must be concrete, <a href="type-system.html#nullable-types">non-nullable</a>, well-formed type</span></li>
+<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: F_i\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">[unbounded type parameter][Unbounded type parameters]</span></li>
+<li><span class="sentence">[projected type parameter][Projected type parameters]</span></li>
+<li><span class="sentence"><a href="type-system.html#bounded-type-parameters">bounded type parameter</a></span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(\forall j \in [1,m]: S_j[F_1, \ldots, F_n]\)</span> must be concrete, non-nullable, valid type</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">To instantiate a type constructor, one provides it with type arguments, creating a concrete parameterized classifier type</span></p>
+<p><span class="sentence">An instantiated parameterized concrete classifier type (iPACT)</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math display">\[T[A_1, \ldots, A_n]\]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">which consists of</span></p>
+<p><span class="sentence">consists of</span></p>
 </div>
 <ul>
-<li><span class="sentence">type constructor <span class="math inline">\(T\)</span></span></li>
+<li><span class="sentence">PACT <span class="math inline">\(T\)</span></span></li>
 <li><span class="sentence">type arguments <span class="math inline">\(A_1, \ldots, A_n\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">To represent a well-formed parameterized type, <span class="math inline">\(T[A_1, \ldots, A_n]\)</span> should satisfy the following conditions.</span></p>
+<p><span class="sentence">To represent a valid iPACT, <span class="math inline">\(T[A_1, \ldots, A_n]\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(T\)</span> is a well-formed type constructor with <span class="math inline">\(n\)</span> type parameters</span></li>
-<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: A_i\)</span> must be well-formed concrete type</span></li>
-<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: K_T(F_i, A_i)\)</span> is a well-formed captured type, where <span class="math inline">\(K\)</span> is a <a href="type-system.html#type-capturing">type capturing</a> operator</span></li>
+<li><span class="sentence"><span class="math inline">\(T\)</span> is a valid PACT with <span class="math inline">\(n\)</span> type parameters</span></li>
+<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: A_i\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">valid concrete type</span></li>
+<li><span class="sentence">valid projected type</span></li>
+<li><span class="sentence">type parameter available in the current type context <span class="math inline">\(\Gamma\)</span><br />
+TODO(What is a type context?)<br />
+TODO(Inner vs nested contexts)</span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: A_i &lt;: F_i\)</span> where <span class="math inline">\(F_i\)</span> is the respective type parameter of <span class="math inline">\(T\)</span></span></li>
 </ul>
-<blockquote>
+<h5 id="type-parameters">Type parameters</h5>
 <div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="co">// A well-formed PACT with no supertypes</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="co">// A and B are unbounded type parameters</span></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">interface</span> Generic&lt;<span class="dt">A</span>, <span class="dt">B</span>&gt;</a>
-<a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5">// A well-formed PACT with a single iPACT supertype</a>
-<a class="sourceLine" id="cb2-6" title="6">// Int and String are well-formed concrete types</a>
-<a class="sourceLine" id="cb2-7" title="7"><span class="kw">interface</span> ConcreteDerived&lt;<span class="dt">P</span>, <span class="dt">Q</span>&gt; : <span class="dt">Generic</span>&lt;<span class="dt">Int</span>, <span class="dt">String</span>&gt;</a>
-<a class="sourceLine" id="cb2-8" title="8"></a>
-<a class="sourceLine" id="cb2-9" title="9">// <span class="dt">A</span> <span class="dt">well</span>-<span class="dt">formed</span> <span class="dt">PACT</span> <span class="dt">with</span> <span class="dt">a</span> <span class="dt">single</span> <span class="dt">iPACT</span> <span class="dt">supertype</span></a>
-<a class="sourceLine" id="cb2-10" title="10">// <span class="dt">P</span> <span class="dt">and</span> <span class="dt">Q</span> <span class="dt">are</span> <span class="dt">type</span> <span class="dt">parameters</span> <span class="dt">of</span> <span class="dt">GenericDerived</span>,</a>
-<a class="sourceLine" id="cb2-11" title="11">//   <span class="dt">used</span> <span class="kw">as</span> type arguments of Generic</a>
-<a class="sourceLine" id="cb2-12" title="12"><span class="kw">interface</span> GenericDerived&lt;<span class="dt">P</span>, <span class="dt">Q</span>&gt; : <span class="dt">Generic</span>&lt;<span class="dt">P</span>, <span class="dt">Q</span>&gt;</a>
-<a class="sourceLine" id="cb2-13" title="13"></a>
-<a class="sourceLine" id="cb2-14" title="14">// <span class="dt">An</span> <span class="dt">ill</span>-<span class="dt">formed</span> <span class="dt">PACT</span>,</a>
-<a class="sourceLine" id="cb2-15" title="15">//   <span class="kw">as</span> an abstract type Generic</a>
-<a class="sourceLine" id="cb2-16" title="16"><span class="co">//   cannot be used as a supertype</span></a>
-<a class="sourceLine" id="cb2-17" title="17"><span class="kw">interface</span> Invalid&lt;<span class="dt">P</span>&gt; : <span class="dt">Generic</span></a>
-<a class="sourceLine" id="cb2-18" title="18"></a>
-<a class="sourceLine" id="cb2-19" title="19"></a>
-<a class="sourceLine" id="cb2-20" title="20">// <span class="dt">A</span> <span class="dt">well</span>-<span class="dt">formed</span> <span class="dt">PACT</span> <span class="dt">with</span> <span class="dt">no</span> <span class="dt">supertypes</span></a>
-<a class="sourceLine" id="cb2-21" title="21">// <span class="kw">out</span> A <span class="kw">is</span> a projected type parameter</a>
-<a class="sourceLine" id="cb2-22" title="22"><span class="kw">interface</span> Out&lt;<span class="kw">out</span> <span class="dt">A</span>&gt;</a>
-<a class="sourceLine" id="cb2-23" title="23"></a>
-<a class="sourceLine" id="cb2-24" title="24"></a>
-<a class="sourceLine" id="cb2-25" title="25">// A well-formed PACT with no supertypes</a>
-<a class="sourceLine" id="cb2-26" title="26">// S : <span class="dt">Number</span> <span class="kw">is</span> a bounded type parameter</a>
-<a class="sourceLine" id="cb2-27" title="27"><span class="co">// (S &lt;: Number)</span></a>
-<a class="sourceLine" id="cb2-28" title="28"><span class="kw">interface</span> NumberWrapper&lt;<span class="dt">S</span> : <span class="dt">Number</span>&gt;</a>
-<a class="sourceLine" id="cb2-29" title="29"></a>
-<a class="sourceLine" id="cb2-30" title="30">// A well-formed type with a single iPACT supertype</a>
-<a class="sourceLine" id="cb2-31" title="31">// NumberWrapper&lt;<span class="dt">Int</span>&gt; <span class="kw">is</span> well-formed,</a>
-<a class="sourceLine" id="cb2-32" title="32">//   <span class="kw">as</span> Int &lt;: <span class="dt">Number</span></a>
-<a class="sourceLine" id="cb2-33" title="33"><span class="kw">interface</span> <span class="dt">IntWrapper</span> : <span class="dt">NumberWrapper</span>&lt;<span class="dt">Int</span>&gt;</a>
-<a class="sourceLine" id="cb2-34" title="34"></a>
-<a class="sourceLine" id="cb2-35" title="35">// <span class="dt">An</span> <span class="dt">ill</span>-<span class="dt">formed</span> <span class="dt">type</span>,</a>
-<a class="sourceLine" id="cb2-36" title="36">//   <span class="kw">as</span> <span class="dt">NumberWrapper</span>&lt;<span class="dt">String</span>&gt; <span class="kw">is</span> <span class="dt">an</span> <span class="dt">ill</span>-<span class="dt">formed</span> <span class="dt">iPACT</span></a>
-<a class="sourceLine" id="cb2-37" title="37">//   (<span class="dt">String</span> &lt;:&gt; <span class="dt">Number</span>)</a>
-<a class="sourceLine" id="cb2-38" title="38"><span class="kw">interface</span> <span class="dt">InvalidWrapper</span> : <span class="dt">NumberWrapper</span>&lt;<span class="dt">String</span>&gt;</a></code></pre></div>
-</blockquote>
-<h4 id="type-parameters">Type parameters</h4>
-<div class="paragraph">
-<p><span class="sentence">Type parameters are a special kind of types, which are introduced by type constructors. </span><span class="sentence">They are considered well-formed concrete types only in the type context of their declaring type constructor.</span></p>
+<p><span class="sentence">Type parameters are a special kind of abstract types, which are introduced by PACTs. </span><span class="sentence">They are valid only in the context of their declaring PACT.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">When creating a parameterized type from a type constructor, its type parameters with their respective type arguments go through <a href="type-system.html#type-capturing">capturing</a> and create <em>captured</em> types, which follow special rules described in more detail below.</span></p>
+<p><span class="sentence">When creating an iPACT from PACT, type parameters with their respective type arguments go through <a href="type-system.html#type-capturing">capturing</a> and create <em>captured</em> type arguments, which follow special rules described in more detail below.</span></p>
+</div>
+<h6 id="bounded-type-parameters">Bounded type parameters</h6>
+<div class="paragraph">
+<p><span class="sentence">A bounded type parameter is an abstract type which is used to specify upper type bounds for type parameters and is defined as <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span>, where <span class="math inline">\(B_i\)</span> is an i-th upper bound on type parameter <span class="math inline">\(F\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Type parameters may be either unbounded or bounded. </span><span class="sentence">By default, a type parameter <span class="math inline">\(F\)</span> is unbounded, which is the same as saying it is a bounded type parameter of the form <span class="math inline">\(F &lt;: \operatorname{\mathtt{kotlin.Any?}}\)</span>.</span></p>
+<p><span class="sentence">To represent a valid bounded type parameter of PACT <span class="math inline">\(T\)</span>, <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span> should satisfy the following conditions.</span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence">A bounded type parameter additionally specify upper type bounds for the type parameter and is defined as <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span>, where <span class="math inline">\(B_i\)</span> is an i-th upper bound on type parameter <span class="math inline">\(F\)</span>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">To represent a well-formed bounded type parameter of type constructor <span class="math inline">\(T\)</span>, <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span> should satisfy either of the following sets of conditions.</span></p>
-</div>
-<ul>
-<li><span class="sentence">Bounded type parameter with regular bounds:</span>
 <ul>
 <li><span class="sentence"><span class="math inline">\(F\)</span> is a type parameter of PACT <span class="math inline">\(T\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: B_i\)</span> must be concrete, non-type-parameter, well-formed type</span></li>
-<li><span class="sentence">No more than one of <span class="math inline">\(B_i\)</span> may be a class type</span></li>
+<li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: B_i\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">valid concrete type</span></li>
+<li><span class="sentence">a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
 </ul></li>
 </ul>
-<blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Note: the last condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds. </span><span class="sentence">For any two class types, either these types are in a subtyping relation (and you should use the more specific type in the bounded type parameter), or they are unrelated (and the bounded type parameter is empty).</span></p>
+<p><span class="sentence">TODO(Single generic bound allowed)</span></p>
 </div>
-</blockquote>
-<ul>
-<li><span class="sentence">Bounded type parameter with type parameter bound:</span>
-<ul>
-<li><span class="sentence"><span class="math inline">\(F\)</span> is a type parameter of PACT <span class="math inline">\(T\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(i = 1\)</span> (i.e., there is a single upper bound)</span></li>
-<li><span class="sentence"><span class="math inline">\(B_1\)</span> must be well-formed <a href="type-system.html#type-parameters">type parameter</a></span></li>
-</ul></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">From the definition, it follows <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span> can be represented as <span class="math inline">\(K &lt;: U\)</span> where <span class="math inline">\(U = B_1 \operatorname{\&amp;}\ldots \operatorname{\&amp;}B_n\)</span>.</span></p>
-</div>
-<h5 id="mixed-site-variance">Mixed-site variance</h5>
-<div class="paragraph">
-<p><span class="sentence">To implement subtyping between parameterized types, Kotlin uses <em>mixed-site variance</em> — a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java. </span><span class="sentence">Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Info: <em>variance</em> is a way of describing how <a href="type-system.html#subtyping">subtyping</a> works for <em>variant</em> parameterized types. </span><span class="sentence">With declaration-site variance, for two types <span class="math inline">\(A &lt;: B\)</span>, subtyping between <code>T&lt;A&gt;</code> and <code>T&lt;B&gt;</code> depends on the variance of type parameter <span class="math inline">\(F\)</span> of some type constructor <span class="math inline">\(T\)</span>.</span></p>
-</div>
-<ul>
-<li><span class="sentence">if <span class="math inline">\(F\)</span> is covariant (<span class="math inline">\(\operatorname{\mathtt{out\ }}F\)</span>), <code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;B&gt;</code></span></li>
-<li><span class="sentence">if <span class="math inline">\(F\)</span> is contravariant(<span class="math inline">\(\operatorname{\mathtt{in\ }}F\)</span>), <code>T&lt;A&gt;</code> <span class="math inline">\(:&gt;\)</span> <code>T&lt;B&gt;</code></span></li>
-<li><span class="sentence">if <span class="math inline">\(F\)</span> is invariant (default), <code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:&gt;\)</span> <code>T&lt;B&gt;</code></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Use-site variance allows the user to change the type variance of an <em>invariant</em> type parameter by specifying it on the corresponding type argument. </span><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{out\ }}A\)</span> means covariant type argument, <span class="math inline">\(\operatorname{\mathtt{in\ }}A\)</span> means contravariant type argument; for two types <span class="math inline">\(A &lt;: B\)</span> and an invariant type parameter <span class="math inline">\(F\)</span> of some type constructor <span class="math inline">\(T\)</span>, subtyping for use-site variance has the following rules.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>T&lt;out A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out B&gt;</code></span></li>
-<li><span class="sentence"><code>T&lt;in A&gt;</code> <span class="math inline">\(:&gt;\)</span> <code>T&lt;in B&gt;</code></span></li>
-<li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out A&gt;</code></span></li>
-<li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;in A&gt;</code></span></li>
-<li><span class="sentence"><code>T&lt;in A&gt;</code> <span class="math inline">\(&lt;:&gt;\)</span> <code>T&lt;out A&gt;</code></span></li>
-</ul>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have <code>T&lt;in A out B&gt;</code> neither on declaration- nor on use-site.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">For further discussion about mixed-site variance and its practical applications, we readdress you to <a href="type-system.html#subtyping">subtyping</a> and [generics][Generics].</span></p>
-</div>
-<h5 id="declaration-site-variance">Declaration-site variance</h5>
-<div class="paragraph">
-<p><span class="sentence">A type parameter <span class="math inline">\(F\)</span> may be invariant, covariant or contravariant.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">By default, all type parameters are invariant.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">To specify a covariant type parameter, it is marked as <span class="math inline">\(\operatorname{\mathtt{out\ }}F\)</span>. </span><span class="sentence">To specify a contravariant type parameter, it is marked as <span class="math inline">\(\operatorname{\mathtt{in\ }}F\)</span>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">The variance information is used by <a href="type-system.html#subtyping">subtyping</a> and for checking allowed operations on values of co- and contravariant type parameters.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Important: declaration-site variance can be used only when declaring types, e.g., type parameters of functions cannot be variant.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="co">// A type constructor with an invariant type parameter</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="kw">interface</span> Invariant&lt;<span class="dt">A</span>&gt;</a>
-<a class="sourceLine" id="cb3-3" title="3">// A type <span class="kw">constructor</span> with a covariant type parameter</a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="kw">interface</span> Out&lt;<span class="kw">out</span> <span class="dt">A</span>&gt;</a>
-<a class="sourceLine" id="cb3-5" title="5">// A type <span class="kw">constructor</span> with a contravariant type parameter</a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="kw">interface</span> In&lt;<span class="kw">in</span> <span class="dt">A</span>&gt;</a>
-<a class="sourceLine" id="cb3-7" title="7"></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="kw">fun</span> testInvariant() {</a>
-<a class="sourceLine" id="cb3-9" title="9">    <span class="kw">var</span> <span class="va">invInt</span>: Invariant&lt;<span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb3-10" title="10">    <span class="kw">var</span> <span class="va">invNumber</span>: Invariant&lt;Number&gt; = ...</a>
-<a class="sourceLine" id="cb3-11" title="11">    </a>
-<a class="sourceLine" id="cb3-12" title="12">    <span class="cf">if</span> (random) invInt = invNumber <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb3-13" title="13">    <span class="cf">else</span> invNumber = invInt <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb3-14" title="14">    </a>
-<a class="sourceLine" id="cb3-15" title="15">    <span class="co">// Invariant type parameters do not create subtyping</span></a>
-<a class="sourceLine" id="cb3-16" title="16">}</a>
-<a class="sourceLine" id="cb3-17" title="17"></a>
-<a class="sourceLine" id="cb3-18" title="18"><span class="kw">fun</span> <span class="fu">testOut</span>() {</a>
-<a class="sourceLine" id="cb3-19" title="19">    <span class="kw">var</span> <span class="va">outInt</span>: Out&lt;<span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb3-20" title="20">    <span class="kw">var</span> <span class="va">outNumber</span>: Out&lt;Number&gt; = ...</a>
-<a class="sourceLine" id="cb3-21" title="21">    </a>
-<a class="sourceLine" id="cb3-22" title="22">    <span class="cf">if</span> (random) outInt = outNumber <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb3-23" title="23">    <span class="cf">else</span> outNumber = outInt <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb3-24" title="24">    </a>
-<a class="sourceLine" id="cb3-25" title="25">    <span class="co">// Covariant type parameters create &quot;same-way&quot; subtyping</span></a>
-<a class="sourceLine" id="cb3-26" title="26">    <span class="co">//   Int &lt;: Number =&gt; Out&lt;Int&gt; &lt;: Out&lt;Number&gt;</span></a>
-<a class="sourceLine" id="cb3-27" title="27">    <span class="co">// (more specific type Out&lt;Int&gt; can be assigned</span></a>
-<a class="sourceLine" id="cb3-28" title="28">    <span class="co">//  to a less specific type Out&lt;Number&gt;)</span></a>
-<a class="sourceLine" id="cb3-29" title="29">}</a>
-<a class="sourceLine" id="cb3-30" title="30"></a>
-<a class="sourceLine" id="cb3-31" title="31"><span class="kw">fun</span> <span class="fu">testIn</span>() {</a>
-<a class="sourceLine" id="cb3-32" title="32">    <span class="kw">var</span> <span class="va">inInt</span>: In&lt;<span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb3-33" title="33">    <span class="kw">var</span> <span class="va">inNumber</span>: In&lt;Number&gt; = ...</a>
-<a class="sourceLine" id="cb3-34" title="34">    </a>
-<a class="sourceLine" id="cb3-35" title="35">    <span class="cf">if</span> (random) inInt = inNumber <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb3-36" title="36">    <span class="cf">else</span> inNumber = inInt <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb3-37" title="37">    </a>
-<a class="sourceLine" id="cb3-38" title="38">    <span class="co">// Contravariant type parameters create &quot;opposite-way&quot; subtyping</span></a>
-<a class="sourceLine" id="cb3-39" title="39">    <span class="co">//   Int &lt;: Number =&gt; In&lt;Int&gt; :&gt; In&lt;Number&gt;</span></a>
-<a class="sourceLine" id="cb3-40" title="40">    <span class="co">// (more specific type In&lt;Number&gt; can be assigned</span></a>
-<a class="sourceLine" id="cb3-41" title="41">    <span class="co">//  to a less specific type In&lt;Int&gt;)</span></a>
-<a class="sourceLine" id="cb3-42" title="42">}</a></code></pre></div>
-</blockquote>
-<h5 id="use-site-variance">Use-site variance</h5>
-<div class="paragraph">
-<p><span class="sentence">Kotlin also supports use-site variance, by specifying the variance for type arguments. </span><span class="sentence">Similarly to type parameters, one can have type arguments being co-, contra- or invariant.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">By default, all type arguments are invariant.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">To specify a covariant type argument, it is marked as <span class="math inline">\(\operatorname{\mathtt{out\ }}A\)</span>. </span><span class="sentence">To specify a contravariant type argument, it is marked as <span class="math inline">\(\operatorname{\mathtt{in\ }}A\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: in some cases, Kotlin prohibits certain combinations of declaration- and use-site variance, i.e., which type arguments can be used in which type parameters. </span><span class="sentence">These rules are covered in more detail [here][TODO()].</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, one may use <em>bivariant</em> type argument <span class="math inline">\(\star\)</span>, which is roughly equivalent to a combination of <span class="math inline">\(\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}\)</span> and <span class="math inline">\(\operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\)</span> (for further details, see <a href="type-system.html#subtyping">subtyping</a> and [generics][Generics]).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)</span></p>
+<p><span class="sentence">TODO(Only one class bound allowed)</span></p>
+</div>
+</div>
+<h6 id="mixed-site-variance">Mixed-site variance</h6>
+<div class="paragraph">
+<p><span class="sentence">To implement subtyping between parameterized types, Kotlin uses <em>mixed-site variance</em> — a combination of declaration- and use-site variance, which is easier to understand and reason about, compared to wildcards from Java. </span><span class="sentence">Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site). </span><span class="sentence">For more practical discussion about mixed-site variance, we readdress you to <a href="type-system.html#generics">generics</a>.</span></p>
+</div>
+<h6 id="declaration-site-variance">Declaration-site variance</h6>
+<div class="paragraph">
+<p><span class="sentence">An invariant type parameter <span class="math inline">\(F\)</span> is an abstract type which may capture any valid type (see <a href="type-system.html#subtyping">subtyping</a> for more details on variance); if one needs co- or contravariant type parameter, they need to use projected type parameters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid invariant type parameter of PACT <span class="math inline">\(T\)</span>, <span class="math inline">\(F\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(F\)</span> is a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Projected type parameters are abstract types which are used to declare a type parameter as <em>covariant</em> or <em>contravariant</em>. </span><span class="sentence">The variance information is used by <a href="type-system.html#subtyping">subtyping</a> and for checking allowed operations on values of co- and contravariant type parameters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid covariant type parameter <span class="math inline">\(\triangleleft F\)</span> of PACT <span class="math inline">\(T\)</span>, <span class="math inline">\(\triangleleft F\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(F\)</span> is a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid contravariant type parameter <span class="math inline">\(\triangleright F\)</span> of PACT <span class="math inline">\(T\)</span>, <span class="math inline">\(\triangleright F\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(F\)</span> is a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(type projections are not allowed on functions and properties)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(no type projections on supertype type arguments)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(conflicting projections)</span></p>
+</div>
+</div>
+<h6 id="use-site-variance">Use-site variance</h6>
+<div class="paragraph">
+<p><span class="sentence">Kotlin also supports use-site variance, by specifying the variance for type arguments. </span><span class="sentence">Just like with projected type parameters, one can have projected type arguments being co-, contra- or invariant.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid invariant type argument of iPACT <span class="math inline">\(T\)</span>, <span class="math inline">\(A\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">a valid concrete type</span></li>
+<li><span class="sentence">a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid covariant type argument <span class="math inline">\(\triangleleft A\)</span> of iPACT <span class="math inline">\(T\)</span>, <span class="math inline">\(\triangleleft A\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">a valid concrete type</span></li>
+<li><span class="sentence">a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">To represent a valid contravariant type argument <span class="math inline">\(\triangleright A\)</span> of iPACT <span class="math inline">\(T\)</span>, <span class="math inline">\(\triangleright A\)</span> should satisfy the following conditions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\)</span> must be one of the following kinds</span>
+<ul>
+<li><span class="sentence">a valid concrete type</span></li>
+<li><span class="sentence">a type parameter available in the current type context <span class="math inline">\(\Gamma\)</span></span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In case one cannot specify any valid type argument, but still needs to use PACT in a type-safe way, one may use <em>star-projected</em> type argument, which is roughly equivalent to a combination of <span class="math inline">\(\triangleleft \texttt{kotlin.Any?}\)</span> and <span class="math inline">\(\triangleright \texttt{kotlin.Nothing}\)</span> (for further details, see <a href="type-system.html#generics">here</a>).</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Clean-up this mess)</span></p>
+</div>
+</div>
+<h5 id="type-capturing">Type capturing</h5>
+<div class="paragraph">
+<p><span class="sentence">Type capturing (similarly to Java capturing conversion) is used when instantiating parameterized types; it creates <em>captured</em> types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For a given PACT <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its iPACT <span class="math inline">\(T[A_1, \ldots, A_n]\)</span> uses the following rules to create captured type <span class="math inline">\(C_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Does this set describe a type universe?)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Blah-blah about existential types?)</span></p>
 </div>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: use-site variance cannot be used when declaring a supertype.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="co">// A type constructor with an invariant type parameter</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">interface</span> Inv&lt;<span class="dt">A</span>&gt;</a>
-<a class="sourceLine" id="cb4-3" title="3"></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="kw">fun</span> test() {</a>
-<a class="sourceLine" id="cb4-5" title="5">    <span class="kw">var</span> <span class="va">invInt</span>: Inv&lt;<span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb4-6" title="6">    <span class="kw">var</span> <span class="va">invNumber</span>: Inv&lt;Number&gt; = ...</a>
-<a class="sourceLine" id="cb4-7" title="7">    <span class="kw">var</span> <span class="va">outInt</span>: Inv&lt;<span class="kw">out</span> <span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb4-8" title="8">    <span class="kw">var</span> <span class="va">outNumber</span>: Inv&lt;<span class="kw">out</span> Number&gt; = ...</a>
-<a class="sourceLine" id="cb4-9" title="9">    <span class="kw">var</span> <span class="va">inInt</span>: Inv&lt;<span class="kw">in</span> <span class="kw">Int</span>&gt; = ...</a>
-<a class="sourceLine" id="cb4-10" title="10">    <span class="kw">var</span> <span class="va">inNumber</span>: Inv&lt;<span class="kw">in</span> Number&gt; = ...</a>
-<a class="sourceLine" id="cb4-11" title="11">    </a>
-<a class="sourceLine" id="cb4-12" title="12">    <span class="cf">when</span> (random) {</a>
-<a class="sourceLine" id="cb4-13" title="13">        <span class="dv">1</span> -&gt; {</a>
-<a class="sourceLine" id="cb4-14" title="14">            inInt = invInt    <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb4-15" title="15">            <span class="co">// T&lt;in Int&gt; :&gt; T&lt;Int&gt;</span></a>
-<a class="sourceLine" id="cb4-16" title="16">            </a>
-<a class="sourceLine" id="cb4-17" title="17">            inInt = invNumber <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb4-18" title="18">            <span class="co">// T&lt;in Int&gt; :&gt; T&lt;in Number&gt; :&gt; T&lt;Number&gt;</span></a>
-<a class="sourceLine" id="cb4-19" title="19">        }</a>
-<a class="sourceLine" id="cb4-20" title="20">        <span class="dv">2</span> -&gt; {</a>
-<a class="sourceLine" id="cb4-21" title="21">            outNumber = invInt    <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb4-22" title="22">            <span class="co">// T&lt;out Number&gt; :&gt; T&lt;out Int&gt; :&gt; T&lt;Int&gt;</span></a>
-<a class="sourceLine" id="cb4-23" title="23">            </a>
-<a class="sourceLine" id="cb4-24" title="24">            outNumber = invNumber <span class="co">// OK</span></a>
-<a class="sourceLine" id="cb4-25" title="25">            <span class="co">// T&lt;out Number&gt; :&gt; T&lt;Number&gt;</span></a>
-<a class="sourceLine" id="cb4-26" title="26">        }</a>
-<a class="sourceLine" id="cb4-27" title="27">        <span class="dv">3</span> -&gt; {</a>
-<a class="sourceLine" id="cb4-28" title="28">            invInt = inInt  <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb4-29" title="29">            invInt = outInt <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb4-30" title="30">            <span class="co">// It is invalid to assign less specific type</span></a>
-<a class="sourceLine" id="cb4-31" title="31">            <span class="co">// to a more specific one</span></a>
-<a class="sourceLine" id="cb4-32" title="32">            <span class="co">//   T&lt;Int&gt; &lt;: T&lt;in Int&gt;</span></a>
-<a class="sourceLine" id="cb4-33" title="33">            <span class="co">//   T&lt;Int&gt; &lt;: T&lt;out Int&gt;</span></a>
-<a class="sourceLine" id="cb4-34" title="34">        }</a>
-<a class="sourceLine" id="cb4-35" title="35">        <span class="dv">4</span> -&gt; {</a>
-<a class="sourceLine" id="cb4-36" title="36">            inInt = outInt    <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb4-37" title="37">            inInt = outNumber <span class="co">// ERROR</span></a>
-<a class="sourceLine" id="cb4-38" title="38">            <span class="co">// types with co- and contravariant type parameters</span></a>
-<a class="sourceLine" id="cb4-39" title="39">            <span class="co">// are not connected by subtyping</span></a>
-<a class="sourceLine" id="cb4-40" title="40">            <span class="co">//   T&lt;in Int&gt; &lt;:&gt; T&lt;out Int&gt;</span></a>
-<a class="sourceLine" id="cb4-41" title="41">        }</a>
-<a class="sourceLine" id="cb4-42" title="42">    }</a>
-<a class="sourceLine" id="cb4-43" title="43">}</a></code></pre></div>
-</blockquote>
-<h4 id="type-capturing">Type capturing</h4>
-<div class="paragraph">
-<p><span class="sentence">Type capturing (similarly to Java capture conversion) is used when instantiating type constructors; it creates <em>abstract captured</em> types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">The reasoning behind type capturing is closely related to variant parameterized types being a form of <em>bounded existential types</em>; e.g., <code>A&lt;out T&gt;</code> may be loosely considered as the following existential type: <span class="math inline">\(\exists X : X &lt;: T . \mathtt{A&lt;X&gt;}\)</span>. </span><span class="sentence">Informally, a bounded existential type describes a <em>set</em> of possible types, which satisfy its bound constraints. </span><span class="sentence">Before such a type can be used, it needs to be <em>opened</em> (or <em>unpacked</em>): existentially quantified type variables are lifted to fresh type variables with corresponding bounds. </span><span class="sentence">We call these type variables <em>captured</em> types.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">For a given type constructor <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its instance <span class="math inline">\(T[\sigma]\)</span> uses the following rules to create captured type <span class="math inline">\(K_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: <strong>All</strong> applicable rules are used to create the resulting constraint set.</span></p>
+<p><span class="sentence">NB: A captured type <span class="math inline">\(C\)</span> may be viewed as a set of its type constraints <span class="math inline">\(\mathbb{C}\)</span>. </span><span class="sentence"><strong>All</strong> applicable rules are used to create the resulting constraint set.</span></p>
 </div>
 </blockquote>
 <ul>
-<li><span class="sentence">For a covariant type parameter <span class="math inline">\(\operatorname{\mathtt{out\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a contravariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
-<li><span class="sentence">For a contravariant type parameter <span class="math inline">\(\operatorname{\mathtt{in\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a covariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i :&gt; A_i\)</span>.</span></li>
-<li><div class="paragraph">
-<p><span class="sentence">For a bounded type parameter <span class="math inline">\(F_i &lt;: B_1, \ldots, B_m\)</span>, if <span class="math inline">\(\exists j \in [1,m]: \neg (A_i &lt;: B_j)\)</span>, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(\forall j \in [1,m]: K_i &lt;: \sigma B_j\)</span>.</span></p>
-</div></li>
-<li><span class="sentence">For a covariant type argument <span class="math inline">\(\operatorname{\mathtt{out\ }}A_i\)</span>, if <span class="math inline">\(F_i\)</span> is a contravariant type parameter, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
-<li><div class="paragraph">
-<p><span class="sentence">For a contravariant type argument <span class="math inline">\(\operatorname{\mathtt{in\ }}A_i\)</span>, if <span class="math inline">\(F_i\)</span> is a covariant type parameter, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i :&gt; A_i\)</span>.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">For a bivariant type argument <span class="math inline">\(\star\)</span>, <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}&lt;: K_i &lt;: \operatorname{\mathtt{kotlin.Any?}}\)</span>.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">Otherwise, <span class="math inline">\(K_i \equiv A_i\)</span>.</span></p>
-</div></li>
+<li><span class="sentence">If <span class="math inline">\(\triangleleft F_i\)</span> is a covariant type parameter and <span class="math inline">\(A_i\)</span> is not a concrete type, covariant or star-projected type argument, it is an error. </span><span class="sentence">Otherwise, <span class="math inline">\(C_i &lt;: A_i\)</span>.</span></li>
+<li><span class="sentence">If <span class="math inline">\(\triangleright F_i\)</span> is a contravariant type parameter and <span class="math inline">\(A_i\)</span> is not a concrete type, contravariant or star-projected type argument, it is an error. </span><span class="sentence">Otherwise, <span class="math inline">\(C_i :&gt; A_i\)</span>.</span></li>
+<li><span class="sentence">If <span class="math inline">\(F_i &lt;: B_1, \ldots, B_n\)</span> is a bounded type parameter, <span class="math inline">\(C_i &lt;: B_i[C_1, \ldots, C_n]\)</span></span></li>
+<li><span class="sentence">If <span class="math inline">\(\triangleleft A_i\)</span> is a covariant type argument, <span class="math inline">\(C_i &lt;: A_i\)</span></span></li>
+<li><span class="sentence">If <span class="math inline">\(\triangleright A_i\)</span> is a contravariant type argument, <span class="math inline">\(C_i :&gt; A_i\)</span></span></li>
+<li><span class="sentence">If <span class="math inline">\(\star A_i\)</span> is a star-projected type argument, <span class="math inline">\(kotlin.Nothing &lt;: C_i &lt;: kotlin.Any?\)</span></span></li>
+<li><span class="sentence">Otherwise, <span class="math inline">\(C_i = A_i\)</span></span></li>
 </ul>
-<div class="paragraph">
-<p><span class="sentence">By construction, every captured type <span class="math inline">\(K\)</span> has the following form:</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\{L_1 &lt;: K, \ldots, L_p &lt;: K, K &lt;: U_1, \ldots, K &lt;: U_q\}\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">which can be represented as</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[L &lt;: K &lt;: U\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">where <span class="math inline">\(L = L_1 | \ldots | L_p\)</span> and <span class="math inline">\(U = U_1 \operatorname{\&amp;}\ldots \operatorname{\&amp;}U_q\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as every captured type corresponds to a fresh type variable, two different captured types <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_j\)</span> which describe the same set of possible types (i.e., their constraint sets are equal) are <em>not</em> considered equal. </span><span class="sentence">However, in some cases <a href="type-inference.html#type-inference">type inference</a> may approximate a captured type <span class="math inline">\(K\)</span> to a concrete type <span class="math inline">\(K^{\approx}\)</span>; in our case, it would be that <span class="math inline">\(K_i^{\approx} \equiv K_j^{\approx}\)</span>.</span></p>
-</div>
-</blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Need to think more about this part)</span></p>
-</div>
-</div>
 <h4 id="function-types">Function types</h4>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Kotlin has first-order functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.</span></p>
+<p><span class="sentence">TODO(Everything…)</span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence">A function type <span class="math inline">\(\operatorname{\text{FT}}\)</span></span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">consists of</span></p>
-</div>
-<ul>
-<li><span class="sentence">argument types <span class="math inline">\(A_i\)</span></span></li>
-<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">and may be considered the following instantiation of a special type constructor <span class="math inline">\(\operatorname{\text{FunctionN}}(\operatorname{\mathtt{in\ }}P_1, \ldots, \operatorname{\mathtt{in\ }}P_n, \operatorname{\mathtt{out\ }}R)\)</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R \equiv \operatorname{\text{FunctionN}}[A_1, \ldots, A_n, R]\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">These <span class="math inline">\(\operatorname{\text{FunctionN}}\)</span> types follow the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A function type with receiver <span class="math inline">\(\operatorname{\text{FTR}}\)</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\operatorname{\text{FTR}}(\operatorname{\text{RT}}, A_1, \ldots, A_n) \rightarrow R\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">consists of</span></p>
-</div>
-<ul>
-<li><span class="sentence">receiver type <span class="math inline">\(\operatorname{\text{RT}}\)</span></span></li>
-<li><span class="sentence">argument types <span class="math inline">\(A_i\)</span></span></li>
-<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">From the type system’s point of view, it is equivalent to the following function type</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><span class="math display">\[\operatorname{\text{FTR}}(\operatorname{\text{RT}}, A_1, \ldots, A_n) \rightarrow R \equiv \operatorname{\text{FT}}(\operatorname{\text{RT}}, A_1, \ldots, A_n) \rightarrow R\]</span></span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">i.e., receiver is considered as yet another argument of its function type.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: this means that, for example, these two types are equivalent</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>Int.(Int) -&gt; String</code></span></li>
-<li><span class="sentence"><code>(Int, Int) -&gt; String</code></span></li>
-</ul>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">Furthermore, all function types <span class="math inline">\(\operatorname{\text{FunctionN}}\)</span> are subtypes of a general argument-agnostic type <a href="type-system.html#kotlin.function"><span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}\)</span></a> for the purpose of unification; this subtyping relation is also used in <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">overload resolution</a>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: a compiler implementation may consider a function type <span class="math inline">\(\operatorname{\text{FunctionN}}\)</span> to have additional supertypes, if it is necessary.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="co">// A function of type Function1&lt;Number, Number&gt;</span></a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="co">//   or (Number) -&gt; Number</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Number</span>): <span class="dt">Number</span> = ...</a>
-<a class="sourceLine" id="cb5-4" title="4"></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="co">// A valid assignment w.r.t. function type variance</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="co">// Function1&lt;in Int, out Any&gt; :&gt; Function1&lt;in Number, out Number&gt;</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="kw">val</span> <span class="va">fooRef</span>: (<span class="kw">Int</span>) -&gt; Any = ::foo</a>
-<a class="sourceLine" id="cb5-8" title="8"></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="co">// A function with receiver of type Function1&lt;Number, Number&gt;</span></a>
-<a class="sourceLine" id="cb5-10" title="10"><span class="co">//   or Number.() -&gt; Number</span></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="kw">fun</span> <span class="fu">Number</span>.<span class="fu">bar</span>(): <span class="dt">Number</span> = ...</a>
-<a class="sourceLine" id="cb5-12" title="12"></a>
-<a class="sourceLine" id="cb5-13" title="13"><span class="co">// A valid assignment w.r.t. function type variance</span></a>
-<a class="sourceLine" id="cb5-14" title="14"><span class="co">// Receiver is just yet another function argument</span></a>
-<a class="sourceLine" id="cb5-15" title="15"><span class="co">// Function1&lt;in Int, out Any&gt; :&gt; Function1&lt;in Number, out Number&gt;</span></a>
-<a class="sourceLine" id="cb5-16" title="16"><span class="kw">val</span> <span class="va">barRef</span>: (<span class="kw">Int</span>) -&gt; Any = Number::bar</a></code></pre></div>
-</blockquote>
 <h4 id="array-types">Array types</h4>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Kotlin arrays are represented as a parameterized type <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span>, where <span class="math inline">\(T\)</span> is the type of the stored elements, which supports <code>get</code>/<code>set</code> operations. </span><span class="sentence">The <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
+<p><span class="sentence">TODO(Everything…)</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: unlike Java, arrays in Kotlin are declared as invariant. </span><span class="sentence">To use them in a co- or contravariant way, one should use <a href="type-system.html#use-site-variance">use-site variance</a>.</span></p>
 </div>
-</blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">In addition to the general <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type, Kotlin also has the following specialized array types:</span></p>
+<p><span class="sentence">TODO(Primitive type array coercion)</span></p>
 </div>
-<ul>
-<li><span class="sentence"><code>DoubleArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Double)\)</span>)</span></li>
-<li><span class="sentence"><code>FloatArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Float)\)</span>)</span></li>
-<li><span class="sentence"><code>LongArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Long)\)</span>)</span></li>
-<li><span class="sentence"><code>IntArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>)</span></li>
-<li><span class="sentence"><code>ShortArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Short)\)</span>)</span></li>
-<li><span class="sentence"><code>ByteArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Byte)\)</span>)</span></li>
-<li><span class="sentence"><code>CharArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Char)\)</span>)</span></li>
-<li><span class="sentence"><code>BooleanArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>)</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">These array types structurally match the corresponding <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type; i.e., <code>IntArray</code> has the same methods and properties as <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>. </span><span class="sentence">However, they are <strong>not</strong> related by subtyping; meaning one cannot pass a <code>BooleanArray</code> argument to a function expecting an <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence"><em>Array type specialization</em> <span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span> is a transformation of a generic <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type to a corresponding specialized version, which works as follows.</span></p>
-</div>
-<ul>
-<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> has a specialized version <code>TArray</code>, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = TArray\)</span></span></li>
-<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> does not have a specialized version, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = \operatorname{\mathtt{kotlin.Array}}(T)\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{ATS}}\)</span> takes an important part in how <a href="declarations.html#variable-length-parameters">variable length parameters</a> are handled.</span></p>
 </div>
 <h4 id="flexible-types">Flexible types</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. </span><span class="sentence">However, this presents a problem in that some platforms may not support null safety the way Kotlin does. </span><span class="sentence">To deal with this, Kotlin supports <em>gradual typing</em> in the form of flexible types.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A flexible type represents a range of possible types between type <span class="math inline">\(L\)</span> (lower bound) and type <span class="math inline">\(U\)</span> (upper bound), written as <span class="math inline">\((L..U)\)</span>. </span><span class="sentence">One should note flexible types are <em>non-denotable</em>, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.</span></p>
+<p><span class="sentence">A flexible type represents a range of possible types between type <span class="math inline">\(L\)</span> (lower bound) and type <span class="math inline">\(U\)</span> (upper bound), written as <span class="math inline">\((L..U)\)</span>. </span><span class="sentence">One should note flexible types are abstract and <em>non-denotable</em>, i.e., one cannot explicitly declare a variable with flexible type, these types are created by the type system when needed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">To represent a well-formed flexible type, <span class="math inline">\((L..U)\)</span> should satisfy the following conditions.</span></p>
+<p><span class="sentence">To represent a valid flexible type, <span class="math inline">\((L..U)\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are well-formed concrete types</span></li>
+<li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are valid concrete types</span></li>
 <li><span class="sentence"><span class="math inline">\(L &lt;: U\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\neg (L &lt;: U)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are <strong>not</strong> flexible types (but may contain other flexible types as some of their type arguments)</span></li>
+<li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are <strong>not</strong> flexible types (but may contains other flexible types as part of their type signature)</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">As the name suggests, flexible types are flexible — a value of type <span class="math inline">\((L..U)\)</span> can be used in any context, where one of the possible types between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> is needed (for more details, see <a href="type-system.html#subtyping-for-flexible-types">subtyping rules for flexible types</a>). </span><span class="sentence">However, the actual type will be a specific type between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.</span></p>
+<p><span class="sentence">As the name suggests, flexible types are flexible — a value of type <span class="math inline">\((L..U)\)</span> can be used in any context, where one of the possible types between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> is needed (for more details, see <a href="type-system.html#subtyping">subtyping rules for flexible types</a>). </span><span class="sentence">However, the actual type will be a specific type between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Details of assertion generation?)</span></p>
 </div>
 </div>
-<h5 id="dynamic-type">Dynamic type</h5>
-<div class="paragraph">
-<p><span class="sentence">Kotlin includes a special <code>dynamic</code> type, which in many contexts can be viewed as a flexible type <span class="math inline">\((\operatorname{\mathtt{kotlin.Nothing}}..\operatorname{\mathtt{kotlin.Any?}})\)</span>. </span><span class="sentence">By definition, this type represents <em>any</em> possible Kotlin type, and may be used to support interoperability with dynamically typed libraries, platforms or languages.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">However, as a platform may assign special meaning to the values of <code>dynamic</code> type, it may be handled differently from the regular flexible type. </span><span class="sentence">These differences are to be explained in the corresponding platform-dependent sections of this specification.</span></p>
-</div>
 <h5 id="platform-types">Platform types</h5>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">The main use cases for flexible types are <em>platform types</em> — types which the Kotlin compiler uses, when interoperating with code written for another platform (e.g., Java). </span><span class="sentence">In this case all types on the interoperability boundary are subject to <em>flexibilization</em> — the process of converting a platform-specific type to a Kotlin-compatible flexible type.</span></p>
+<p><span class="sentence">TODO(Platform types as flexible types)</span></p>
 </div>
+</div>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">For further details on how <em>flexibilization</em> is done, see:</span></p>
+<p><span class="sentence">TODO(Reference for different platforms)</span></p>
 </div>
-<ul>
-<li><span class="sentence">[Platform types for Java][TODO(need a way to have same section names in different parts of the spec)]</span></li>
-</ul>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Important: platform types should not be confused with <em>multi-platform projects</em> — another Kotlin feature targeted at supporting platform interop.</span></p>
 </div>
-</blockquote>
 <h4 id="nullable-types">Nullable types</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports null safety by having two type universes — nullable and non-nullable. </span><span class="sentence">All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold <code>null</code> value at runtime.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">To specify a nullable version of type <span class="math inline">\(T\)</span>, one needs to use <span class="math inline">\(T?\)</span> as a type. </span><span class="sentence">Redundant nullability specifiers are ignored — <span class="math inline">\(T?? \equiv T?\)</span>.</span></p>
+<p><span class="sentence">To specify a nullable version of type <code>T</code>, one needs to use <code>T?</code> as a type. </span><span class="sentence">Redundant nullability specifiers are ignored — <code>T???</code> is equivalent to <code>T?</code>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, question mark means “<span class="math inline">\(T?\)</span> may hold values of type <span class="math inline">\(T\)</span> or value <code>null</code>”</span></p>
+<p><span class="sentence">Informally, question mark means “<span class="math inline">\(T?\)</span> may hold values of type <span class="math inline">\(T\)</span> or value <code>null</code>”</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">To represent a well-formed nullable type, <span class="math inline">\(T?\)</span> should satisfy the following conditions.</span></p>
+<p><span class="sentence">To represent a valid nullable type, <span class="math inline">\(T?\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(T\)</span> is a well-formed concrete type</span></li>
+<li><span class="sentence"><span class="math inline">\(T\)</span> is a valid type</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If an operation is safe regardless of absence or presence of <code>null</code>, e.g., assignment of one nullable value to another, it can be used as-is for nullable types. </span><span class="sentence">For operations on <span class="math inline">\(T?\)</span> which may violate null safety, e.g., access to a property, one has the following null-safe options:</span></p>
+<p><span class="sentence">If an operation is safe regardless of absence or presence of <code>null</code>, i.e., assignment of one nullable value to another, it can be used as-is for nullable types. </span><span class="sentence">For operations on <span class="math inline">\(T?\)</span> which may violate null safety, one has the following null-safe options:</span></p>
 </div>
 <ol type="1">
 <li><span class="sentence">Use safe operations</span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#navigation-operators">safe call</a></span></li>
+<li><span class="sentence"><a href="expressions.html#safe-call-expression">safe call</a></span></li>
 </ul></li>
 <li><span class="sentence">Downcast from <span class="math inline">\(T?\)</span> to <span class="math inline">\(T!!\)</span></span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#cast-expression">unsafe cast</a></span></li>
-<li><span class="sentence"><a href="expressions.html#type-checking-expression">type check</a> combined with <a href="type-inference.html#smart-casts">smart casts</a></span></li>
-<li><span class="sentence">null check combined with <a href="type-inference.html#smart-casts">smart casts</a></span></li>
-<li><span class="sentence"><a href="expressions.html#not-null-assertion-expression">not-null assertion operator</a></span></li>
+<li><span class="sentence"><a href="expressions.html#cast-expression-1">unsafe cast</a></span></li>
+<li><span class="sentence"><a href="expressions.html#type-check-expression">type check</a> combined with <a href="overload-resolution.html#smart-casts">smart casts</a></span></li>
+<li><span class="sentence">null check combined with <a href="overload-resolution.html#smart-casts">smart casts</a></span></li>
+<li><span class="sentence">[not-null assertion operator][Not-null assertion operator expression]</span></li>
 </ul></li>
-<li><span class="sentence">Supply a default value to use if <code>null</code> is present</span>
+<li><span class="sentence">Supply a default value to use instead of <code>null</code></span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#elvis-operator-expression">elvis operator</a></span></li>
+<li><span class="sentence"><a href="expressions.html#elvis-operator-expression-1">elvis operator</a></span></li>
 </ul></li>
 </ol>
-<h4 id="intersection-types">Intersection types</h4>
-<div class="paragraph">
-<p><span class="sentence">Intersection types are special <em>non-denotable</em> types used to express the fact that a value belongs to <em>all</em> of <em>several</em> types at the same time.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Intersection type of two types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is denoted <span class="math inline">\(A \operatorname{\&amp;}B\)</span> and is equivalent to the <a href="type-system.html#greatest-lower-bound">greatest lower bound</a> of its components <span class="math inline">\(\operatorname{\text{GLB}}(A, B)\)</span>. </span><span class="sentence">Thus, the normalization procedure for <span class="math inline">\(\operatorname{\text{GLB}}\)</span> may be used to <em>normalize</em> an intersection type.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: this means intersection types are commutative and associative (following the GLB properties); e.g., <span class="math inline">\(A \operatorname{\&amp;}B\)</span> is the same type as <span class="math inline">\(B \operatorname{\&amp;}A\)</span>, and <span class="math inline">\(A \operatorname{\&amp;}(B \operatorname{\&amp;}C)\)</span> is the same type as <span class="math inline">\(A \operatorname{\&amp;}B \operatorname{\&amp;}C\)</span>.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: for presentation purposes, we will henceforth order intersection type operands lexicographically based on their notation.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">When needed, the compiler may <em>approximate</em> an intersection type to a <em>denotable concrete</em> type using <a href="type-system.html#type-approximation">type approximation</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">One of the main uses of intersection types are <a href="type-inference.html#smart-casts">smart casts</a>.</span></p>
-</div>
-<h4 id="integer-literal-types">Integer literal types</h4>
-<div class="paragraph">
-<p><span class="sentence">An integer literal type containing types <span class="math inline">\(T_1, \ldots, T_N\)</span>, denoted <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_N)\)</span> is a special <em>non-denotable</em> type designed for integer literals. </span><span class="sentence">Each type <span class="math inline">\(T_1, \ldots, T_N\)</span> must be one of the <a href="built-in-classifier-types.html#built-in-integer-types-1">built-in integer types</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Integer literal types are the types of <a href="expressions.html#integer-literals">integer literals</a>.</span></p>
-</div>
-<h4 id="union-types">Union types</h4>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Important: Kotlin does <strong>not</strong> have union types in its type system. </span><span class="sentence">However, they make reasoning about several type system features easier. </span><span class="sentence">Therefore, we decided to include a brief intro to the union types here.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">Union types are special <em>non-denotable</em> types used to express the fact that a value belongs to <em>one</em> of <em>several</em> possible types.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Union type of two types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is denoted <span class="math inline">\(A | B\)</span> and is equivalent to the <a href="type-system.html#least-upper-bound">least upper bound</a> of its components <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span>. </span><span class="sentence">Thus, the normalization procedure for <span class="math inline">\(\operatorname{\text{LUB}}\)</span> may be used to <em>normalize</em> a union type.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Moreover, as union types are <em>not</em> used in Kotlin, the compiler always <em>decays</em> a union type to a <em>non-union</em> type using <a href="type-system.html#type-approximation">type approximation</a>.</span></p>
-</div>
-<h3 id="type-context">Type context</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Type contexts and their relation to scopes) TODO(Inner vs nested type contexts)</span></p>
-</div>
-</div>
 <h3 id="subtyping">Subtyping</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin uses the classic notion of <em>subtyping</em> as <em>substitutability</em> — if <span class="math inline">\(S\)</span> is a subtype of <span class="math inline">\(T\)</span> (denoted as <span class="math inline">\(S &lt;: T\)</span>), values of type <span class="math inline">\(S\)</span> can be safely used where values of type <span class="math inline">\(T\)</span> are expected. </span><span class="sentence">The subtyping relation <span class="math inline">\(&lt;:\)</span> is:</span></p>
@@ -1003,41 +583,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Subtyping for non-nullable, concrete types uses the following rules.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\forall T : \operatorname{\mathtt{kotlin.Nothing}}&lt;: T &lt;: \operatorname{\mathtt{kotlin.Any}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\forall T : \text{kotlin.Nothing} &lt;: T &lt;: \text{kotlin.Any}\)</span></span></li>
 <li><span class="sentence">For any simple classifier type <span class="math inline">\(T : S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: T &lt;: S_i\)</span></span></li>
-<li><span class="sentence">For any parameterized type <span class="math inline">\(\widehat{T} = T[\sigma]: S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: \sigma S_i\)</span></span></li>
-<li><span class="sentence">For any two parameterized types <span class="math inline">\(\widehat{T}\)</span> and <span class="math inline">\(\widehat{T^\prime}\)</span> with captured type arguments <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_i^\prime\)</span> it is true that <span class="math inline">\(\widehat{T} &lt;: \widehat{T^\prime}\)</span> if <span class="math inline">\(\forall i \in [1,n]: K_i &lt;: K_i^\prime\)</span></span></li>
+<li><span class="sentence">For any iPACT <span class="math inline">\(\widehat{T} = T(F_1, \ldots, F_n)[A_1, \ldots, A_n] : S_1, \ldots, S_m\)</span> with captured type arguments <span class="math inline">\(C_1, \ldots, C_n\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: S_i[C_1, \ldots, C_n]\)</span></span></li>
+<li><span class="sentence">For any two iPACTs <span class="math inline">\(\widehat{T}\)</span> and <span class="math inline">\(\widehat{T^\prime}\)</span> with captured type arguments <span class="math inline">\(C_i\)</span> and <span class="math inline">\(C_i^\prime\)</span> it is true that <span class="math inline">\(\widehat{T} &lt;: \widehat{T^\prime}\)</span> if <span class="math inline">\(\forall i \in [1,n]: C_i &lt;: C_i^\prime\)</span></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Subtyping for non-nullable, abstract types uses the following rules.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\forall T : \operatorname{\mathtt{kotlin.Nothing}}&lt;: T &lt;: \operatorname{\mathtt{kotlin.Any}}\)</span></span></li>
-<li><span class="sentence">For any type constructor <span class="math inline">\(\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: S_i\)</span></span></li>
-<li><span class="sentence">For any two type constructors <span class="math inline">\(\widehat{T}\)</span> and <span class="math inline">\(\widehat{T^\prime}\)</span> with type parameters <span class="math inline">\(F_i\)</span> and <span class="math inline">\(F_i^\prime\)</span> it is true that <span class="math inline">\(\widehat{T} &lt;: \widehat{T^\prime}\)</span> if <span class="math inline">\(\forall i \in [1,n]: F_i &lt;: F_i^\prime\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\forall T : \text{kotlin.Nothing} &lt;: T &lt;: \text{kotlin.Any}\)</span></span></li>
+<li><span class="sentence">For any PACT <span class="math inline">\(\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: S_i\)</span></span></li>
 </ul>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Subtyping for type parameters uses the following rules.</span></p>
+<p><span class="sentence">TODO(Subtyping for type parameters)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Subtyping for non-nullable, captured types uses rules of different kind, as captured type <span class="math inline">\(C\)</span> describes not one, but a set of types which satisfy its type constraints <span class="math inline">\(\mathbb{C}\)</span>. </span><span class="sentence">Therefore, we use the following subtyping rules for captured types.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\forall F : \operatorname{\mathtt{kotlin.Nothing}}&lt;: F &lt;: \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
-<li><span class="sentence">For any two type parameters <span class="math inline">\(F\)</span> and <span class="math inline">\(F^\prime\)</span>, it is true that <span class="math inline">\(F &lt;: F^\prime\)</span>, if all of the following hold</span>
-<ul>
-<li><span class="sentence">variance of <span class="math inline">\(F\)</span> matches variance of <span class="math inline">\(F^\prime\)</span></span>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{out\ }}\)</span> matches <span class="math inline">\(\operatorname{\mathtt{out\ }}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{in\ }}\)</span> matches <span class="math inline">\(\operatorname{\mathtt{in\ }}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{inv\ }}\)</span> matches any variance</span></li>
-</ul></li>
-<li><span class="sentence">for <span class="math inline">\(F &lt;: B\)</span> and <span class="math inline">\(F^\prime &lt;: B^\prime\)</span>, <span class="math inline">\(B &lt;: B^\prime\)</span></span></li>
-</ul></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Subtyping for captured types uses the following rules.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\forall K : \text{kotlin.Nothing} &lt;: K &lt;: \text{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence">For any two captured types <span class="math inline">\(L &lt;: K &lt;: U\)</span> and <span class="math inline">\(L^\prime &lt;: K^\prime &lt;: U^\prime\)</span>, it is true that <span class="math inline">\(K &lt;: K^\prime\)</span> if <span class="math inline">\(L^\prime &lt;: L\)</span> and <span class="math inline">\(U &lt;: U^\prime\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\forall C : \text{kotlin.Nothing} &lt;: C &lt;: \text{kotlin.Any}\)</span></span></li>
+<li><span class="sentence">For any two captured types <span class="math inline">\(C\)</span> and <span class="math inline">\(C^\prime\)</span>, <span class="math inline">\(C &lt;: C^\prime\)</span> if <span class="math inline">\(\forall T : \mathbb{C}(T) \Rightarrow \mathbb{C^\prime}(T)\)</span> (i.e., a set of types for <span class="math inline">\(C\)</span> is a subset of a set of types for <span class="math inline">\(C^\prime\)</span>)</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Subtyping for nullable types is checked separately and uses a special set of rules which are described <a href="type-system.html#subtyping-for-nullable-types">here</a>.</span></p>
@@ -1066,63 +634,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">However, <span class="math inline">\(A \not \equiv B\)</span>.</span></p>
 </div>
-<h4 id="subtyping-for-intersection-types">Subtyping for intersection types</h4>
-<div class="paragraph">
-<p><span class="sentence">Intersection types introduce several new rules for subtyping. </span><span class="sentence">Let <span class="math inline">\(A, B, C, D\)</span> be non-nullable types.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(A \operatorname{\&amp;}B &lt;: A\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A \operatorname{\&amp;}B &lt;: B\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A &lt;: C \land B &lt;: D \Rightarrow A \operatorname{\&amp;}B &lt;: C \operatorname{\&amp;}D\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Moreover, any type <span class="math inline">\(T\)</span> with supertypes <span class="math inline">\(S_1, \ldots, S_N\)</span> is also a subtype of <span class="math inline">\(S_1 \operatorname{\&amp;}\ldots \operatorname{\&amp;}S_N\)</span>.</span></p>
-</div>
-<h4 id="subtyping-for-integer-literal-types">Subtyping for integer literal types</h4>
-<div class="paragraph">
-<p><span class="sentence">All integer literal type are equivalent w.r.t. subtyping, meaning that for any sets <span class="math inline">\(T_1, \ldots, T_K\)</span> and <span class="math inline">\(U_1, \ldots, U_N\)</span> of built-in integer types:</span></p>
-</div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_K) &lt;: \operatorname{\text{LTS}}(U_1, \ldots, U_N)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\operatorname{\text{LTS}}(U_1, \ldots, U_N) &lt;: \operatorname{\text{LTS}}(T_1, \ldots, T_K)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\forall T_i \in \{T_1, \ldots, T_K\} \ldotp \operatorname{\text{LTS}}(T_1, \ldots, T_K) &lt;: T_i\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\forall T_i \in \{T_1, \ldots, T_K\} \ldotp T_i &lt;: \operatorname{\text{LTS}}(T_1, \ldots, T_K)\)</span></span></li>
-</ul>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: the last two rules mean <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_K)\)</span> can be considered as an intersection type <span class="math inline">\(T_1 \operatorname{\&amp;}\ldots \operatorname{\&amp;}T_K\)</span> or as a union type <span class="math inline">\(T_1 | \ldots | T_K\)</span>, depending on the context. </span><span class="sentence">Viewing <span class="math inline">\(\operatorname{\text{LTS}}\)</span> as intersection type allows us to use integer literals where built-in integer types are expected. </span><span class="sentence">Making <span class="math inline">\(\operatorname{\text{LTS}}\)</span> behave as union type is needed to support cases when they appear in contravariant position.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Example:</span></p>
-</div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">interface</span> In&lt;<span class="kw">in</span> <span class="dt">T</span>&gt;</a>
-<a class="sourceLine" id="cb6-2" title="2"></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; T.asIn(): <span class="dt">In</span>&lt;<span class="dt">T</span>&gt; = ...</a>
-<a class="sourceLine" id="cb6-4" title="4"></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">fun</span> &lt;<span class="dt">S</span>&gt; <span class="fu">select</span>(<span class="va">a</span>: <span class="dt">S</span>, <span class="va">b</span>: <span class="dt">In</span>&lt;<span class="va">S</span>&gt;): <span class="dt">S</span> = ...</a>
-<a class="sourceLine" id="cb6-6" title="6"></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="kw">fun</span> <span class="fu">ltsAsIntersection</span>() {</a>
-<a class="sourceLine" id="cb6-8" title="8">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Int</span> = <span class="dv">42</span> <span class="co">// LTS(Byte, Short, Int, Long) &lt;: Int</span></a>
-<a class="sourceLine" id="cb6-9" title="9">    </a>
-<a class="sourceLine" id="cb6-10" title="10">    <span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Short</span>) {}</a>
-<a class="sourceLine" id="cb6-11" title="11">    </a>
-<a class="sourceLine" id="cb6-12" title="12">    foo(<span class="dv">1377</span>) <span class="co">// LTS(Short, Int, Long) &lt;: Short</span></a>
-<a class="sourceLine" id="cb6-13" title="13">}</a>
-<a class="sourceLine" id="cb6-14" title="14"></a>
-<a class="sourceLine" id="cb6-15" title="15"><span class="kw">fun</span> <span class="fu">ltsAsUnion</span>() {</a>
-<a class="sourceLine" id="cb6-16" title="16">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Short</span> = <span class="dv">42</span></a>
-<a class="sourceLine" id="cb6-17" title="17">    </a>
-<a class="sourceLine" id="cb6-18" title="18">    select(a, <span class="fl">1337.</span>asIn())</a>
-<a class="sourceLine" id="cb6-19" title="19">        <span class="co">// For argument a:</span></a>
-<a class="sourceLine" id="cb6-20" title="20">        <span class="co">//   Short &lt;: S</span></a>
-<a class="sourceLine" id="cb6-21" title="21">        <span class="co">// For argument b:</span></a>
-<a class="sourceLine" id="cb6-22" title="22">        <span class="co">//   In&lt;LTS(Short, Int, Long)&gt; &lt;: In&lt;S&gt; =&gt;</span></a>
-<a class="sourceLine" id="cb6-23" title="23">        <span class="co">//     S &lt;: LTS(Short, Int, Long)</span></a>
-<a class="sourceLine" id="cb6-24" title="24">        <span class="co">// Solution: S =:= Short</span></a>
-<a class="sourceLine" id="cb6-25" title="25">}</a></code></pre></div>
-</blockquote>
 <h4 id="subtyping-for-nullable-types">Subtyping for nullable types</h4>
 <div class="paragraph">
 <p><span class="sentence">Subtyping for two possibly nullable types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is defined via <em>two</em> relations, both of which must hold.</span></p>
@@ -1140,220 +651,759 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><span class="math inline">\(A \stackrel{null}{&lt;:}B?\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(A \stackrel{null}{&lt;:}B\)</span> if <span class="math inline">\(\not \exists T!! : B &lt;: T!!\)</span></span></li>
 </ul>
-<blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Example:</span></p>
+<p><span class="sentence">TODO(How the existence check works)</span></p>
 </div>
-<div>
-<img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="299" height="68" text-rendering="auto" shape-rendering="auto">
-<defs></defs>
-<line x1="142.5" y1="37.5" x2="232.5" y2="37.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="307.5" y1="37.5" x2="330" y2="37.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 337.5 37.5 L 322.5 42.5 L 322.5 32.5 Z "/></g><line x1="67.5" y1="22.5" x2="67.5" y2="60" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 67.5 67.5 L 62.5 52.5 L 72.5 52.5 Z "/></g><line x1="142.5" y1="22.5" x2="142.5" y2="37.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="232.5" y1="22.5" x2="232.5" y2="37.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="412.5" y1="22.5" x2="412.5" y2="60" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 412.5 67.5 L 407.5 52.5 L 417.5 52.5 Z "/></g><line x1="187.5" y1="37.5" x2="187.5" y2="60" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 187.5 67.5 L 182.5 52.5 L 192.5 52.5 Z "/></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="60.5" y="15.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="129.5" y="15.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B?</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="212.5" y="15.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >C!!</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="405.5" y="15.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="60.5" y="90.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="180.5" y="90.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="405.5" y="90.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g></svg>
-' />
+</div>
+<h3 id="generics">Generics</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Here be a lot of dragons…)</span></p>
+</div>
+</div>
+<h3 id="references">References</h3>
+<ol type="1">
+<li><span class="sentence">Tate, Ross. </span><span class="sentence">“Mixed-site variance.” FOOL, 2013. </span><span class="sentence">## Declarations</span></li>
+</ol>
+<h3 id="glossary-2">Glossary</h3>
+<dl>
+<dt>Entity</dt>
+<dd><span class="sentence">A distinguishable part of a program</span>
+</dd>
+</dl>
+<h3 id="introduction-2">Introduction</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Examples)</span></p>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This example shows a situation, when the subtyping by nullability relation from <span class="math inline">\(T &lt;: C!!\)</span> is used to prove <span class="math inline">\(T &lt;: A\)</span>.</span></p>
+<p><span class="sentence">Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are <em>named</em>, i.e. they also assign an identifier to their own entity, however, some declarations may be <em>anonymous</em>.</span></p>
 </div>
-</blockquote>
-<h3 id="upper-and-lower-bounds">Upper and lower bounds</h3>
 <div class="paragraph">
-<p><span class="sentence">A type <span class="math inline">\(U\)</span> is an <em>upper bound</em> of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> if <span class="math inline">\(A &lt;: U\)</span> and <span class="math inline">\(B &lt;: U\)</span>. </span><span class="sentence">A type <span class="math inline">\(L\)</span> is a <em>lower bound</em> of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> if <span class="math inline">\(L &lt;: A\)</span> and <span class="math inline">\(L &lt;: B\)</span>.</span></p>
+<p><span class="sentence">Every declaration is accessible in a particular <em>scope</em>, which is dependent both on where the declaration is located and on the declaration itself.</span></p>
 </div>
-<blockquote>
+<h3 id="classifier-declaration">Classifier declaration</h3>
+<dl>
+<dt><strong><em>classDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em>modifierList</em>] (<code>class</code> | <code>interface</code>) {<em>NL</em>} <em>simpleIdentifier</em><br />
+[{<em>NL</em>} <em>typeParameters</em>] [{<em>NL</em>} <em>primaryConstructor</em>]<br />
+[{<em>NL</em>} <code>:</code> {<em>NL</em>} <em>delegationSpecifiers</em>]<br />
+[{<em>NL</em>} <em>typeConstraints</em>]<br />
+[{<em>NL</em>} <em>classBody</em> | {<em>NL</em>} <em>enumClassBody</em>]</span>
+</dd>
+<dt><strong><em>objectDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em>modifierList</em>] <code>object</code><br />
+{<em>NL</em>} <em>simpleIdentifier</em><br />
+[{<em>NL</em>} <code>:</code> {<em>NL</em>} <em>delegationSpecifiers</em>]<br />
+[{<em>NL</em>} <em>classBody</em>]</span>
+</dd>
+</dl>
 <div class="paragraph">
-<p><span class="sentence">Note: as the type system of Kotlin is bounded by definition (the upper bound of all types is <span class="math inline">\(\operatorname{\mathtt{kotlin.Any?}}\)</span>, and the lower bound of all types is <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span>), any two types have at least one lower bound and at least one upper bound.</span></p>
-</div>
-</blockquote>
-<h4 id="least-upper-bound">Least upper bound</h4>
-<div class="paragraph">
-<p><span class="sentence">The <em>least upper bound</em> <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span> of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is an upper bound <span class="math inline">\(U\)</span> of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> such that there is no other upper bound of these types which is less by subtyping relation than <span class="math inline">\(U\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: <span class="math inline">\(\operatorname{\text{LUB}}\)</span> is commutative, i.e., <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = \operatorname{\text{LUB}}(B, A)\)</span>. </span><span class="sentence">This property is used in the subsequent description, e.g., other properties of <span class="math inline">\(\operatorname{\text{LUB}}\)</span> are defined only for a specific order of the arguments. </span><span class="sentence">Definitions following from commutativity of <span class="math inline">\(\operatorname{\text{LUB}}\)</span> are implied.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span> has the following properties, which may be used to <em>normalize</em> it. </span><span class="sentence">This normalization procedure, if finite, creates a <em>canonical</em> representation of LUB.</span></p>
+<p><span class="sentence">Classifier declarations introduce new types to the program, of the forms described <a href="type-system.html#classifier-types">here</a>. </span><span class="sentence">There are three kinds of classifier declarations:</span></p>
 </div>
 <ul>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{LUB}}(A, A) = A\)</span></span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A &lt;: B\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = B\)</span></span></p>
-</div></li>
-<li><span class="sentence">if <span class="math inline">\(A\)</span> is nullable, <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span> is also nullable</span></li>
-<li><span class="sentence">if both <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are nullable, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = \operatorname{\text{LUB}}(A!!, B!!)?\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A\)</span> is nullable and <span class="math inline">\(B\)</span> is not, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = \operatorname{\text{LUB}}(A!!, B)?\)</span></span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle\)</span>, where <span class="math inline">\(\phi(X, Y)\)</span> is defined as follows:</span></p>
+<li><span class="sentence">class declarations</span></li>
+<li><span class="sentence">interface declarations</span></li>
+<li><span class="sentence">object declarations</span></li>
+</ul>
+<h4 id="class-declaration">Class declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A simple class declaration consists of the following parts.</span></p>
 </div>
 <ul>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{inv\ }}X) = X\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y) = \operatorname{\mathtt{out\ }}\operatorname{\text{LUB}}(X, Y)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}Y) = \star\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{out\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{in\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}) = \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{out\ }}Y) = \star\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{out\ }}Y) = \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{in\ }}Y) = \operatorname{\mathtt{in\ }}\operatorname{\text{GLB}}(X, Y)\)</span></span></p>
-</div></li>
-<li><div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(we may also choose the <code>in</code> projection for <code>inv</code> parameters, do we wanna do it though?)</span></p>
-</div>
-</div></li>
+<li><span class="sentence">name <span class="math inline">\(c\)</span></span></li>
+<li><span class="sentence">primary constructor declaration <span class="math inline">\(ptor\)</span></span></li>
+<li><span class="sentence">supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span></span></li>
+<li><span class="sentence">body <span class="math inline">\(b\)</span>, which may include the following</span>
+<ul>
+<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span></span></li>
+<li><span class="sentence">instance initialization block <span class="math inline">\(init\)</span></span></li>
+<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span></span></li>
+<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span></span></li>
+<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span></span></li>
+<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span></span></li>
 </ul></li>
-<li><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B = (L_B..U_B)\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, L_B)..\operatorname{\text{LUB}}(U_A, U_B))\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B\)</span> is not flexible, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, B)..\operatorname{\text{LUB}}(U_A, B))\)</span></span></p>
-</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">and creates a simple classifier type <span class="math inline">\(c : S_1, \ldots, S_s\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. </span><span class="sentence">You can use classes and interfaces as supertypes, but not objects.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. </span><span class="sentence">Multiple interface inheritance is allowed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Instance initialization block describes a block of code which should be executed during <a href="type-system.html#classifier-initialization">object creation</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Property and function declarations in the class body introduce their respective entities in this class’ scope, meaning they are available only on an entity of the corresponding class.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Companion object declaration <code>companion object CO { ... }</code> for class <code>C</code> introduces an object, which is available under this class’ name or under the reference <code>C.CO</code>.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Nested classifier declaraions)</span></p>
+</div>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="al">TODO(Examples)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">A parameterized class declaration consists of the following parts.</span></p>
+</div>
+<ul>
+<li><span class="sentence">name <span class="math inline">\(c\)</span></span></li>
+<li><span class="sentence">type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span></span></li>
+<li><span class="sentence">primary constructor declaration <span class="math inline">\(ptor\)</span></span></li>
+<li><span class="sentence">supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span></span></li>
+<li><span class="sentence">body <span class="math inline">\(b\)</span>, which may include the following</span>
+<ul>
+<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span></span></li>
+<li><span class="sentence">instance initialization block <span class="math inline">\(init\)</span></span></li>
+<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span></span></li>
+<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span></span></li>
+<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span></span></li>
+<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span></span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">and extends the rules for a simple class declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="type-system.html#declarations-with-type-parameters">here</a>.</span></p>
+</div>
+<h5 id="constructor-declaration">Constructor declaration</h5>
+<div class="paragraph">
+<p><span class="sentence">There are two types of class constructors in Kotlin: primary and secondary.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[ptor : (p_1, \ldots, p_n)\]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">where each of <span class="math inline">\(p_i\)</span> may be one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">regular constructor parameter <span class="math inline">\(name: type\)</span></span></li>
+<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(val name: type\)</span></span></li>
+<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(var name: type\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. </span><span class="sentence">One can consider them to have the following syntactic expansion.</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">class</span> Foo(<span class="va">i</span>: <span class="dt">Int</span>, <span class="kw">val</span> <span class="va">d</span>: <span class="dt">Double</span>, <span class="kw">var</span> <span class="va">s</span>: <span class="dt">String</span>) : <span class="dt">Super</span>(<span class="va">i</span>, <span class="va">d</span>, <span class="va">s</span>) {}</a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">class</span> FooEx(<span class="va">i</span>: <span class="dt">Int</span>, <span class="va">d_</span>: <span class="dt">Double</span>, <span class="va">s_</span>: <span class="dt">String</span>) : <span class="dt">Super</span>(<span class="va">i</span>, <span class="va">d_</span>, <span class="va">s_</span>) {</a>
+<a class="sourceLine" id="cb2-4" title="4">  <span class="kw">val</span> <span class="va">d</span> = d_</a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="kw">var</span> <span class="va">s</span> = s_</a>
+<a class="sourceLine" id="cb2-6" title="6">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">When accessing property constructor parameters inside the class body, one works with their corresponding properties; however, when accessing them in the supertype specifier list (e.g., as an argument to a superclass constructor invocation), we see them as actual parameters, which cannot be changed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. </span><span class="sentence">If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via <code>this(...)</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via <code>super(...)</code> (if the superclass is present in the supertype specifier list) or to another secondary constructor via <code>this(...)</code>. </span><span class="sentence">If the only superclass is <code>Any</code>, delegation is optional.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In all cases, it is forbidden if two or more secondary constructors form a delegation loop.</span></p>
+</div>
+<h5 id="nested-and-inner-classes">Nested and inner classes</h5>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(…)</span></p>
+</div>
+</div>
+<h5 id="inheritance-delegation">Inheritance delegation</h5>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(…)</span></p>
+</div>
+</div>
+<h4 id="data-class-declaration">Data class declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A data class <span class="math inline">\(dataClass\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((dp_1, \ldots, dp_m)\)</span>, described in its primary constructor. </span><span class="sentence">As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with their contracts</span></li>
+<li><span class="sentence">A <code>copy()</code> function for shallow object copying</span></li>
+<li><span class="sentence">A number of <code>componentN()</code> functions for destructive declaration</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">All these functions consider only data properties <span class="math inline">\(\{dp_i\}\)</span>; e.g., your data class may include regular property declarations in its body, however, they will <em>not</em> be considered in the <code>equals()</code> implementation or have a <code>componentN()</code> generated for them.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To support these features, data classes have the following restrictions.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Data classes are final and cannot be inherited from</span></li>
+<li><span class="sentence">Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class</span></li>
+</ul>
+<h5 id="data-class-generation">Data class generation</h5>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(A more detailed explaination)</span></p>
+</div>
+</div>
+<h4 id="enum-class-declaration">Enum class declaration</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(…)</span></p>
+</div>
+</div>
+<h4 id="annotation-class-declaration">Annotation class declaration</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(…)</span></p>
+</div>
+</div>
+<h4 id="interface-declaration">Interface declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface’s subtypes. </span><span class="sentence">In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.</span></p>
+</div>
+<ul>
+<li><span class="sentence">An interface cannot have a class as its supertype</span></li>
+<li><span class="sentence">An interface cannot have a constructor</span></li>
+<li><span class="sentence">Interface properties cannot have initializers</span></li>
+<li><span class="sentence">All interface members must be public</span></li>
 </ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(prettify formatting)</span></p>
+<p><span class="sentence">TODO(Something else?)</span></p>
 </div>
 </div>
-<div class="TODO">
+<h4 id="object-declaration">Object declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing LUB)</span></p>
+<p><span class="sentence">Object declarations are used to support a singleton pattern and, thus, do two things at the same time. </span><span class="sentence">One, they (just like class declarations) introduce a new type to the program. </span><span class="sentence">Two, they create a singleton-like object of that type.</span></p>
 </div>
-</div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(LUB for 3+ types)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Why do we need union types again?)</span></p>
-</div>
-</div>
-<h4 id="greatest-lower-bound">Greatest lower bound</h4>
-<div class="paragraph">
-<p><span class="sentence">The <em>greatest lower bound</em> <span class="math inline">\(\operatorname{\text{GLB}}(A, B)\)</span> of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is a lower bound <span class="math inline">\(L\)</span> of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> such that there is no other lower bound of these types which is greater by subtyping relation than <span class="math inline">\(L\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: enumerating all subtypes of a given type is impossible in general, but in the presence of <a href="type-system.html#intersection-types">intersection types</a>, <span class="math inline">\(GLB(A, B) \equiv A \operatorname{\&amp;}B\)</span>.</span></p>
-</div>
-</blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(It’s not if types are related)</span></p>
-</div>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: <span class="math inline">\(\operatorname{\text{GLB}}\)</span> is commutative, i.e., <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = \operatorname{\text{GLB}}(B, A)\)</span>. </span><span class="sentence">This property is used in the subsequent description, e.g., other properties of <span class="math inline">\(\operatorname{\text{GLB}}\)</span> are defined only for a specific order of the arguments. </span><span class="sentence">Definitions following from commutativity of <span class="math inline">\(\operatorname{\text{GLB}}\)</span> are implied.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{GLB}}(A, B)\)</span> has the following properties, which may be used to <em>normalize</em> it. </span><span class="sentence">This normalization procedure, if finite, creates a <em>canonical</em> representation of GLB.</span></p>
+<p><span class="sentence">Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.</span></p>
 </div>
 <ul>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{GLB}}(A, A) = A\)</span></span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A &lt;: B\)</span>, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = A\)</span></span></p>
-</div></li>
-<li><span class="sentence">if <span class="math inline">\(A\)</span> is non-nullable, <span class="math inline">\(\operatorname{\text{GLB}}(A, B)\)</span> is also non-nullable</span></li>
-<li><span class="sentence">if both <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are nullable, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = \operatorname{\text{GLB}}(A!!, B!!)?\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A\)</span> is nullable and <span class="math inline">\(B\)</span> is not, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = \operatorname{\text{GLB}}(A!!, B)\)</span></span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle\)</span>, where <span class="math inline">\(\phi(X, Y)\)</span> is defined as follows:</span></p>
-</div>
-<ul>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{inv\ }}X) = X\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y) = \operatorname{\mathtt{out\ }}\operatorname{\text{GLB}}(X, Y)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}Y) = \star\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{out\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}Y)\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi(\operatorname{\mathtt{inv\ }}X, \operatorname{\mathtt{in\ }}Y) = \phi(\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}) = \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}\)</span></span></p>
-</div></li>
-<li><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{out\ }}Y) = \star\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{inv\ }}Y) = \phi(\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{out\ }}Y) = \operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\phi( \operatorname{\mathtt{in\ }}X, \operatorname{\mathtt{in\ }}Y) = \operatorname{\mathtt{in\ }}\operatorname{\text{LUB}}(X, Y)\)</span></span></p>
-</div></li>
-<li><div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(we may also choose the <code>in</code> projection for <code>inv</code> parameters, do we wanna do it though?)</span></p>
-</div>
-</div></li>
-</ul></li>
-<li><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B = (L_B..U_B)\)</span>, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = (\operatorname{\text{GLB}}(L_A, L_B)..\operatorname{\text{GLB}}(U_A, U_B))\)</span></span></li>
-<li><div class="paragraph">
-<p><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B\)</span> is not flexible, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = (\operatorname{\text{GLB}}(L_A, B)..\operatorname{\text{GLB}}(U_A, B))\)</span></span></p>
-</div></li>
+<li><span class="sentence">An object type cannot be used as a supertype for other types</span></li>
+<li><span class="sentence">An object cannot have a constructor</span></li>
+<li><span class="sentence">An object cannot be parameterized, i.e., cannot have type parameters</span></li>
 </ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(prettify formatting)</span></p>
+<p><span class="sentence">TODO(Something else?)</span></p>
 </div>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing GLB)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(GLB for 3+ types)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
-</div>
-</div>
-<h3 id="type-approximation">Type approximation</h3>
+<h4 id="anonymous-object-declaration">Anonymous object declaration</h4>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO()</span></p>
 </div>
 </div>
-<h3 id="references">References</h3>
-<ol type="1">
-<li><span class="sentence">Ross Tate. </span><span class="sentence">“Mixed-site variance.” FOOL, 2013.</span></li>
-<li><span class="sentence">Ross Tate, Alan Leung, and Sorin Lerner. </span><span class="sentence">“Taming wildcards in Java’s type system.” PLDI, 2011.</span></li>
-</ol>
+<h4 id="classifier-initialization">Classifier initialization</h4>
+<div class="paragraph">
+<p><span class="sentence">When creating a class or object instance via one of its constructors <span class="math inline">\(ctor\)</span>, it is initialized in a particular order, which we describe here.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, a supertype constructor corresponding to <span class="math inline">\(ctor\)</span> is called with its respective parameters.</span></p>
+</div>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(ctor\)</span> is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list</span></li>
+<li><span class="sentence">If <span class="math inline">\(ctor\)</span> is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of <span class="math inline">\(ctor\)</span></span></li>
+<li><span class="sentence">If an explicit supertype constructor is not available, <code>Any()</code> is implicitly used</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, <em>in the order of their inclusion in the body</em>. </span><span class="sentence">If any initialization step creates a loop, it is considered an undefined behavior.</span></p>
+</div>
+<h3 id="function-declaration">Function declaration</h3>
+<dl>
+<dt><strong><em>functionDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em>modifierList</em>]<br />
+<code>fun</code><br />
+[{<em>NL</em>} <em>typeParameters</em>]<br />
+[{<em>NL</em>} <em>type</em> {<em>NL</em>} <code>.</code>] ({<em>NL</em>} <em>simpleIdentifier</em>)<br />
+{<em>NL</em>} <em>functionValueParameters</em><br />
+[{<em>NL</em>} <code>:</code> {<em>NL</em>} <em>type</em>]<br />
+[{<em>NL</em>} <em>typeConstraints</em>]<br />
+[{<em>NL</em>} <em>functionBody</em>]</span>
+</dd>
+</dl>
+<div class="paragraph">
+<p><span class="sentence">Function declarations assign names to such entities as functions — blocks of code which may be called by passing them a number of arguments. </span><span class="sentence">Functions have special <em>function types</em> which are covered in more detail <a href="type-system.html#function-types">here</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A simple function declaration consists of four main parts</span></p>
+</div>
+<ul>
+<li><span class="sentence">name <span class="math inline">\(f\)</span></span></li>
+<li><span class="sentence">parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span></span></li>
+<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
+<li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">and creates a function type <span class="math inline">\(f : (P_1, \ldots, P_n) \rightarrow R\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span> describes function parameters — inputs needed to execute the declared function. </span><span class="sentence">Each parameter <span class="math inline">\(p_i: P_i = v_i\)</span> introduces <span class="math inline">\(p_i\)</span> as a name of value with type <span class="math inline">\(P_i\)</span> available inside function body <span class="math inline">\(b\)</span>; therefore, parameters are final and cannot be changed inside the function. </span><span class="sentence">A function may have zero or more parameters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A parameter may include a default value <span class="math inline">\(v_i\)</span>, which is used if the corresponding argument is not specified in function invocation; <span class="math inline">\(v_i\)</span> should be an expression which evaluates to type <span class="math inline">\(V &lt;: P_i\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Return type <span class="math inline">\(R\)</span> is optional, if function body <span class="math inline">\(b\)</span> is present and may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv kotlin.Nothing\)</span>, in which case <span class="math inline">\(R \equiv B\)</span>. </span><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> must be specified explicitly.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">As type <span class="math inline">\(kotlin.Nothing\)</span> has a <a href="type-system.html#kotlin.nothing">special meaning</a> in Kotlin type system, it must be specified explicitly, to avoid spurious <span class="math inline">\(kotlin.Nothing\)</span> function return types.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="type-system.html#classifier-declaration">abstract classifier declaration</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A parameterized function declaration consists of five main parts.</span></p>
+</div>
+<ul>
+<li><span class="sentence">name <span class="math inline">\(f\)</span></span></li>
+<li><span class="sentence">type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span></span></li>
+<li><span class="sentence">parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span></span></li>
+<li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
+<li><span class="sentence">body <span class="math inline">\(b\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="type-system.html#declarations-with-type-parameters">here</a>.</span></p>
+</div>
+<h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports <em>named</em> parameters out-of-the-box, meaning one can bind an argument to a parameter in function invocation not by its position, but by its name, which is equal to the argument name.</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">a</span>: <span class="dt">Int</span>, <span class="va">b</span>: <span class="dt">Double</span>, <span class="va">s</span>: <span class="dt">String</span>): <span class="dt">Double</span> = a + b + s.toDouble()</a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
+<a class="sourceLine" id="cb3-4" title="4">    println(bar(b = <span class="fl">42.0</span>, a = <span class="dv">5</span>, s = <span class="st">&quot;13&quot;</span>))</a>
+<a class="sourceLine" id="cb3-5" title="5">}</a></code></pre></div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. </span><span class="sentence">An example of the second distinction would be difference between <span class="math inline">\((A?)!!\)</span> and <span class="math inline">\(((A!!)?)!!\)</span>. </span><span class="sentence">Are they the same type? </span><span class="sentence">Are they different, but equivalent? </span><span class="sentence">Same goes for <span class="math inline">\((A..B)?\)</span> vs <span class="math inline">\((A?..B?)\)</span> and such.)</span></p>
+<p><span class="sentence">TODO(Argument names are resolved in compile time)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If one wants to mix named and positional arguments, the argument list must conform to the following form: <span class="math inline">\(P_1, \ldots, P_M, N_1, \ldots, N_Q\)</span>, where <span class="math inline">\(P_i\)</span> is a positional argument, <span class="math inline">\(N_j\)</span> is a named argument; i.e., positional arguments must precede all of the named ones.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin also supports <em>default</em> parameters — parameters which have a default value used in function invocation, if the corresponding argument is missing. </span><span class="sentence">Note that default parameters cannot be used to provide a value for positional argument <em>in the middle</em> of the positional argument list; allowing this would create an ambiguity of which argument for position <span class="math inline">\(i\)</span> is the correct one: explicit one provided by the developer or implicit one from the default value.</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">a</span>: <span class="dt">Int</span> = 1, <span class="va">b</span>: <span class="dt">Double</span> = 42.0, <span class="va">s</span>: <span class="dt">String</span> = <span class="st">&quot;Hello&quot;</span>): <span class="dt">Double</span> =</a>
+<a class="sourceLine" id="cb4-2" title="2">    a + b + s.toDouble()</a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
+<a class="sourceLine" id="cb4-5" title="5">    <span class="co">// Valid call, all default parameters used</span></a>
+<a class="sourceLine" id="cb4-6" title="6">    println(bar())</a>
+<a class="sourceLine" id="cb4-7" title="7">    <span class="co">// Valid call, defaults for `b` and `s` used</span></a>
+<a class="sourceLine" id="cb4-8" title="8">    println(bar(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb4-9" title="9">    <span class="co">// Valid call, default for `b` used</span></a>
+<a class="sourceLine" id="cb4-10" title="10">    println(bar(<span class="dv">2</span>, s = <span class="st">&quot;Me&quot;</span>))</a>
+<a class="sourceLine" id="cb4-11" title="11"></a>
+<a class="sourceLine" id="cb4-12" title="12">    <span class="co">// Invalid call, default for `b` cannot be used</span></a>
+<a class="sourceLine" id="cb4-13" title="13">    println(bar(<span class="dv">2</span>, <span class="st">&quot;Me&quot;</span>))</a>
+<a class="sourceLine" id="cb4-14" title="14">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">In summary, argument list should have the following form:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Zero or more positional arguments</span></li>
+<li><span class="sentence">Zero or more named arguments</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Missing arguments are bound to their default values.</span></p>
+</div>
+<h4 id="variable-length-parameters">Variable length parameters</h4>
+<div class="paragraph">
+<p><span class="sentence">One of the parameters may be designated as being variable length (aka <em>vararg</em>). </span><span class="sentence">A parameter list <span class="math inline">\((p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)\)</span> means a function may be called with any number of arguments in the i-th position. </span><span class="sentence">These arguments are represented inside function body <span class="math inline">\(b\)</span> as an <a href="type-system.html#array-types">array of type <span class="math inline">\(P_i\)</span></a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. </span><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to an <a href="type-system.html#array-types">array of type <span class="math inline">\(P_i\)</span></a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">An array of type <span class="math inline">\(Q &lt;: P_i\)</span> may be <em>unpacked</em> to a variable length parameter in function invocation using <a href="expressions.html#spread-operator">spread operator</a>; in this case array elements are considered to be separate arguments in the variable length parameter position. </span><span class="sentence">A function invocation may include several spread operator expressions corresponding to the vararg parameter.</span></p>
+</div>
+<h4 id="function-type-parameters">Function type parameters</h4>
+<div class="paragraph">
+<p><span class="sentence">Some parameters may have <a href="type-system.html#function-types">function types</a>, as Kotlin supports first-class functions. </span><span class="sentence">Function type parameters do not have any special treatment on the function declaration side, however, there are some special cases on the invocation side.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Function type parameter may bind to an argument of the following kinds - <a href="statements.html#callable-references">callable reference</a> - <a href="expressions.html#anonymous-function-declarations-1">anonymous function</a> - <a href="expressions.html#lambda-literals-1">lambda literal</a> Iff we use a lambda literal for the <strong>last</strong> parameter in the parameter list, it can be written outside the argument list, as in this example.</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>, <span class="va">b</span>: <span class="dt">Int</span>, <span class="va">f</span>: (<span class="dt">Int</span>, <span class="dt">Int</span>) -&gt; <span class="dt">String</span>): <span class="dt">String</span> = f(a, b)</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">a</span>: <span class="dt">Int</span>, <span class="va">b</span>: <span class="dt">Int</span>) = foo(a, b) { a, b -&gt; <span class="st">&quot;${a + b}&quot;</span> }</a></code></pre></div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Describe possible ambiguities?)</span></p>
+</div>
+</div>
+<h4 id="extension-function-declaration">Extension function declaration</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<h4 id="anonymous-function-declaration">Anonymous function declaration</h4>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<h3 id="property-declaration">Property declaration</h3>
+<dl>
+<dt><strong><em>propertyDeclaration</em>:</strong></dt>
+<dd><span class="sentence">[<em>modifierList</em>] (<code>val</code> | <code>var</code>)<br />
+[{<em>NL</em>} <em>typeParameters</em>]<br />
+[{<em>NL</em>} <em>type</em> {<em>NL</em>} <code>.</code>]<br />
+({<em>NL</em>} (<em>multiVariableDeclaration</em> | <em>variableDeclaration</em>))<br />
+[{<em>NL</em>} <em>typeConstraints</em>]<br />
+[{<em>NL</em>} (<code>by</code> | <code>=</code>) {<em>NL</em>} <em>expression</em>]<br />
+[NL+ <code>;</code>] {<em>NL</em>} [[<em>getter</em>] ({<em>NL</em>} [<em>semi</em>] <em>setter</em>] | [<em>setter</em>] [{<em>NL</em>} [<em>semi</em>] <em>getter</em>])</span>
+</dd>
+</dl>
+<div class="paragraph">
+<p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — functions which are used to read or write the property value.</span></p>
+</div>
+<h4 id="read-only-property-declaration">Read-only property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A read-only property declaration <code>val x: T = e</code> introduces <code>x</code> as a name of the result of <code>e</code>. </span><span class="sentence">Both the right-hand value <code>e</code> and the type <code>T</code> are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if the type of <code>e</code> cannot be [inferred][Type inference], the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A read-only property declaration may include a custom <a href="type-system.html#getters-and-setters">getter</a> in the form of</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb6-2" title="2">    <span class="kw">get</span>() { ... }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation.</span></p>
+</div>
+<h4 id="mutable-property-declaration">Mutable property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A mutable property declaration <code>var x: T = e</code> introduces <code>x</code> as a name of a mutable variable with type <code>T</code> and initial value equals to the result of <code>e</code>. </span><span class="sentence">The rules regarding the right-hand value <code>e</code> and the type <code>T</code> match those of a read-only property declaration.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A mutable property declaration may include a custom <a href="type-system.html#getters-and-setters">getter</a> and/or custom <a href="type-system.html#getters-and-setters">setter</a> in the form of</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb7-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
+<a class="sourceLine" id="cb7-3" title="3">    <span class="kw">set</span>(value: TS) { ... }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation when read from and to the setter invocation when written to.</span></p>
+</div>
+<h4 id="delegated-property-declaration">Delegated property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="type-system.html#getters-and-setters">getters</a>. </span><span class="sentence">TODO(Type is optional if inferred?)</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In case of a delegated read-only property, access to <code>x</code> is replaced with the call to a special function <code>getValue</code>, which must be available on <code>e</code>. </span><span class="sentence">This function has the following signature</span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">getValue</span>(<span class="va">thisRef</span>: <span class="dt">E</span>, <span class="va">property</span>: <span class="dt">PropertyInfo</span>): <span class="dt">R</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>thisRef: E</code> is the reference to the enclosing entity</span>
+<ul>
+<li><span class="sentence">holds the enclosing class or object instance in case of classifier property</span></li>
+<li><span class="sentence">is <code>null</code> for <a href="type-system.html#local-property-declaration">local properties</a></span></li>
+</ul></li>
+<li><span class="sentence"><code>property: PropertyInfo</code> contains runtime-available information about the declared property, most importantly</span>
+<ul>
+<li><span class="sentence"><code>property.name</code> holds the property name</span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">This convention implies the following requirements on the <code>getValue</code> function</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(S &lt;: E\)</span>, where <span class="math inline">\(S\)</span> is the type of the enclosing entity</span></li>
+<li><span class="sentence"><span class="math inline">\(\text{KProperty&lt;*&gt;} &lt;: \text{PropertyInfo}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(R\)</span> should be in a supertype relation with the delegated property type <span class="math inline">\(T\)</span></span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">In case of the local property, enclosing entity has the type <code>Nothing?</code></span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="type-system.html#getters-and-setters">getters and setters</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Read access is handeled using the same <code>getValue</code> function as for a delegated read-only property. </span><span class="sentence">Write access is processed using a special function <code>setValue</code>, which must be available on <code>e</code>. </span><span class="sentence">This function has the following signature</span></p>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">setValue</span>(<span class="va">thisRef</span>: <span class="dt">E</span>, <span class="va">property</span>: <span class="dt">PropertyInfo</span>, <span class="va">value</span>: <span class="dt">R</span>): <span class="dt">U</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>thisRef: E</code> is the reference to the enclosing entity</span>
+<ul>
+<li><span class="sentence">holds the enclosing class or object instance in case of classifier property</span></li>
+<li><span class="sentence">is <code>null</code> for <a href="type-system.html#local-property-declaration">local properties</a></span></li>
+</ul></li>
+<li><span class="sentence"><code>property: PropertyInfo</code> contains runtime-available information about the declared property, most importantly</span>
+<ul>
+<li><span class="sentence"><code>property.name</code> holds the property name</span></li>
+</ul></li>
+<li><span class="sentence"><code>value: R</code> is the new property value</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">This convention implies the following requirements on the <code>setValue</code> function</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(S &lt;: E\)</span>, where <span class="math inline">\(S\)</span> is the type of the enclosing entity</span></li>
+<li><span class="sentence"><span class="math inline">\(\text{KProperty&lt;*&gt;} &lt;: \text{PropertyInfo}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(R\)</span> should be in a supertype relation with the delegated property type <span class="math inline">\(T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(U\)</span> is ignored</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">In case of the local property, enclosing entity has the type <code>Nothing?</code></span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The delegated property is expanded as follows.</span></p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="co">/*</span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="co"> * Actual code</span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="co"> */</span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="kw">class</span> C {</a>
+<a class="sourceLine" id="cb10-5" title="5">    <span class="kw">var</span> <span class="va">prop</span>: Type <span class="kw">by</span> DelegateExpression</a>
+<a class="sourceLine" id="cb10-6" title="6">}</a>
+<a class="sourceLine" id="cb10-7" title="7"></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">/*</span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="co"> * Expanded code</span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="co"> */</span></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="kw">class</span> C {</a>
+<a class="sourceLine" id="cb10-12" title="12">    <span class="kw">private</span> <span class="kw">val</span> <span class="va">prop</span>$delegate = DelegateExpression</a>
+<a class="sourceLine" id="cb10-13" title="13">    <span class="kw">var</span> <span class="va">prop</span>: Type</a>
+<a class="sourceLine" id="cb10-14" title="14">        <span class="kw">get</span>() = prop$delegate.getValue(<span class="kw">this</span>, <span class="kw">this</span>::prop)</a>
+<a class="sourceLine" id="cb10-15" title="15">        <span class="kw">set</span>(value: Type) = prop$delegate.setValue(<span class="kw">this</span>, <span class="kw">this</span>::prop, value)</a>
+<a class="sourceLine" id="cb10-16" title="16">}</a></code></pre></div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(provideDelegate)</span></p>
+</div>
+</div>
+<h4 id="local-property-declaration">Local property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. </span><span class="sentence">However, local property declarations cannot have custom getters or setters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Local property declarations also support <em>destructive</em> declaration in the form of</span></p>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">which is a syntactic sygar for the following expansion</span></p>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">a</span>: T = e.component1()</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="kw">val</span> <span class="va">b</span>: U = e.component2()</a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
+<a class="sourceLine" id="cb12-4" title="4">...</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Each individual component property follows the rules for regular local property declaration.</span></p>
+</div>
+<h4 id="getters-and-setters">Getters and setters</h4>
+<div class="paragraph">
+<p><span class="sentence">As mentioned before, a property declaration may include a custom getter and/or custom setter (together called <em>accessors</em>) in the form of</span></p>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb13-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
+<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">set</span>(anyValidArgumentName: TS) { ... }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">These functions have the following requirements</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(TG \equiv T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(TS \equiv T\)</span></span></li>
+<li><div class="paragraph">
+<p><span class="sentence">Both <span class="math inline">\(TG\)</span> and <span class="math inline">\(TG\)</span> types are optional and may be omitted from the declaration</span></p>
+</div></li>
+<li><span class="sentence">Read-only properties may have a custom getter, but not a custom setter</span></li>
+<li><div class="paragraph">
+<p><span class="sentence">Mutable properties may have any combination of a cusom getter and a custom setter</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence">Setter argument may have any valid argument name</span></p>
+</div></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Regular coding convention recommends <code>value</code> as the name for the setter argument</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">One can also ommit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
+</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb14-2" title="2">    <span class="kw">get</span></a>
+<a class="sourceLine" id="cb14-3" title="3">    <span class="kw">set</span></a></code></pre></div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Getters and setters allow one to customize how the property is accessed, and may need access to the property’s <em>backing field</em>, which is responsible for actually storing the property data. </span><span class="sentence">It is accessed via the special <code>field</code> property available inside accessor body, which follows these conventions</span></p>
+</div>
+<ul>
+<li><span class="sentence">For a property declaration of type <code>T</code>, field<code>has the same type</code>T`</span></li>
+<li><span class="sentence"><code>field</code> is read-only inside getter body</span></li>
+<li><span class="sentence"><code>field</code> is mutable inside setter body</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">However, the backing field is created for a property only in the following cases</span></p>
+</div>
+<ul>
+<li><span class="sentence">A property has no custom accessors</span></li>
+<li><span class="sentence">A property has a default accessor</span></li>
+<li><span class="sentence">A property has a custom accessor, and it uses <code>field</code> property</span></li>
+<li><span class="sentence">A mutable property has a custom getter or setter, but not both</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In all other cases a property has no backing field.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively.</span></p>
+</div>
+<h4 id="property-initialization">Property initialization</h4>
+<div class="paragraph">
+<p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].</span></p>
+</div>
+<h3 id="type-alias">Type alias</h3>
+<dl>
+<dt><strong><em>typeAlias</em>:</strong></dt>
+<dd><span class="sentence">[<em>modifierList</em>] <code>typealias</code> {<em>NL</em>} <em>simpleIdentifier</em> [{<em>NL</em>} <em>typeParameters</em>] {<em>NL</em>} <code>=</code> {<em>NL</em>} <em>type</em></span>
+</dd>
+</dl>
+<div class="paragraph">
+<p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="visibility.html#visibility"><em>visibility modifiers</em></a>.</span></p>
+</div>
+<h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<h3 id="declaration-modifiers">Declaration modifiers</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(declaration scope)</span></p>
 </div>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(another big question is: do we want to formally prove all the different thing here?)</span></p>
+<p><span class="sentence">TODO(open)</span></p>
 </div>
 </div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(abstract)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(lateinit)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(const) ## Inheritance</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(…) ## Scopes and identifiers</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All the program code in Kotlin is logically divided into <em>scopes</em>. </span><span class="sentence">A scope is a syntactically-delimited region of code that constitutes a context in which entities and their names can be introduced. </span><span class="sentence">Scopes are nested, with entities introduced in outer scopes also available in the inner scopes. </span><span class="sentence">The top level of a Kotlin file is also a scope, containing all the scopes within the file.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All the scopes are divided into two categories: declaration scopes and statement scopes. </span><span class="sentence">These two kinds of scopes differ in how the identifiers in code refer to the values definied in the scopes.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declaration scopes include:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The top level scope of a normal Kotlin file (not script file);</span></li>
+<li><span class="sentence">The bodies of <a href="type-system.html#classifier-declaration">classifier declarations</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#object-literals-1">object literals</a>;</span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(Anything else?)</span>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Statement scopes include:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The top level scope of a Kotlin script file;</span></li>
+<li><span class="sentence">Various scopes produced by control structure bodies of different <a href="expressions.html#expressions">expressions</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="type-system.html#function-declaration">function declarations</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#anonymous-function-declarations-1">anonymous function literals</a>;</span></li>
+<li><span class="sentence">The bodies of getters and setters of <a href="type-system.html#property-declaration">properties</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="type-system.html#constructor-declaration">constructors</a>;</span></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="type-system.html#class-declaration">class declarations</a>;</span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(Anything else?)</span>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">All the declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values may refer to objects, functions or properties (that may be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce such bindings using <a href="packages-and-imports.html#packages-and-imports"><code>import</code> directive</a> from other top-level scopes.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature <span><span class="TODO">(TODO: what’s a signature?)</span><span class="TODO-marker">*</span></span> and allow definining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions-1">calling functions</a> a process called <a href="overload-resolution.html#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order their declarations appear in it. </span><span class="sentence">It is not allowed to access a value through an identifier in the code that (syntactically) precedes the binding itself. </span><span class="sentence">On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur and need to be detected by the compiler. </span><span class="sentence">It also means that the statement scopes nested inside declaration scopes may access values declared after itself in the declaration scopes, but any values defined inside the statement scope must be accessed only after they are declared.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence">In declaration scope:</span></p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1">    <span class="co">// x refers to the property defined below even if there is another property</span></a>
+<a class="sourceLine" id="cb15-2" title="2">    <span class="co">// called x in outer scope or imported</span></a>
+<a class="sourceLine" id="cb15-3" title="3">    <span class="kw">fun</span> <span class="fu">foo</span>() { <span class="kw">return</span> x + <span class="dv">2</span>; } </a>
+<a class="sourceLine" id="cb15-4" title="4">    <span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span>; </a></code></pre></div></li>
+<li><div class="paragraph">
+<p><span class="sentence">In statement scope:</span></p>
+</div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1">    <span class="co">// x either refers to other property defined in some outer scope or imported</span></a>
+<a class="sourceLine" id="cb16-2" title="2">    <span class="co">// or it is a compile-time error</span></a>
+<a class="sourceLine" id="cb16-3" title="3">    <span class="kw">fun</span> <span class="fu">foo</span>() { <span class="kw">return</span> x + <span class="dv">2</span>; } </a>
+<a class="sourceLine" id="cb16-4" title="4">    <span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span>; </a></code></pre></div></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: please note that all the above is primarily applied to declarations, because declaration scopes do not allow standalone statements to appear in them</span></p>
+</div>
+</blockquote>
+<ul>
+<li><div class="TODO">
+<span class="sentence">TODO(qualified names?)</span>
+</div></li>
+<li><div class="TODO">
+<span class="sentence">TODO(extensions?)</span>
+</div></li>
+<li><div class="TODO">
+<span class="sentence">TODO(receivers)</span>
+</div></li>
+<li><div class="TODO">
+<span class="sentence">TODO(rewrite expressions and statements as references to this part)</span>
+</div></li>
+<li><div class="TODO">
+<span class="sentence">TODO(identifier lifetime &amp; such)</span>
+</div></li>
+</ul>
 </body>
 </html>
