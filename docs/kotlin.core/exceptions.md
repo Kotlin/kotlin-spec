@@ -42,7 +42,3 @@ Throwing an exception results in checking active `try`-blocks as described above
 > This is a platform-dependent mechanism.
 
 TODO: control flow?
-
-TODO: concurrency?
-
-TODO: write it better

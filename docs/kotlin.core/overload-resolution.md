@@ -24,8 +24,6 @@ Implicit receivers are available in some syntactic scope according to the follow
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
 - The scope of a lambda expression, if it has an extension function type, contains `this` argument of the lambda expression.
 
-TODO(If I'm a companion object, is a companion object of my supertype an implicit receiver for me or not?)
-
 The available receivers are prioritized in the following way:
 
 - The receivers provided in the most inner scope have higher priority;
@@ -62,15 +60,16 @@ A *callable* $X$ for the purpose of this section is one of the following:
     - A constructor of the type named $X$ at its declaration site;
 - Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
     - A property named $X$ at its declaration site;
-    - [An object][Object declarations] named $X$ at its declaration site;
-    - [A companion object][Companion objects] of a classifier type named $X$ at its declaration site;
+    - [An object][Object declaration] named $X$ at its declaration site;
+    - [A companion object][Class declaration] of a classifier type named $X$ at its declaration site;
+    - [An enum entry][Enum class declaration] named $X$ at its declaration site;
     - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
 
 In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-The set of explicit receivers itself (denoted by a [`this`][This-expression] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
-As with normal property-like callables, $\mathtt{this@A}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\mathtt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)$.
+The set of explicit receivers itself (denoted by a [`this`][This-expressions] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
+As with normal property-like callables, $\texttt{this@A}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\texttt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)$.
 
 A *member callable* is either a member function-like callable or a member property-like callable with a member operator `invoke`.
 An *extension callable* is either an extension function-like callable, a member property-like callable with an extension operator `invoke` or an extension property-like callable with an extension operator `invoke`.
@@ -94,8 +93,6 @@ As this partition is the most fine-grained of all other steps of partitioning re
 
 If a callable name is fully-qualified (that is, it contains a full package path), then the overload candidate set $S$ simply contains all the callables with the specified name in the specified package.
 As a package name can never clash with any other declared entity, after performing c-level partition on $S$, the resulting sets are the only ones available for further processing.
-
-TODO(Clear up this mess)
 
 Example:
 ```kotlin
@@ -124,8 +121,6 @@ A call of callable `f` with an explicit receiver `e` is correct if one (or more)
 > For example, if class $P$ contains a member extension function for another class $T$ and an object of class $P$ is available as an implicit receiver, this extension function may be used for the call if it has a suitable type.
 
 If a call is correct, for a callable named `f` with an explicit receiver `e` of type `T` the following sets are analyzed (in the given order):
-
-TODO(Sync with scopes and stuff when we have them)
 
 1. The sets of non-extension member callables named `f` of type `T`;
 2. The sets of local extension callables named `f`, whose receiver type conforms to type `T`, in all declaration scopes containing the current declaration scope, ordered by the size of the scope (smallest first), excluding the package scope;
@@ -158,7 +153,7 @@ This makes operator expressions semantically equivalent to function calls with e
 The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with `operator` modifier are considered for inclusion when building overload candidate sets.
 Any properties are never considered for the overload candidate sets of operator calls.
 
-> Note: this also means that all the properties available through the `invoke`convention are non-eligible for operator calls, as there is no way of specifying the `operator` modifier for them, even though the `invoke` callable is required to always have such modifier.
+> Note: this also means that all the properties available through the `invoke` convention are non-eligible for operator calls, as there is no way of specifying the `operator` modifier for them, even though the `invoke` callable is required to always have such modifier.
 > As `invoke` convention itself is an operator call, it is impossible to use more than one `invoke` conventions in a single call.
 
 Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.
@@ -199,16 +194,16 @@ While the number of defaults (see [the MSC selection process][Choosing the most 
 
 ### Calls with trailing lambda expressions
 
-A call expression may have a single lambda expression placed outside of the argument list parentheses or even completely replacing them (see [this section][Call expression] for further details).
+A call expression may have a single lambda expression placed outside of the argument list parentheses or even completely replacing them (see [this section][Function calls and property access] for further details).
 This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable argument parameters or parameters with defaults.
 
 > Example: this means that calls `f(1,2) { g() } ` and `f(1,2, body = { g() })` are completely equivalent w.r.t. the overload resolution, assuming `body` is the name of the last formal parameter of `f`.
 
 ### Calls with specified type parameters
 
-A call expression may have a type argument list explicitly specified before the argument list (see [this section][Call expression] for further details)..
+A call expression may have a type argument list explicitly specified before the argument list (see [this section][Function calls and property access] for further details).
 In this case all the potential overload sets only include callables which contain exactly the same number of formal type parameters at declaration site.
-In case of a property callable via `invoke` convention, type parameters must be present at the `invoke` operator function declaration.
+In case of a property callable via `invoke` convention, type parameters must be present at the `invoke` operator function declaration instead.
 
 ### Determining function applicability for a specific call
 
@@ -218,7 +213,7 @@ A function is *applicable* for a specific call if and only if the function param
 
 #### Description
 
-Determining function applicability for a specific call is a [type constraint][Type constraints] problem.
+Determining function applicability for a specific call is a [type constraint][Kotlin type constraints] problem.
 First, for every non-lambda argument of the function supplied in the call, type inference is performed.
 Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
@@ -272,7 +267,7 @@ The rest of this section will try to clarify this mechanism in more detail.
 
 When an overload resolution set $S$ is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.
 
-The selection process uses the [type constraint][Type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
+The selection process uses the [type constraint][Kotlin type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
@@ -307,18 +302,3 @@ If after this additional step there are still several candidates that are equall
 
 [Type inference][Type inference] in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates.
 Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up.
-
-#### TODOs
-
-- Property business
-- Function types (type system section?)
-- Definition of "type parameter level"
-- Calls with trailing lambda without parameter type
-    * Lambdas with parameter types seem to be covered (**nope, they are not**)
-- Calls with specified type parameters `f<Double>(3)`
-- Widen the notion of "function" and "property" during overloading
-    - Constructors and companion object `invoke` (clash with functions)
-    - Singleton objects (clash with properties)
-    - Enum constants (clash with properties)
-    - Explicit `this` cannot clash with properties, but can clash with other explicit `this`, meaning it effectively overloads over all the available receivers in the scope
-    - Can `super` be overloaded? I suppose
