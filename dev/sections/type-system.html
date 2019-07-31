@@ -176,7 +176,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Null safety is enforced by having two type universes — <em>nullable</em> (with nullable types <span class="math inline">\(T?\)</span>) and <em>non-nullable</em> (with non-nullable types <span class="math inline">\(T!!\)</span>). </span><span class="sentence">All operations within the non-nullable type universe are safe, i.e., should never cause a runtime null pointer error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an <a href="expressions.html#cast-expression-1">explicit cast</a>. </span><span class="sentence">However, Kotlin also supports smart casts — a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail <a href="overload-resolution.html#smart-casts">here</a>.</span></p>
+<p><span class="sentence">Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an <a href="expressions-1.html#cast-expression-1">explicit cast</a>. </span><span class="sentence">However, Kotlin also supports smart casts — a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail <a href="overload-resolution.html#smart-casts">here</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The unified supertype type for all types in Kotlin is <code>kotlin.Any?</code>, a nullable version of <a href="type-system.html#kotlin.any">kotlin.Any</a>.</span></p>
@@ -553,18 +553,18 @@ TODO(Inner vs nested contexts)</span></li>
 <ol type="1">
 <li><span class="sentence">Use safe operations</span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#safe-call-expression-1">safe call</a></span></li>
+<li><span class="sentence"><a href="expressions-1.html#safe-call-expression-1">safe call</a></span></li>
 </ul></li>
 <li><span class="sentence">Downcast from <span class="math inline">\(T?\)</span> to <span class="math inline">\(T!!\)</span></span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#cast-expression-1">unsafe cast</a></span></li>
-<li><span class="sentence"><a href="expressions.html#type-check-expression-1">type check</a> combined with <a href="overload-resolution.html#smart-casts">smart casts</a></span></li>
+<li><span class="sentence"><a href="expressions-1.html#cast-expression-1">unsafe cast</a></span></li>
+<li><span class="sentence"><a href="expressions-1.html#type-check-expression-1">type check</a> combined with <a href="overload-resolution.html#smart-casts">smart casts</a></span></li>
 <li><span class="sentence">null check combined with <a href="overload-resolution.html#smart-casts">smart casts</a></span></li>
 <li><span class="sentence">[not-null assertion operator][Not-null assertion operator expression]</span></li>
 </ul></li>
 <li><span class="sentence">Supply a default value to use instead of <code>null</code></span>
 <ul>
-<li><span class="sentence"><a href="expressions.html#elvis-operator-expression-1">elvis operator</a></span></li>
+<li><span class="sentence"><a href="expressions-1.html#elvis-operator-expression-1">elvis operator</a></span></li>
 </ul></li>
 </ol>
 <h3 id="subtyping">Subtyping</h3>
@@ -1025,14 +1025,14 @@ TODO(Inner vs nested contexts)</span></li>
 <p><span class="sentence">If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments. </span><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to an <a href="type-system.html#array-types">array of type <span class="math inline">\(P_i\)</span></a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An array of type <span class="math inline">\(Q &lt;: P_i\)</span> may be <em>unpacked</em> to a variable length parameter in function invocation using <a href="expressions.html#spread-operator-1">spread operator</a>; in this case array elements are considered to be separate arguments in the variable length parameter position. </span><span class="sentence">A function invocation may include several spread operator expressions corresponding to the vararg parameter.</span></p>
+<p><span class="sentence">An array of type <span class="math inline">\(Q &lt;: P_i\)</span> may be <em>unpacked</em> to a variable length parameter in function invocation using <a href="expressions-1.html#spread-operator-1">spread operator</a>; in this case array elements are considered to be separate arguments in the variable length parameter position. </span><span class="sentence">A function invocation may include several spread operator expressions corresponding to the vararg parameter.</span></p>
 </div>
 <h4 id="function-type-parameters">Function type parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Some parameters may have <a href="type-system.html#function-types">function types</a>, as Kotlin supports first-class functions. </span><span class="sentence">Function type parameters do not have any special treatment on the function declaration side, however, there are some special cases on the invocation side.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Function type parameter may bind to an argument of the following kinds - [callable reference][Callable references] - <a href="expressions.html#anonymous-function-declarations-1">anonymous function</a> - <a href="expressions.html#lambda-literals-1">lambda literal</a> Iff we use a lambda literal for the <strong>last</strong> parameter in the parameter list, it can be written outside the argument list, as in this example.</span></p>
+<p><span class="sentence">Function type parameter may bind to an argument of the following kinds - [callable reference][Callable references] - <a href="expressions-1.html#anonymous-function-declarations-1">anonymous function</a> - <a href="expressions-1.html#lambda-literals-1">lambda literal</a> Iff we use a lambda literal for the <strong>last</strong> parameter in the parameter list, it can be written outside the argument list, as in this example.</span></p>
 </div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>, <span class="va">b</span>: <span class="dt">Int</span>, <span class="va">f</span>: (<span class="dt">Int</span>, <span class="dt">Int</span>) -&gt; <span class="dt">String</span>): <span class="dt">String</span> = f(a, b)</a>
 <a class="sourceLine" id="cb5-2" title="2"></a>
@@ -1335,7 +1335,7 @@ TODO(Inner vs nested contexts)</span></li>
 <ul>
 <li><span class="sentence">The top level scope of a normal Kotlin file (not script file);</span></li>
 <li><span class="sentence">The bodies of <a href="type-system.html#classifier-declaration">classifier declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="expressions.html#object-literals-1">object literals</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions-1.html#object-literals-1">object literals</a>;</span></li>
 <li><div class="TODO">
 <span class="sentence">TODO(Anything else?)</span>
 </div></li>
@@ -1345,9 +1345,9 @@ TODO(Inner vs nested contexts)</span></li>
 </div>
 <ul>
 <li><span class="sentence">The top level scope of a Kotlin script file;</span></li>
-<li><span class="sentence">Various scopes produced by control structure bodies of different <a href="expressions.html#expressions">expressions</a>;</span></li>
+<li><span class="sentence">Various scopes produced by control structure bodies of different <a href="expressions-1.html#expressions-1">expressions</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="type-system.html#function-declaration">function declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="expressions.html#anonymous-function-declarations-1">anonymous function literals</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions-1.html#anonymous-function-declarations-1">anonymous function literals</a>;</span></li>
 <li><span class="sentence">The bodies of getters and setters of <a href="type-system.html#property-declaration">properties</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="type-system.html#constructor-declaration">constructors</a>;</span></li>
 <li><span class="sentence">The bodies of instance initialization blocks in <a href="type-system.html#class-declaration">class declarations</a>;</span></li>
@@ -1359,7 +1359,7 @@ TODO(Inner vs nested contexts)</span></li>
 <p><span class="sentence">All the declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values may refer to objects, functions or properties (that may be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce such bindings using <a href="packages-and-imports.html#packages-and-imports"><code>import</code> directive</a> from other top-level scopes.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature <span><span class="TODO">(TODO: what’s a signature?)</span><span class="TODO-marker">*</span></span> and allow definining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions-1">calling functions</a> a process called <a href="overload-resolution.html#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
+<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature <span><span class="TODO">(TODO: what’s a signature?)</span><span class="TODO-marker">*</span></span> and allow definining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions-1.html#call-and-property-access-expressions-1">calling functions</a> a process called <a href="overload-resolution.html#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order their declarations appear in it. </span><span class="sentence">It is not allowed to access a value through an identifier in the code that (syntactically) precedes the binding itself. </span><span class="sentence">On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur and need to be detected by the compiler. </span><span class="sentence">It also means that the statement scopes nested inside declaration scopes may access values declared after itself in the declaration scopes, but any values defined inside the statement scope must be accessed only after they are declared.</span></p>
