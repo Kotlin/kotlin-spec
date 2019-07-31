@@ -124,7 +124,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#built-in-types">Built-in types</a><ul>
 <li><a href="#kotlin.any"><code>kotlin.Any</code></a></li>
 <li><a href="#kotlin.nothing"><code>kotlin.Nothing</code></a></li>
-<li><a href="#kotlin.unit"><code>kotlin.Unit</code></a></li>
 <li><a href="#kotlin.function"><code>kotlin.Function</code></a></li>
 <li><a href="#built-in-integer-types">Built-in integer types</a></li>
 </ul></li>
@@ -164,7 +163,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#type-approximation">Type approximation</a></li>
 <li><a href="#references">References</a></li>
 </ul></li>
-<li><a href="#built-in-classifier-types">Built-in classifier types</a><ul>
+<li><a href="#built-in-types-and-their-semantics">Built-in types and their semantics</a><ul>
+<li><a href="#kotlin.any-1"><code>kotlin.Any</code></a><ul>
+<li><a href="#kotlin.nothing-1"><code>kotlin.Nothing</code></a></li>
+</ul></li>
+<li><a href="#kotlin.unit"><code>kotlin.Unit</code></a></li>
 <li><a href="#kotlin.boolean"><code>kotlin.Boolean</code></a></li>
 <li><a href="#built-in-integer-types-1">Built-in integer types</a></li>
 <li><a href="#built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</a></li>
@@ -2547,39 +2550,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> is the unified <a href="#subtyping">supertype</a> (<span class="math inline">\(\top\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., all non-nullable types are subtypes of <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span>, either explicitly, implicitly, or by <a href="#subtyping">subtyping relation</a>.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">It must provide the following methods.</span></p>
+<p><span class="sentence">Note: additional details about <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> are available <a href="#kotlin.any-1">here</a>.</span></p>
 </div>
-<ul>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
-</div></li>
-</ul>
+</blockquote>
 <h5 id="kotlin.nothing"><code>kotlin.Nothing</code></h5>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is the unified <a href="#subtyping">subtype</a> (<span class="math inline">\(\bot\)</span>) for <span class="math inline">\(\{T\}\)</span>, i.e., <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is a subtype of all well-formed Kotlin types, including user-defined ones. </span><span class="sentence">This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> in Kotlin.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">As the evaluation of an expression with <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> type can never complete normally, it is used to mark special situations, such as</span></p>
+<p><span class="sentence">Note: additional details about <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> are available <a href="#kotlin.nothing-1">here</a>.</span></p>
 </div>
-<ul>
-<li><span class="sentence">non-terminating expressions</span></li>
-<li><span class="sentence">exceptional control flow</span></li>
-<li><span class="sentence">control flow transfer</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Additional details about how <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> should be processed are available <a href="#control--and-data-flow-analysis">here</a>.</span></p>
-</div>
-<h5 id="kotlin.unit"><code>kotlin.Unit</code></h5>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
-</div>
+</blockquote>
 <h5 id="kotlin.function"><code>kotlin.Function</code></h5>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}(R)\)</span> is the unified supertype of all <a href="#function-types">function types</a>. </span><span class="sentence">It is parameterized over function return type <code>R</code>.</span></p>
@@ -2589,17 +2573,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin supports the following signed integer types.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>Byte</code> (bit width 8)</span></li>
-<li><span class="sentence"><code>Short</code> (bit width 16)</span></li>
-<li><span class="sentence"><code>Int</code> (bit width 32)</span></li>
-<li><span class="sentence"><code>Long</code> (bit width 64)</span></li>
+<li><span class="sentence"><code>kotlin.Int</code></span></li>
+<li><span class="sentence"><code>kotlin.Short</code></span></li>
+<li><span class="sentence"><code>kotlin.Byte</code></span></li>
+<li><span class="sentence"><code>kotlin.Long</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">A value with signed integer type of bit width <span class="math inline">\(N\)</span> is guaranteed to be able to hold integer values in range <span class="math inline">\([-2^{N-1}, 2^{N-1}-1]\)</span>.</span></p>
+<p><span class="sentence">Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal type].</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: additional details about built-in integer types are available <a href="#built-in-integer-types-1">here</a>.</span></p>
+</div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Add unsigned types?)</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
 </div>
 </div>
 <h4 id="classifier-types">Classifier types</h4>
@@ -3639,36 +3628,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(another big question is: do we want to formally prove all the different thing here?)</span></p>
 </div>
 </div>
-<h2 id="built-in-classifier-types">Built-in classifier types</h2>
+<h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <ul>
 <li><div class="TODO">
-<span class="sentence">TODO: Move the whole section to type system?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: Move <code>kotlin.Unit</code> here?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">depends on how we plan to approach the interpolation expansion</span>
+<span class="sentence">TODO: <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">Depends on how we plan to approach the interpolation expansion</span>
 </div></li>
 <li><div class="TODO">
 <span class="sentence">TODO: <code>{Builtin}Array</code> types?</span>
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">As well as the types defined in the <a href="#built-in-types">type system section</a>, Kotlin defines several built-in classifier types that are important for the rest of this document. </span><span class="sentence">These have their own declarations in the standard library, but have special semantics in Kotlin.</span></p>
+<p><span class="sentence">In addition to the types defined in the <a href="#built-in-types">type system section</a>, Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">These types have regular declarations in the standard library, but may also introduce special semantics.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In this section we introduce these types and describe their semantics. </span><span class="sentence">We also describe additional semantics of built-in types described in the type system section.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this is not meant to declare all the types available in the standard library, for this please refer to the standard library documentation <span><span class="TODO">(TODO: link?)</span><span class="TODO-marker">*</span></span>.</span></p>
+<p><span class="sentence">Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation <span><span class="TODO">(TODO: link)</span><span class="TODO-marker">*</span></span>.</span></p>
 </div>
 </blockquote>
+<h3 id="kotlin.any-1"><code>kotlin.Any</code></h3>
+<div class="paragraph">
+<p><span class="sentence">Besides being the <a href="#kotlin.any">unified supertype</a> of all non-nullable types, <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> must also provide the following methods.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
+</div></li>
+</ul>
+<h5 id="kotlin.nothing-1"><code>kotlin.Nothing</code></h5>
+<div class="paragraph">
+<p><span class="sentence"><a href="#kotlin.nothing"><span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span></a> is an uninhabited type, which means the evaluation of an expression with <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> type can never complete normally. </span><span class="sentence">Therefore, it is used to mark special situations, such as</span></p>
+</div>
+<ul>
+<li><span class="sentence">non-terminating expressions</span></li>
+<li><span class="sentence">exceptional control flow</span></li>
+<li><span class="sentence">control flow transfer</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Further details about how <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> should be handled are available <a href="#control--and-data-flow-analysis">here</a> and <a href="#type-inference">here</a>.</span></p>
+</div>
+<h3 id="kotlin.unit"><code>kotlin.Unit</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
+</div>
 <h3 id="kotlin.boolean"><code>kotlin.Boolean</code></h3>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing the value that may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators. </span><span class="sentence">For other traits of this type (such as the classes it inherits from, interfaces it may inherit from and its member functions) please refer to the standard library specification.</span></p>
+<p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing the value that may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
 </div>
 <h3 id="built-in-integer-types-1">Built-in integer types</h3>
 <div class="paragraph">
-<p><span class="sentence">There are several built-in class types that represent signed integer numbers of different bit size. </span><span class="sentence">Kotlin does not have a built-in infinite-length integer number class. </span><span class="sentence">Kotlin also does not currently define any built-in unsigned integer number types <span><span class="TODO">(TODO: Kotlin 1.3 does)</span><span class="TODO-marker">*</span></span>. </span><span class="sentence">The signed integer number types are:</span></p>
+<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">The signed integer types are the following.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>kotlin.Int</code></span></li>
@@ -3676,23 +3693,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>kotlin.Byte</code></span></li>
 <li><span class="sentence"><code>kotlin.Long</code></span></li>
 </ul>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">These types may or may not have different runtime representation. </span><span class="sentence">See your platform reference for details.</span></p>
+<p><span class="sentence">Note: Kotlin does not have a built-in arbitrary-precision integer type.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin does not have any built-in unsigned integer types.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Int</code> is the type of integer numbers that is required to be able to hold at least the values in the range from <span class="math inline">\(-2^{31}\)</span> to <span class="math inline">\(2^{31} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Int</code> results in arithmetic overflow or underflow, the result is undefined.</span></p>
+<p><span class="sentence"><code>kotlin.Int</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{31}\)</span> to <span class="math inline">\(2^{31} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Int</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Short</code> is the type of integer numbers that is required to be able to hold at least the values in the range from <span class="math inline">\(-2^{15}\)</span> to <span class="math inline">\(2^{15} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Short</code> results in arithmetic overflow or underflow, the result is undefined.</span></p>
+<p><span class="sentence"><code>kotlin.Short</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{15}\)</span> to <span class="math inline">\(2^{15} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Short</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Byte</code> is the type of integer numbers that is required to be able to hold at least the values in the range from <span class="math inline">\(-2^{7}\)</span> to <span class="math inline">\(2^{7} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Byte</code> results in arithmetic overflow or underflow, the result is undefined.</span></p>
+<p><span class="sentence"><code>kotlin.Byte</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{7}\)</span> to <span class="math inline">\(2^{7} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Byte</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Long</code> is the type of integer numbers that is required to be able to hold at least the values in the range from <span class="math inline">\(-2^{63}\)</span> to <span class="math inline">\(2^{63} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Long</code> results in arithmetic overflow or underflow, the result is undefined.</span></p>
+<p><span class="sentence"><code>kotlin.Long</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{63}\)</span> to <span class="math inline">\(2^{63} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Long</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">For other traits of these types (such as the classes they inherit from, interfaces they may inherit from and their member functions) please refer to the standard library specification.</span></p>
+<p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow or underflow.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
+</div>
 </div>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
 <div class="paragraph">
@@ -4214,7 +4248,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">As type <code>kotlin.Nothing</code> has a <a href="#kotlin.nothing">special meaning</a> in Kotlin type system, it must be specified explicitly, to avoid spurious <code>kotlin.Nothing</code> function return types.</span></p>
+<p><span class="sentence">As type <code>kotlin.Nothing</code> has a <a href="#kotlin.nothing-1">special meaning</a> in Kotlin type system, it must be specified explicitly, to avoid spurious <code>kotlin.Nothing</code> function return types.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -5451,7 +5485,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="null-literal">Null literal</h4>
 <div class="paragraph">
-<p><span class="sentence">The keyword <code>null</code> denotes the <strong>null reference</strong>, which represents an absence of a value and is a valid value only for <a href="#nullable-types">nullable types</a>. </span><span class="sentence">Null reference has type <a href="#kotlin.nothing"><code>kotlin.Nothing?</code></a> and is, by definition, the only value of this type.</span></p>
+<p><span class="sentence">The keyword <code>null</code> denotes the <strong>null reference</strong>, which represents an absence of a value and is a valid value only for <a href="#nullable-types">nullable types</a>. </span><span class="sentence">Null reference has type <a href="#kotlin.nothing-1"><code>kotlin.Nothing?</code></a> and is, by definition, the only value of this type.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -6749,7 +6783,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence"><em>Jump expressions</em> are expressions which redirect the evaluation of the program to a different program point. </span><span class="sentence">All these expressions have several things in common:</span></p>
 </div>
 <ul>
-<li><span class="sentence">They all have type <a href="#kotlin.nothing"><code>kotlin.Nothing</code></a>, meaning that they never produce any runtime value;</span></li>
+<li><span class="sentence">They all have type <a href="#kotlin.nothing-1"><code>kotlin.Nothing</code></a>, meaning that they never produce any runtime value;</span></li>
 <li><span class="sentence">Any code which follows such expressions is never evaluated.</span></li>
 </ul>
 <h4 id="throw-expressions">Throw expressions</h4>

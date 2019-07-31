@@ -263,39 +263,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> is the unified <a href="type-system.html#subtyping">supertype</a> (<span class="math inline">\(\top\)</span>) for <span class="math inline">\(\{T!!\}\)</span>, i.e., all non-nullable types are subtypes of <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span>, either explicitly, implicitly, or by <a href="type-system.html#subtyping">subtyping relation</a>.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">It must provide the following methods.</span></p>
+<p><span class="sentence">Note: additional details about <span class="math inline">\(\operatorname{\mathtt{kotlin.Any}}\)</span> are available <a href="built-in-types-and-their-semantics.html#kotlin.any-1">here</a>.</span></p>
 </div>
-<ul>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
-</div></li>
-<li><div class="paragraph">
-<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
-</div></li>
-</ul>
+</blockquote>
 <h5 id="kotlin.nothing"><code>kotlin.Nothing</code></h5>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is the unified <a href="type-system.html#subtyping">subtype</a> (<span class="math inline">\(\bot\)</span>) for <span class="math inline">\(\{T\}\)</span>, i.e., <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> is a subtype of all well-formed Kotlin types, including user-defined ones. </span><span class="sentence">This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> in Kotlin.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">As the evaluation of an expression with <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> type can never complete normally, it is used to mark special situations, such as</span></p>
+<p><span class="sentence">Note: additional details about <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> are available <a href="built-in-types-and-their-semantics.html#kotlin.nothing-1">here</a>.</span></p>
 </div>
-<ul>
-<li><span class="sentence">non-terminating expressions</span></li>
-<li><span class="sentence">exceptional control flow</span></li>
-<li><span class="sentence">control flow transfer</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Additional details about how <span class="math inline">\(\operatorname{\mathtt{kotlin.Nothing}}\)</span> should be processed are available <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a>.</span></p>
-</div>
-<h5 id="kotlin.unit"><code>kotlin.Unit</code></h5>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\mathtt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
-</div>
+</blockquote>
 <h5 id="kotlin.function"><code>kotlin.Function</code></h5>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}(R)\)</span> is the unified supertype of all <a href="type-system.html#function-types">function types</a>. </span><span class="sentence">It is parameterized over function return type <code>R</code>.</span></p>
@@ -305,17 +286,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin supports the following signed integer types.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>Byte</code> (bit width 8)</span></li>
-<li><span class="sentence"><code>Short</code> (bit width 16)</span></li>
-<li><span class="sentence"><code>Int</code> (bit width 32)</span></li>
-<li><span class="sentence"><code>Long</code> (bit width 64)</span></li>
+<li><span class="sentence"><code>kotlin.Int</code></span></li>
+<li><span class="sentence"><code>kotlin.Short</code></span></li>
+<li><span class="sentence"><code>kotlin.Byte</code></span></li>
+<li><span class="sentence"><code>kotlin.Long</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">A value with signed integer type of bit width <span class="math inline">\(N\)</span> is guaranteed to be able to hold integer values in range <span class="math inline">\([-2^{N-1}, 2^{N-1}-1]\)</span>.</span></p>
+<p><span class="sentence">Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal type].</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: additional details about built-in integer types are available <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">here</a>.</span></p>
+</div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Add unsigned types?)</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
 </div>
 </div>
 <h4 id="classifier-types">Classifier types</h4>
@@ -961,7 +947,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="integer-literal-types">Integer literal types</h4>
 <div class="paragraph">
-<p><span class="sentence">An integer literal type containing types <span class="math inline">\(T_1, \ldots, T_N\)</span>, denoted <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_N)\)</span> is a special <em>non-denotable</em> type designed for integer literals. </span><span class="sentence">Each type <span class="math inline">\(T_1, \ldots, T_N\)</span> must be one of the <a href="built-in-classifier-types.html#built-in-integer-types-1">built-in integer types</a>.</span></p>
+<p><span class="sentence">An integer literal type containing types <span class="math inline">\(T_1, \ldots, T_N\)</span>, denoted <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_N)\)</span> is a special <em>non-denotable</em> type designed for integer literals. </span><span class="sentence">Each type <span class="math inline">\(T_1, \ldots, T_N\)</span> must be one of the <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Integer literal types are the types of <a href="expressions.html#integer-literals">integer literals</a>.</span></p>
