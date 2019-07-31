@@ -87,27 +87,27 @@ TODO([Kotlin 1.3] Add unsigned types)
 
 ### Built-in floating point arithmetic types
 
-There are two built-in class types that represent floating-point numbers: `kotlin.Float` and `kotlin.Double`.
-These types may or may not have different runtime representations. See your platform reference for details.
+There are two built-in classifier types which represent floating-point numbers: `kotlin.Float` and `kotlin.Double`.
+These types may or may not have different runtime representations, depending on the used platform and/or implementation.
+Consult the specific platform reference for further details.
 
-`kotlin.Float` is the type of floating-point number that is able to contain all the numbers as a IEEE754 (TODO: link) single-precision binary floating number with the same precision.
-`kotlin.Double` is the type of floating-point number that is able to contain all the numbers as a IEEE754 (TODO: link) double-precision binary floating number with the same precision.
+`kotlin.Float` is the type of floating-point number that is able to contain all the numbers as a [IEEE 754][IEEE754] single-precision binary floating number with the same precision.
+`kotlin.Double` is the type of floating-point number that is able to contain all the numbers as a [IEEE 754][IEEE754] double-precision binary floating number with the same precision.
 
-TODO: or do they?
+TODO(Is this true?)
 
-Platform specification may give a more thorough information on how these types are represented on a particular platform.
-For other traits of these types (such as the classes they inherit from, interfaces they may inherit from and their member functions) please refer to the standard library specification.
+Platform implementations may give additional information on how these types are represented on a particular platform.
 
-TODO: FP semantics are pretty hard, how much of that we want to put here?
+[IEEE754]: https://ieeexplore.ieee.org/document/8766229
 
 ### `kotlin.Char`
 
-`kotlin.Char` is the built-in class type that represents a single unicode symbol in UTF-16 (TODO: link) character encoding. It is the type of [character literals][Character literals]. For other traits of this type (such as the classes it inherits from, interfaces it may inherit from and its member functions) please refer to the standard library specification.
-
-TODO: UTF-16 or UCS-2?
+`kotlin.Char` is the built-in classifier type which represents a single Unicode symbol in [UCS-2][UCS-2] character encoding.
+It is the type of [character literals][Character literals].
 
 ### `kotlin.String`
 
-`kotlin.String` is the built-in class type that represents a sequence of unicode symbol in UTF-16 (TODO: link) character encoding. It is the type of the result of [string interpolation][String interpolation expressions]. For other traits of this type (such as the classes it inherits from, interfaces it may inherit from and its member functions) please refer to the standard library specification.
+`kotlin.String` is the built-in classifier type that represents a sequence of Unicode symbol in [UCS-2][UCS-2] character encoding.
+It is the type of the result of [string interpolation][String interpolation expressions].
 
-TODO: UTF-16 or UCS-2?
+[UCS-2]: https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip
