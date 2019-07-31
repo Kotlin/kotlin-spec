@@ -142,37 +142,18 @@ Kotlin type system uses the following built-in types, which have special semanti
 
 $\Any$ is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of $\Any$, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
-It must provide the following methods.
+> Note: additional details about $\Any$ are available [here][`kotlin.Any`-bi].
 
-- `public open operator fun equals(other: Any?): Boolean`
-  Returns `true` iff a value is equal to some other value.
-  Implementations of `equals` must satisfy the properties of reflexivity (`x.equals(x)` is always true), symmetry (`x.equals(y) == y.equals(x)`), transitivity (if `x.equals(y)` and `y.equals(z)`, `x.equals(z)`) and consistency (`x.equals(y)` should not change between multiple invocations).
-  A non-null value also must never be considered equal to `null`, i.e. `x.equals(null)` must be `false`.
-
-- `public open fun hashCode(): Int`
-  Returns a hash code for a value.
-  Implementations of `hashCode` must satisfy the following property: if two values are equals w.r.t. `equals`, `hashCode` must produce the same result consistently.
-
-- `public open fun toString(): String`
-  Returns a string representation of a value.
+[`kotlin.Any`-bi]: #kotlin.any-1
 
 ##### `kotlin.Nothing`
 
 $\Nothing$ is the unified [subtype][Subtyping] ($\bot$) for $\{T\}$, i.e., $\Nothing$ is a subtype of all well-formed Kotlin types, including user-defined ones.
 This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of $\Nothing$ in Kotlin.
 
-As the evaluation of an expression with $\Nothing$ type can never complete normally, it is used to mark special situations, such as
+> Note: additional details about $\Nothing$ are available [here][`kotlin.Nothing`-bi].
 
-* non-terminating expressions
-* exceptional control flow
-* control flow transfer
-
-Additional details about how $\Nothing$ should be processed are available [here][Control- and data-flow analysis].
-
-##### `kotlin.Unit`
-
-$\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
-It is somewhat similar in purpose to `void` return type in Java, but has several minor differences, which fall outside the scope of this specification.
+[`kotlin.Nothing`-bi]: #kotlin.nothing-1
 
 ##### `kotlin.Function`
 
@@ -183,14 +164,18 @@ It is parameterized over function return type `R`.
 
 Kotlin supports the following signed integer types.
 
-- `Byte` (bit width 8)
-- `Short` (bit width 16)
-- `Int` (bit width 32)
-- `Long` (bit width 64)
+* `kotlin.Int`
+* `kotlin.Short`
+* `kotlin.Byte`
+* `kotlin.Long`
 
-A value with signed integer type of bit width $N$ is guaranteed to be able to hold integer values in range $[-2^{N-1}, 2^{N-1}-1]$.
+Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal type].
 
-TODO(Add unsigned types?)
+> Note: additional details about built-in integer types are available [here][Built-in integer types-bi].
+
+[Built-in integer types-bi]: #built-in-integer-types-1
+
+TODO([Kotlin 1.3] Add unsigned types)
 
 #### Classifier types
 
