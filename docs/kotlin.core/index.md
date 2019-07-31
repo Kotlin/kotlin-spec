@@ -3,7 +3,6 @@
 <#include "introduction.md">
 <#include "syntax.md">
 <#include "type-system.md">
-<#include "builtins.md">
 <#include "declarations.md">
 <#include "inheritance.md">
 <#include "scoping.md">
