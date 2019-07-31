@@ -38,5 +38,3 @@ star-projected type notation or a special parameter-less notation (TODO: link?))
 
 Only non-nullable runtime types may be used in `class` literal expressions. 
 These include reified type parameters with non-nullable upper bounds, as well as all classifier and function types.
-
-TODO(Anything else?)

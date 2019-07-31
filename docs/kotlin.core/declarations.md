@@ -149,7 +149,7 @@ In a classifier (an object or a class) $C$ declaration any supertype $I$ inherit
 - $v$ has type $T$ such that $T <: I$.
 
 The inheritance delegation uses a syntax similar to [property delegation][Property delegation] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
-If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the method overriding (TODO: link) section).
+If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the method [overriding][Overriding] section).
 
 The particular means on how $v$ is stored inside the classifier object is platform-defined.
 
@@ -195,17 +195,7 @@ Data classes have the following restrictions:
 * Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;
 * There must be at least one data property in the primary constructor.
 
-##### Data class generation
-
-TODO(Do we really need this?)
-
-TODO(A more detailed explaination)
-
 #### Enum class declaration
-
-TODO(grammar reference)
-
-TODO(Use "enumeration" instead of "enum"?)
 
 Enum class is a special kind of class with the following properties:
 
