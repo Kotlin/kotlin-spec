@@ -29,7 +29,7 @@ Besides being the [unified supertype][`kotlin.Any`-ts] of all non-nullable types
 
 [`kotlin.Any`-ts]: #kotlin.any
 
-##### `kotlin.Nothing`
+### `kotlin.Nothing`
 
 [$\Nothing$][`kotlin.Nothing`-ts] is an uninhabited type, which means the evaluation of an expression with $\Nothing$ type can never complete normally.
 Therefore, it is used to mark special situations, such as
