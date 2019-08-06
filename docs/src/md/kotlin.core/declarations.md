@@ -813,6 +813,7 @@ Reified type parameters can only be substitued by other [runtime-available types
 
 Each declaration has a visibility property relative to the scope it is declared in.
 By default, all the declarations are `public`, meaning that they can be accessed from any other scope their outer scope can be accessed from.
+The only exception to this rule are [overriding declarations][Overriding] that by default inherit the visibility from the declaration they override.
 Declarations may be also marked `public` explicitly.
 
 Declarations marked as `private` can only be accessed from the same scope they are declared in.
@@ -822,8 +823,13 @@ Declarations marked as `internal` may only be accessed from the same [module][Mo
 
 Declarations in classifier declaration scope can also be declared `protected`, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.
 
+There is a partial order of *weakness* between different visibility modifiers:
+
+- `protected` and `internal` are weaker than `private`;
+- `public` is weaker than `protected` and `internal`.
+
 > There is a certain restriction regarding `inline` functions that have a different visibility from entities they access.
-> In particular, an `inline` function cannot access entities with a less permitting visibility (i.e. `public inline` function accessing a `private` property).
+> In particular, an `inline` function cannot access entities with a stronger visibility (i.e. `public inline` function accessing a `private` property).
 > There is one exception to this: a `public inline` function can access `internal` entities which are marked with a special builtin [annotation][Annotations] `@PublishedApi`.
 
 ### Declaration modifiers
