@@ -2,6 +2,10 @@
 
 - TODO: `Appendable`/`StringBuilder`? Depends on how we plan to approach the interpolation expansion
 - TODO: `{Builtin}Array` types?
+- TODO: `KClass`?
+- TODO: `KProperty`/`KFunction`?
+- TODO: `Enum`?
+- TODO: `Throwable`?
 
 In addition to the types defined in the [type system section][Built-in types], Kotlin has several built-in classifier types, which are important for the rest of this document.
 These types have regular declarations in the standard library, but may also introduce special semantics.
