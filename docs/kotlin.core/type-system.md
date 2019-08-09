@@ -10,10 +10,10 @@ $T$
 ~ Type
 
 $T!!$
-~ Non-nullable type
+~ [Non-nullable type][Nullable types]
 
 $T?$
-~ Nullable type
+~ [Nullable type][Nullable types]
 
 $\{T\}$
 ~ Universe of all possible types
@@ -24,13 +24,16 @@ $\{T!!\}$
 $\{T?\}$
 ~ Universe of nullable types
 
+Well-formed type
+~ A properly constructed type w.r.t. Kotlin type system
+
 $\Gamma$
 ~ Type context
 
 $A <: B$
 ~ A is a subtype of B
 
-$A <:> B$
+$A \sur B$
 ~ A and B are not related w.r.t. subtyping
 
 Type constructor
@@ -291,7 +294,7 @@ To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should sati
 > 
 > // An ill-formed type,
 > //   as NumberWrapper<String> is an ill-formed iPACT
-> //   (String <:> Number)
+> //   (String not(<:>) Number)
 > interface InvalidWrapper : NumberWrapper<String>
 >```
 
@@ -314,8 +317,22 @@ To represent a well-formed bounded type parameter of type constructor $T$, $F <:
     * $\forall i \in [1,n]: B_i$ must be concrete, non-type-parameter, well-formed type
     * No more than one of $B_i$ may be a class type
 
-> Note: the last condition is a nod to the single inheritance nature of Kotlin; as any type may be a subtype of no more than one class type, it makes no sense to support several class type bounds.
+> Note: the last condition is a nod to the single inheritance nature of Kotlin: any type may be a subtype of no more than one class type.
 > For any two class types, either these types are in a subtyping relation (and you should use the more specific type in the bounded type parameter), or they are unrelated (and the bounded type parameter is empty).
+> 
+> Actual support for multiple class type bounds would be needed only in very rare cases, such as the following example.
+> 
+> ```kotlin
+> interface Foo
+> interface Bar
+> 
+> open class A<T>
+> class B<T> : A<T>
+> 
+> class C<T> where T : A<out Foo>, T : B<out Bar>
+> // A convoluted way of saying T <: B<out Foo & Bar>,
+> // which contains a non-denotable intersection type
+> ```
 
 * Bounded type parameter with type parameter bound:
     * $F$ is a type parameter of PACT $T$
@@ -330,24 +347,23 @@ To implement subtyping between parameterized types, Kotlin uses *mixed-site vari
 Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).
 
 > Info: *variance* is a way of describing how [subtyping][Subtyping] works for *variant* parameterized types.
-> With declaration-site variance, for two types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some type constructor $T$.
+> With declaration-site variance, for two [non-equivalent][Subtyping] types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some type constructor $T$.
 > 
 > * if $F$ is covariant ($\outV F$), `T<A>` $<:$ `T<B>`
 > * if $F$ is contravariant($\inV F$), `T<A>` $:>$ `T<B>`
-> * if $F$ is invariant (default), `T<A>` $<:>$ `T<B>`
+> * if $F$ is invariant (default), `T<A>` $\sur$ `T<B>`
 > 
 > Use-site variance allows the user to change the type variance of an *invariant* type parameter by specifying it on the corresponding type argument.
-> $\outV A$ means covariant type argument, $\inV A$ means contravariant type argument; for two types $A <: B$ and an invariant type parameter $F$ of some type constructor $T$, subtyping for use-site variance has the following rules.
+> $\outV A$ means covariant type argument, $\inV A$ means contravariant type argument; for two [non-equivalent][Subtyping] types $A <: B$ and an invariant type parameter $F$ of some type constructor $T$, subtyping for use-site variance has the following rules.
 > 
 > * `T<out A>` $<:$ `T<out B>`
 > * `T<in A>` $:>$ `T<in B>`
 > * `T<A>` $<:$ `T<out A>`
 > * `T<A>` $<:$ `T<in A>`
-> * `T<in A>` $<:>$ `T<out A>`
 
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
-For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping] and [generics][Generics].
+For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping].
 
 ##### Declaration-site variance
 
@@ -361,6 +377,8 @@ To specify a contravariant type parameter, it is marked as $\inV F$.
 The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
 
 > Important: declaration-site variance can be used only when declaring types, e.g., type parameters of functions cannot be variant.
+
+TODO(Function type parameters)
 
 > Example:
 > 
@@ -426,7 +444,7 @@ In case one cannot specify any well-formed type argument, but still needs to use
 
 TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)
 
-> Important: use-site variance cannot be used when declaring a supertype.
+> Important: use-site variance cannot be used when declaring a supertype top-level type parameter.
 
 > Example:
 > ```kotlin
@@ -469,7 +487,7 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 >             inInt = outNumber // ERROR
 >             // types with co- and contravariant type parameters
 >             // are not connected by subtyping
->             //   T<in Int> <:> T<out Int>
+>             //   T<in Int> not(<:>) T<out Int>
 >         }
 >     }
 > }
