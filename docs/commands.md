@@ -15,10 +15,12 @@
 \newcommand{\llbracket}{\left[\!\left[}
 \newcommand{\rrbracket}{\right]\!\right]}
 
-\newcommand{\sbn}{\stackrel{null}{<:}}
-\newcommand{\sbnn}{\stackrel{!}{<:}}
+\newcommand{\sbn}{\mathrel{\operatorname{\stackrel{null}{<:}}}}
+\newcommand{\sbnn}{\mathrel{\operatorname{\stackrel{!}{<:}}}}
 
-\newcommand{\amp}{\operatorname{\&}}
+\newcommand{\amp}{\mathbin{\operatorname{\&}}}
+
+\newcommand{\sur}{\mathrel{\operatorname{\cancel{<:>}}}}
 
 \opMathTEXT{\LUB}{LUB}
 \opMathTEXT{\GLB}{GLB}
