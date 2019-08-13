@@ -308,6 +308,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
 </div>
 </div>
+<h5 id="array-types">Array types</h5>
+<div class="paragraph">
+<p><span class="sentence">Kotlin arrays are represented as a <a href="type-system.html#parameterized-classifier-types">parameterized type</a> <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span>, where <span class="math inline">\(T\)</span> is the type of the stored elements, which supports <code>get</code>/<code>set</code> operations. </span><span class="sentence">The <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: unlike Java, arrays in Kotlin are declared as invariant. </span><span class="sentence">To use them in a co- or contravariant way, one should use <a href="type-system.html#use-site-variance">use-site variance</a>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">In addition to the general <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type, Kotlin also has the following specialized array types:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>DoubleArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Double)\)</span>)</span></li>
+<li><span class="sentence"><code>FloatArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Float)\)</span>)</span></li>
+<li><span class="sentence"><code>LongArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Long)\)</span>)</span></li>
+<li><span class="sentence"><code>IntArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>)</span></li>
+<li><span class="sentence"><code>ShortArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Short)\)</span>)</span></li>
+<li><span class="sentence"><code>ByteArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Byte)\)</span>)</span></li>
+<li><span class="sentence"><code>CharArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Char)\)</span>)</span></li>
+<li><span class="sentence"><code>BooleanArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>)</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">These array types structurally match the corresponding <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type; i.e., <code>IntArray</code> has the same methods and properties as <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>. </span><span class="sentence">However, they are <strong>not</strong> related by subtyping; meaning one cannot pass a <code>BooleanArray</code> argument to a function expecting an <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations. </span><span class="sentence">Note: specialized and non-specialized array types match modulo their iterator types, which are also specialized; <code>Iterator&lt;Int&gt;</code> is specialized to <code>IntIterator</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence"><em>Array type specialization</em> <span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span> is a transformation of a generic <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type to a corresponding specialized version, which works as follows.</span></p>
+</div>
+<ul>
+<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> has a specialized version <code>TArray</code>, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = TArray\)</span></span></li>
+<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> does not have a specialized version, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = \operatorname{\mathtt{kotlin.Array}}(T)\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><span class="math inline">\(\operatorname{\text{ATS}}\)</span> takes an important part in how <a href="declarations.html#variable-length-parameters">variable length parameters</a> are handled.</span></p>
+</div>
 <h4 id="classifier-types">Classifier types</h4>
 <div class="paragraph">
 <p><span class="sentence">Classifier types represent regular types which are declared as <a href="declarations.html#class-declaration">classes</a>, <a href="declarations.html#interface-declaration">interfaces</a> or <a href="declarations.html#object-declaration">objects</a>. </span><span class="sentence">As Kotlin supports parametric polymorphism, there are two variants of classifier types: simple and parameterized.</span></p>
@@ -357,6 +397,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">class <code>Int</code> <span class="math inline">\(&lt;:\)</span> <code>Number</code></span></li>
 <li><span class="sentence">class <code>Double</code> <span class="math inline">\(&lt;:\)</span> <code>Number</code></span></li>
 </ul>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: <code>Number</code> is actually a built-in abstract class; we use it as an interface for illustrative purposes.</span></p>
+</div>
 </blockquote>
 <h5 id="parameterized-classifier-types">Parameterized classifier types</h5>
 <div class="paragraph">
@@ -682,7 +727,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The reasoning behind type capturing is closely related to variant parameterized types being a form of <em>bounded existential types</em>; e.g., <code>A&lt;out T&gt;</code> may be loosely considered as the following existential type: <span class="math inline">\(\exists X : X &lt;: T . \mathtt{A&lt;X&gt;}\)</span>. </span><span class="sentence">Informally, a bounded existential type describes a <em>set</em> of possible types, which satisfy its bound constraints. </span><span class="sentence">Before such a type can be used, it needs to be <em>opened</em> (or <em>unpacked</em>): existentially quantified type variables are lifted to fresh type variables with corresponding bounds. </span><span class="sentence">We call these type variables <em>captured</em> types.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For a given type constructor <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its instance <span class="math inline">\(T[\sigma]\)</span> uses the following rules to create captured type <span class="math inline">\(K_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>.</span></p>
+<p><span class="sentence">For a given type constructor <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its instance <span class="math inline">\(T[\sigma]\)</span> uses the following rules to create captured type <span class="math inline">\(K_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>, both of which may have specified variance.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -693,7 +738,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For a covariant type parameter <span class="math inline">\(\operatorname{\mathtt{out\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a contravariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
 <li><span class="sentence">For a contravariant type parameter <span class="math inline">\(\operatorname{\mathtt{in\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a covariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i :&gt; A_i\)</span>.</span></li>
 <li><div class="paragraph">
-<p><span class="sentence">For a bounded type parameter <span class="math inline">\(F_i &lt;: B_1, \ldots, B_m\)</span>, if <span class="math inline">\(\exists j \in [1,m]: \neg (A_i &lt;: B_j)\)</span>, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(\forall j \in [1,m]: K_i &lt;: \sigma B_j\)</span>.</span></p>
+<p><span class="sentence">For a bounded type parameter <span class="math inline">\(F_i &lt;: B_1, \ldots, B_m\)</span>, if <span class="math inline">\(\exists j \in [1,m]: \neg (A_i &lt;: \sigma B_j)\)</span>, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(\forall j \in [1,m]: K_i &lt;: \tau B_j\)</span>, where substitution <span class="math inline">\(\tau : F_1 = K_1, \ldots, F_n = K_n\)</span> manipulates captured types.</span></p>
 </div></li>
 <li><span class="sentence">For a covariant type argument <span class="math inline">\(\operatorname{\mathtt{out\ }}A_i\)</span>, if <span class="math inline">\(F_i\)</span> is a contravariant type parameter, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
 <li><div class="paragraph">
@@ -721,6 +766,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">where <span class="math inline">\(L = L_1 | \ldots | L_p\)</span> and <span class="math inline">\(U = U_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}U_q\)</span>.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for implementation reasons the compiler may <a href="type-system.html#type-approximation">approximate</a> <span class="math inline">\(L\)</span> and/or <span class="math inline">\(U\)</span>; for example, in the current implementation <span class="math inline">\(L\)</span> is always approximated to be a single type.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: as every captured type corresponds to a fresh type variable, two different captured types <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_j\)</span> which describe the same set of possible types (i.e., their constraint sets are equal) are <em>not</em> considered equal. </span><span class="sentence">However, in some cases <a href="type-inference.html#type-inference">type inference</a> may approximate a captured type <span class="math inline">\(K\)</span> to a concrete type <span class="math inline">\(K^{\approx}\)</span>; in our case, it would be that <span class="math inline">\(K_i^{\approx} \equiv K_j^{\approx}\)</span>.</span></p>
@@ -818,46 +868,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-15" title="15"><span class="co">// Function1&lt;in Int, out Any&gt; :&gt; Function1&lt;in Number, out Number&gt;</span></a>
 <a class="sourceLine" id="cb6-16" title="16"><span class="kw">val</span> <span class="va">barRef</span>: (<span class="kw">Int</span>) -&gt; Any = Number::bar</a></code></pre></div>
 </blockquote>
-<h4 id="array-types">Array types</h4>
-<div class="paragraph">
-<p><span class="sentence">Kotlin arrays are represented as a parameterized type <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span>, where <span class="math inline">\(T\)</span> is the type of the stored elements, which supports <code>get</code>/<code>set</code> operations. </span><span class="sentence">The <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: unlike Java, arrays in Kotlin are declared as invariant. </span><span class="sentence">To use them in a co- or contravariant way, one should use <a href="type-system.html#use-site-variance">use-site variance</a>.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">In addition to the general <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type, Kotlin also has the following specialized array types:</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>DoubleArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Double)\)</span>)</span></li>
-<li><span class="sentence"><code>FloatArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Float)\)</span>)</span></li>
-<li><span class="sentence"><code>LongArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Long)\)</span>)</span></li>
-<li><span class="sentence"><code>IntArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>)</span></li>
-<li><span class="sentence"><code>ShortArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Short)\)</span>)</span></li>
-<li><span class="sentence"><code>ByteArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Byte)\)</span>)</span></li>
-<li><span class="sentence"><code>CharArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Char)\)</span>)</span></li>
-<li><span class="sentence"><code>BooleanArray</code> (for <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>)</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">These array types structurally match the corresponding <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type; i.e., <code>IntArray</code> has the same methods and properties as <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Int)\)</span>. </span><span class="sentence">However, they are <strong>not</strong> related by subtyping; meaning one cannot pass a <code>BooleanArray</code> argument to a function expecting an <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(Boolean)\)</span>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence"><em>Array type specialization</em> <span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span> is a transformation of a generic <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> type to a corresponding specialized version, which works as follows.</span></p>
-</div>
-<ul>
-<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> has a specialized version <code>TArray</code>, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = TArray\)</span></span></li>
-<li><span class="sentence">if <span class="math inline">\(\operatorname{\mathtt{kotlin.Array}}(T)\)</span> does not have a specialized version, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\mathtt{kotlin.Array}}(T)) = \operatorname{\mathtt{kotlin.Array}}(T)\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\text{ATS}}\)</span> takes an important part in how <a href="declarations.html#variable-length-parameters">variable length parameters</a> are handled.</span></p>
-</div>
 <h4 id="flexible-types">Flexible types</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. </span><span class="sentence">However, this presents a problem in that some platforms may not support null safety the way Kotlin does. </span><span class="sentence">To deal with this, Kotlin supports <em>gradual typing</em> in the form of flexible types.</span></p>
@@ -871,11 +881,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are well-formed concrete types</span></li>
 <li><span class="sentence"><span class="math inline">\(L &lt;: U\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\neg (L &lt;: U)\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are <strong>not</strong> flexible types (but may contain other flexible types as some of their type arguments)</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">As the name suggests, flexible types are flexible — a value of type <span class="math inline">\((L..U)\)</span> can be used in any context, where one of the possible types between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> is needed (for more details, see <a href="type-system.html#subtyping-for-flexible-types">subtyping rules for flexible types</a>). </span><span class="sentence">However, the actual type will be a specific type between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.</span></p>
+<p><span class="sentence">As the name suggests, flexible types are flexible — a value of type <span class="math inline">\((L..U)\)</span> can be used in any context, where one of the possible types between <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> is needed (for more details, see <a href="type-system.html#subtyping-for-flexible-types">subtyping rules for flexible types</a>). </span><span class="sentence">However, the actual runtime type <span class="math inline">\(T\)</span> will be a specific type satisfying <span class="math inline">\(\exists S : T &lt;: S \land L &lt;: S &lt;: U\)</span>, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
