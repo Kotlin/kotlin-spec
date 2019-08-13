@@ -54,6 +54,8 @@ It is the type of [boolean literals][Boolean literals] as well as the type retur
 
 ### Built-in integer types
 
+TODO(Do we need `kotlin.Number`?)
+
 Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size.
 The signed integer types are the following.
 
