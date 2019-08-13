@@ -180,6 +180,37 @@ Besides their use as types, integer types are important w.r.t. [integer literal 
 
 TODO([Kotlin 1.3] Add unsigned types)
 
+##### Array types
+
+Kotlin arrays are represented as a [parameterized type][Parameterized classifier types] $\Array(T)$, where $T$ is the type of the stored elements, which supports `get`/`set` operations.
+The $\Array(T)$ type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.
+
+> Note: unlike Java, arrays in Kotlin are declared as invariant. To use them in a co- or contravariant way, one should use [use-site variance][Use-site variance].
+
+In addition to the general $\Array(T)$ type, Kotlin also has the following specialized array types:
+
+* `DoubleArray` (for $\Array(Double)$)
+* `FloatArray` (for $\Array(Float)$)
+* `LongArray` (for $\Array(Long)$)
+* `IntArray` (for $\Array(Int)$)
+* `ShortArray` (for $\Array(Short)$)
+* `ByteArray` (for $\Array(Byte)$)
+* `CharArray` (for $\Array(Char)$)
+* `BooleanArray` (for $\Array(Boolean)$)
+
+These array types structurally match the corresponding $\Array(T)$ type; i.e., `IntArray` has the same methods and properties as $\Array(Int)$.
+However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an $\Array(Boolean)$.
+
+> Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.
+> Note: specialized and non-specialized array types match modulo their iterator types, which are also specialized; `Iterator<Int>` is specialized to `IntIterator`.
+
+*Array type specialization* $\ATS(T)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
+
+* if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = TArray$
+* if $\Array(T)$ does not have a specialized version, $\ATS(\Array(T)) = \Array(T)$
+
+$\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
+
 #### Classifier types
 
 Classifier types represent regular types which are declared as [classes][Class declaration], [interfaces][Interface declaration] or [objects][Object declaration].
@@ -221,6 +252,8 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 > * interface `Number`
 > * class `Int` $<:$ `Number`
 > * class `Double` $<:$ `Number`
+
+> Note: `Number` is actually a built-in abstract class; we use it as an interface for illustrative purposes.
 
 ##### Parameterized classifier types
 
@@ -502,7 +535,7 @@ Informally, a bounded existential type describes a *set* of possible types, whic
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
 
-For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma]$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$.
+For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma]$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, both of which may have specified variance.
 
 > Note: **All** applicable rules are used to create the resulting constraint set.
 
@@ -510,8 +543,8 @@ For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its insta
   Otherwise, $K_i <: A_i$.
 * For a contravariant type parameter $\inV F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $K_i$ is an ill-formed type.
   Otherwise, $K_i :> A_i$.
-* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: B_j)$, $K_i$ is an ill-formed type.
-  Otherwise, $\forall j \in [1,m]: K_i <: \sigma B_j$.
+* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: \sigma B_j)$, $K_i$ is an ill-formed type.
+  Otherwise, $\forall j \in [1,m]: K_i <: \tau B_j$, where substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates captured types.
 
 * For a covariant type argument $\outV A_i$, if $F_i$ is a contravariant type parameter, $K_i$ is an ill-formed type.
   Otherwise, $K_i <: A_i$.
@@ -531,6 +564,8 @@ which can be represented as
 $$L <: K <: U$$
 
 where $L = L_1 | \ldots | L_p$ and $U = U_1 \amp \ldots \amp U_q$.
+
+> Note: for implementation reasons the compiler may [approximate][Type approximation] $L$ and/or $U$; for example, in the current implementation $L$ is always approximated to be a single type.
 
 > Note: as every captured type corresponds to a fresh type variable, two different captured types $K_i$ and $K_j$ which describe the same set of possible types (i.e., their constraint sets are equal) are *not* considered equal.
 > However, in some cases [type inference][Type inference] may approximate a captured type $K$ to a concrete type $K^{\approx}$; in our case, it would be that $K_i^{\approx} \equiv K_j^{\approx}$.
@@ -601,36 +636,6 @@ Furthermore, all function types $\FunctionN$ are subtypes of a general argument-
 > val barRef: (Int) -> Any = Number::bar
 > ```
 
-#### Array types
-
-Kotlin arrays are represented as a parameterized type $\Array(T)$, where $T$ is the type of the stored elements, which supports `get`/`set` operations.
-The $\Array(T)$ type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.
-
-> Note: unlike Java, arrays in Kotlin are declared as invariant. To use them in a co- or contravariant way, one should use [use-site variance][Use-site variance].
-
-In addition to the general $\Array(T)$ type, Kotlin also has the following specialized array types:
-
-* `DoubleArray` (for $\Array(Double)$)
-* `FloatArray` (for $\Array(Float)$)
-* `LongArray` (for $\Array(Long)$)
-* `IntArray` (for $\Array(Int)$)
-* `ShortArray` (for $\Array(Short)$)
-* `ByteArray` (for $\Array(Byte)$)
-* `CharArray` (for $\Array(Char)$)
-* `BooleanArray` (for $\Array(Boolean)$)
-
-These array types structurally match the corresponding $\Array(T)$ type; i.e., `IntArray` has the same methods and properties as $\Array(Int)$.
-However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an $\Array(Boolean)$.
-
-> Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.
-
-*Array type specialization* $\ATS(T)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
-
-* if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = TArray$
-* if $\Array(T)$ does not have a specialized version, $\ATS(\Array(T)) = \Array(T)$
-
-$\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
-
 #### Flexible types
 
 Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code.
@@ -644,11 +649,10 @@ To represent a well-formed flexible type, $(L..U)$ should satisfy the following 
 
 * $L$ and $U$ are well-formed concrete types
 * $L <: U$
-* $\neg (L <: U)$
 * $L$ and $U$ are **not** flexible types (but may contain other flexible types as some of their type arguments)
 
 As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping for flexible types]).
-However, the actual type will be a specific type between $L$ and $U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
+However, the actual runtime type $T$ will be a specific type satisfying $\exists S : T <: S \land L <: S <: U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
 
 TODO(Details of assertion generation?)
 
