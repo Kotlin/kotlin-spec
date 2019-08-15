@@ -1,4 +1,7 @@
 source directories.sh
+source settings.sh
+
+init_settings "pdf"
 
 export PROJECT_DIR
 
@@ -11,6 +14,8 @@ gpp -H ./index.md | pandoc \
 --filter ../${HELPERS_DIRECTORY}/inlineDiagramFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/inlineCodeIndentFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/mathCleanUpFilter.sh \
---toc --toc-depth=6 -H ./preamble.tex --variable documentclass=book \
--s -f markdown-raw_html+smart+tex_math_double_backslash \
+${PREAMBLE_OPTIONS} \
+${COMMON_PANDOC_OPTIONS} \
+${TOC_PANDOC_OPTIONS} \
+--variable documentclass=book \
 -o ../${BUILD_DIRECTORY}/pdf/kotlin-spec.pdf

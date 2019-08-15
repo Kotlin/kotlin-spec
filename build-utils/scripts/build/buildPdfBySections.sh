@@ -1,4 +1,7 @@
 source directories.sh
+source settings.sh
+
+init_settings "pdf" "section"
 
 export PROJECT_DIR
 
@@ -13,8 +16,9 @@ gpp -H ./~temp.md | pandoc \
 --filter ../${HELPERS_DIRECTORY}/inlineDiagramFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/inlineCodeIndentFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/mathCleanUpFilter.sh \
--H ./preamble.tex --variable documentclass=book \
--s -f markdown-raw_html+smart+tex_math_double_backslash \
+${PREAMBLE_OPTIONS} \
+${COMMON_PANDOC_OPTIONS} \
+--variable documentclass=book \
 -o ../${BUILD_DIRECTORY}/pdf/sections/<section>.pdf
 
 rm ./~temp.md
