@@ -1,4 +1,7 @@
 source directories.sh
+source settings.sh
+
+init_settings "html"
 
 export PROJECT_DIR
 
@@ -11,7 +14,8 @@ gpp -H ./index.md | pandoc \
 --filter ../${HELPERS_DIRECTORY}/inlineDiagramFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/inlineCodeIndentFilter.sh \
 --filter ../${HELPERS_DIRECTORY}/mathCleanUpFilter.sh \
---toc --toc-depth=6 -c ./${ASSETS_DIRECTORY}/css/main.css \
---katex=./${ASSETS_DIRECTORY}/js/katex/ \
--H ./preamble.md -s -f markdown-raw_html+smart+tex_math_double_backslash \
+${PREAMBLE_OPTIONS} \
+${COMMON_PANDOC_OPTIONS} \
+${TOC_PANDOC_OPTIONS} \
+${HTML_ASSETS_OPTIONS} \
 -o ../${BUILD_DIRECTORY}/html/kotlin-spec.html
