@@ -689,18 +689,18 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 
 * $T$ is a well-formed concrete type
 
-If an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
-For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
-
-1. Use safe operations
-    * [safe call][Navigation operators]
-2. Downcast from $T?$ to $T!!$
-    * [unsafe cast][Cast expression]
-    * [type check][Type-checking expression] combined with [smart casts][Smart casts]
-    * null check combined with [smart casts][Smart casts]
-    * [not-null assertion operator][Not-null assertion expression]
-3. Supply a default value to use if `null` is present
-    * [elvis operator][Elvis operator expression]
+> Note: If an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
+> For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
+> 
+> 1. Use safe operations
+>     * [safe call][Navigation operators]
+> 2. Downcast from $T?$ to $T!!$
+>     * [unsafe cast][Cast expression]
+>     * [type check][Type-checking expression] combined with [smart casts][Smart casts]
+>     * null check combined with [smart casts][Smart casts]
+>     * [not-null assertion operator][Not-null assertion expression]
+> 3. Supply a default value to use if `null` is present
+>     * [elvis operator][Elvis operator expression]
 
 #### Intersection types
 
@@ -748,7 +748,7 @@ Kotlin uses the classic notion of *subtyping* as *substitutability* --- if $S$ i
 The subtyping relation $<:$ is:
 
 * reflexive ($A <: A$)
-* transitive ($A <: B \land B <: C \Rightarrow A <: C$)
+* *rigidly* transitive ($A <: B \land B <: C \Rightarrow A <: C$ for non-flexible types $A$, $B$ and $C$)
 
 Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$.
 Due to the presence of flexible types, this relation is **not** transitive (see [here][Subtyping for flexible types] for more details).
@@ -760,13 +760,13 @@ Subtyping for non-nullable, concrete types uses the following rules.
 * $\forall T : \Nothing <: T <: \Any$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
 * For any parameterized type $\widehat{T} = T[\sigma]: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \sigma S_i$
-* For any two parameterized types $\widehat{T}$ and $\widehat{T^\prime}$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
+* For any two parameterized types $\widehat{T} = T[\sigma]$ and $\widehat{T^\prime} = T[\sigma^\prime]$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
 
 Subtyping for non-nullable, abstract types uses the following rules.
 
 * $\forall T : \Nothing <: T <: \Any$
 * For any type constructor $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
-* For any two type constructors $\widehat{T}$ and $\widehat{T^\prime}$ with type parameters $F_i$ and $F_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
+* For any two type constructors $\widehat{T} = T[\sigma]$ and $\widehat{T^\prime} = T[\sigma^\prime]$ with type parameters $F_i$ and $F_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
 
 Subtyping for type parameters uses the following rules.
 
@@ -903,36 +903,24 @@ The _least upper bound_ $\LUB(A, B)$ of types $A$ and $B$ is an upper bound $U$ 
 $\LUB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of LUB.
 
+> Important: $A$ and $B$ are considered to be non-flexible, unless specified otherwise.
+
 - $\LUB(A, A) = A$
 
 - if $A <: B$, $\LUB(A, B) = B$
 
-- if $A$ is nullable, $\LUB(A, B)$ is also nullable
-- if both $A$ and $B$ are nullable, $\LUB(A, B) = \LUB(A!!, B!!)?$
-- if $A$ is nullable and $B$ is not, $\LUB(A, B) = \LUB(A!!, B)?$
+- if $A$ is nullable, $\LUB(A, B) = \LUB(A!!, B!!)?$
 
-- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\LUB(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle$, where $\phi(X, Y)$ is defined as follows:
+- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\LUB(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle$, where $\eta(T)$ and $\phi(X, Y)$ are defined as follows:
 
-    + $\phi(\invV X, \invV X) = X$
-
-    + $\phi(\outV X, \outV Y) = \outV \LUB(X, Y)$
-    + $\phi(\outV X, \invV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\outV X,  \inV Y) = \star$
-
-    + $\phi(\invV X, \outV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\invV X, \invV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\invV X,  \inV Y) = \phi(\outV X, \outV \AnyQ) = \outV \AnyQ$
-
-    + $\phi( \inV X, \outV Y) = \star$
-    + $\phi( \inV X, \invV Y) = \phi(\outV \AnyQ, \outV Y) = \outV \AnyQ$
-    + $\phi( \inV X,  \inV Y) = \inV \GLB(X, Y)$
-
-    + TODO(we may also choose the `in` projection for `inv` parameters, do we wanna do it though?)
+    + $\eta(\invV X) = \{\outV X, \inV X\}$
+    + $\eta(\outV X) = \{\outV X, \inV \Nothing\}$
+    + $\eta(\inV X) = \{\outV \AnyQ, \inV X\}$
+    + $\eta(\star) = \{\outV \AnyQ, \inV \Nothing\}$
+    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) = \eta^{-1}(\{\outV \LUB(X_{out}, Y_{out}), \inV \GLB(X_{in}, Y_{in})\})$
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
-
-TODO(prettify formatting)
 
 TODO(actual algorithm for computing LUB)
 
@@ -957,13 +945,13 @@ TODO(It's not if types are related)
 $\GLB(A, B)$ has the following properties, which may be used to *normalize* it.
 This normalization procedure, if finite, creates a *canonical* representation of GLB.
 
+> Important: $A$ and $B$ are considered to be non-flexible, unless specified otherwise.
+
 - $\GLB(A, A) = A$
 
 - if $A <: B$, $\GLB(A, B) = A$
 
-- if $A$ is non-nullable, $\GLB(A, B)$ is also non-nullable
-- if both $A$ and $B$ are nullable, $\GLB(A, B) = \GLB(A!!, B!!)?$
-- if $A$ is nullable and $B$ is not, $\GLB(A, B) = \GLB(A!!, B)$
+- if $A$ is non-nullable, $\GLB(A, B) = \GLB(A!!, B!!)$
 
 - if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\GLB(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle$, where $\phi(X, Y)$ is defined as follows:
 
