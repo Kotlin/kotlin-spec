@@ -917,7 +917,9 @@ This normalization procedure, if finite, creates a *canonical* representation of
     + $\eta(\outV X) = \{\outV X, \inV \Nothing\}$
     + $\eta(\inV X) = \{\outV \AnyQ, \inV X\}$
     + $\eta(\star) = \{\outV \AnyQ, \inV \Nothing\}$
-    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) = \eta^{-1}(\{\outV \LUB(X_{out}, Y_{out}), \inV \GLB(X_{in}, Y_{in})\})$
+    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) =
+       \eta^{-1}
+       (\{\outV \LUB(X_{out}, Y_{out}), \inV \GLB(X_{in}, Y_{in})\})$
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
@@ -953,28 +955,27 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 - if $A$ is non-nullable, $\GLB(A, B) = \GLB(A!!, B!!)$
 
-- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\GLB(A, B) = T\langle \phi(K_{A,1}, K_{B,1}), \ldots, \phi(K_{A,n}, K_{B,n})\rangle$, where $\phi(X, Y)$ is defined as follows:
+- if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\GLB(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle$, where $\eta(T)$ and $\phi(X, Y)$ are defined as follows:
 
-    + $\phi(\invV X, \invV X) = X$
+    + $\eta(\invV X) = \{\outV X, \inV X\}$
+    + $\eta(\outV X) = \{\outV X, \inV \Nothing\}$
+    + $\eta(\inV X) = \{\outV \AnyQ, \inV X\}$
+    + $\eta(\star) = \{\outV \AnyQ, \inV \Nothing\}$
+    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) =
+       {(\eta^{-1} \circ \Omega)}
+       (\{\outV \GLB(X_{out}, Y_{out}), \inV \LUB(X_{in}, Y_{in})\})$
+    + $\Omega(\{\outV A, \inV B\}) =
+  \begin{cases}
+    \{\outV A, \inV \Nothing\} & \text{if } A <: B \land A \not\equiv B \\
+    \{\outV A, \inV B\}               & \text{otherwise}
+  \end{cases}$
 
-    + $\phi(\outV X, \outV Y) = \outV \GLB(X, Y)$
-    + $\phi(\outV X, \invV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\outV X,  \inV Y) = \star$
-
-    + $\phi(\invV X, \outV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\invV X, \invV Y) = \phi(\outV X, \outV Y)$
-    + $\phi(\invV X,  \inV Y) = \phi(\outV X, \outV \AnyQ) = \outV \AnyQ$
-
-    + $\phi( \inV X, \outV Y) = \star$
-    + $\phi( \inV X, \invV Y) = \phi(\outV \AnyQ, \outV Y) = \outV \AnyQ$
-    + $\phi( \inV X,  \inV Y) = \inV \LUB(X, Y)$
-
-    + TODO(we may also choose the `in` projection for `inv` parameters, do we wanna do it though?)
+> Note: the $\Omega$ function preserves type system consistency; $\forall A, B : A <: B \land A \not\equiv B$, type $T\langle \{\outV A \inV B\}\rangle$ is the evidence of type $T\langle X\rangle : X <: A <: B <: X$, which makes the type system inconsistent.
+> To avoid this situation, we underapproximate $\inV B$ with $\inV \Nothing$ when needed.
+> Further details are available in the ["Mixed-site variance" paper][References].
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\GLB(A, B) = (\GLB(L_A, L_B)..\GLB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\GLB(A, B) = (\GLB(L_A, B)..\GLB(U_A, B))$
-
-TODO(prettify formatting)
 
 TODO(actual algorithm for computing GLB)
 
