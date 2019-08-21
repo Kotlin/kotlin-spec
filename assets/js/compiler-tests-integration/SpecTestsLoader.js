@@ -1,7 +1,7 @@
 var SpecTestsLoader = new (function() {
     this.rawGithubUrl = "https://raw.githubusercontent.com/JetBrains/kotlin";
     this.testDataPath = "compiler/tests-spec/testData";
-    this.defaultBranch = "spec-tests-draft";
+    this.defaultBranch = "spec-tests";
     this.linkedSpecTestsFolder = "linked";
 
     this.paragraphSelector = [".paragraph", "DL", "UL", "OL"].join(",");
