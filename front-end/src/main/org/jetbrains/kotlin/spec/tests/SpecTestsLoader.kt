@@ -1,0 +1,176 @@
+package org.jetbrains.kotlin.spec.tests
+
+import js.externals.jquery.JQuery
+import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.tests.loaders.*
+import org.jetbrains.kotlin.spec.utils.*
+import kotlin.browser.window
+
+class SpecTestsLoader(loadType: GithubTestsLoaderType) {
+    private val loader = when (loadType) {
+        GithubTestsLoaderType.DIRECTLY -> DirectLoader()
+        GithubTestsLoaderType.USING_API -> LoaderByGithubApi()
+        GithubTestsLoaderType.USING_TESTS_MAP_FILE -> LoaderByTestsMapFile()
+    }
+
+    companion object {
+        private const val EXCEPTED_SELECTORS = ".grammar-rule"
+        private val paragraphSelector = listOf(".paragraph", "DL", "UL", "OL").joinToString(",")
+        private val sectionTagNames = listOf("H1", "H2", "H3", "H4", "H5")
+
+        private const val LOADING_ICON_PATH = "./resources/images/loading.gif"
+        private const val LOADING_ICON_HTML = "<img src=\"$LOADING_ICON_PATH\" />"
+        private const val SET_BRANCH_ICON = "./resources/images/set-branch.png"
+
+        private const val LOAD_TESTS_TEXT = "Load tests"
+        private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
+
+        fun insertLoadIcon(headerElement: JQuery) {
+            headerElement.append("""
+                <a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="${this.SET_BRANCH_ICON}" /></a></span>
+                <a href="#" data-id="${headerElement.attr("id")}" data-type="${headerElement.prop("tagName").toString().toLowerCase()}" class="load-tests" title="Show tests coverage">Load tests</a>
+            """)
+        }
+
+        private fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
+            var nextSibling = sectionElement.get()[0].nextElementSibling
+            val sectionName = sectionElement.attr("id")
+            val paragraphsMap = mutableListOf<Map<String, Any>>()
+            var paragraphCounter = 1
+
+            if (sectionName.isEmpty())
+                return null
+
+            while (nextSibling != null) {
+                if (sectionTagNames.indexOf(nextSibling.tagName) != -1) break
+
+                val isParagraph = nextSibling.matches(paragraphSelector)
+                val childParagraph = nextSibling.querySelector(".paragraph")
+
+                if ((isParagraph || childParagraph != null) && !`$`(nextSibling).`is`(EXCEPTED_SELECTORS)) {
+                    val nextParagraph = childParagraph ?: nextSibling
+                    paragraphsMap.add(
+                            mapOf(
+                                    "paragraphElement" to nextParagraph,
+                                    "sentenceCount" to `$`(nextParagraph).find(".sentence").length.toString()
+                            )
+                    )
+                    paragraphCounter++
+                }
+                nextSibling = nextSibling.nextElementSibling
+            }
+
+            return paragraphsMap
+        }
+
+        private fun getNestedSections(sectionElement: JQuery): List<String> {
+            val placeCurrentSectionLevel = sectionTagNames.indexOf(sectionElement.prop("tagName").toString().toUpperCase())
+            val otherSectionTagNames = sectionTagNames.slice(0..placeCurrentSectionLevel)
+            val nestedSectionTagNames = sectionTagNames.slice(placeCurrentSectionLevel until sectionTagNames.size)
+            var nextSibling = sectionElement.get()[0].nextElementSibling
+            val nestedSectionIds = mutableListOf<String>()
+
+            while (nextSibling != null) {
+                if (otherSectionTagNames.indexOf(nextSibling.tagName) != -1)
+                    break
+
+                if (nestedSectionTagNames.indexOf(nextSibling.tagName) != -1) {
+                    nestedSectionIds.add(nextSibling.getAttribute("id")!!)
+                }
+
+                nextSibling = nextSibling.nextElementSibling
+            }
+
+            return nestedSectionIds
+        }
+
+        fun loadHelperFile(helperName: String) =
+                GithubTestsLoader.loadFileFromRawGithub("$helperName.kt", "helpers")
+
+        fun parseTestFiles(
+                responses: Array<out Map<String, String>>,
+                currentSection: String,
+                sectionsPath: List<String>,
+                paragraphsInfo: List<Map<String, Any>>
+        ) {
+            val pathPrefix = "${sectionsPath.joinToString(".")}.$currentSection"
+            val tests = mutableMapOf<String, Any>()
+
+            responses.forEach { response ->
+                val objectPath = response["path"]
+                        ?.replace(".kt", "")
+                        ?.replace(Regex("""/""", RegexOption.MULTILINE), ".")
+                        ?: return@forEach
+                val parsedTest = response["content"]?.let { SpecTestsParser.parseTest(it) } ?: return@forEach
+
+                setValueByObjectPath(tests, parsedTest, objectPath)
+            }
+
+            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, getValueByObjectPath(tests, pathPrefix))
+        }
+
+        fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")
+
+        fun onSetBranchIconClick() {
+            val currentBranch = window.localStorage.getItem("spec-tests-branch") ?: GithubTestsLoader.DEFAULT_BRANCH
+            val newBranch = window.prompt("Specify the Kotlin compiler repo branch from which the spec tests will be taken:", currentBranch)
+
+            if (newBranch != null && newBranch != currentBranch) {
+                window.localStorage.setItem("spec-tests-branch", newBranch)
+            }
+        }
+    }
+
+    private lateinit var sectionPrevLoaded: String
+    private var originalSectionName: String? = null
+    private var numberSectionsLoaded = 0
+
+    fun onLoadIconClick(icon: JQuery) {
+        val section = icon.parent("h3, h4, h5")
+        val paragraphsInfo = getParagraphsInfo(section)
+        val nestedSections = getNestedSections(section)
+        val sectionName = section.attr("id")
+        val sectionsPath = mutableListOf(getParentSectionName(section, "h2"))
+
+        if (originalSectionName == null) {
+            originalSectionName = sectionName
+            numberSectionsLoaded = 1
+        }
+
+        icon.html(LOADING_ICON_HTML)
+
+        if (icon.data("type") == "h4" || icon.data("type") == "h5") {
+            sectionsPath.add(getParentSectionName(section, "h3"))
+        }
+        if (icon.data("type") == "h5") {
+            sectionsPath.add(getParentSectionName(section, "h4"))
+        }
+
+        loader.loadTestFiles(sectionName, sectionsPath, paragraphsInfo!!)
+                .then { testFileContents ->
+                    parseTestFiles(testFileContents, sectionName, sectionsPath, paragraphsInfo)
+                    icon.html("Reload tests")
+
+                    if (originalSectionName == sectionName) {
+                        section.nextAll(".paragraph.with-tests").first().get()[0].scrollIntoView()
+                        originalSectionName = null
+                        sectionPrevLoaded = sectionName
+                    }
+                }.catch {
+                    numberSectionsLoaded--
+                    if (originalSectionName == sectionName) {
+                        originalSectionName = null
+                        sectionPrevLoaded = sectionName
+                    }
+                    if (numberSectionsLoaded == 0) {
+                        window.alert(notLoadedTestsText.format(sectionPrevLoaded))
+                    }
+                    icon.html(LOAD_TESTS_TEXT)
+                }
+
+        nestedSections.forEach { sectionId ->
+            numberSectionsLoaded++
+            `$`("#$sectionId .load-tests").click()
+        }
+    }
+}

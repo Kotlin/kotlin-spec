@@ -7,12 +7,13 @@ plugins {
     id("org.jetbrains.intellij") version "0.4.1"
     antlr
     `maven-publish`
+    id("kotlin") version "1.3.41"
 }
+
+apply(plugin="at.phatbl.shellexec")
 
 group = "org.jetbrains.kotlin.spec.grammar"
 version = "0.1"
-
-apply(plugin = "kotlin")
 
 val jar: Jar by tasks
 val archivePrefix = "kotlin-grammar-parser"
@@ -41,12 +42,6 @@ java.sourceSets {
     }
     "test" {
         java.srcDir("src/test")
-    }
-}
-
-buildscript {
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21")
     }
 }
 
