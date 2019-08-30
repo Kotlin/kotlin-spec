@@ -63,6 +63,28 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             return paragraphsMap
         }
 
+        fun showMarkup() {
+            `$`("h2, h3, h4, h5").each { _, section ->
+                val sectionTagName = section.tagName.toLowerCase()
+                val sectionElement = `$`(section)
+                val paragraphsInfo = getParagraphsInfo(sectionElement) ?: return@each null
+                val sectionsPath = mutableSetOf<String>().apply {
+                    if (sectionTagName == "h3" || sectionTagName == "h4" || sectionTagName == "h5") {
+                        add(getParentSectionName(sectionElement, "h2"))
+                    }
+                    if (sectionTagName == "h4" || sectionTagName == "h5") {
+                        add(getParentSectionName(sectionElement, "h3"))
+                    }
+                    if (sectionTagName == "h5") {
+                        add(getParentSectionName(sectionElement, "h4"))
+                    }
+                    add(sectionElement.attr("id"))
+                }
+
+                TestsCoverageColorsArranger.showCoverage(paragraphsInfo, mapOf(), sectionsPath.joinToString(", "))
+            }
+        }
+
         private fun getNestedSections(sectionElement: JQuery): List<String> {
             val placeCurrentSectionLevel = sectionTagNames.indexOf(sectionElement.prop("tagName").toString().toUpperCase())
             val otherSectionTagNames = sectionTagNames.slice(0..placeCurrentSectionLevel)
@@ -106,7 +128,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                 setValueByObjectPath(tests, parsedTest, objectPath)
             }
 
-            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, getValueByObjectPath(tests, pathPrefix))
+            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, tests, pathPrefix)
         }
 
         fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")
@@ -119,14 +141,18 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                 window.localStorage.setItem("spec-tests-branch", newBranch)
             }
         }
+
+        fun onParagraphNumberInfoClick(element: JQuery) {
+            window.prompt("Path to this section:", element.data("path").toString())
+        }
     }
 
     private lateinit var sectionPrevLoaded: String
     private var originalSectionName: String? = null
     private var numberSectionsLoaded = 0
 
-    fun onLoadIconClick(icon: JQuery) {
-        val section = icon.parent("h3, h4, h5")
+    fun onTestsLoadingLinkClick(link: JQuery) {
+        val section = link.parent("h3, h4, h5")
         val paragraphsInfo = getParagraphsInfo(section)
         val nestedSections = getNestedSections(section)
         val sectionName = section.attr("id")
@@ -137,19 +163,19 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             numberSectionsLoaded = 1
         }
 
-        icon.html(LOADING_ICON_HTML)
+        link.html(LOADING_ICON_HTML)
 
-        if (icon.data("type") == "h4" || icon.data("type") == "h5") {
+        if (link.data("type") == "h4" || link.data("type") == "h5") {
             sectionsPath.add(getParentSectionName(section, "h3"))
         }
-        if (icon.data("type") == "h5") {
+        if (link.data("type") == "h5") {
             sectionsPath.add(getParentSectionName(section, "h4"))
         }
 
         loader.loadTestFiles(sectionName, sectionsPath, paragraphsInfo!!)
                 .then { testFileContents ->
                     parseTestFiles(testFileContents, sectionName, sectionsPath, paragraphsInfo)
-                    icon.html("Reload tests")
+                    link.html("Reload tests")
 
                     if (originalSectionName == sectionName) {
                         section.nextAll(".paragraph.with-tests").first().get()[0].scrollIntoView()
@@ -165,7 +191,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                     if (numberSectionsLoaded == 0) {
                         window.alert(notLoadedTestsText.format(sectionPrevLoaded))
                     }
-                    icon.html(LOAD_TESTS_TEXT)
+                    link.html(LOAD_TESTS_TEXT)
                 }
 
         nestedSections.forEach { sectionId ->

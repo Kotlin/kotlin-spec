@@ -1,5 +1,7 @@
 package org.jetbrains.kotlin.spec.utils
 
+import org.w3c.dom.Location
+
 fun String.format(vararg args: Any): String {
     return this.replace(Regex("""\{(\d+)}""", RegexOption.MULTILINE)) {
         val number = it.groupValues[1].toInt()
@@ -27,14 +29,28 @@ fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: Stri
     soughtForObj[pathComponents.last()] = value
 }
 
-fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T = getValueByObjectPath(obj, path.split("."))
+fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.split("."))
 
-fun <T> getValueByObjectPath(obj: Map<String, Any>, path: List<String>): T {
+fun <T> getValueByObjectPath(obj: Map<String, Any>, path: List<String>): T? {
     var soughtForObj = obj
 
     path.forEach {
+        if (it !in soughtForObj) return null
         soughtForObj = soughtForObj[it].unsafeCast<MutableMap<String, Any>>()
     }
 
     return soughtForObj.unsafeCast<T>()
 }
+
+val Location.searchMap: MutableMap<String, String>
+    get() {
+        val rawSearch = search.substring(1).split("&")
+        val objURL = mutableMapOf<String, String>()
+
+        rawSearch.forEach { param ->
+            val paramComponents = param.split("=")
+            objURL[paramComponents[0]] = paramComponents[1]
+        }
+
+        return objURL
+    }
