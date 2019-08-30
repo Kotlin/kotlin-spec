@@ -3,6 +3,7 @@ package org.jetbrains.kotlin.spec.tests
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.getValueByObjectPath
 import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
 import org.w3c.dom.HTMLElement
 
@@ -21,8 +22,12 @@ object TestsCoverageColorsArranger {
             </div>
         """
 
-    private fun insertNumber(element: JQuery, number: Int) {
-        element.prepend("<span class='number-info'>{1}</span>".format(number))
+    private fun insertParagraphNumber(element: JQuery, number: Int, paragraphPath: String) {
+        element.prepend("<span class='number-info' data-path='{1}'>{2}</span>".format(paragraphPath, number))
+    }
+
+    private fun insertSentenceNumber(element: JQuery, number: Int, sentencePath: String) {
+        element.prepend("<span class='number-info' data-path='{1}'>{2}</span>".format(sentencePath, number))
     }
 
     private fun detectUnexpectedBehaviour(testsOfType: Map<String, Map<String, Any>>): Boolean {
@@ -77,12 +82,13 @@ object TestsCoverageColorsArranger {
                 .addClass("covered")
     }
 
-    private fun showParagraphCoverage(paragraph: JQuery, paragraphCounter: Int, tests: Map<String, Map<String, Map<String, String>>>) {
+    private fun showParagraphCoverage(paragraph: JQuery, paragraphNumber: Int, tests: Map<String, Any>, sectionPath: String) {
         val sentences = `$`(paragraph).find(".sentence")
         var sentenceCounter = 1
-        val paragraphTests = tests["p-$paragraphCounter"]
+        val paragraphTests =
+                getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(tests, sectionPath)?.get("p-$paragraphNumber")
 
-        insertNumber(`$`(paragraph), paragraphCounter)
+        insertParagraphNumber(`$`(paragraph), paragraphNumber, "$sectionPath -> paragraph $paragraphNumber")
 
         sentences.each { _, el ->
             val sentenceTests =
@@ -105,16 +111,17 @@ object TestsCoverageColorsArranger {
                     showSentenceCoverage(sentence, sentenceTests)
                 }
             }
-            insertNumber(sentence, sentenceCounter)
+            insertSentenceNumber(sentence, sentenceCounter, "$sectionPath -> paragraph $paragraphNumber -> sentence $sentenceCounter")
             sentenceCounter++
         }
     }
 
-    fun showCoverage(paragraphsInfo: List<Map<String, Any>>, tests: Map<String, Map<String, Map<String, String>>>) {
+    fun showCoverage(paragraphsInfo: List<Map<String, Any>>, tests: Map<String, Any>, sectionsPath: String) {
         paragraphsInfo.forEachIndexed { paragraphIndex, paragraph ->
-            val paragraphEl = `$`(paragraph["paragraphElement"] as HTMLElement)
-            paragraphEl.addClass("with-tests")
-            showParagraphCoverage(paragraphEl, paragraphIndex + 1, tests)
+            val paragraphNumber = paragraphIndex + 1
+            val paragraphEl = `$`(paragraph["paragraphElement"] as HTMLElement).apply { addClass("with-tests") }
+
+            showParagraphCoverage(paragraphEl, paragraphNumber, tests, sectionsPath)
         }
     }
 }

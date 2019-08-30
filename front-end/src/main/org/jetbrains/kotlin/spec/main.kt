@@ -6,13 +6,20 @@ import org.jetbrains.kotlin.spec.tests.NavigationType
 import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
 import org.jetbrains.kotlin.spec.tests.SpecTestsViewer
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoaderType
+import org.jetbrains.kotlin.spec.utils.searchMap
+import kotlin.browser.window
 
 fun main() {
     val specTestsLoader = SpecTestsLoader(GithubTestsLoaderType.USING_TESTS_MAP_FILE)
     val specTestsViewer = SpecTestsViewer()
+    val shouldBeShowedMarkup = window.location.searchMap["showMarkup"] == "true"
 
     `$`("h3, h4, h5").each { _, el ->
         SpecTestsLoader.insertLoadIcon(`$`(el))
+    }
+
+    if (shouldBeShowedMarkup) {
+        SpecTestsLoader.showMarkup()
     }
 
     document.body?.let { `$`(it) }?.run {
@@ -37,11 +44,16 @@ fun main() {
             false
         }
         on("click", ".load-tests") { e, _ ->
-            specTestsLoader.onLoadIconClick(`$`(e.currentTarget))
+            specTestsLoader.onTestsLoadingLinkClick(`$`(e.currentTarget))
             false
         }
         on("click", ".set-branch") { _, _ ->
             SpecTestsLoader.onSetBranchIconClick()
+            false
+        }
+        on("click", ".number-info[data-path]") { e, _ ->
+            SpecTestsLoader.onParagraphNumberInfoClick(`$`(e.currentTarget))
+            e.stopPropagation()
             false
         }
         on("click", ".loaded-tests") { _, _ -> false }
