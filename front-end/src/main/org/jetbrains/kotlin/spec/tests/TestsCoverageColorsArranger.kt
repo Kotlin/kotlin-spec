@@ -22,12 +22,18 @@ object TestsCoverageColorsArranger {
             </div>
         """
 
-    private fun insertParagraphNumber(element: JQuery, number: Int, paragraphPath: String) {
-        element.prepend("<span class='number-info' data-path='{1}'>{2}</span>".format(paragraphPath, number))
+    private fun insertParagraphNumber(element: JQuery, number: Int, sectionPath: String, paragraphNumber: Int) {
+        element.prepend("<span class='paragraph-link' data-link='{1}'>{2}</span>".format(
+                "paragraph=${sectionPath.replace(" ", "")},$paragraphNumber", number
+        ))
     }
 
-    private fun insertSentenceNumber(element: JQuery, number: Int, sentencePath: String) {
-        element.prepend("<span class='number-info' data-path='{1}'>{2}</span>".format(sentencePath, number))
+    private fun insertSentenceNumber(element: JQuery, number: Int, sectionPath: String, paragraphNumber: Int, sentenceNumber: Int) {
+        element.prepend("<span class='number-info' data-path='{1}' data-link='{2}'>{3}</span>".format(
+                "$sectionPath -> paragraph $paragraphNumber -> sentence $sentenceNumber",
+                "sentence=${sectionPath.replace(" ", "")},$paragraphNumber,$sentenceNumber",
+                number
+        ))
     }
 
     private fun detectUnexpectedBehaviour(testsOfType: Map<String, Map<String, Any>>): Boolean {
@@ -88,7 +94,7 @@ object TestsCoverageColorsArranger {
         val paragraphTests =
                 getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(tests, sectionPath)?.get("p-$paragraphNumber")
 
-        insertParagraphNumber(`$`(paragraph), paragraphNumber, "$sectionPath -> paragraph $paragraphNumber")
+        insertParagraphNumber(`$`(paragraph), paragraphNumber, sectionPath, paragraphNumber)
 
         sentences.each { _, el ->
             val sentenceTests =
@@ -111,7 +117,7 @@ object TestsCoverageColorsArranger {
                     showSentenceCoverage(sentence, sentenceTests)
                 }
             }
-            insertSentenceNumber(sentence, sentenceCounter, "$sectionPath -> paragraph $paragraphNumber -> sentence $sentenceCounter")
+            insertSentenceNumber(sentence, sentenceCounter, sectionPath, paragraphNumber, sentenceCounter)
             sentenceCounter++
         }
     }

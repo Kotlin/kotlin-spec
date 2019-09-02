@@ -32,7 +32,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             """)
         }
 
-        private fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
+        fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
             var nextSibling = sectionElement.get()[0].nextElementSibling
             val sectionName = sectionElement.attr("id")
             val paragraphsMap = mutableListOf<Map<String, Any>>()
