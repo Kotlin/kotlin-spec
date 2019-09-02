@@ -1,0 +1,127 @@
+package org.jetbrains.kotlin.spec.links
+
+import js.externals.jquery.JQuery
+import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
+import org.jetbrains.kotlin.spec.tests.TestsCoverageColorsArranger
+import org.jetbrains.kotlin.spec.utils.Popup
+import org.jetbrains.kotlin.spec.utils.PopupConfig
+import org.w3c.dom.HTMLElement
+import kotlin.browser.document
+import kotlin.browser.window
+
+data class SpecPlaceComponents(
+        val sectionId: String,
+        val paragraphNumber: Int,
+        val sentenceNumber: Int? = null
+)
+
+object SpecPlaceHighlighter {
+    private fun findParagraph(sectionId: String, paragraphNumber: Int): JQuery? {
+        val sectionElement = `$`("#$sectionId")
+        val paragraphsInfo = SpecTestsLoader.getParagraphsInfo(sectionElement) ?: return null
+
+        return if (paragraphsInfo.size > paragraphNumber - 1) {
+             `$`(paragraphsInfo[paragraphNumber - 1]["paragraphElement"] as HTMLElement)
+        } else null
+    }
+
+    private fun findSentence(paragraphElement: JQuery, sentenceNumber: Int): JQuery? {
+        val sentences = paragraphElement.find(".sentence")
+
+        return if (sentences.length.toInt() > sentenceNumber - 1) {
+            `$`(sentences[sentenceNumber - 1]!!)
+        } else {
+            null
+        }
+    }
+
+    fun highlightParagraph(sectionId: String, paragraphNumber: Int) {
+        val paragraph = findParagraph(sectionId, paragraphNumber) ?: return
+
+        paragraph.addClass("highlighted")
+
+        window.addEventListener("load", { paragraph[0]?.scrollIntoView() })
+    }
+
+    fun highlightParagraph(paragraphToBeHighlighted: String) =
+            highlightParagraph(getParagraphInfo(paragraphToBeHighlighted))
+
+    fun highlightParagraph(sentencePath: SpecPlaceComponents) {
+        highlightParagraph(sentencePath.sectionId, sentencePath.paragraphNumber)
+    }
+
+    fun highlightSentence(sectionId: String, paragraphNumber: Int, sentenceNumber: Int) {
+        val paragraphElement = findParagraph(sectionId, paragraphNumber) ?: return
+        val sentence = findSentence(paragraphElement, sentenceNumber) ?: return
+
+        sentence.addClass("highlighted")
+
+        window.addEventListener("load", { sentence[0]?.scrollIntoView() })
+    }
+
+    fun highlightSentence(sentenceToBeHighlighted: String) =
+            highlightSentence(getSentenceInfo(sentenceToBeHighlighted))
+
+    fun highlightSentence(sentencePath: SpecPlaceComponents) {
+        highlightSentence(sentencePath.sectionId, sentencePath.paragraphNumber, sentencePath.sentenceNumber ?: return)
+    }
+
+    fun getSentenceInfo(sentenceToBeHighlighted: String): SpecPlaceComponents {
+        val splittedSentencePath = sentenceToBeHighlighted.split(Regex("""\s*,\s*"""))
+        val splittedSentencePathSize = splittedSentencePath.size
+
+        return SpecPlaceComponents(
+                splittedSentencePath[splittedSentencePathSize - 3],
+                splittedSentencePath[splittedSentencePathSize - 2].toInt(),
+                splittedSentencePath[splittedSentencePathSize - 1].toInt()
+        )
+    }
+
+    fun getParagraphInfo(paragraphToBeHighlighted: String): SpecPlaceComponents {
+        val splittedSentencePath = paragraphToBeHighlighted.split(Regex("""\s*,\s*"""))
+        val splittedSentencePathSize = splittedSentencePath.size
+
+        return SpecPlaceComponents(
+                splittedSentencePath[splittedSentencePathSize - 2],
+                splittedSentencePath[splittedSentencePathSize - 1].toInt()
+        )
+    }
+
+    private fun getLink(searchComponent: String) = window.location.run {
+        "$protocol//$hostname$pathname?$searchComponent$hash"
+    }
+
+    fun onSentenceGetLinkClick(element: JQuery) {
+        Popup(
+                PopupConfig(
+                        title = "Link to this sentence",
+                        content = """
+                            <div class="sentence-links-popup">
+                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Path for compiler test:</span><input type="text" class="sentence-path-for-compiler-test" value="${element.data("path")}"></div>
+                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Link:</span><input type="text" class="sentence-link-field" value="${getLink(element.data("link").toString())}"></div>
+                            </div>
+                        """.trimIndent(),
+                        width = 800,
+                        height = 150
+                )
+        ).apply { open() }
+        `$`(".sentence-path-for-compiler-test").select().focus()
+    }
+
+    fun onParagraphGetLinkClick(element: JQuery) {
+        Popup(
+                PopupConfig(
+                        title = "Link to this paragraph",
+                        content = """
+                            <div class="sentence-links-popup">
+                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Link:</span><input type="text" class="sentence-link-field" value="${getLink(element.data("link").toString())}"></div>
+                            </div>
+                        """.trimIndent(),
+                        width = 800,
+                        height = 100
+                )
+        ).apply { open() }
+        `$`(".sentence-link-field").select().focus()
+    }
+}
