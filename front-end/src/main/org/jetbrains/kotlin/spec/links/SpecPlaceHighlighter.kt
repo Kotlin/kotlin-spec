@@ -3,11 +3,9 @@ package org.jetbrains.kotlin.spec.links
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
-import org.jetbrains.kotlin.spec.tests.TestsCoverageColorsArranger
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.w3c.dom.HTMLElement
-import kotlin.browser.document
 import kotlin.browser.window
 
 data class SpecPlaceComponents(
@@ -36,12 +34,12 @@ object SpecPlaceHighlighter {
         }
     }
 
-    fun highlightParagraph(sectionId: String, paragraphNumber: Int) {
+    private fun highlightParagraph(sectionId: String, paragraphNumber: Int) {
         val paragraph = findParagraph(sectionId, paragraphNumber) ?: return
 
         paragraph.addClass("highlighted")
 
-        window.addEventListener("load", { paragraph[0]?.scrollIntoView() })
+        paragraph[0]?.scrollIntoView()
     }
 
     fun highlightParagraph(paragraphToBeHighlighted: String) =
@@ -51,23 +49,23 @@ object SpecPlaceHighlighter {
         highlightParagraph(sentencePath.sectionId, sentencePath.paragraphNumber)
     }
 
-    fun highlightSentence(sectionId: String, paragraphNumber: Int, sentenceNumber: Int) {
+    private fun highlightSentence(sectionId: String, paragraphNumber: Int, sentenceNumber: Int) {
         val paragraphElement = findParagraph(sectionId, paragraphNumber) ?: return
         val sentence = findSentence(paragraphElement, sentenceNumber) ?: return
 
         sentence.addClass("highlighted")
-
-        window.addEventListener("load", { sentence[0]?.scrollIntoView() })
+        sentence[0]?.scrollIntoView()
+        `$`(window).scrollTop(`$`(window).scrollTop().toInt() - 80)
     }
 
     fun highlightSentence(sentenceToBeHighlighted: String) =
-            highlightSentence(getSentenceInfo(sentenceToBeHighlighted))
+            highlightSentence(getSentenceInfoFromUrl(sentenceToBeHighlighted))
 
     fun highlightSentence(sentencePath: SpecPlaceComponents) {
         highlightSentence(sentencePath.sectionId, sentencePath.paragraphNumber, sentencePath.sentenceNumber ?: return)
     }
 
-    fun getSentenceInfo(sentenceToBeHighlighted: String): SpecPlaceComponents {
+    private fun getSentenceInfoFromUrl(sentenceToBeHighlighted: String): SpecPlaceComponents {
         val splittedSentencePath = sentenceToBeHighlighted.split(Regex("""\s*,\s*"""))
         val splittedSentencePathSize = splittedSentencePath.size
 
@@ -78,7 +76,18 @@ object SpecPlaceHighlighter {
         )
     }
 
-    fun getParagraphInfo(paragraphToBeHighlighted: String): SpecPlaceComponents {
+    fun getSentenceInfoFromSearchField(sentenceToBeHighlighted: String): SpecPlaceComponents {
+        val splittedSentencePath = sentenceToBeHighlighted.split(Regex("""\s*->\s*"""))
+        val splittedSectionPath = splittedSentencePath[0].split(Regex("""\s*,\s*"""))
+
+        return SpecPlaceComponents(
+                splittedSectionPath.last(),
+                splittedSentencePath[1].replace("paragraph ", "").toInt(),
+                if (splittedSentencePath.size == 3) splittedSentencePath[2].replace("sentence ", "").toInt() else null
+        )
+    }
+
+    private fun getParagraphInfo(paragraphToBeHighlighted: String): SpecPlaceComponents {
         val splittedSentencePath = paragraphToBeHighlighted.split(Regex("""\s*,\s*"""))
         val splittedSentencePathSize = splittedSentencePath.size
 

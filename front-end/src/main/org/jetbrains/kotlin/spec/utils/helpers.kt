@@ -49,6 +49,7 @@ val Location.searchMap: MutableMap<String, String>
 
         rawSearch.forEach { param ->
             val paramComponents = param.split("=")
+            if (paramComponents.size != 2) return@forEach
             objURL[paramComponents[0]] = paramComponents[1]
         }
 
