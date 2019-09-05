@@ -107,10 +107,14 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
         }
 
         fun loadHelperFile(helperName: String) =
-                GithubTestsLoader.loadFileFromRawGithub("$helperName.kt", "helpers")
+                GithubTestsLoader.loadFileFromRawGithub(
+                        "$helperName.kt",
+                        testType = GithubTestsLoader.TestFileType.SPEC_TEST,
+                        customFolder = "helpers"
+                )
 
         fun parseTestFiles(
-                responses: Array<out Map<String, String>>,
+                responses: Array<out Map<String, Any>>,
                 currentSection: String,
                 sectionsPath: List<String>,
                 paragraphsInfo: List<Map<String, Any>>
@@ -119,11 +123,14 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             val tests = mutableMapOf<String, Any>()
 
             responses.forEach { response ->
-                val objectPath = response["path"]
-                        ?.replace(".kt", "")
-                        ?.replace(Regex("""/""", RegexOption.MULTILINE), ".")
-                        ?: return@forEach
-                val parsedTest = response["content"]?.let { SpecTestsParser.parseTest(it) } ?: return@forEach
+                val objectPath = response["path"]?.toString() ?: return@forEach
+                val parsedTest = response["content"]?.let {
+                    if (response.contains("testInfo")) {
+                        SpecTestsParser.getInfoForImplementationTest(response)
+                    } else {
+                        SpecTestsParser.parseSpecTest(it.toString())
+                    }
+                } ?: return@forEach
 
                 setValueByObjectPath(tests, parsedTest, objectPath)
             }
@@ -140,10 +147,6 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             if (newBranch != null && newBranch != currentBranch) {
                 window.localStorage.setItem("spec-tests-branch", newBranch)
             }
-        }
-
-        fun onParagraphNumberInfoClick(element: JQuery) {
-            window.prompt("Path to this section:", element.data("path").toString())
         }
     }
 

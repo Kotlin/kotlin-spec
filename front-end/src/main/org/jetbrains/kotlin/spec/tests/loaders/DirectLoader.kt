@@ -7,12 +7,16 @@ import kotlin.js.Promise
 
 
 class DirectLoader: GithubTestsLoader {
-    private val testFileContents = mutableListOf<Map<String, String>>()
+    private val testFileContents = mutableListOf<Map<String, Any>>()
     private var promisesQueueLength = 0
 
     private fun tryRequestRun(testNumber: Int, pathPrefix: String, resolve: (Promise<Array<Map<String, String>>>) -> Unit) {
         promisesQueueLength++
-        loadFileFromRawGithub("$pathPrefix.$testNumber.kt").then { response: Map<String, String> ->
+        loadFileFromRawGithub(
+                "$pathPrefix.$testNumber.kt",
+                "$pathPrefix.$testNumber",
+                GithubTestsLoader.TestFileType.SPEC_TEST
+        ).then { response: Map<String, Any> ->
             promisesQueueLength--
             testFileContents.add(response)
             tryRequestRun(testNumber + 1, pathPrefix, resolve)
