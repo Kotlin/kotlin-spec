@@ -2,18 +2,22 @@ package org.jetbrains.kotlin.spec
 
 import kotlin.browser.document
 import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.links.SentenceFinder
 import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter
 import org.jetbrains.kotlin.spec.tests.NavigationType
 import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
 import org.jetbrains.kotlin.spec.tests.SpecTestsViewer
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoaderType
+import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
+import kotlin.browser.localStorage
 import kotlin.browser.window
+import kotlin.js.json
 
 fun runAfterDocumentReady() {
     val specTestsLoader = SpecTestsLoader(GithubTestsLoaderType.USING_TESTS_MAP_FILE)
     val specTestsViewer = SpecTestsViewer()
-    val shouldBeShowedMarkup = window.location.searchMap["showMarkup"] == "true"
+    val shouldBeShowedMarkup = localStorage.getItem("showMarkup") != null
     val sentenceToBeHighlighted = window.location.searchMap["sentence"]
     val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
 
@@ -72,6 +76,42 @@ fun runAfterDocumentReady() {
             false
         }
         on("click", ".loaded-tests") { _, _ -> false }
+
+        prepend(SentenceFinder.FINDER_BAR_HTML.format(
+                *(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show"))
+        ))
+
+        on("click", ".spec-sentence-find") { _, _ -> SentenceFinder.findSentence() }
+        on("keyup", ".spec-location-search input[name=\"spec-sentence-location\"]") { e, _ ->
+            if (e.keyCode == 13) {
+                SentenceFinder.findSentence()
+            }
+        }
+
+        mutableMapOf(18 to false, 69 to false).let { keys ->
+            `$`(document).keydown{ e ->
+                keys[e.keyCode.toInt()] = true
+                true
+            }.keyup { e ->
+                if (keys[18] == true && keys[69] == true) {
+                    `$`(".spec-location-search input[name=\"spec-sentence-location\"]").focus().select()
+                }
+                keys[e.keyCode.toInt()] = false
+                true
+            }
+        }
+
+        on("click", ".show-markup-link") { _, _ ->
+            localStorage.setItem("showMarkup", "true")
+            SpecTestsLoader.showMarkup()
+            false
+        }
+
+        on("click", ".hide-markup-link") { _, _ ->
+            localStorage.removeItem("showMarkup")
+            window.location.reload()
+            false
+        }
     }
 }
 
