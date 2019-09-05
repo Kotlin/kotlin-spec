@@ -1,5 +1,6 @@
 package org.jetbrains.kotlin.spec.tests
 
+import kotlinx.serialization.json.JsonObject
 import org.jetbrains.kotlin.spec.utils.format
 
 object SpecTestsParser {
@@ -32,8 +33,10 @@ object SpecTestsParser {
             """{1} KOTLIN {2} SPEC TEST \({3}\)\n(?<infoElements>[\s\S]*?\n)""".format(ASTERISK_REGEX, testAreaRegex, testTypeRegex)
         )
     )
+    private val implementationTestInfoPattern = Regex(MULTILINE_COMMENT_REGEX.format("""\*\s+RELEVANT SPEC SENTENCES \(spec version: (?<specVersion>\d+\.[0-9]\d*\-[0-9]\d*), test type: (?<testType>pos|neg)\):(?<testSpecSentenceList>(\n\s+\*\s+-\s+.*?)+)"""))
+    private val topLevelDirectivePattern = Regex("""^(?://.*?\n)+""")
 
-    private val diagnosticTagRegexp = Regex("(<!>)|(<!(.+?(\\(\".*?\"\\))?(,\\s*)?)+?!>)", RegexOption.MULTILINE)
+    private val diagnosticTagRegexp = Regex("""(?:<!>)|(?:<!(.+?(\(".*?"\))?(,\s*)?)+?!>)""", RegexOption.MULTILINE)
 
     private fun parseTestInfoElements(data: String): Map<String, String?> {
         val testInfoElements = mutableMapOf<String, String?>()
@@ -52,7 +55,26 @@ object SpecTestsParser {
         return testInfoElements
     }
 
-    fun parseTest(data: String): Map<String, Any?> {
+    fun getInfoForImplementationTest(response: Map<String, Any>): Map<String, Any?> {
+        val testInfo = response["testInfo"] as JsonObject
+
+        return mapOf(
+                "cases" to listOf(
+                        mapOf(
+                                "infoElements" to null,
+                                "code" to response["content"].toString()
+                                        .replace(diagnosticTagRegexp, "")
+                                        .replace(implementationTestInfoPattern, "")
+                                        .replace(topLevelDirectivePattern, "")
+                        )
+                ),
+                "description" to testInfo["description"],
+                "unexpectedBehaviour" to (testInfo["unexpectedBehaviour"]?.primitive?.boolean == true),
+                "helpers" to null
+        )
+    }
+
+    fun parseSpecTest(data: String): Map<String, Any?> {
         val testMatches = testInfoPattern.find(data)
         val testInfoElements =
                 parseTestInfoElements(testMatches?.groups?.get(3)?.value ?: throw Exception("Unable to parse test"))

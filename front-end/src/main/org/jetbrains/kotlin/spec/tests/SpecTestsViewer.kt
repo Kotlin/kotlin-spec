@@ -6,7 +6,10 @@ import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.escapeHtml
 import org.jetbrains.kotlin.spec.utils.format
+import kotlin.browser.window
+import kotlin.js.Json
 import kotlin.js.Promise
+import kotlin.js.json
 
 external fun require(module:String): dynamic
 
@@ -49,7 +52,7 @@ class SpecTestsViewer {
     private lateinit var currentSentenceTests: Map<String, Map<String, Map<String, Map<String, String>>>>
     private lateinit var testPopup: Popup
 
-    private fun insertCode(testCase: Map<String, String>, helperFilesContent: List<Map<String, String>>? = null) {
+    private fun insertCode(testCase: Map<String, String>, helperFilesContent: List<Map<String, Any>>? = null) {
         val code = StringBuilder()
 
         helperFilesContent?.forEach { helperFile ->
@@ -61,13 +64,13 @@ class SpecTestsViewer {
 
         `$`(TEST_CODE_WRAPPER_SELECTOR).html(TEST_CODE_TEMPLATE.format(code.toString().escapeHtml()))
 
-        KotlinPlayground(TEST_CODE_SELECTOR, mapOf(
+        KotlinPlayground(TEST_CODE_SELECTOR, json(
                 "callback" to { testPopup.computeSizes() },
                 "onChange" to { testPopup.computeSizes() }
         ))
     }
 
-    private fun showTestCaseCode(test: Map<String, String>, helperFilesContent: List<Map<String, String>>? = null) {
+    private fun showTestCaseCode(test: Map<String, String>, helperFilesContent: List<Map<String, Any>>? = null) {
         `$`(TEST_CASE_INFO_SELECTOR).remove()
         `$`(TESTS_VIEWER_SELECTOR).append(TEST_VIEWER_BODY_TEMPLATE.format(test["description"] ?: return))
 
@@ -80,8 +83,8 @@ class SpecTestsViewer {
         }
     }
 
-    private fun getHelpers(helperNames: List<String>): Promise<Array<out Map<String, String>>> {
-        val helperFilesPromises = mutableListOf<Promise<Map<String, String>>>()
+    private fun getHelpers(helperNames: List<String>): Promise<Array<out Map<String, Any>>> {
+        val helperFilesPromises = mutableListOf<Promise<Map<String, Any>>>()
 
         helperNames.forEach { helperName ->
             helperFilesPromises.add(SpecTestsLoader.loadHelperFile(helperName))
