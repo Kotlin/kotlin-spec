@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
 import kotlin.browser.localStorage
 import kotlin.browser.window
-import kotlin.js.json
 
 fun runAfterDocumentReady() {
     val specTestsLoader = SpecTestsLoader(GithubTestsLoaderType.USING_TESTS_MAP_FILE)
@@ -20,6 +19,7 @@ fun runAfterDocumentReady() {
     val shouldBeShowedMarkup = localStorage.getItem("showMarkup") != null
     val sentenceToBeHighlighted = window.location.searchMap["sentence"]
     val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
+    val sectionToBeHighlighted = window.location.hash
 
     `$`("h3, h4, h5").each { _, el ->
         SpecTestsLoader.insertLoadIcon(`$`(el))
@@ -35,6 +35,10 @@ fun runAfterDocumentReady() {
 
     if (paragraphToBeHighlighted != null) {
         SpecPlaceHighlighter.highlightParagraph(paragraphToBeHighlighted)
+    }
+
+    if (sectionToBeHighlighted.isNotEmpty()) {
+        SpecPlaceHighlighter.highlightSection(sectionToBeHighlighted.substring(1))
     }
 
     document.body?.let { `$`(it) }?.run {
@@ -111,6 +115,10 @@ fun runAfterDocumentReady() {
             localStorage.removeItem("showMarkup")
             window.location.reload()
             false
+        }
+
+        on("click", "h2, h3, h4, h5") { e, _ ->
+            SpecPlaceHighlighter.onHeaderGetLinkClick(`$`(e.currentTarget))
         }
     }
 }

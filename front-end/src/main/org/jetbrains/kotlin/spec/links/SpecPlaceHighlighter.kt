@@ -40,6 +40,7 @@ object SpecPlaceHighlighter {
         paragraph.addClass("highlighted")
 
         paragraph[0]?.scrollIntoView()
+        `$`(window).scrollTop(`$`(window).scrollTop().toInt() - 80)
     }
 
     fun highlightParagraph(paragraphToBeHighlighted: String) =
@@ -63,6 +64,14 @@ object SpecPlaceHighlighter {
 
     fun highlightSentence(sentencePath: SpecPlaceComponents) {
         highlightSentence(sentencePath.sectionId, sentencePath.paragraphNumber, sentencePath.sentenceNumber ?: return)
+    }
+
+    fun highlightSection(sectionId: String) {
+        val sectionElement = `$`("#$sectionId")
+
+        sectionElement.addClass("highlighted")
+        sectionElement[0]?.scrollIntoView()
+        `$`(window).scrollTop(`$`(window).scrollTop().toInt() - 80)
     }
 
     private fun getSentenceInfoFromUrl(sentenceToBeHighlighted: String): SpecPlaceComponents {
@@ -101,6 +110,10 @@ object SpecPlaceHighlighter {
         "$protocol//$hostname$pathname?$searchComponent$hash"
     }
 
+    private fun getSectionLink(sectionId: String) = window.location.run {
+        "$protocol//$hostname$pathname${if (search.isNotEmpty()) "?$search" else ""}#$sectionId"
+    }
+
     fun onSentenceGetLinkClick(element: JQuery) {
         Popup(
                 PopupConfig(
@@ -125,6 +138,22 @@ object SpecPlaceHighlighter {
                         content = """
                             <div class="sentence-links-popup">
                                 <div class="sentence-links-row"><span class="link-sentence-description-link-type">Link:</span><input type="text" class="sentence-link-field" value="${getLink(element.data("link").toString())}"></div>
+                            </div>
+                        """.trimIndent(),
+                        width = 800,
+                        height = 100
+                )
+        ).apply { open() }
+        `$`(".sentence-link-field").select().focus()
+    }
+
+    fun onHeaderGetLinkClick(element: JQuery) {
+        Popup(
+                PopupConfig(
+                        title = "Link to this section",
+                        content = """
+                            <div class="sentence-links-popup">
+                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Link:</span><input type="text" class="sentence-link-field" value="${getSectionLink(element.attr("id"))}"></div>
                             </div>
                         """.trimIndent(),
                         width = 800,
