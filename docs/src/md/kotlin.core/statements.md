@@ -39,8 +39,7 @@ TODO(switch to navigation paths when we have them?)
 A *simple assigment* is an assignment which uses the assign operator `=`.
 If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).
 
-- If a property is [delegated][Delegated property declaration], the corresponding operator function `setValue` is called using the right-hand side expression as the `value` argument;
-- If a property has a [setter][Getters and setters], it is called using the right-hand side expression as its argument;
+- If a property has a [setter][Getters and setters] (including [delegated properties][Delegated property declaration]), it is called using the right-hand side expression as its argument;
 - Otherwise, if a property is a [mutable property][Mutable property declaration], its value is changed to the evaluation result of the right-hand side expression.
 
 If the left-hand side of an assignment refers to a mutable property through the usage of safe navigation operator (`?.`), the same rules apply to it, but only if the left-hand side of the navigation operator is not referentially equal to `null` reference, e.g.:

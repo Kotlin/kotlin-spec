@@ -44,17 +44,19 @@ Example:
 
 - In declaration scope:
   ```kotlin
-      // x refers to the property defined below even if there is another property
-      // called x in outer scope or imported
-      fun foo() { return x + 2; } 
-      val x = 3; 
+  // x refers to the property defined below 
+  // even if there is another property
+  // called x in outer scope or imported
+  fun foo() { return x + 2; } 
+  val x = 3; 
   ```
 - In statement scope:
   ```kotlin
-      // x either refers to other property defined in some outer scope or imported
-      // or it is a compile-time error
-      fun foo() { return x + 2; } 
-      val x = 3; 
+  // x either refers to other property 
+  // defined in some outer scope or imported
+  // or it is a compile-time error
+  fun foo() { return x + 2; } 
+  val x = 3; 
   ```
 
 > Note: please note that all the above is primarily applied to declarations, because declaration scopes do not allow standalone statements to appear in them
@@ -66,6 +68,8 @@ Example:
 - TODO(identifier lifetime & such)
 
 ## Visibility
+
+TODO: remove this? See [Declaration visibility]
 
 Any entity declared in a declaration scope has an implicitly or explicitly defined *visibility*.
 The visibility of a declaration denotes whether the entity is *accessible* in other scopes of the program.

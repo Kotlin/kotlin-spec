@@ -16,6 +16,8 @@ A `data class`, `enum class` or `annotation class` cannot be declared `open` or 
 
 An interface type may be inherited from any number of other interface types (and only interface types) without any limitation.
 
+TODO: there are limitations, for example, generic interfaces with different parameters make things complicated
+
 Inheritance is the primary mechanism of introducing [subtyping relations][Subtyping] between user-defined types in Kotlin.
 When a classifier type $A$ is declared with base types $B_1, \dots, B_i$ it introduces subtyping relations $A <: B_1, \ldots, A <: B_i$, which are then used in  [overload resolution] and [type inference] mechanisms.
 
@@ -44,7 +46,7 @@ Most of them are closed class types and cannot be inherited from.
 A callable declaration (that is, a property or member function declaration) inside a classifier declaration is said to be *overridable* if:
 
 - Its visibility (and the visibility of its getter and/or setter) is not `private`;
-- It is declared as `open`, `abstract` or `override` (interface methods and properties are implicitly `abstract`).
+- It is declared as `open`, `abstract` or `override` (interface methods and properties are implicitly `abstract` if they don't have a body or `open` if they do).
 
 It is illegal for a declaration to be both `private` and `open`, `abstract` or `override` and should result in a compiler error.
 
