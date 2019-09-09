@@ -38,10 +38,10 @@ There are three kinds of classifier declarations:
 
 A simple class declaration consists of the following parts.
 
-* name $c$;
-* primary constructor declaration $ptor$;
-* supertype specifiers $S_1, \ldots, S_s$;
-* body $b$, which may include the following:
+* Name $c$;
+* Optional primary constructor declaration $ptor$;
+* Optional supertype specifiers $S_1, \ldots, S_s$;
+* Optional body $b$, which may include the following:
   - secondary constructor declarations $stor_1, \ldots, stor_c$;
   - instance initialization blocks $init_1, \ldots, init_i$;
   - property declarations $prop_1, \ldots, prop_p$;
@@ -64,26 +64,12 @@ Companion object declaration `companion object CO { ... }` for class `C` introdu
 Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
 Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. 
-Inner classes are available only on the corresponding class' entities. 
+Inner classes are available only on the corresponding class' entities (TODO: wording here is very bad). 
 Further details are available [here][Inner and nested classes].
 
 TODO(Examples)
 
-A parameterized class declaration consists of the following parts.
-
-* name $c$;
-* type parameter list $T_1, \ldots, T_m$;
-* primary constructor declaration $ptor$;
-* supertype specifiers $S_1, \ldots, S_s$;
-* body $b$, which may include the following
-  - secondary constructor declarations $stor_1, \ldots, stor_c$;
-  - instance initialization blocks $init_1, \ldots, init_i$;
-  - property declarations $prop_1, \ldots, prop_p;$
-  - function declarations $md_1, \ldots, md_m$;
-  - companion object declaration $companionObj;$
-  - nested classifier declarations $nested$.
-
-and extends the rules for a simple class declaration w.r.t. type parameter list. 
+A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list $T_1, \ldots, T_m$ and extends the rules for a simple class declaration w.r.t. this type parameter list. 
 Further details are described [here][Declarations with type parameters].
 
 ##### Constructor declaration
@@ -97,16 +83,17 @@ $$ptor : (p_1, \ldots, p_n)$$
 where each of $p_i$ may be one of the following:
 
 * regular constructor parameter $name: type$;
-* read-only property constructor parameter $\mathtt{val}\ name: type$;
-* mutable property constructor parameter $\mathtt{var}\ name: type$.
+* read-only property constructor parameter $\texttt{val}\ name: type$;
+* mutable property constructor parameter $\texttt{var}\ name: type$.
 
-Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type. 
+Regular and read-only property constructor parameters may be introduced with a `vararg` modifier, making them variable argument parameters.
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type, with variable argument parameters have corresponding array types, same as with function variable argument parameters. 
 One can consider them to have the following syntactic expansion.
 
 ```kotlin
-class Foo(i: Int, val d: Double, var s: String) : Super(i, d, s) {}
+class Foo(i: Int, vararg val d: Double, var s: String) : Super(i, d, s) {}
 
-class Foo(i: Int, d_: Double, s_: String) : Super(i, d_, s_) {
+class Foo(i: Int, vararg d_: Double, s_: String) : Super(i, d_, s_) {
   val d = d_
   var s = s_
 }
@@ -138,6 +125,8 @@ Inner classes are a special kind of nested classifiers, which introduce types of
 An inner class declaration $ID$ nested in another classifier declaration $PD$ may reference an *object* of type $ID$ associated with it.
 
 This association happens when instantiating an object of type $ID$, as its constructor may be invoked only when a receiver of type $PD$ is available, and this receiver becomes associated with the new instantiated object of type $ID$.
+
+TODO(the relation between containing and nested classifiers if generics are involved)
 
 TODO(...)
 
@@ -182,7 +171,8 @@ Each one of these functions is generated if and only if a matching signature fun
 
 These generated declarations of `equals`, `hashCode` and `toString` may be overriden the same way they may be overriden in normal classes.
 The overriding version is preferred, as normally.
-In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an `override` modifier.
+In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an `override` modifier, unless the function was declared `final` in the base type declaration.
+In this case, this function is not generated and does not override anything, making the final version the preferred one.
 
 > Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name.
 > As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.
@@ -590,7 +580,7 @@ val x: T
     get(): T = x$delegate.getValue(thisRef, ::x)
 ```
 
-Here every access to such property (`x` in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:
+Here every access to such property (`x` in this case) becomes an [overloadable][Overloadable operators] form which is expanded into the following:
 
 ```haskell
 e.getValue(thisRef, property)
@@ -752,9 +742,9 @@ This means, among other things, that it is the responsibility of the programmer 
 A property may be declared late-initialized if:
 
 - It has no custom getters, setters or delegation;
-- It is a member property;
+- It is a member or top-level property;
 - It is mutable;
-- It has declared non-nullable type.
+- It has declared non-nullable type which is also not one of built-in [integer][Built-in integer types] or [floating][Built-in floating point arithmetic types] types.
 
 ### Type alias
 

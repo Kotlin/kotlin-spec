@@ -276,7 +276,7 @@ In fact, it supports three different condition forms:
   The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
 - *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
   The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
-- *Any other expression* (`Expr`) besides the following.
+- *Any other expression* (`Expr`) besides the following. (TODO: do we really need these here? `break` and `continue` are disallowed **anywhere** in when and spreads are disallowed **everywhere** besides function calls, so this is kinda pointless)
     + [Simple continue expression][Continue expression]
     + [Simple break expression][Break expression]
     + [Spread operator expression][Spread operator expression]
@@ -361,6 +361,7 @@ There are two kinds of equality operators: *reference equality operators* and *v
 
 *Reference equality expressions* are binary expressions which use reference equality operators: `===` and `!==`.
 These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference*: two values are equal by reference if and only if they represent the same runtime value.
+In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
 
 For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:
 
@@ -374,15 +375,14 @@ Reference equality expressions always have type `kotlin.Boolean`.
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are [overloadable][Overloadable operators] with the following expansion:
+These operators are different from [other overloadable operators][Overloadable operators] and have the following expansion:
 
-- `A == B` is exactly the same as `A?.equals(B) ?: (B === null)` where `equals` is a valid operator function available in the current scope;
-- `A != B` is exactly the same as `!(A?.equals(B) ?: (B === null))` where `equals` is a valid operator function available in the current scope.
+- `A == B` is exactly the same as `(A as Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
+- `A != B` is exactly the same as `!((A as Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
 
-> Note: `kotlin.Any` type has a built-in open operator member function `equals`, meaning there is always only one available overloading candidate for any value equality expression.
+Value equality expressions always have type `kotlin.Boolean` as does the `equals` method in `kotlin.Any`.
 
-Value equality expressions always have type `kotlin.Boolean`.
-If the corresponding operator function `equals` has a different return type, it is a compile-time error.
+TODO: the subtyping constraints for `==` are non-trivial and creepy and need to be specified
 
 ### Comparison expressions
 
@@ -559,9 +559,9 @@ These do not change the value of the expression and can be used by external tool
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-- `++A` is exactly the same as `A = A.inc(); A` where `inc` is a valid operator function available in the current scope.
+- `++A` is exactly the same as `val $freshId = A.inc(); A = $freshId; $freshId` where `inc` is a valid operator function available in the current scope.
 
-> Note: informally, `++A` assigns the result of `A.inc()` to `A` and then returns `A` as the result.
+> Note: informally, `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
 
 For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -575,9 +575,9 @@ A prefix increment expression has the same type as the return type of the corres
 A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
 It is an [overloadable][Overloadable operators] operator with the following expansion:
 
-- `--A` is exactly the same as `A = A.dec(); A` where `dec` is a valid operator function available in the current scope.
+- `--A` is exactly the same as `val $freshId = A.dec(); A = $freshId; $freshId` where `dec` is a valid operator function available in the current scope.
 
-> Note: informally, `--A` assigns the result of `A.dec()` to `A` and then returns `A` as the result.
+> Note: informally, `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
 
 For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -634,7 +634,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignable expressions].
 Otherwise, it is a compile-time error.
 
-A postfix increment expression has the same type as the return type of the corresponding `inc` overload variant.
+A postfix increment expression has the same type as its operand expression (`A` in our examples).
 
 > Note: as the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 
@@ -650,7 +650,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignable expressions].
 Otherwise, it is a compile-time error.
 
-A postfix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
+A postfix decrement expression has the same type as its operand expression (`A` in our examples).
 
 > Note: as the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 
@@ -715,7 +715,7 @@ For a corresponding assignment form, see [indexing assignment][Indexing assignme
 
 #### Navigation operators
 
-Expressions which use the navigation binary operators (`.`, `.?` or `::`) are syntactically similar, but, in fact, may have very different semantics.
+Expressions which use the navigation binary operators (`.`, `?.` or `::`) are syntactically similar, but, in fact, may have very different semantics.
 
 `a.c` may have one of the following semantics when used as an expression:
 
@@ -774,6 +774,7 @@ Being of an appropriate function type also means that the values defined by thes
 > Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.
 
 TODO(this is pretty complex, actually. Do we need all the K(Mutable)PropertyN business defined in the specification???)
+
 TODO(we need to update overload resolution section with these guys)
 
 #### Class literals
