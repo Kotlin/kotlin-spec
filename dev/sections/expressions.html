@@ -524,7 +524,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><em>Type test condition</em>: <a href="expressions.html#type-checking-expression">type checking operator</a> followed by a type (<code>is T</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#type-checking-expression">type check expression</a> of the form <code>boundValue is T</code>.</span></li>
 <li><span class="sentence"><em>Contains test condition</em>: <a href="expressions.html#containment-checking-expression">containment operator</a> followed by an expression (<code>in Expr</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#containment-checking-expression">containment check expression</a> of the form <code>boundValue in Expr</code>.</span></li>
-<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following.</span>
+<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following. </span><span class="sentence"><span><span class="TODO">(TODO: do we really need these here? <code>break</code> and <code>continue</code> are disallowed <strong>anywhere</strong> in when and spreads are disallowed <strong>everywhere</strong> besides function calls, so this is kinda pointless)</span><span class="TODO-marker">*</span></span></span>
 <ul>
 <li><span class="sentence"><a href="expressions.html#continue-expression">Simple continue expression</a></span></li>
 <li><span class="sentence"><a href="expressions.html#break-expression">Simple break expression</a></span></li>
@@ -634,7 +634,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="reference-equality-expressions">Reference equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value.</span></p>
+<p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value. </span><span class="sentence">In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:</span></p>
@@ -649,19 +649,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are <a href="overloadable-operators.html#overloadable-operators">overloadable</a> with the following expansion:</span></p>
+<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="overloadable-operators.html#overloadable-operators">other overloadable operators</a> and have the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A == B</code> is exactly the same as <code>A?.equals(B) ?: (B === null)</code> where <code>equals</code> is a valid operator function available in the current scope;</span></li>
-<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!(A?.equals(B) ?: (B === null))</code> where <code>equals</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
+<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!((A as Any)?.equals(B) ?: (B === null))</code> where <code>equals</code> is the method of <code>kotlin.Any</code>.</span></li>
 </ul>
-<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always only one available overloading candidate for any value equality expression.</span></p>
+<p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code> as does the <code>equals</code> method in <code>kotlin.Any</code>.</span></p>
 </div>
-</blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code>. </span><span class="sentence">If the corresponding operator function <code>equals</code> has a different return type, it is a compile-time error.</span></p>
+<p><span class="sentence">TODO: the subtyping constraints for <code>==</code> are non-trivial and creepy and need to be specified</span></p>
+</div>
 </div>
 <h3 id="comparison-expressions">Comparison expressions</h3>
 <div id="grammar-rule-comparison-pasted-43" class="grammar-rule">
@@ -954,11 +954,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>++A</code> is exactly the same as <code>A = A.inc(); A</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>++A</code> is exactly the same as <code>val $freshId = A.inc(); A = $freshId; $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and then returns <code>A</code> as the result.</span></p>
+<p><span class="sentence">Note: informally, <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -977,11 +977,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>--A</code> is exactly the same as <code>A = A.dec(); A</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>--A</code> is exactly the same as <code>val $freshId = A.dec(); A = $freshId; $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and then returns <code>A</code> as the result.</span></p>
+<p><span class="sentence">Note: informally, <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1070,7 +1070,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix increment expression <code>A++</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
+<p><span class="sentence">A postfix increment expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1093,7 +1093,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix decrement expression <code>A--</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
+<p><span class="sentence">A postfix decrement expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1260,7 +1260,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="navigation-operators">Navigation operators</h4>
 <div class="paragraph">
-<p><span class="sentence">Expressions which use the navigation binary operators (<code>.</code>, <code>.?</code> or <code>::</code>) are syntactically similar, but, in fact, may have very different semantics.</span></p>
+<p><span class="sentence">Expressions which use the navigation binary operators (<code>.</code>, <code>?.</code> or <code>::</code>) are syntactically similar, but, in fact, may have very different semantics.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>a.c</code> may have one of the following semantics when used as an expression:</span></p>
@@ -1340,7 +1340,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(this is pretty complex, actually. </span><span class="sentence">Do we need all the K(Mutable)PropertyN business defined in the specification???) TODO(we need to update overload resolution section with these guys)</span></p>
+<p><span class="sentence">TODO(this is pretty complex, actually. </span><span class="sentence">Do we need all the K(Mutable)PropertyN business defined in the specification???)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(we need to update overload resolution section with these guys)</span></p>
 </div>
 </div>
 <h4 id="class-literals">Class literals</h4>
