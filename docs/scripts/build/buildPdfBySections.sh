@@ -25,7 +25,7 @@ mkdir -p ${BUILD_DIR}/pdf/sections
 
 for f in $TMP_DIR/*.json;
 do \
-  pandoc $f --variable documentclass=book -o ${BUILD_DIR}/pdf/sections/"$(basename "$f" .json).pdf";
+  pandoc ${PREAMBLE_OPTIONS} $f --variable documentclass=book -o ${BUILD_DIR}/pdf/sections/"$(basename "$f" .json).pdf";
 done
 
 rm -rf $TMP_DIR

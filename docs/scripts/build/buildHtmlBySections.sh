@@ -25,7 +25,7 @@ mkdir -p ${BUILD_DIR}/html/sections
 
 for f in $TMP_DIR/*.json;
 do \
-pandoc $f ${HTML_ASSETS_OPTIONS} -s -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
+  pandoc ${PREAMBLE_OPTIONS} $f ${HTML_ASSETS_OPTIONS} -s -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
 done
 
 rm -rf $TMP_DIR
