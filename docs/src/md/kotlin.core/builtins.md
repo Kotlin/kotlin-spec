@@ -57,6 +57,8 @@ It is the type of [boolean literals][Boolean literals] as well as the type retur
 TODO(Do we need `kotlin.Number`?)
 
 Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size.
+These types are important w.r.t. [type system][Built-in integer types-ts] and [integer literals][Integer literals].
+
 The signed integer types are the following.
 
 * `kotlin.Int`
@@ -85,6 +87,8 @@ If an arithmetic operation on `kotlin.Long` results in arithmetic overflow or un
 
 > Important: a platform implementation may specify behaviour for an arithmetic overflow or underflow.
 
+[Built-in integer types-ts]: #built-in-integer-types
+
 TODO([Kotlin 1.3] Add unsigned types)
 
 ### Built-in floating point arithmetic types
@@ -97,6 +101,7 @@ Consult the specific platform reference for further details.
 `kotlin.Double` is the type of floating-point number that is able to contain all the numbers as a [IEEE 754][IEEE754] double-precision binary floating number with the same precision.
 
 TODO(Is this true?)
+TODO(Specify IEEE 754 quirks w.r.t. smart casts, cc @dmitry.petrov)
 
 Platform implementations may give additional information on how these types are represented on a particular platform.
 
@@ -107,9 +112,17 @@ Platform implementations may give additional information on how these types are 
 `kotlin.Char` is the built-in classifier type which represents a single Unicode symbol in [UCS-2][UCS-2] character encoding.
 It is the type of [character literals][Character literals].
 
+> Important: a platform implementation may *extend* the supported character encodings, e.g., to UTF-16.
+
 ### `kotlin.String`
 
 `kotlin.String` is the built-in classifier type that represents a sequence of Unicode symbol in [UCS-2][UCS-2] character encoding.
 It is the type of the result of [string interpolation][String interpolation expressions].
 
+> Important: a platform implementation may *extend* the supported character encodings, e.g., to UTF-16.
+
 [UCS-2]: https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip
+
+### `kotlin.Enum`
+
+TODO(Everything)
