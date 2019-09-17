@@ -63,14 +63,13 @@ Property and function declarations in the class body introduce their respective 
 Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. 
 Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
-Nested classifier declarations introduce new classifiers, available under this class' path for all nested classifiers except for inner classes. 
-Inner classes are available only on the corresponding class' entities (TODO: wording here is very bad). 
-Further details are available [here][Inner and nested classes].
-
-TODO(Examples)
+Nested classifier declarations introduce new classifiers, available under this class' path.
+Further details are available [here][Nested and inner classifiers].
 
 A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list $T_1, \ldots, T_m$ and extends the rules for a simple class declaration w.r.t. this type parameter list. 
 Further details are described [here][Declarations with type parameters].
+
+TODO(Examples)
 
 ##### Constructor declaration
 
@@ -86,9 +85,11 @@ where each of $p_i$ may be one of the following:
 * read-only property constructor parameter $\texttt{val}\ name: type$;
 * mutable property constructor parameter $\texttt{var}\ name: type$.
 
-Regular and read-only property constructor parameters may be introduced with a `vararg` modifier, making them variable argument parameters.
-Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type, with variable argument parameters have corresponding array types, same as with function variable argument parameters. 
-One can consider them to have the following syntactic expansion.
+Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type.
+
+> Important: if a property constructor parameter with type $T$ is specified as `vararg`, its corresponding class property type is the result of [*array type specialization*][Array types] of type `Array<`$\outV T$`>`.
+
+One can consider primary constructor parameters to have the following syntactic expansion.
 
 ```kotlin
 class Foo(i: Int, vararg val d: Double, var s: String) : Super(i, d, s) {}
@@ -113,8 +114,8 @@ In all cases, it is forbidden if two or more secondary constructors form a deleg
 
 TODO(elaborate this `this(...)` and `super(...)` business)
 
-Class constructors (both secondary and primary) may have variable-argument parameters and default parameter values, just as regular functions.
-Please refer to the [function declaration reference][Function declarations] for details.
+Class constructors (both primary and secondary) may have variable-argument parameters and default parameter values, just as regular functions.
+Please refer to the [function declaration reference][Function declaration] for details.
 
 ##### Nested and inner classifiers
 
@@ -132,13 +133,13 @@ TODO(...)
 
 ##### Inheritance delegation
 
-In a classifier (an object or a class) $C$ declaration any supertype $I$ inheritance may be *delegated to* an arbitrary value $v$ if:
+In a classifier (an object or a class) declaration $C$, any supertype $I$ inheritance may be *delegated to* an arbitrary value $v$ if:
 
 - The supertype $I$ is an interface type;
 - $v$ has type $T$ such that $T <: I$.
 
-The inheritance delegation uses a syntax similar to [property delegation][Property delegation] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
-If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the method [overriding][Overriding] section).
+The inheritance delegation uses a syntax similar to [property delegation][Delegated property declaration] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
+If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the [method overriding][Overriding] section).
 
 The particular means on how $v$ is stored inside the classifier object is platform-defined.
 
@@ -157,7 +158,7 @@ Each one of these functions is generated if and only if a matching signature fun
     - `equals(that)` returns true iff:
         - `that` has the same runtime type as `this`;
         - `this.prop.equals(that.prop)` returns `true` for every data property `prop`;
-    - `hashCode()` returns different numbers for objects `A` and `B` if they do not equal by the generated `equals`;
+    - `hashCode()` returns the same numbers for objects `A` and `B` if they are equal w.r.t. the generated `equals`;
     - `toString` returns a string representations which is guaranteed to include the class name along with all the data properties' string representations.
     - TODO(Be more specific?).
 * A `copy()` function for shallow object copying with the following properties:
@@ -166,13 +167,13 @@ Each one of these functions is generated if and only if a matching signature fun
     - It has defaults for all the parameters defaulting to the value of the corresponding property in `this` object.
 * A number of `componentN()` functions for destructive declaration:
     - For the data property at position $N$ (**starting with 1**), the generated `component`$N$ function has the same type as this property and returns the value of this property;
-    - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Destructuring declaration];
+    - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Local property declaration];
     - The number of these functions is the same as the number of data properties.
 
 These generated declarations of `equals`, `hashCode` and `toString` may be overriden the same way they may be overriden in normal classes.
 The overriding version is preferred, as normally.
 In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an `override` modifier, unless the function was declared `final` in the base type declaration.
-In this case, this function is not generated and does not override anything, making the final version the preferred one.
+In this case, the function is not generated and does not override anything, making the final version the preferred one.
 
 > Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name.
 > As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.
@@ -318,13 +319,13 @@ Functions have special *function types* which are covered in more detail [here][
 A simple function declaration consists of four main parts:
 
 * Name $f$;
-* Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$;
+* Parameter list $(p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])$;
 * Return type $R$;
 * Body $b$.
 
 and has a function type $f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)$ describes function parameters --- inputs needed to execute the declared function. 
+Parameter list $(p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])$ describes function parameters --- inputs needed to execute the declared function. 
 Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
 A function may have zero or more parameters.
 
