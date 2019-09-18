@@ -38,7 +38,7 @@ private val visitor = object : PandocVisitor() {
         val format = props["format"] ?: Main.defaultFormat ?: "svg"
 
         val dprops = DiagramProperties(
-                fontSpec = "Fira Code;Fira Mono;Consolas;Monospaced",
+                fontSpec = "Fira Mono;Consolas;Monospaced",
                 textScale = 1.5,
                 diagramScale = 0.7
         )

@@ -872,16 +872,18 @@ Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses
 * $A!! \sbn B$
 * $A \sbn B$ if $\exists T!! : A <: T!!$
 * $A \sbn B?$
-* $A \sbn B$ if $\not \exists T!! : B <: T!!$
+* $A \sbn B$ if $\nexists T!! : B <: T!!$
 
 > Example:
 > ```diagram
+>
 >     A    B?   C!!          A
 >     |    |     |           |
 >     |    +--+--+    -->    |
 >     |       |              |
 >     v       v              v
 >     B       T              T
+>
 > ```
 > This example shows a situation, when the subtyping by nullability relation from $T <: C!!$ is used to prove $T <: A$.
 
