@@ -51,6 +51,8 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.create<ShellExec>("buildPdf") {
+    group = "internal"
+
     dependsOn("convertGrammar")
 
     doFirst {
@@ -62,6 +64,8 @@ tasks.create<ShellExec>("buildPdf") {
 }
 
 tasks.create<ShellExec>("buildPdfBySections") {
+    group = "internal"
+
     dependsOn("convertGrammar")
 
     doFirst {
@@ -85,6 +89,8 @@ tasks.create<JavaExec>("convertGrammar") {
 }
 
 tasks.create<ShellExec>("buildHtml") {
+    group = "internal"
+
     dependsOn("convertGrammar")
 
     doFirst {
@@ -96,6 +102,8 @@ tasks.create<ShellExec>("buildHtml") {
 }
 
 tasks.create<ShellExec>("buildHtmlBySections") {
+    group = "internal"
+
     dependsOn("convertGrammar")
 
     doFirst {
@@ -107,6 +115,8 @@ tasks.create<ShellExec>("buildHtmlBySections") {
 }
 
 tasks.create<JavaExec>("execute") {
+    group = "internal"
+
     classpath = java.sourceSets["main"].runtimeClasspath
     main = if (project.hasProperty("mainClass")) project.property("mainClass") as String else ""
     if (project.hasProperty("args")) {
