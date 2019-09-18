@@ -13,13 +13,13 @@ mkdir -p $TMP_DIR
 
 gpp -H ./index.md \
 | pandoc ${PREAMBLE_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json \
-| bash ${FILTERS_DIR}/processTodoFilter.sh html \
-| bash ${FILTERS_DIR}/markSentencesFilter.sh html \
-| bash ${FILTERS_DIR}/copyPasteFilter.sh html \
-| bash ${FILTERS_DIR}/inlineDiagramFilter.sh html \
-| bash ${FILTERS_DIR}/inlineCodeIndenterFilter.sh html \
-| bash ${FILTERS_DIR}/mathCleanUpFilter.sh html \
-| bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR
+| bash ${FILTERS_DIR}/processTodoFilter.sh latex \
+| bash ${FILTERS_DIR}/markSentencesFilter.sh latex \
+| bash ${FILTERS_DIR}/copyPasteFilter.sh latex \
+| bash ${FILTERS_DIR}/inlineDiagramFilter.sh latex \
+| bash ${FILTERS_DIR}/inlineCodeIndenterFilter.sh latex \
+| bash ${FILTERS_DIR}/mathCleanUpFilter.sh latex \
+| bash ${FILTERS_DIR}/splitSections.sh "--output-directory=$TMP_DIR --format=latex"
 
 mkdir -p ${BUILD_DIR}/pdf/sections
 

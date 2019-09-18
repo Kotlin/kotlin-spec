@@ -29,8 +29,9 @@ private class IdMapper(val splitLevel: Int) : PandocVisitor() {
     }
 }
 
-private class LinkFixer(splitLevel: Int) : PandocVisitor() {
+private class LinkFixer(splitLevel: Int, format: String) : PandocVisitor() {
     val ids: IdMapper = IdMapper(splitLevel)
+    val ext = if(format !== "html") "pdf" else "html"
 
     override fun visit(doc: Pandoc): Pandoc {
         doc.accept(ids)
@@ -41,7 +42,7 @@ private class LinkFixer(splitLevel: Int) : PandocVisitor() {
         val targetId = i.target.v0
         if (targetId in ids.entities) {
             val sec = ids.entities[targetId]!!
-            return i.copy(target = i.target.copy(v0 = "${sec}.html${targetId}"))
+            return i.copy(target = i.target.copy(v0 = "${sec}.${ext}${targetId}"))
         }
         return super.visit(i)
     }
@@ -51,9 +52,9 @@ val mapper = constructObjectMapper()
 
 data class Section(val title: String, val blocks: MutableList<Block> = mutableListOf())
 
-private class Splitter(val outputDirectory: File, val splitLevel: Int = 2) : PandocVisitor() {
+private class Splitter(val outputDirectory: File, val format: String, val splitLevel: Int = 2) : PandocVisitor() {
     override fun visit(doc: Pandoc): Pandoc {
-        val newDoc = LinkFixer(splitLevel).visit(doc)
+        val newDoc = LinkFixer(splitLevel, format).visit(doc)
 
         val blockIt = newDoc.blocks.iterator()
 
@@ -87,12 +88,13 @@ private class Splitter(val outputDirectory: File, val splitLevel: Int = 2) : Pan
 }
 
 private object SplitDocument : CliktCommand() {
+    val format: String by option("-f", "--format", help = "Format to use").defaultLazy { "html" }
     val outputDirectory: File by option().convert { File(it) }.defaultLazy { File(".") }
 
     override fun run() {
         val doc: Pandoc = mapper.readValue(System.`in`)
         outputDirectory.mkdirs()
-        Splitter(outputDirectory).visit(doc)
+        Splitter(outputDirectory, format).visit(doc)
     }
 }
 
