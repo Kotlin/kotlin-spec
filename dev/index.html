@@ -4939,6 +4939,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">interface declarations;</span></li>
 <li><span class="sentence">object declarations.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(abstract classifiers)</span></p>
+</div>
+</div>
 <h4 id="class-declaration">Class declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">A simple class declaration consists of the following parts.</span></p>
@@ -5348,7 +5353,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A parameter may include a default value <span class="math inline">\(v_i\)</span>, which is used if the corresponding argument is not specified in function invocation; <span class="math inline">\(v_i\)</span> must be an expression which evaluates to type <span class="math inline">\(V &lt;: P_i\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Return type <span class="math inline">\(R\)</span> is optional, if function body <span class="math inline">\(b\)</span> is present and may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv \operatorname{\mathtt{kotlin.Nothing}}\)</span>, in which case <span class="math inline">\(R \equiv B\)</span>. </span><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> must be specified explicitly.</span></p>
+<p><span class="sentence">Return type <span class="math inline">\(R\)</span>, if omitted, is calculated as follows.</span></p>
+</div>
+<ul>
+<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the expression form and it may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv \operatorname{\mathtt{kotlin.Nothing}}\)</span>, <span class="math inline">\(R \equiv B\)</span>.</span></li>
+<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the block form, <span class="math inline">\(R \equiv \operatorname{\mathtt{kotlin.Unit}}\)</span>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> cannot be omitted and must be specified explicitly.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -5360,7 +5372,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: <code>expect</code> and <code>external</code> functions also do not have implementations</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3] <code>expect</code> and <code>external</code> functions also do not have implementations)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -5487,6 +5499,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(brief property intro and classification)</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — functions which are used to read or write the property value.</span></p>
 </div>
@@ -5500,7 +5517,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T = e</a>
 <a class="sourceLine" id="cb12-2" title="2">    <span class="kw">get</span>() { ... }</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be <a href="#type-inference">inferred</a> (or, in case of the getter, specified explicitely), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="#subtyping">subtyping</a> for more details).</span></p>
+<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be <a href="#type-inference">inferred</a> (or, in case of the getter, specified explicitly), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="#subtyping">subtyping</a> for more details).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -5544,7 +5561,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb15-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
 <a class="sourceLine" id="cb15-4" title="4">...</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Each individual component property follows the rules for regular local property declaration.</span></p>
+<p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding <code>componentN()</code> function.</span></p>
 </div>
 <h4 id="getters-and-setters">Getters and setters</h4>
 <div class="paragraph">
