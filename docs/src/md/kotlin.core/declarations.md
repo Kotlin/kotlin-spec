@@ -34,6 +34,8 @@ There are three kinds of classifier declarations:
 * interface declarations;
 * object declarations.
 
+TODO(abstract classifiers)
+
 #### Class declaration
 
 A simple class declaration consists of the following parts.
@@ -331,8 +333,12 @@ A function may have zero or more parameters.
 
 A parameter may include a default value $v_i$, which is used if the corresponding argument is not specified in function invocation; $v_i$ must be an expression which evaluates to type $V <: P_i$.
 
-Return type $R$ is optional, if function body $b$ is present and may be inferred to have a valid type $B : B \not \equiv \Nothing$, in which case $R \equiv B$.
-In other cases return type $R$ must be specified explicitly.
+Return type $R$, if omitted, is calculated as follows.
+
+* If function body $b$ is present in the expression form and it may be inferred to have a valid type $B : B \not \equiv \Nothing$, $R \equiv B$.
+* If function body $b$ is present in the block form, $R \equiv \Unit$.
+
+In other cases return type $R$ cannot be omitted and must be specified explicitly.
 
 > As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
@@ -340,7 +346,7 @@ Function body $b$ is optional; if it is ommited, a function declaration creates 
 This is allowed only inside an [abstract classifier declaration][Classifier declaration].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
-TODO: `expect` and `external` functions also do not have implementations
+TODO([Kotlin 1.3] `expect` and `external` functions also do not have implementations)
 
 A parameterized function declaration consists of five main parts.
 
@@ -447,6 +453,8 @@ class Bar {
 :::{.paste target=grammar-rule-propertyDeclaration}
 :::
 
+TODO(brief property intro and classification)
+
 Property declarations are used to create read-only (`val`) or mutable (`var`) entities in their respective scope. 
 Properties may also have custom getter or setter --- functions which are used to read or write the property value.
 
@@ -463,7 +471,7 @@ val x: T = e
 
 in which case `x` is used as a synonym to the getter invocation. 
 Both the right-hand value `e`, the type `T` and the getter are optional, however, at least one of them must be specified. 
-More so, if both the type of `e` and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitely), the type `T` must be specified explicitly. 
+More so, if both the type of `e` and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitly), the type `T` must be specified explicitly. 
 In case both `e` and `T` are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
 
 TODO: we never actually say how getters are similar/different to normal functions and, henceworth, how the inference works
@@ -490,7 +498,8 @@ in which case `x` is used as a synonym to the getter invocation when read from a
 
 #### Local property declaration
 
-If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. However, local property declarations cannot have custom getters or setters.
+If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations.
+However, local property declarations cannot have custom getters or setters.
 
 Local property declarations also support *destructive* declaration in the form of
 
@@ -507,7 +516,9 @@ val c: V = e.component3()
 ...
 ```
 
-where `componentN()` should be a valid operator function available on the result of `e`. Each individual component property follows the rules for regular local property declaration.
+where `componentN()` should be a valid operator function available on the result of `e`.
+
+As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding `componentN()` function.
 
 #### Getters and setters
 
