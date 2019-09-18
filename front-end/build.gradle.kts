@@ -37,6 +37,8 @@ java.sourceSets {
 }
 
 tasks.create<Copy>("copyKatex") {
+    group = "internal"
+
     from("$buildDir/node_modules/katex/dist")
     into("$buildDir/js/katex".also { File(it).mkdirs() })
 }
@@ -54,11 +56,15 @@ tasks.withType<NpmInstallTask> {
 }
 
 tasks.create<Copy>("copyImportedLibraries") {
+    group = "internal"
+
     from("$buildDir/node_modules_imported")
     into("$buildDir/node_modules")
 }
 
 tasks.create<Delete>("removeUnnecessaryImportedLibraries") {
+    group = "internal"
+
     delete("$buildDir/node_modules_imported/@kotlin-externals")
 }
 
