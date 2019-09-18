@@ -166,6 +166,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</a></li>
 <li><a href="#kotlin.char"><code>kotlin.Char</code></a></li>
 <li><a href="#kotlin.string"><code>kotlin.String</code></a></li>
+<li><a href="#kotlin.enum"><code>kotlin.Enum</code></a></li>
 </ul></li>
 <li><a href="#declarations">Declarations</a><ul>
 <li><a href="#glossary-2">Glossary</a></li>
@@ -4789,7 +4790,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">The signed integer types are the following.</span></p>
+<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="#built-in-integer-types">type system</a> and <a href="#integer-literals">integer literals</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The signed integer types are the following.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>kotlin.Int</code></span></li>
@@ -4841,7 +4845,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Is this true?)</span></p>
+<p><span class="sentence">TODO(Is this true?) TODO(Specify IEEE 754 quirks w.r.t. smart casts, cc <span class="citation" data-cites="dmitry.petrov">@dmitry.petrov</span>)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -4851,9 +4855,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Char</code> is the built-in classifier type which represents a single Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of <a href="#character-literals">character literals</a>.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
+</div>
+</blockquote>
 <h3 id="kotlin.string"><code>kotlin.String</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.String</code> is the built-in classifier type that represents a sequence of Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of the result of <a href="#string-interpolation-expressions">string interpolation</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.enum"><code>kotlin.Enum</code></h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Everything)</span></p>
+</div>
 </div>
 <h2 id="declarations">Declarations</h2>
 <h3 id="glossary-2">Glossary</h3>
@@ -4956,15 +4976,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Companion object declaration <code>companion object CO { ... }</code> for class <code>C</code> introduces an object, which is available under this class’ name or under the path <code>C.CO</code>. </span><span class="sentence">Companion object name may be omitted, in which case it is considered to be equal to <code>Companion</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ path for all nested classifiers except for inner classes. </span><span class="sentence">Inner classes are available only on the corresponding class’ entities <span><span class="TODO">(TODO: wording here is very bad)</span><span class="TODO-marker">*</span></span>. </span><span class="sentence">Further details are available [here][Inner and nested classes].</span></p>
+<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ path. </span><span class="sentence">Further details are available <a href="#nested-and-inner-classifiers">here</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> and extends the rules for a simple class declaration w.r.t. this type parameter list. </span><span class="sentence">Further details are described <a href="#declarations-with-type-parameters">here</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Examples)</span></p>
 </div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> and extends the rules for a simple class declaration w.r.t. this type parameter list. </span><span class="sentence">Further details are described <a href="#declarations-with-type-parameters">here</a>.</span></p>
 </div>
 <h5 id="constructor-declaration">Constructor declaration</h5>
 <div class="paragraph">
@@ -4985,7 +5005,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\texttt{var}\ name: type\)</span>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Regular and read-only property constructor parameters may be introduced with a <code>vararg</code> modifier, making them variable argument parameters. </span><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type, with variable argument parameters have corresponding array types, same as with function variable argument parameters. </span><span class="sentence">One can consider them to have the following syntactic expansion.</span></p>
+<p><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: if a property constructor parameter with type <span class="math inline">\(T\)</span> is specified as <code>vararg</code>, its corresponding class property type is the result of <a href="#array-types"><em>array type specialization</em></a> of type <code>Array&lt;</code><span class="math inline">\(\operatorname{\mathtt{out\ }}T\)</span><code>&gt;</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">One can consider primary constructor parameters to have the following syntactic expansion.</span></p>
 </div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">class</span> Foo(<span class="va">i</span>: <span class="dt">Int</span>, <span class="kw">vararg</span> <span class="kw">val</span> <span class="va">d</span>: <span class="dt">Double</span>, <span class="kw">var</span> <span class="va">s</span>: <span class="dt">String</span>) : <span class="dt">Super</span>(<span class="va">i</span>, <span class="va">d</span>, <span class="va">s</span>) {}</a>
 <a class="sourceLine" id="cb8-2" title="2"></a>
@@ -5014,7 +5042,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Class constructors (both secondary and primary) may have variable-argument parameters and default parameter values, just as regular functions. </span><span class="sentence">Please refer to the [function declaration reference][Function declarations] for details.</span></p>
+<p><span class="sentence">Class constructors (both primary and secondary) may have variable-argument parameters and default parameter values, just as regular functions. </span><span class="sentence">Please refer to the <a href="#function-declaration">function declaration reference</a> for details.</span></p>
 </div>
 <h5 id="nested-and-inner-classifiers">Nested and inner classifiers</h5>
 <div class="paragraph">
@@ -5038,14 +5066,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="inheritance-delegation">Inheritance delegation</h5>
 <div class="paragraph">
-<p><span class="sentence">In a classifier (an object or a class) <span class="math inline">\(C\)</span> declaration any supertype <span class="math inline">\(I\)</span> inheritance may be <em>delegated to</em> an arbitrary value <span class="math inline">\(v\)</span> if:</span></p>
+<p><span class="sentence">In a classifier (an object or a class) declaration <span class="math inline">\(C\)</span>, any supertype <span class="math inline">\(I\)</span> inheritance may be <em>delegated to</em> an arbitrary value <span class="math inline">\(v\)</span> if:</span></p>
 </div>
 <ul>
 <li><span class="sentence">The supertype <span class="math inline">\(I\)</span> is an interface type;</span></li>
 <li><span class="sentence"><span class="math inline">\(v\)</span> has type <span class="math inline">\(T\)</span> such that <span class="math inline">\(T &lt;: I\)</span>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The inheritance delegation uses a syntax similar to [property delegation][Property delegation] using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overriden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the method <a href="#overriding">overriding</a> section).</span></p>
+<p><span class="sentence">The inheritance delegation uses a syntax similar to <a href="#delegated-property-declaration">property delegation</a> using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overriden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the <a href="#overriding">method overriding</a> section).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The particular means on how <span class="math inline">\(v\)</span> is stored inside the classifier object is platform-defined.</span></p>
@@ -5070,7 +5098,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>that</code> has the same runtime type as <code>this</code>;</span></li>
 <li><span class="sentence"><code>this.prop.equals(that.prop)</code> returns <code>true</code> for every data property <code>prop</code>;</span></li>
 </ul></li>
-<li><span class="sentence"><code>hashCode()</code> returns different numbers for objects <code>A</code> and <code>B</code> if they do not equal by the generated <code>equals</code>;</span></li>
+<li><span class="sentence"><code>hashCode()</code> returns the same numbers for objects <code>A</code> and <code>B</code> if they are equal w.r.t. the generated <code>equals</code>;</span></li>
 <li><span class="sentence"><code>toString</code> returns a string representations which is guaranteed to include the class name along with all the data properties’ string representations.</span></li>
 <li><div class="TODO">
 <span class="sentence">TODO(Be more specific?).</span>
@@ -5085,12 +5113,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A number of <code>componentN()</code> functions for destructive declaration:</span>
 <ul>
 <li><span class="sentence">For the data property at position <span class="math inline">\(N\)</span> (<strong>starting with 1</strong>), the generated <code>component</code><span class="math inline">\(N\)</span> function has the same type as this property and returns the value of this property;</span></li>
-<li><span class="sentence">It has an <code>operator</code> modifier, allowing it to be used in [destructuring declarations][Destructuring declaration];</span></li>
+<li><span class="sentence">It has an <code>operator</code> modifier, allowing it to be used in <a href="#local-property-declaration">destructuring declarations</a>;</span></li>
 <li><span class="sentence">The number of these functions is the same as the number of data properties.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">These generated declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be overriden the same way they may be overriden in normal classes. </span><span class="sentence">The overriding version is preferred, as normally. </span><span class="sentence">In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an <code>override</code> modifier, unless the function was declared <code>final</code> in the base type declaration. </span><span class="sentence">In this case, this function is not generated and does not override anything, making the final version the preferred one.</span></p>
+<p><span class="sentence">These generated declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be overriden the same way they may be overriden in normal classes. </span><span class="sentence">The overriding version is preferred, as normally. </span><span class="sentence">In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an <code>override</code> modifier, unless the function was declared <code>final</code> in the base type declaration. </span><span class="sentence">In this case, the function is not generated and does not override anything, making the final version the preferred one.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -5306,7 +5334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">Name <span class="math inline">\(f\)</span>;</span></li>
-<li><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span>;</span></li>
+<li><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])\)</span>;</span></li>
 <li><span class="sentence">Return type <span class="math inline">\(R\)</span>;</span></li>
 <li><span class="sentence">Body <span class="math inline">\(b\)</span>.</span></li>
 </ul>
@@ -5314,7 +5342,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">and has a function type <span class="math inline">\(f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 = v_1, \ldots, p_n: P_n = v_n)\)</span> describes function parameters — inputs needed to execute the declared function. </span><span class="sentence">Each parameter <span class="math inline">\(p_i: P_i = v_i\)</span> introduces <span class="math inline">\(p_i\)</span> as a name of value with type <span class="math inline">\(P_i\)</span> available inside function body <span class="math inline">\(b\)</span>; therefore, parameters are final and cannot be changed inside the function. </span><span class="sentence">A function may have zero or more parameters.</span></p>
+<p><span class="sentence">Parameter list <span class="math inline">\((p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])\)</span> describes function parameters — inputs needed to execute the declared function. </span><span class="sentence">Each parameter <span class="math inline">\(p_i: P_i = v_i\)</span> introduces <span class="math inline">\(p_i\)</span> as a name of value with type <span class="math inline">\(P_i\)</span> available inside function body <span class="math inline">\(b\)</span>; therefore, parameters are final and cannot be changed inside the function. </span><span class="sentence">A function may have zero or more parameters.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A parameter may include a default value <span class="math inline">\(v_i\)</span>, which is used if the corresponding argument is not specified in function invocation; <span class="math inline">\(v_i\)</span> must be an expression which evaluates to type <span class="math inline">\(V &lt;: P_i\)</span>.</span></p>
