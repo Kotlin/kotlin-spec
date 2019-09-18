@@ -593,12 +593,12 @@
 :::
 ::: { .grammar-rule #grammar-rule-IntegerLiteral }
 **_IntegerLiteral_:**  
-  ~ [_DecDigitsNoZero_](#grammar-rule-DecDigitsNoZero) {[_DecDigitsOrSeparator_](#grammar-rule-DecDigitsOrSeparator)} [_DecDigit_](#grammar-rule-DecDigit)  
+  ~ [_DecDigitNoZero_](#grammar-rule-DecDigitNoZero) {[_DecDigitOrSeparator_](#grammar-rule-DecDigitOrSeparator)} [_DecDigit_](#grammar-rule-DecDigit)  
   | [_DecDigit_](#grammar-rule-DecDigit)
 :::
 :::{ .grammar-rule #grammar-rule-HexDigit }
 **_HexDigit_:**  
-  ~  [_DecimalDigit_](#grammar-rule-DecimalDigit)   
+  ~  [_DecDigit_](#grammar-rule-DecDigit)   
   | `'A'` | `'B'` | `'C'` | `'D'` | `'E'` | `'F'`   
   | `'a'` | `'b'` | `'c'` | `'d'` | `'e'` | `'f'`
 :::
