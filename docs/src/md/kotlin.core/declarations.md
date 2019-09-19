@@ -577,8 +577,8 @@ Getters and setters allow for some modifiers available for function declarations
 
 #### Delegated property declaration
 
-A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e`. 
-One may view these properties as regular properties with a special *delegating* [getters][Getters and setters]:
+A delegated read-only property declaration `val x: T by e` introduces `x` as a name for the *delegation* result of property `x` to the entity `e` or to the delegatee of `e` provided by [`provideDelegate`](#provide-delegate).
+For the former, one may consider these properties as regular properties with a special *delegating* [getters][Getters and setters]:
 
 ```kotlin
 val x: T by e
@@ -594,7 +594,7 @@ val x: T
 
 Here every access to such property (`x` in this case) becomes an [overloadable][Overloadable operators] form which is expanded into the following:
 
-```haskell
+```kotlin
 e.getValue(thisRef, property)
 ```
 
@@ -605,6 +605,9 @@ where
 - `thisRef` is the [receiver][Receivers] object for the property.
   This argument is `null` for local properties;
 - `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details).
+
+A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e` or to the delegatee of `e` provided by [`provideDelegate`](#provide-delegate).
+As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters]:
 
 ```kotlin
 var x: T by e
@@ -619,13 +622,10 @@ var x: T
     set(value: T) { x$delegate.setValue(thisRef, ::x, value) }
 ```
 
-A delegated mutable property declaration `var x: T by e` introduces `x` as a name of a mutable entity with type `T`, access to which is *delegated* to the entity `e`. 
-As before, one may view these properties as regular properties with special *delegating* [getters and setters][Getters and setters].
-
 Read access is handled the same way as for a delegated read-only property. 
 Any write access to `x` (using, for example, an assignment operator `x = y`) becomes an overloadable form with the following expansion:
 
-```haskell
+```kotlin
 e.setValue(thisRef, property, y)
 ```
 
@@ -643,6 +643,7 @@ The type of a delegated property may be omitted at the declaration site, meaning
 If this type is omitted, it is inferred as if it was assigned the value of its expansion.
 If this inference fails, it is a compile-time error.
 
+::: {#provide-delegate}
 If the delegate expression has a suitable operator function called `provideDelegate`, a *provided* delegate is used instead.
 The provided delegate is accessed using the following expansion:
 
@@ -676,6 +677,7 @@ val x: T
 where `provideDelegate` is a suitable operator function available using the receiver `e`, while `getValue` and `setValue` work the same way they do with normal property delegation.
 As is the case with`setValue` and `getValue`,  `thisRef`  is a reference to the receiver of the property or `null` for local properties, but there is also a special case: for extension properties `thisRef` supplied to `provideDelegate` is `null`, while `thisRef` provided to `getValue` and `setValue` is the actual receiver.
 This is due to the fact that, during the creation of the property, no receiver is available.
+:::
 
 For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property.
 This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value.
@@ -694,7 +696,7 @@ This is different from usual property declarations, that do not have any paramet
 > Only properties that use other objects' storage facilities and/or uses constant data can be extension properties.
 
 Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a [_receiver_][Receivers], implicit or explicit. 
-Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. 
+Like for regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. 
 For more information on how a particular receiver for each access is chosen, please refer to the [overloading section][Overload resolution].
 
 The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`. 
@@ -737,13 +739,24 @@ In order to be declared `const`, a property must meet the following requirements
 
 - Its type is one of the following:
     - One of the [the built-in integral types][Built-in integer types];
+    - One of the [the built-in floating types][Built-in floating point arithmetic types];
     - `kotlin.Boolean`;
     - `kotlin.Char`;
     - `kotlin.String`;
 - It is declared in the top-level scope or inside [an object declaration][Object declarations];
-- It has an initializer expression and this initializer expression may be evaluated at compile-time.
-  Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
+- It has an initializer expression and this initializer expression can be evaluated at compile-time.
+  Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.
+
+> Example:
+> ```kotlin
+> // Correct constant properties
+> const val answer = 2 * 21
+> const val msg = "Hello World!"
+> 
+> // Incorrect constant properties
+> const val emptyStringHashCode = "".hashCode()
+> ```
 
 #### Late-initialized properties
 
@@ -754,9 +767,13 @@ This means, among other things, that it is the responsibility of the programmer 
 A property may be declared late-initialized if:
 
 - It has no custom getters, setters or delegation;
-- It is a member or top-level property;
+- It is a member or a top-level property;
 - It is mutable;
-- It has declared non-nullable type which is also not one of built-in [integer][Built-in integer types] or [floating][Built-in floating point arithmetic types] types.
+- It has declared non-nullable type which is also not one of the following types:
+    + One of the [built-in integer types][Built-in integer types];
+    + One of the [built-in floating types][Built-in floating point arithmetic types];
+    + [`kotlin.Boolean`][`kotlin.Boolean`];
+    + [`kotlin.Char`][`kotlin.Char`].
 
 ### Type alias
 
@@ -791,7 +808,11 @@ The following declarations are not allowed to have type parameters:
 
 Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
 These either are written directly at the parameter placement syntax or using a special `where` syntax.
-Any number of restrictions is allowed on a single type.
+Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.
+
+- For a given type parameter `T`, only one restriction `T : U` can have `U` to be another type parameter;
+- TODO(anything else?)
+
 These restrictions are turned into corresponding [type constraints][Kotlin type constraints] when the type parameters are substituted with types and are employed during [type inference][Type inference] and [overload resolution][Overload resolution] of any usage of the corresponding declaration.
 See the corresponding sections for details.
 
@@ -799,7 +820,7 @@ Type parameters do not introduce [runtime-available types][Runtime-available typ
 
 #### Type parameter variance
 
-The [declaration-site variance][Mixed-site variance] of a particular type parameter for a type is specified using special keywords `in` (for covariant parameters) and `out` (for contravariant parameters).
+The [declaration-site variance][Mixed-site variance] of a particular type parameter for a classifier declaration is specified using special keywords `in` (for covariant parameters) and `out` (for contravariant parameters).
 If the variance is not specified, the parameter is implicitly declared invariant.
 See [the type system section][Mixed-site variance] for details.
 
