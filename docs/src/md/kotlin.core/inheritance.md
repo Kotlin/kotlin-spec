@@ -14,7 +14,7 @@ This means, among other things, that every class or object type has a direct sup
 A class is called **closed** and is forbidden to be inherited from if it is declared not `open` or `abstract` (please note that classes are neither `open` nor `abstract` by default). 
 A `data class`, `enum class` or `annotation class` cannot be declared `open` or `abstract` and cannot be inherited from.
 
-An interface type may be inherited from any number of other interface types (and only interface types) without any limitation.
+An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is [well-formed][Type system].
 
 TODO: there are limitations, for example, generic interfaces with different parameters make things complicated
 
@@ -48,15 +48,16 @@ A callable declaration (that is, a property or member function declaration) insi
 - Its visibility (and the visibility of its getter and/or setter) is not `private`;
 - It is declared as `open`, `abstract` or `override` (interface methods and properties are implicitly `abstract` if they don't have a body or `open` if they do).
 
-It is illegal for a declaration to be both `private` and `open`, `abstract` or `override` and should result in a compiler error.
+It is illegal for a declaration to be both `private` and `open`, `abstract` or `override`, such declarations should result in a compile-time error.
 
-A callable declaration inside a classifier declaration *subsumes* a corresponding declaration of the base classifier type if:
+A callable declaration $D$ inside a classifier declaration *subsumes* a corresponding declaration $B$ of the base classifier type if:
 
-- Its return type is a subtype of the return type of the corresponding declaration;
-- Its formal parameter types are supertypes of the types of corresponding parameters from the corresponding declaration;
-- Its name is the same as the name of the corresponding declaration.
+- Return type of $D$ is a subtype of the return type of $B$;
+- Formal parameter types of $D$ are pairwise equal to the formal parameter types of $B$;
+- Type parameters of $D$ are pairwise [equivalent][Subtyping] to the type parameters of $B$;
+- Name of $D$ is the same as the name of $B$.
 
-If the declaration of the base classifier type is overridable and the declaration of the derived classifier type subsumes it and it has an `override` modifier, it is *overriding* the base declaration.
+If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes it, and $D$ has an `override` modifier, $D$ is *overriding* the base declaration $B$.
 If the base declaration is not overridable and/or the deriving declaration does not have an `override` modifier, it is not permitted and should result in a compile-time error.
 
 If the overriding declaration does not have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overriden declaration.
