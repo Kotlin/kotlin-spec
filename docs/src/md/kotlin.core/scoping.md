@@ -6,10 +6,12 @@ Scopes are nested, with entities introduced in outer scopes also available in th
 The top level of a Kotlin file is also a scope, containing all the scopes within the file.
 
 All the scopes are divided into two categories: declaration scopes and statement scopes. 
-These two kinds of scopes differ in how the identifiers in code refer to the values definied in the scopes.
+These two kinds of scopes differ in how the identifiers in code refer to the values defined in the scopes.
 
 Declaration scopes include:
 
+- The project [modules][Modules];
+- The project [packages][Packages and imports];
 - The top level scope of a normal Kotlin file (not script file);
 - The bodies of [classifier declarations][Classifier declaration];
 - The bodies of [object literals][Object literals];
@@ -31,9 +33,11 @@ These entities may be types or values, where values may refer to objects, functi
 Top-level scopes additionally allow to introduce such bindings using [`import` directive][Packages and imports] from other top-level scopes.
 
 In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. 
-An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature (TODO: what's a signature?) and allow definining several functions with the same name in the same scope. 
+An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature (TODO: what's a signature?) and allow defining several functions with the same name in the same scope. 
 When [calling functions][Call and property access expressions] a process called [overloading resolution][Overload resolution] takes places that allows differentiating such functions. 
 Overloading resolution also applies to properties if they are used as functions through `invoke`-convention, but it does not mean several properties with the same name may be defined in the same scope.
+
+Platforms may introduce additional restrictions on which identifiers may be declared together in the same or related scopes.
 
 The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order their declarations appear in it. 
 It is not allowed to access a value through an identifier in the code that (syntactically) precedes the binding itself. 

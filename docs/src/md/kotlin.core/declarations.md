@@ -840,16 +840,20 @@ Declarations may be also marked `public` explicitly.
 Declarations marked as `private` can only be accessed from the same scope they are declared in.
 For example, all `private` top-level declarations in a file may only be accessed by code from the same file.
 
+TODO(PRIVATE_TO_THIS)
+
 Declarations marked as `internal` may only be accessed from the same [module][Modules], treated as `public` from inside the module and as `private` from outside the module.
 
 Declarations in classifier declaration scope can also be declared `protected`, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.
+
+TODO(Double check rules for `protected`)
 
 There is a partial order of *weakness* between different visibility modifiers:
 
 - `protected` and `internal` are weaker than `private`;
 - `public` is weaker than `protected` and `internal`.
 
-> There is a certain restriction regarding `inline` functions that have a different visibility from entities they access.
+> Note: there is a certain restriction regarding `inline` functions that have a different visibility from entities they access.
 > In particular, an `inline` function cannot access entities with a stronger visibility (i.e. `public inline` function accessing a `private` property).
 > There is one exception to this: a `public inline` function can access `internal` entities which are marked with a special builtin [annotation][Annotations] `@PublishedApi`.
 

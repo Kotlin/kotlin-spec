@@ -255,6 +255,9 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 
 > Note: `Number` is actually a built-in abstract class; we use it as an interface for illustrative purposes.
 
+TODO(We need to forbid situations like this:
+     Inv<T> + A : Inv<String> + B : A, Inv<Int>)
+
 ##### Parameterized classifier types
 
 A classifier type constructor
