@@ -27,7 +27,7 @@ Both left-hand and right-hand sides of an assignment must be expressions, more s
 For an expression to be *assignable*, i.e. be allowed to occur on the left-hand side of an assignment, it **must** be one of the following:
 
 - an identifier referring to a mutable property;
-- a navigation expression referring to a mutable property;
+- a [navigation expression][Navigation operators] referring to a mutable property;
 - an indexing expression.
 
 TODO(switch to navigation paths when we have them?)
@@ -81,6 +81,8 @@ All of these operators are overloadable operator functions with the following ex
 - $A\ \texttt{\%=}\ B$ is exactly the same as one of the following:
     - $A\texttt{.remAssign(}B\texttt{)}$ if a suitable `remAssign` operator function exists and is available;
     - $A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}$ if a suitable `rem` operator function exists and is available.
+
+> Note: second expansions of the form $A\ \texttt{=}\ \ldots$ are applicable only if $A$ is a mutable property.
 
 > Note: as of Kotlin version 1.2.31, there are additional overloadable functions for `%` called `mod`/`modAssign`, which are deprecated.
 
@@ -174,6 +176,8 @@ A code block is said to contain no last expression if it does not contain any st
 
 > Note: you may consider the case of a missing last expression as if a synthetic last expression with no runtime semantics and type `kotlin.Unit` is introduced in its place.
 
+TODO(COERSION_TO_UNIT?)
+
 A *control structure body* is either a single statement or a code block.
 A *last expression* of a control structure body `CSB` is either the last expression of a code block (if `CSB` is a code block) or the single statement itself (if `CSB` is an expression).
 If a control structure body is not a code block or an expression, it has no last expression.
@@ -193,4 +197,5 @@ The type of a control structure body is the type of its value.
 - Labels
 - Are declarations statements or not?
     - In the current grammar, they are
+    - If yes, what does it mean to the spec?
 - How expansions with new variables actually work
