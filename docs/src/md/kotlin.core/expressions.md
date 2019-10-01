@@ -968,9 +968,39 @@ These may be any of the following:
 
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;
 - `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;
-- `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
+- `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
+- `this@outerFunction`, where `outerFunction` is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
+  Note that this is exclusive with the previous case, meaning that if the lambda literal is labeled, this mechanism cannot be used.
 
-TODO: `this@run` ?
+In case there are several entities the labeled `this` can refer to using the same name, the closest one syntactically is used.
+
+Example:
+
+```
+object C
+class A {
+    fun B.foo() {
+        // run is a standard library function with extension lambda parameter
+        C.run { 
+            this // refers to receiver of type C
+            this@A // refers to receiver of type A
+            this@B // refers to receiver of type B
+            this@foo // refers to receiver of type B
+            this@run // refers to receiver of type C
+        }
+        C.run label@ {
+            this // refers to receiver of type C
+            this@A // refers to receiver of type A
+            this@B // refers to receiver of type B
+            this@foo // refers to receiver of type B
+            this@label // refers to receiver of type C
+            this@run // illegal: lambda literal is labeled
+        }
+    }
+}
+```
+
+TODO: check this example for errors
 
 Any other form of this-expression is illegal and must be a compile-time error.
 
