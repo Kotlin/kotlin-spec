@@ -223,6 +223,8 @@ Smart casts are introduced by the following Kotlin constructions.
 - Direct assignments;
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
 
+TODO: links for all these
+
 > Note: property declarations are not listed here, as their types are derived from initializers.
 
 > Note: for the purposes of smart casts, most of these constructions are simplified and/or desugared, when we are building the program CFG for the data-flow analysis.
