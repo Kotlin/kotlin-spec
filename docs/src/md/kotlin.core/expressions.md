@@ -128,14 +128,14 @@ A simply-formed character literal is any symbol between two single quotation mar
 A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint.
 Simple escaped symbols include:
 
-- `\t` --- the unicode TAB symbol (TODO());
-- `\b` --- the unicode BACKSPACE symbol (TODO());
+- `\t` --- the unicode TAB symbol (U+0009);
+- `\b` --- the unicode BACKSPACE symbol (U+0008);
 - `\r` --- *CR*;
 - `\n` --- *LF*;
-- `\'` --- the unicode single quotation symbol (TODO());
-- `\"` --- the unicode double quotation symbol (TODO());
-- `\\` --- the unicode backslash symbol symbol (TODO());
-- `\$` --- the unicode DOLLAR symbol (TODO()).
+- `\'` --- the unicode apostrophe symbol (U+0027);
+- `\"` --- the unicode double quotation symbol (U+0028);
+- `\\` --- the unicode backslash symbol (U+005C);
+- `\$` --- the unicode DOLLAR sign (U+0024).
 
 A unicode codepoint escaped symbol is the symbol `\u` followed by exactly four hexadecimal digits.
 It represents the unicode symbol with the codepoint equal to the number represented by these four digits.
@@ -207,7 +207,7 @@ If the condition evaluates to `true`, the first branch (the *true branch*) is ev
 
 The value of the resulting expression is the same as the value of the chosen branch.
 
-The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches (TODO(not that simple)), if both branches are present.
+The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches, if both branches are present.
 If either of the branches are omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
 
 Let's illustrate it with some examples:
@@ -371,6 +371,8 @@ For special values created without explicit constructor calls, notably, the cons
 - Otherwise, equality by reference is implementation-defined and should not be used as a means of comparing such values.
 
 Reference equality expressions always have type `kotlin.Boolean`.
+
+> Note: in the current version of Kotlin, using the reference equality expression to compare [built-in integer values][Built-in integer types] or [built-in floating-point values][Built-in floating point arithmetic types] is deprecated as these have no available constructors and such a comparison is meaningless and error-prone due to the reasons stated above
 
 #### Value equality expressions
 
@@ -967,6 +969,8 @@ These may be any of the following:
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;
 - `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;
 - `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
+
+TODO: `this@run` ?
 
 Any other form of this-expression is illegal and must be a compile-time error.
 
