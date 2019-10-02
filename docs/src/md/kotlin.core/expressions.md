@@ -379,8 +379,8 @@ Reference equality expressions always have type `kotlin.Boolean`.
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
 These operators are different from [other overloadable operators][Overloadable operators] and have the following expansion:
 
-- `A == B` is exactly the same as `(A as Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
-- `A != B` is exactly the same as `!((A as Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
+- `A == B` is exactly the same as `(A as? Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
+- `A != B` is exactly the same as `!((A as? Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
 
 Value equality expressions always have type `kotlin.Boolean` as does the `equals` method in `kotlin.Any`.
 
@@ -403,7 +403,7 @@ These operators are [overloadable][Overloadable operators] with the following ex
 
 where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
 
-The `compareTo` operator function must have a return type `kotlin.Int`, otherwise it is a compile-time error.
+The `compareTo` operator function must have return type `kotlin.Int`, otherwise such declaration is a compile-time error.
 
 All comparison expressions always have type `kotlin.Boolean`.
 
@@ -421,6 +421,8 @@ All comparison expressions always have type `kotlin.Boolean`.
 A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
 The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
+
+TODO(Rules for $T$ are more complicated, for `B<T> : A<T>` such checks as `a is B` or `a is B<Number>` are sometimes OK)
 
 Type-checking expression always has type `kotlin.Boolean`.
 
@@ -568,9 +570,10 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
 
-A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
+As the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
+Otherwise, such declaration is a compile-time error.
 
-> Note: as the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
+A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
 
 #### Prefix decrement expression
 
@@ -584,9 +587,10 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
 
-A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
+As the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
+Otherwise, such declaration is a compile-time error.
 
-> Note: as the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
+A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
 
 #### Unary minus expression
 
@@ -636,9 +640,10 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignable expressions].
 Otherwise, it is a compile-time error.
 
-A postfix increment expression has the same type as its operand expression (`A` in our examples).
+As the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
+Otherwise, such declaration is a compile-time error.
 
-> Note: as the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
+A postfix increment expression has the same type as its operand expression (`A` in our examples).
 
 #### Postfix decrement expression
 
@@ -652,9 +657,10 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignable expressions].
 Otherwise, it is a compile-time error.
 
-A postfix decrement expression has the same type as its operand expression (`A` in our examples).
+As the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
+Otherwise, such declaration is a compile-time error.
 
-> Note: as the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
+A postfix decrement expression has the same type as its operand expression (`A` in our examples).
 
 ### Not-null assertion expression
 
@@ -722,14 +728,22 @@ Expressions which use the navigation binary operators (`.`, `?.` or `::`) are sy
 `a.c` may have one of the following semantics when used as an expression:
 
 - A fully-qualified type, property or object name.
-  The left side of `.` must be a package name, while the right side corresponds to a declaration in that package.
+  The left side of `.` must be a value available in the current scope, while the right side corresponds to a declaration in the scope of that value.
   
     > Note: qualification uses operator `.` only.
 - A property access.
   Here `a` is a value available in the current scope and `c` is a property name.
-- A function call if followed by the call suffix (arguments in parentheses).
-  Here `a` is a value available in the current scope and `c` is a function name.
-  These expressions follow the [overloading][Overload resolution] rules.
+
+TODO(Are packages values?)
+
+TODO(Type references and their stuff)
+
+If followed by the call suffix (arguments in parentheses), `a.c()` may have one of the following semantics when used as an expression:
+
+- A function call; here `a` is a value available in the current scope and `c` is a function name;
+- A property access with `invoke`-convention; here `a` is a value available in the current scope and `c` is a property name.
+
+    These expressions follow the [overloading][Overload resolution] rules.
 
 `a::c` may have one of the following semantics when used as an expression:
 
