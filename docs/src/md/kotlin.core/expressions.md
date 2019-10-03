@@ -768,7 +768,8 @@ It is not to be confused with [class literals][Class literals] that use similar 
 
 A callable reference `A::c` where `A` is a type name and `c` is a name of a callable available for type `A` is a *callable reference* for a type.
 A callable reference `e::c` where `e` is another expression and `c` is a name of a callable available for type `A` is a *callable reference* for expression `e`.
-The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the usual navigation syntax. 
+The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the usual navigation syntax.
+However, in some cases there are some differences which we cover in the corresponding paragraphs.
 
 Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:
 
@@ -777,11 +778,19 @@ Depending on the meaning of the left-hand and right-hand sides of the expression
 - If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a property of the value on the left-hand side, then the expression is a value-property reference;
 - If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a function for the receiver being th value on the left-hand side, then the expression is a value-function reference.
 
+TODO(We might get new ambiguity between props and funs with the same name)
+
+TODO(References to members of companion objects work kinda explicitly)
+
+TODO(Examples)
+
+TODO(Everything is very-very messy here...)
+
 The types of these expressions are implementation-defined, but the following constraints must hold:
 
 - The type of any kind of property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
 - The type of any kind of callable reference is a subtype of [function type][Function types] that allows the corresponding callable to be accessed/called accordingly:
-    - For a type-callable reference, it is an extension function type `O.(Arg0 ... ArgN) -> R`, where `O` is a receiver type same as the left-hand type of the expression, `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable;
+    - For a type-callable reference, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type same as the left-hand type of the expression, `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable;
     - For a value-callable reference, it is a normal function type `(Args) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable.
     The receiver is bound to the left-hand side expression of the reference expression.
 
@@ -789,9 +798,9 @@ Being of an appropriate function type also means that the values defined by thes
 
 > Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.
 
-TODO(this is pretty complex, actually. Do we need all the K(Mutable)PropertyN business defined in the specification???)
+TODO(Include all the K(Mutable)Property(N) business, as it's shared between BEs; we also need KProperty because of delegates)
 
-TODO(we need to update overload resolution section with these guys)
+TODO(We need to update overload resolution section with these guys)
 
 #### Class literals
 
@@ -822,15 +831,17 @@ As described in [the function declaration section][Function declarations], funct
 
 - Explicit receiver argument, used in calls with explicit receivers;
 - Normal arguments, provided directly inside the parentheses part of the call;
-- Named arguments in the form $identifier\ \texttt{=}\ value$, where $identifier$ is a parameter name used at declaration-site of the function;
+- Named arguments in the form `identifier = value`, where `identifier` is a parameter name used at declaration-site of the function;
 - Variable-argument arguments, provided the same way as normal arguments;
 - A trailing lambda literal argument, specified outside the parentheses (see [lambda literal section][Lambda literals]) for details.
 
 In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.
 
-The evaluation of the function arguments is performed **before** the function itself is invoked **in the order of appearance of the arguments** left-to-right, with no consideration on how the parameters of the function were specified during function declaration.
+The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present.
+Function arguments are then evaluated **in the order of their appearance in the function call** left-to-right, with no consideration on how the parameters of the function were specified during function declaration.
 This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given.
 Default arguments not specified in the call are all evaluated **after** all the provided arguments, in the order of their appearance in function declaration.
+All this happens **before** the function itself is invoked.
 
 Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):
 
@@ -877,11 +888,12 @@ Both of these provide a way of defining a function in-place, but have subtle dif
 They have a syntax very similar to function declarations, with the following key differences:
 
 - Anonymous functions do not have a name;
-- Anonymous functions may not have type parameters;
-- Anonymous functions may not have default parameters;
-- Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding array type (TODO(how does this really work?)).
+- Anonymous functions cannot have type parameters;
+- Anonymous functions cannot have default parameters;
+- Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding [array type][Array types] (TODO(how does this really work?));
+- Anonymous functions may omit formal parameter types, if they can be [inferred][Type inference] from the context.
 
-Anonymous function declaration may declare an anonymous extension function.
+Anonymous function declaration can declare an anonymous extension function by following the [extension function declaration][Extension function declaration] convention.
 
 > Note: as anonymous functions may not have type parameters, you cannot declare an anonymous extension function on a parameterized receiver type.
 
@@ -917,17 +929,17 @@ If the lambda expression defines an expansion function, the expansion receiver m
 > Note: having no parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).
 
 Lambda literals are different from other forms of function definition in that the `return` expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself.
-Such returns are only allowed if the function defined by the lambda is guaranteed to be [inlined][Inlining] and are not allowed at all otherwise.
+Such returns are only allowed if the function defined by the lambda and its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it should be a compile-time error.
 
 If the lambda expression is labeled, it can also be returned from using the [labeled return expression][Labeled return expression].
 In addition to this, if the lambda expression is used as a trailing lambda parameter to a function call, the name of the function used in the call may be used instead of the label.
-If a particular labeled `return` expression is used inside multiple lambda bodies invoked during the call of the same function, this is an ambiguity and should be reported as a compile-time error.
+If a particular labeled `return` expression is used inside multiple lambda bodies invoked during the call of the same function, this is resolved as `return` from the nearest matching lambda.
 
 TODO(Typing)
 
 Any properties used in any way inside the lambda body are **captured** by the lambda expression and, depending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
 
-TODO(Rules of capturing)
+TODO(Rules of capturing + capture by "property")
 
 ### Object literals
 

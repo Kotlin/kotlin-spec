@@ -615,6 +615,8 @@ i.e., receiver is considered as yet another argument of its function type.
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
 
+TODO(Specify cases when these two types are **not** equivalent)
+
 Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
 
 > Note: a compiler implementation may consider a function type $\FunctionN$ to have additional supertypes, if it is necessary.
