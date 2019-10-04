@@ -58,6 +58,8 @@ The expression `C[0][0]++` is expanded (see the [Expressions][expressions] secti
     C.get(0).set(C.get(0).get(0).inc())
     ```
 
+TODO(Specify when we run the overload resolution to know what we're expanding to)
+
 Although the resulting expression contains several invocations of the subexpression `C.get(0)`, it is evaluated only once, making this code roughly equivalent to:
 
 ```kotlin
