@@ -992,7 +992,7 @@ The basic form of this expression, denoted by `this` keyword, is used to access 
 In order to access other receivers, labeled `this` expressions are used.
 These may be any of the following:
 
-- `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;
+- `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the [inner scope][Scopes and identifiers] of the classifier declaration), refers to the implicit object of the type being declared;
 - `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;
 - `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
 - `this@outerFunction`, where `outerFunction` is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
@@ -1066,7 +1066,7 @@ A return expression with no value implicitly returns the `kotlin.Unit` object.
 There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [Anonymous function declaration][Anonymous function declarations]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
 
 - The name of one of the enclosing function declarations, which refers to this function.
-  If several declarations match one name, it is a compile-time error;
+  If several declarations match one name, the `return` is considered to be from the nearest matching function;
 - If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself.
 - TODO(return from a labeled lambda)
 
@@ -1118,8 +1118,13 @@ There are two forms of break expressions:
 :::{.paste target=grammar-rule-multiLineStringExpression}
 :::
 
-_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol. 
-This syntax allows to specify such fragments by directly following the `$` symbol with either a single identifier (if the expression is a single identifier) or a control structure body. 
+_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol.
+
+Interpolated expressions can be specified via two forms.
+
+* `$id`, where `id` is a single identifier available in the current scope;
+* `${e}`, where `e` is a valid Kotlin expression.
+
 In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
 The resulting value of a string interpolation expression is the joining of all fragments in the expression.
 
@@ -1128,8 +1133,8 @@ An interpolated value $v$ is converted to `kotlin.String` according to the follo
 - If it is equal to the [null reference][Null literal], the result is `"null"`;
 - Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
 
-There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions. 
-The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see [grammar][Grammar] for details). 
+There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions.
+The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see [grammar][Grammar] for details).
 On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.
 
 > Note: among other things, this means that the escaping of the `$` symbol is impossible in multiline strings. 
