@@ -91,6 +91,8 @@ As this partition is the most fine-grained of all other steps of partitioning re
 
 ### Overload resolution for a fully-qualified call
 
+TODO(Detection of fully-qualified vs explicit receiver calls)
+
 If a callable name is fully-qualified (that is, it contains a full package path), then the overload candidate set $S$ simply contains all the callables with the specified name in the specified package.
 As a package name can never clash with any other declared entity, after performing c-level partition on $S$, the resulting sets are the only ones available for further processing.
 
@@ -116,6 +118,8 @@ A call of callable `f` with an explicit receiver `e` is correct if one (or more)
 
 1. `f` is a member callable of the classifier type of `e` or any of its supertypes;
 2. `f` is an extension callable of the classifier type of `e` or any of its supertypes, including local and imported extensions.
+
+TODO(Handle `a.foo()` where `foo : A.() -> Unit`)
 
 > Important: callables for case 2 include not only top-level extension callables, but also extension callables from any of the available implicit receivers.
 > For example, if class $P$ contains a member extension function for another class $T$ and an object of class $P$ is available as an implicit receiver, this extension function may be used for the call if it has a suitable type.
@@ -168,14 +172,16 @@ It may have one or more implicit receivers or reference a top-level function.
 > Note: this does not include calls using the `invoke` operator function where the left side of the call operator is not an identifier, but some other kind of expression.
 > These cases are handled the same way as covered in the [previous section][Operator calls] and need no special treatment
 
+TODO(Add an example to the above note)
+
 As with function calls with explicit receiver, we should first pick a valid overload candidate set and then search this set for the _most specific function_ to match the call.
 
-For an idenitifer named `f` the following sets are analyzed (in the given order):
+For an identifier named `f` the following sets are analyzed (in the given order):
 
 1. The sets of local non-extension functions named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
 2. The overload candidate sets for each implicit receiver `r` and `f`, calculated as if `r` is the explicit receiver, in order of the receiver priority (see the [corresponding section][A call with an explicit receiver]);
 3. Top-level non-extension functions named `f`, in the order of:
-   a. Functions explicitely imported into current file;
+   a. Functions explicitly imported into current file;
    b. Functions declared in the same package;
    c. Functions star-imported into current file;
    d. Implicitly imported functions (either Kotlin standard library or platform-specific ones).
@@ -191,6 +197,8 @@ Such calls are treated the same way as normal calls, but the overload resolution
 
 Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.
 While the number of defaults (see [the MSC selection process][Choosing the most specific function from the overload candidate set]) does affect resolution process, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
+
+TODO(Named parameters actually influence the applicability of candidates)
 
 ### Calls with trailing lambda expressions
 

@@ -20,7 +20,7 @@ Unlike Java and some other languages, Kotlin does not restrict the package hiera
 
 ### Importing
 
-Program entities declared in one package may be freely used in any file in the same package with the only restriction being [module][Modules] boundaries.
+Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being [module][Modules] boundaries and [visibility][Visibility] constraints.
 In order to use an entity from a file belonging to a different package, the programmer must use *import directives*.
 
 :::{.paste target=grammar-rule-importList}
@@ -36,6 +36,8 @@ Any named declaration within that scope (that is, top-level scope of all files i
 There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the use of `as` operator. 
 Star-imports import all the named entities inside the corresponding scope, but have weaker priority during [resolution][Overload resolution] of functions and properties. 
 Renaming imports work just as regular imports, but introduce the entity into current file with a name different from the name it has at declaration site.
+
+TODO(Add specifics about imports from objects)
 
 Imports are file-based, meaning that if an entity is introduced into file A.kt belonging to package `kotlinx.foo`, it does not introduce this entity to all other files belonging to `kotlinx.foo`.
 
@@ -55,12 +57,16 @@ These are the following packages of the standard library:
 
 Platform implementations may introduce additional implicitly imported packages, for example, adding standard platform functionality into Kotlin code.
 
-> Note: an example of this would be `java.lang` package implicitly imported on the jvm platform
+> Note: an example of this would be `java.lang` package implicitly imported on the JVM platform
 
 Importing certain entities may be disallowed by their [visibility modifiers][Visibility].
 
 TODO(Clarify all this)
 
+TODO(Availability declaration from current package)
+
+TODO(Scopes and priorities)
+
 ### Modules
 
-TODO(Here be The dragons)
+TODO(Here be THE DRAGONS)
