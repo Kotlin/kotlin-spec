@@ -71,12 +71,12 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 > ```kotlin
 > val e = if(c) a else b
 > ```
-> where `a`, `b`, `c` are some expressions with types completely unknown (having no other type constraints besided the implicit ones).
+> where `a`, `b`, `c` are some expressions with types completely unknown (having no other type constraints besides the implicit ones).
 > Let's assume the type variables generated for them to be $A$, $B$ and $C$ respectively and the type variable for `e` being $E$.
 > This, according to [the conditional expression chapter][Conditional expression], produces the following relations:
 >
 > - $C <: \texttt{kotlin.Boolean}$
-> - $E = LUB(A, B)$
+> - $E = \LUB(A, B)$
 > 
 > These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with `kotlin.Any?` and `kotlin.Nothing`):
 > 
@@ -90,9 +90,9 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 > Which, according to the semantics of additional constraints (and the default pull-up constraint for $C$), produce the following solution:
 >
 > - $C \rightarrow \texttt{kotlin.Boolean}$
-> - $A \rightarrow \texttt{kotlin.Any?}$
-> - $B \rightarrow \texttt{kotlin.Any?}$
-> - $E \rightarrow \texttt{kotlin.Any?}$
+> - $A \rightarrow \AnyQ$
+> - $B \rightarrow \AnyQ$
+> - $E \rightarrow \AnyQ$
 
 TODO(prove that these constraints are equivalent to LUB from type system?)
 

@@ -406,6 +406,9 @@ One of the parameters may be designated as being variable length (aka *vararg*).
 A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position.
 These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
 
+> Important: we also consider variable length parameters to have such types for the purposes of type inference.
+> TODO(Something else?)
+
 If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.
 
 If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.

@@ -26,6 +26,8 @@ There are the following types of retention available:
 - Binary retention (retained in compilation artifacts);
 - Runtime retention (accessible during runtime).
 
+    Each subsequent level inherits what is accessible in the previous levels.
+
 For availability and particular ways of accessing the metadata specified by these annotations please refer to the corresponding platforms' documentation.
 
 ### Annotation targets
