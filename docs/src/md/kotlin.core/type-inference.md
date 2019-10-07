@@ -220,6 +220,7 @@ Smart casts are introduced by the following Kotlin constructions.
 - Logical disjunction expressions (operator `||`);
 - Not-null assertion expressions (operator `!!`);
 - Direct casting expression (operator `as`);
+- Type checking expression (operator `is`);
 - Direct assignments;
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
 
@@ -238,6 +239,7 @@ This is one of the necessary conditions for smart cast to be applicable to an ex
 Smart cast sink stability breaks in the presence of the following aspects.
 
 * concurrent writes;
+* mutable value capturing;
 * separate module compilation;
 * custom getters;
 * delegation.
@@ -246,7 +248,7 @@ The following smart cast sinks are considered stable.
 
 1. Immutable local or classifier-scope properties without delegation or custom getters;
 1. Mutable local properties without delegation or custom getters, if the compiler can prove that they are [effectively immutable][Effectively immutable smart cast sinks], i.e., cannot be changed by external means;
-1. Immutable properties of immutable stable properties without delegation or custom getters.
+1. Immutable properties of immutable stable properties without delegation or custom getters, if they are declared in the current [module][Modules].
 
 ##### Effectively immutable smart cast sinks
 
@@ -379,7 +381,7 @@ For the following loop configurations, we consider their bodies to be definitely
 >     var a: Any? = null
 > 
 >     do {
->         sink(a)
+>         println(a)
 >     } while (a == null)
 > 
 >     a // Smart cast to Any
