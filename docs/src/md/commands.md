@@ -45,6 +45,15 @@
 
 \opMathTT{\Array}{kotlin.Array}
 
+\opMathTT{\Double}{kotlin.Double}
+\opMathTT{\Float}{kotlin.Float}
+\opMathTT{\Long}{kotlin.Long}
+\opMathTT{\Int}{kotlin.Int}
+\opMathTT{\Short}{kotlin.Short}
+\opMathTT{\Byte}{kotlin.Byte}
+\opMathTT{\Char}{kotlin.Char}
+\opMathTT{\Boolean}{kotlin.Boolean}
+
 \opMathTEXT{\ATS}{ATS}
 \opMathTEXT{\LTS}{LTS}
 

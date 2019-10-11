@@ -7,7 +7,7 @@ TODO(Decide on the formatting style and fix it)
 ### Glossary
 
 $T$
-~ Type
+~ Type (with unknown nullability)
 
 $T!!$
 ~ [Non-nullable type][Nullable types]
@@ -86,11 +86,11 @@ An empty value is represented by a special `null` object; most operations with i
 
 Kotlin has a type system with the following main properties.
 
-* Hybrid static, gradual and flow type checking
-* Null safety
-* No unsafe implicit conversions
-* Unified top and bottom types
-* Nominal subtyping with bounded parametric polymorphism and mixed-site variance
+* Hybrid static, gradual and flow type checking;
+* Null safety;
+* No unsafe implicit conversions;
+* Unified top and bottom types;
+* Nominal subtyping with bounded parametric polymorphism and mixed-site variance.
 
 Type safety (consistency between compile and runtime types) is verified *statically*, at compile time, for the majority of Kotlin types.
 However, for better interoperability with platform-dependent code Kotlin also support a variant of *gradual types* in the form of [flexible types][Flexible types].
@@ -102,10 +102,10 @@ A value of any non-nullable type cannot contain `null`, meaning all operations w
 Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression].
 However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
-The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][kotlin.Any].
-The unified subtype type for all types in Kotlin is [$\Nothing$][kotlin.Nothing].
+The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][`kotlin.Any`].
+The unified subtype type for all types in Kotlin is [$\Nothing$][`kotlin.Nothing`].
 
-Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as [generics][Generics] via [parameterized types][Parameterized classifier types].
+Kotlin uses nominal subtyping, meaning subtyping relation is defined when a type is declared, with bounded parametric polymorphism, implemented as generics via [parameterized types][Parameterized classifier types].
 Subtyping between these parameterized types is defined through [mixed-site variance][Mixed-site variance].
 
 ### Type kinds
@@ -135,7 +135,7 @@ Any given concrete type may be either a class or an interface type, but never bo
 
 We also distinguish between *denotable* and *non-denotable* types.
 The former are types which are expressible in Kotlin and can be written by the end-user.
-The latter are special types which are *not* expressible in Kotlin and are used internally by the compiler.
+The latter are special types which are *not* expressible in Kotlin and are used by the compiler in [type inference][Type inference], [smart casts][Smart casts], etc.
 
 #### Built-in types
 
@@ -172,7 +172,7 @@ Kotlin supports the following signed integer types.
 * `kotlin.Byte`
 * `kotlin.Long`
 
-Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal type].
+Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal types].
 
 > Note: additional details about built-in integer types are available [here][Built-in integer types-bi].
 
@@ -189,24 +189,25 @@ The $\Array(T)$ type follows the rules of regular type constructors and paramete
 
 In addition to the general $\Array(T)$ type, Kotlin also has the following specialized array types:
 
-* `DoubleArray` (for $\Array(Double)$)
-* `FloatArray` (for $\Array(Float)$)
-* `LongArray` (for $\Array(Long)$)
-* `IntArray` (for $\Array(Int)$)
-* `ShortArray` (for $\Array(Short)$)
-* `ByteArray` (for $\Array(Byte)$)
-* `CharArray` (for $\Array(Char)$)
-* `BooleanArray` (for $\Array(Boolean)$)
+* `DoubleArray` (for $\Array(\Double)$)
+* `FloatArray` (for $\Array(\Float)$)
+* `LongArray` (for $\Array(\Long)$)
+* `IntArray` (for $\Array(\Int)$)
+* `ShortArray` (for $\Array(\Short)$)
+* `ByteArray` (for $\Array(\Byte)$)
+* `CharArray` (for $\Array(\Char)$)
+* `BooleanArray` (for $\Array(\Boolean)$)
 
-These array types structurally match the corresponding $\Array(T)$ type; i.e., `IntArray` has the same methods and properties as $\Array(Int)$.
-However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an $\Array(Boolean)$.
+These array types structurally match the corresponding $\Array(T)$ type; i.e., `IntArray` has the same methods and properties as $\Array(\Int)$.
+However, they are **not** related by subtyping; meaning one cannot pass a `BooleanArray` argument to a function expecting an $\Array(\Boolean)$.
 
 > Note: the presence of such specialized types allows the compiler to perform additional array-related optimizations.
+
 > Note: specialized and non-specialized array types match modulo their iterator types, which are also specialized; `Iterator<Int>` is specialized to `IntIterator`.
 
 *Array type specialization* $\ATS(T)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
 
-* if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = TArray$
+* if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = \texttt{TArray}$
 * if $\Array(T)$ does not have a specialized version, $\ATS(\Array(T)) = \Array(T)$
 
 $\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
@@ -294,42 +295,45 @@ To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should sati
 > Example:
 > 
 > ```kotlin
-> // A well-formed PACT with no supertypes
+> // A well-formed type constructor with no supertypes
 > // A and B are unbounded type parameters
 > interface Generic<A, B>
 > 
-> // A well-formed PACT with a single iPACT supertype
+> // A well-formed type constructor
+> //   with a single parameterized supertype
 > // Int and String are well-formed concrete types
 > interface ConcreteDerived<P, Q> : Generic<Int, String>
 > 
-> // A well-formed PACT with a single iPACT supertype
+> // A well-formed type constructor
+> //   with a single parameterized supertype
 > // P and Q are type parameters of GenericDerived,
 > //   used as type arguments of Generic
 > interface GenericDerived<P, Q> : Generic<P, Q>
 > 
-> // An ill-formed PACT,
-> //   as an abstract type Generic
+> // An ill-formed type constructor,
+> //   as abstract type Generic
 > //   cannot be used as a supertype
 > interface Invalid<P> : Generic
 > 
 > 
-> // A well-formed PACT with no supertypes
+> // A well-formed type constructor with no supertypes
 > // out A is a projected type parameter
 > interface Out<out A>
 > 
 > 
-> // A well-formed PACT with no supertypes
+> // A well-formed type constructor with no supertypes
 > // S : Number is a bounded type parameter
 > // (S <: Number)
 > interface NumberWrapper<S : Number>
 > 
-> // A well-formed type with a single iPACT supertype
+> // A well-formed type constructor
+> //   with a single parameterized supertype
 > // NumberWrapper<Int> is well-formed,
 > //   as Int <: Number
 > interface IntWrapper : NumberWrapper<Int>
 > 
-> // An ill-formed type,
-> //   as NumberWrapper<String> is an ill-formed iPACT
+> // An ill-formed type constructor,
+> //   as NumberWrapper<String> is an ill-formed parameterized type
 > //   (String not(<:>) Number)
 > interface InvalidWrapper : NumberWrapper<String>
 >```
@@ -349,7 +353,7 @@ A bounded type parameter additionally specify upper type bounds for the type par
 To represent a well-formed bounded type parameter of type constructor $T$, $F <: B_1, \ldots, B_n$ should satisfy either of the following sets of conditions.
 
 * Bounded type parameter with regular bounds:
-    * $F$ is a type parameter of PACT $T$
+    * $F$ is a type parameter of type constructor $T$
     * $\forall i \in [1,n]: B_i$ must be concrete, non-type-parameter, well-formed type
     * No more than one of $B_i$ may be a class type
 
@@ -371,11 +375,23 @@ To represent a well-formed bounded type parameter of type constructor $T$, $F <:
 > ```
 
 * Bounded type parameter with type parameter bound:
-    * $F$ is a type parameter of PACT $T$
+    * $F$ is a type parameter of type constructor $T$
     * $i = 1$ (i.e., there is a single upper bound)
     * $B_1$ must be well-formed [type parameter][Type parameters]
 
-From the definition, it follows $F <: B_1, \ldots, B_n$ can be represented as $K <: U$ where $U = B_1 \amp \ldots \amp B_n$.
+From the definition, it follows $F <: B_1, \ldots, B_n$ can be represented as $K <: U$ where $U = B_1 \amp \ldots \amp B_n$ (aka [intersection type][Intersection types]).
+
+##### Function type parameters
+
+Function type parameters are a flavor of type parameters, which are used in [function declarations][Function declaration] to create parameterized functions.
+They are considered well-formed concrete types only in the type context of their declaring function.
+
+> Note: one may view such parameterized functions as a kind of function type constructors.
+
+Function type parameters work similarly to regular type parameters, however, they have the following limitations.
+
+* Function type parameters does not support specifying [mixed-site variance][Mixed-site variance].
+* TODO(Anything else?)
 
 ##### Mixed-site variance
 
@@ -383,7 +399,7 @@ To implement subtyping between parameterized types, Kotlin uses *mixed-site vari
 Mixed-site variance means you can specify, whether you want your parameterized type to be co-, contra- or invariant on some type parameter, both in type parameter (declaration-site) and type argument (use-site).
 
 > Info: *variance* is a way of describing how [subtyping][Subtyping] works for *variant* parameterized types.
-> With declaration-site variance, for two [non-equivalent][Subtyping] types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ of some type constructor $T$.
+> With declaration-site variance, for two [non-equivalent][Subtyping] types $A <: B$, subtyping between `T<A>` and `T<B>` depends on the variance of type parameter $F$ for some type constructor $T$.
 > 
 > * if $F$ is covariant ($\outV F$), `T<A>` $<:$ `T<B>`
 > * if $F$ is contravariant($\inV F$), `T<A>` $:>$ `T<B>`
@@ -399,6 +415,8 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
 
+> Note: informally, covariant type parameter $\outV A$ of type constructor $T$ means "$T$ is a producer of $A$s and gets them out"; contravariant type parameter $\inV A$ of type constructor $T$ means "$T$ is a consumer of $A$s and takes them in".
+
 For further discussion about mixed-site variance and its practical applications, we readdress you to [subtyping][Subtyping].
 
 ##### Declaration-site variance
@@ -412,9 +430,7 @@ To specify a contravariant type parameter, it is marked as $\inV F$.
 
 The variance information is used by [subtyping][Subtyping] and for checking allowed operations on values of co- and contravariant type parameters.
 
-> Important: declaration-site variance can be used only when declaring types, e.g., type parameters of functions cannot be variant.
-
-TODO(Function type parameters)
+> Important: declaration-site variance can be used only when declaring types, e.g., [function type parameters][Function type parameters] cannot be variant.
 
 > Example:
 > 
@@ -476,11 +492,11 @@ To specify a contravariant type argument, it is marked as $\inV A$.
 > Note: in some cases, Kotlin prohibits certain combinations of declaration- and use-site variance, i.e., which type arguments can be used in which type parameters.
 > These rules are covered in more detail [here][TODO()].
 
-In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, one may use *bivariant* type argument $\star$, which is roughly equivalent to a combination of $\outV \AnyQ$ and $\inV \Nothing$ (for further details, see [subtyping][Subtyping] and [generics][Generics]).
+> Important: use-site variance cannot be used when declaring a supertype top-level type argument.
 
-TODO(Specify how this combination of co- and contravariant parameters works from the practical PoV)
+In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, they may use *bivariant* type argument $\star$, which is roughly equivalent to a combination of $\outV \AnyQ$ and $\inV \Nothing$ (for further details, see [subtyping][Subtyping]).
 
-> Important: use-site variance cannot be used when declaring a supertype top-level type parameter.
+> Note: informally, $T\langle \star \rangle$ means "I can give out something very generic ($\AnyQ$) and cannot take in anything".
 
 > Example:
 > ```kotlin
@@ -533,12 +549,14 @@ TODO(Specify how this combination of co- and contravariant parameters works from
 
 Type capturing (similarly to Java capture conversion) is used when instantiating type constructors; it creates *abstract captured* types based on the type information of both type parameters and arguments, which present a unified view on the resulting types and simplifies further reasoning.
 
-The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . \mathtt{A<X>}$.
+The reasoning behind type capturing is closely related to variant parameterized types being a form of *bounded existential types*; e.g., `A<out T>` may be loosely considered as the following existential type: $\exists X : X <: T . A\langle X\rangle$.
 Informally, a bounded existential type describes a *set* of possible types, which satisfy its bound constraints.
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
 
 For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma]$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, both of which may have specified variance.
+
+> Important: type capturing is **not** recursive.
 
 > Note: **All** applicable rules are used to create the resulting constraint set.
 
@@ -610,12 +628,14 @@ $$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(\RT, A_1, \ldots, A_n) \r
 
 i.e., receiver is considered as yet another argument of its function type.
 
-> Note: this means that, for example, these two types are equivalent
+> Note: this means that, for example, these two types are equivalent w.r.t. type system
 >
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
+>
+> However, these two types are **not** equivalent w.r.t. [overload resolution][Overload resolution], as it distinguishes between functions with and without receiver.
 
-TODO(Specify cases when these two types are **not** equivalent)
+TODO(Specify other cases when these two types are **not** equivalent)
 
 Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
 
@@ -694,7 +714,7 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 
 * $T$ is a well-formed concrete type
 
-> Note: If an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
+> Note: if an operation is safe regardless of absence or presence of `null`, e.g., assignment of one nullable value to another, it can be used as-is for nullable types.
 > For operations on $T?$ which may violate null safety, e.g., access to a property, one has the following null-safe options:
 > 
 > 1. Use safe operations
@@ -727,7 +747,7 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 An integer literal type containing types $T_1, \ldots, T_N$, denoted $\LTS(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
 Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types].
 
-Integer literal types are the types of [integer literals][Integer literals].
+Integer literal types are the types of [integer literals][Integer literals] and have special handling w.r.t. [subtyping][Subtyping for integer literal types].
 
 #### Union types
 
@@ -745,6 +765,7 @@ Moreover, as union types are *not* used in Kotlin, the compiler always *decays* 
 ### Type context
 
 TODO(Type contexts and their relation to scopes)
+
 TODO(Inner vs nested type contexts)
 
 ### Subtyping
@@ -785,7 +806,7 @@ Subtyping for type parameters uses the following rules.
 
 Subtyping for captured types uses the following rules.
 
-* $\forall K : \text{kotlin.Nothing} <: K <: \text{kotlin.Any?}$
+* $\forall K : \Nothing <: K <: \AnyQ$
 * For any two captured types $L <: K <: U$ and $L^\prime <: K^\prime <: U^\prime$, it is true that $K <: K^\prime$ if $L^\prime <: L$ and $U <: U^\prime$
 
 Subtyping for nullable types is checked separately and uses a special set of rules which are described [here][Subtyping for nullable types].
