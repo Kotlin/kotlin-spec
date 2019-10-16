@@ -796,6 +796,10 @@ The types of these expressions are implementation-defined, but the following con
 
 Being of an appropriate function type also means that the values defined by these references are valid callables themselves, with an appropriate `operator invoke` overload, that allows using call syntax to evaluate the value of the callable with the appropriate arguments.
 
+Please note that the above holds for *resolved* callable references, where it is known what entity a particular reference references.
+In the general case, however, it is unknown as the [overload resolution][Overload resolution] must be performed first.
+Please refer to the [corresponding section][Resolving callable references] for details.
+
 > Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.
 
 TODO(Include all the K(Mutable)Property(N) business, as it's shared between BEs; we also need KProperty because of delegates)
