@@ -306,6 +306,69 @@ If after this additional step there are still several candidates that are equall
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actuall call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
+### Resolving callable references
+
+[Callable references] introduce a special case of overload resolution that is similar to how function calls are resolved, but different in several aspects.
+First, property and function references are treated equally, as a property reference has a type that is a subtype of a function type.
+Second, the type information needed to perform the resolution steps is acquired from _expected type_ of the reference itself, rather than the types of arguments and/or result.
+Third, and most important, is that in the case of a call receiving a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable getting called and the callable referenced are to be resolved _simultaneously_.
+
+#### Resolving callable references in the presence of an expected type
+
+In the simple case where there is no overloaded call performed, the resolution is performed as follows:
+
+- For each callable reference candidate, the type constraints are built;
+- This constraints is added to the constraint system of the expression the callable reference is used in;
+- A callable reference is deemed applicable if the constraint system is sound;
+- Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen.
+  This process is performed the same way as for [choosing candidates][Choosing the most specific function from the overload candidate set] for function calls.
+
+For example, let's consider the two following functions:
+
+```kotlin
+fun foo(i: Int): Int = 2         // (1)
+fun foo(d: Double): Double = 2.0 // (2)
+```
+
+In the following case
+
+```kotlin
+val x: (Int) -> Int = ::foo
+```
+
+candidate (1) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Int) \rightarrow \Int$ and only one of the two types of corresponding functions abides this constraint.
+
+Let's consider another example:
+
+```kotlin
+fun bar(f: (Double) -> Double) {}
+
+bar(::foo)
+```
+
+candidate (2) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Double) \rightarrow \Double and only one of the two types of corresponding functions abides this constraint.
+
+Please note that no bidirectional resolution is performed here as there is only one candidate for `bar`.
+If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.
+
+#### Bidirectional resolution for function calls
+
+If the callable reference (or several callable references) are themselves arguments to an overloaded function call, the resolution process is performed for both callables simultaneously.
+Let's assume we have a call `f(::g, b, c)`:
+
+- For each overload candidate `f`, a separate overload resolution process is performed as described in the other sections of this chapter, up to the point of picking the overload candidate sets.
+  During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
+- For each candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described in [the previous case][Resolving callable references in the presence of an expected type] and the most specific candidate is selected.
+  Even if this process yields no applicable candidates for `::g`, it does not invalidate the corresponding canididate for `f`;
+- The overload resolution process for `f` is finished, selecting the most specific candidate for `f` of the available sets.
+
+> Note: this may result in selecting a more specific candidate for `f` that has no available candidates for `g`, which means that the process fails when resolving `::g`
+
+When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2.
+This still means that overload resolution for the called callable is performed only once.
+
+TODO: examples
+
 ### About type inference
 
 [Type inference][Type inference] in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates.
