@@ -346,7 +346,7 @@ fun bar(f: (Double) -> Double) {}
 bar(::foo)
 ```
 
-candidate (2) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Double) \rightarrow \Double and only one of the two types of corresponding functions abides this constraint.
+candidate (2) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Double) \rightarrow \Double$ and only one of the two types of corresponding functions abides this constraint.
 
 Please note that no bidirectional resolution is performed here as there is only one candidate for `bar`.
 If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.
