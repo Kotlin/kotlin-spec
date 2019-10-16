@@ -19,6 +19,7 @@ gpp -H ./index.md \
 | bash ${FILTERS_DIR}/inlineDiagramFilter.sh html \
 | bash ${FILTERS_DIR}/inlineCodeIndenterFilter.sh html \
 | bash ${FILTERS_DIR}/mathCleanUpFilter.sh html \
+| bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh html \
 | bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR
 
 mkdir -p ${BUILD_DIR}/html/sections
