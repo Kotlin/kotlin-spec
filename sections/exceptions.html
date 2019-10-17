@@ -4,30 +4,37 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Untitled</title>
+  <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../resources/css/main.css">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="./assets/js/jquery-3.4.1.min.js"></script>
-  <script src="./assets/js/lodash.js"></script>
-  <script src="https://unpkg.com/kotlin-playground@1"></script>
-  <script src="./assets/js/helpers.js"></script>
-  <script src="./assets/js/Popup.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
-  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
-  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
-  <script src="./assets/js/sentenceHighlighter.js"></script>
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
 </head>
 <body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -48,7 +55,7 @@
 <p><span class="sentence">An <em>exception</em> type declaration is any type declaration that meets the following criteria:</span></p>
 </div>
 <ul>
-<li><span class="sentence">It is a [class or object declaration][Classifier declaration];</span></li>
+<li><span class="sentence">It is a <a href="declarations.html#classifier-declaration">class or object declaration</a>;</span></li>
 <li><span class="sentence">It has <code>kotlin.Throwable</code> as supertype;</span></li>
 <li><span class="sentence">It has no type parameters.</span></li>
 </ul>
@@ -57,10 +64,10 @@
 </div>
 <h3 id="catching-exceptions">Catching exceptions</h3>
 <div class="paragraph">
-<p><span class="sentence">A [<code>try</code>-expression][Try-expression] becomes <em>active</em> once the execution of the program enters it and stops being active once the execution of the program leaves it. </span><span class="sentence">If there are several active <code>try</code>-expressions, the one that became active last is <em>currently active</em>.</span></p>
+<p><span class="sentence">A <a href="expressions.html#try-expression"><code>try</code>-expression</a> becomes <em>active</em> once the execution of the program enters it and stops being active once the execution of the program leaves it. </span><span class="sentence">If there are several active <code>try</code>-expressions, the one that became active last is <em>currently active</em>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If an exception is thrown while a try-expression is currently active and this try-expression has any <code>catch</code>-blocks, those <code>catch</code>-blocks are checked for applicability for this exception. </span><span class="sentence">A <code>catch</code>-block is applicable for an exception object if the runtime type of this expression object is a subtype of the bound exception parameter of this <code>catch</code>-block. </span><span class="sentence">Note that this is subject to Kotlin [runtime type information][Runtime type information] limitations and may be dependent on the platform implementation of runtime type information, as well as the implementation of exception classes.</span></p>
+<p><span class="sentence">If an exception is thrown while a try-expression is currently active and this try-expression has any <code>catch</code>-blocks, those <code>catch</code>-blocks are checked for applicability for this exception. </span><span class="sentence">A <code>catch</code>-block is applicable for an exception object if the runtime type of this expression object is a subtype of the bound exception parameter of this <code>catch</code>-block. </span><span class="sentence">Note that this is subject to Kotlin <a href="runtime-type-information.html#runtime-type-information">runtime type information</a> limitations and may be dependent on the platform implementation of runtime type information, as well as the implementation of exception classes.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If a <code>catch</code>-block is applicable for the exception thrown, the code inside the block is evaluated and the value of the block is returned as the value of a <code>try</code>-expression. </span><span class="sentence">If this <code>try</code>-expression contains a <code>finally</code>-block, the body of this block is evaluated after the body of the selected <code>catch</code> block. </span><span class="sentence">The <code>try</code>-expression itself is not considered active inside its own <code>catch</code> and <code>finally</code> blocks. </span><span class="sentence">If this results in throwing other exceptions (including the one caught by the <code>catch</code>-block), they are propagated as normal.</span></p>
@@ -76,7 +83,7 @@
 <p><span class="sentence">Throwing an exception object is performed using <code>throw</code>-expression. </span><span class="sentence">A valid throw expression <code>throw e</code> requires that:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>e</code> is a value of [a runtime-available type][Runtime-available types];</span></li>
+<li><span class="sentence"><code>e</code> is a value of <a href="runtime-type-information.html#runtime-available-types">a runtime-available type</a>;</span></li>
 <li><span class="sentence"><code>e</code> is a value of an exception type (see above).</span></li>
 </ul>
 <div class="paragraph">
@@ -90,16 +97,6 @@
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO: control flow?</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: concurrency?</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: write it better</span></p>
 </div>
 </div>
 </body>

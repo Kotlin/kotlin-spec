@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Untitled</title>
+  <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -74,24 +74,33 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../assets/css/main.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <link rel="stylesheet" href="../resources/css/main.css">
+  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script src="./assets/js/jquery-3.4.1.min.js"></script>
-  <script src="./assets/js/lodash.js"></script>
-  <script src="https://unpkg.com/kotlin-playground@1"></script>
-  <script src="./assets/js/helpers.js"></script>
-  <script src="./assets/js/Popup.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsLoader.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsParser.js"></script>
-  <script src="./assets/js/compiler-tests-integration/SpecTestsViewer.js"></script>
-  <script src="./assets/js/compiler-tests-integration/TestsCoverageColorsArranger.js"></script>
-  <script src="./assets/js/compiler-tests-integration/handlers.js"></script>
-  <script src="./assets/js/sentenceHighlighter.js"></script>
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
 </head>
 <body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -103,20 +112,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <h2 id="expressions">Expressions</h2>
-<h3 id="glossary">Glossary</h3>
+<h3 id="glossary-3">Glossary</h3>
 <dl>
 <dt>CSB</dt>
-<dd><span class="sentence">[Control structure body][Code blocks]</span>
+<dd><span class="sentence"><a href="statements.html#code-blocks">Control structure body</a></span>
 </dd>
 </dl>
-<h3 id="introduction">Introduction</h3>
+<h3 id="introduction-3">Introduction</h3>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO()</span></p>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid [statements][Statements], free expressions may be used as single statements or inside code blocks.</span></p>
+<p><span class="sentence">An expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid <a href="control--and-data-flow-analysis.html#statements-1">statements</a>, free expressions may be used as single statements or inside code blocks.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call. </span><span class="sentence">An expression is used as a statement if it is encountered in any position where a statement is allowed.</span></p>
@@ -134,19 +143,77 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Constant literals are expressions which describe constant values. </span><span class="sentence">Every constant literal is defined to have a single standard library type, whichever it is defined to be on current platform. </span><span class="sentence">All constant literals are evaluated immediately.</span></p>
 </div>
 <h4 id="boolean-literals">Boolean literals</h4>
-<strong>Id grammar-rule-BooleanLiteral not found</strong>
+<div id="grammar-rule-BooleanLiteral-pasted-16" class="grammar-rule">
+<dl>
+<dt><strong><em>BooleanLiteral</em></strong></dt>
+<dd><span class="sentence"><code>'true'</code> | <code>'false'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Keywords <code>true</code> and <code>false</code> denote boolean literals of the same values. </span><span class="sentence">These are strong keywords which cannot be used as identifiers unless [escaped][Escaped identifiers]. </span><span class="sentence">Values <code>true</code> and <code>false</code> always have the type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h4 id="integer-literals">Integer literals</h4>
-<strong>Id grammar-rule-IntegerLiteral not found</strong>
-<strong>Id grammar-rule-HexLiteral not found</strong>
-<strong>Id grammar-rule-BinLiteral not found</strong>
-<strong>Id grammar-rule-DecDigitNoZero not found</strong>
-<strong>Id grammar-rule-DecDigitOrSeparator not found</strong>
-<strong>Id grammar-rule-HexDigitOrSeparator not found</strong>
-<strong>Id grammar-rule-BinDigitOrSeparator not found</strong>
-<strong>Id grammar-rule-DecDigits not found</strong>
+<div id="grammar-rule-IntegerLiteral-pasted-17" class="grammar-rule">
+<dl>
+<dt><strong><em>IntegerLiteral</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-DecDigitNoZero"><em>DecDigitNoZero</em></a> {<a href="syntax.html#grammar-rule-DecDigitOrSeparator"><em>DecDigitOrSeparator</em></a>} <a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a><br />
+| <a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-HexLiteral-pasted-18" class="grammar-rule">
+<dl>
+<dt><strong><em>HexLiteral</em></strong></dt>
+<dd><span class="sentence"><code>'0'</code> (<code>'x'</code> | <code>'X'</code>) <a href="syntax.html#grammar-rule-HexDigit"><em>HexDigit</em></a> {<a href="syntax.html#grammar-rule-HexDigitOrSeparator"><em>HexDigitOrSeparator</em></a>} <a href="syntax.html#grammar-rule-HexDigit"><em>HexDigit</em></a><br />
+| <code>'0'</code> (<code>'x'</code> | <code>'X'</code>) <a href="syntax.html#grammar-rule-HexDigit"><em>HexDigit</em></a></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BinLiteral-pasted-19" class="grammar-rule">
+<dl>
+<dt><strong><em>BinLiteral</em></strong></dt>
+<dd><span class="sentence"><code>'0'</code> (<code>'b'</code> | <code>'B'</code>) <a href="syntax.html#grammar-rule-BinDigit"><em>BinDigit</em></a> {<a href="syntax.html#grammar-rule-BinDigitOrSeparator"><em>BinDigitOrSeparator</em></a>} <a href="syntax.html#grammar-rule-BinDigit"><em>BinDigit</em></a><br />
+| <code>'0'</code> (<code>'b'</code> | <code>'B'</code>) <a href="syntax.html#grammar-rule-BinDigit"><em>BinDigit</em></a></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigitNoZero-pasted-20" class="grammar-rule">
+<dl>
+<dt><strong><em>DecDigitNoZero</em>:</strong></dt>
+<dd><span class="sentence"><code>'1'</code> | <code>'2'</code> | <code>'3'</code> | <code>'4'</code> | <code>'5'</code> | <code>'6'</code> | <code>'7'</code> | <code>'8'</code> | <code>'9'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigitOrSeparator-pasted-21" class="grammar-rule">
+<dl>
+<dt><strong><em>DecDigitOrSeparator</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a> | <code>'_'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-HexDigitOrSeparator-pasted-22" class="grammar-rule">
+<dl>
+<dt><strong><em>HexDigitOrSeparator</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-HexDigit"><em>HexDigit</em></a> | <code>'_'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-BinDigitOrSeparator-pasted-23" class="grammar-rule">
+<dl>
+<dt><strong><em>BinDigitOrSeparator</em></strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-BinDigit"><em>BinDigit</em></a> | <code>'_'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DecDigits-pasted-24" class="grammar-rule">
+<dl>
+<dt><strong><em>DecDigits</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a> {<a href="syntax.html#grammar-rule-DecDigitOrSeparator"><em>DecDigitOrSeparator</em></a>} <a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a><br />
+| <a href="syntax.html#grammar-rule-DecDigit"><em>DecDigit</em></a></span>
+</dd>
+</dl>
+</div>
 <h5 id="decimal-integer-literals">Decimal integer literals</h5>
 <div class="paragraph">
 <p><span class="sentence">A sequence of decimal digit symbols (<code>0</code> though <code>9</code>) is a decimal integer literal. </span><span class="sentence">Digits may be separated by an underscore symbol, but no underscore can be placed before the first digit or after the last one.</span></p>
@@ -166,22 +233,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="the-types-for-integer-literals">The types for integer literals</h4>
 <div class="paragraph">
-<p><span class="sentence">Any of the decimal, hexadecimal or binary literals may be suffixed by the long literal mark (symbol <code>L</code>). </span><span class="sentence">An integer literal with the long literal mark has type <code>kotlin.Long</code>. </span><span class="sentence">A literal without the mark has a special [integer literal type][Integer literal types] dependent on the value of the literal:</span></p>
+<p><span class="sentence">Any of the decimal, hexadecimal or binary literals may be suffixed by the long literal mark (symbol <code>L</code>). </span><span class="sentence">An integer literal with the long literal mark has type <code>kotlin.Long</code>. </span><span class="sentence">A literal without the mark has a special <a href="type-system.html#integer-literal-types">integer literal type</a> dependent on the value of the literal:</span></p>
 </div>
 <ul>
-<li><span class="sentence">If the value is greater than maximum <code>kotlin.Long</code> value (see [built-in integer types][Built-in integer types]), it is an illegal integer literal and a compiler error;</span></li>
-<li><span class="sentence">Otherwise, if the value is greater than maximum <code>kotlin.Int</code> value (see [built-in integer types][Built-in integer types]), it has type <code>kotlin.Long</code>;</span></li>
+<li><span class="sentence">If the value is greater than maximum <code>kotlin.Long</code> value (see <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>), it is an illegal integer literal and a compiler error;</span></li>
+<li><span class="sentence">Otherwise, if the value is greater than maximum <code>kotlin.Int</code> value (see <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>), it has type <code>kotlin.Long</code>;</span></li>
 <li><span class="sentence">Otherwise, it has an integer literal type containing all the built-in integer types that are guaranteed to be able to represent this value.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: for example, integer literal <code>0x01</code> has value <span class="math inline">\(1\)</span> and therefore has type <span class="math inline">\(\mathtt{LTS}(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>. </span><span class="sentence">Integer literal <code>70000</code> has value <span class="math inline">\(70000\)</span>, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="math inline">\(\mathtt{LTS}(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>.</span></p>
+<p><span class="sentence">Note: for example, integer literal <code>0x01</code> has value <span class="math inline">\(1\)</span> and therefore has type <span class="math inline">\(\operatorname{\text{LTS}}(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>. </span><span class="sentence">Integer literal <code>70000</code> has value <span class="math inline">\(70000\)</span>, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="math inline">\(\operatorname{\text{LTS}}(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})\)</span>.</span></p>
 </div>
 </blockquote>
 <h4 id="real-literals">Real literals</h4>
-<strong>Id grammar-rule-RealLiteral not found</strong>
-<strong>Id grammar-rule-FloatLiteral not found</strong>
-<strong>Id grammar-rule-DoubleLiteral not found</strong>
+<div id="grammar-rule-RealLiteral-pasted-25" class="grammar-rule">
+<dl>
+<dt><strong><em>RealLiteral</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-FloatLiteral"><em>FloatLiteral</em></a> | <a href="syntax.html#grammar-rule-DoubleLiteral"><em>DoubleLiteral</em></a></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-FloatLiteral-pasted-26" class="grammar-rule">
+<dl>
+<dt><strong><em>FloatLiteral</em>:</strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-DoubleLiteral"><em>DoubleLiteral</em></a> (<code>'f'</code> | <code>'F'</code>)<br />
+| <a href="syntax.html#grammar-rule-DecDigits"><em>DecDigits</em></a> (<code>'f'</code> | <code>'F'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-DoubleLiteral-pasted-27" class="grammar-rule">
+<dl>
+<dt><strong><em>DoubleLiteral</em>:</strong></dt>
+<dd><span class="sentence">[<a href="syntax.html#grammar-rule-DecDigits"><em>DecDigits</em></a>] <code>'.'</code> <a href="syntax.html#grammar-rule-DecDigits"><em>DecDigits</em></a> [<a href="syntax.html#grammar-rule-DoubleExponent"><em>DoubleExponent</em></a>]<br />
+| [<a href="syntax.html#grammar-rule-DecDigits"><em>DecDigits</em></a>] [<a href="syntax.html#grammar-rule-DoubleExponent"><em>DoubleExponent</em></a>]</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">A <em>real literal</em> consists of the following parts: the whole-number part, the decimal point (ASCII period character <code>.</code>), the fraction part and the exponent. </span><span class="sentence">Unlike other languages, Kotlin real literals may only be expressed in decimal numbers. </span><span class="sentence">A real literal may also be followed by a type suffix (<code>f</code> or <code>F</code>).</span></p>
 </div>
@@ -203,8 +290,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="character-literals">Character literals</h4>
-<strong>Id grammar-rule-CharacterLiteral not found</strong>
-<strong>Id grammar-rule-EscapeSeq not found</strong>
+<div id="grammar-rule-CharacterLiteral-pasted-28" class="grammar-rule">
+<dl>
+<dt><strong><em>CharacterLiteral</em></strong></dt>
+<dd><span class="sentence"><code>'''</code> (<a href="syntax.html#grammar-rule-EscapeSeq"><em>EscapeSeq</em></a> | &lt;any character excluding CR, LF, <code>'''</code> or <code>'\'</code>&gt;) <code>'''</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-EscapeSeq-pasted-29" class="grammar-rule">
+<dl>
+<dt><strong><em>EscapeSeq</em></strong></dt>
+<dd><span class="sentence"><a href="syntax.html#grammar-rule-UniCharacterLiteral"><em>UniCharacterLiteral</em></a> | <a href="syntax.html#grammar-rule-EscapedIdentifier"><em>EscapedIdentifier</em></a></span>
+</dd>
+</dl>
+</div>
 <strong>Id grammar-rule-UnicodeCharacterLiteral not found</strong>
 <strong>Id grammar-rule-EscapedCharacter not found</strong>
 <div class="paragraph">
@@ -236,11 +335,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="string-literals">String literals</h4>
 <div class="paragraph">
-<p><span class="sentence">Kotlin supports <a href="#string-interpolation-expressions">string interpolation</a> which supersedes traditional string literals. </span><span class="sentence">For further details, please refer to the corresponding section.</span></p>
+<p><span class="sentence">Kotlin supports <a href="expressions.html#string-interpolation-expressions">string interpolation</a> which supersedes traditional string literals. </span><span class="sentence">For further details, please refer to the corresponding section.</span></p>
 </div>
 <h4 id="null-literal">Null literal</h4>
 <div class="paragraph">
-<p><span class="sentence">The keyword <code>null</code> denotes the <strong>null reference</strong>, which represents an absence of a value and is a valid value only for [nullable types][Nullable types]. </span><span class="sentence">Null reference has type [<code>kotlin.Nothing?</code>][<code>kotlin.Nothing</code>] and is, by definition, the only value of this type.</span></p>
+<p><span class="sentence">The keyword <code>null</code> denotes the <strong>null reference</strong>, which represents an absence of a value and is a valid value only for <a href="type-system.html#nullable-types">nullable types</a>. </span><span class="sentence">Null reference has type <a href="built-in-types-and-their-semantics.html#kotlin.nothing-1"><code>kotlin.Nothing?</code></a> and is, by definition, the only value of this type.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -248,19 +347,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="try-expression">Try-expression</h3>
-<strong>Id grammar-rule-tryExpression not found</strong>
-<strong>Id grammar-rule-catchBlock not found</strong>
-<strong>Id grammar-rule-finallyBlock not found</strong>
+<div id="grammar-rule-tryExpression-pasted-30" class="grammar-rule">
+<dl>
+<dt><strong><em>tryExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'try'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-block">block</a></em> ((({<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-catchBlock">catchBlock</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-catchBlock">catchBlock</a></em>}) [{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-finallyBlock">finallyBlock</a></em>]) | ({<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-finallyBlock">finallyBlock</a></em>))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-catchBlock-pasted-31" class="grammar-rule">
+<dl>
+<dt><strong><em>catchBlock</em>:</strong></dt>
+<dd><span class="sentence"><code>'catch'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
+<code>':'</code><br />
+<em><a href="syntax.html#grammar-rule-type">type</a></em><br />
+<code>')'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-block">block</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-finallyBlock-pasted-32" class="grammar-rule">
+<dl>
+<dt><strong><em>finallyBlock</em>:</strong></dt>
+<dd><span class="sentence"><code>'finally'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-block">block</a></em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">A <em>try-expression</em> is an expression starting with the keyword <code>try</code>. </span><span class="sentence">It consists of a [code block][Code blocks] (<em>try body</em>) and one or more of the following kinds of blocks: zero or more <em>catch blocks</em> and an optional <em>finally block</em>. </span><span class="sentence">A <em>catch block</em> starts with the soft keyword <code>catch</code> with a single <em>exception parameter</em>, which is followed by a [code block][Code blocks]. </span><span class="sentence">A <em>finally block</em> starts with the soft keyword <code>finally</code>, which is followed by a [code block][Code blocks]. </span><span class="sentence">A valid try-expression must have at least one catch or finally block.</span></p>
+<p><span class="sentence">A <em>try-expression</em> is an expression starting with the keyword <code>try</code>. </span><span class="sentence">It consists of a <a href="statements.html#code-blocks">code block</a> (<em>try body</em>) and one or more of the following kinds of blocks: zero or more <em>catch blocks</em> and an optional <em>finally block</em>. </span><span class="sentence">A <em>catch block</em> starts with the soft keyword <code>catch</code> with a single <em>exception parameter</em>, which is followed by a <a href="statements.html#code-blocks">code block</a>. </span><span class="sentence">A <em>finally block</em> starts with the soft keyword <code>finally</code>, which is followed by a <a href="statements.html#code-blocks">code block</a>. </span><span class="sentence">A valid try-expression must have at least one catch or finally block.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The try-expression evaluation evaluates its body; if any statement in the try body throws an exception (of type <span class="math inline">\(E\)</span>), this exception, rather than being immediately propagated up the call stack, is checked for a matching catch block. </span><span class="sentence">If a catch block of this try-expression has an exception parameter of type <span class="math inline">\(T :&gt; E\)</span>, this catch block is evaluated immediately after the exception is thrown and the exception itself is passed inside the catch block as the corresponding parameter. </span><span class="sentence">If there are several catch blocks which match the exception type, the first one is picked.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Exception handling?)</span></p>
-</div>
+<p><span class="sentence">For an in-detail explanation on how exceptions and catch-blocks work, please refer to the <a href="exceptions.html#exceptions">Exceptions</a> section. </span><span class="sentence">For a low-level explanation, please refer to platform-specific parts of this document.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:</span></p>
@@ -268,10 +392,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">If no exception is thrown during the evaluation of the try body, no catch blocks are executed, the finally block is evaluated after the try body, and the program execution continues as normal.</span></li>
 <li><span class="sentence">If an exception was thrown, and one of the catch blocks matched its type, the finally block is evaluated after the evaluation of the matching catch block.</span></li>
-<li><span class="sentence">If an exception was thrown, but no catch block matched its type, the finally block is evaluated before [propagating the exception][Exceptions] up the call stack.</span></li>
+<li><span class="sentence">If an exception was thrown, but no catch block matched its type, the finally block is evaluated before <a href="exceptions.html#exceptions">propagating the exception</a> up the call stack.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The value of the try-expression is the same as the value of the [last expression][Code blocks] of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched). </span><span class="sentence">All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression becomes irrelevant.</span></p>
+<p><span class="sentence">The value of the try-expression is the same as the value of the <a href="statements.html#code-blocks">last expression</a> of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched). </span><span class="sentence">All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression becomes irrelevant.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -279,7 +403,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">The type of the try-expression is the [least upper bound][Least upper bound] of the types of the last expressions of the try body and the last expressions of all the catch blocks <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>.</span></p>
+<p><span class="sentence">The type of the try-expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of the last expressions of the try body and the last expressions of all the catch blocks <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -287,9 +411,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="conditional-expression">Conditional expression</h3>
-<strong>Id grammar-rule-ifExpression not found</strong>
+<div id="grammar-rule-ifExpression-pasted-33" class="grammar-rule">
+<dl>
+<dt><strong><em>ifExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'if'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> | <code>';'</code>))<br />
+| (<code>'if'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>] {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} [<code>';'</code>] {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'else'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> | <code>';'</code>))</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence"><em>Conditional expressions</em> use a boolean value of one expression (<em>condition</em>) to decide which of the two [control structure bodies][Code blocks] (<em>branches</em>) should be evaluated. </span><span class="sentence">If the condition evaluates to <code>true</code>, the first branch (the <em>true branch</em>) is evaluated if it is present, otherwise the second branch (the <em>false branch</em>) is evaluated if it is present.</span></p>
+<p><span class="sentence"><em>Conditional expressions</em> use a boolean value of one expression (<em>condition</em>) to decide which of the two <a href="statements.html#code-blocks">control structure bodies</a> (<em>branches</em>) should be evaluated. </span><span class="sentence">If the condition evaluates to <code>true</code>, the first branch (the <em>true branch</em>) is evaluated if it is present, otherwise the second branch (the <em>false branch</em>) is evaluated if it is present.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -301,29 +432,86 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The value of the resulting expression is the same as the value of the chosen branch.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>, if both branches are present. </span><span class="sentence">If either of the branches are omitted, the resulting conditional expression has type [<code>kotlin.Unit</code>][<code>kotlin.Unit</code>] and may used only as a statement.</span></p>
+<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of two branches <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>, if both branches are present. </span><span class="sentence">If either of the branches are omitted, the resulting conditional expression has type <a href="built-in-types-and-their-semantics.html#kotlin.unit"><code>kotlin.Unit</code></a> and may used only as a statement.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Examples?)</span></p>
+<p><span class="sentence">Let’s illustrate it with some examples:</span></p>
 </div>
-</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">val</span> <span class="va">x</span> = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span> <span class="co">// x has type kotlin.Int and value 1</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">val</span> <span class="va">y</span> = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="co">// illegal, if expression withour false branch cannot be used as an expression</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The type of the condition expression must be a subtype of <code>kotlin.Boolean</code>, otherwise it is an error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority. </span><span class="sentence">For details, see Kotlin [grammar][Syntax grammar].</span></p>
+<p><span class="sentence">Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority. </span><span class="sentence">For details, see Kotlin <a href="syntax.html#syntax-grammar">grammar</a>.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">For example:</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1">x = <span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1">x = (<span class="cf">if</span>(<span class="kw">true</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="dv">2</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">while</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">if</span>(<span class="kw">true</span>) x = <span class="dv">1</span> <span class="cf">else</span> x = <span class="dv">2</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="cf">if</span>(<span class="kw">true</span>) (x = <span class="dv">1</span>) <span class="cf">else</span> (x = <span class="dv">2</span>)</a></code></pre></div>
 </blockquote>
 <h3 id="when-expression">When expression</h3>
-<strong>Id grammar-rule-whenExpression not found</strong>
-<strong>Id grammar-rule-whenEntry not found</strong>
-<strong>Id grammar-rule-whenCondition not found</strong>
-<strong>Id grammar-rule-rangeTest not found</strong>
-<strong>Id grammar-rule-typeTest not found</strong>
+<div id="grammar-rule-whenExpression-pasted-34" class="grammar-rule">
+<dl>
+<dt><strong><em>whenExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'when'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+[<code>'('</code> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>')'</code>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'{'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="syntax.html#grammar-rule-whenEntry">whenEntry</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}}<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenEntry-pasted-35" class="grammar-rule">
+<dl>
+<dt><strong><em>whenEntry</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="syntax.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-whenCondition">whenCondition</a></em>} {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax.html#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax.html#grammar-rule-semi">semi</a></em>])</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenCondition-pasted-36" class="grammar-rule">
+<dl>
+<dt><strong><em>whenCondition</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+| <em><a href="syntax.html#grammar-rule-rangeTest">rangeTest</a></em><br />
+| <em><a href="syntax.html#grammar-rule-typeTest">typeTest</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-rangeTest-pasted-37" class="grammar-rule">
+<dl>
+<dt><strong><em>rangeTest</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-inOperator">inOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeTest-pasted-38" class="grammar-rule">
+<dl>
+<dt><strong><em>typeTest</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-isOperator">isOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence"><em>When expression</em> is similar to a <a href="#conditional-expression">conditional expression</a> in that it allows one of several different [control structure bodies][Code blocks] (<em>cases</em>) to be evaluated, depending on some boolean conditions. </span><span class="sentence">The key difference is exactly that a when expressions may include several different conditions with their corresponding control structure bodies. </span><span class="sentence">When expression has two different forms: with bound value and without it.</span></p>
+<p><span class="sentence"><em>When expression</em> is similar to a <a href="expressions.html#conditional-expression">conditional expression</a> in that it allows one of several different <a href="statements.html#code-blocks">control structure bodies</a> (<em>cases</em>) to be evaluated, depending on some boolean conditions. </span><span class="sentence">The key difference is exactly that a when expressions may include several different conditions with their corresponding control structure bodies. </span><span class="sentence">When expression has two different forms: with bound value and without it.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><strong>When expression without bound value</strong> (the form where the expression enclosed in parentheses after the <code>when</code> keyword is absent) evaluates one of the different CSBs based on its condition from the <em>when entry</em>. </span><span class="sentence">Each when entry consists of a boolean <em>condition</em> (or a special <code>else</code> condition) and its corresponding CSB. </span><span class="sentence">When entries are checked and evaluated in their order of appearance. </span><span class="sentence">If the condition evaluates to <code>true</code>, the corresponding CSB is evaluated and the value of when expression is the same as the value of the CSB. </span><span class="sentence">All remaining conditions and expressions are not evaluated.</span></p>
@@ -340,9 +528,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><strong>When expression with bound value</strong> (the form where the expression enclosed in parentheses after the <code>when</code> keyword is present) are similar to the form without bound value, but use a different syntax for conditions. </span><span class="sentence">In fact, it supports three different condition forms:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><em>Type test condition</em>: <a href="#type-checking-expression">type checking operator</a> followed by a type (<code>is T</code>). </span><span class="sentence">The resulting condition is a <a href="#type-checking-expression">type check expression</a> of the form <code>boundValue is T</code>.</span></li>
-<li><span class="sentence"><em>Contains test condition</em>: <a href="#containment-checking-expression">containment operator</a> followed by an expression (<code>in Expr</code>). </span><span class="sentence">The resulting condition is a <a href="#containment-checking-expression">containment check expression</a> of the form <code>boundValue in Expr</code>.</span></li>
-<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>). </span><span class="sentence">The resulting condition is an <a href="#equality-expressions">equality check</a> of the form <code>boundValue == Expr</code>.</span></li>
+<li><span class="sentence"><em>Type test condition</em>: <a href="expressions.html#type-checking-expression">type checking operator</a> followed by a type (<code>is T</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#type-checking-expression">type check expression</a> of the form <code>boundValue is T</code>.</span></li>
+<li><span class="sentence"><em>Contains test condition</em>: <a href="expressions.html#containment-checking-expression">containment operator</a> followed by an expression (<code>in Expr</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#containment-checking-expression">containment check expression</a> of the form <code>boundValue in Expr</code>.</span></li>
+<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following. </span><span class="sentence"><span><span class="TODO">(TODO: do we really need these here? <code>break</code> and <code>continue</code> are disallowed <strong>anywhere</strong> in when and spreads are disallowed <strong>everywhere</strong> besides function calls, so this is kinda pointless)</span><span class="TODO-marker">*</span></span></span>
+<ul>
+<li><span class="sentence"><a href="expressions.html#continue-expression">Simple continue expression</a></span></li>
+<li><span class="sentence"><a href="expressions.html#break-expression">Simple break expression</a></span></li>
+<li><span class="sentence">[Spread operator expression][Spread operator expression]</span></li>
+</ul>
+<span class="sentence">The resulting condition is an <a href="expressions.html#equality-expressions">equality check</a> of the form <code>boundValue == Expr</code>.</span></li>
 <li><span class="sentence">The <code>else</code> condition, which is a special condition which evaluates to <code>true</code> if none of the branches above it evaluated to <code>true</code>. </span><span class="sentence">The <code>else</code> condition <strong>must</strong> also be in the last when entry of when expression, otherwise it is a compile-time error.</span></li>
 </ul>
 <blockquote>
@@ -356,7 +550,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of the resulting expression is the [least upper bound][Least upper bound] of the types of all its entries <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>. </span><span class="sentence">If the when expression is not <a href="#exhaustive-when-expressions">exhaustive</a>, it has type [<code>kotlin.Unit</code>][<code>kotlin.Unit</code>] and may used only as a statement.</span></p>
+<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of all its entries. </span><span class="sentence">If the when expression is not <a href="expressions.html#exhaustive-when-expressions">exhaustive</a>, it has type <a href="built-in-types-and-their-semantics.html#kotlin.unit"><code>kotlin.Unit</code></a> and may only be used as a statement.</span></p>
 </div>
 <h4 id="exhaustive-when-expressions">Exhaustive when expressions</h4>
 <div class="paragraph">
@@ -371,36 +565,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>true</code>;</span></li>
 <li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>false</code>;</span></li>
 </ul></li>
-<li><span class="sentence">The bound expression is of a [<code>sealed class</code>][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression. </span><span class="sentence">This should include checks for all direct subtypes of this sealed class. </span><span class="sentence">If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;</span></li>
-<li><span class="sentence">The bound expression is of an [<code>enum class</code>][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;</span></li>
-<li><span class="sentence">The bound expression is of a [nullable type][Nullable types] <span class="math inline">\(T?\)</span> and one of the cases above is met for its non-nullable counterpart <span class="math inline">\(T\)</span> together with another condition which checks the bound value for equality with <code>null</code>.</span></li>
+<li><span class="sentence">The bound expression is of a <a href="inheritance.html#sealed-classes"><code>sealed class</code></a> type and all of its subtypes are covered using type test conditions in this expression. </span><span class="sentence">This should include checks for all direct subtypes of this sealed class. </span><span class="sentence">If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;</span></li>
+<li><span class="sentence">The bound expression is of an <a href="declarations.html#enum-class-declaration"><code>enum class</code></a> type and all its enumerated values are checked for equality using constant expression;</span></li>
+<li><span class="sentence">The bound expression is of a <a href="type-system.html#nullable-types">nullable type</a> <span class="math inline">\(T?\)</span> and one of the cases above is met for its non-nullable counterpart <span class="math inline">\(T\)</span> together with another condition which checks the bound value for equality with <code>null</code>.</span></li>
 </ul></li>
 </ul>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Equality check with object behaves kinda like a type check. </span><span class="sentence">Or not.)</span></p>
+<p><span class="sentence">For object types, the type test condition may be replaced with equality check with the object value:</span></p>
 </div>
-</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">sealed</span> <span class="kw">class</span> Base</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">class</span> Derived1(): <span class="dt">Base</span>()</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">object</span> Derived2(): <span class="dt">Base</span></a>
+<a class="sourceLine" id="cb7-4" title="4"></a>
+<a class="sourceLine" id="cb7-5" title="5">...</a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="kw">val</span> <span class="va">b</span>: Base = ...</a>
+<a class="sourceLine" id="cb7-7" title="7">... = <span class="cf">when</span>(b) {</a>
+<a class="sourceLine" id="cb7-8" title="8">    <span class="kw">is</span> Derived1 -&gt; ...</a>
+<a class="sourceLine" id="cb7-9" title="9">    Derived2 -&gt; ...</a>
+<a class="sourceLine" id="cb7-10" title="10">    <span class="co">// no else needed here</span></a>
+<a class="sourceLine" id="cb7-11" title="11">}</a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.</span></p>
 </div>
 </blockquote>
 <h3 id="logical-disjunction-expression">Logical disjunction expression</h3>
-<strong>Id grammar-rule-disjunction not found</strong>
+<div id="grammar-rule-disjunction-pasted-39" class="grammar-rule">
+<dl>
+<dt><strong><em>disjunction</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-conjunction">conjunction</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'||'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-conjunction">conjunction</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Operator symbol <code>||</code> performs logical disjunction over two values of type <code>kotlin.Boolean</code>. </span><span class="sentence">This operator is <strong>lazy</strong>, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to <code>false</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Both operands of a logical disjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Types of errors? </span><span class="sentence">Compile-time, type, run-time, whatever?)</span></p>
-</div>
-</div>
 <h3 id="logical-conjunction-expression">Logical conjunction expression</h3>
-<strong>Id grammar-rule-conjunction not found</strong>
+<div id="grammar-rule-conjunction-pasted-40" class="grammar-rule">
+<dl>
+<dt><strong><em>conjunction</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-equality">equality</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'&amp;&amp;'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-equality">equality</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Operator symbol <code>&amp;&amp;</code> performs logical conjunction over two values of type <code>kotlin.Boolean</code>. </span><span class="sentence">This operator is <strong>lazy</strong>, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to <code>true</code>.</span></p>
 </div>
@@ -408,56 +618,86 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Both operands of a logical conjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="equality-expressions">Equality expressions</h3>
-<strong>Id grammar-rule-equality not found</strong>
-<strong>Id grammar-rule-equalityOperator not found</strong>
+<div id="grammar-rule-equality-pasted-41" class="grammar-rule">
+<dl>
+<dt><strong><em>equality</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-comparison">comparison</a></em> {<em><a href="syntax.html#grammar-rule-equalityOperator">equalityOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-comparison">comparison</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-equalityOperator-pasted-42" class="grammar-rule">
+<dl>
+<dt><strong><em>equalityOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'!='</code><br />
+| <code>'!=='</code><br />
+| <code>'=='</code><br />
+| <code>'==='</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Equality expressions are binary expressions involving equality operators. </span><span class="sentence">There are two kinds of equality operators: <em>reference equality operators</em> and <em>value equality operators</em>.</span></p>
 </div>
 <h4 id="reference-equality-expressions">Reference equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value.</span></p>
+<p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value. </span><span class="sentence">In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:</span></p>
 </div>
 <ul>
-<li><span class="sentence">If these values are <a href="#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>
+<li><span class="sentence">If these values are <a href="expressions.html#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>
 <li><span class="sentence">Any instance of the null reference <code>null</code> is equal by reference to any other instance of the null reference;</span></li>
-<li><span class="sentence">Otherwise, equality by reference is implementation-defined and must not be used as a means of comparing such values.</span></li>
+<li><span class="sentence">Otherwise, equality by reference is implementation-defined and should not be used as a means of comparing such values.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Reference equality expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are [overloadable][Overloadable operators] with the following expansion:</span></p>
+<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="overloadable-operators.html#overloadable-operators">other overloadable operators</a> and have the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A == B</code> is exactly the same as <code>A?.equals(B) ?: (B === null)</code> where <code>equals</code> is a valid operator function available in the current scope;</span></li>
-<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!(A?.equals(B) ?: (B === null))</code> where <code>equals</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
+<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!((A as Any)?.equals(B) ?: (B === null))</code> where <code>equals</code> is the method of <code>kotlin.Any</code>.</span></li>
 </ul>
-<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>kotlin.Any</code> type has a built-in open operator member function <code>equals</code>, meaning there is always at least one available overloading candidate for any value equality expression.</span></p>
+<p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code> as does the <code>equals</code> method in <code>kotlin.Any</code>.</span></p>
 </div>
-</blockquote>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code>. </span><span class="sentence">If the corresponding operator function <code>equals</code> has a different return type, it is a compile-time error.</span></p>
+<p><span class="sentence">TODO: the subtyping constraints for <code>==</code> are non-trivial and creepy and need to be specified</span></p>
+</div>
 </div>
 <h3 id="comparison-expressions">Comparison expressions</h3>
-<strong>Id grammar-rule-comparison not found</strong>
-<strong>Id grammar-rule-comparisonOperator not found</strong>
+<div id="grammar-rule-comparison-pasted-43" class="grammar-rule">
+<dl>
+<dt><strong><em>comparison</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-infixOperation">infixOperation</a></em> [<em><a href="syntax.html#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-infixOperation">infixOperation</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-comparisonOperator-pasted-44" class="grammar-rule">
+<dl>
+<dt><strong><em>comparisonOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'&lt;'</code><br />
+| <code>'&gt;'</code><br />
+| <code>'&lt;='</code><br />
+| <code>'&gt;='</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are [overloadable][Overloadable operators] with the following expansion:</span></p>
+<p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are <a href="overloadable-operators.html#overloadable-operators">overloadable</a> with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>A.compareTo(B) [&lt;] 0</code></span></li>
-<li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>0 [&lt;] A.compareTo(B)</code></span></li>
-<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!(A.compareTo(B) [&lt;] 0)</code></span></li>
-<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!(0 [&lt;] A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
+<li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>integerLess(0, A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B),0)</code></span></li>
+<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>[&lt;]</code> (read “boxed less”) is a special operator unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
+<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The <code>compareTo</code> operator function must have a return type <code>kotlin.Int</code>, otherwise it is a compile-time error.</span></p>
@@ -466,12 +706,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">All comparison expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="type-checking-and-containment-checking-expressions">Type-checking and containment-checking expressions</h3>
-<strong>Id grammar-rule-infixOperation not found</strong>
-<strong>Id grammar-rule-inOperator not found</strong>
-<strong>Id grammar-rule-isOperator not found</strong>
+<div id="grammar-rule-infixOperation-pasted-45" class="grammar-rule">
+<dl>
+<dt><strong><em>infixOperation</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-elvisExpression">elvisExpression</a></em> {(<em><a href="syntax.html#grammar-rule-inOperator">inOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-elvisExpression">elvisExpression</a></em>) | (<em><a href="syntax.html#grammar-rule-isOperator">isOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em>)}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-inOperator-pasted-46" class="grammar-rule">
+<dl>
+<dt><strong><em>inOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'in'</code><br />
+| <em><a href="syntax.html#grammar-rule-NOT_IN">NOT_IN</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-isOperator-pasted-47" class="grammar-rule">
+<dl>
+<dt><strong><em>isOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'is'</code><br />
+| <em><a href="syntax.html#grammar-rule-NOT_IS">NOT_IS</a></em></span>
+</dd>
+</dl>
+</div>
 <h4 id="type-checking-expression">Type-checking expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">The type <span class="math inline">\(T\)</span> must be [runtime-available][Runtime-available types], otherwise it is a compiler error. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
+<p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="runtime-type-information.html#runtime-available-types">runtime-available</a>, otherwise it is a compiler error. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Type-checking expression always has type <code>kotlin.Boolean</code>.</span></p>
@@ -483,12 +743,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: type-checking expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.</span></p>
+<p><span class="sentence">Note: type-checking expressions may create <a href="type-inference.html#smart-casts">smart casts</a>, for further details, refer to the corresponding section.</span></p>
 </div>
 </blockquote>
 <h4 id="containment-checking-expression">Containment-checking expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>containment-checking expression</em> is a binary expression which uses a containment operator <code>in</code> or <code>!in</code>. </span><span class="sentence">These operators are [overloadable][Overloadable operators] with the following expansion:</span></p>
+<p><span class="sentence">A <em>containment-checking expression</em> is a binary expression which uses a containment operator <code>in</code> or <code>!in</code>. </span><span class="sentence">These operators are <a href="overloadable-operators.html#overloadable-operators">overloadable</a> with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A in B</code> is exactly the same as <code>B.contains(A)</code>;</span></li>
@@ -506,7 +766,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The <code>contains</code> function must have a return type <code>kotlin.Boolean</code>, otherwise it is a compile-time error. </span><span class="sentence">Containment-checking expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="elvis-operator-expression">Elvis operator expression</h3>
-<strong>Id grammar-rule-elvisExpression not found</strong>
+<div id="grammar-rule-elvisExpression-pasted-48" class="grammar-rule">
+<dl>
+<dt><strong><em>elvisExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-infixFunctionCall">infixFunctionCall</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-elvis">elvis</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-infixFunctionCall">infixFunctionCall</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">An <em>elvis operator expression</em> is a binary expression which uses an elvis operator (<code>?:</code>). </span><span class="sentence">It checks whether the left-hand side expression is reference equal to <code>null</code>, and, if it is, evaluates and return the right-hand side expression.</span></p>
 </div>
@@ -514,7 +780,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">This operator is <strong>lazy</strong>, meaning that if the left-hand side expression is not reference equal to <code>null</code>, the right-hand side expression is not evaluated.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.</span></p>
+<p><span class="sentence">The type of elvis operator expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -522,9 +788,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="range-expression">Range expression</h3>
-<strong>Id grammar-rule-rangeExpression not found</strong>
+<div id="grammar-rule-rangeExpression-pasted-49" class="grammar-rule">
+<dl>
+<dt><strong><em>rangeExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A..B</code> is exactly the same as <code>A.rangeTo(B)</code></span></li>
@@ -536,10 +808,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of this function is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding <code>rangeTo</code> overload variant.</span></p>
 </div>
 <h3 id="additive-expression">Additive expression</h3>
-<strong>Id grammar-rule-additiveExpression not found</strong>
-<strong>Id grammar-rule-additiveOperator not found</strong>
+<div id="grammar-rule-additiveExpression-pasted-50" class="grammar-rule">
+<dl>
+<dt><strong><em>additiveExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em> {<em><a href="syntax.html#grammar-rule-additiveOperator">additiveOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-multiplicativeExpression">multiplicativeExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-additiveOperator-pasted-51" class="grammar-rule">
+<dl>
+<dt><strong><em>additiveOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'+'</code><br />
+| <code>'-'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses the addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are [overloadable][Overloadable operators] operators with the following expansions:</span></p>
+<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses the addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A + B</code> is exactly the same as <code>A.plus(B)</code></span></li>
@@ -552,10 +837,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">An additive expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="multiplicative-expression">Multiplicative expression</h3>
-<strong>Id grammar-rule-multiplicativeExpression not found</strong>
-<strong>Id grammar-rule-multiplicativeOperator not found</strong>
+<div id="grammar-rule-multiplicativeExpression-pasted-52" class="grammar-rule">
+<dl>
+<dt><strong><em>multiplicativeExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-asExpression">asExpression</a></em> {<em><a href="syntax.html#grammar-rule-multiplicativeOperator">multiplicativeOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-asExpression">asExpression</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiplicativeOperator-pasted-53" class="grammar-rule">
+<dl>
+<dt><strong><em>multiplicativeOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'*'</code><br />
+| <code>'/'</code><br />
+| <code>'%'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses the multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are [overloadable][Overloadable operators] operators with the following expansions:</span></p>
+<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses the multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A * B</code> is exactly the same as <code>A.times(B)</code></span></li>
@@ -574,13 +873,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="cast-expression">Cast expression</h3>
-<strong>Id grammar-rule-asExpression not found</strong>
-<strong>Id grammar-rule-asOperator not found</strong>
+<div id="grammar-rule-asExpression-pasted-54" class="grammar-rule">
+<dl>
+<dt><strong><em>asExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> [{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-asOperator">asOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em>]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-asOperator-pasted-55" class="grammar-rule">
+<dl>
+<dt><strong><em>asOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'as'</code><br />
+| <code>'as?'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">A <em>cast expression</em> is a binary expression which uses the cast operators <code>as</code> or <code>as?</code> and has the form <code>E as/as? T</code>, where <span class="math inline">\(E\)</span> is an expression and <span class="math inline">\(T\)</span> is a type name.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An <strong><code>as</code> cast expression</strong> <code>E as T</code> is called <em>a unchecked cast</em> expression. </span><span class="sentence">This expression perform a runtime check whether the runtime type of <span class="math inline">\(E\)</span> is a [subtype][Subtyping] of <span class="math inline">\(T\)</span> and throws an exception otherwise. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.</span></p>
+<p><span class="sentence">An <strong><code>as</code> cast expression</strong> <code>E as T</code> is called <em>a unchecked cast</em> expression. </span><span class="sentence">This expression perform a runtime check whether the runtime type of <span class="math inline">\(E\)</span> is a <a href="type-system.html#subtyping">subtype</a> of <span class="math inline">\(T\)</span> and throws an exception otherwise. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -596,43 +908,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">An unchecked cast expression result always has the same type as the type <span class="math inline">\(T\)</span> specified in the expression.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An <strong><code>as?</code> cast expression</strong> <code>E as? T</code> is called <em>a checked cast</em> expression. </span><span class="sentence">This expression is similar to the unchecked cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns <code>null</code> instead. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is not a [runtime-available][Runtime-available types] type, then the check is not performed and <code>null</code> is never returned, leading to potential runtime errors later in the program execution. </span><span class="sentence">This situation should be reported as a compile-time warning.</span></p>
+<p><span class="sentence">An <strong><code>as?</code> cast expression</strong> <code>E as? T</code> is called <em>a checked cast</em> expression. </span><span class="sentence">This expression is similar to the unchecked cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns <code>null</code> instead. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is not a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type, then the check is not performed and <code>null</code> is never returned, leading to potential runtime errors later in the program execution. </span><span class="sentence">This situation should be reported as a compile-time warning.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: if type <span class="math inline">\(T\)</span> is a [runtime-available][Runtime-available types] type <strong>with</strong> generic parameters, type parameters are <strong>not</strong> checked w.r.t. subtyping. </span><span class="sentence">This is another porentially erroneous situation, which should be reported as a compile-time warning.</span></p>
+<p><span class="sentence">Note: if type <span class="math inline">\(T\)</span> is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type <strong>with</strong> generic parameters, type parameters are <strong>not</strong> checked w.r.t. subtyping. </span><span class="sentence">This is another porentially erroneous situation, which should be reported as a compile-time warning.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">The checked cast expression type is the [nullable][Nullable types] variant of the type <span class="math inline">\(T\)</span>.</span></p>
+<p><span class="sentence">The checked cast expression type is the <a href="type-system.html#nullable-types">nullable</a> variant of the type <span class="math inline">\(T\)</span>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: cast expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.</span></p>
+<p><span class="sentence">Note: cast expressions may create <a href="type-inference.html#smart-casts">smart casts</a>, for further details, refer to the corresponding section.</span></p>
 </div>
 </blockquote>
 <h3 id="prefix-expressions">Prefix expressions</h3>
-<strong>Id grammar-rule-prefixUnaryExpression not found</strong>
-<strong>Id grammar-rule-unaryPrefix not found</strong>
-<strong>Id grammar-rule-prefixUnaryOperator not found</strong>
+<div id="grammar-rule-prefixUnaryExpression-pasted-56" class="grammar-rule">
+<dl>
+<dt><strong><em>prefixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="syntax.html#grammar-rule-unaryPrefix">unaryPrefix</a></em>} <em><a href="syntax.html#grammar-rule-postfixUnaryExpression">postfixUnaryExpression</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-unaryPrefix-pasted-57" class="grammar-rule">
+<dl>
+<dt><strong><em>unaryPrefix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-annotation">annotation</a></em><br />
+| <em><a href="syntax.html#grammar-rule-label">label</a></em><br />
+| (<em><a href="syntax.html#grammar-rule-prefixUnaryOperator">prefixUnaryOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>})</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-prefixUnaryOperator-pasted-58" class="grammar-rule">
+<dl>
+<dt><strong><em>prefixUnaryOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'++'</code><br />
+| <code>'--'</code><br />
+| <code>'-'</code><br />
+| <code>'+'</code><br />
+| <em><a href="syntax.html#grammar-rule-excl">excl</a></em></span>
+</dd>
+</dl>
+</div>
 <h4 id="annotated-and-labeled-expression">Annotated and labeled expression</h4>
 <div class="paragraph">
-<p><span class="sentence">Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels]. </span><span class="sentence">These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.</span></p>
+<p><span class="sentence">Any expression in Kotlin may be prefixed with any number of <a href="annotations.html#annotations">annotations</a> and [labels][Labels]. </span><span class="sentence">These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.</span></p>
 </div>
 <h4 id="prefix-increment-expression">Prefix increment expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>++A</code> is exactly the same as <code>A = A.inc(); A</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>++A</code> is exactly the same as <code>val $freshId = A.inc(); A = $freshId; $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and then returns <code>A</code> as the result.</span></p>
+<p><span class="sentence">Note: informally, <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">For a prefix increment expression <code>++A</code> expression <code>A</code> must be [an assignable expression][Assignments]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
+<p><span class="sentence">For a prefix increment expression <code>++A</code> expression <code>A</code> must be <a href="statements.html#assignments">an assignable expression</a>. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A prefix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
@@ -644,18 +980,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="prefix-decrement-expression">Prefix decrement expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>--A</code> is exactly the same as <code>A = A.dec(); A</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>--A</code> is exactly the same as <code>val $freshId = A.dec(); A = $freshId; $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and then returns <code>A</code> as the result.</span></p>
+<p><span class="sentence">Note: informally, <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">For a prefix decrement expression <code>--A</code> expression <code>A</code> must be [an assignable expression][Assignments]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
+<p><span class="sentence">For a prefix decrement expression <code>--A</code> expression <code>A</code> must be <a href="statements.html#assignments">an assignable expression</a>. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A prefix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
@@ -667,7 +1003,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="unary-minus-expression">Unary minus expression</h4>
 <div class="paragraph">
-<p><span class="sentence">An <em>unary minus</em> expression is an expression which uses the prefix form of operator <code>-</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">An <em>unary minus</em> expression is an expression which uses the prefix form of operator <code>-</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>-A</code> is exactly the same as <code>A.unaryMinus()</code> where <code>unaryMinus</code> is a valid operator function available in the current scope.</span></li>
@@ -677,7 +1013,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="unary-plus-expression">Unary plus expression</h4>
 <div class="paragraph">
-<p><span class="sentence">An <em>unary plus</em> expression is an expression which uses the prefix form of operator <code>+</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">An <em>unary plus</em> expression is an expression which uses the prefix form of operator <code>+</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>+A</code> is exactly the same as <code>A.unaryPlus()</code> where <code>unaryPlus</code> is a valid operator function available in the current scope.</span></li>
@@ -687,7 +1023,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="logical-not-expression">Logical not expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>logical not</em> expression is an expression which uses the prefix operator <code>!</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>logical not</em> expression is an expression which uses the prefix operator <code>!</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>!A</code> is exactly the same as <code>A.not()</code> where <code>not</code> is a valid operator function available in the current scope.</span></li>
@@ -696,12 +1032,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">No additional restrictions apply.</span></p>
 </div>
 <h3 id="postfix-operator-expressions">Postfix operator expressions</h3>
-<strong>Id grammar-rule-postfixUnaryExpression not found</strong>
-<strong>Id grammar-rule-postfixUnarySuffix not found</strong>
-<strong>Id grammar-rule-postfixUnaryOperator not found</strong>
+<div id="grammar-rule-postfixUnaryExpression-pasted-59" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em><br />
+| (<em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em> (<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em> {<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em>}))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnarySuffix-pasted-60" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
+| <em><a href="syntax.html#grammar-rule-typeArguments">typeArguments</a></em><br />
+| <em><a href="syntax.html#grammar-rule-callSuffix">callSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-indexingSuffix">indexingSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-navigationSuffix">navigationSuffix</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnaryOperator-pasted-61" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'++'</code><br />
+| <code>'--'</code><br />
+| (<em><a href="syntax.html#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em> <em><a href="syntax.html#grammar-rule-excl">excl</a></em>)</span>
+</dd>
+</dl>
+</div>
 <h4 id="postfix-increment-expression">Postfix increment expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>postfix increment</em> expression is an expression which uses the postfix form of operator <code>++</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>postfix increment</em> expression is an expression which uses the postfix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A++</code> is exactly the same as <code>val $freshId = A; A = A.inc(); $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
@@ -715,7 +1076,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix increment expression <code>A++</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
+<p><span class="sentence">A postfix increment expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -724,7 +1085,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="postfix-decrement-expression">Postfix decrement expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A--</code> is exactly the same as <code>val $freshId = A; A = A.dec(); $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
@@ -738,7 +1099,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix decrement expression <code>A--</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
+<p><span class="sentence">A postfix decrement expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -758,11 +1119,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If the type of <code>e</code> is non-nullable, not-null assertion expression <code>e!!</code> has no effect.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the type of <code>e</code>.</span></p>
+<p><span class="sentence">The type of non-null assertion expression is the <a href="type-system.html#nullable-types">non-nullable</a> variant of the type of <code>e</code>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this type may be non-denotable in Kotlin and, as such, may be [approximated][Type approximation] in some situations with the help of [type inference][Type inference].</span></p>
+<p><span class="sentence">Note: this type may be non-denotable in Kotlin and, as such, may be <a href="type-system.html#type-approximation">approximated</a> in some situations with the help of <a href="type-inference.html#type-inference">type inference</a>.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
@@ -771,14 +1132,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="indexing-expressions">Indexing expressions</h3>
-<strong>Id grammar-rule-postfixUnaryExpression not found</strong>
-<strong>Id grammar-rule-postfixUnarySuffix not found</strong>
-<strong>Id grammar-rule-indexingSuffix not found</strong>
+<div id="grammar-rule-postfixUnaryExpression-pasted-62" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em><br />
+| (<em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em> (<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em> {<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em>}))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnarySuffix-pasted-63" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
+| <em><a href="syntax.html#grammar-rule-typeArguments">typeArguments</a></em><br />
+| <em><a href="syntax.html#grammar-rule-callSuffix">callSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-indexingSuffix">indexingSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-navigationSuffix">navigationSuffix</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-indexingSuffix-pasted-64" class="grammar-rule">
+<dl>
+<dt><strong><em>indexingSuffix</em>:</strong></dt>
+<dd><span class="sentence"><code>'['</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+{{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>}<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>']'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">An <em>indexing expression</em> is a suffix expression which uses one or more subexpression as <em>indices</em> between square brackets (<code>[</code> and <code>]</code>).</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">It is an [overloadable][Overloadable operators] operator with the following expansion:</span></p>
+<p><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A[I_0,I_1,...,I_N]</code> is exactly the same as <code>A.get(I_0,I_1,...,I_N)</code>, where <code>get</code> is a valid operator function available in the current scope.</span></li>
@@ -790,19 +1179,94 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Indexing expressions are [assignable][Assignable expressions]. </span><span class="sentence">For a corresponding assignment form, see [indexing assignment][Indexing assignment].</span></p>
 </div>
 <h3 id="call-and-property-access-expressions">Call and property access expressions</h3>
-<strong>Id grammar-rule-postfixUnaryExpression not found</strong>
-<strong>Id grammar-rule-postfixUnarySuffix not found</strong>
-<strong>Id grammar-rule-navigationSuffix not found</strong>
-<strong>Id grammar-rule-callSuffix not found</strong>
-<strong>Id grammar-rule-annotatedLambda not found</strong>
-<strong>Id grammar-rule-valueArguments not found</strong>
-<strong>Id grammar-rule-typeArguments not found</strong>
-<strong>Id grammar-rule-typeProjection not found</strong>
-<strong>Id grammar-rule-typeProjectionModifiers not found</strong>
-<strong>Id grammar-rule-memberAccessOperator not found</strong>
+<div id="grammar-rule-postfixUnaryExpression-pasted-65" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em><br />
+| (<em><a href="syntax.html#grammar-rule-primaryExpression">primaryExpression</a></em> (<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em> {<em><a href="syntax.html#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em>}))</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-postfixUnarySuffix-pasted-66" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnarySuffix</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-postfixUnaryOperator">postfixUnaryOperator</a></em><br />
+| <em><a href="syntax.html#grammar-rule-typeArguments">typeArguments</a></em><br />
+| <em><a href="syntax.html#grammar-rule-callSuffix">callSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-indexingSuffix">indexingSuffix</a></em><br />
+| <em><a href="syntax.html#grammar-rule-navigationSuffix">navigationSuffix</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-navigationSuffix-pasted-67" class="grammar-rule">
+<dl>
+<dt><strong><em>navigationSuffix</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-memberAccessOperator">memberAccessOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em> | <em><a href="syntax.html#grammar-rule-parenthesizedExpression">parenthesizedExpression</a></em> | <code>'class'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-callSuffix-pasted-68" class="grammar-rule">
+<dl>
+<dt><strong><em>callSuffix</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="syntax.html#grammar-rule-typeArguments">typeArguments</a></em>] [<em><a href="syntax.html#grammar-rule-valueArguments">valueArguments</a></em>] <em><a href="syntax.html#grammar-rule-annotatedLambda">annotatedLambda</a></em>)<br />
+| ([<em><a href="syntax.html#grammar-rule-typeArguments">typeArguments</a></em>] <em><a href="syntax.html#grammar-rule-valueArguments">valueArguments</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-annotatedLambda-pasted-69" class="grammar-rule">
+<dl>
+<dt><strong><em>annotatedLambda</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>} [<em><a href="syntax.html#grammar-rule-label">label</a></em>] {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-lambdaLiteral">lambdaLiteral</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-valueArguments-pasted-70" class="grammar-rule">
+<dl>
+<dt><strong><em>valueArguments</em>:</strong></dt>
+<dd><span class="sentence">(<code>'('</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
+| (<code>'('</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-valueArgument">valueArgument</a></em>} {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeArguments-pasted-71" class="grammar-rule">
+<dl>
+<dt><strong><em>typeArguments</em>:</strong></dt>
+<dd><span class="sentence"><code>'&lt;'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-typeProjection">typeProjection</a></em><br />
+{{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeProjection">typeProjection</a></em>}<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'&gt;'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeProjection-pasted-72" class="grammar-rule">
+<dl>
+<dt><strong><em>typeProjection</em>:</strong></dt>
+<dd><span class="sentence">([<em><a href="syntax.html#grammar-rule-typeProjectionModifiers">typeProjectionModifiers</a></em>] <em><a href="syntax.html#grammar-rule-type">type</a></em>)<br />
+| <code>'*'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-typeProjectionModifiers-pasted-73" class="grammar-rule">
+<dl>
+<dt><strong><em>typeProjectionModifiers</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em> {<em><a href="syntax.html#grammar-rule-typeProjectionModifier">typeProjectionModifier</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-memberAccessOperator-pasted-74" class="grammar-rule">
+<dl>
+<dt><strong><em>memberAccessOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'.'</code><br />
+| <em><a href="syntax.html#grammar-rule-safeNav">safeNav</a></em><br />
+| <code>'::'</code></span>
+</dd>
+</dl>
+</div>
 <h4 id="navigation-operators">Navigation operators</h4>
 <div class="paragraph">
-<p><span class="sentence">Expressions which use the navigation binary operators (<code>.</code>, <code>.?</code> or <code>::</code>) are syntactically similar, but, in fact, may have very different semantics.</span></p>
+<p><span class="sentence">Expressions which use the navigation binary operators (<code>.</code>, <code>?.</code> or <code>::</code>) are syntactically similar, but, in fact, may have very different semantics.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>a.c</code> may have one of the following semantics when used as an expression:</span></p>
@@ -818,16 +1282,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote></li>
 <li><span class="sentence">A property access. </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a property name.</span></li>
 <li><div class="paragraph">
-<p><span class="sentence">A function call if followed by the call suffix (arguments in parentheses). </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a function name. </span><span class="sentence">These expressions follow the [overloading][Overload resolution] rules.</span></p>
+<p><span class="sentence">A function call if followed by the call suffix (arguments in parentheses). </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a function name. </span><span class="sentence">These expressions follow the <a href="overload-resolution.html#overload-resolution">overloading</a> rules.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><code>a::c</code> may have one of the following semantics when used as an expression:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A <a href="#class-literals">class literal expression</a> if, instead of an identifier, <code>c</code> is the keyword <code>class</code>;</span></li>
-<li><span class="sentence">A <a href="#callable-references">property reference</a>. </span><span class="sentence">Here <code>a</code> may be either a value available in the current scope or a type name, and <code>c</code> is a property name.</span></li>
-<li><span class="sentence">A <a href="#callable-references">function reference</a>. </span><span class="sentence">Here <code>a</code> may be either a value available in the current scope or a type name, and <code>c</code> is a function name.</span></li>
+<li><span class="sentence">A <a href="expressions.html#class-literals">class literal expression</a> if, instead of an identifier, <code>c</code> is the keyword <code>class</code>;</span></li>
+<li><span class="sentence">A <a href="expressions.html#callable-references">property reference</a>. </span><span class="sentence">Here <code>a</code> may be either a value available in the current scope or a type name, and <code>c</code> is a property name.</span></li>
+<li><span class="sentence">A <a href="expressions.html#callable-references">function reference</a>. </span><span class="sentence">Here <code>a</code> may be either a value available in the current scope or a type name, and <code>c</code> is a function name.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><code>a?.c</code> is a <em>safe navigation</em> operator, which has the following expansion:</span></p>
@@ -837,7 +1301,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this means the type of <code>a?.c</code> is the [nullable][Nullable types] variant of the type of <code>a.c</code>.</span></p>
+<p><span class="sentence">Note: this means the type of <code>a?.c</code> is the <a href="type-system.html#nullable-types">nullable</a> variant of the type of <code>a.c</code>.</span></p>
 </div>
 </blockquote>
 <h4 id="callable-references">Callable references</h4>
@@ -847,10 +1311,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> used instead of the identifier.</span></p>
+<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="expressions.html#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> used instead of the identifier.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for a type. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is another expression and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the usual navigation syntax.</span></p>
+<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for a type. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is another expression and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="overload-resolution.html#overload-resolution">overload resolution</a> much like when accessing the value of a property using the usual navigation syntax.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:</span></p>
@@ -866,7 +1330,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">The type of any kind of property reference is a subtype of <code>kotlin.reflect.KProperty&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the type of the property;</span></li>
-<li><span class="sentence">The type of any kind of callable reference is a subtype of [function type][Function types] that allows the corresponding callable to be accessed/called accordingly:</span>
+<li><span class="sentence">The type of any kind of callable reference is a subtype of <a href="type-system.html#function-types">function type</a> that allows the corresponding callable to be accessed/called accordingly:</span>
 <ul>
 <li><span class="sentence">For a type-callable reference, it is an extension function type <code>O.(Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type same as the left-hand type of the expression, <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable;</span></li>
 <li><span class="sentence">For a value-callable reference, it is a normal function type <code>(Args) -&gt; R</code>, where <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable. </span><span class="sentence">The receiver is bound to the left-hand side expression of the reference expression.</span></li>
@@ -882,7 +1346,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(this is pretty complex, actually. </span><span class="sentence">Do we need all the K(Mutable)PropertyN business defined in the specification???) TODO(we need to update overload resolution section with these guys)</span></p>
+<p><span class="sentence">TODO(this is pretty complex, actually. </span><span class="sentence">Do we need all the K(Mutable)PropertyN business defined in the specification???)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(we need to update overload resolution section with these guys)</span></p>
 </div>
 </div>
 <h4 id="class-literals">Class literals</h4>
@@ -890,7 +1359,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A class literal is very similar in syntax to a callable reference, with the difference being that it uses the keyword <code>class</code> instead of the referenced identifier. </span><span class="sentence">Similar to callable references, there are two forms of class literals: with a type used as the left-hand side argument of the expression and with another expression used as such. </span><span class="sentence">This is also one of the few cases where a parameterized type may (<strong>and must</strong>) be used without its type parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">All class literals have type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the type given as the left-hand side of the expression or the [runtime type][Runtime type information] of the value given as the left-hand side of the expression. </span><span class="sentence">In both cases, <code>T</code> must be a [runtime-available type][Runtime type information] in the current scope. </span><span class="sentence">As the runtime type of the expression is not known at compile time, the compile-time type of the expression is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time of the expression.</span></p>
+<p><span class="sentence">All class literals have type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the type given as the left-hand side of the expression or the <a href="runtime-type-information.html#runtime-type-information">runtime type</a> of the value given as the left-hand side of the expression. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="runtime-type-information.html#runtime-type-information">runtime-available non-nullable type</a> in the current scope. </span><span class="sentence">As the runtime type of the expression is not known at compile time, the compile-time type of the expression is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time of the expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.</span></p>
@@ -905,20 +1374,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(Identifiers, paths, that kinda stuff)</span></p>
 </div>
 </div>
+<h4 id="function-calls-and-property-access">Function calls and property access</h4>
+<div class="paragraph">
+<p><span class="sentence">Function call expression is the expression used to invoke functions. </span><span class="sentence">Property access expression is the expression used to access properties. </span><span class="sentence">There are two kinds of both: with and without explicit receiver (the left-hand side of the <code>.</code> operator). </span><span class="sentence">For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading</a> section. </span><span class="sentence">Please note that in some cases function calls are indistinguishable from property access with <code>invoke</code>-convention call suffix.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">From this point on in this section we well refer to both as function calls. </span><span class="sentence">As described in [the function declaration section][Function declarations], function calls receive arguments of several different kinds:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
+<li><span class="sentence">Normal arguments, provided directly inside the parentheses part of the call;</span></li>
+<li><span class="sentence">Named arguments in the form <span class="math inline">\(identifier\ \texttt{=}\ value\)</span>, where <span class="math inline">\(identifier\)</span> is a parameter name used at declaration-site of the function;</span></li>
+<li><span class="sentence">Variable-argument arguments, provided the same way as normal arguments;</span></li>
+<li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="expressions.html#lambda-literals">lambda literal section</a>) for details.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The evaluation of the function arguments is performed <strong>before</strong> the function itself is invoked <strong>in the order of appearance of the arguments</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Some examples (here we use notation similar to the <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
+<a class="sourceLine" id="cb8-2" title="2">...</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="fu">f</span>() // $<span class="fu">1</span> = h(); $<span class="dv">2</span> = g(); $result = f($<span class="dv">1</span>, $<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb8-4" title="4">f(m(), n()) <span class="co">// $1 = m(); $2 = n(); $result = f($1, $2)</span></a>
+<a class="sourceLine" id="cb8-5" title="5">f(y = n(), x = m()) <span class="co">// $1 = n(); $2 = m(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb8-6" title="6">f(y = n()) <span class="co">// $1 = n(); $2 = h(); $result = f($2, $1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: () -&gt; <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb9-2" title="2">...</a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="fu">f</span>(<span class="va">y</span> = {2}) // $<span class="fu">1</span> = {<span class="dv">2</span>}; $<span class="dv">2</span> = h(); $result = f($<span class="dv">2</span>, $<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-4" title="4">f { <span class="dv">2</span> } <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb9-5" title="5">f(m()) { <span class="dv">2</span> } <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence"><a href="overloadable-operators.html#overloadable-operators">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments. </span><span class="sentence">See <a href="expressions.html#containment-checking-expression">corresponding section for details</a></span></p>
+</div>
+</blockquote>
 <h3 id="function-literals">Function literals</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>
+<p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="expressions.html#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">There are two types of function literals in Kotlin: <em>lambda literals</em> and <em>anonymous function declarations</em>. </span><span class="sentence">Both of these provide a way of defining a function in-place, but have subtle differences.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as some may consider function literals to be closely related to function declarations, [here][Function declaration] is the corresponding section of the specification.</span></p>
+<p><span class="sentence">Note: as some may consider function literals to be closely related to function declarations, <a href="declarations.html#function-declaration">here</a> is the corresponding section of the specification.</span></p>
 </div>
 </blockquote>
 <h4 id="anonymous-function-declarations">Anonymous function declarations</h4>
-<strong>Id grammar-rule-anonymousFunction not found</strong>
+<div id="grammar-rule-anonymousFunction-pasted-75" class="grammar-rule">
+<dl>
+<dt><strong><em>anonymousFunction</em>:</strong></dt>
+<dd><span class="sentence"><code>'fun'</code><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-parametersWithOptionalType">parametersWithOptionalType</a></em><br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
+[{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-functionBody">functionBody</a></em>]</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence"><em>Anonymous function declarations</em>, despite their name, are not declarations per se, but rather expressions which resemble function declarations. </span><span class="sentence">They have a syntax very similar to function declarations, with the following key differences:</span></p>
 </div>
@@ -937,12 +1460,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">The type of an anonymous function declaration is the function type constructed similarly to a [named function declaration][Function declaration].</span></p>
+<p><span class="sentence">The type of an anonymous function declaration is the function type constructed similarly to a <a href="declarations.html#function-declaration">named function declaration</a>.</span></p>
 </div>
 <h4 id="lambda-literals">Lambda literals</h4>
-<strong>Id grammar-rule-lambdaLiteral not found</strong>
-<strong>Id grammar-rule-lambdaParameters not found</strong>
-<strong>Id grammar-rule-lambdaParameter not found</strong>
+<div id="grammar-rule-lambdaLiteral-pasted-76" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<code>'{'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-statements">statements</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'}'</code>)<br />
+| (<code>'{'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax.html#grammar-rule-lambdaParameters">lambdaParameters</a></em>] {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-statements">statements</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'}'</code>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lambdaParameters-pasted-77" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaParameters</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lambdaParameter-pasted-78" class="grammar-rule">
+<dl>
+<dt><strong><em>lambdaParameter</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
+| (<em><a href="syntax.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em> [{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em>])</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Lambda literals are similar to anonymous function declarations in that they define a function with no name. </span><span class="sentence">Lambda also use very different syntax, similar to control structure bodies of other expressions.</span></p>
 </div>
@@ -958,7 +1501,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If a lambda expression has no parameter list, it can actually be defining an anonymous function with either zero or one parameter, the exact case dependent on the context of the usage of this expression. </span><span class="sentence">The selection of number of parameters in this case is performed during [type inference][Type inference]. </span><span class="sentence">Any lambda may also define either a normal function or an expansion function, the exact case also dependent on the context of the usage of lambda expression.</span></p>
+<p><span class="sentence">If a lambda expression has no parameter list, it can actually be defining an anonymous function with either zero or one parameter, the exact case dependent on the context of the usage of this expression. </span><span class="sentence">The selection of number of parameters in this case is performed during <a href="type-inference.html#type-inference">type inference</a>. </span><span class="sentence">Any lambda may also define either a normal function or an expansion function, the exact case also dependent on the context of the usage of lambda expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the lambda expression has no parameter list, but has one parameter, this parameter can be accessed inside the lambda body using a special property called <code>it</code>. </span><span class="sentence">If the lambda expression defines an expansion function, the expansion receiver may be accessed using standard <code>this</code> syntax inside the lambda body.</span></p>
@@ -980,7 +1523,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Any properties used in any way inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. [smart casts][Smart casts].</span></p>
+<p><span class="sentence">Any properties used in any way inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. <a href="type-inference.html#smart-casts">smart casts</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -988,7 +1531,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="object-literals">Object literals</h3>
-<strong>Id grammar-rule-objectLiteral not found</strong>
+<div id="grammar-rule-objectLiteral-pasted-79" class="grammar-rule">
+<dl>
+<dt><strong><em>objectLiteral</em>:</strong></dt>
+<dd><span class="sentence">(<code>'object'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-classBody">classBody</a></em>)<br />
+| (<code>'object'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-classBody">classBody</a></em>)</span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Object literals are used to define anonymous objects in Kotlin. </span><span class="sentence">Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions. </span><span class="sentence">Anonymous objects, just like regular object declarations, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.</span></p>
 </div>
@@ -1036,9 +1586,16 @@ M().test2().bar() // Error: Unresolved reference: bar
 }</code></pre>
 </blockquote>
 <h3 id="this-expressions">This-expressions</h3>
-<strong>Id grammar-rule-thisExpression not found</strong>
+<div id="grammar-rule-thisExpression-pasted-80" class="grammar-rule">
+<dl>
+<dt><strong><em>thisExpression</em>:</strong></dt>
+<dd><span class="sentence"><code>'this'</code><br />
+| <em><a href="syntax.html#grammar-rule-THIS_AT">THIS_AT</a></em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p><span class="sentence">This-expressions are special kind of expressions used to access [receivers][Receivers] available in current scope. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">This-expressions are special kind of expressions used to access <a href="overload-resolution.html#receivers">receivers</a> available in current scope. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
@@ -1049,7 +1606,14 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">Any other form of this-expression is illegal and must be a compile-time error.</span></p>
 </div>
 <h3 id="super-forms">Super-forms</h3>
-<strong>Id grammar-rule-superExpression not found</strong>
+<div id="grammar-rule-superExpression-pasted-81" class="grammar-rule">
+<dl>
+<dt><strong><em>superExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-type">type</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<em><a href="syntax.html#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> <em><a href="syntax.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
+| <em><a href="syntax.html#grammar-rule-SUPER_AT">SUPER_AT</a></em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a function or property access expression. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
 </div>
@@ -1062,18 +1626,29 @@ M().test2().bar() // Error: Unresolved reference: bar
 </div>
 </div>
 <h3 id="jump-expressions">Jump expressions</h3>
-<strong>Id grammar-rule-jumpExpression not found</strong>
+<div id="grammar-rule-jumpExpression-pasted-82" class="grammar-rule">
+<dl>
+<dt><strong><em>jumpExpression</em>:</strong></dt>
+<dd><span class="sentence">(<code>'throw'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)<br />
+| ((<code>'return'</code> | <em><a href="syntax.html#grammar-rule-RETURN_AT">RETURN_AT</a></em>) [<em><a href="syntax.html#grammar-rule-expression">expression</a></em>])<br />
+| <code>'continue'</code><br />
+| <em><a href="syntax.html#grammar-rule-CONTINUE_AT">CONTINUE_AT</a></em><br />
+| <code>'break'</code><br />
+| <em><a href="syntax.html#grammar-rule-BREAK_AT">BREAK_AT</a></em></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence"><em>Jump expressions</em> are expressions which redirect the evaluation of the program to a different program point. </span><span class="sentence">All these expressions have several things in common:</span></p>
 </div>
 <ul>
-<li><span class="sentence">They all have type [<code>kotlin.Nothing</code>][<code>kotlin.Nothing</code>], meaning that they never produce any runtime value;</span></li>
+<li><span class="sentence">They all have type <a href="built-in-types-and-their-semantics.html#kotlin.nothing-1"><code>kotlin.Nothing</code></a>, meaning that they never produce any runtime value;</span></li>
 <li><span class="sentence">Any code which follows such expressions is never evaluated.</span></li>
 </ul>
 <h4 id="throw-expressions">Throw expressions</h4>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO([Exceptions] go first)</span></p>
+<p><span class="sentence">TODO(<a href="exceptions.html#exceptions">Exceptions</a> go first)</span></p>
 </div>
 </div>
 <h4 id="return-expressions">Return expressions</h4>
@@ -1081,7 +1656,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">A <em>return expression</em>, when used inside a function body, immediately stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any). </span><span class="sentence">A return expression with no value implicitly returns the <code>kotlin.Unit</code> object.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">There are two forms of return expression: a simple return expression, specified using the <code>return</code> keyword, which returns from the innermost [function declaration][Function declaration] (or <a href="#anonymous-function-declarations">Anonymous function declaration</a>) and a labeled return expression of the form <code>return@Context</code> where <code>Context</code> may be one of the following:</span></p>
+<p><span class="sentence">There are two forms of return expression: a simple return expression, specified using the <code>return</code> keyword, which returns from the innermost <a href="declarations.html#function-declaration">function declaration</a> (or <a href="expressions.html#anonymous-function-declarations">Anonymous function declaration</a>) and a labeled return expression of the form <code>return@Context</code> where <code>Context</code> may be one of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence">The name of one of the enclosing function declarations, which refers to this function. </span><span class="sentence">If several declarations match one name, it is a compile-time error;</span></li>
@@ -1136,13 +1711,64 @@ M().test2().bar() // Error: Unresolved reference: bar
 </div>
 </blockquote>
 <h3 id="string-interpolation-expressions">String interpolation expressions</h3>
-<strong>Id grammar-rule-stringLiteral not found</strong>
-<strong>Id grammar-rule-lineStringLiteral not found</strong>
-<strong>Id grammar-rule-multiLineStringLiteral not found</strong>
-<strong>Id grammar-rule-lineStringContent not found</strong>
-<strong>Id grammar-rule-lineStringExpression not found</strong>
-<strong>Id grammar-rule-multiLineStringContent not found</strong>
-<strong>Id grammar-rule-multiLineStringExpression not found</strong>
+<div id="grammar-rule-stringLiteral-pasted-83" class="grammar-rule">
+<dl>
+<dt><strong><em>stringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-lineStringLiteral">lineStringLiteral</a></em><br />
+| <em><a href="syntax.html#grammar-rule-multiLineStringLiteral">multiLineStringLiteral</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringLiteral-pasted-84" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="syntax.html#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="syntax.html#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="syntax.html#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringLiteral-pasted-85" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="syntax.html#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="syntax.html#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="syntax.html#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringContent-pasted-86" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringContent</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-LineStrText">LineStrText</a></em><br />
+| <em><a href="syntax.html#grammar-rule-LineStrEscapedChar">LineStrEscapedChar</a></em><br />
+| <em><a href="syntax.html#grammar-rule-LineStrRef">LineStrRef</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-lineStringExpression-pasted-87" class="grammar-rule">
+<dl>
+<dt><strong><em>lineStringExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringContent-pasted-88" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringContent</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
+| <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em><br />
+| <em><a href="syntax.html#grammar-rule-MultiLineStrRef">MultiLineStrRef</a></em></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-multiLineStringExpression-pasted-89" class="grammar-rule">
+<dl>
+<dt><strong><em>multiLineStringExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
 <p><span class="sentence"><em>String interpolation expressions</em> replace the traditional string literals and supersede them. </span><span class="sentence">A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and <em>interpolated expressions</em>, delimited by the special syntax using the <code>$</code> symbol. </span><span class="sentence">This syntax allows to specify such fragments by directly following the <code>$</code> symbol with either a single identifier (if the expression is a single identifier) or a control structure body. </span><span class="sentence">In either case, the interpolated value is evaluated and converted into a <code>kotlin.String</code> by a process defined below. </span><span class="sentence">The resulting value of a string interpolation expression is the joining of all fragments in the expression.</span></p>
 </div>
@@ -1150,11 +1776,11 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">An interpolated value <span class="math inline">\(v\)</span> is converted to <code>kotlin.String</code> according to the following convention:</span></p>
 </div>
 <ul>
-<li><span class="sentence">If it is equal to the <a href="#null-literal">null reference</a>, the result is <code>&quot;null&quot;</code>;</span></li>
+<li><span class="sentence">If it is equal to the <a href="expressions.html#null-literal">null reference</a>, the result is <code>&quot;null&quot;</code>;</span></li>
 <li><span class="sentence">Otherwise, the result is <span class="math inline">\(v\)</span><code>.toString()</code> where <code>toString</code> is the <code>kotlin.Any</code> member function (no overloading resolution is performed to choose the function in this context).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions. </span><span class="sentence">The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see [grammar][Grammar] for details). </span><span class="sentence">On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.</span></p>
+<p><span class="sentence">There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions. </span><span class="sentence">The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see <a href="syntax.html#grammar">grammar</a> for details). </span><span class="sentence">On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1174,14 +1800,5 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">TODO(list all the allowed escapes here?)</span></p>
 </div>
 </div>
-<h2 id="todos">TODOs()</h2>
-<ul>
-<li><span class="sentence">Class literals</span></li>
-<li><span class="sentence">Smart casts vs compile-time types</span></li>
-<li><span class="sentence">What does <code>decaying</code> for vararg actually mean?</span></li>
-<li><span class="sentence">Where to define spread operator?</span></li>
-<li><span class="sentence">Object literal types look just like restricted union types. </span><span class="sentence">Are there any traps hidden here?</span></li>
-<li><span class="sentence">The last paragraph in <a href="#object-literals">object literals</a> is also pretty shady</span></li>
-</ul>
 </body>
 </html>
