@@ -679,7 +679,7 @@ To represent a well-formed flexible type, $(L..U)$ should satisfy the following 
 As the name suggests, flexible types are flexible --- a value of type $(L..U)$ can be used in any context, where one of the possible types between $L$ and $U$ is needed (for more details, see [subtyping rules for flexible types][Subtyping for flexible types]).
 However, the actual runtime type $T$ will be a specific type satisfying $\exists S : T <: S \land L <: S <: U$, thus making the substitution possibly unsafe, which is why Kotlin generates dynamic assertions, when it is impossible to prove statically the safety of flexible type use.
 
-TODO(Details of assertion generation?)
+TODO([Kotlin.*] Details of assertion generation?)
 
 ##### Dynamic type
 
@@ -762,11 +762,39 @@ Thus, the normalization procedure for $\LUB$ may be used to *normalize* a union 
 
 Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type approximation][Type approximation].
 
-### Type context
+### Type contexts and scopes
 
-TODO(Type contexts and their relation to scopes)
+The way types and [scopes][Scopes and identifiers] interoperate is very similar to how values and scopes work; this includes [visibility][Visibility], accessing types via qualified names or [imports][Importing].
+This means, in many cases, type contexts are equivalent to the corresponding scopes.
+However, there are several important differences, which we outline below.
 
-TODO(Inner vs nested type contexts)
+#### Inner and nested type contexts
+
+[Type parameters][Type parameters] are well-formed types in the type context (scope) of their declaring type constructor, including inner type declarations.
+However, type context for a [*nested* type declaration][Nested and inner classifiers] $\ND$ of a parent type declaration $\PD$ does **not** include the type parameters of $\PD$.
+
+> Note: nested type declarations cannot capture parent type parameters, as  they simply create a regular type available under a nested path.
+
+> Example:
+> ```kotlin
+> class Parent<T> {
+>     class Nested(val i: Int)
+> 
+>     // Can use type parameter T as a type
+>     // in an inner class
+>     inner class Inner(val t: T)
+> 
+>     // Cannot use type parameter T as a type
+>     // in a nested class
+>     class Error(val t: T)
+> }
+> 
+> fun main() {
+>     val nested = Parent.Nested(42)
+> 
+>     val inner = Parent<String>().Inner("42")
+> }
+> ```
 
 ### Subtyping
 
@@ -777,7 +805,7 @@ The subtyping relation $<:$ is:
 * *rigidly* transitive ($A <: B \land B <: C \Rightarrow A <: C$ for non-flexible types $A$, $B$ and $C$)
 
 Two types $A$ and $B$ are *equivalent* ($A \equiv B$), iff $A <: B \land B <: A$.
-Due to the presence of flexible types, this relation is **not** transitive (see [here][Subtyping for flexible types] for more details).
+Due to the presence of flexible types, this relation is also only *rigidly* transitive, e.g., holds only for non-flexible types (see [here][Subtyping for flexible types] for more details).
 
 #### Subtyping rules
 
@@ -792,7 +820,7 @@ Subtyping for non-nullable, abstract types uses the following rules.
 
 * $\forall T : \Nothing <: T <: \Any$
 * For any type constructor $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
-* For any two type constructors $\widehat{T} = T[\sigma]$ and $\widehat{T^\prime} = T[\sigma^\prime]$ with type parameters $F_i$ and $F_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
+* For any two type constructors $\widehat{T} = T(F_1, \ldots, F_n)$ and $\widehat{T^\prime} = T(F_1^\prime, \ldots, F_n^\prime)$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
 
 Subtyping for type parameters uses the following rules.
 
@@ -813,8 +841,8 @@ Subtyping for nullable types is checked separately and uses a special set of rul
 
 #### Subtyping for flexible types
 
-Flexible types (being flexible) follow a simple subtyping relation with other inflexible types.
-Let $T, A, B, L, U$ be inflexible types.
+Flexible types (being flexible) follow a simple subtyping relation with other rigid (i.e., non-flexible) types.
+Let $T, A, B, L, U$ be rigid types.
 
 * $L <: T \Rightarrow (L..U) <: T$
 * $T <: U \Rightarrow T <: (L..U)$
@@ -850,8 +878,8 @@ All integer literal type are equivalent w.r.t. subtyping, meaning that for any s
 
 - $\LTS(T_1, \ldots, T_K) <: \LTS(U_1, \ldots, U_N)$
 - $\LTS(U_1, \ldots, U_N) <: \LTS(T_1, \ldots, T_K)$
-- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp \LTS(T_1, \ldots, T_K) <: T_i$
-- $\forall T_i \in \{T_1, \ldots, T_K\} \ldotp T_i <: \LTS(T_1, \ldots, T_K)$
+- $\forall T_i \in \{T_1, \ldots, T_K\} : \LTS(T_1, \ldots, T_K) <: T_i$
+- $\forall T_i \in \{T_1, \ldots, T_K\} : T_i <: \LTS(T_1, \ldots, T_K)$
 
 > Note: the last two rules mean $\LTS(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 | \ldots | T_K$, depending on the context.
 > Viewing $\LTS$ as intersection type allows us to use integer literals where built-in integer types are expected.
@@ -958,15 +986,9 @@ TODO(LUB for 3+ types)
 
 TODO(what do we do if this procedure loops?)
 
-TODO(Why do we need union types again?)
-
 #### Greatest lower bound
 
 The _greatest lower bound_ $\GLB(A, B)$ of types $A$ and $B$ is a lower bound $L$ of $A$ and $B$ such that there is no other lower bound of these types which is greater by subtyping relation than $L$.
-
-> Note: enumerating all subtypes of a given type is impossible in general, but in the presence of [intersection types][Intersection types], $GLB(A, B) \equiv A \amp B$.
-
-TODO(It's not if types are related)
 
 > Note: $\GLB$ is commutative, i.e., $\GLB(A, B) = \GLB(B, A)$.
 > This property is used in the subsequent description, e.g., other properties of $\GLB$ are defined only for a specific order of the arguments.
@@ -994,11 +1016,11 @@ This normalization procedure, if finite, creates a *canonical* representation of
        (\{\outV \GLB(X_{out}, Y_{out}), \inV \LUB(X_{in}, Y_{in})\})$
     + $\Omega(\{\outV A, \inV B\}) =
   \begin{cases}
-    \{\outV A, \inV \Nothing\} & \text{if } A <: B \land A \not\equiv B \\
-    \{\outV A, \inV B\}               & \text{otherwise}
+    \{\outV A, \inV B\}        & \text{if } A :> B \\
+    \{\outV A, \inV \Nothing\} & \text{if } A <: B \land A \not \equiv B
   \end{cases}$
 
-> Note: the $\Omega$ function preserves type system consistency; $\forall A, B : A <: B \land A \not\equiv B$, type $T\langle \{\outV A \inV B\}\rangle$ is the evidence of type $T\langle X\rangle : X <: A <: B <: X$, which makes the type system inconsistent.
+> Note: the $\Omega$ function preserves type system consistency; $\forall A, B : A <: B \land A \not\equiv B$, type $T\langle \{\outV A, \inV B\}\rangle$ is the evidence of type $T\langle X\rangle : X <: A <: B <: X$, which makes the type system inconsistent.
 > To avoid this situation, we underapproximate $\inV B$ with $\inV \Nothing$ when needed.
 > Further details are available in the ["Mixed-site variance" paper][References].
 

@@ -57,6 +57,10 @@
 \opMathTEXT{\ATS}{ATS}
 \opMathTEXT{\LTS}{LTS}
 
+\opMathTEXT{\PD}{PD}
+\opMathTEXT{\ND}{ND}
+\opMathTEXT{\ID}{ID}
+
 \opMathTEXT{\SmartCastData}{SmartCastData}
 \opMathTEXT{\Expression}{Expression}
 \opMathTEXT{\SmartCastType}{SmartCastType}

@@ -121,15 +121,15 @@ Please refer to the [function declaration reference][Function declaration] for d
 
 ##### Nested and inner classifiers
 
-If a classifier declaration $ND$ is *nested* in another classifier declaration $PD$, it creates a nested classifier type --- a classifier type available under the path $PD.ND$. 
+If a classifier declaration $\ND$ is *nested* in another classifier declaration $\PD$, it creates a nested classifier type --- a classifier type available under the path $\PD.\ND$. 
 In all other aspects, nested classifiers are equivalent to regular ones.
 
-Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. 
-An inner class declaration $ID$ nested in another classifier declaration $PD$ may reference an *object* of type $ID$ associated with it.
+*Inner* classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects.
+An inner class declaration $\ID$ nested in another classifier declaration $\PD$ may reference an *object* of type $\ID$ associated with it.
 
-This association happens when instantiating an object of type $ID$, as its constructor may be invoked only when a receiver of type $PD$ is available, and this receiver becomes associated with the new instantiated object of type $ID$.
+This association happens when instantiating an object of type $\ID$, as its constructor may be invoked only when a receiver of type $\PD$ is available, and this receiver becomes associated with the new instantiated object of type $\ID$.
 
-TODO(the relation between containing and nested classifiers if generics are involved)
+For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
 
 TODO(...)
 
