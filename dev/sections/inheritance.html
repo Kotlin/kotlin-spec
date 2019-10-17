@@ -111,6 +111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
 <h2 id="inheritance">Inheritance</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -125,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A class is called <strong>closed</strong> and is forbidden to be inherited from if it is declared not <code>open</code> or <code>abstract</code> (please note that classes are neither <code>open</code> nor <code>abstract</code> by default). </span><span class="sentence">A <code>data class</code>, <code>enum class</code> or <code>annotation class</code> cannot be declared <code>open</code> or <code>abstract</code> and cannot be inherited from.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An interface type may be inherited from any number of other interface types (and only interface types) without any limitation.</span></p>
+<p><span class="sentence">An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is <a href="type-system.html#type-system">well-formed</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -161,18 +163,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">It is declared as <code>open</code>, <code>abstract</code> or <code>override</code> (interface methods and properties are implicitly <code>abstract</code> if they don’t have a body or <code>open</code> if they do).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and <code>open</code>, <code>abstract</code> or <code>override</code> and should result in a compiler error.</span></p>
+<p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable declaration inside a classifier declaration <em>subsumes</em> a corresponding declaration of the base classifier type if:</span></p>
+<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Its return type is a subtype of the return type of the corresponding declaration;</span></li>
-<li><span class="sentence">Its formal parameter types are supertypes of the types of corresponding parameters from the corresponding declaration;</span></li>
-<li><span class="sentence">Its name is the same as the name of the corresponding declaration.</span></li>
+<li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of the return type of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Formal parameter types of <span class="math inline">\(D\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Type parameters of <span class="math inline">\(D\)</span> are pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Name of <span class="math inline">\(D\)</span> is the same as the name of <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If the declaration of the base classifier type is overridable and the declaration of the derived classifier type subsumes it and it has an <code>override</code> modifier, it is <em>overriding</em> the base declaration. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
+<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the overriding declaration does not have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overriden declaration. </span><span class="sentence">If the overriding declaration does have its visibility specified, it must be weaker than the visibility of the overriden declaration.</span></p>

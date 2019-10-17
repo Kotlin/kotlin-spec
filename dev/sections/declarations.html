@@ -111,6 +111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
 <h2 id="declarations">Declarations</h2>
 <h3 id="glossary-2">Glossary</h3>
 <dl>
@@ -287,18 +289,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="nested-and-inner-classifiers">Nested and inner classifiers</h5>
 <div class="paragraph">
-<p><span class="sentence">If a classifier declaration <span class="math inline">\(ND\)</span> is <em>nested</em> in another classifier declaration <span class="math inline">\(PD\)</span>, it creates a nested classifier type — a classifier type available under the path <span class="math inline">\(PD.ND\)</span>. </span><span class="sentence">In all other aspects, nested classifiers are equivalent to regular ones.</span></p>
+<p><span class="sentence">If a classifier declaration <span class="math inline">\(\operatorname{\text{ND}}\)</span> is <em>nested</em> in another classifier declaration <span class="math inline">\(\operatorname{\text{PD}}\)</span>, it creates a nested classifier type — a classifier type available under the path <span class="math inline">\(\operatorname{\text{PD}}.\operatorname{\text{ND}}\)</span>. </span><span class="sentence">In all other aspects, nested classifiers are equivalent to regular ones.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. </span><span class="sentence">An inner class declaration <span class="math inline">\(ID\)</span> nested in another classifier declaration <span class="math inline">\(PD\)</span> may reference an <em>object</em> of type <span class="math inline">\(ID\)</span> associated with it.</span></p>
+<p><span class="sentence"><em>Inner</em> classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. </span><span class="sentence">An inner class declaration <span class="math inline">\(\operatorname{\text{ID}}\)</span> nested in another classifier declaration <span class="math inline">\(\operatorname{\text{PD}}\)</span> may reference an <em>object</em> of type <span class="math inline">\(\operatorname{\text{ID}}\)</span> associated with it.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This association happens when instantiating an object of type <span class="math inline">\(ID\)</span>, as its constructor may be invoked only when a receiver of type <span class="math inline">\(PD\)</span> is available, and this receiver becomes associated with the new instantiated object of type <span class="math inline">\(ID\)</span>.</span></p>
+<p><span class="sentence">This association happens when instantiating an object of type <span class="math inline">\(\operatorname{\text{ID}}\)</span>, as its constructor may be invoked only when a receiver of type <span class="math inline">\(\operatorname{\text{PD}}\)</span> is available, and this receiver becomes associated with the new instantiated object of type <span class="math inline">\(\operatorname{\text{ID}}\)</span>.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(the relation between containing and nested classifiers if generics are involved)</span></p>
-</div>
+<p><span class="sentence">For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the <a href="type-system.html#inner-and-nested-type-contexts">type system</a> section of the specification.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -670,6 +670,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">One of the parameters may be designated as being variable length (aka <em>vararg</em>). </span><span class="sentence">A parameter list <span class="math inline">\((p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)\)</span> means a function may be called with any number of arguments in the i-th position. </span><span class="sentence">These arguments are represented inside function body <span class="math inline">\(b\)</span> as a value <span class="math inline">\(p_i\)</span> of type, which is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: we also consider variable length parameters to have such types for the purposes of type inference. </span><span class="sentence">TODO(Something else?)</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.</span></p>
 </div>
@@ -871,7 +876,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="delegated-property-declaration">Delegated property declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code>. </span><span class="sentence">One may view these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
+<p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">For the former, one may consider these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
 </div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
@@ -883,7 +888,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> form which is expanded into the following:</span></p>
 </div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb13-1" title="1">e<span class="op">.</span>getValue(thisRef, property)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -893,6 +898,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>thisRef</code> is the <a href="overload-resolution.html#receivers">receiver</a> object for the property. </span><span class="sentence">This argument is <code>null</code> for local properties;</span></li>
 <li><span class="sentence"><code>property</code> is an object of the type <code>kotlin.KProperty&lt;*&gt;</code> that contains information relevant to <code>x</code> (for example, its name, see standard library documentation for details).</span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>:</span></p>
+</div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
@@ -902,12 +910,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb15-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
 <a class="sourceLine" id="cb15-4" title="4">    <span class="kw">set</span>(value: T) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>.</span></p>
-</div>
-<div class="paragraph">
 <p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb16-1" title="1">e<span class="op">.</span>setValue(thisRef, property, y)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1">e.setValue(thisRef, property, y)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -921,6 +926,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of a delegated property may be omitted at the declaration site, meaning that it may be <a href="type-inference.html#type-inference">inferred</a> from the delegating function itself, as it is with regular getters and setters. </span><span class="sentence">If this type is omitted, it is inferred as if it was assigned the value of its expansion. </span><span class="sentence">If this inference fails, it is a compile-time error.</span></p>
 </div>
+<div id="provide-delegate">
 <div class="paragraph">
 <p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
 </div>
@@ -945,6 +951,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
 </div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property. </span><span class="sentence">This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value. </span><span class="sentence">This affects this value’s lifetime in the same way normal value lifetime works.</span></p>
 </div>
@@ -963,7 +970,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a <a href="overload-resolution.html#receivers"><em>receiver</em></a>, implicit or explicit. </span><span class="sentence">Also, unlike regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. </span><span class="sentence">For more information on how a particular receiver for each access is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
+<p><span class="sentence">Aside from these differences, extension properties are similar to regular properties, but, when accessing such a property one always need to supply a <a href="overload-resolution.html#receivers"><em>receiver</em></a>, implicit or explicit. </span><span class="sentence">Like for regular properties, the type of the receiver must be a subtype of the receiver parameter, and the value that is supplied as the receiver is bound to the receiver parameter. </span><span class="sentence">For more information on how a particular receiver for each access is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The receiver parameter can be accessed inside getter and setter scopes of the property as the implicit receiver or <code>this</code>. </span><span class="sentence">It may also be accessed inside nested scopes using <a href="expressions.html#this-expressions">labeled <code>this</code> syntax</a> using the name of the property declared as the label. </span><span class="sentence">For delegated properties, the value passed into the operator functions <code>getValue</code> and <code>setValue</code> as the receiver is the value of the receiver parameter, rather than the value of the outer classifier. </span><span class="sentence">This is also true for local extension properties: while regular local properties are passed <code>null</code> as the first argument of these operator functions, local extension properties are passed the value of the receiver argument instead.</span></p>
@@ -1011,14 +1018,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Its type is one of the following:</span>
 <ul>
 <li><span class="sentence">One of the <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">the built-in integral types</a>;</span></li>
+<li><span class="sentence">One of the <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">the built-in floating types</a>;</span></li>
 <li><span class="sentence"><code>kotlin.Boolean</code>;</span></li>
 <li><span class="sentence"><code>kotlin.Char</code>;</span></li>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 </ul></li>
 <li><span class="sentence">It is declared in the top-level scope or inside [an object declaration][Object declarations];</span></li>
-<li><span class="sentence">It has an initializer expression and this initializer expression may be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as builtin arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
+<li><span class="sentence">It has an initializer expression and this initializer expression can be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="co">// Correct constant properties</span></a>
+<a class="sourceLine" id="cb22-2" title="2">const <span class="kw">val</span> <span class="va">answer</span> = <span class="dv">2</span> * <span class="dv">21</span></a>
+<a class="sourceLine" id="cb22-3" title="3">const <span class="kw">val</span> <span class="va">msg</span> = <span class="st">&quot;Hello World!&quot;</span></a>
+<a class="sourceLine" id="cb22-4" title="4"></a>
+<a class="sourceLine" id="cb22-5" title="5"><span class="co">// Incorrect constant properties</span></a>
+<a class="sourceLine" id="cb22-6" title="6">const <span class="kw">val</span> <span class="va">emptyStringHashCode</span> = <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
+</blockquote>
 <h4 id="late-initialized-properties">Late-initialized properties</h4>
 <div class="paragraph">
 <p><span class="sentence">A mutable member property can be declared with a special <code>lateinit</code> modifier, effectively turning off the <a href="declarations.html#property-initialization">property initialization checks</a> for it. </span><span class="sentence">Such a property is called late-initialized and may be used for values that are supposed to be initialized not during object construction, but during some other time (for example, a special initialization function). </span><span class="sentence">This means, among other things, that it is the responsibility of the programmer to guarantee that the property is initialized before its usage.</span></p>
@@ -1028,9 +1047,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">It has no custom getters, setters or delegation;</span></li>
-<li><span class="sentence">It is a member or top-level property;</span></li>
+<li><span class="sentence">It is a member or a top-level property;</span></li>
 <li><span class="sentence">It is mutable;</span></li>
-<li><span class="sentence">It has declared non-nullable type which is also not one of built-in <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">integer</a> or <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">floating</a> types.</span></li>
+<li><span class="sentence">It has declared non-nullable type which is also not one of the following types:</span>
+<ul>
+<li><span class="sentence">One of the <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>;</span></li>
+<li><span class="sentence">One of the <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">built-in floating types</a>;</span></li>
+<li><span class="sentence"><a href="built-in-types-and-their-semantics.html#kotlin.boolean"><code>kotlin.Boolean</code></a>;</span></li>
+<li><span class="sentence"><a href="built-in-types-and-their-semantics.html#kotlin.char"><code>kotlin.Char</code></a>.</span></li>
+</ul></li>
 </ul>
 <h3 id="type-alias">Type alias</h3>
 <div id="grammar-rule-typeAlias-pasted-5" class="grammar-rule">
@@ -1079,14 +1104,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type. </span><span class="sentence">These restrictions are turned into corresponding <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="type-inference.html#type-inference">type inference</a> and <a href="overload-resolution.html#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
+<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.</span></p>
+</div>
+<ul>
+<li><span class="sentence">For a given type parameter <code>T</code>, only one restriction <code>T : U</code> can have <code>U</code> to be another type parameter;</span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(anything else?)</span>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">These restrictions are turned into corresponding <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="type-inference.html#type-inference">type inference</a> and <a href="overload-resolution.html#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Type parameters do not introduce <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>.</span></p>
 </div>
 <h4 id="type-parameter-variance">Type parameter variance</h4>
 <div class="paragraph">
-<p><span class="sentence">The <a href="type-system.html#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a type is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="type-system.html#mixed-site-variance">the type system section</a> for details.</span></p>
+<p><span class="sentence">The <a href="type-system.html#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a classifier declaration is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="type-system.html#mixed-site-variance">the type system section</a> for details.</span></p>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
@@ -1099,11 +1133,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Declarations marked as <code>private</code> can only be accessed from the same scope they are declared in. </span><span class="sentence">For example, all <code>private</code> top-level declarations in a file may only be accessed by code from the same file.</span></p>
 </div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(PRIVATE_TO_THIS)</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Declarations marked as <code>internal</code> may only be accessed from the same <a href="packages-and-imports.html#modules">module</a>, treated as <code>public</code> from inside the module and as <code>private</code> from outside the module.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Declarations in classifier declaration scope can also be declared <code>protected</code>, meaning that they can only be accessed from the same classifier type as well as any types <a href="inheritance.html#inheritance">inheriting</a> from this type regardless of the scope they are declared in.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Double check rules for <code>protected</code>)</span></p>
+</div>
 </div>
 <div class="paragraph">
 <p><span class="sentence">There is a partial order of <em>weakness</em> between different visibility modifiers:</span></p>
@@ -1114,7 +1158,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">There is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a stronger visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin <a href="annotations.html#annotations">annotation</a> <code>@PublishedApi</code>.</span></p>
+<p><span class="sentence">Note: there is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a stronger visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin <a href="annotations.html#annotations">annotation</a> <code>@PublishedApi</code>.</span></p>
 </div>
 </blockquote>
 <h3 id="declaration-modifiers">Declaration modifiers</h3>

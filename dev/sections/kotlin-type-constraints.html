@@ -111,6 +111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
 <h2 id="kotlin-type-constraints">Kotlin type constraints</h2>
 <div class="paragraph">
 <p><span class="sentence">Some complex tasks that need to be solved when compiling Kotlin code are formulated best using <em>constraint systems</em> on Kotlin types. </span><span class="sentence">These are solved using constraint solvers.</span></p>
@@ -197,11 +199,11 @@ Let’s assume we have the following code:</span></p>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">e</span> = <span class="cf">if</span>(c) a <span class="cf">else</span> b</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besided the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to <a href="expressions.html#conditional-expression">the conditional expression chapter</a>, produces the following relations:</span></p>
+<p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besides the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to <a href="expressions.html#conditional-expression">the conditional expression chapter</a>, produces the following relations:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(E = LUB(A, B)\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E = \operatorname{\text{LUB}}(A, B)\)</span></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with <code>kotlin.Any?</code> and <code>kotlin.Nothing</code>):</span></p>
@@ -219,9 +221,9 @@ Let’s assume we have the following code:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(C \rightarrow \texttt{kotlin.Boolean}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(B \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(E \rightarrow \texttt{kotlin.Any?}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
 </ul>
 </blockquote>
 <div class="TODO">

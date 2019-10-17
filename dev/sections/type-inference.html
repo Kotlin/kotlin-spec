@@ -111,6 +111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
 <h2 id="type-inference">Type inference</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has a concept of <em>type inference</em> for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler. </span><span class="sentence">There are two kinds of type inference supported by Kotlin.</span></p>
@@ -290,9 +292,15 @@ fun smartCastInInference() {
 <li><span class="sentence">Logical disjunction expressions (operator <code>||</code>);</span></li>
 <li><span class="sentence">Not-null assertion expressions (operator <code>!!</code>);</span></li>
 <li><span class="sentence">Direct casting expression (operator <code>as</code>);</span></li>
+<li><span class="sentence">Type checking expression (operator <code>is</code>);</span></li>
 <li><span class="sentence">Direct assignments;</span></li>
 <li><span class="sentence">Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: links for all these</span></p>
+</div>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: property declarations are not listed here, as their types are derived from initializers.</span></p>
@@ -312,6 +320,7 @@ fun smartCastInInference() {
 </div>
 <ul>
 <li><span class="sentence">concurrent writes;</span></li>
+<li><span class="sentence">mutable value capturing;</span></li>
 <li><span class="sentence">separate module compilation;</span></li>
 <li><span class="sentence">custom getters;</span></li>
 <li><span class="sentence">delegation.</span></li>
@@ -322,7 +331,7 @@ fun smartCastInInference() {
 <ol type="1">
 <li><span class="sentence">Immutable local or classifier-scope properties without delegation or custom getters;</span></li>
 <li><span class="sentence">Mutable local properties without delegation or custom getters, if the compiler can prove that they are <a href="type-inference.html#effectively-immutable-smart-cast-sinks">effectively immutable</a>, i.e., cannot be changed by external means;</span></li>
-<li><span class="sentence">Immutable properties of immutable stable properties without delegation or custom getters.</span></li>
+<li><span class="sentence">Immutable properties of immutable stable properties without delegation or custom getters, if they are declared in the current <a href="packages-and-imports.html#modules">module</a>.</span></li>
 </ol>
 <h5 id="effectively-immutable-smart-cast-sinks">Effectively immutable smart cast sinks</h5>
 <div class="paragraph">
@@ -468,7 +477,7 @@ fun smartCastInInference() {
 <a class="sourceLine" id="cb4-24" title="24">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
 <a class="sourceLine" id="cb4-25" title="25"></a>
 <a class="sourceLine" id="cb4-26" title="26">    <span class="cf">do</span> {</a>
-<a class="sourceLine" id="cb4-27" title="27">        sink(a)</a>
+<a class="sourceLine" id="cb4-27" title="27">        println(a)</a>
 <a class="sourceLine" id="cb4-28" title="28">    } <span class="cf">while</span> (a == <span class="kw">null</span>)</a>
 <a class="sourceLine" id="cb4-29" title="29"></a>
 <a class="sourceLine" id="cb4-30" title="30">    a <span class="co">// Smart cast to Any</span></a>

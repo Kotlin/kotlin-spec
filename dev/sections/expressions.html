@@ -111,6 +111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
 <h2 id="expressions">Expressions</h2>
 <h3 id="glossary-3">Glossary</h3>
 <dl>
@@ -313,14 +315,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint. </span><span class="sentence">Simple escaped symbols include:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>\t</code> — the unicode TAB symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>;</span></li>
-<li><span class="sentence"><code>\b</code> — the unicode BACKSPACE symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>;</span></li>
+<li><span class="sentence"><code>\t</code> — the unicode TAB symbol (U+0009);</span></li>
+<li><span class="sentence"><code>\b</code> — the unicode BACKSPACE symbol (U+0008);</span></li>
 <li><span class="sentence"><code>\r</code> — <em>CR</em>;</span></li>
 <li><span class="sentence"><code>\n</code> — <em>LF</em>;</span></li>
-<li><span class="sentence"><code>\'</code> — the unicode single quotation symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>;</span></li>
-<li><span class="sentence"><code>\&quot;</code> — the unicode double quotation symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>;</span></li>
-<li><span class="sentence"><code>\\</code> — the unicode backslash symbol symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>;</span></li>
-<li><span class="sentence"><code>\$</code> — the unicode DOLLAR symbol <span><span class="TODO">(TODO())</span><span class="TODO-marker">*</span></span>.</span></li>
+<li><span class="sentence"><code>\'</code> — the unicode apostrophe symbol (U+0027);</span></li>
+<li><span class="sentence"><code>\&quot;</code> — the unicode double quotation symbol (U+0028);</span></li>
+<li><span class="sentence"><code>\\</code> — the unicode backslash symbol (U+005C);</span></li>
+<li><span class="sentence"><code>\$</code> — the unicode DOLLAR sign (U+0024).</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">A unicode codepoint escaped symbol is the symbol <code>\u</code> followed by exactly four hexadecimal digits. </span><span class="sentence">It represents the unicode symbol with the codepoint equal to the number represented by these four digits.</span></p>
@@ -432,7 +434,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The value of the resulting expression is the same as the value of the chosen branch.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of two branches <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>, if both branches are present. </span><span class="sentence">If either of the branches are omitted, the resulting conditional expression has type <a href="built-in-types-and-their-semantics.html#kotlin.unit"><code>kotlin.Unit</code></a> and may used only as a statement.</span></p>
+<p><span class="sentence">The type of the resulting expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of two branches, if both branches are present. </span><span class="sentence">If either of the branches are omitted, the resulting conditional expression has type <a href="built-in-types-and-their-semantics.html#kotlin.unit"><code>kotlin.Unit</code></a> and may used only as a statement.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Let’s illustrate it with some examples:</span></p>
@@ -653,13 +655,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Reference equality expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in the current version of Kotlin, using the reference equality expression to compare <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer values</a> or <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">built-in floating-point values</a> is deprecated as these have no available constructors and such a comparison is meaningless and error-prone due to the reasons stated above</span></p>
+</div>
+</blockquote>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
 <p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="overloadable-operators.html#overloadable-operators">other overloadable operators</a> and have the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
-<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!((A as Any)?.equals(B) ?: (B === null))</code> where <code>equals</code> is the method of <code>kotlin.Any</code>.</span></li>
+<li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as? Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
+<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!((A as? Any)?.equals(B) ?: (B === null))</code> where <code>equals</code> is the method of <code>kotlin.Any</code>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code> as does the <code>equals</code> method in <code>kotlin.Any</code>.</span></p>
@@ -700,7 +707,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The <code>compareTo</code> operator function must have a return type <code>kotlin.Int</code>, otherwise it is a compile-time error.</span></p>
+<p><span class="sentence">The <code>compareTo</code> operator function must have return type <code>kotlin.Int</code>, otherwise such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">All comparison expressions always have type <code>kotlin.Boolean</code>.</span></p>
@@ -732,6 +739,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 id="type-checking-expression">Type-checking expression</h4>
 <div class="paragraph">
 <p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="runtime-type-information.html#runtime-available-types">runtime-available</a>, otherwise it is a compiler error. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Rules for <span class="math inline">\(T\)</span> are more complicated, for <code>B&lt;T&gt; : A&lt;T&gt;</code> such checks as <code>a is B</code> or <code>a is B&lt;Number&gt;</code> are sometimes OK)</span></p>
+</div>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Type-checking expression always has type <code>kotlin.Boolean</code>.</span></p>
@@ -971,13 +983,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a prefix increment expression <code>++A</code> expression <code>A</code> must be <a href="statements.html#assignments">an assignable expression</a>. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
+<p><span class="sentence">As the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">A prefix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>.</span></p>
-</div>
-</blockquote>
 <h4 id="prefix-decrement-expression">Prefix decrement expression</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
@@ -994,13 +1004,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a prefix decrement expression <code>--A</code> expression <code>A</code> must be <a href="statements.html#assignments">an assignable expression</a>. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
+<p><span class="sentence">As the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">A prefix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>.</span></p>
-</div>
-</blockquote>
 <h4 id="unary-minus-expression">Unary minus expression</h4>
 <div class="paragraph">
 <p><span class="sentence">An <em>unary minus</em> expression is an expression which uses the prefix form of operator <code>-</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
@@ -1076,13 +1084,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix increment expression <code>A++</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
+<p><span class="sentence">As the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">A postfix increment expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>.</span></p>
-</div>
-</blockquote>
 <h4 id="postfix-decrement-expression">Postfix decrement expression</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
@@ -1099,13 +1105,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For a postfix decrement expression <code>A--</code> expression <code>A</code> must be [assignable expressions][Assignable expressions]. </span><span class="sentence">Otherwise, it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
+<p><span class="sentence">As the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">A postfix decrement expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>.</span></p>
-</div>
-</blockquote>
 <h3 id="not-null-assertion-expression">Not-null assertion expression</h3>
 <div class="TODO">
 <div class="paragraph">
@@ -1273,16 +1277,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="paragraph">
-<p><span class="sentence">A fully-qualified type, property or object name. </span><span class="sentence">The left side of <code>.</code> must be a package name, while the right side corresponds to a declaration in that package.</span></p>
+<p><span class="sentence">A fully-qualified type, property or object name. </span><span class="sentence">The left side of <code>.</code> must be a value available in the current scope, while the right side corresponds to a declaration in the scope of that value.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: qualification uses operator <code>.</code> only.</span></p>
 </div>
 </blockquote></li>
-<li><span class="sentence">A property access. </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a property name.</span></li>
 <li><div class="paragraph">
-<p><span class="sentence">A function call if followed by the call suffix (arguments in parentheses). </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a function name. </span><span class="sentence">These expressions follow the <a href="overload-resolution.html#overload-resolution">overloading</a> rules.</span></p>
+<p><span class="sentence">A property access. </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a property name.</span></p>
+</div></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Are packages values?)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Type references and their stuff)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If followed by the call suffix (arguments in parentheses), <code>a.c()</code> may have one of the following semantics when used as an expression:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A function call; here <code>a</code> is a value available in the current scope and <code>c</code> is a function name;</span></li>
+<li><div class="paragraph">
+<p><span class="sentence">A property access with <code>invoke</code>-convention; here <code>a</code> is a value available in the current scope and <code>c</code> is a property name.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">These expressions follow the <a href="overload-resolution.html#overload-resolution">overloading</a> rules.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
@@ -1314,7 +1339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="expressions.html#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> used instead of the identifier.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for a type. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is another expression and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="overload-resolution.html#overload-resolution">overload resolution</a> much like when accessing the value of a property using the usual navigation syntax.</span></p>
+<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for a type. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is another expression and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="overload-resolution.html#overload-resolution">overload resolution</a> much like when accessing the value of a property using the usual navigation syntax. </span><span class="sentence">However, in some cases there are some differences which we cover in the corresponding paragraphs.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:</span></p>
@@ -1325,6 +1350,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a property of the value on the left-hand side, then the expression is a value-property reference;</span></li>
 <li><span class="sentence">If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a function for the receiver being th value on the left-hand side, then the expression is a value-function reference.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(We might get new ambiguity between props and funs with the same name)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(References to members of companion objects work kinda explicitly)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Examples)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Everything is very-very messy here…)</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">The types of these expressions are implementation-defined, but the following constraints must hold:</span></p>
 </div>
@@ -1332,12 +1377,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The type of any kind of property reference is a subtype of <code>kotlin.reflect.KProperty&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the type of the property;</span></li>
 <li><span class="sentence">The type of any kind of callable reference is a subtype of <a href="type-system.html#function-types">function type</a> that allows the corresponding callable to be accessed/called accordingly:</span>
 <ul>
-<li><span class="sentence">For a type-callable reference, it is an extension function type <code>O.(Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type same as the left-hand type of the expression, <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable;</span></li>
+<li><span class="sentence">For a type-callable reference, it is a function type <code>(O, Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type same as the left-hand type of the expression, <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable;</span></li>
 <li><span class="sentence">For a value-callable reference, it is a normal function type <code>(Args) -&gt; R</code>, where <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable. </span><span class="sentence">The receiver is bound to the left-hand side expression of the reference expression.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Being of an appropriate function type also means that the values defined by these references are valid callables themselves, with an appropriate <code>operator invoke</code> overload, that allows using call syntax to evaluate the value of the callable with the appropriate arguments.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Please note that the above holds for <em>resolved</em> callable references, where it is known what entity a particular reference references. </span><span class="sentence">In the general case, however, it is unknown as the <a href="overload-resolution.html#overload-resolution">overload resolution</a> must be performed first. </span><span class="sentence">Please refer to the <a href="overload-resolution.html#resolving-callable-references">corresponding section</a> for details.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1346,12 +1394,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(this is pretty complex, actually. </span><span class="sentence">Do we need all the K(Mutable)PropertyN business defined in the specification???)</span></p>
+<p><span class="sentence">TODO(Include all the K(Mutable)Property(N) business, as it’s shared between BEs; we also need KProperty because of delegates)</span></p>
 </div>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(we need to update overload resolution section with these guys)</span></p>
+<p><span class="sentence">TODO(We need to update overload resolution section with these guys)</span></p>
 </div>
 </div>
 <h4 id="class-literals">Class literals</h4>
@@ -1384,7 +1432,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
 <li><span class="sentence">Normal arguments, provided directly inside the parentheses part of the call;</span></li>
-<li><span class="sentence">Named arguments in the form <span class="math inline">\(identifier\ \texttt{=}\ value\)</span>, where <span class="math inline">\(identifier\)</span> is a parameter name used at declaration-site of the function;</span></li>
+<li><span class="sentence">Named arguments in the form <code>identifier = value</code>, where <code>identifier</code> is a parameter name used at declaration-site of the function;</span></li>
 <li><span class="sentence">Variable-argument arguments, provided the same way as normal arguments;</span></li>
 <li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="expressions.html#lambda-literals">lambda literal section</a>) for details.</span></li>
 </ul>
@@ -1392,7 +1440,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The evaluation of the function arguments is performed <strong>before</strong> the function itself is invoked <strong>in the order of appearance of the arguments</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration.</span></p>
+<p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">All this happens <strong>before</strong> the function itself is invoked.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Some examples (here we use notation similar to the <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
@@ -1447,12 +1495,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">Anonymous functions do not have a name;</span></li>
-<li><span class="sentence">Anonymous functions may not have type parameters;</span></li>
-<li><span class="sentence">Anonymous functions may not have default parameters;</span></li>
-<li><span class="sentence">Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding array type <span><span class="TODO">(TODO(how does this really work?))</span><span class="TODO-marker">*</span></span>.</span></li>
+<li><span class="sentence">Anonymous functions cannot have type parameters;</span></li>
+<li><span class="sentence">Anonymous functions cannot have default parameters;</span></li>
+<li><span class="sentence">Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding <a href="type-system.html#array-types">array type</a> <span><span class="TODO">(TODO(how does this really work?))</span><span class="TODO-marker">*</span></span>;</span></li>
+<li><span class="sentence">Anonymous functions may omit formal parameter types, if they can be <a href="type-inference.html#type-inference">inferred</a> from the context.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Anonymous function declaration may declare an anonymous extension function.</span></p>
+<p><span class="sentence">Anonymous function declaration can declare an anonymous extension function by following the <a href="declarations.html#extension-function-declaration">extension function declaration</a> convention.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1512,10 +1561,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals are different from other forms of function definition in that the <code>return</code> expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such returns are only allowed if the function defined by the lambda is guaranteed to be [inlined][Inlining] and are not allowed at all otherwise.</span></p>
+<p><span class="sentence">Lambda literals are different from other forms of function definition in that the <code>return</code> expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such returns are only allowed if the function defined by the lambda and its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it should be a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the lambda expression is labeled, it can also be returned from using the [labeled return expression][Labeled return expression]. </span><span class="sentence">In addition to this, if the lambda expression is used as a trailing lambda parameter to a function call, the name of the function used in the call may be used instead of the label. </span><span class="sentence">If a particular labeled <code>return</code> expression is used inside multiple lambda bodies invoked during the call of the same function, this is an ambiguity and should be reported as a compile-time error.</span></p>
+<p><span class="sentence">If the lambda expression is labeled, it can also be returned from using the [labeled return expression][Labeled return expression]. </span><span class="sentence">In addition to this, if the lambda expression is used as a trailing lambda parameter to a function call, the name of the function used in the call may be used instead of the label. </span><span class="sentence">If a particular labeled <code>return</code> expression is used inside multiple lambda bodies invoked during the call of the same function, this is resolved as <code>return</code> from the nearest matching lambda.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -1527,7 +1576,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Rules of capturing)</span></p>
+<p><span class="sentence">TODO(Rules of capturing + capture by “property”)</span></p>
 </div>
 </div>
 <h3 id="object-literals">Object literals</h3>
@@ -1598,10 +1647,43 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">This-expressions are special kind of expressions used to access <a href="overload-resolution.html#receivers">receivers</a> available in current scope. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the inner scope of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
+<li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the <a href="scopes-and-identifiers.html#scopes-and-identifiers">inner scope</a> of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
 <li><span class="sentence"><code>this@function</code>, where <code>function</code> is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;</span></li>
-<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.</span></li>
+<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;</span></li>
+<li><span class="sentence"><code>this@outerFunction</code>, where <code>outerFunction</code> is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression. </span><span class="sentence">Note that this is exclusive with the previous case, meaning that if the lambda literal is labeled, this mechanism cannot be used.</span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">In case there are several entities the labeled <code>this</code> can refer to using the same name, the closest one syntactically is used.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<pre><code>object C
+class A {
+    fun B.foo() {
+        // run is a standard library function with extension lambda parameter
+        C.run { 
+            this // refers to receiver of type C
+            this@A // refers to receiver of type A
+            this@B // refers to receiver of type B
+            this@foo // refers to receiver of type B
+            this@run // refers to receiver of type C
+        }
+        C.run label@ {
+            this // refers to receiver of type C
+            this@A // refers to receiver of type A
+            this@B // refers to receiver of type B
+            this@foo // refers to receiver of type B
+            this@label // refers to receiver of type C
+            this@run // illegal: lambda literal is labeled
+        }
+    }
+}</code></pre>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: check this example for errors</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Any other form of this-expression is illegal and must be a compile-time error.</span></p>
 </div>
@@ -1659,7 +1741,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <p><span class="sentence">There are two forms of return expression: a simple return expression, specified using the <code>return</code> keyword, which returns from the innermost <a href="declarations.html#function-declaration">function declaration</a> (or <a href="expressions.html#anonymous-function-declarations">Anonymous function declaration</a>) and a labeled return expression of the form <code>return@Context</code> where <code>Context</code> may be one of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence">The name of one of the enclosing function declarations, which refers to this function. </span><span class="sentence">If several declarations match one name, it is a compile-time error;</span></li>
+<li><span class="sentence">The name of one of the enclosing function declarations, which refers to this function. </span><span class="sentence">If several declarations match one name, the <code>return</code> is considered to be from the nearest matching function;</span></li>
 <li><span class="sentence">If <code>return@Context</code> is inside a lambda expression body, the name of the function <strong>using</strong> this lambda expression as its argument may be used as <code>Context</code> to refer to the lambda literal itself.</span></li>
 <li><div class="TODO">
 <span class="sentence">TODO(return from a labeled lambda)</span>
@@ -1770,7 +1852,17 @@ M().test2().bar() // Error: Unresolved reference: bar
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><em>String interpolation expressions</em> replace the traditional string literals and supersede them. </span><span class="sentence">A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and <em>interpolated expressions</em>, delimited by the special syntax using the <code>$</code> symbol. </span><span class="sentence">This syntax allows to specify such fragments by directly following the <code>$</code> symbol with either a single identifier (if the expression is a single identifier) or a control structure body. </span><span class="sentence">In either case, the interpolated value is evaluated and converted into a <code>kotlin.String</code> by a process defined below. </span><span class="sentence">The resulting value of a string interpolation expression is the joining of all fragments in the expression.</span></p>
+<p><span class="sentence"><em>String interpolation expressions</em> replace the traditional string literals and supersede them. </span><span class="sentence">A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and <em>interpolated expressions</em>, delimited by the special syntax using the <code>$</code> symbol.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Interpolated expressions can be specified via two forms.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>$id</code>, where <code>id</code> is a single identifier available in the current scope;</span></li>
+<li><span class="sentence"><code>${e}</code>, where <code>e</code> is a valid Kotlin expression.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In either case, the interpolated value is evaluated and converted into a <code>kotlin.String</code> by a process defined below. </span><span class="sentence">The resulting value of a string interpolation expression is the joining of all fragments in the expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An interpolated value <span class="math inline">\(v\)</span> is converted to <code>kotlin.String</code> according to the following convention:</span></p>
