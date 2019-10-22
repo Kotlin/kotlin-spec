@@ -33,7 +33,7 @@ A class may be declared `sealed`, making it special from the inheritance point-o
 
 - A `sealed` class is implicitly abstract (and these two modifiers are exclusive);
 - It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes for other classes);
-- It allows for [exhaustiveness checking of when expressions][When-expressions] for values of this type.
+- It allows for [exhaustiveness checking of when expressions][When-expression] for values of this type.
 
 #### Inheritance from built-in types
 
