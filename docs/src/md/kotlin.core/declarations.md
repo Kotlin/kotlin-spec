@@ -199,7 +199,7 @@ Enum class is a special kind of class with the following properties:
 - It has special syntax to accommodate for the properties described above.
 
 Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
-Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Object declaration].
+Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declarations].
 
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
