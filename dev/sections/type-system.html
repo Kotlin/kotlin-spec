@@ -183,6 +183,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><span class="math inline">\(T\langle K_1, \ldots, K_n\rangle\)</span></dt>
 <dd><span class="sentence">The result of type capturing for parameterized type <span class="math inline">\(T\)</span> with <em>captured</em> types <span class="math inline">\(K_i\)</span></span>
 </dd>
+<dt><span class="math inline">\(T\langle \tau \rangle\)</span></dt>
+<dd><span class="sentence">The result of type capturing for parameterized type <span class="math inline">\(T(F_1, \ldots, F_n)\)</span> with <em>captured</em> substitution <span class="math inline">\(\tau : F_1 = K_1, \ldots, F_n = K_n\)</span></span>
+</dd>
 <dt><span class="math inline">\(A \mathbin{\operatorname{\&amp;}}B\)</span></dt>
 <dd><span class="sentence">Intersection type of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></span>
 </dd>
@@ -561,7 +564,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">From the definition, it follows <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span> can be represented as <span class="math inline">\(K &lt;: U\)</span> where <span class="math inline">\(U = B_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}B_n\)</span> (aka <a href="type-system.html#intersection-types">intersection type</a>).</span></p>
+<p><span class="sentence">From the definition, it follows <span class="math inline">\(F &lt;: B_1, \ldots, B_n\)</span> can be represented as <span class="math inline">\(F &lt;: U\)</span> where <span class="math inline">\(U = B_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}B_n\)</span> (aka <a href="type-system.html#intersection-types">intersection type</a>).</span></p>
 </div>
 <h5 id="function-type-parameters">Function type parameters</h5>
 <div class="paragraph">
@@ -707,7 +710,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <span class="math inline">\(T\langle \star \rangle\)</span> means “I can give out something very generic (<span class="math inline">\(\operatorname{\mathtt{kotlin.Any?}}\)</span>) and cannot take in anything”.</span></p>
+<p><span class="sentence">Note: informally, <span class="math inline">\(T[\star]\)</span> means “I can give out something very generic (<span class="math inline">\(\operatorname{\mathtt{kotlin.Any?}}\)</span>) and cannot take in anything”.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -766,7 +769,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The reasoning behind type capturing is closely related to variant parameterized types being a form of <em>bounded existential types</em>; e.g., <code>A&lt;out T&gt;</code> may be loosely considered as the following existential type: <span class="math inline">\(\exists X : X &lt;: T . A\langle X\rangle\)</span>. </span><span class="sentence">Informally, a bounded existential type describes a <em>set</em> of possible types, which satisfy its bound constraints. </span><span class="sentence">Before such a type can be used, it needs to be <em>opened</em> (or <em>unpacked</em>): existentially quantified type variables are lifted to fresh type variables with corresponding bounds. </span><span class="sentence">We call these type variables <em>captured</em> types.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For a given type constructor <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its instance <span class="math inline">\(T[\sigma]\)</span> uses the following rules to create captured type <span class="math inline">\(K_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>, both of which may have specified variance.</span></p>
+<p><span class="sentence">For a given type constructor <span class="math inline">\(T(F_1, \ldots, F_n) : S_1, \ldots, S_m\)</span>, its instance <span class="math inline">\(T[\sigma] = T\langle \tau \rangle\)</span> uses the following rules to create captured type <span class="math inline">\(K_i\)</span> from the type parameter <span class="math inline">\(F_i\)</span> and type argument <span class="math inline">\(A_i\)</span>, both of which may have specified variance.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -782,8 +785,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For a covariant type parameter <span class="math inline">\(\operatorname{\mathtt{out\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a contravariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
 <li><span class="sentence">For a contravariant type parameter <span class="math inline">\(\operatorname{\mathtt{in\ }}F_i\)</span>, if <span class="math inline">\(A_i\)</span> is an ill-formed type or a covariant type argument, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i :&gt; A_i\)</span>.</span></li>
 <li><div class="paragraph">
-<p><span class="sentence">For a bounded type parameter <span class="math inline">\(F_i &lt;: B_1, \ldots, B_m\)</span>, if <span class="math inline">\(\exists j \in [1,m]: \neg (A_i &lt;: \sigma B_j)\)</span>, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(\forall j \in [1,m]: K_i &lt;: \tau B_j\)</span>, where substitution <span class="math inline">\(\tau : F_1 = K_1, \ldots, F_n = K_n\)</span> manipulates captured types.</span></p>
-</div></li>
+<p><span class="sentence">For a bounded type parameter <span class="math inline">\(F_i &lt;: B_1, \ldots, B_m\)</span>, if <span class="math inline">\(\exists j \in [1,m]: \neg (A_i &lt;: \tau B_j)\)</span>, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(\forall j \in [1,m]: K_i &lt;: \tau B_j\)</span>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: captured substitution <span class="math inline">\(\tau : F_1 = K_1, \ldots, F_n = K_n\)</span> manipulates captured types.</span></p>
+</div>
+</blockquote></li>
 <li><span class="sentence">For a covariant type argument <span class="math inline">\(\operatorname{\mathtt{out\ }}A_i\)</span>, if <span class="math inline">\(F_i\)</span> is a contravariant type parameter, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i &lt;: A_i\)</span>.</span></li>
 <li><div class="paragraph">
 <p><span class="sentence">For a contravariant type argument <span class="math inline">\(\operatorname{\mathtt{in\ }}A_i\)</span>, if <span class="math inline">\(F_i\)</span> is a covariant type parameter, <span class="math inline">\(K_i\)</span> is an ill-formed type. </span><span class="sentence">Otherwise, <span class="math inline">\(K_i :&gt; A_i\)</span>.</span></p>
@@ -817,7 +825,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as every captured type corresponds to a fresh type variable, two different captured types <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_j\)</span> which describe the same set of possible types (i.e., their constraint sets are equal) are <em>not</em> considered equal. </span><span class="sentence">However, in some cases <a href="type-inference.html#type-inference">type inference</a> may approximate a captured type <span class="math inline">\(K\)</span> to a concrete type <span class="math inline">\(K^{\approx}\)</span>; in our case, it would be that <span class="math inline">\(K_i^{\approx} \equiv K_j^{\approx}\)</span>.</span></p>
+<p><span class="sentence">Note: as every captured type corresponds to a fresh type variable, two different captured types <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_j\)</span> which describe the same set of possible types (i.e., their constraint sets are equal) are <em>not</em> considered equal. </span><span class="sentence">However, in some cases <a href="type-inference.html#type-inference">type inference</a> may <a href="type-system.html#type-approximation">approximate</a> a captured type <span class="math inline">\(K\)</span> to a concrete type <span class="math inline">\(K^{\approx}\)</span>; in our case, it would be that <span class="math inline">\(K_i^{\approx} \equiv K_j^{\approx}\)</span>.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
@@ -1048,7 +1056,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Union type of two types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is denoted <span class="math inline">\(A | B\)</span> and is equivalent to the <a href="type-system.html#least-upper-bound">least upper bound</a> of its components <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span>. </span><span class="sentence">Thus, the normalization procedure for <span class="math inline">\(\operatorname{\text{LUB}}\)</span> may be used to <em>normalize</em> a union type.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Moreover, as union types are <em>not</em> used in Kotlin, the compiler always <em>decays</em> a union type to a <em>non-union</em> type using <a href="type-system.html#type-approximation">type approximation</a>.</span></p>
+<p><span class="sentence">Moreover, as union types are <em>not</em> used in Kotlin, the compiler always <em>decays</em> a union type to a <em>non-union</em> type using <a href="type-system.html#type-decaying">type decaying</a>.</span></p>
 </div>
 <h3 id="type-contexts-and-scopes">Type contexts and scopes</h3>
 <div class="paragraph">
@@ -1103,8 +1111,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><span class="math inline">\(\forall T : \operatorname{\mathtt{kotlin.Nothing}}&lt;: T &lt;: \operatorname{\mathtt{kotlin.Any}}\)</span></span></li>
 <li><span class="sentence">For any simple classifier type <span class="math inline">\(T : S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: T &lt;: S_i\)</span></span></li>
-<li><span class="sentence">For any parameterized type <span class="math inline">\(\widehat{T} = T[\sigma]: S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: \sigma S_i\)</span></span></li>
-<li><span class="sentence">For any two parameterized types <span class="math inline">\(\widehat{T} = T[\sigma]\)</span> and <span class="math inline">\(\widehat{T^\prime} = T[\sigma^\prime]\)</span> with captured type arguments <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_i^\prime\)</span> it is true that <span class="math inline">\(\widehat{T} &lt;: \widehat{T^\prime}\)</span> if <span class="math inline">\(\forall i \in [1,n]: K_i &lt;: K_i^\prime\)</span></span></li>
+<li><span class="sentence">For any parameterized type <span class="math inline">\(\widehat{T} = T\langle \tau \rangle: S_1, \ldots, S_m\)</span> it is true that <span class="math inline">\(\forall i \in [1,m]: \widehat{T} &lt;: \tau S_i\)</span></span></li>
+<li><span class="sentence">For any two parameterized types <span class="math inline">\(\widehat{T} = T\langle \tau \rangle\)</span> and <span class="math inline">\(\widehat{T^\prime} = T\langle \tau^\prime \rangle\)</span> with captured type arguments <span class="math inline">\(K_i\)</span> and <span class="math inline">\(K_i^\prime\)</span> it is true that <span class="math inline">\(\widehat{T} &lt;: \widehat{T^\prime}\)</span> if <span class="math inline">\(\forall i \in [1,n]: K_i &lt;: K_i^\prime\)</span></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Subtyping for non-nullable, abstract types uses the following rules.</span></p>
@@ -1361,7 +1369,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: the <span class="math inline">\(\Omega\)</span> function preserves type system consistency; <span class="math inline">\(\forall A, B : A &lt;: B \land A \not\equiv B\)</span>, type <span class="math inline">\(T\langle \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}\rangle\)</span> is the evidence of type <span class="math inline">\(T\langle X\rangle : X &lt;: A &lt;: B &lt;: X\)</span>, which makes the type system inconsistent. </span><span class="sentence">To avoid this situation, we underapproximate <span class="math inline">\(\operatorname{\mathtt{in\ }}B\)</span> with <span class="math inline">\(\operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\)</span> when needed. </span><span class="sentence">Further details are available in the <a href="type-system.html#references">“Mixed-site variance” paper</a>.</span></p>
+<p><span class="sentence">Note: the <span class="math inline">\(\Omega\)</span> function preserves type system consistency; <span class="math inline">\(\forall A, B : A &lt;: B \land A \not\equiv B\)</span>, type <span class="math inline">\(T\langle \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}\rangle\)</span> is the evidence of type <span class="math inline">\(T\langle X\rangle : X &lt;: A &lt;: B &lt;: X\)</span>, which makes the type system inconsistent. </span><span class="sentence">To avoid this situation, we overapproximate <span class="math inline">\(\operatorname{\mathtt{in\ }}B\)</span> with <span class="math inline">\(\operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\)</span> when needed. </span><span class="sentence">Further details are available in the <a href="type-system.html#references">“Mixed-site variance” paper</a>.</span></p>
 </div>
 </blockquote>
 <ul>
@@ -1384,9 +1392,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="type-approximation">Type approximation</h3>
+<div class="paragraph">
+<p><span class="sentence">As we mentioned <a href="type-system.html#type-kinds">before</a>, Kotlin type system has denotable and non-denotable types. </span><span class="sentence">In many cases, we need to <em>approximate</em> a non-denotable type, which appeared, for example, during type inference, into a denotable type, so that it can be used in the program. </span><span class="sentence">This is achieved via <em>type approximation</em>, which we describe below.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: at the moment, type approximation is applied only to <a href="type-system.html#intersection-types">intersection</a> and <a href="type-system.html#union-types">union</a> types.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Type approximation function <span class="math inline">\(\alpha\)</span> is defined as follows.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha\downarrow\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
+<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))\)</span>, where <span class="math inline">\(\delta\)</span> is the <a href="type-system.html#type-decaying">type decaying</a> function.</span></li>
+</ul>
+<h3 id="type-decaying">Type decaying</h3>
+<div class="paragraph">
+<p><span class="sentence">All <a href="type-system.html#union-types">union types</a> are subject to <em>type decaying</em>, when they are converted to a specific <a href="type-system.html#intersection-types">intersection type</a>, representable within Kotlin type system.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: at the moment, type decaying is applied only to <a href="type-system.html#union-types">union</a> types. </span><span class="sentence">Note: type decaying is comparable to how <em>least upper bound</em> computation works in Java.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Type decaying function <span class="math inline">\(\delta\)</span> is defined as follows.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta\downarrow\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a set of most specific common supertypes <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a reduction of a set of all common supertypes <span class="math inline">\(\mathbb{U}(A, B)\)</span>, such that it excludes all types <span class="math inline">\(T \in \mathbb{U}\)</span> such that <span class="math inline">\(\exists V \in \mathbb{U} : V \neq T \land V &lt;: T\)</span>.</span></p>
+</div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO()</span></p>
+<p><span class="sentence">TODO(Specify when we drop type arguments when doing type approximation / decaying business)</span></p>
 </div>
 </div>
 <h3 id="references">References</h3>
