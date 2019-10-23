@@ -63,6 +63,9 @@ $K_T(F, A)$
 $T\langle K_1, \ldots, K_n\rangle$
 ~ The result of type capturing for parameterized type $T$ with *captured* types $K_i$
 
+$T\langle \tau \rangle$
+~ The result of type capturing for parameterized type $T(F_1, \ldots, F_n)$ with *captured* substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$
+
 $A \amp B$
 ~ Intersection type of $A$ and $B$
 
@@ -379,7 +382,7 @@ To represent a well-formed bounded type parameter of type constructor $T$, $F <:
     * $i = 1$ (i.e., there is a single upper bound)
     * $B_1$ must be well-formed [type parameter][Type parameters]
 
-From the definition, it follows $F <: B_1, \ldots, B_n$ can be represented as $K <: U$ where $U = B_1 \amp \ldots \amp B_n$ (aka [intersection type][Intersection types]).
+From the definition, it follows $F <: B_1, \ldots, B_n$ can be represented as $F <: U$ where $U = B_1 \amp \ldots \amp B_n$ (aka [intersection type][Intersection types]).
 
 ##### Function type parameters
 
@@ -496,7 +499,7 @@ To specify a contravariant type argument, it is marked as $\inV A$.
 
 In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, they may use *bivariant* type argument $\star$, which is roughly equivalent to a combination of $\outV \AnyQ$ and $\inV \Nothing$ (for further details, see [subtyping][Subtyping]).
 
-> Note: informally, $T\langle \star \rangle$ means "I can give out something very generic ($\AnyQ$) and cannot take in anything".
+> Note: informally, $T[\star]$ means "I can give out something very generic ($\AnyQ$) and cannot take in anything".
 
 > Example:
 > ```kotlin
@@ -554,7 +557,7 @@ Informally, a bounded existential type describes a *set* of possible types, whic
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
 
-For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma]$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, both of which may have specified variance.
+For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma] = T\langle \tau \rangle$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, both of which may have specified variance.
 
 > Important: type capturing is **not** recursive.
 
@@ -564,8 +567,10 @@ For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its insta
   Otherwise, $K_i <: A_i$.
 * For a contravariant type parameter $\inV F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $K_i$ is an ill-formed type.
   Otherwise, $K_i :> A_i$.
-* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: \sigma B_j)$, $K_i$ is an ill-formed type.
-  Otherwise, $\forall j \in [1,m]: K_i <: \tau B_j$, where substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates captured types.
+* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: \tau B_j)$, $K_i$ is an ill-formed type.
+  Otherwise, $\forall j \in [1,m]: K_i <: \tau B_j$.
+
+    > Note: captured substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates captured types.
 
 * For a covariant type argument $\outV A_i$, if $F_i$ is a contravariant type parameter, $K_i$ is an ill-formed type.
   Otherwise, $K_i <: A_i$.
@@ -589,7 +594,7 @@ where $L = L_1 | \ldots | L_p$ and $U = U_1 \amp \ldots \amp U_q$.
 > Note: for implementation reasons the compiler may [approximate][Type approximation] $L$ and/or $U$; for example, in the current implementation $L$ is always approximated to be a single type.
 
 > Note: as every captured type corresponds to a fresh type variable, two different captured types $K_i$ and $K_j$ which describe the same set of possible types (i.e., their constraint sets are equal) are *not* considered equal.
-> However, in some cases [type inference][Type inference] may approximate a captured type $K$ to a concrete type $K^{\approx}$; in our case, it would be that $K_i^{\approx} \equiv K_j^{\approx}$.
+> However, in some cases [type inference][Type inference] may [approximate][Type approximation] a captured type $K$ to a concrete type $K^{\approx}$; in our case, it would be that $K_i^{\approx} \equiv K_j^{\approx}$.
 
 TODO(Need to think more about this part)
 
@@ -760,7 +765,7 @@ Union types are special *non-denotable* types used to express the fact that a va
 Union type of two types $A$ and $B$ is denoted $A | B$ and is equivalent to the [least upper bound][Least upper bound] of its components $\LUB(A, B)$.
 Thus, the normalization procedure for $\LUB$ may be used to *normalize* a union type.
 
-Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type approximation][Type approximation].
+Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type decaying][Type decaying].
 
 ### Type contexts and scopes
 
@@ -813,8 +818,8 @@ Subtyping for non-nullable, concrete types uses the following rules.
 
 * $\forall T : \Nothing <: T <: \Any$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
-* For any parameterized type $\widehat{T} = T[\sigma]: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \sigma S_i$
-* For any two parameterized types $\widehat{T} = T[\sigma]$ and $\widehat{T^\prime} = T[\sigma^\prime]$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
+* For any parameterized type $\widehat{T} = T\langle \tau \rangle: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \tau S_i$
+* For any two parameterized types $\widehat{T} = T\langle \tau \rangle$ and $\widehat{T^\prime} = T\langle \tau^\prime \rangle$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
 
 Subtyping for non-nullable, abstract types uses the following rules.
 
@@ -1021,7 +1026,7 @@ This normalization procedure, if finite, creates a *canonical* representation of
   \end{cases}$
 
 > Note: the $\Omega$ function preserves type system consistency; $\forall A, B : A <: B \land A \not\equiv B$, type $T\langle \{\outV A, \inV B\}\rangle$ is the evidence of type $T\langle X\rangle : X <: A <: B <: X$, which makes the type system inconsistent.
-> To avoid this situation, we underapproximate $\inV B$ with $\inV \Nothing$ when needed.
+> To avoid this situation, we overapproximate $\inV B$ with $\inV \Nothing$ when needed.
 > Further details are available in the ["Mixed-site variance" paper][References].
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\GLB(A, B) = (\GLB(L_A, L_B)..\GLB(U_A, U_B))$
@@ -1035,7 +1040,31 @@ TODO(what do we do if this procedure loops?)
 
 ### Type approximation
 
-TODO()
+As we mentioned [before][Type kinds], Kotlin type system has denotable and non-denotable types.
+In many cases, we need to *approximate* a non-denotable type, which appeared, for example, during type inference, into a denotable type, so that it can be used in the program.
+This is achieved via *type approximation*, which we describe below.
+
+> Important: at the moment, type approximation is applied only to [intersection][Intersection types] and [union][Union types] types.
+
+Type approximation function $\alpha$ is defined as follows.
+
+* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha\downarrow \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha\downarrow$ is a function which applies type approximation function to the type arguments if needed;
+* $\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
+
+### Type decaying
+
+All [union types][Union types] are subject to *type decaying*, when they are converted to a specific [intersection type][Intersection types], representable within Kotlin type system.
+
+> Important: at the moment, type decaying is applied only to [union][Union types] types.
+> Note: type decaying is comparable to how *least upper bound* computation works in Java.
+
+Type decaying function $\delta$ is defined as follows.
+
+* $\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta\downarrow \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta\downarrow$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
+
+> Note: a set of most specific common supertypes $\mathbb{S}(A, B)$ is a reduction of a set of all common supertypes $\mathbb{U}(A, B)$, such that it excludes all types $T \in \mathbb{U}$ such that $\exists V \in \mathbb{U} : V \neq T \land V <: T$.
+
+TODO(Specify when we drop type arguments when doing type approximation / decaying business)
 
 ### References
 
