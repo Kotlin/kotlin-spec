@@ -50,6 +50,7 @@
 
 
 
+
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <ul>
 <li><div class="TODO">
@@ -65,17 +66,22 @@
 <span class="sentence">TODO: <code>KProperty</code>/<code>KFunction</code>?</span>
 </div></li>
 <li><div class="TODO">
-<span class="sentence">TODO: <code>Enum</code>?</span>
+<span class="sentence">TODO: <code>Throwable</code>?</span>
 </div></li>
 <li><div class="TODO">
-<span class="sentence">TODO: <code>Throwable</code>?</span>
+<span class="sentence">TODO: <code>Comparable</code>?</span>
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">In addition to the types defined in the <a href="type-system.html#built-in-types">type system section</a>, Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">These types have regular declarations in the standard library, but may also introduce special semantics.</span></p>
+<p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="type-system.html#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">In this section we introduce these types and describe their semantics. </span><span class="sentence">We also describe additional semantics of built-in types described in the type system section.</span></p>
+<p><span class="sentence">Note: these types may have regular declarations in the standard library, but they also introduce semantics not representable via Kotlin source code.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">In this section we describe these types and their semantics.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -88,13 +94,22 @@
 </div>
 <ul>
 <li><div class="paragraph">
-<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code> Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e. <code>x.equals(null)</code> must be <code>false</code>.</span></p>
+<p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e., <code>x.equals(null)</code> must be <code>false</code>.</span></p>
 </div></li>
 <li><div class="paragraph">
-<p><span class="sentence"><code>public open fun hashCode(): Int</code> Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must produce the same result consistently.</span></p>
+<p><span class="sentence"><code>public open fun hashCode(): Int</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must consistently produce the same result.</span></p>
 </div></li>
 <li><div class="paragraph">
-<p><span class="sentence"><code>public open fun toString(): String</code> Returns a string representation of a value.</span></p>
+<p><span class="sentence"><code>public open fun toString(): String</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns a string representation of a value.</span></p>
 </div></li>
 </ul>
 <h3 id="kotlin.nothing-1"><code>kotlin.Nothing</code></h3>
@@ -115,7 +130,7 @@
 </div>
 <h3 id="kotlin.boolean"><code>kotlin.Boolean</code></h3>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing the value that may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="expressions.html#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
+<p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing a value which may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="expressions.html#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
 </div>
 <h3 id="built-in-integer-types-1">Built-in integer types</h3>
 <div class="TODO">
@@ -145,41 +160,54 @@
 <p><span class="sentence">Note: Kotlin does not have any built-in unsigned integer types.</span></p>
 </div>
 </blockquote>
-<div class="paragraph">
-<p><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><code>kotlin.Int</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{31}\)</span> to <span class="math inline">\(2^{31} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Int</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><code>kotlin.Short</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{15}\)</span> to <span class="math inline">\(2^{15} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Short</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><code>kotlin.Byte</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{7}\)</span> to <span class="math inline">\(2^{7} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Byte</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><code>kotlin.Long</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{63}\)</span> to <span class="math inline">\(2^{63} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Long</code> results in arithmetic overflow or underflow, the result is unspecified.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow or underflow.</span></p>
-</div>
-</blockquote>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
 </div>
 </div>
+<div class="paragraph">
+<p><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Int</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{31}\)</span> to <span class="math inline">\(2^{31} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Int</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Short</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{15}\)</span> to <span class="math inline">\(2^{15} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Short</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Byte</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{7}\)</span> to <span class="math inline">\(2^{7} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Byte</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Long</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="math inline">\(-2^{63}\)</span> to <span class="math inline">\(2^{63} - 1\)</span>. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Long</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: by “arithmetic overflow” we assume both positive and negative integer overflows.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
+</div>
+</blockquote>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
 <div class="paragraph">
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision.</span></p>
+<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Is this true?) TODO(Specify IEEE 754 quirks w.r.t. smart casts, cc <span class="citation" data-cites="dmitry.petrov">@dmitry.petrov</span>)</span></p>
+<p><span class="sentence">TODO(Is this true?)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO([Kotlin.JVM] Specify IEEE 754 quirks w.r.t. smart casts, cc <span class="citation" data-cites="dmitry.petrov">@dmitry.petrov</span>)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -196,7 +224,7 @@
 </blockquote>
 <h3 id="kotlin.string"><code>kotlin.String</code></h3>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.String</code> is the built-in classifier type that represents a sequence of Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of the result of <a href="expressions.html#string-interpolation-expressions">string interpolation</a>.</span></p>
+<p><span class="sentence"><code>kotlin.String</code> is the built-in classifier type which represents a sequence of Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of the result of <a href="expressions.html#string-interpolation-expressions">string interpolation</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -204,10 +232,54 @@
 </div>
 </blockquote>
 <h3 id="kotlin.enum"><code>kotlin.Enum</code></h3>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Everything)</span></p>
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is the built-in parameterized classifier type which is used as a superclass for all <a href="declarations.html#enum-class-declaration">enum classes</a>: every enum class <code>E</code> is implicitly a subtype of <code>kotlin.Enum&lt;E&gt;</code>.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> has the following characteristics.</span></p>
 </div>
+<ul>
+<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <code>kotlin.Comparable&lt;T&gt;</code></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following properties.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public final val name: String</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Contains the name of this enumeration constant, exactly as declared in its declaration.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public final val ordinal: Int</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Contains the ordinal of this enumeration constant, i.e., its position in the declaration, starting from zero.</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following methods.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>public override final fun compareTo(other: T): Int</code></span></li>
+<li><span class="sentence"><code>public override final fun equals(other: Any?): Boolean</code></span></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public override final fun hashCode(): Int</code></span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.</span></p>
+</div>
+</blockquote></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>protected final fun clone(): Any</code></span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the <code>clone()</code> implementation throws an exception, as enumeration objects cannot be copied.</span></p>
+</div>
+</blockquote></li>
+</ul>
 </body>
 </html>
