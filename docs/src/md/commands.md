@@ -54,6 +54,8 @@
 \opMathTT{\Char}{kotlin.Char}
 \opMathTT{\Boolean}{kotlin.Boolean}
 
+\opMathTT{\Enum}{kotlin.Enum}
+
 \opMathTEXT{\ATS}{ATS}
 \opMathTEXT{\LTS}{LTS}
 
