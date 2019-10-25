@@ -194,28 +194,28 @@ Enum class is a special kind of class with the following properties:
 
 - It has a number of predefined values that are declared in the class itself (*enum entries*);
 - No other values of this class can be constructed;
-- It implicitly inherits the built-in class `kotlin.Enum` (and cannot have any other base classes);
+- It implicitly inherits the built-in class [`kotlin.Enum`][`kotlin.Enum`] (and cannot have any other base classes);
 - It it implicitly final and cannot be inherited from;
 - It has special syntax to accommodate for the properties described above.
 
 Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
-Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declarations].
+Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declaration].
 
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
 
+TODO(The following are actually static methods)
+
 In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):
 
 - `valueOf(value: String)` returning an object corresponding to the entry with the name equal to `value` parameter of the call;
-- `values()` returning an [array][Array types] of all the possible enum values.
+- `values()` returning an [array][Array types] of all possible enum values.
   Every invocation of this function returns a new array to disallow changing its contents.
 
 > Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>`.
 > Please refer to the standard library documentation for details.
 
 TODO(`kotlin.Comparable` generation?)
-
-TODO(...)
 
 #### Annotation class declaration
 
