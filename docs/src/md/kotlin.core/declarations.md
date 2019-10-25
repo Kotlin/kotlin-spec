@@ -3,14 +3,30 @@
 ### Glossary
 
 Entity
-~ A distinguishable part of a program
+~ Distinguishable part of a program
+
+Identifier
+~ Name of a program entity
 
 Path
-~ A sequence of names which identifies a program entity
+~ Sequence of identifiers which references a program entity in a given [scope][Scopes and identifiers]
 
 ### Identifiers, names and paths
 
-TODO(Explain paths)
+Kotlin program operates with different *entities*, such as classes, interfaces, values, etc.
+An entity can be referenced using its *path*: a sequence of identifiers which references this entity in a given [scope][Scopes and identifiers].
+
+Kotlin supports two kinds of paths.
+
+* Simple paths $P$, which consist of a single identifier
+* Qualified paths $P.m$, which consist of a path $P$ and a member identifier $m$
+
+Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
+
+* `this@label` -- an identifier which references the selected receiver available in the current scope, further details are available [here][This-expressions]
+* `super<Klazz>` -- an identifier which references the selected supertype available in the current scope, further details are available [here][Super-forms]
+
+TODO(Should this thing be moved to Scopes and identifiers?)
 
 ### Introduction
 
@@ -34,22 +50,20 @@ There are three kinds of classifier declarations:
 * interface declarations;
 * object declarations.
 
-TODO(abstract classifiers)
-
 #### Class declaration
 
 A simple class declaration consists of the following parts.
 
 * Name $c$;
-* Optional primary constructor declaration $ptor$;
+* Optional primary constructor declaration $\ptor$;
 * Optional supertype specifiers $S_1, \ldots, S_s$;
 * Optional body $b$, which may include the following:
-  - secondary constructor declarations $stor_1, \ldots, stor_c$;
-  - instance initialization blocks $init_1, \ldots, init_i$;
-  - property declarations $prop_1, \ldots, prop_p$;
-  - function declarations $md_1, \ldots, md_m$;
-  - companion object declaration $companionObj$;
-  - nested classifier declarations $nested$.
+  - secondary constructor declarations $\stor_1, \ldots, \stor_c$;
+  - instance initialization blocks $\init_1, \ldots, \init_i$;
+  - property declarations $\prop_1, \ldots, \prop_p$;
+  - function declarations $\md_1, \ldots, \md_m$;
+  - companion object declaration $\companionObj$;
+  - nested classifier declarations $\nested$.
 
 and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
@@ -65,7 +79,7 @@ Property and function declarations in the class body introduce their respective 
 Companion object declaration `companion object CO { ... }` for class `C` introduces an object, which is available under this class' name or under the path `C.CO`. 
 Companion object name may be omitted, in which case it is considered to be equal to `Companion`.
 
-Nested classifier declarations introduce new classifiers, available under this class' path.
+Nested classifier declarations introduce new classifiers, available under this class' name.
 Further details are available [here][Nested and inner classifiers].
 
 A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list $T_1, \ldots, T_m$ and extends the rules for a simple class declaration w.r.t. this type parameter list. 
@@ -79,13 +93,13 @@ There are two types of class constructors in Kotlin: primary and secondary.
 
 A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form
 
-$$ptor : (p_1, \ldots, p_n)$$
+$$\ptor : (p_1, \ldots, p_n)$$
 
 where each of $p_i$ may be one of the following:
 
-* regular constructor parameter $name: type$;
-* read-only property constructor parameter $\texttt{val}\ name: type$;
-* mutable property constructor parameter $\texttt{var}\ name: type$.
+* regular constructor parameter $\name: \type$;
+* read-only property constructor parameter $\texttt{val}\ \name: \type$;
+* mutable property constructor parameter $\texttt{var}\ \name: \type$.
 
 Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type.
 
@@ -106,7 +120,8 @@ When accessing property constructor parameters inside the class body, one works 
 
 If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
 
-A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. 
+A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters.
+
 If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via `this(...)`.
 
 If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via `super(...)` (if the superclass is present in the supertype specifier list) or to another secondary constructor via `this(...)`. 
@@ -148,6 +163,13 @@ The particular means on how $v$ is stored inside the classifier object is platfo
 Due to the [initialization order of a classifier object][Classifier initialization], the expression used to construct $v$ can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.
 
 TODO(...)
+
+##### Abstract classes
+
+A [class declaration][Class declaration] can be marked `abstract`.
+Such classes *cannot* be instantiated directly; they are used as superclasses for other classes or objects.
+
+Abstract classes may contain one or more abstract members: members without implementation, which should be implemented in a subtype of this abstract class.
 
 #### Data class declaration
 
@@ -343,7 +365,7 @@ In other cases return type $R$ cannot be omitted and must be specified explicitl
 > As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
 Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation.
-This is allowed only inside an [abstract classifier declaration][Classifier declaration].
+This is allowed only inside an [abstract class][Abstract classes].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
 TODO([Kotlin 1.3] `expect` and `external` functions also do not have implementations)
@@ -864,7 +886,7 @@ There is a partial order of *weakness* between different visibility modifiers:
 
 TODO(this is a stub)
 
-A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the [inheritance section][Overriding] for details).
+A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the [inheritance section][Overriding] for details).
 
 TODO(declaration scope)
 
