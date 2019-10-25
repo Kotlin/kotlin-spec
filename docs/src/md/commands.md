@@ -19,6 +19,7 @@
 \newcommand{\sbnn}{\mathrel{\operatorname{\stackrel{!}{<:}}}}
 
 \newcommand{\amp}{\mathbin{\operatorname{\&}}}
+\newcommand{\hor}{\mathbin{\operatorname{|}}}
 
 \newcommand{\sur}{\mathrel{\operatorname{\cancel{<:>}}}}
 

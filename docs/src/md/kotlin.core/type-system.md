@@ -69,7 +69,7 @@ $T\langle \tau \rangle$
 $A \amp B$
 ~ Intersection type of $A$ and $B$
 
-$A | B$
+$A \hor B$
 ~ Union type of $A$ and $B$
 
 $\GLB$
@@ -589,7 +589,7 @@ which can be represented as
 
 $$L <: K <: U$$
 
-where $L = L_1 | \ldots | L_p$ and $U = U_1 \amp \ldots \amp U_q$.
+where $L = L_1 \hor \ldots \hor L_p$ and $U = U_1 \amp \ldots \amp U_q$.
 
 > Note: for implementation reasons the compiler may [approximate][Type approximation] $L$ and/or $U$; for example, in the current implementation $L$ is always approximated to be a single type.
 
@@ -762,7 +762,7 @@ Integer literal types are the types of [integer literals][Integer literals] and 
 
 Union types are special *non-denotable* types used to express the fact that a value belongs to *one* of *several* possible types.
 
-Union type of two types $A$ and $B$ is denoted $A | B$ and is equivalent to the [least upper bound][Least upper bound] of its components $\LUB(A, B)$.
+Union type of two types $A$ and $B$ is denoted $A \hor B$ and is equivalent to the [least upper bound][Least upper bound] of its components $\LUB(A, B)$.
 Thus, the normalization procedure for $\LUB$ may be used to *normalize* a union type.
 
 Moreover, as union types are *not* used in Kotlin, the compiler always *decays* a union type to a *non-union* type using [type decaying][Type decaying].
@@ -886,7 +886,7 @@ All integer literal type are equivalent w.r.t. subtyping, meaning that for any s
 - $\forall T_i \in \{T_1, \ldots, T_K\} : \LTS(T_1, \ldots, T_K) <: T_i$
 - $\forall T_i \in \{T_1, \ldots, T_K\} : T_i <: \LTS(T_1, \ldots, T_K)$
 
-> Note: the last two rules mean $\LTS(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 | \ldots | T_K$, depending on the context.
+> Note: the last two rules mean $\LTS(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 \hor \ldots \hor T_K$, depending on the context.
 > Viewing $\LTS$ as intersection type allows us to use integer literals where built-in integer types are expected.
 > Making $\LTS$ behave as union type is needed to support cases when they appear in contravariant position.
 
@@ -1066,7 +1066,7 @@ This is achieved via *type approximation*, which we describe below.
 Type approximation function $\alpha$ is defined as follows.
 
 * $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
-* $\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
+* $\alpha(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
 
 ### Type decaying
 
@@ -1077,7 +1077,7 @@ All [union types][Union types] are subject to *type decaying*, when they are con
 
 Type decaying function $\delta$ is defined as follows.
 
-* $\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
+* $\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
 
 > Note: a set of most specific common supertypes $\mathbb{S}(A, B)$ is a reduction of a set of all common supertypes $\mathbb{U}(A, B)$, such that it excludes all types $T \in \mathbb{U}$ such that $\exists V \in \mathbb{U} : V \neq T \land V <: T$.
 
