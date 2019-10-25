@@ -190,7 +190,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><span class="math inline">\(A \mathbin{\operatorname{\&amp;}}B\)</span></dt>
 <dd><span class="sentence">Intersection type of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></span>
 </dd>
-<dt><span class="math inline">\(A | B\)</span></dt>
+<dt><span class="math inline">\(A \mathbin{\operatorname{|}}B\)</span></dt>
 <dd><span class="sentence">Union type of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></span>
 </dd>
 <dt><span class="math inline">\(\operatorname{\text{GLB}}\)</span></dt>
@@ -817,7 +817,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><span class="math display">\[L &lt;: K &lt;: U\]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">where <span class="math inline">\(L = L_1 | \ldots | L_p\)</span> and <span class="math inline">\(U = U_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}U_q\)</span>.</span></p>
+<p><span class="sentence">where <span class="math inline">\(L = L_1 \mathbin{\operatorname{|}}\ldots \mathbin{\operatorname{|}}L_p\)</span> and <span class="math inline">\(U = U_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}U_q\)</span>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1054,7 +1054,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Union types are special <em>non-denotable</em> types used to express the fact that a value belongs to <em>one</em> of <em>several</em> possible types.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Union type of two types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is denoted <span class="math inline">\(A | B\)</span> and is equivalent to the <a href="type-system.html#least-upper-bound">least upper bound</a> of its components <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span>. </span><span class="sentence">Thus, the normalization procedure for <span class="math inline">\(\operatorname{\text{LUB}}\)</span> may be used to <em>normalize</em> a union type.</span></p>
+<p><span class="sentence">Union type of two types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is denoted <span class="math inline">\(A \mathbin{\operatorname{|}}B\)</span> and is equivalent to the <a href="type-system.html#least-upper-bound">least upper bound</a> of its components <span class="math inline">\(\operatorname{\text{LUB}}(A, B)\)</span>. </span><span class="sentence">Thus, the normalization procedure for <span class="math inline">\(\operatorname{\text{LUB}}\)</span> may be used to <em>normalize</em> a union type.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Moreover, as union types are <em>not</em> used in Kotlin, the compiler always <em>decays</em> a union type to a <em>non-union</em> type using <a href="type-system.html#type-decaying">type decaying</a>.</span></p>
@@ -1197,7 +1197,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: the last two rules mean <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_K)\)</span> can be considered as an intersection type <span class="math inline">\(T_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}T_K\)</span> or as a union type <span class="math inline">\(T_1 | \ldots | T_K\)</span>, depending on the context. </span><span class="sentence">Viewing <span class="math inline">\(\operatorname{\text{LTS}}\)</span> as intersection type allows us to use integer literals where built-in integer types are expected. </span><span class="sentence">Making <span class="math inline">\(\operatorname{\text{LTS}}\)</span> behave as union type is needed to support cases when they appear in contravariant position.</span></p>
+<p><span class="sentence">Note: the last two rules mean <span class="math inline">\(\operatorname{\text{LTS}}(T_1, \ldots, T_K)\)</span> can be considered as an intersection type <span class="math inline">\(T_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}T_K\)</span> or as a union type <span class="math inline">\(T_1 \mathbin{\operatorname{|}}\ldots \mathbin{\operatorname{|}}T_K\)</span>, depending on the context. </span><span class="sentence">Viewing <span class="math inline">\(\operatorname{\text{LTS}}\)</span> as intersection type allows us to use integer literals where built-in integer types are expected. </span><span class="sentence">Making <span class="math inline">\(\operatorname{\text{LTS}}\)</span> behave as union type is needed to support cases when they appear in contravariant position.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -1433,7 +1433,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha {\downarrow}\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
-<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))\)</span>, where <span class="math inline">\(\delta\)</span> is the <a href="type-system.html#type-decaying">type decaying</a> function.</span></li>
+<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{|}}B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle \mathbin{\operatorname{|}}B\langle \tau_B \rangle))\)</span>, where <span class="math inline">\(\delta\)</span> is the <a href="type-system.html#type-decaying">type decaying</a> function.</span></li>
 </ul>
 <h3 id="type-decaying">Type decaying</h3>
 <div class="paragraph">
@@ -1448,7 +1448,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type decaying function <span class="math inline">\(\delta\)</span> is defined as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta {\downarrow}\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
+<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle \mathbin{\operatorname{|}}B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta {\downarrow}\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
