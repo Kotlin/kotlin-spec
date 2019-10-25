@@ -974,13 +974,21 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 - if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\LUB(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle$, where $\eta(T)$ and $\phi(X, Y)$ are defined as follows:
 
-    + $\eta(\invV X) = \{\outV X, \inV X\}$
-    + $\eta(\outV X) = \{\outV X, \inV \Nothing\}$
-    + $\eta(\inV X) = \{\outV \AnyQ, \inV X\}$
-    + $\eta(\star) = \{\outV \AnyQ, \inV \Nothing\}$
-    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) =
-       \eta^{-1}
-       (\{\outV \LUB(X_{out}, Y_{out}), \inV \GLB(X_{in}, Y_{in})\})$
+    $$
+    \begin{aligned}
+        \eta(\invV X) &= \{\outV X, \inV X\} \\
+        \eta(\outV X) &= \{\outV X, \inV \Nothing\} \\
+        \eta(\inV X)  &= \{\outV \AnyQ, \inV X\} \\
+        \eta(\star)   &= \{\outV \AnyQ, \inV \Nothing\}
+    \end{aligned}
+    $$
+    
+    $$
+    \begin{aligned}
+        &\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) = \\
+        & \qquad \eta^{-1} (\{\outV \LUB(X_{out}, Y_{out}), \inV \GLB(X_{in}, Y_{in})\})
+    \end{aligned}
+    $$
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
@@ -1011,20 +1019,29 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if $A$ is non-nullable, $\GLB(A, B) = \GLB(A!!, B!!)$
 
 - if $A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle$ and $B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle$, $\GLB(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle$, where $\eta(T)$ and $\phi(X, Y)$ are defined as follows:
-
-    + $\eta(\invV X) = \{\outV X, \inV X\}$
-    + $\eta(\outV X) = \{\outV X, \inV \Nothing\}$
-    + $\eta(\inV X) = \{\outV \AnyQ, \inV X\}$
-    + $\eta(\star) = \{\outV \AnyQ, \inV \Nothing\}$
-    + $\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) =
-       {(\eta^{-1} \circ \Omega)}
-       (\{\outV \GLB(X_{out}, Y_{out}), \inV \LUB(X_{in}, Y_{in})\})$
-    + $\Omega(\{\outV A, \inV B\}) =
-  \begin{cases}
-    \{\outV A, \inV B\}        & \text{if } A :> B \\
-    \{\outV A, \inV \Nothing\} & \text{if } A <: B \land A \not \equiv B
-  \end{cases}$
-
+    
+    $$
+    \begin{aligned}
+        \eta(\invV X) &= \{\outV X, \inV X\} \\
+        \eta(\outV X) &= \{\outV X, \inV \Nothing\} \\
+        \eta(\inV X)  &= \{\outV \AnyQ, \inV X\} \\
+        \eta(\star)   &= \{\outV \AnyQ, \inV \Nothing\} 
+    \end{aligned}
+    $$
+    
+    $$
+    \begin{aligned}
+       & {\phi(\{\outV X_{out}, \inV X_{in}\}, \{\outV Y_{out}, \inV Y_{in}\}) = } \\
+       & \qquad {(\eta^{-1} \circ \Omega)} (\{\outV \GLB(X_{out}, Y_{out}), \inV \LUB(X_{in}, Y_{in})\}) \\
+       & {\Omega(\{\outV A, \inV B\}) = } \\
+       & \qquad
+         \begin{cases}
+            \{\outV A, \inV B\}        & \text{if } A :> B \\
+            \{\outV A, \inV \Nothing\} & \text{if } A <: B \land A \not \equiv B
+         \end{cases}
+    \end{aligned}
+    $$
+    
 > Note: the $\Omega$ function preserves type system consistency; $\forall A, B : A <: B \land A \not\equiv B$, type $T\langle \{\outV A, \inV B\}\rangle$ is the evidence of type $T\langle X\rangle : X <: A <: B <: X$, which makes the type system inconsistent.
 > To avoid this situation, we overapproximate $\inV B$ with $\inV \Nothing$ when needed.
 > Further details are available in the ["Mixed-site variance" paper][References].
@@ -1048,7 +1065,7 @@ This is achieved via *type approximation*, which we describe below.
 
 Type approximation function $\alpha$ is defined as follows.
 
-* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha\downarrow \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha\downarrow$ is a function which applies type approximation function to the type arguments if needed;
+* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
 * $\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
 
 ### Type decaying
@@ -1060,7 +1077,7 @@ All [union types][Union types] are subject to *type decaying*, when they are con
 
 Type decaying function $\delta$ is defined as follows.
 
-* $\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta\downarrow \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta\downarrow$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
+* $\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
 
 > Note: a set of most specific common supertypes $\mathbb{S}(A, B)$ is a reduction of a set of all common supertypes $\mathbb{U}(A, B)$, such that it excludes all types $T \in \mathbb{U}$ such that $\exists V \in \mathbb{U} : V \neq T \land V <: T$.
 

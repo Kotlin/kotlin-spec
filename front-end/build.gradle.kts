@@ -87,7 +87,7 @@ kotlinFrontend {
     sourceMaps = true
 
     npm {
-        dependency("katex")
+        dependency("katex", "0.11.1")
         dependency("jquery")
         dependency("kotlin-playground")
     }
