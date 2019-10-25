@@ -54,13 +54,13 @@ $$
 > Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
 > $$
 > \begin{alignedat}{2}
-> (P_1 \amp \neg N_1) | (P_2 \amp \neg N_2)
->   &\sqsubseteq (P_1 | P_2) \amp (\neg N_1 | \neg N_2)
->   &&= (P_1 | P_2) \amp \neg (N_1 \amp N_2)
+> (P_1 \amp \neg N_1) \hor (P_2 \amp \neg N_2)
+>   &\sqsubseteq (P_1 \hor P_2) \amp (\neg N_1 \hor \neg N_2)
+>   &&= (P_1 \hor P_2) \amp \neg (N_1 \amp N_2)
 >   \\
 > (P_1 \amp \neg N_1) \amp (P_2 \amp \neg N_2)
 >   &= (P_1 \amp P_2) \amp (\neg N_1 \amp \neg N_2) 
->   &&= (P_1 \amp P_2) \amp \neg (N_1 | N_2)
+>   &&= (P_1 \amp P_2) \amp \neg (N_1 \hor N_2)
 > \end{alignedat}
 > $$
 > 
