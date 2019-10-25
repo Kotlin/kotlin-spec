@@ -204,7 +204,7 @@ Enum entries have their own bodies that may contain their own declarations, simi
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
 
-TODO(The following are actually static methods (╯°□°)╯︵ ┻━┻)
+TODO(The following are actually static methods)
 
 In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):
 
