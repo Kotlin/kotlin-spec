@@ -53,15 +53,14 @@ $$
 
 > Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
 > $$
-> \begin{alignedat}{2}
+> \begin{aligned}
 > (P_1 \amp \neg N_1) \hor (P_2 \amp \neg N_2)
->   &\sqsubseteq (P_1 \hor P_2) \amp (\neg N_1 \hor \neg N_2)
->   &&= (P_1 \hor P_2) \amp \neg (N_1 \amp N_2)
->   \\
+>   &\sqsubseteq (P_1 \hor P_2) \amp (\neg N_1 \hor \neg N_2) \\
+>   &= (P_1 \hor P_2) \amp \neg (N_1 \amp N_2) \\
 > (P_1 \amp \neg N_1) \amp (P_2 \amp \neg N_2)
->   &= (P_1 \amp P_2) \amp (\neg N_1 \amp \neg N_2) 
->   &&= (P_1 \amp P_2) \amp \neg (N_1 \hor N_2)
-> \end{alignedat}
+>   &= (P_1 \amp P_2) \amp (\neg N_1 \amp \neg N_2) \\ 
+>   &= (P_1 \amp P_2) \amp \neg (N_1 \hor N_2)
+> \end{aligned}
 > $$
 > 
 > This is as intended, as "type which an expression definitely does not have" is exactly a negation type.
