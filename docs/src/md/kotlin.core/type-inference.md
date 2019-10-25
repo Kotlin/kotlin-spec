@@ -40,18 +40,20 @@ P_2 \times N_2
   \Leftrightarrow P_1 <: P_2 \land N_1 :> N_2
 $$
 
-\begin{align*}
+$$
+\begin{aligned}
 P_1 \times N_1 \join
 P_2 \times N_2
   &= \LUB(P_1, P_2) \times \GLB(N_1, N_2) \\
 P_1 \times N_1 \meet
 P_2 \times N_2
   &= \GLB(P_1, P_2) \times \LUB(N_1, N_2)
-\end{align*}
+\end{aligned}
+$$
 
 > Note: a well-informed reader may notice the second component is behaving very similarly to a *negation* type.
-> 
-> \begin{alignat*}{2}
+> $$
+> \begin{alignedat}{2}
 > (P_1 \amp \neg N_1) | (P_2 \amp \neg N_2)
 >   &\sqsubseteq (P_1 | P_2) \amp (\neg N_1 | \neg N_2)
 >   &&= (P_1 | P_2) \amp \neg (N_1 \amp N_2)
@@ -59,7 +61,8 @@ P_2 \times N_2
 > (P_1 \amp \neg N_1) \amp (P_2 \amp \neg N_2)
 >   &= (P_1 \amp P_2) \amp (\neg N_1 \amp \neg N_2) 
 >   &&= (P_1 \amp P_2) \amp \neg (N_1 | N_2)
-> \end{alignat*}
+> \end{alignedat}
+> $$
 > 
 > This is as intended, as "type which an expression definitely does not have" is exactly a negation type.
 > In smart casts, as Kotlin [type system][Type system] does not have negation types, we overapproximate them when needed.
@@ -70,7 +73,8 @@ The data-flow information uses the following transfer functions.
 
 TODO(Add compile-time types of expressions to the transfer functions)
 
-\begin{alignat*}{2}
+$$
+\begin{alignedat}{2}
 &\llbracket \assume(x \is T) \rrbracket(s)
 &&= s[x \rightarrow s(x) \meet (T \times \top)]
 \\
@@ -127,11 +131,13 @@ TODO(Add compile-time types of expressions to the transfer functions)
 \\
 &\llbracket l \rrbracket(s)
 &&= \bigsqcup_{p \in predecessor(l)} \llbracket p \rrbracket(s)
-\end{alignat*}
+\end{alignedat}
+$$
 
 where
 
-\begin{alignat*}{1}
+$$
+\begin{alignedat}{1}
 \swap(P \times N) &= N \times P
 \\
 \isNullable(s) &=
@@ -141,7 +147,8 @@ where
     (\top \times \top)      & \text{otherwise}
   \end{cases}
 \right.
-\end{alignat*}
+\end{alignedat}
+$$
 
 > Important: transfer function for `==` and `!=` are used only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
 > For example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
@@ -186,7 +193,7 @@ $$
 As a result, $\smartCastTypeOf(e)$ is used as a compile-time type of $e$ for most purposes (including, but not limited to, function overloading and type inference of other values).
 
 > Note: the most important exception to when smart casts are used in type inference is direct property declaration.
-> ```
+> ```kotlin
 > fun noSmartCastInInference() {
 >     var a: Any? = null
 > 
