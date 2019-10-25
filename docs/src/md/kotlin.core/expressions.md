@@ -213,8 +213,10 @@ If either of the branches are omitted, the resulting conditional expression has 
 Let's illustrate it with some examples:
 
 ```kotlin
-val x = if(true) 1 else 2 // x has type kotlin.Int and value 1
-val y = if(true) 1 // illegal, if expression withour false branch cannot be used as an expression
+// x has type kotlin.Int and value 1
+val x = if(true) 1 else 2 
+// illegal, if expression without false branch cannot be used as an expression
+val y = if(true) 1 
 ```
 
 The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is an error.

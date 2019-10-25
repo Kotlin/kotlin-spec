@@ -74,63 +74,63 @@ The data-flow information uses the following transfer functions.
 TODO(Add compile-time types of expressions to the transfer functions)
 
 $$
-\begin{alignedat}{2}
+\begin{alignedat}{3}
 &\llbracket \assume(x \is T) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (T \times \top)]
+&&= s[&&x \rightarrow s(x) \meet (T \times \top)]
 \\
 &\llbracket \assume(x \notIs T) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\top \times T)]
+&&= s[&&x \rightarrow s(x) \meet (\top \times T)]
 \\
 \\
 &\llbracket x \as T \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (T \times \top)]
+&&= s[&&x \rightarrow s(x) \meet (T \times \top)]
 \\
 &\llbracket x \notAs T) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\top \times T)]
+&&= s[&&x \rightarrow s(x) \meet (\top \times T)]
 \\
 \\
 &\llbracket \assume(x \eqq null) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
+&&= s[&&x \rightarrow s(x) \meet (\NothingQ \times \top)]
 \\
 &\llbracket \assume(x \notEqq null) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
+&&= s[&&x \rightarrow s(x) \meet (\top \times \NothingQ)]
 \\
 \\
 &\llbracket \assume(x \refEqq null) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\NothingQ \times \top)]
+&&= s[&&x \rightarrow s(x) \meet (\NothingQ \times \top)]
 \\
 &\llbracket \assume(x \notRefEqq null) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet (\top \times \NothingQ)]
+&&= s[&&x \rightarrow s(x) \meet (\top \times \NothingQ)]
 \\
 \\
 &\llbracket \assume(x \eqq y) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet s(y),
-      y \rightarrow s(x) \meet s(y)]
+&&= s[&&x \rightarrow s(x) \meet s(y), \\
+&  && &&y \rightarrow s(x) \meet s(y)]
 \\
 &\llbracket \assume(x \notEqq y) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
-      y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
+&&= s[&&x \rightarrow s(x) \meet \swap(\isNullable(s(y))), \\
+&  && &&y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
 \\
 \\
 &\llbracket \assume(x \refEqq y) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet s(y),
-      y \rightarrow s(x) \meet s(y)]
+&&= s[&&x \rightarrow s(x) \meet s(y), \\
+&  && &&y \rightarrow s(x) \meet s(y)]
 \\
 &\llbracket \assume(x \notRefEqq y) \rrbracket(s)
-&&= s[x \rightarrow s(x) \meet \swap(\isNullable(s(y))),
-      y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
+&&= s[&&x \rightarrow s(x) \meet \swap(\isNullable(s(y))), \\
+&  && &&y \rightarrow s(y) \meet \swap(\isNullable(s(x)))]
 \\
 \\
 &\llbracket x = y \rrbracket(s)
-&&= s[x \rightarrow s(y)]
+&&= s[&&x \rightarrow s(y)]
 \\
 \\
 &\llbracket \killDataFlow(x) \rrbracket(s)
-&&= s[x \rightarrow (\top \times \top)]
+&&= s[&&x \rightarrow (\top \times \top)]
 \\
 \\
 &\llbracket l \rrbracket(s)
-&&= \bigsqcup_{p \in predecessor(l)} \llbracket p \rrbracket(s)
+&&= &&\bigsqcup_{p \in predecessor(l)} \llbracket p \rrbracket(s)
 \end{alignedat}
 $$
 
