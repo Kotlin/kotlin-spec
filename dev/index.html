@@ -4682,13 +4682,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle\)</span>, where <span class="math inline">\(\eta(T)\)</span> and <span class="math inline">\(\phi(X, Y)\)</span> are defined as follows:</span></p>
 </div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{inv\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{out\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{in\ }}X) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\star) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) =  \eta^{-1}  (\{\operatorname{\mathtt{out\ }}\operatorname{\text{LUB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{GLB}}(X_{in}, Y_{in})\})\)</span></span></li>
-</ul></li>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      \eta(\operatorname{\mathtt{inv\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\operatorname{\mathtt{out\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} \\
+      \eta(\operatorname{\mathtt{in\ }}X)  &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\star)   &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}
+  \end{aligned}
+  \]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      &amp;\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) = \\
+      &amp; \qquad \eta^{-1} (\{\operatorname{\mathtt{out\ }}\operatorname{\text{LUB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{GLB}}(X_{in}, Y_{in})\})
+  \end{aligned}
+  \]</span></span></p>
+</div></li>
 <li><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B = (L_B..U_B)\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, L_B)..\operatorname{\text{LUB}}(U_A, U_B))\)</span></span></li>
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B\)</span> is not flexible, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, B)..\operatorname{\text{LUB}}(U_A, B))\)</span></span></p>
@@ -4739,14 +4750,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle\)</span>, where <span class="math inline">\(\eta(T)\)</span> and <span class="math inline">\(\phi(X, Y)\)</span> are defined as follows:</span></p>
 </div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{inv\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{out\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{in\ }}X) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\star) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) =  {(\eta^{-1} \circ \Omega)}  (\{\operatorname{\mathtt{out\ }}\operatorname{\text{GLB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{LUB}}(X_{in}, Y_{in})\})\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\Omega(\{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}) = \begin{cases}  \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\} &amp; \text{if } A :&gt; B \\  \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} &amp; \text{if } A &lt;: B \land A \not \equiv B \end{cases}\)</span></span></li>
-</ul></li>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      \eta(\operatorname{\mathtt{inv\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\operatorname{\mathtt{out\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} \\
+      \eta(\operatorname{\mathtt{in\ }}X)  &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\star)   &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} 
+  \end{aligned}
+  \]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+     &amp; {\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) = } \\
+     &amp; \qquad {(\eta^{-1} \circ \Omega)} (\{\operatorname{\mathtt{out\ }}\operatorname{\text{GLB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{LUB}}(X_{in}, Y_{in})\}) \\
+     &amp; {\Omega(\{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}) = } \\
+     &amp; \qquad
+       \begin{cases}
+          \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}        &amp; \text{if } A :&gt; B \\
+          \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} &amp; \text{if } A &lt;: B \land A \not \equiv B
+       \end{cases}
+  \end{aligned}
+  \]</span></span></p>
+</div></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -4785,7 +4812,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type approximation function <span class="math inline">\(\alpha\)</span> is defined as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha\downarrow\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
+<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha {\downarrow}\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
 <li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))\)</span>, where <span class="math inline">\(\delta\)</span> is the <a href="#type-decaying">type decaying</a> function.</span></li>
 </ul>
 <h3 id="type-decaying">Type decaying</h3>
@@ -4801,7 +4828,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type decaying function <span class="math inline">\(\delta\)</span> is defined as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta\downarrow\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
+<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta {\downarrow}\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -9620,14 +9647,30 @@ P_2 \times N_2
 \]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{aligned}
+P_1 \times N_1 \sqcup
+P_2 \times N_2
+  &amp;= \operatorname{\text{LUB}}(P_1, P_2) \times \operatorname{\text{GLB}}(N_1, N_2) \\
+P_1 \times N_1 \sqcap
+P_2 \times N_2
+  &amp;= \operatorname{\text{GLB}}(P_1, P_2) \times \operatorname{\text{LUB}}(N_1, N_2)
+\end{aligned}
+\]</span></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type. </span><span class="sentence"><span class="math display">\[
+\begin{alignedat}{2}
+(P_1 \mathbin{\operatorname{\&amp;}}\neg N_1) | (P_2 \mathbin{\operatorname{\&amp;}}\neg N_2)
+  &amp;\sqsubseteq (P_1 | P_2) \mathbin{\operatorname{\&amp;}}(\neg N_1 | \neg N_2)
+  &amp;&amp;= (P_1 | P_2) \mathbin{\operatorname{\&amp;}}\neg (N_1 \mathbin{\operatorname{\&amp;}}N_2)
+  \\
+(P_1 \mathbin{\operatorname{\&amp;}}\neg N_1) \mathbin{\operatorname{\&amp;}}(P_2 \mathbin{\operatorname{\&amp;}}\neg N_2)
+  &amp;= (P_1 \mathbin{\operatorname{\&amp;}}P_2) \mathbin{\operatorname{\&amp;}}(\neg N_1 \mathbin{\operatorname{\&amp;}}\neg N_2) 
+  &amp;&amp;= (P_1 \mathbin{\operatorname{\&amp;}}P_2) \mathbin{\operatorname{\&amp;}}\neg (N_1 | N_2)
+\end{alignedat}
+\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin <a href="#type-system">type system</a> does not have negation types, we overapproximate them when needed.</span></p>
@@ -9643,13 +9686,84 @@ P_2 \times N_2
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{alignedat}{2}
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{as}}T \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{!as}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[x = y \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(y)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{killDataFlow}}(x) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow (\top \times \top)]
+\\
+\\
+&amp;\left[\!\left[l \right]\!\right](s)
+&amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
+\end{alignedat}
+\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{alignedat}{1}
+\operatorname{\mathit{swap}}(P \times N) &amp;= N \times P
+\\
+\operatorname{\mathit{isNullable}}(s) &amp;=
+\left.
+  \begin{cases}
+    (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) &amp; \text{if } s \sqsubseteq (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) \\
+    (\top \times \top)      &amp; \text{otherwise}
+  \end{cases}
+\right.
+\end{alignedat}
+\]</span></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9712,28 +9826,28 @@ P_2 \times N_2
 <div class="paragraph">
 <p><span class="sentence">Note: the most important exception to when smart casts are used in type inference is direct property declaration.</span></p>
 </div>
-<pre><code>fun noSmartCastInInference() {
-    var a: Any? = null
-
-    if (a == null) return
-
-    var c = a // Direct property declaration
-
-    c // Declared type of `c` is Any?
-      // However, here it&#39;s smart casted to Any
-}
-
-fun &lt;T&gt; id(a: T): T = a
-
-fun smartCastInInference() {
-    var a: Any? = null
-
-    if (a == null) return
-
-    var c = id(a)
-
-    c // Declared type of `c` is Any
-}</code></pre>
+<div class="sourceCode" id="cb89"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb89-1" title="1"><span class="kw">fun</span> <span class="fu">noSmartCastInInference</span>() {</a>
+<a class="sourceLine" id="cb89-2" title="2">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb89-3" title="3"></a>
+<a class="sourceLine" id="cb89-4" title="4">    <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb89-5" title="5"></a>
+<a class="sourceLine" id="cb89-6" title="6">    <span class="kw">var</span> <span class="va">c</span> = a <span class="co">// Direct property declaration</span></a>
+<a class="sourceLine" id="cb89-7" title="7"></a>
+<a class="sourceLine" id="cb89-8" title="8">    c <span class="co">// Declared type of `c` is Any?</span></a>
+<a class="sourceLine" id="cb89-9" title="9">      <span class="co">// However, here it&#39;s smart casted to Any</span></a>
+<a class="sourceLine" id="cb89-10" title="10">}</a>
+<a class="sourceLine" id="cb89-11" title="11"></a>
+<a class="sourceLine" id="cb89-12" title="12"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">id</span>(<span class="va">a</span>: <span class="dt">T</span>): <span class="dt">T</span> = a</a>
+<a class="sourceLine" id="cb89-13" title="13"></a>
+<a class="sourceLine" id="cb89-14" title="14"><span class="kw">fun</span> <span class="fu">smartCastInInference</span>() {</a>
+<a class="sourceLine" id="cb89-15" title="15">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb89-16" title="16"></a>
+<a class="sourceLine" id="cb89-17" title="17">    <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb89-18" title="18"></a>
+<a class="sourceLine" id="cb89-19" title="19">    <span class="kw">var</span> <span class="va">c</span> = id(a)</a>
+<a class="sourceLine" id="cb89-20" title="20"></a>
+<a class="sourceLine" id="cb89-21" title="21">    c <span class="co">// Declared type of `c` is Any</span></a>
+<a class="sourceLine" id="cb89-22" title="22">}</a></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">Smart casts are introduced by the following Kotlin constructions.</span></p>

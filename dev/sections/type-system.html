@@ -1302,13 +1302,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle\)</span>, where <span class="math inline">\(\eta(T)\)</span> and <span class="math inline">\(\phi(X, Y)\)</span> are defined as follows:</span></p>
 </div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{inv\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{out\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{in\ }}X) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\star) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) =  \eta^{-1}  (\{\operatorname{\mathtt{out\ }}\operatorname{\text{LUB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{GLB}}(X_{in}, Y_{in})\})\)</span></span></li>
-</ul></li>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      \eta(\operatorname{\mathtt{inv\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\operatorname{\mathtt{out\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} \\
+      \eta(\operatorname{\mathtt{in\ }}X)  &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\star)   &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}
+  \end{aligned}
+  \]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      &amp;\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) = \\
+      &amp; \qquad \eta^{-1} (\{\operatorname{\mathtt{out\ }}\operatorname{\text{LUB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{GLB}}(X_{in}, Y_{in})\})
+  \end{aligned}
+  \]</span></span></p>
+</div></li>
 <li><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B = (L_B..U_B)\)</span>, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, L_B)..\operatorname{\text{LUB}}(U_A, U_B))\)</span></span></li>
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = (L_A..U_A)\)</span> and <span class="math inline">\(B\)</span> is not flexible, <span class="math inline">\(\operatorname{\text{LUB}}(A, B) = (\operatorname{\text{LUB}}(L_A, B)..\operatorname{\text{LUB}}(U_A, B))\)</span></span></p>
@@ -1359,14 +1370,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">if <span class="math inline">\(A = T\langle K_{A,1}, \ldots, K_{A,n}\rangle\)</span> and <span class="math inline">\(B = T\langle K_{B,1}, \ldots, K_{B,n}\rangle\)</span>, <span class="math inline">\(\operatorname{\text{GLB}}(A, B) = T\langle \phi(\eta(K_{A,1}), \eta(K_{B,1})), \ldots, \phi(\eta(K_{A,n}), \eta(K_{B,n}))\rangle\)</span>, where <span class="math inline">\(\eta(T)\)</span> and <span class="math inline">\(\phi(X, Y)\)</span> are defined as follows:</span></p>
 </div>
-<ul>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{inv\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{out\ }}X) = \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\operatorname{\mathtt{in\ }}X) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\eta(\star) = \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) =  {(\eta^{-1} \circ \Omega)}  (\{\operatorname{\mathtt{out\ }}\operatorname{\text{GLB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{LUB}}(X_{in}, Y_{in})\})\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(\Omega(\{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}) = \begin{cases}  \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\} &amp; \text{if } A :&gt; B \\  \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} &amp; \text{if } A &lt;: B \land A \not \equiv B \end{cases}\)</span></span></li>
-</ul></li>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+      \eta(\operatorname{\mathtt{inv\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\operatorname{\mathtt{out\ }}X) &amp;= \{\operatorname{\mathtt{out\ }}X, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} \\
+      \eta(\operatorname{\mathtt{in\ }}X)  &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}X\} \\
+      \eta(\star)   &amp;= \{\operatorname{\mathtt{out\ }}\operatorname{\mathtt{kotlin.Any?}}, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} 
+  \end{aligned}
+  \]</span></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math display">\[
+  \begin{aligned}
+     &amp; {\phi(\{\operatorname{\mathtt{out\ }}X_{out}, \operatorname{\mathtt{in\ }}X_{in}\}, \{\operatorname{\mathtt{out\ }}Y_{out}, \operatorname{\mathtt{in\ }}Y_{in}\}) = } \\
+     &amp; \qquad {(\eta^{-1} \circ \Omega)} (\{\operatorname{\mathtt{out\ }}\operatorname{\text{GLB}}(X_{out}, Y_{out}), \operatorname{\mathtt{in\ }}\operatorname{\text{LUB}}(X_{in}, Y_{in})\}) \\
+     &amp; {\Omega(\{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}) = } \\
+     &amp; \qquad
+       \begin{cases}
+          \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}B\}        &amp; \text{if } A :&gt; B \\
+          \{\operatorname{\mathtt{out\ }}A, \operatorname{\mathtt{in\ }}\operatorname{\mathtt{kotlin.Nothing}}\} &amp; \text{if } A &lt;: B \land A \not \equiv B
+       \end{cases}
+  \end{aligned}
+  \]</span></span></p>
+</div></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -1405,7 +1432,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type approximation function <span class="math inline">\(\alpha\)</span> is defined as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha\downarrow\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
+<li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle \mathbin{\operatorname{\&amp;}}B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where type <span class="math inline">\(S\)</span> is the least common supertype of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\alpha {\downarrow}\)</span> is a function which applies type approximation function to the type arguments if needed;</span></li>
 <li><span class="sentence"><span class="math inline">\(\alpha(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle))\)</span>, where <span class="math inline">\(\delta\)</span> is the <a href="type-system.html#type-decaying">type decaying</a> function.</span></li>
 </ul>
 <h3 id="type-decaying">Type decaying</h3>
@@ -1421,7 +1448,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type decaying function <span class="math inline">\(\delta\)</span> is defined as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta\downarrow \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta\downarrow\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
+<li><span class="sentence"><span class="math inline">\(\delta(A\langle \tau_A \rangle | B\langle \tau_B \rangle) = \mathbin{\operatorname{\&amp;}}_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \operatorname{\text{GLB}})(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)\)</span>, where substitution <span class="math inline">\(\tau_{P \rightarrow Q}\)</span> is the result of chain applying substitutions from type <span class="math inline">\(P\)</span> to type <span class="math inline">\(Q :&gt; P\)</span>, <span class="math inline">\(\delta {\downarrow}\)</span> is a function which applies type decaying function to the type arguments if needed, <span class="math inline">\(\mathbb{S}(A, B)\)</span> is a set of most specific common supertypes of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">

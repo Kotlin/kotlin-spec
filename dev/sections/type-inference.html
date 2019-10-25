@@ -167,14 +167,30 @@ P_2 \times N_2
 \]</span></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{aligned}
+P_1 \times N_1 \sqcup
+P_2 \times N_2
+  &amp;= \operatorname{\text{LUB}}(P_1, P_2) \times \operatorname{\text{GLB}}(N_1, N_2) \\
+P_1 \times N_1 \sqcap
+P_2 \times N_2
+  &amp;= \operatorname{\text{GLB}}(P_1, P_2) \times \operatorname{\text{LUB}}(N_1, N_2)
+\end{aligned}
+\]</span></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence">Note: a well-informed reader may notice the second component is behaving very similarly to a <em>negation</em> type. </span><span class="sentence"><span class="math display">\[
+\begin{alignedat}{2}
+(P_1 \mathbin{\operatorname{\&amp;}}\neg N_1) | (P_2 \mathbin{\operatorname{\&amp;}}\neg N_2)
+  &amp;\sqsubseteq (P_1 | P_2) \mathbin{\operatorname{\&amp;}}(\neg N_1 | \neg N_2)
+  &amp;&amp;= (P_1 | P_2) \mathbin{\operatorname{\&amp;}}\neg (N_1 \mathbin{\operatorname{\&amp;}}N_2)
+  \\
+(P_1 \mathbin{\operatorname{\&amp;}}\neg N_1) \mathbin{\operatorname{\&amp;}}(P_2 \mathbin{\operatorname{\&amp;}}\neg N_2)
+  &amp;= (P_1 \mathbin{\operatorname{\&amp;}}P_2) \mathbin{\operatorname{\&amp;}}(\neg N_1 \mathbin{\operatorname{\&amp;}}\neg N_2) 
+  &amp;&amp;= (P_1 \mathbin{\operatorname{\&amp;}}P_2) \mathbin{\operatorname{\&amp;}}\neg (N_1 | N_2)
+\end{alignedat}
+\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This is as intended, as “type which an expression definitely does not have” is exactly a negation type. </span><span class="sentence">In smart casts, as Kotlin <a href="type-system.html#type-system">type system</a> does not have negation types, we overapproximate them when needed.</span></p>
@@ -190,13 +206,84 @@ P_2 \times N_2
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{alignedat}{2}
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!is}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{as}}T \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(T \times \top)]
+\\
+&amp;\left[\!\left[x \operatorname{\mathtt{!as}}T) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times T)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\operatorname{\mathtt{kotlin.Nothing?}}\times \top)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}null) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap(\top \times \operatorname{\mathtt{kotlin.Nothing?}})]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!=}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{===}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap s(y),
+      y \rightarrow s(x) \sqcap s(y)]
+\\
+&amp;\left[\!\left[\operatorname{\mathit{assume}}(x \operatorname{\mathtt{!\!\!==}}y) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(x) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(y))),
+      y \rightarrow s(y) \sqcap\operatorname{\mathit{swap}}(\operatorname{\mathit{isNullable}}(s(x)))]
+\\
+\\
+&amp;\left[\!\left[x = y \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow s(y)]
+\\
+\\
+&amp;\left[\!\left[\operatorname{\mathit{killDataFlow}}(x) \right]\!\right](s)
+&amp;&amp;= s[x \rightarrow (\top \times \top)]
+\\
+\\
+&amp;\left[\!\left[l \right]\!\right](s)
+&amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
+\end{alignedat}
+\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"></span></p>
+<p><span class="sentence"><span class="math display">\[
+\begin{alignedat}{1}
+\operatorname{\mathit{swap}}(P \times N) &amp;= N \times P
+\\
+\operatorname{\mathit{isNullable}}(s) &amp;=
+\left.
+  \begin{cases}
+    (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) &amp; \text{if } s \sqsubseteq (\operatorname{\mathtt{kotlin.Nothing?}}\times \top) \\
+    (\top \times \top)      &amp; \text{otherwise}
+  \end{cases}
+\right.
+\end{alignedat}
+\]</span></span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -259,28 +346,28 @@ P_2 \times N_2
 <div class="paragraph">
 <p><span class="sentence">Note: the most important exception to when smart casts are used in type inference is direct property declaration.</span></p>
 </div>
-<pre><code>fun noSmartCastInInference() {
-    var a: Any? = null
-
-    if (a == null) return
-
-    var c = a // Direct property declaration
-
-    c // Declared type of `c` is Any?
-      // However, here it&#39;s smart casted to Any
-}
-
-fun &lt;T&gt; id(a: T): T = a
-
-fun smartCastInInference() {
-    var a: Any? = null
-
-    if (a == null) return
-
-    var c = id(a)
-
-    c // Declared type of `c` is Any
-}</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">fun</span> <span class="fu">noSmartCastInInference</span>() {</a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4">    <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">    <span class="kw">var</span> <span class="va">c</span> = a <span class="co">// Direct property declaration</span></a>
+<a class="sourceLine" id="cb1-7" title="7"></a>
+<a class="sourceLine" id="cb1-8" title="8">    c <span class="co">// Declared type of `c` is Any?</span></a>
+<a class="sourceLine" id="cb1-9" title="9">      <span class="co">// However, here it&#39;s smart casted to Any</span></a>
+<a class="sourceLine" id="cb1-10" title="10">}</a>
+<a class="sourceLine" id="cb1-11" title="11"></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">id</span>(<span class="va">a</span>: <span class="dt">T</span>): <span class="dt">T</span> = a</a>
+<a class="sourceLine" id="cb1-13" title="13"></a>
+<a class="sourceLine" id="cb1-14" title="14"><span class="kw">fun</span> <span class="fu">smartCastInInference</span>() {</a>
+<a class="sourceLine" id="cb1-15" title="15">    <span class="kw">var</span> <span class="va">a</span>: Any? = <span class="kw">null</span></a>
+<a class="sourceLine" id="cb1-16" title="16"></a>
+<a class="sourceLine" id="cb1-17" title="17">    <span class="cf">if</span> (a == <span class="kw">null</span>) <span class="kw">return</span></a>
+<a class="sourceLine" id="cb1-18" title="18"></a>
+<a class="sourceLine" id="cb1-19" title="19">    <span class="kw">var</span> <span class="va">c</span> = id(a)</a>
+<a class="sourceLine" id="cb1-20" title="20"></a>
+<a class="sourceLine" id="cb1-21" title="21">    c <span class="co">// Declared type of `c` is Any</span></a>
+<a class="sourceLine" id="cb1-22" title="22">}</a></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">Smart casts are introduced by the following Kotlin constructions.</span></p>
