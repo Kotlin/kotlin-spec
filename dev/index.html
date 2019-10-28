@@ -181,6 +181,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#constructor-declaration">Constructor declaration</a></li>
 <li><a href="#nested-and-inner-classifiers">Nested and inner classifiers</a></li>
 <li><a href="#inheritance-delegation">Inheritance delegation</a></li>
+<li><a href="#abstract-classes">Abstract classes</a></li>
 </ul></li>
 <li><a href="#data-class-declaration">Data class declaration</a></li>
 <li><a href="#enum-class-declaration">Enum class declaration</a></li>
@@ -215,7 +216,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="#inheritance">Inheritance</a><ul>
 <li><a href="#classifier-type-inheritance">Classifier type inheritance</a><ul>
-<li><a href="#abstract-classes">Abstract classes</a></li>
+<li><a href="#abstract-classes-1">Abstract classes</a></li>
 <li><a href="#sealed-classes">Sealed classes</a></li>
 <li><a href="#inheritance-from-built-in-types">Inheritance from built-in types</a></li>
 </ul></li>
@@ -404,6 +405,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 </nav>
+
+
 
 
 
@@ -5089,16 +5092,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="glossary-2">Glossary</h3>
 <dl>
 <dt>Entity</dt>
-<dd><span class="sentence">A distinguishable part of a program</span>
+<dd><span class="sentence">Distinguishable part of a program</span>
+</dd>
+<dt>Identifier</dt>
+<dd><span class="sentence">Name of a program entity</span>
 </dd>
 <dt>Path</dt>
-<dd><span class="sentence">A sequence of names which identifies a program entity</span>
+<dd><span class="sentence">Sequence of identifiers which references a program entity in a given <a href="#scopes-and-identifiers">scope</a></span>
 </dd>
 </dl>
 <h3 id="identifiers-names-and-paths">Identifiers, names and paths</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin program operates with different <em>entities</em>, such as classes, interfaces, values, etc. An entity can be referenced using its <em>path</em>: a sequence of identifiers which references this entity in a given <a href="#scopes-and-identifiers">scope</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports two kinds of paths.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Simple paths <span class="math inline">\(P\)</span>, which consist of a single identifier</span></li>
+<li><span class="sentence">Qualified paths <span class="math inline">\(P.m\)</span>, which consist of a path <span class="math inline">\(P\)</span> and a member identifier <span class="math inline">\(m\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>this@label</code> – an identifier which references the selected receiver available in the current scope, further details are available <a href="#this-expressions">here</a></span></li>
+<li><span class="sentence"><code>super&lt;Klazz&gt;</code> – an identifier which references the selected supertype available in the current scope, further details are available <a href="#super-forms">here</a></span></li>
+</ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Explain paths)</span></p>
+<p><span class="sentence">TODO(Should this thing be moved to Scopes and identifiers?)</span></p>
 </div>
 </div>
 <h3 id="introduction-2">Introduction</h3>
@@ -5149,27 +5172,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">interface declarations;</span></li>
 <li><span class="sentence">object declarations.</span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(abstract classifiers)</span></p>
-</div>
-</div>
 <h4 id="class-declaration">Class declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">A simple class declaration consists of the following parts.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Name <span class="math inline">\(c\)</span>;</span></li>
-<li><span class="sentence">Optional primary constructor declaration <span class="math inline">\(ptor\)</span>;</span></li>
+<li><span class="sentence">Optional primary constructor declaration <span class="math inline">\(\operatorname{\mathit{ptor}}\)</span>;</span></li>
 <li><span class="sentence">Optional supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span>;</span></li>
 <li><span class="sentence">Optional body <span class="math inline">\(b\)</span>, which may include the following:</span>
 <ul>
-<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span>;</span></li>
-<li><span class="sentence">instance initialization blocks <span class="math inline">\(init_1, \ldots, init_i\)</span>;</span></li>
-<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span>;</span></li>
-<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span>;</span></li>
-<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span>;</span></li>
-<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span>.</span></li>
+<li><span class="sentence">secondary constructor declarations <span class="math inline">\(\operatorname{\mathit{stor}}_1, \ldots, \operatorname{\mathit{stor}}_c\)</span>;</span></li>
+<li><span class="sentence">instance initialization blocks <span class="math inline">\(\operatorname{\mathit{init}}_1, \ldots, \operatorname{\mathit{init}}_i\)</span>;</span></li>
+<li><span class="sentence">property declarations <span class="math inline">\(\operatorname{\mathit{prop}}_1, \ldots, \operatorname{\mathit{prop}}_p\)</span>;</span></li>
+<li><span class="sentence">function declarations <span class="math inline">\(\operatorname{\mathit{md}}_1, \ldots, \operatorname{\mathit{md}}_m\)</span>;</span></li>
+<li><span class="sentence">companion object declaration <span class="math inline">\(\operatorname{\mathit{companionObj}}\)</span>;</span></li>
+<li><span class="sentence">nested classifier declarations <span class="math inline">\(\operatorname{\mathit{nested}}\)</span>.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
@@ -5191,7 +5209,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Companion object declaration <code>companion object CO { ... }</code> for class <code>C</code> introduces an object, which is available under this class’ name or under the path <code>C.CO</code>. </span><span class="sentence">Companion object name may be omitted, in which case it is considered to be equal to <code>Companion</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ path. </span><span class="sentence">Further details are available <a href="#nested-and-inner-classifiers">here</a>.</span></p>
+<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ name. </span><span class="sentence">Further details are available <a href="#nested-and-inner-classifiers">here</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> and extends the rules for a simple class declaration w.r.t. this type parameter list. </span><span class="sentence">Further details are described <a href="#declarations-with-type-parameters">here</a>.</span></p>
@@ -5209,15 +5227,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[ptor : (p_1, \ldots, p_n)\]</span></span></p>
+<p><span class="sentence"><span class="math display">\[\operatorname{\mathit{ptor}}: (p_1, \ldots, p_n)\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where each of <span class="math inline">\(p_i\)</span> may be one of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence">regular constructor parameter <span class="math inline">\(name: type\)</span>;</span></li>
-<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\texttt{val}\ name: type\)</span>;</span></li>
-<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\texttt{var}\ name: type\)</span>.</span></li>
+<li><span class="sentence">regular constructor parameter <span class="math inline">\(\operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>;</span></li>
+<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\texttt{val}\ \operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>;</span></li>
+<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\texttt{var}\ \operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type.</span></p>
@@ -5243,7 +5261,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. </span><span class="sentence">If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via <code>this(...)</code>.</span></p>
+<p><span class="sentence">A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via <code>this(...)</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via <code>super(...)</code> (if the superclass is present in the supertype specifier list) or to another secondary constructor via <code>this(...)</code>. </span><span class="sentence">If the only superclass is <code>kotlin.Any</code>, delegation is optional.</span></p>
@@ -5298,6 +5319,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">TODO(…)</span></p>
 </div>
+</div>
+<h5 id="abstract-classes">Abstract classes</h5>
+<div class="paragraph">
+<p><span class="sentence">A <a href="#class-declaration">class declaration</a> can be marked <code>abstract</code>. </span><span class="sentence">Such classes <em>cannot</em> be instantiated directly; they are used as superclasses for other classes or objects.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Abstract classes may contain one or more abstract members: members without implementation, which should be implemented in a subtype of this abstract class.</span></p>
 </div>
 <h4 id="data-class-declaration">Data class declaration</h4>
 <div class="paragraph">
@@ -5576,7 +5604,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="#classifier-declaration">abstract classifier declaration</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
+<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="#abstract-classes-1">abstract class</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -6140,7 +6168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the <a href="#overriding">inheritance section</a> for details).</span></p>
+<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the <a href="#overriding">inheritance section</a> for details).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -6176,7 +6204,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Inheritance is the primary mechanism of introducing <a href="#subtyping">subtyping relations</a> between user-defined types in Kotlin. </span><span class="sentence">When a classifier type <span class="math inline">\(A\)</span> is declared with base types <span class="math inline">\(B_1, \dots, B_i\)</span> it introduces subtyping relations <span class="math inline">\(A &lt;: B_1, \ldots, A &lt;: B_i\)</span>, which are then used in <a href="#overload-resolution">overload resolution</a> and <a href="#type-inference">type inference</a> mechanisms.</span></p>
 </div>
-<h4 id="abstract-classes">Abstract classes</h4>
+<h4 id="abstract-classes-1">Abstract classes</h4>
 <div class="paragraph">
 <p><span class="sentence">A class declared <code>abstract</code> cannot be instantiated, i.e. an object of this class cannot be created directly. </span><span class="sentence">Abstract classes are implicitly open and their primary purpose is to be inherited from. </span><span class="sentence">Only abstract classes allow for <code>abstract</code> property and function declarations in its scope.</span></p>
 </div>
