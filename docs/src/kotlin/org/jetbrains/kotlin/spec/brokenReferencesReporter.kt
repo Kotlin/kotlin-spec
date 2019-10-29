@@ -19,6 +19,7 @@ object BrokenReferencesReporter: PandocVisitor() {
 
     override fun visit(b: Block.Para) = detect(b)
     override fun visit(b: Block.Plain) = detect(b)
+    override fun visit(b: Block.LineBlock) = detect(b)
 
     override fun visit(b: Block.Header) = b.also { lastHeader = b }
 

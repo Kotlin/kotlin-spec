@@ -1,7 +1,7 @@
 <#mode quote>
 
 \newcommand{\opMathTT}[2]{%
-  \expandafter\newcommand{#1}{\operatorname{\mathtt{#2}}}%
+  \expandafter\newcommand{#1}{\operatorname{\texttt{#2}}}%
 }
 
 \newcommand{\opMathIT}[2]{%
@@ -26,9 +26,9 @@
 \opMathTEXT{\LUB}{LUB}
 \opMathTEXT{\GLB}{GLB}
 
-\opMathTT{\outV}{out\ }
-\opMathTT{\invV}{inv\ }
-\opMathTT{\inV}{in\ }
+\opMathTT{\outV}{out\,}
+\opMathTT{\invV}{inv\,}
+\opMathTT{\inV}{in\,}
 
 \opMathTT{\Any}{kotlin.Any}
 \opMathTT{\AnyQ}{kotlin.Any?}
