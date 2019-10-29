@@ -64,6 +64,17 @@
 \opMathTEXT{\ND}{ND}
 \opMathTEXT{\ID}{ID}
 
+\opMathIT{\ptor}{ptor}
+\opMathIT{\stor}{stor}
+\opMathIT{\init}{init}
+\opMathIT{\prop}{prop}
+\opMathIT{\md}{md}
+\opMathIT{\companionObj}{companionObj}
+\opMathIT{\nested}{nested}
+
+\opMathIT{\name}{name}
+\opMathIT{\type}{type}
+
 \opMathTEXT{\SmartCastData}{SmartCastData}
 \opMathTEXT{\Expression}{Expression}
 \opMathTEXT{\SmartCastType}{SmartCastType}
