@@ -659,6 +659,10 @@
 **_Letter_**  
   ~ <any unicode character of classes LL, LM, LO, LT, LU or NL>
 :::
+:::{ .grammar-rule #grammar-rule-QuotedSymbol }
+**_QuotedSymbol_**  
+  ~ <any character excluding CR, LF and ``'`'``>
+:::
 :::{ .grammar-rule #grammar-rule-UnicodeDigit }
 **_UnicodeDigit_**  
   ~ <any unicode character of class ND>
@@ -666,7 +670,7 @@
 :::{ .grammar-rule #grammar-rule-Identifier }
 **_Identifier_**  
   ~ ([_Letter_](#grammar-rule-Letter) | `'_'`) {[_Letter_](#grammar-rule-Letter) | `'_'` | [_UnicodeDigit_](#grammar-rule-UnicodeDigit)}  
-  | ``'`'`` <any character excluding CR, LF and ``'`'``> {<any character excluding CR, LF and ``'`'``>} ``'`'``
+  | ``'`'`` [_QuotedSymbol_](#grammar-rule-QuotedSymbol) {[_QuotedSymbol_](#grammar-rule-QuotedSymbol)} ``'`'``
 :::
 :::{ .grammar-rule #grammar-rule-IdentifierOrSoftKey }
 **_IdentifierOrSoftKey_**  
@@ -938,7 +942,7 @@ Note that syntax grammar ignores tokens [_DelimitedComment_](#grammar-rule-Delim
   | [_LineStrRef_](#grammar-rule-LineStrRef)  
   | [_LineStrText_](#grammar-rule-LineStrText)  
   | [_LineStrEscapedChar_](#grammar-rule-LineStrEscapedChar)  
-  | [_LineStrExprStart_](#grammar-rule-LineStrExprStart)
+  | [_LineStrExprStart_](#grammar-rule-LineStrExprStart)  
   | [_MultilineStringQuote_](#grammar-rule-MultilineStringQuote)  
   | [_MultiLineStrRef_](#grammar-rule-MultiLineStrRef)  
   | [_MultiLineStrText_](#grammar-rule-MultiLineStrText)  
