@@ -173,7 +173,7 @@ Abstract classes may contain one or more abstract members: members without imple
 
 #### Data class declaration
 
-A data class $\dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(\dp_1, \ldots, \dp_m)$, described in its primary constructor.
+A data class $\dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(\dataClassParam_1, \ldots, \dataClassParam_m)$, described in its primary constructor.
 Non-property constructor parameters are not allowed in the primary constructor of a data class.
 As such, data classes allow Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
@@ -192,7 +192,7 @@ As such, data classes allow Kotlin to reduce the boilerplate and generate a numb
     - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Local property declaration];
     - The number of these functions is the same as the number of data properties.
 
-All these functions consider only data properties $\{\dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
+All these functions consider only data properties $\{\dataClassParam_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
 
 There are several rules as to how these generated functions may be explicified or inherited.
 

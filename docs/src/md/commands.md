@@ -72,7 +72,7 @@
 \opMathIT{\companionObj}{companionObj}
 \opMathIT{\nested}{nested}
 \opMathIT{\dataClass}{dataClass}
-\opMathIT{\dp}{dp}
+\opMathIT{\dataClassParam}{dp}
 
 \opMathIT{\name}{name}
 \opMathIT{\type}{type}
