@@ -71,6 +71,8 @@
 \opMathIT{\md}{md}
 \opMathIT{\companionObj}{companionObj}
 \opMathIT{\nested}{nested}
+\opMathIT{\dataClass}{dataClass}
+\opMathIT{\dp}{dp}
 
 \opMathIT{\name}{name}
 \opMathIT{\type}{type}

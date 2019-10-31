@@ -173,42 +173,54 @@ Abstract classes may contain one or more abstract members: members without imple
 
 #### Data class declaration
 
-A data class $dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(dp_1, \ldots, dp_m)$, described in its primary constructor. 
+A data class $\dataClass$ is a special kind of class, which represents a product type constructed from a number of data properties $(\dp_1, \ldots, \dp_m)$, described in its primary constructor.
 Non-property constructor parameters are not allowed in the primary constructor of a data class.
-As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
-Each one of these functions is generated if and only if a matching signature function is not present in the class body.
+As such, data classes allow Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
-* `equals() / hashCode() / toString()` functions compliant with their contracts:
+* `equals() / hashCode() / toString()` functions compliant with [their contracts][`kotlin.Any`-bi]:
     - `equals(that)` returns true iff:
         - `that` has the same runtime type as `this`;
-        - `this.prop.equals(that.prop)` returns `true` for every data property `prop`;
+        - `this.prop == that.prop` returns `true` for every data property `prop`;
     - `hashCode()` returns the same numbers for objects `A` and `B` if they are equal w.r.t. the generated `equals`;
     - `toString` returns a string representations which is guaranteed to include the class name along with all the data properties' string representations.
-    - TODO(Be more specific?).
 * A `copy()` function for shallow object copying with the following properties:
     - It has the same number of parameters as the primary constructor with the same names and types;
     - It calls the primary constructor with the corresponding parameters at the corresponding positions;
     - It has defaults for all the parameters defaulting to the value of the corresponding property in `this` object.
-* A number of `componentN()` functions for destructive declaration:
-    - For the data property at position $N$ (**starting with 1**), the generated `component`$N$ function has the same type as this property and returns the value of this property;
+* A number of `componentN()` functions for [destructive declaration][Local property declaration]:
+    - For the data property at position $N$ (**starting from 1**), the generated `component`$N$ function has the same type as this property and returns the value of this property;
     - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Local property declaration];
     - The number of these functions is the same as the number of data properties.
 
-These generated declarations of `equals`, `hashCode` and `toString` may be overriden the same way they may be overriden in normal classes.
-The overriding version is preferred, as normally.
-In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an `override` modifier, unless the function was declared `final` in the base type declaration.
-In this case, the function is not generated and does not override anything, making the final version the preferred one.
+All these functions consider only data properties $\{\dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
 
-> Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name.
-> As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.
+There are several rules as to how these generated functions may be explicified or inherited.
 
-All these functions consider only data properties $\{dp_i\}$; e.g., your data class may include regular property declarations in its body, however, they will *not* be considered in the `equals()` implementation or have a `componentN()` generated for them.
+> Note: a generated function is explicified, if its implementation is provided explicitly in the body of the data class.
+> A generated function is inherited, if its implementation is taken from a supertype of the data class.
+
+The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how overriding works in normal classes.
+If a correct explicit implementation is available, no function is generated.
+Other functions (`copy`, `componentN`) **cannot** be explicified.
+
+The declarations of `equals`, `hashCode` and `toString` may be inherited from the base class, if it provides a `final` version with a matching signature.
+If a correct inherited implementation is available, no function is generated.
+Other functions (`copy`, `componentN`) **cannot** be inherited.
+
+In addition, for every generated function, if any of the base types provide an open function with a matching signature, it is automatically overridden by the generated function as if it was generated with an `override` modifier.
+
+> Note: base classes may also have functions that have a conflicting signature with the same function name.
+> As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.
 
 Data classes have the following restrictions:
 
 * Data classes are closed and cannot be [inherited][Inheritance] from;
-* Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;
+* Data classes must have a primary constructor with property constructor parameters only, which become data properties for the data class;
 * There must be at least one data property in the primary constructor.
+
+[`kotlin.Any`-bi]: #kotlin.any-1
+
+TODO(We need a definition for matching signatures)
 
 #### Enum class declaration
 
