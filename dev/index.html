@@ -5337,21 +5337,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="data-class-declaration">Data class declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">A data class <span class="math inline">\(dataClass\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((dp_1, \ldots, dp_m)\)</span>, described in its primary constructor. </span><span class="sentence">Non-property constructor parameters are not allowed in the primary constructor of a data class. </span><span class="sentence">As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions. </span><span class="sentence">Each one of these functions is generated if and only if a matching signature function is not present in the class body.</span></p>
+<p><span class="sentence">A data class <span class="math inline">\(\operatorname{\mathit{dataClass}}\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((\operatorname{\mathit{dp}}_1, \ldots, \operatorname{\mathit{dp}}_m)\)</span>, described in its primary constructor. </span><span class="sentence">Non-property constructor parameters are not allowed in the primary constructor of a data class. </span><span class="sentence">As such, data classes allow Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with their contracts:</span>
+<li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with <a href="#kotlin.any-1">their contracts</a>:</span>
 <ul>
 <li><span class="sentence"><code>equals(that)</code> returns true iff:</span>
 <ul>
 <li><span class="sentence"><code>that</code> has the same runtime type as <code>this</code>;</span></li>
-<li><span class="sentence"><code>this.prop.equals(that.prop)</code> returns <code>true</code> for every data property <code>prop</code>;</span></li>
+<li><span class="sentence"><code>this.prop == that.prop</code> returns <code>true</code> for every data property <code>prop</code>;</span></li>
 </ul></li>
 <li><span class="sentence"><code>hashCode()</code> returns the same numbers for objects <code>A</code> and <code>B</code> if they are equal w.r.t. the generated <code>equals</code>;</span></li>
 <li><span class="sentence"><code>toString</code> returns a string representations which is guaranteed to include the class name along with all the data properties’ string representations.</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Be more specific?).</span>
-</div></li>
 </ul></li>
 <li><span class="sentence">A <code>copy()</code> function for shallow object copying with the following properties:</span>
 <ul>
@@ -5359,32 +5356,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">It calls the primary constructor with the corresponding parameters at the corresponding positions;</span></li>
 <li><span class="sentence">It has defaults for all the parameters defaulting to the value of the corresponding property in <code>this</code> object.</span></li>
 </ul></li>
-<li><span class="sentence">A number of <code>componentN()</code> functions for destructive declaration:</span>
+<li><span class="sentence">A number of <code>componentN()</code> functions for <a href="#local-property-declaration">destructive declaration</a>:</span>
 <ul>
-<li><span class="sentence">For the data property at position <span class="math inline">\(N\)</span> (<strong>starting with 1</strong>), the generated <code>component</code><span class="math inline">\(N\)</span> function has the same type as this property and returns the value of this property;</span></li>
+<li><span class="sentence">For the data property at position <span class="math inline">\(N\)</span> (<strong>starting from 1</strong>), the generated <code>component</code><span class="math inline">\(N\)</span> function has the same type as this property and returns the value of this property;</span></li>
 <li><span class="sentence">It has an <code>operator</code> modifier, allowing it to be used in <a href="#local-property-declaration">destructuring declarations</a>;</span></li>
 <li><span class="sentence">The number of these functions is the same as the number of data properties.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">These generated declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be overriden the same way they may be overriden in normal classes. </span><span class="sentence">The overriding version is preferred, as normally. </span><span class="sentence">In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an <code>override</code> modifier, unless the function was declared <code>final</code> in the base type declaration. </span><span class="sentence">In this case, the function is not generated and does not override anything, making the final version the preferred one.</span></p>
+<p><span class="sentence">All these functions consider only data properties <span class="math inline">\(\{\operatorname{\mathit{dp}}_i\}\)</span>; e.g., your data class may include regular property declarations in its body, however, they will <em>not</em> be considered in the <code>equals()</code> implementation or have a <code>componentN()</code> generated for them.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">There are several rules as to how these generated functions may be explicified or inherited.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name. </span><span class="sentence">As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.</span></p>
+<p><span class="sentence">Note: a generated function is explicified, if its implementation is provided explicitly in the body of the data class. </span><span class="sentence">A generated function is inherited, if its implementation is taken from a supertype of the data class.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">All these functions consider only data properties <span class="math inline">\(\{dp_i\}\)</span>; e.g., your data class may include regular property declarations in its body, however, they will <em>not</em> be considered in the <code>equals()</code> implementation or have a <code>componentN()</code> generated for them.</span></p>
+<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be explicified similarly to how overriding works in normal classes. </span><span class="sentence">If a correct explicit implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be explicified.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be inherited from the base class, if it provides a <code>final</code> version with a matching signature. </span><span class="sentence">If a correct inherited implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be inherited.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In addition, for every generated function, if any of the base types provide an open function with a matching signature, it is automatically overridden by the generated function as if it was generated with an <code>override</code> modifier.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: base classes may also have functions that have a conflicting signature with the same function name. </span><span class="sentence">As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Data classes have the following restrictions:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Data classes are closed and cannot be <a href="#inheritance">inherited</a> from;</span></li>
-<li><span class="sentence">Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;</span></li>
+<li><span class="sentence">Data classes must have a primary constructor with property constructor parameters only, which become data properties for the data class;</span></li>
 <li><span class="sentence">There must be at least one data property in the primary constructor.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(We need a definition for matching signatures)</span></p>
+</div>
+</div>
 <h4 id="enum-class-declaration">Enum class declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">Enum class is a special kind of class with the following properties:</span></p>
