@@ -33,7 +33,10 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
         }
 
         fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
-            var nextSibling = sectionElement.get()[0].nextElementSibling
+            var nextSibling = sectionElement.get().run {
+                if (size == 0) return@getParagraphsInfo null
+                this[0].nextElementSibling
+            }
             val sectionName = sectionElement.attr("id")
             val paragraphsMap = mutableListOf<Map<String, Any>>()
             var paragraphCounter = 1
@@ -199,7 +202,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
 
         nestedSections.forEach { sectionId ->
             numberSectionsLoaded++
-            `$`("#$sectionId .load-tests").click()
+            `$`("#${sectionId.replace(".", """\\.""")} .load-tests").click()
         }
     }
 }
