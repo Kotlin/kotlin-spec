@@ -16,7 +16,7 @@ data class SpecPlaceComponents(
 
 object SpecPlaceHighlighter {
     private fun findParagraph(sectionId: String, paragraphNumber: Int): JQuery? {
-        val sectionElement = `$`("#$sectionId")
+        val sectionElement = `$`("#${sectionId.replace(".", """\\.""")}")
         val paragraphsInfo = SpecTestsLoader.getParagraphsInfo(sectionElement) ?: return null
 
         return if (paragraphsInfo.size > paragraphNumber - 1) {
@@ -67,7 +67,7 @@ object SpecPlaceHighlighter {
     }
 
     fun highlightSection(sectionId: String) {
-        val sectionElement = `$`("#$sectionId")
+        val sectionElement = `$`("#${sectionId.replace(".", """\\.""")}")
 
         sectionElement.addClass("highlighted")
         sectionElement[0]?.scrollIntoView()
