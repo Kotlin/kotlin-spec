@@ -71,6 +71,21 @@ Example:
 - TODO(rewrite expressions and statements as references to this part)
 - TODO(identifier lifetime & such)
 
+## Labels
+
+Labels are special syntactic marks that mark certain code elements.
+Any [expression][Annotated and labeled expression] (including [lambda expressions][Lambda literals]), as well as [loop statements][Loop statements], can be labeled, with label identifier assigned to the corresponding entity.
+Labels can be **redeclared**, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
+Labels are **scoped**, meaning that they are only available in the scope they were declared in.
+
+Labels are used by certain expressions, such as [`break`][Break expression], [`continue`][Continue expression] and
+[`return`][Return expressions] to specify exactly what entity the expression corresponds to.
+Please refer to the corresponding sections for details.
+
+When resolving labels (i.e. determining which label current expression refers to) which have been redeclared, the **closest** label is chosen, i.e. the label with the innermost scope which is syntactically the closest to the point of its usage.
+
+TODO: this is a stub
+
 ## Visibility
 
 TODO: remove this? See [Declaration visibility]

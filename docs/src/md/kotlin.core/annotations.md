@@ -6,7 +6,7 @@ Values of annotation types cannot be created directly, but can be operated when 
 
 ### Annotation values
 
-An annotation value is a value of a special [Annotation type][Annotation types]. 
+An annotation value is a value of a special [Annotation type][Annotation declarations]. 
 An annotation type is a special kind of class type that is allowed to include properties of the following types:
 
 - [Integer types][Built-in integer types];
@@ -46,7 +46,7 @@ The *targets* of a particular type of annotations is the kind of entity which th
 - A [constructor][Constructor declaration];
 - A [function declaration][Function declaration];
 - A type usage;
-- An [expression][Expression];
+- An [expression][Expressions];
 - A [Kotlin file][Kotlin file scope];
 - A [type alias declaration][Type alias declaration].
 
@@ -54,6 +54,9 @@ The *targets* of a particular type of annotations is the kind of entity which th
 
 Annotations are declared using [annotation class declarations][Annotation class declaration].
 See the corresponding section for details.
+
+Annotations may be declared *repeatable* (meaning that the same annotation may be applied to the same entity more than one time) or *non-repeatable* (meaning that only one annotation of a particular type may be applied to the same entity).
+
 
 TODO()
 
