@@ -6147,6 +6147,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The <a href="#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a classifier declaration is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="#mixed-site-variance">the type system section</a> for details.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is <strong>used in covariant position</strong> in the following cases:</span></p>
+</div>
+<ul>
+<li><span class="sentence">It is used as an argument in another generic type and the corresponding parameter in that type is covariant;</span></li>
+<li><span class="sentence">It is the return type of a function;</span></li>
+<li><span class="sentence">It is a type of a property.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is <strong>used in contravariant position</strong> in the following cases:</span></p>
+</div>
+<ul>
+<li><span class="sentence">It is used as an argument in another generic type and the corresponding parameter in that type is contravariant;</span></li>
+<li><span class="sentence">It is a type of an parameter of a function;</span></li>
+<li><span class="sentence">It is a type of a mutable property.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in <strong>variance conflict</strong> and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the <a href="#declaration-visibility">visibility</a> section for details).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This restrictions may be lifted in particular cases by <a href="#annotations">annotating</a> the corresponding type parameter usage with a special built-in annotation <code>kotlin.UnsafeVariance</code>. </span><span class="sentence">By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: account for more complex cases</span></p>
+</div>
+</div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
@@ -6164,7 +6194,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include [property declarations][Property declarations] that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any properties with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any properties with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
+<p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include declarations that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any declarations with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any declarations with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
