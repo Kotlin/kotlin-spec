@@ -861,6 +861,27 @@ The [declaration-site variance][Mixed-site variance] of a particular type parame
 If the variance is not specified, the parameter is implicitly declared invariant.
 See [the type system section][Mixed-site variance] for details.
 
+A type parameter is **used in covariant position** in the following cases:
+
+- It is used as an argument in another generic type and the corresponding parameter in that type is covariant;
+- It is the return type of a function;
+- It is a type of a property.
+
+A type parameter is **used in contravariant position** in the following cases:
+
+- It is used as an argument in another generic type and the corresponding parameter in that type is contravariant;
+- It is a type of an parameter of a function;
+- It is a type of a mutable property.
+
+A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.
+
+A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in **variance conflict** and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the [visibility][Declaration visibility] section for details).
+
+This restrictions may be lifted in particular cases by [annotating][Annotations] the corresponding type parameter usage with a special built-in annotation `kotlin.UnsafeVariance`.
+By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.
+
+TODO: account for more complex cases
+
 #### Reified type parameters
 
 Type parameters of inline function declarations (and only those) can be declared `reified` using the corresponding keyword.
@@ -880,9 +901,9 @@ For example, all `private` top-level declarations in a file may only be accessed
 TODO: clarify all this
 
 Some `private` declarations are special in that they have an even more restricted visibility, called "`private` to `this`".
-These include [property declarations][Property declarations] that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside `this` object, meaning that they can be accessed using `this` as the receiver, but are not visible on other instances of the same class even in the methods of this class.
+These include declarations that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside `this` object, meaning that they can be accessed using `this` as the receiver, but are not visible on other instances of the same class even in the methods of this class.
 For example, for a class declaration $C$ with type parameter $T$ it is not allowed to introduce declarations involving $T$ with conflicting variance, unless they are declared `private`.
-That is, if $T$ is declared as covariant, any properties with a type using $T$ in a contravariant position (including properties with type $T$ itself if they are mutable) and if $T$ is declared as contravariant, any properties with a type using $T$ in a covariant position (including properties with type $T$ itself) are forbidden, unless they are declared using `private` visibility, in which case they are instead treated as "`private` to `this`".
+That is, if $T$ is declared as covariant, any declarations with a type using $T$ in a contravariant position (including properties with type $T$ itself if they are mutable) and if $T$ is declared as contravariant, any declarations with a type using $T$ in a covariant position (including properties with type $T$ itself) are forbidden, unless they are declared using `private` visibility, in which case they are instead treated as "`private` to `this`".
 
 > Note: the above does not account for `@UnsafeVariance` annotation that lifts any variance restrictions on type parameters
 
