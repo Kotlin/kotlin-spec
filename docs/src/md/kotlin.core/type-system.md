@@ -2,8 +2,6 @@
 
 TODO(Add grammar snippets?)
 
-TODO(Decide on the formatting style and fix it)
-
 ### Glossary
 
 $T$
@@ -124,7 +122,6 @@ For the purposes of this section, we establish the following type kinds --- diff
 * [Nullable types][Nullable types]
 * [Intersection types][Intersection types]
 * [Union types][Union types]
-* TODO(Error / invalid types)
 
 We distinguish between *concrete* and *abstract* types.
 Concrete types are types which are assignable to values.
@@ -293,7 +290,8 @@ To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should sati
 
 * $T$ is a well-formed type constructor with $n$ type parameters
 * $\forall i \in [1,n]: A_i$ must be well-formed concrete type
-* $\forall i \in [1,n]: K_T(F_i, A_i)$ is a well-formed captured type, where $K$ is a [type capturing][Type capturing] operator
+* $\forall i \in [1,n]:$ variance of $A_i$ does not [contradict][Use-site variance] variance of $F_i$
+* $\forall i \in [1,n]: A_i <: \tau U_i$, where $U_i$ is the upper bound for $F_i$ and captured substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates [captured types][Type capturing].
 
 > Example:
 > 
@@ -351,7 +349,7 @@ When creating a parameterized type from a type constructor, its type parameters 
 Type parameters may be either unbounded or bounded.
 By default, a type parameter $F$ is unbounded, which is the same as saying it is a bounded type parameter of the form $F <: \AnyQ$.
 
-A bounded type parameter additionally specify upper type bounds for the type parameter and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
+A bounded type parameter additionally specifies upper type bounds for the type parameter and is defined as $F <: B_1, \ldots, B_n$, where $B_i$ is an i-th upper bound on type parameter $F$.
 
 To represent a well-formed bounded type parameter of type constructor $T$, $F <: B_1, \ldots, B_n$ should satisfy either of the following sets of conditions.
 
@@ -416,7 +414,7 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > * `T<A>` $<:$ `T<out A>`
 > * `T<A>` $<:$ `T<in A>`
 
-> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<in A out B>` neither on declaration- nor on use-site.
+> Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<out A in B>` neither on declaration- nor on use-site.
 
 > Note: informally, covariant type parameter $\outV A$ of type constructor $T$ means "$T$ is a producer of $A$s and gets them out"; contravariant type parameter $\inV A$ of type constructor $T$ means "$T$ is a consumer of $A$s and takes them in".
 
@@ -487,15 +485,17 @@ The variance information is used by [subtyping][Subtyping] and for checking allo
 Kotlin also supports use-site variance, by specifying the variance for type arguments.
 Similarly to type parameters, one can have type arguments being co-, contra- or invariant.
 
+> Important: use-site variance cannot be used when declaring a supertype top-level type argument.
+
 By default, all type arguments are invariant.
 
 To specify a covariant type argument, it is marked as $\outV A$.
 To specify a contravariant type argument, it is marked as $\inV A$.
 
-> Note: in some cases, Kotlin prohibits certain combinations of declaration- and use-site variance, i.e., which type arguments can be used in which type parameters.
-> These rules are covered in more detail [here][TODO()].
+Kotlin prohibits contradictory combinations of declaration- and use-site variance as follows.
 
-> Important: use-site variance cannot be used when declaring a supertype top-level type argument.
+* It is a compile-time error to use a covariant type argument in a contravariant type parameter
+* It is a compile-time error to use a contravariant type argument in a covariant type parameter
 
 In case one cannot specify any well-formed type argument, but still needs to use a parameterized type in a type-safe way, they may use *bivariant* type argument $\star$, which is roughly equivalent to a combination of $\outV \AnyQ$ and $\inV \Nothing$ (for further details, see [subtyping][Subtyping]).
 
@@ -557,7 +557,8 @@ Informally, a bounded existential type describes a *set* of possible types, whic
 Before such a type can be used, it needs to be *opened* (or *unpacked*): existentially quantified type variables are lifted to fresh type variables with corresponding bounds.
 We call these type variables *captured* types.
 
-For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma] = T\langle \tau \rangle$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, both of which may have specified variance.
+For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its instance $T[\sigma] = T\langle \tau \rangle$ uses the following rules to create captured type $K_i$ from the type parameter $F_i$ and type argument $A_i$, at least one of which should have specified variance to create a captured type.
+In case both type parameter and type argument are invariant, their captured type is *equivalent* to $A_i$.
 
 > Important: type capturing is **not** recursive.
 
@@ -567,8 +568,8 @@ For a given type constructor $T(F_1, \ldots, F_n) : S_1, \ldots, S_m$, its insta
   Otherwise, $K_i <: A_i$.
 * For a contravariant type parameter $\inV F_i$, if $A_i$ is an ill-formed type or a covariant type argument, $K_i$ is an ill-formed type.
   Otherwise, $K_i :> A_i$.
-* For a bounded type parameter $F_i <: B_1, \ldots, B_m$, if $\exists j \in [1,m]: \neg (A_i <: \tau B_j)$, $K_i$ is an ill-formed type.
-  Otherwise, $\forall j \in [1,m]: K_i <: \tau B_j$.
+* For a bounded type parameter $F_i <: U_i \equiv B_1 \amp \ldots \amp B_m$, if $\neg (A_i <: \tau U_i)$, $K_i$ is an ill-formed type.
+  Otherwise, $K_i <: \tau U_i$.
 
     > Note: captured substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates captured types.
 
@@ -597,6 +598,34 @@ where $L = L_1 \hor \ldots \hor L_p$ and $U = U_1 \amp \ldots \amp U_q$.
 > However, in some cases [type inference][Type inference] may [approximate][Type approximation] a captured type $K$ to a concrete type $K^{\approx}$; in our case, it would be that $K_i^{\approx} \equiv K_j^{\approx}$.
 
 TODO(Need to think more about this part)
+
+#### Type containment
+
+Type containment operator $\preceq$ is used to decide, whether a type $A$ is contained in another type $B$ denoted $A \preceq B$, for the purposes of establishing type argument [subtyping][Subtyping].
+
+Let $A, B$ be concrete, well-defined non-type-parameter types, $K_A, K_B$ be captured types.
+
+> Important: type parameters $F_i <: U_i$ are handled as if they have been converted to well-formed captured types $K_i : \Nothing <: K_i <: U_i$.
+
+$\preceq$ is defined as follows.
+
+* $A \preceq B$ if $A \equiv B$
+* $A \preceq \outV B$ if $A <: B$
+* $A \preceq \inV B$ if $A :> B$
+
+* $\outV A \preceq \outV B$ if $A <: B$
+* $\inV A \preceq \inV B$ if $A :> B$
+
+Rules for captured types follow the same structure.
+
+* $K_A \preceq K_B$ if $K_A \equiv K_B$
+* $K_A \preceq \outV K_B$ if $K_A <: K_B$
+* $K_A \preceq \inV K_B$ if $K_A :> K_B$
+
+* $\outV K_A \preceq \outV K_B$ if $K_A <: K_B$
+* $\inV K_A \preceq \inV K_B$ if $K_A :> K_B$
+
+In case we need to establish type containment between regular type $A$ and captured type $K_B$, $A$ is converted to captured type $K_A : A <: K_A <: A$.
 
 #### Function types
 
@@ -819,28 +848,12 @@ Subtyping for non-nullable, concrete types uses the following rules.
 * $\forall T : \Nothing <: T <: \Any$
 * For any simple classifier type $T : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: T <: S_i$
 * For any parameterized type $\widehat{T} = T\langle \tau \rangle: S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: \tau S_i$
-* For any two parameterized types $\widehat{T} = T\langle \tau \rangle$ and $\widehat{T^\prime} = T\langle \tau^\prime \rangle$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i <: K_i^\prime$
-
-Subtyping for non-nullable, abstract types uses the following rules.
-
-* $\forall T : \Nothing <: T <: \Any$
-* For any type constructor $\widehat{T} = T(F_1, \ldots, F_n) : S_1, \ldots, S_m$ it is true that $\forall i \in [1,m]: \widehat{T} <: S_i$
-* For any two type constructors $\widehat{T} = T(F_1, \ldots, F_n)$ and $\widehat{T^\prime} = T(F_1^\prime, \ldots, F_n^\prime)$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: F_i <: F_i^\prime$
-
-Subtyping for type parameters uses the following rules.
-
-* $\forall F : \Nothing <: F <: \AnyQ$
-* For any two type parameters $F$ and $F^\prime$, it is true that $F <: F^\prime$, if all of the following hold
-    - variance of $F$ matches variance of $F^\prime$
-        + $\outV$ matches $\outV$
-        + $\inV$ matches $\inV$
-        + $\invV$ matches any variance
-    - for $F <: B$ and $F^\prime <: B^\prime$, $B <: B^\prime$
+* For any two parameterized types $\widehat{T} = T\langle \tau \rangle$ and $\widehat{T^\prime} = T\langle \tau^\prime \rangle$ with captured type arguments $K_i$ and $K_i^\prime$ it is true that $\widehat{T} <: \widehat{T^\prime}$ if $\forall i \in [1,n]: K_i \preceq K_i^\prime$
 
 Subtyping for captured types uses the following rules.
 
 * $\forall K : \Nothing <: K <: \AnyQ$
-* For any two captured types $L <: K <: U$ and $L^\prime <: K^\prime <: U^\prime$, it is true that $K <: K^\prime$ if $L^\prime <: L$ and $U <: U^\prime$
+* For any two captured types $L <: K <: U$ and $L^\prime <: K^\prime <: U^\prime$, it is true that $K <: K^\prime$ if $U <: L^\prime$
 
 Subtyping for nullable types is checked separately and uses a special set of rules which are described [here][Subtyping for nullable types].
 
@@ -1067,6 +1080,8 @@ Type approximation function $\alpha$ is defined as follows.
 
 * $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
 * $\alpha(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
+
+TODO(Type approximation for captured types)
 
 ### Type decaying
 
