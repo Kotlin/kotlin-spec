@@ -8979,6 +8979,9 @@ class A {
 <li><span class="sentence">The sets of star-imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
 <li><span class="sentence">The sets of implicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>.</span></li>
 </ol>
+<div class="paragraph">
+<p><span class="sentence">There is a caveat here, however, as a callable may be a property with an <code>invoke</code> function (see previous section), and these may belong to different sets (for example, the property may be imported, while the <code>invoke</code> on it may be a local extension). </span><span class="sentence">In this situation, this callable belongs to the <strong>lowest priority</strong> set of its parts. </span><span class="sentence">For example, when trying to decide between an explicitly imported extension property with a member <code>invoke</code> and a local property with a star-imported extension <code>invoke</code>, the first one wins even though local property has more priority.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="math inline">\(T &lt;: U\)</span>.</span></p>
@@ -9040,18 +9043,18 @@ class A {
 <p><span class="sentence">For an identifier named <code>f</code> the following sets are analyzed (in the given order):</span></p>
 </div>
 <ol type="1">
-<li><span class="sentence">The sets of local non-extension functions named <code>f</code> available in the current scope, in order of the scope they are declared in, smallest scope first;</span></li>
+<li><span class="sentence">The sets of local non-extension callables named <code>f</code> available in the current scope, in order of the scope they are declared in, smallest scope first;</span></li>
 <li><span class="sentence">The overload candidate sets for each implicit receiver <code>r</code> and <code>f</code>, calculated as if <code>r</code> is the explicit receiver, in order of the receiver priority (see the <a href="#a-call-with-an-explicit-receiver">corresponding section</a>);</span></li>
 <li><span class="sentence">Top-level non-extension functions named <code>f</code>, in the order of:</span>
 <ol type="a">
-<li><span class="sentence">Functions explicitly imported into current file;</span></li>
-<li><span class="sentence">Functions declared in the same package;</span></li>
-<li><span class="sentence">Functions star-imported into current file;</span></li>
-<li><span class="sentence">Implicitly imported functions (either Kotlin standard library or platform-specific ones).</span></li>
+<li><span class="sentence">Callables explicitly imported into current file;</span></li>
+<li><span class="sentence">Callables declared in the same package;</span></li>
+<li><span class="sentence">Callables star-imported into current file;</span></li>
+<li><span class="sentence">Implicitly imported callables (either Kotlin standard library or platform-specific ones).</span></li>
 </ol></li>
 </ol>
 <div class="paragraph">
-<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> function with the corresponding name and conforming types is picked.</span></p>
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> function with the corresponding name and conforming types is picked. </span><span class="sentence">As with calls with implicit receiver, for a callable that is a property with an <code>invoke</code> function available, the resulting set is chosen as the <em>lowest priority set</em> of the set for the property and the <code>invoke</code>.</span></p>
 </div>
 <h3 id="calls-with-named-parameters">Calls with named parameters</h3>
 <div class="paragraph">
@@ -9099,7 +9102,7 @@ class A {
 <li><span class="sentence">For every non-lambda parameter inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function argument of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
 <li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
 <li><span class="sentence">For every lambda parameter with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function argument of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh variables;</span></li>
-<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(\operatorname{\texttt{kotlin.Function}}&lt;: U_m\)</span> is added to the constraint system, where <a href="#kotlin.function"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}\)</span></a> is the common supertype of all <a href="#function-types">function types</a>.</span></li>
+<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(U_m &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="#kotlin.function"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.</span></p>
