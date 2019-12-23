@@ -133,6 +133,10 @@ If a call is correct, for a callable named `f` with an explicit receiver `e` of 
 5. The sets of star-imported extension callables named `f`, whose receiver type conforms to type `T`;
 6. The sets of implicitly imported extension callables named `f`, whose receiver type conforms to type `T`.
 
+There is a caveat here, however, as a callable may be a property with an `invoke` function (see previous section), and these may belong to different sets (for example, the property may be imported, while the `invoke` on it may be a local extension).
+In this situation, this callable belongs to the **lowest priority** set of its parts.
+For example, when trying to decide between an explicitly imported extension property with a member `invoke` and a local property with a star-imported extension `invoke`, the first one wins even though local property has more priority.
+
 > Note: here type `U` conforms to type `T`, if $T <: U$.
 
 When analyzing these sets, the **first** set that contains **any** callable with the corresponding name and conforming types is picked.
@@ -178,15 +182,16 @@ As with function calls with explicit receiver, we should first pick a valid over
 
 For an identifier named `f` the following sets are analyzed (in the given order):
 
-1. The sets of local non-extension functions named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
+1. The sets of local non-extension callables named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
 2. The overload candidate sets for each implicit receiver `r` and `f`, calculated as if `r` is the explicit receiver, in order of the receiver priority (see the [corresponding section][A call with an explicit receiver]);
 3. Top-level non-extension functions named `f`, in the order of:
-   a. Functions explicitly imported into current file;
-   b. Functions declared in the same package;
-   c. Functions star-imported into current file;
-   d. Implicitly imported functions (either Kotlin standard library or platform-specific ones).
+   a. Callables explicitly imported into current file;
+   b. Callables declared in the same package;
+   c. Callables star-imported into current file;
+   d. Implicitly imported callables (either Kotlin standard library or platform-specific ones).
 
 When analyzing these sets, the **first** set which contains **any** function with the corresponding name and conforming types is picked.
+As with calls with implicit receiver, for a callable that is a property with an `invoke` function available, the resulting set is chosen as the *lowest priority set* of the set for the property and the `invoke`.
 
 ### Calls with named parameters
 
@@ -230,11 +235,10 @@ Second, the following constraint system is built:
 - For every non-lambda parameter inferred to have type $T_i$, corresponding to the function argument of type $U_j$, a constraint $T_i <: U_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
 - For every lambda parameter with the number of lambda arguments known to be $K$, corresponding to the function argument of type $U_m$, a special constraint of the form $\FT(L_1, \ldots, L_K) \rightarrow R <: U_m$ is added to the constraint system, where $R, L_1, \ldots, L_K$ are fresh variables;
-- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $\Function <: U_m$ is added to the constraint system, where [$\Function$][`kotlin.Function`] is the common supertype of all [function types][Function types].
+- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $U_m <: \Function(R)$ is added to the constraint system, where [$\Function(R)$][`kotlin.Function`] is the common supertype of all [function types][Function types] and $R$ is a fresh type variable.
 
 If this constraint system is sound, the function is applicable for the call.
-Only applicable functions are considered for the next step: finding the most
-specific overload candidate from the candidate set.
+Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.
 
 ### Choosing the most specific function from the overload candidate set
 
