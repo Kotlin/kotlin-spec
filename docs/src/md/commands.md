@@ -97,6 +97,7 @@
 
 \opMathIT{\assume}{assume}
 \opMathIT{\killDataFlow}{killDataFlow}
+\opMathTT{\backedge}{backedge}
 \opMathIT{\swap}{swap}
 \opMathIT{\isNullable}{isNullable}
 \opMathIT{\smartCastTypeOf}{smartCastTypeOf}
