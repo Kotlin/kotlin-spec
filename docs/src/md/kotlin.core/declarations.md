@@ -69,6 +69,8 @@ and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
 Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
 
+> Note: if supertype specifiers are absent, the declared type is considered to be implicitly derived from `kotlin.Any`.
+
 It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. 
 Multiple interface inheritance is allowed.
 
@@ -376,7 +378,7 @@ In other cases return type $R$ cannot be omitted and must be specified explicitl
 
 > As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
-Function body $b$ is optional; if it is ommited, a function declaration creates an *abstract* function, which does not have an implementation.
+Function body $b$ is optional; if it is omitted, a function declaration creates an *abstract* function, which does not have an implementation.
 This is allowed only inside an [abstract class][Abstract classes].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
@@ -391,6 +393,25 @@ A parameterized function declaration consists of five main parts.
 * Body $b$.
 
 and extends the rules for a simple function declaration w.r.t. type parameter list. Further details are described [here][Declarations with type parameters].
+
+#### Function signature
+
+In some cases we need to establish whether one function declaration *matches* another, e.g., for checking [overridability][Overriding].
+To do that, we compare *function signatures*, which consist of the following.
+
+* Name $f$;
+* Type parameter list $T_1, \ldots, T_m$ (if present);
+* Parameter list $P_1, \ldots, P_n$.
+
+Two function signatures $A$ and $B$ are considered *matching*, if the following is true.
+
+* Name of $A$ is the same as the name of $B$;
+* Type parameters of $A$ are pairwise [equivalent][Subtyping] to the type parameters of $B$;
+* Formal parameter types of $A$ are pairwise equal to the formal parameter types of $B$ w.r.t. possible type parameter substitutions.
+
+> Important: a platform implementation may change which function signatures are considered matching, depending on the platform's specifics.
+
+TODO(Investigate how this actually works)
 
 #### Named, positional and default parameters
 
