@@ -224,6 +224,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. </span><span class="sentence">You can use classes and interfaces as supertypes, but not objects.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: if supertype specifiers are absent, the declared type is considered to be implicitly derived from <code>kotlin.Any</code>.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. </span><span class="sentence">Multiple interface inheritance is allowed.</span></p>
 </div>
@@ -648,7 +653,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="inheritance.html#abstract-classes-1">abstract class</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
+<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is omitted, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="inheritance.html#abstract-classes-1">abstract class</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -667,6 +672,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="paragraph">
 <p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
+</div>
+<h4 id="function-signature">Function signature</h4>
+<div class="paragraph">
+<p><span class="sentence">In some cases we need to establish whether one function declaration <em>matches</em> another, e.g., for checking <a href="inheritance.html#overriding">overridability</a>. </span><span class="sentence">To do that, we compare <em>function signatures</em>, which consist of the following.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Name <span class="math inline">\(f\)</span>;</span></li>
+<li><span class="sentence">Type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> (if present);</span></li>
+<li><span class="sentence">Parameter list <span class="math inline">\(P_1, \ldots, P_n\)</span>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Two function signatures <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are considered <em>matching</em>, if the following is true.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Name of <span class="math inline">\(A\)</span> is the same as the name of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Type parameters of <span class="math inline">\(A\)</span> are pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may change which function signatures are considered matching, depending on the platform’s specifics.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Investigate how this actually works)</span></p>
+</div>
 </div>
 <h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
 <div class="paragraph">
