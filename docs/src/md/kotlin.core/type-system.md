@@ -212,6 +212,10 @@ However, they are **not** related by subtyping; meaning one cannot pass a `Boole
 
 $\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
+> Note: additional details about built-in array types are available [here][Built-in array types-bi].
+
+[Built-in array types-bi]: #built-in-array-types-1
+
 #### Classifier types
 
 Classifier types represent regular types which are declared as [classes][Class declaration], [interfaces][Interface declaration] or [objects][Object declaration].
