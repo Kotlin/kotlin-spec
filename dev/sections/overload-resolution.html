@@ -406,6 +406,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is deemed not applicable for any member callables, regardless of other parameters. </span><span class="sentence">This is due to the fact that, as <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is the subtype of any other type in kotlin type system, it would have allow <strong>all</strong> the member callables of all the currently available types to participate in the overload resolution, which is practically possible, but very resource-consuming and does not make much sense. </span><span class="sentence">Extension callables are still available because they are naturally limited to the declarations available or imported in the current scope.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: although it’s impossible to create a value of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> directly, there may be situations where performing overload resolution on such a value is necessary, for example, when doing safe navigation on values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing?}}\)</span></span></p>
+</div>
+</blockquote>
 <h3 id="choosing-the-most-specific-function-from-the-overload-candidate-set">Choosing the most specific function from the overload candidate set</h3>
 <h4 id="rationale-1">Rationale</h4>
 <div class="paragraph">
