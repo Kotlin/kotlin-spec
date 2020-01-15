@@ -7,9 +7,9 @@ private class ModifiedToStringVisitor: PandocVisitor() {
 
     val builder = StringBuilder()
 
-    override fun visit(i: Inline.Code): Inline = i // no code
-    override fun visit(i: Inline.Math): Inline = i // no math
-    override fun visit(i: Inline.RawInline): Inline = i // no LaTeX
+    override fun visit(i: Inline.Code): Inline = i.also { builder.append("$") } // no code
+    override fun visit(i: Inline.Math): Inline = i.also { builder.append("$") } // no math
+    override fun visit(i: Inline.RawInline): Inline = i.also { builder.append("$") } // no LaTeX
 
     override fun visit(i: Inline.Str): Inline {
         builder.append(i.text)
