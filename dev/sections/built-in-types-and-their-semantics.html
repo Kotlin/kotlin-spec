@@ -56,12 +56,6 @@
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <ul>
 <li><div class="TODO">
-<span class="sentence">TODO: <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">Depends on how we plan to approach the interpolation expansion</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>{Builtin}Array</code> types?</span>
-</div></li>
-<li><div class="TODO">
 <span class="sentence">TODO: <code>KClass</code>?</span>
 </div></li>
 <li><div class="TODO">
@@ -99,13 +93,13 @@
 <p><span class="sentence"><code>public open operator fun equals(other: Any?): Boolean</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> and <code>y.equals(z)</code>, <code>x.equals(z)</code>) and consistency (<code>x.equals(y)</code> should not change between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e., <code>x.equals(null)</code> must be <code>false</code>.</span></p>
+<p><span class="sentence">Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> is true and <code>y.equals(z)</code> is true, <code>x.equals(z)</code> is also true) and consistency (<code>x.equals(y)</code> should not change its result between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e., <code>x.equals(null)</code> must be <code>false</code>.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>public open fun hashCode(): Int</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Returns a hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must consistently produce the same result.</span></p>
+<p><span class="sentence">Returns the hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must consistently produce the same result.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>public open fun toString(): String</code></span></p>
@@ -116,7 +110,7 @@
 </ul>
 <h3 id="kotlin.nothing-1"><code>kotlin.Nothing</code></h3>
 <div class="paragraph">
-<p><span class="sentence"><a href="type-system.html#kotlin.nothing"><span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span></a> is an uninhabited type, which means the evaluation of an expression with <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> type can never complete normally. </span><span class="sentence">Therefore, it is used to mark special situations, such as</span></p>
+<p><span class="sentence"><span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is an <a href="type-system.html#kotlin.nothing">uninhabited type</a>, which means the evaluation of an expression with <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> type can never complete normally. </span><span class="sentence">Therefore, it is used to mark special situations, such as</span></p>
 </div>
 <ul>
 <li><span class="sentence">non-terminating expressions</span></li>
@@ -128,18 +122,13 @@
 </div>
 <h3 id="kotlin.unit"><code>kotlin.Unit</code></h3>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in Java, but has several minor differences, which fall outside the scope of this specification.</span></p>
+<p><span class="sentence"><span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in other programming languages, but has several minor differences, which fall outside the scope of this specification.</span></p>
 </div>
 <h3 id="kotlin.boolean"><code>kotlin.Boolean</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing a value which may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="expressions.html#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
 </div>
 <h3 id="built-in-integer-types-1">Built-in integer types</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Do we need <code>kotlin.Number</code>?)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="type-system.html#built-in-integer-types">type system</a> and <a href="expressions.html#integer-literals">integer literals</a>.</span></p>
 </div>
@@ -164,7 +153,7 @@
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3+, Experimental] Add unsigned types)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -201,11 +190,6 @@
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Is this true?)</span></p>
-</div>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -283,5 +267,128 @@
 </div>
 </blockquote></li>
 </ul>
+<h3 id="built-in-array-types">Built-in array types</h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> is the built-in parameterized classifier type which is used to represent an indexed fixed-size collection of elements of type <code>T</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It is final (i.e., cannot be inherited from) and has the following public constructor.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public inline constructor(size: Int, init: (Int) -&gt; T)</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Creates a new array with the specified size, where each element is calculated by calling the specified <code>init</code> function with the corresponding element’s index. </span><span class="sentence">The function <code>init</code> is called for each array element sequentially starting from the first one.</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> provides the following methods and properties.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun get(index: Int): T</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns the array element at the specified index. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun set(index: Int, value: T): Unit</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Sets the array element at the specified index to the specified value. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public val size: Int</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns the array size.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun iterator(): Iterator&lt;T&gt;</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Creates an <a href="built-in-types-and-their-semantics.html#iterator-types">iterator</a> for iterating over the elements of the array.</span></p>
+</div></li>
+</ul>
+<h4 id="specialized-array-types">Specialized array types</h4>
+<div class="paragraph">
+<p><span class="sentence">In addition to the general <code>kotlin.Array&lt;T&gt;</code> type, Kotlin also has the following specialized array types:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>kotlin.DoubleArray</code> (for <code>kotlin.Array&lt;kotlin.Double&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.FloatArray</code> (for <code>kotlin.Array&lt;kotlin.Float&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.LongArray</code> (for <code>kotlin.Array&lt;kotlin.Long&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.IntArray</code> (for <code>kotlin.Array&lt;kotlin.Int&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.ShortArray</code> (for <code>kotlin.Array&lt;kotlin.Short&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.ByteArray</code> (for <code>kotlin.Array&lt;kotlin.Byte&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.CharArray</code> (for <code>kotlin.Array&lt;kotlin.Char&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.BooleanArray</code> (for <code>kotlin.Array&lt;kotlin.Boolean&gt;</code>)</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">These array types are similar to the corresponding <code>kotlin.Array&lt;T&gt;</code> type; i.e., <code>kotlin.IntArray</code> has the same methods and properties as <code>kotlin.Array&lt;Int&gt;</code>, with the following changes.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public constructor(size: Int)</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Creates a new array with the specified size, where each element is set to the corresponding built-in type default value.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: default values are platform-specific.</span></p>
+</div>
+</blockquote></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun iterator(): {TYPE}Iterator</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Creates a <a href="built-in-types-and-their-semantics.html#specialized-iterator-types">specialized iterator</a> for iterating over the elements of the array.</span></p>
+</div></li>
+</ul>
+<h3 id="iterator-types">Iterator types</h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Iterator&lt;out T&gt;</code> is the built-in parameterized classifier type which is used to represent a sequence of elements of type <code>T</code>, allowing for sequential access to these elements.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It provides the following methods.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun next(): T</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns the next element in the sequence.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun hasNext(): Boolean</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns <code>true</code> if the sequence has more elements.</span></p>
+</div></li>
+</ul>
+<h4 id="specialized-iterator-types">Specialized iterator types</h4>
+<div class="paragraph">
+<p><span class="sentence">Specialized iterator types are iterator types used for <a href="built-in-types-and-their-semantics.html#specialized-array-types">specialized array types</a>. </span><span class="sentence">They inherit <code>kotlin.Iterator&lt;out T&gt;</code> for their type (i.e., <code>kotlin.CharIterator</code> inherits <code>kotlin.Iterator&lt;Char&gt;</code>) and provide the following methods.</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>public operator fun next{TYPE}(): {TYPE}</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Returns the next element in the sequence as a specific type.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this additional method allows the compiler and/or developer to avoid unneeded platform-specific boxing/unboxing conversions.</span></p>
+</div>
+</blockquote></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO([Kotlin.*] <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">Depends on how we plan to approach the interpolation expansion)</span></p>
+</div>
+</div>
 </body>
 </html>

@@ -52,33 +52,33 @@
 
 <h2 id="annotations">Annotations</h2>
 <div class="paragraph">
-<p><span class="sentence">Annotations are a form of syntactically-defined metadata that may be associated with different entities in a Kotlin program. </span><span class="sentence">Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and during runtime (using [reflection][Reflection] facilities). </span><span class="sentence">Values of annotation types cannot be created directly, but can be operated when accessed using platform-specific facilities.</span></p>
+<p><span class="sentence">Annotations are a form of syntactically-defined metadata which may be associated with different entities in a Kotlin program. </span><span class="sentence">Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and at runtime (using [reflection][Reflection] facilities). </span><span class="sentence">Values of annotation types cannot be created directly, but can be operated on when accessed using platform-specific facilities.</span></p>
 </div>
 <h3 id="annotation-values">Annotation values</h3>
 <div class="paragraph">
-<p><span class="sentence">An annotation value is a value of a special <a href="annotations.html#annotation-declarations">Annotation type</a>. </span><span class="sentence">An annotation type is a special kind of class type that is allowed to include properties of the following types:</span></p>
+<p><span class="sentence">An annotation value is a value of a special <a href="annotations.html#annotation-declarations">annotation type</a>. </span><span class="sentence">An annotation type is a special kind of class type which is allowed to include properties of the following types:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">Integer types</a>;</span></li>
-<li><span class="sentence">String type;</span></li>
+<li><span class="sentence"><a href="built-in-types-and-their-semantics.html#kotlin.string">String type</a>;</span></li>
 <li><span class="sentence">Other annotation types;</span></li>
 <li><span class="sentence"><a href="type-system.html#array-types">Arrays</a> of any type listed above.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Annotation classes are not allowed to have any member functions, constructors or mutable properties. </span><span class="sentence">They are also not allowed to have base classes besides <code>kotlin.Annotation</code>.</span></p>
+<p><span class="sentence">Annotation classes are not allowed to have any member functions, constructors or mutable properties. </span><span class="sentence">They are also not allowed to have base classes and are considered to be implicitly derived from <code>kotlin.Annotation</code>.</span></p>
 </div>
 <h3 id="annotation-retention">Annotation retention</h3>
 <div class="paragraph">
-<p><span class="sentence">The retention level of an annotation declares which compilation artifacts a particular compiler on a particular platform do retain this kind of annotation. </span><span class="sentence">There are the following types of retention available:</span></p>
+<p><span class="sentence">The retention level of an annotation declares which compilation artifacts a particular compiler on a particular platform <em>retain</em> this kind of annotation. </span><span class="sentence">There are the following types of retention available:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Source retention (accessible by source-processing tools);</span></li>
 <li><span class="sentence">Binary retention (retained in compilation artifacts);</span></li>
 <li><div class="paragraph">
-<p><span class="sentence">Runtime retention (accessible during runtime).</span></p>
+<p><span class="sentence">Runtime retention (accessible at runtime).</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Each subsequent level inherits what is accessible in the previous levels.</span></p>
+<p><span class="sentence">Each subsequent level inherits what is accessible on the previous levels.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
@@ -86,38 +86,38 @@
 </div>
 <h3 id="annotation-targets">Annotation targets</h3>
 <div class="paragraph">
-<p><span class="sentence">The <em>targets</em> of a particular type of annotations is the kind of entity which this annotations may be placed on. </span><span class="sentence">There are the following targets available:</span></p>
+<p><span class="sentence">The <em>targets</em> of a particular type of annotations is the kind of program entity which this annotations may be placed on. </span><span class="sentence">There are the following targets available:</span></p>
 </div>
 <ul>
 <li><span class="sentence">A <a href="declarations.html#class-declaration">class declaration</a> (including annotation classes);</span></li>
 <li><span class="sentence">An <a href="declarations.html#annotation-class-declaration">annotation class declaration</a>;</span></li>
-<li><span class="sentence">A <a href="type-system.html#type-system">type</a> parameter;</span></li>
+<li><span class="sentence">A <a href="type-system.html#type-parameters">type parameter</a>;</span></li>
 <li><span class="sentence">A <a href="declarations.html#property-declaration">property declaration</a>;</span></li>
-<li><span class="sentence">A property backing field;</span></li>
-<li><span class="sentence">A property getter;</span></li>
-<li><span class="sentence">A property setter;</span></li>
-<li><span class="sentence">A local property declaration;</span></li>
-<li><span class="sentence">A value parameter (<a href="declarations.html#function-declaration">function</a> or <a href="declarations.html#constructor-declaration">constructor</a> declaration);</span></li>
+<li><span class="sentence">A <a href="declarations.html#getters-and-setters">property backing field</a>;</span></li>
+<li><span class="sentence">A <a href="declarations.html#getters-and-setters">property getter</a>;</span></li>
+<li><span class="sentence">A <a href="declarations.html#getters-and-setters">property setter</a>;</span></li>
+<li><span class="sentence">A <a href="declarations.html#local-property-declaration">local property declaration</a>;</span></li>
+<li><span class="sentence">A value parameter in <a href="declarations.html#function-declaration">function</a> or <a href="declarations.html#constructor-declaration">constructor</a> declaration;</span></li>
 <li><span class="sentence">A <a href="declarations.html#constructor-declaration">constructor</a>;</span></li>
 <li><span class="sentence">A <a href="declarations.html#function-declaration">function declaration</a>;</span></li>
-<li><span class="sentence">A type usage;</span></li>
-<li><span class="sentence">An <a href="control--and-data-flow-analysis.html#expressions-1">expression</a>;</span></li>
-<li><span class="sentence">A [Kotlin file][Kotlin file scope];</span></li>
-<li><span class="sentence">A [type alias declaration][Type alias declaration].</span></li>
+<li><span class="sentence">A <a href="type-system.html#type-system">type</a> usage;</span></li>
+<li><span class="sentence">An arbitrary <a href="control--and-data-flow-analysis.html#expressions-1">expression</a>;</span></li>
+<li><span class="sentence">A <a href="scopes-and-identifiers.html#scopes-and-identifiers">Kotlin file</a>;</span></li>
+<li><span class="sentence">A <a href="declarations.html#type-alias">type alias declaration</a>.</span></li>
 </ul>
 <h3 id="annotation-declarations">Annotation declarations</h3>
 <div class="paragraph">
 <p><span class="sentence">Annotations are declared using <a href="declarations.html#annotation-class-declaration">annotation class declarations</a>. </span><span class="sentence">See the corresponding section for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Annotations may be declared <em>repeatable</em> (meaning that the same annotation may be applied to the same entity more than one time) or <em>non-repeatable</em> (meaning that only one annotation of a particular type may be applied to the same entity).</span></p>
+<p><span class="sentence">Annotations may be declared <em>repeatable</em> (meaning that the same annotation may be applied to the same entity more than once) or <em>non-repeatable</em> (meaning that only one annotation of a particular type may be applied to the same entity).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO()</span></p>
+<p><span class="sentence">TODO(Anything else?)</span></p>
 </div>
 </div>
-<h3 id="builtin-annotations">Builtin annotations</h3>
+<h3 id="built-in-annotations">Built-in annotations</h3>
 <ul>
 <li><span class="sentence">Deprecated / ReplaceWith</span></li>
 <li><span class="sentence">Suppress</span></li>
@@ -125,6 +125,7 @@
 <li><span class="sentence">UnsafeVariance</span></li>
 <li><span class="sentence">DslMarker</span></li>
 <li><span class="sentence">PublishedApi</span></li>
+<li><span class="sentence">Experimental / UseExperimental</span></li>
 <li><span class="sentence">Contract-related stuff???</span></li>
 </ul>
 </body>
