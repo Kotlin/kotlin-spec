@@ -240,6 +240,12 @@ Second, the following constraint system is built:
 If this constraint system is sound, the function is applicable for the call.
 Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.
 
+Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type $\Nothing$ is deemed not applicable for any member callables, regardless of other parameters.
+This is due to the fact that, as $\Nothing$ is the subtype of any other type in kotlin type system, it would have allow **all** the member callables of all the currently available types to participate in the overload resolution, which is practically possible, but very resource-consuming and does not make much sense.
+Extension callables are still available because they are naturally limited to the declarations available or imported in the current scope.
+
+> Note: although it's impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such a value is necessary, for example, when doing safe navigation on values of type $\NothingQ$
+
 ### Choosing the most specific function from the overload candidate set
 
 #### Rationale
