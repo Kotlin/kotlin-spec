@@ -213,10 +213,31 @@ These array types are similar to the corresponding `kotlin.Array<T>` type; i.e.,
 
 * `public operator fun iterator(): {TYPE}Iterator`
 
-    Creates a specialized [iterator][Iterator types] for iterating over the elements of the array.
+    Creates a [specialized iterator][Specialized iterator types] for iterating over the elements of the array.
 
 ### Iterator types
 
-TODO(...)
+`kotlin.Iterator<out T>` is the built-in parameterized classifier type which is used to represent a sequence of elements of type `T`, allowing for sequential access to these elements.
+
+It provides the following methods.
+
+* `public operator fun next(): T`
+
+    Returns the next element in the sequence.
+
+* `public operator fun hasNext(): Boolean`
+
+    Returns `true` if the sequence has more elements.
+
+#### Specialized iterator types
+
+Specialized iterator types are iterator types used for [specialized array types][Specialized array types].
+They inherit `kotlin.Iterator<out T>` for their type (i.e., `kotlin.CharIterator` inherits `kotlin.Iterator<Char>`) and provide the following methods.
+
+* `public operator fun next{TYPE}(): {TYPE}`
+
+    Returns the next element in the sequence as a specific type.
+
+    > Note: this additional method allows the compiler and/or developer to avoid unneeded platform-specific boxing/unboxing conversions.
 
 TODO([Kotlin.*] `Appendable`/`StringBuilder`? Depends on how we plan to approach the interpolation expansion)
