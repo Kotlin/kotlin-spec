@@ -103,3 +103,6 @@
 \opMathIT{\smartCastTypeOf}{smartCastTypeOf}
 \opMathIT{\typeOf}{typeOf}
 \opMathIT{\approxNegationType}{approxNegationType}
+
+\opMathIT{\Assigned}{Assigned}
+\opMathIT{\Unassigned}{Unassigned}

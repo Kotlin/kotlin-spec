@@ -928,53 +928,53 @@ After running this analysis, for every backedge $b$ and every variable $x$ prese
 
 #### Variable initialization analysis
 
-Kotlin allows non-delegated properties (see [Property declarations]) to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
-This property is checked by the variable initialization analysis.
-This analysis operates on abstract values from the flat lattice or two values $\{Assigned, Unassigned\}$ with the top value $\top$ signifying the unknown state for the property.
-The analysis itself uses the abstract values of functional lattice from all the property declarations to their respective abstract states based on the lattice given above.
+Kotlin allows [non-delegated properties][Property declarations] to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
+This property is checked by the variable initialization analysis (VIA).
+VIA operates on abstract values from a flat lattice of two values $\{\Assigned, \Unassigned\}$.
+The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the lattice given above.
 The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.
 
-The CFG nodes relevant to this analysis include only property declarations and direct assignments.
-Every declaration adds itself to the domain by assigning the $Unassigned$ value to itself.
-Every direct assigment of a property changes the value for this property to $Assigned$.
+The CFG nodes relevant to VIA include only property declarations and direct assignments.
+Every property declaration adds itself to the domain by setting the $\Unassigned$ value to itself.
+Every direct assignment of a property changes the value for this property to $\Assigned$.
 
 The results of the analysis are interpreted as follows. 
-For every property any usage of the said property in any statement is a compile-time error unless the abstract state of this property in this statement is $Assigned$.
-For every immutable property (declared using `val` keyword) any assignment to this property is a compile-time error unless the abstract state of this property is $Unassigned$.
+For every property, any usage of the said property in any statement is a compile-time error unless the abstract state of this property at this statement is $\Assigned$.
+For every immutable property (declared using `val` keyword), any assignment to this property is a compile-time error unless the abstract state of this property is $\Unassigned$.
 
-TODO: example?
+TODO(example?)
 
 Let's consider the following example:
 
-`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$  
-`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$  
-`if(c) {       //`{.kotlin}   
-`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$   
-`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$   
-`} else {      //`{.kotlin}   
-`    x = 20    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$   
-`}             //`{.kotlin}         $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$   
-`y = 5         //`{.kotlin}         $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$   
-`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \mathtt{z} \rightarrow Assigned, \star \rightarrow \bot \}$   
+`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`if(c) {       //`{.kotlin}    
+`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$    
+`} else {      //`{.kotlin}    
+`    x = 20    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`}             //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
+`y = 5         //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$    
+`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}$    
 
-TODO: somehow fix this atrocities for indentation in inline code
+TODO(somehow fix these atrocities for indentation in inline code)
 
-There are no incorrect states in this example, so it is indeed correct.
+There are no incorrect states in this example, so the code is correct.
 
 Let's consider another example:
 
-`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$   
-`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$   
-`while(c) {    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ Error!   
-`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$   
-`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$   
-`}             //`{.kotlin}   
-`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ 2 errors!   
+`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
+`while(c) {    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ Error!    
+`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
+`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
+`}             //`{.kotlin}    
+`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ More errors!    
 
-Here the state of both properties at line 3 is $\top$ because the corresponding edges of CFG are the lowest upper bound of the statements at lines 5 and 2, which, after a rather trivial fixed point calculation, is derived to be $\top$.
-This is a compiler error in the case of `x` because one cannot reassign an immutable variable.
+In this example, the state of both properties at line 3 is $\top$, as it is the least upper bound of the states from lines 5 and 2 (from the `while` loop), which, after a rather trivial fixed point calculation, is derived to be $\top$.
+This is a compile-time error in the case of `x`, because one cannot reassign an immutable property.
 
-At line 7 there is another error as both variables are used, but there are paths through which they were not previously assigned values, namely, the paths where loop did not take any iterations.
+At line 7 there is another compile-time error when both properties are used, because there are paths in the CFG which reach line 7 when the properties have not been assigned (the case when the `while` loop was skipped).
 
 TODO(draw graphs for all these?)
 
