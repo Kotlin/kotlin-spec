@@ -14,7 +14,7 @@ plugins {
 group = "org.jetbrains.kotlin.spec"
 version = "0.1"
 
-val buildMode = "production" // production | development
+val buildMode = "development" // production | development
 
 repositories {
     mavenCentral()
