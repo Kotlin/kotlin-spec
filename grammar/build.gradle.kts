@@ -51,8 +51,7 @@ dependencies {
 }
 
 tasks.withType<AntlrTask> {
-    outputDirectory = File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/grammar/parser").also { it.mkdirs() }
-
+    outputDirectory = File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
     arguments.add("-package")
     arguments.add("org.jetbrains.kotlin.spec.grammar")
 }

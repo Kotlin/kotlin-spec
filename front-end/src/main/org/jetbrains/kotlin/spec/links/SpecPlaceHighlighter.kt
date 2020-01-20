@@ -3,8 +3,10 @@ package org.jetbrains.kotlin.spec.links
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
+import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
+import org.jetbrains.kotlin.spec.utils.format
 import org.w3c.dom.HTMLElement
 import kotlin.browser.window
 
@@ -14,14 +16,21 @@ data class SpecPlaceComponents(
         val sentenceNumber: Int? = null
 )
 
+
 object SpecPlaceHighlighter {
+    private const val paragraphNotFound = "Paragraph \"{1}\" of section \"{2}\" is not found."
+    private const val sentenceNotFound = "Sentence \"{1}\" is not found."
+
     private fun findParagraph(sectionId: String, paragraphNumber: Int): JQuery? {
         val sectionElement = `$`("#${sectionId.replace(".", """\.""")}")
         val paragraphsInfo = SpecTestsLoader.getParagraphsInfo(sectionElement) ?: return null
 
         return if (paragraphsInfo.size > paragraphNumber - 1) {
              `$`(paragraphsInfo[paragraphNumber - 1]["paragraphElement"] as HTMLElement)
-        } else null
+        } else {
+            window.alert(paragraphNotFound.format(paragraphNumber, sectionId))
+            null
+        }
     }
 
     private fun findSentence(paragraphElement: JQuery, sentenceNumber: Int): JQuery? {
@@ -30,6 +39,7 @@ object SpecPlaceHighlighter {
         return if (sentences.length.toInt() > sentenceNumber - 1) {
             `$`(sentences[sentenceNumber - 1]!!)
         } else {
+            window.alert(sentenceNotFound.format(sentenceNumber))
             null
         }
     }

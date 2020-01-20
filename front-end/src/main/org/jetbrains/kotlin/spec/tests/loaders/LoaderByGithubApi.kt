@@ -68,13 +68,13 @@ class LoaderByGithubApi: GithubTestsLoader {
         val promises = mutableListOf<Promise<Map<String, Any>>>()
 
         tree.forEach { testFile ->
-            if (SpecTestsParser.testPathStartingParagraphRegexp.matches(testFile.jsonObject["path"]!!.toString())) {
+            if (SpecTestsParser.testPathStartingParagraphRegexp.matches(testFile.jsonObject["path1"]!!.toString())) {
                 promises.add(
                         loadFileFromRawGithub(
                                 "{1}/{2}/{3}".format(
                                         sectionsPath.joinToString("/"),
                                         currentSection,
-                                        testFile.jsonObject["path"]!!.toString()
+                                        testFile.jsonObject["path1"]!!.toString()
                                 ),
                                 null,
                                 GithubTestsLoader.TestFileType.SPEC_TEST

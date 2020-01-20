@@ -3,7 +3,9 @@ package org.jetbrains.kotlin.spec.tests
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.loaders.*
-import org.jetbrains.kotlin.spec.utils.*
+import org.jetbrains.kotlin.spec.utils.TestTypeInfo
+import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
 import kotlin.browser.window
 
 class SpecTestsLoader(loadType: GithubTestsLoaderType) {
@@ -120,22 +122,31 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                 paragraphsInfo: List<Map<String, Any>>
         ) {
             val pathPrefix = "${sectionsPath.joinToString(".")}.$currentSection"
-            val tests = mutableMapOf<String, Any>()
 
+
+            val testsScope = mutableMapOf(
+                    TestTypeInfo.DIAG to getTestsByTestTypeInfo(responses, TestTypeInfo.DIAG),
+                    TestTypeInfo.BOX to getTestsByTestTypeInfo(responses, TestTypeInfo.BOX))
+            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, testsScope, pathPrefix)
+
+        }
+
+        /**
+         * @param responses
+         * @param testTypeInfo diagnostics or box type
+         *
+         * @return Map of tests depends on the testType
+         */
+        private fun getTestsByTestTypeInfo(responses: Array<out Map<String, Any>>, testTypeInfo: TestTypeInfo): MutableMap<String, Any> {
+            val testsDiag = mutableMapOf<String, Any>()
             responses.forEach { response ->
-                val objectPath = response["path"]?.toString() ?: return@forEach
-                val parsedTest = response["content"]?.let {
-                    if (response.contains("testInfo")) {
-                        SpecTestsParser.getInfoForImplementationTest(response)
-                    } else {
-                        SpecTestsParser.parseSpecTest(it.toString())
-                    }
+                val objectPath = response[testTypeInfo.contentPath]?.toString() ?: return@forEach
+                val parsedTest = response[testTypeInfo.content]?.let {
+                    SpecTestsParser.parseSpecTest(response, testTypeInfo)
                 } ?: return@forEach
-
-                setValueByObjectPath(tests, parsedTest, objectPath)
+                setValueByObjectPath(testsDiag, parsedTest, objectPath)
             }
-
-            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, tests, pathPrefix)
+            return testsDiag
         }
 
         fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")

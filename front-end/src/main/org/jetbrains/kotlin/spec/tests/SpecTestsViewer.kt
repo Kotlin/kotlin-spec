@@ -6,12 +6,10 @@ import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.escapeHtml
 import org.jetbrains.kotlin.spec.utils.format
-import kotlin.browser.window
-import kotlin.js.Json
 import kotlin.js.Promise
 import kotlin.js.json
 
-external fun require(module:String): dynamic
+external fun require(module: String): dynamic
 
 val KotlinPlayground = require("kotlin-playground")
 
@@ -56,7 +54,7 @@ class SpecTestsViewer {
         val code = StringBuilder()
 
         helperFilesContent?.forEach { helperFile ->
-            code.append("${helperFile["content"]}\n\n")
+            code.append("${helperFile["content1"]}\n\n")
         }
 
         code.append(SAMPLE_WRAP_CODE.format(testCase["code"] ?: return))
@@ -96,16 +94,16 @@ class SpecTestsViewer {
     fun showViewer(sentenceElement: JQuery) {
         val tests =
                 sentenceElement.data("tests").unsafeCast<Map<String, Map<String, Map<String, Map<String, String>>>>>()
-        val sentenceText = sentenceElement.clone().children(".number-info, .coverage-info").remove().end().text()
+        val sentenceText = "sentence {1}".format(sentenceElement.clone().children(".number-info").text())
 
         currentSentenceTests = tests
         testPopup = Popup(
                 PopupConfig(
-                title = "Test coverage: «$sentenceText»",
-                content = TestsCoverageColorsArranger.TEMPLATE,
-                width = 800,
-                height = 300
-            )
+                        title = "Test coverage of $sentenceText",
+                        content = TestsCoverageColorsArranger.TEMPLATE,
+                        width = 1000,
+                        height = 300
+                )
         ).apply { open() }
 
         `$`(TEST_AREA_OPTION_SELECTOR).each { _, el ->
@@ -124,6 +122,7 @@ class SpecTestsViewer {
         val tests = currentSentenceTests[testArea] ?: return
         val testTypes = mapOf("pos" to "Positive", "neg" to "Negative")
 
+        //TODO: fix appends if test type option is not appended yet
         tests.keys.reversed().forEach { testType ->
             `$`(TEST_TYPE_SELECTOR).append(TEST_TYPE_OPTION_TEMPLATE.format(testType, testTypes[testType] ?: return@forEach))
         }
@@ -140,7 +139,8 @@ class SpecTestsViewer {
 
         `$`(TEST_NUMBER_SELECTOR).empty()
         for ((testNumber, test) in tests) {
-            `$`(TEST_NUMBER_SELECTOR).append(TEST_NUMBER_OPTION_TEMPLATE.format(testNumber, test["description"] ?: continue))
+            `$`(TEST_NUMBER_SELECTOR).append(TEST_NUMBER_OPTION_TEMPLATE.format(testNumber, test["description"]
+                    ?: continue))
         }
 
         `$`(TEST_NUMBER_SELECTOR).show().`val`(`$`(TEST_NUMBER_OPTION_SELECTOR).eq(0).`val`().toString())

@@ -1,5 +1,6 @@
 package org.jetbrains.kotlin.spec.utils
 
+import org.w3c.dom.CanvasDrawPath
 import org.w3c.dom.Location
 
 fun String.format(vararg args: Any): String {
@@ -12,10 +13,10 @@ fun String.format(vararg args: Any): String {
 
 fun String.escapeHtml(): String {
     return this.replace(Regex("&", RegexOption.MULTILINE), "&amp;")
-        .replace(Regex("<", RegexOption.MULTILINE), "&lt;")
-        .replace(Regex(">"), "&gt;")
-        .replace(Regex("\"", RegexOption.MULTILINE), "&quot;")
-        .replace(Regex("'", RegexOption.MULTILINE), "&#039;")
+            .replace(Regex("<", RegexOption.MULTILINE), "&lt;")
+            .replace(Regex(">"), "&gt;")
+            .replace(Regex("\"", RegexOption.MULTILINE), "&quot;")
+            .replace(Regex("'", RegexOption.MULTILINE), "&#039;")
 }
 
 fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: String) {
@@ -27,6 +28,7 @@ fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: Stri
     }
 
     soughtForObj[pathComponents.last()] = value
+
 }
 
 fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.split("."))
@@ -36,7 +38,7 @@ fun <T> getValueByObjectPath(obj: Map<String, Any>, path: List<String>): T? {
 
     path.forEach {
         if (it !in soughtForObj) return null
-        soughtForObj = soughtForObj[it].unsafeCast<MutableMap<String, Any>>()
+        soughtForObj = soughtForObj[it].unsafeCast<MutableMap<String, Any>>() //todo  (<MutableMap<String, List<Any>>>)
     }
 
     return soughtForObj.unsafeCast<T>()
@@ -55,3 +57,11 @@ val Location.searchMap: MutableMap<String, String>
 
         return objURL
     }
+
+enum class TestTypeInfo(val path: String, val content: String, val contentPath: String) {
+    DIAG("diagnostics", "content1", "path1"),
+    BOX("codegen/box", "content2", "path2")
+}
+
+
+
