@@ -1,7 +1,5 @@
 ## Control- and data-flow analysis
 
-TODO(Unreachable code w.r.t. Nothing)
-
 ### Control flow graph
 
 We define all kinds of control-flow analysis for Kotlin on a classic model called a control-flow graph (CFG).
@@ -368,6 +366,8 @@ x && y
         t  |                         |  f
            v                         v
 ```
+
+##### Other expressions
 
 ```kotlin
 x ?: y
@@ -885,6 +885,14 @@ fun f() = listOf(1, 2).map { it + 2 }.filter { it > 0 }
                |               |                     |
                v               +---------------------+
 ```
+
+#### `kotlin.Nothing` and its influence on the CFG
+
+As discussed in the [type system][`kotlin.Nothing`] section of this specification, `kotlin.Nothing` is an uninhabited type, meaning an instance of this type can never exist at runtime.
+For the purposes of control-flow graph (and related analyses) this means as soon as an expression is known statically to have `kotlin.Nothing` type it makes all subsequent code **unreachable**.
+
+> Important: each specific analysis may decide to either use this information or ignore it for a given program.
+> If unreachability from `kotlin.Nothing` is used, it can be represented in different ways, e.g., by changing the CFG structure or via [$\killDataFlow$][Preliminary analysis and $\killDataFlow$ instruction] instruction.
 
 ### Performing analyses on the control-flow graph
 
