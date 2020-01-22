@@ -1,40 +1,45 @@
 ## Coroutines
 
-TODO(everything: state machine, context, etc.)
+TODO([Kotlin 1.3+, Experimental] Everything: state machine, context, etc.)
+TODO([Kotlin 1.3+, Experimental] Update w.r.t. structured concurrency)
 
-> Note: as of Kotlin 1.2, the support for coroutines is experimental
+> Note: as of Kotlin 1.2, the support for coroutines is experimental.
 
 ### Suspending functions
 
-Any [function declaration][Function declaration] or a getter/setter declaration in Kotlin may be marked *suspending* using the special `suspend` modifier.
+Any [function declaration][Function declaration] or [getter/setter declaration][Getters and setters] in Kotlin may be marked *suspending* using the special `suspend` modifier.
+There are no additional restrictions: regular functions, extension functions, top-level and member functions, anonymous and named functions, all these may be marked as suspending.
+
 A function type for a particular value may also be marked suspending using the `suspend` modifier.
-Both normal functions and extension functions, top-level and member, anonymous and named, may be marked as suspending.
 
 TODO(`suspend val`?)
 
-A suspending function is different from normal functions by potentially having zero or more *suspension points* --- statements in its body that may pause the function execution to be resumed at a later moment in time.
-Each call to another suspending function inside the body of a suspending function is a suspension point.
-Suspension points are important because at such a point another function may start being executed in the same flow of execution, leading to potential changes in shared state in the middle of a function execution flow.
+A suspending function is different from non-suspending functions by potentially having zero or more *suspension points* --- statements in its body that may pause the function execution to be resumed at a later moment in time.
+The main source of suspension points are calls to other suspending functions which represent possible suspension points.
 
-Normal functions may not call suspending functions directly, meaning they do not have suspension points.
-Suspending functions may call normal functions without any limitation, such calls are not suspension points.
-The exception for this rule are inlined lambda parameters that, if the inlined higher-order function invoking them is called from a suspending function, may also have suspension points and call other suspending functions.
+Suspension points are very important because at these points another function may start being executed in the same flow of execution, leading to potential changes in the shared state in the middle of a function execution flow.
 
-> Note: suspending functions interleaving each other in this manner is not dissimilar to how functions from different threads interact on platforms that support multithreading.
+Non-suspending functions may not call suspending functions directly, as they do not support suspension points.
+Suspending functions may call non-suspending functions without any limitations; such calls do not create suspension points.
+
+> Important: an exception to this rule are non-suspending inlined lambda parameters: if the higher-order function invoking such a lambda is called from a suspending function, this lambda is allowed to also have suspension points and call other suspending functions.
+
+> Note: suspending functions interleaving each other in this manner are not dissimilar to how functions from different threads interact on platforms that support multi-threading.
 > There are, however, several key differences.
-> First, suspending functions may pause only at suspension points, this process cannot be paused at arbitrary execution point.
-> Second, this may happen in one platform thread.
-> In multithreaded environment, suspension functions may also be interleaved by the usual rules of concurrent execution on this platform, independent of the interleaving of coroutines.
+> First, suspending functions may pause only at suspension points, i.e., they cannot be paused at arbitrary execution point.
+> Second, this interleaving may happen on one platform thread.
+>
+> In a multi-threaded environment suspension functions may also be interleaved by the platform-dependent concurrent execution, independent of the interleaving of coroutines.
 
-The implementation of suspending functions on a particular platform is platform-dependent.
+The implementation of suspending functions is platform-dependent.
 Please refer to the platform documentation for details.
 
 ### Coroutines
 
-A *coroutine* is a concept similar to a thread of concurrent programming, but representing cooperating multitasking, e.g. the switching between different contexts of execution is done by the coroutines themselves rather than operating system or language virtual machine.
+A *coroutine* is a concept similar to a thread in traditional concurrent programming, but based on *cooperating multitasking*, e.g., the switching between different execution contexts is done by the coroutines themselves rather than an operating system or a virtual machine.
 Coroutines run suspending functions and can only switch contexts at suspension points.
 
-TODO(Write this)
+TODO(Everything)
 
 ### Coroutine intrinsics
 
