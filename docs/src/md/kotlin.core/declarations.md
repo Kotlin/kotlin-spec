@@ -205,11 +205,11 @@ The declarations of `equals`, `hashCode` and `toString` may be explicified simil
 If a correct explicit implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be explicified.
 
-The declarations of `equals`, `hashCode` and `toString` may be inherited from the base class, if it provides a `final` version with a matching signature.
+The declarations of `equals`, `hashCode` and `toString` may be inherited from the base class, if it provides a `final` version with a [matching signature][Function signature].
 If a correct inherited implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be inherited.
 
-In addition, for every generated function, if any of the base types provide an open function with a matching signature, it is automatically overridden by the generated function as if it was generated with an `override` modifier.
+In addition, for every generated function, if any of the base types provide an open function with a [matching signature][Function signature], it is automatically overridden by the generated function as if it was generated with an `override` modifier.
 
 > Note: base classes may also have functions that have a conflicting signature with the same function name.
 > As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.
@@ -221,8 +221,6 @@ Data classes have the following restrictions:
 * There must be at least one data property in the primary constructor.
 
 [`kotlin.Any`-bi]: #kotlin.any-1
-
-TODO(We need a definition for matching signatures)
 
 #### Enum class declaration
 
