@@ -43,18 +43,17 @@ private class ModifiedToStringVisitor: PandocVisitor() {
     }
 }
 
+private fun toCharSequence(b: Block): CharSequence = ModifiedToStringVisitor().also { b.accept(it) }.builder
+
 object BrokenReferencesReporter: PandocVisitor() {
 
     var lastHeader: Block? = null
     val re = """\[[^]]+\]\[[^]]+\]""".toRegex()
 
-    fun toCharSequence(b: Block): CharSequence =
-        ModifiedToStringVisitor().also { b.accept(it) }.builder
-
     fun detect(b: Block): Block {
-        val match = re.find(toCharSequence(b));
+        val matches = re.findAll(toCharSequence(b));
 
-        if(match !== null) {
+        for(match in matches) {
             System.err.println("Broken link detected in section '${lastHeader?.getContentsAsText()}': " + match.value)
         }
 
