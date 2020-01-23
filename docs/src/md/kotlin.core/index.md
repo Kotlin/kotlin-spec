@@ -1,5 +1,10 @@
 # Kotlin/Core
 
+## Overall TODOs
+
+TODO(We need to sort out undefined/implementation-defined/platform-defined)
+TODO(We need to define what "evaluation" is. Or not.)
+
 <#include "introduction.md">
 <#include "syntax.md">
 <#include "type-system.md">

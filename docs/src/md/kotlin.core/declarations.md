@@ -11,23 +11,6 @@ Identifier
 Path
 ~ Sequence of identifiers which references a program entity in a given [scope][Scopes and identifiers]
 
-### Identifiers, names and paths
-
-Kotlin program operates with different *entities*, such as classes, interfaces, values, etc.
-An entity can be referenced using its *path*: a sequence of identifiers which references this entity in a given [scope][Scopes and identifiers].
-
-Kotlin supports two kinds of paths.
-
-* Simple paths $P$, which consist of a single identifier
-* Qualified paths $P.m$, which consist of a path $P$ and a member identifier $m$
-
-Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
-
-* `this@label` -- an identifier which references the selected receiver available in the current scope, further details are available [here][This-expressions]
-* `super<Klazz>` -- an identifier which references the selected supertype available in the current scope, further details are available [here][Super-forms]
-
-TODO(Should this thing be moved to Scopes and identifiers?)
-
 ### Introduction
 
 TODO(Examples)
@@ -205,11 +188,11 @@ The declarations of `equals`, `hashCode` and `toString` may be explicified simil
 If a correct explicit implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be explicified.
 
-The declarations of `equals`, `hashCode` and `toString` may be inherited from the base class, if it provides a `final` version with a matching signature.
+The declarations of `equals`, `hashCode` and `toString` may be inherited from the base class, if it provides a `final` version with a [matching signature][Function signature].
 If a correct inherited implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be inherited.
 
-In addition, for every generated function, if any of the base types provide an open function with a matching signature, it is automatically overridden by the generated function as if it was generated with an `override` modifier.
+In addition, for every generated function, if any of the base types provide an open function with a [matching signature][Function signature], it is automatically overridden by the generated function as if it was generated with an `override` modifier.
 
 > Note: base classes may also have functions that have a conflicting signature with the same function name.
 > As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.
@@ -221,8 +204,6 @@ Data classes have the following restrictions:
 * There must be at least one data property in the primary constructor.
 
 [`kotlin.Any`-bi]: #kotlin.any-1
-
-TODO(We need a definition for matching signatures)
 
 #### Enum class declaration
 
