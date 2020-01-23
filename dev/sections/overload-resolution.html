@@ -133,13 +133,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Implicit receivers are available in some syntactic scope according to the following rules:</span></p>
 </div>
 <ul>
-<li><span class="sentence">All receivers available in an outer scope are also available in the nested scope;</span></li>
+<li><span class="sentence">Any receiver available in the outer statement scope is available in any directly nested scope;</span></li>
+<li><span class="sentence">Inside an <a href="declarations.html#object-declaration">object declaration</a>, the object itself is an available receiver in this and any nested scope;</span></li>
 <li><span class="sentence">In the scope of a classifier declaration, the following receivers are available:</span>
 <ul>
 <li><span class="sentence">The implicit <code>this</code> object of the declared type;</span></li>
 <li><span class="sentence">The companion object (if one exists) of this class;</span></li>
 <li><span class="sentence">The companion objects (if any exist) of all its superclasses;</span></li>
 </ul></li>
+<li><span class="sentence">In an [inner class declaration][inner classes] all the receivers available in the outer declaration scope are also available in this declaration scope;</span></li>
 <li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
 <li><span class="sentence">The scope of a lambda expression, if it has an extension function type, contains <code>this</code> argument of the lambda expression.</span></li>
 </ul>
@@ -155,8 +157,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The implicit receiver having the highest priority is also called the <em>default implicit receiver</em>. </span><span class="sentence">The default implicit receiver is available in the scope as <code>this</code>. </span><span class="sentence">Other available receivers may be accessed using <a href="expressions.html#this-expressions">labeled this-expressions</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.</span></p>
+<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator. </span><span class="sentence">For <a href="overload-resolution.html#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver the extension itself is declared in is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: there may be situations in which <em>the same implicit receiver</em> is used as both the dispatch receiver and extension receiver for a particular callable access, for example:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">interface</span> Y</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">class</span> X: <span class="dt">Y</span> {</a>
+<a class="sourceLine" id="cb1-3" title="3">       <span class="kw">fun</span> <span class="fu">Y</span>.<span class="fu">foo</span>() {} <span class="co">// foo is an extension for Y, needs extension receiver to be called</span></a>
+<a class="sourceLine" id="cb1-4" title="4">   </a>
+<a class="sourceLine" id="cb1-5" title="5">       <span class="kw">fun</span> <span class="fu">bar</span>() {</a>
+<a class="sourceLine" id="cb1-6" title="6">           foo() <span class="co">// this reference is both the extension and the dispatch receiver</span></a>
+<a class="sourceLine" id="cb1-7" title="7">       }</a>
+<a class="sourceLine" id="cb1-8" title="8">}</a></code></pre></div>
+</blockquote>
 <h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
 <div class="paragraph">
 <p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
@@ -236,14 +251,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>) {}</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Double</span>) {}</a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">List</span>&lt;<span class="va">Char</span>&gt;) {}</a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="kw">val</span> <span class="va">foo</span> = {}</a>
-<a class="sourceLine" id="cb1-7" title="7">. . .</a>
-<a class="sourceLine" id="cb1-8" title="8">a.b.c.foo()</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>) {}</a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Double</span>) {}</a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">List</span>&lt;<span class="va">Char</span>&gt;) {}</a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">foo</span> = {}</a>
+<a class="sourceLine" id="cb2-7" title="7">. . .</a>
+<a class="sourceLine" id="cb2-8" title="8">a.b.c.foo()</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here the resulting overload candidate set contains all the callables named <code>foo</code> from the package <code>a.b.c</code>.</span></p>
 </div>
@@ -289,6 +304,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">When analyzing these sets, the <strong>first</strong> set that contains <strong>any</strong> callable with the corresponding name and conforming types is picked. </span><span class="sentence">This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(think about moving the following somewhere else (separate subsec???))</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">An extension callable access with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver. </span><span class="sentence">In this case, for each such receiver available, a separate number of sets is constructed according to <a href="overload-resolution.html#a-call-without-an-explicit-receiver">the rules for implicit receivers</a>, with non-extension callables having priority, as noted above.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(example???)</span></p>
+</div>
 </div>
 <h3 id="infix-function-calls">Infix function calls</h3>
 <div class="paragraph">
@@ -354,7 +382,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol></li>
 </ol>
 <div class="paragraph">
-<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> function with the corresponding name and conforming types is picked. </span><span class="sentence">As with calls with implicit receiver, for a callable that is a property with an <code>invoke</code> function available, the resulting set is chosen as the <em>lowest priority set</em> of the set for the property and the <code>invoke</code>.</span></p>
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> function with the corresponding name and conforming types is picked. </span><span class="sentence">As with calls with explicit receiver, for a callable that is a property with an <code>invoke</code> function available, the resulting set is chosen as the <em>lowest priority set</em> of the set for the property and the <code>invoke</code>.</span></p>
 </div>
 <h3 id="calls-with-named-parameters">Calls with named parameters</h3>
 <div class="paragraph">
@@ -431,22 +459,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Consider the following example with two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {}        <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {} <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb2-3" title="3">...</a>
-<a class="sourceLine" id="cb2-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {}        <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {} <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb3-3" title="3">...</a>
+<a class="sourceLine" id="cb3-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The following snippet should explain this in more detail.</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {</a>
-<a class="sourceLine" id="cb3-2" title="2">    f2(arg, arg2) <span class="co">// valid: can forward both arguments</span></a>
-<a class="sourceLine" id="cb3-3" title="3">}</a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {</a>
-<a class="sourceLine" id="cb3-5" title="5">    f1(arg, arg2) <span class="co">// invalid: function f1 is not applicable</span></a>
-<a class="sourceLine" id="cb3-6" title="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {</a>
+<a class="sourceLine" id="cb4-2" title="2">    f2(arg, arg2) <span class="co">// valid: can forward both arguments</span></a>
+<a class="sourceLine" id="cb4-3" title="3">}</a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {</a>
+<a class="sourceLine" id="cb4-5" title="5">    f1(arg, arg2) <span class="co">// invalid: function f1 is not applicable</span></a>
+<a class="sourceLine" id="cb4-6" title="6">}</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will try to clarify this mechanism in more detail.</span></p>
 </div>
@@ -504,21 +532,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For example, let’s consider the two following functions:</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Let’s consider another example:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
-<a class="sourceLine" id="cb6-2" title="2"></a>
-<a class="sourceLine" id="cb6-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
+<a class="sourceLine" id="cb7-2" title="2"></a>
+<a class="sourceLine" id="cb7-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
 </div>
@@ -531,7 +559,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is performed as described in the other sections of this chapter, up to the point of picking the overload candidate sets. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
-<li><span class="sentence">For each candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described in <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">the previous case</a> and the most specific candidate is selected. </span><span class="sentence">Even if this process yields no applicable candidates for <code>::g</code>, it does not invalidate the corresponding canididate for <code>f</code>;</span></li>
+<li><span class="sentence">For each candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described in <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">the previous case</a> and the most specific candidate is selected. </span><span class="sentence">Even if this process yields no applicable candidates for <code>::g</code>, it does not invalidate the corresponding candidate for <code>f</code>;</span></li>
 <li><span class="sentence">The overload resolution process for <code>f</code> is finished, selecting the most specific candidate for <code>f</code> of the available sets.</span></li>
 </ul>
 <blockquote>
