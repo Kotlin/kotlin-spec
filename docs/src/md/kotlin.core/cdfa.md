@@ -1,5 +1,6 @@
 ## Control- and data-flow analysis
 
+
 TODO(Unreachable code w.r.t. Nothing)
 
 ### Control flow graph
@@ -884,10 +885,9 @@ Further describing monotone frameworks and analysis based on top of them goes ou
 Some analyses described further in this document are based on special instructions called $\killDataFlow(\epsilon)$ where $\epsilon$ is a program variable.
 These are not present in the graph representation above and need to be inferred before such analyses may actually take place.
 
-This inference is based on a standard control-flow analysis with the flat lattice of natural numbers.
+This inference is based on a standard control-flow analysis with the lattice of natural numbers ordered by $\leq$ with an added $\top$ value which is defined greater than any natural number.
 That is, for every assignable property $x$ an element of this lattice is a natural number $N$ with the least upper bound of two numbers defined as maximum function and the greatest lower bound as minimum function. 
-
-TODO(0 is top and what is bottom?)
+Number $0$ here serves as bottom value.
 
 Then, for the respective commands:
 
@@ -908,7 +908,7 @@ $$
 
 After running this analysis, for every backedge $b$, for every variable $x$ present in $s$, iff $\exists b_p, b_s: b_p \in predecessors(b) \text{ and } b_s \in successors(b) \text{ and } \llbracket b_p \rrbracket(x) > \llbracket b_s \rrbracket(x)$, a $\killDataFlow(x)$ instruction must be inserted after $b$.
 
-> Note: this analysis may seem to contain an infinite lattice (a lattice of natural numbers) and to therefore diverge on some graphs, but, if we assume that every backedge is marked with a `backedge` instruction, it is trivial to prove that no number in this lattice will ever exceed the number of assignments in the analyzed program as any loop in the graph contains at least one backedge
+> Note: this analysis may seem to contain an infinite lattice (a lattice of natural numbers) and to therefore diverge on some graphs, but, if we assume that every backedge is marked with a `backedge` instruction, it is trivial to prove that no number in this lattice will ever exceed the number of assignments in the analyzed program as any loop in the graph contains at least one backedge, which effectively makes the lattice finite
 
 TODO(check this up)
 
