@@ -33,7 +33,7 @@ These entities may be types or values, where values may refer to objects, functi
 Top-level scopes additionally allow to introduce such bindings using [`import` directive][Packages and imports] from other top-level scopes.
 
 In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. 
-An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature (TODO: what's a signature?) and allow defining several functions with the same name in the same scope. 
+An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by [signature][Function signatures] and allow defining several functions with the same name in the same scope. 
 When [calling functions][Call and property access expressions] a process called [overloading resolution][Overload resolution] takes places that allows differentiating such functions. 
 Overloading resolution also applies to properties if they are used as functions through `invoke`-convention, but it does not mean several properties with the same name may be defined in the same scope.
 
@@ -71,7 +71,23 @@ Example:
 - TODO(rewrite expressions and statements as references to this part)
 - TODO(identifier lifetime & such)
 
-## Labels
+### Identifiers and paths
+
+Kotlin program operates with different *entities*, such as classes, interfaces, values, etc.
+An entity can be referenced using its *path*: a sequence of identifiers which references this entity in a given [scope][Scopes and identifiers].
+
+Kotlin supports two kinds of paths.
+
+* Simple paths $P$, which consist of a single identifier
+* Qualified paths $P.m$, which consist of a path $P$ and a member identifier $m$
+
+Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
+
+* `this` -- an identifier which references the default receiver available in the current scope, further details are available [here][This-expressions]
+* `this@label` -- an identifier which references the selected receiver available in the current scope, further details are available [here][This-expressions]
+* `super<Klazz>` -- an identifier which references the selected supertype available in the current scope, further details are available [here][Super-forms]
+
+### Labels
 
 Labels are special syntactic marks that mark certain code elements.
 Any [expression][Annotated and labeled expression] (including [lambda expressions][Lambda literals]), as well as [loop statements][Loop statements], can be labeled, with label identifier assigned to the corresponding entity.
@@ -86,7 +102,7 @@ When resolving labels (i.e. determining which label current expression refers to
 
 TODO: this is a stub
 
-## Visibility
+### Visibility
 
 TODO: remove this? See [Declaration visibility]
 

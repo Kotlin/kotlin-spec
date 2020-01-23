@@ -11,23 +11,6 @@ Identifier
 Path
 ~ Sequence of identifiers which references a program entity in a given [scope][Scopes and identifiers]
 
-### Identifiers, names and paths
-
-Kotlin program operates with different *entities*, such as classes, interfaces, values, etc.
-An entity can be referenced using its *path*: a sequence of identifiers which references this entity in a given [scope][Scopes and identifiers].
-
-Kotlin supports two kinds of paths.
-
-* Simple paths $P$, which consist of a single identifier
-* Qualified paths $P.m$, which consist of a path $P$ and a member identifier $m$
-
-Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
-
-* `this@label` -- an identifier which references the selected receiver available in the current scope, further details are available [here][This-expressions]
-* `super<Klazz>` -- an identifier which references the selected supertype available in the current scope, further details are available [here][Super-forms]
-
-TODO(Should this thing be moved to Scopes and identifiers?)
-
 ### Introduction
 
 TODO(Examples)
