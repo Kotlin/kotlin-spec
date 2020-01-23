@@ -16,11 +16,13 @@ In addition to the explicit receiver, each call may indirectly access zero or mo
 
 Implicit receivers are available in some syntactic scope according to the following rules:
 
-- All receivers available in an outer scope are also available in the nested scope;
+- Any receiver available in the outer statement scope is available in any directly nested scope;
+- Inside an [object declaration][object declaration], the object itself is an available receiver in this and any nested scope;
 - In the scope of a classifier declaration, the following receivers are available:
     - The implicit `this` object of the declared type;
     - The companion object (if one exists) of this class;
     - The companion objects (if any exist) of all its superclasses;
+- In an [inner class declaration][inner classes] all the receivers available in the outer declaration scope are also available in this declaration scope;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
 - The scope of a lambda expression, if it has an extension function type, contains `this` argument of the lambda expression.
 
@@ -35,6 +37,22 @@ The default implicit receiver is available in the scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
 If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.
+For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver the extension itself is declared in is called *dispatch receiver*. 
+For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.
+
+> Note: there may be situations in which *the same implicit receiver* is used as both the dispatch receiver and extension receiver for a particular callable access, for example:
+>
+> ```kotlin
+> interface Y
+> class X: Y {
+>        fun Y.foo() {} // foo is an extension for Y, needs extension receiver to be called
+>    
+>        fun bar() {
+>            foo() // this reference is both the extension and the dispatch receiver
+>        }
+> }
+> ```
+>
 
 ### The forms of call-expression
 
@@ -142,6 +160,13 @@ For example, when trying to decide between an explicitly imported extension prop
 When analyzing these sets, the **first** set that contains **any** callable with the corresponding name and conforming types is picked.
 This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.
 
+TODO(think about moving the following somewhere else (separate subsec???))
+
+An extension callable access with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
+In this case, for each such receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][A call without an explicit receiver], with non-extension callables having priority, as noted above.
+
+TODO(example???)
+
 ### Infix function calls
 
 Infix function calls are a special case of function calls with an explicit receiver in the left hand side position, i.e., `a foo b` may be an infix form of `a.foo(b)`.
@@ -191,7 +216,7 @@ For an identifier named `f` the following sets are analyzed (in the given order)
    d. Implicitly imported callables (either Kotlin standard library or platform-specific ones).
 
 When analyzing these sets, the **first** set which contains **any** function with the corresponding name and conforming types is picked.
-As with calls with implicit receiver, for a callable that is a property with an `invoke` function available, the resulting set is chosen as the *lowest priority set* of the set for the property and the `invoke`.
+As with calls with explicit receiver, for a callable that is a property with an `invoke` function available, the resulting set is chosen as the *lowest priority set* of the set for the property and the `invoke`.
 
 ### Calls with named parameters
 
@@ -369,7 +394,7 @@ Let's assume we have a call `f(::g, b, c)`:
 - For each overload candidate `f`, a separate overload resolution process is performed as described in the other sections of this chapter, up to the point of picking the overload candidate sets.
   During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
 - For each candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described in [the previous case][Resolving callable references in the presence of an expected type] and the most specific candidate is selected.
-  Even if this process yields no applicable candidates for `::g`, it does not invalidate the corresponding canididate for `f`;
+  Even if this process yields no applicable candidates for `::g`, it does not invalidate the corresponding candidate for `f`;
 - The overload resolution process for `f` is finished, selecting the most specific candidate for `f` of the available sets.
 
 > Note: this may result in selecting a more specific candidate for `f` that has no available candidates for `g`, which means that the process fails when resolving `::g`
