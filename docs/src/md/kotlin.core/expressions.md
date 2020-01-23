@@ -7,10 +7,10 @@ CSB
 
 ### Introduction
 
-TODO()
+Expressions (together with [statements][Statements]) are one of the main building blocks of any program, as they represent ways to *compute* program values or *control* the program execution flow.
 
-An expression may be *used as a statement* or *used as an expression* depending on the context.
-As all expressions are valid [statements][Statements], free expressions may be used as single statements or inside code blocks.
+In Kotlin, an expression may be *used as a statement* or *used as an expression* depending on the context.
+As all expressions are valid [statements][Statements], standalone expressions may be used as single statements or inside code blocks.
 
 An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call.
 An expression is used as a statement if it is encountered in any position where a statement is allowed.
@@ -154,8 +154,6 @@ For further details, please refer to the corresponding section.
 The keyword `null` denotes the **null reference**, which represents an absence of a value and is a valid value only for [nullable types][Nullable types].
 Null reference has type [`kotlin.Nothing?`][`kotlin.Nothing`] and is, by definition, the only value of this type.
 
-TODO(rearrange these sections)
-
 ### Try-expression
 
 :::{.paste target=grammar-rule-tryExpression}
@@ -165,7 +163,8 @@ TODO(rearrange these sections)
 :::{.paste target=grammar-rule-finallyBlock}
 :::
 
-A *try-expression* is an expression starting with the keyword `try`. It consists of a [code block][Code blocks] (*try body*) and one or more of the following kinds of blocks: zero or more *catch blocks* and an optional *finally block*.
+A *try-expression* is an expression starting with the keyword `try`.
+It consists of a [code block][Code blocks] (*try body*) and one or more of the following kinds of blocks: zero or more *catch blocks* and an optional *finally block*.
 A *catch block* starts with the soft keyword `catch` with a single *exception parameter*, which is followed by a [code block][Code blocks].
 A *finally block* starts with the soft keyword `finally`, which is followed by a [code block][Code blocks].
 A valid try-expression must have at least one catch or finally block.
@@ -175,7 +174,7 @@ If a catch block of this try-expression has an exception parameter of type $T :>
 If there are several catch blocks which match the exception type, the first one is picked.
 
 For an in-detail explanation on how exceptions and catch-blocks work, please refer to the [Exceptions][Exceptions] section.
-For a low-level explanation, please refer to platform-specific parts of this document.
+For a low-level explanation, please refer to the platform-specific parts of this document.
 
 If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:
 
@@ -184,11 +183,13 @@ If there is a finally block, it is evaluated after the evaluation of all previou
 * If an exception was thrown, but no catch block matched its type, the finally block is evaluated before [propagating the exception][Exceptions] up the call stack.
 
 The value of the try-expression is the same as the value of the [last expression][Code blocks] of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched).
-All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression becomes irrelevant.
+All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression is undefined.
 
-> Note: as desribed, the finally block (if present) is executed regardless, but it has no effect on the value returned by the try-expression.
+> Note: as described, the finally block (if present) is always executed, but has no effect on the value of the try-expression.
 
-The type of the try-expression is the [least upper bound][Least upper bound] of the types of the last expressions of the try body and the last expressions of all the catch blocks (TODO(not that simple)).
+The type of the try-expression is the [least upper bound][Least upper bound] of the types of the last expressions of the try body and the last expressions of all the catch blocks.
+
+> Note: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
 > Note: these rules mean the try-expression always may be used as an expression, as it always has a corresponding result value.
 
@@ -278,7 +279,7 @@ In fact, it supports three different condition forms:
   The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
 - *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
   The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
-- *Any other expression* (`Expr`) besides the following. (TODO: do we really need these here? `break` and `continue` are disallowed **anywhere** in when and spreads are disallowed **everywhere** besides function calls, so this is kinda pointless)
+- *Any other expression* (`Expr`) besides the following.
     + [Simple continue expression][Continue expression]
     + [Simple break expression][Break expression]
     + [Spread operator expression][Spread operator expression]
@@ -286,6 +287,8 @@ In fact, it supports three different condition forms:
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
   The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
+
+TODO([Kotlin 1.3+] break and continue in when)
 
 > Note: the rule for "any other expression" means that if a when expression with bound value contains a boolean condition, this condition is **checked for equality** with the bound value, instead of being used directly for when entry selection.
 
@@ -386,7 +389,12 @@ These operators are different from [other overloadable operators][Overloadable o
 
 Value equality expressions always have type `kotlin.Boolean` as does the `equals` method in `kotlin.Any`.
 
-TODO: the subtyping constraints for `==` are non-trivial and creepy and need to be specified
+Kotlin checks the applicability of value equality operators at compile-time and may reject certain combinations of types for `A` and `B`.
+Specifically, it uses the following basic principle.
+
+> If type of `A` (and all of its possible subtypes) and type of `B` are definitely not related by subtyping (or vice versa), `A == B` is an invalid expression and should result in a compile-time error.
+
+> Informally: this principle means "no two objects unrelated by subtyping can ever be considered equal by `==`".
 
 ### Comparison expressions
 
@@ -421,10 +429,11 @@ All comparison expressions always have type `kotlin.Boolean`.
 #### Type-checking expression
 
 A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
-The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
-TODO(Rules for $T$ are more complicated, for `B<T> : A<T>` such checks as `a is B` or `a is B<Number>` are sometimes OK)
+The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
+
+> Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), we allow the type $T$ to include non-runtime-available components.
 
 Type-checking expression always has type `kotlin.Boolean`.
 
@@ -459,7 +468,7 @@ This operator is **lazy**, meaning that if the left-hand side expression is not 
 
 The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.
 
-TODO(not that simple either)
+> Note: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
 ### Range expression
 
@@ -527,8 +536,6 @@ A *cast expression* is a binary expression which uses the cast operators `as` or
 An **`as` cast expression** `E as T` is called *a unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
 If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
-
-TODO(We need to sort out undefined/implementation-defined/platform-defined)
 
 > Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.
 
@@ -666,8 +673,6 @@ A postfix decrement expression has the same type as its operand expression (`A` 
 
 ### Not-null assertion expression
 
-TODO(We need to define what "evaluation" is)
-
 A *not-null assertion expression* is a postfix expression which uses an operator `!!`.
 For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks, whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
 If the evaluation result of `e` is not equal to `null`, the result of `e!!` is the evaluation result of `e`.
@@ -678,7 +683,7 @@ The type of non-null assertion expression is the [non-nullable][Nullable types] 
 
 > Note: this type may be non-denotable in Kotlin and, as such, may be [approximated][Type approximation] in some situations with the help of [type inference][Type inference].
 
-TODO(Example)
+TODO(Examples)
 
 ### Indexing expressions
 
@@ -736,9 +741,7 @@ Expressions which use the navigation binary operators (`.`, `?.` or `::`) are sy
 - A property access.
   Here `a` is a value available in the current scope and `c` is a property name.
 
-TODO(Are packages values?)
-
-TODO(Type references and their stuff)
+> Note: the navigation operator `.` is closely related to the concept of [paths][Identifiers and paths].
 
 If followed by the call suffix (arguments in parentheses), `a.c()` may have one of the following semantics when used as an expression:
 
