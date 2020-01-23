@@ -125,13 +125,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 <h3 id="introduction-3">Introduction</h3>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO()</span></p>
-</div>
+<p><span class="sentence">Expressions (together with <a href="control--and-data-flow-analysis.html#statements-1">statements</a>) are one of the main building blocks of any program, as they represent ways to <em>compute</em> program values or <em>control</em> the program execution flow.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid <a href="control--and-data-flow-analysis.html#statements-1">statements</a>, free expressions may be used as single statements or inside code blocks.</span></p>
+<p><span class="sentence">In Kotlin, an expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid <a href="control--and-data-flow-analysis.html#statements-1">statements</a>, standalone expressions may be used as single statements or inside code blocks.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call. </span><span class="sentence">An expression is used as a statement if it is encountered in any position where a statement is allowed.</span></p>
@@ -347,11 +345,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The keyword <code>null</code> denotes the <strong>null reference</strong>, which represents an absence of a value and is a valid value only for <a href="type-system.html#nullable-types">nullable types</a>. </span><span class="sentence">Null reference has type <a href="built-in-types-and-their-semantics.html#kotlin.nothing-1"><code>kotlin.Nothing?</code></a> and is, by definition, the only value of this type.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(rearrange these sections)</span></p>
-</div>
-</div>
 <h3 id="try-expression">Try-expression</h3>
 <div id="grammar-rule-tryExpression-pasted-30" class="grammar-rule">
 <dl>
@@ -390,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The try-expression evaluation evaluates its body; if any statement in the try body throws an exception (of type <span class="math inline">\(E\)</span>), this exception, rather than being immediately propagated up the call stack, is checked for a matching catch block. </span><span class="sentence">If a catch block of this try-expression has an exception parameter of type <span class="math inline">\(T :&gt; E\)</span>, this catch block is evaluated immediately after the exception is thrown and the exception itself is passed inside the catch block as the corresponding parameter. </span><span class="sentence">If there are several catch blocks which match the exception type, the first one is picked.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For an in-detail explanation on how exceptions and catch-blocks work, please refer to the <a href="exceptions.html#exceptions">Exceptions</a> section. </span><span class="sentence">For a low-level explanation, please refer to platform-specific parts of this document.</span></p>
+<p><span class="sentence">For an in-detail explanation on how exceptions and catch-blocks work, please refer to the <a href="exceptions.html#exceptions">Exceptions</a> section. </span><span class="sentence">For a low-level explanation, please refer to the platform-specific parts of this document.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If there is a finally block, it is evaluated after the evaluation of all previous try-expression blocks, meaning:</span></p>
@@ -401,16 +394,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If an exception was thrown, but no catch block matched its type, the finally block is evaluated before <a href="exceptions.html#exceptions">propagating the exception</a> up the call stack.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The value of the try-expression is the same as the value of the <a href="statements.html#code-blocks">last expression</a> of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched). </span><span class="sentence">All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression becomes irrelevant.</span></p>
+<p><span class="sentence">The value of the try-expression is the same as the value of the <a href="statements.html#code-blocks">last expression</a> of the try body (if no exception was thrown) or the value of the last expression of the matching catch block (if an exception was thrown and matched). </span><span class="sentence">All other situations mean that an exception is going to be propagated up the call stack, and the value of the try-expression is undefined.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as desribed, the finally block (if present) is executed regardless, but it has no effect on the value returned by the try-expression.</span></p>
+<p><span class="sentence">Note: as described, the finally block (if present) is always executed, but has no effect on the value of the try-expression.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">The type of the try-expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of the last expressions of the try body and the last expressions of all the catch blocks <span><span class="TODO">(TODO(not that simple))</span><span class="TODO-marker">*</span></span>.</span></p>
+<p><span class="sentence">The type of the try-expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the types of the last expressions of the try body and the last expressions of all the catch blocks.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in some cases, the least upper bound is handled as described <a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: these rules mean the try-expression always may be used as an expression, as it always has a corresponding result value.</span></p>
@@ -538,7 +536,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><em>Type test condition</em>: <a href="expressions.html#type-checking-expression">type checking operator</a> followed by a type (<code>is T</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#type-checking-expression">type check expression</a> of the form <code>boundValue is T</code>.</span></li>
 <li><span class="sentence"><em>Contains test condition</em>: <a href="expressions.html#containment-checking-expression">containment operator</a> followed by an expression (<code>in Expr</code>). </span><span class="sentence">The resulting condition is a <a href="expressions.html#containment-checking-expression">containment check expression</a> of the form <code>boundValue in Expr</code>.</span></li>
-<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following. </span><span class="sentence"><span><span class="TODO">(TODO: do we really need these here? <code>break</code> and <code>continue</code> are disallowed <strong>anywhere</strong> in when and spreads are disallowed <strong>everywhere</strong> besides function calls, so this is kinda pointless)</span><span class="TODO-marker">*</span></span></span>
+<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following.</span>
 <ul>
 <li><span class="sentence"><a href="expressions.html#continue-expression">Simple continue expression</a></span></li>
 <li><span class="sentence"><a href="expressions.html#break-expression">Simple break expression</a></span></li>
@@ -547,6 +545,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span class="sentence">The resulting condition is an <a href="expressions.html#equality-expressions">equality check</a> of the form <code>boundValue == Expr</code>.</span></li>
 <li><span class="sentence">The <code>else</code> condition, which is a special condition which evaluates to <code>true</code> if none of the branches above it evaluated to <code>true</code>. </span><span class="sentence">The <code>else</code> condition <strong>must</strong> also be in the last when entry of when expression, otherwise it is a compile-time error.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO([Kotlin 1.3+] break and continue in when)</span></p>
+</div>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: the rule for “any other expression” means that if a when expression with bound value contains a boolean condition, this condition is <strong>checked for equality</strong> with the bound value, instead of being used directly for when entry selection.</span></p>
@@ -677,11 +680,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code> as does the <code>equals</code> method in <code>kotlin.Any</code>.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: the subtyping constraints for <code>==</code> are non-trivial and creepy and need to be specified</span></p>
+<p><span class="sentence">Kotlin checks the applicability of value equality operators at compile-time and may reject certain combinations of types for <code>A</code> and <code>B</code>. </span><span class="sentence">Specifically, it uses the following basic principle.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">If type of <code>A</code> (and all of its possible subtypes) and type of <code>B</code> are definitely not related by subtyping (or vice versa), <code>A == B</code> is an invalid expression and should result in a compile-time error.</span></p>
 </div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: this principle means “no two objects unrelated by subtyping can ever be considered equal by <code>==</code>”.</span></p>
+</div>
+</blockquote>
 <h3 id="comparison-expressions">Comparison expressions</h3>
 <div id="grammar-rule-comparison-pasted-43" class="grammar-rule">
 <dl>
@@ -744,13 +755,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="type-checking-expression">Type-checking expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="runtime-type-information.html#runtime-available-types">runtime-available</a>, otherwise it is a compiler error. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
+<p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Rules for <span class="math inline">\(T\)</span> are more complicated, for <code>B&lt;T&gt; : A&lt;T&gt;</code> such checks as <code>a is B</code> or <code>a is B&lt;Number&gt;</code> are sometimes OK)</span></p>
+<p><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="runtime-type-information.html#runtime-available-types">runtime-available</a>, otherwise it is a compiler error.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in cases when the compile-time type of <span class="math inline">\(E\)</span> and type <span class="math inline">\(T\)</span> are statically known to be related by subtyping (e.g., <span class="math inline">\(E\)</span> has type <code>List&lt;String&gt;</code> and <span class="math inline">\(T\)</span> is <code>MutableList&lt;String&gt;</code>), we allow the type <span class="math inline">\(T\)</span> to include non-runtime-available components.</span></p>
 </div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Type-checking expression always has type <code>kotlin.Boolean</code>.</span></p>
 </div>
@@ -800,11 +814,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of elvis operator expression is the <a href="type-system.html#least-upper-bound">least upper bound</a> of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.</span></p>
 </div>
-<div class="TODO">
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">TODO(not that simple either)</span></p>
+<p><span class="sentence">Note: in some cases, the least upper bound is handled as described <a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
 </div>
-</div>
+</blockquote>
 <h3 id="range-expression">Range expression</h3>
 <div id="grammar-rule-rangeExpression-pasted-49" class="grammar-rule">
 <dl>
@@ -912,11 +926,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">An <strong><code>as</code> cast expression</strong> <code>E as T</code> is called <em>a unchecked cast</em> expression. </span><span class="sentence">This expression perform a runtime check whether the runtime type of <span class="math inline">\(E\)</span> is a <a href="type-system.html#subtyping">subtype</a> of <span class="math inline">\(T\)</span> and throws an exception otherwise. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need to sort out undefined/implementation-defined/platform-defined)</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.</span></p>
@@ -971,7 +980,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="annotated-and-labeled-expression">Annotated and labeled expression</h4>
 <div class="paragraph">
-<p><span class="sentence">Any expression in Kotlin may be prefixed with any number of <a href="annotations.html#annotations">annotations</a> and <a href="labels.html#labels">labels</a>. </span><span class="sentence">These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.</span></p>
+<p><span class="sentence">Any expression in Kotlin may be prefixed with any number of <a href="annotations.html#annotations">annotations</a> and <a href="scopes-and-identifiers.html#labels">labels</a>. </span><span class="sentence">These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.</span></p>
 </div>
 <h4 id="prefix-increment-expression">Prefix increment expression</h4>
 <div class="paragraph">
@@ -1117,11 +1126,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A postfix decrement expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
 </div>
 <h3 id="not-null-assertion-expression">Not-null assertion expression</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need to define what “evaluation” is)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">A <em>not-null assertion expression</em> is a postfix expression which uses an operator <code>!!</code>. </span><span class="sentence">For an expression <code>e!!</code>, if the type of <code>e</code> is nullable, a not-null assertion expression checks, whether the evaluation result of <code>e</code> is equal to <code>null</code> and, if it is, throws a runtime exception. </span><span class="sentence">If the evaluation result of <code>e</code> is not equal to <code>null</code>, the result of <code>e!!</code> is the evaluation result of <code>e</code>.</span></p>
 </div>
@@ -1138,7 +1142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Example)</span></p>
+<p><span class="sentence">TODO(Examples)</span></p>
 </div>
 </div>
 <h3 id="indexing-expressions">Indexing expressions</h3>
@@ -1294,16 +1298,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A property access. </span><span class="sentence">Here <code>a</code> is a value available in the current scope and <code>c</code> is a property name.</span></p>
 </div></li>
 </ul>
-<div class="TODO">
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">TODO(Are packages values?)</span></p>
+<p><span class="sentence">Note: the navigation operator <code>.</code> is closely related to the concept of <a href="scopes-and-identifiers.html#identifiers-and-paths">paths</a>.</span></p>
 </div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Type references and their stuff)</span></p>
-</div>
-</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">If followed by the call suffix (arguments in parentheses), <code>a.c()</code> may have one of the following semantics when used as an expression:</span></p>
 </div>
@@ -1655,7 +1654,7 @@ M().test2().bar() // Error: Unresolved reference: bar
 <ul>
 <li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the <a href="scopes-and-identifiers.html#scopes-and-identifiers">inner scope</a> of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
 <li><span class="sentence"><code>this@function</code>, where <code>function</code> is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;</span></li>
-<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a <a href="labels.html#labels">label</a> provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;</span></li>
+<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a <a href="scopes-and-identifiers.html#labels">label</a> provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;</span></li>
 <li><span class="sentence"><code>this@outerFunction</code>, where <code>outerFunction</code> is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression. </span><span class="sentence">Note that this is exclusive with the previous case, meaning that if the lambda literal is labeled, this mechanism cannot be used.</span></li>
 </ul>
 <div class="paragraph">

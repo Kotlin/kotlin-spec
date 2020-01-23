@@ -130,29 +130,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dd><span class="sentence">Sequence of identifiers which references a program entity in a given <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a></span>
 </dd>
 </dl>
-<h3 id="identifiers-names-and-paths">Identifiers, names and paths</h3>
-<div class="paragraph">
-<p><span class="sentence">Kotlin program operates with different <em>entities</em>, such as classes, interfaces, values, etc. An entity can be referenced using its <em>path</em>: a sequence of identifiers which references this entity in a given <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Kotlin supports two kinds of paths.</span></p>
-</div>
-<ul>
-<li><span class="sentence">Simple paths <span class="math inline">\(P\)</span>, which consist of a single identifier</span></li>
-<li><span class="sentence">Qualified paths <span class="math inline">\(P.m\)</span>, which consist of a path <span class="math inline">\(P\)</span> and a member identifier <span class="math inline">\(m\)</span></span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><code>this@label</code> – an identifier which references the selected receiver available in the current scope, further details are available <a href="expressions.html#this-expressions">here</a></span></li>
-<li><span class="sentence"><code>super&lt;Klazz&gt;</code> – an identifier which references the selected supertype available in the current scope, further details are available <a href="expressions.html#super-forms">here</a></span></li>
-</ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Should this thing be moved to Scopes and identifiers?)</span></p>
-</div>
-</div>
 <h3 id="introduction-2">Introduction</h3>
 <div class="TODO">
 <div class="paragraph">
@@ -404,10 +381,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be explicified similarly to how overriding works in normal classes. </span><span class="sentence">If a correct explicit implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be explicified.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be inherited from the base class, if it provides a <code>final</code> version with a matching signature. </span><span class="sentence">If a correct inherited implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be inherited.</span></p>
+<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be inherited from the base class, if it provides a <code>final</code> version with a <a href="declarations.html#function-signature">matching signature</a>. </span><span class="sentence">If a correct inherited implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be inherited.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In addition, for every generated function, if any of the base types provide an open function with a matching signature, it is automatically overridden by the generated function as if it was generated with an <code>override</code> modifier.</span></p>
+<p><span class="sentence">In addition, for every generated function, if any of the base types provide an open function with a <a href="declarations.html#function-signature">matching signature</a>, it is automatically overridden by the generated function as if it was generated with an <code>override</code> modifier.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -422,11 +399,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Data classes must have a primary constructor with property constructor parameters only, which become data properties for the data class;</span></li>
 <li><span class="sentence">There must be at least one data property in the primary constructor.</span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need a definition for matching signatures)</span></p>
-</div>
-</div>
 <h4 id="enum-class-declaration">Enum class declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">Enum class is a special kind of class with the following properties:</span></p>
@@ -1154,7 +1126,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="visibility.html#visibility"><em>visibility modifiers</em></a>.</span></p>
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="scopes-and-identifiers.html#visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="TODO">

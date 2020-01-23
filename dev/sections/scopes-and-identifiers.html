@@ -75,6 +75,9 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../resources/css/main.css">
+  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -153,7 +156,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">All the declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values may refer to objects, functions or properties (that may be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce such bindings using <a href="packages-and-imports.html#packages-and-imports"><code>import</code> directive</a> from other top-level scopes.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by signature <span><span class="TODO">(TODO: what’s a signature?)</span><span class="TODO-marker">*</span></span> and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions">calling functions</a> a process called <a href="overload-resolution.html#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
+<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by [signature][Function signatures] and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions">calling functions</a> a process called <a href="overload-resolution.html#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Platforms may introduce additional restrictions on which identifiers may be declared together in the same or related scopes.</span></p>
@@ -204,5 +207,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span class="sentence">TODO(identifier lifetime &amp; such)</span>
 </div></li>
 </ul>
+<h3 id="identifiers-and-paths">Identifiers and paths</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin program operates with different <em>entities</em>, such as classes, interfaces, values, etc. An entity can be referenced using its <em>path</em>: a sequence of identifiers which references this entity in a given <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports two kinds of paths.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Simple paths <span class="math inline">\(P\)</span>, which consist of a single identifier</span></li>
+<li><span class="sentence">Qualified paths <span class="math inline">\(P.m\)</span>, which consist of a path <span class="math inline">\(P\)</span> and a member identifier <span class="math inline">\(m\)</span></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>this</code> – an identifier which references the default receiver available in the current scope, further details are available <a href="expressions.html#this-expressions">here</a></span></li>
+<li><span class="sentence"><code>this@label</code> – an identifier which references the selected receiver available in the current scope, further details are available <a href="expressions.html#this-expressions">here</a></span></li>
+<li><span class="sentence"><code>super&lt;Klazz&gt;</code> – an identifier which references the selected supertype available in the current scope, further details are available <a href="expressions.html#super-forms">here</a></span></li>
+</ul>
+<h3 id="labels">Labels</h3>
+<div class="paragraph">
+<p><span class="sentence">Labels are special syntactic marks that mark certain code elements. </span><span class="sentence">Any <a href="expressions.html#annotated-and-labeled-expression">expression</a> (including <a href="expressions.html#lambda-literals">lambda expressions</a>), as well as <a href="statements.html#loop-statements">loop statements</a>, can be labeled, with label identifier assigned to the corresponding entity. </span><span class="sentence">Labels can be <strong>redeclared</strong>, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times. </span><span class="sentence">Labels are <strong>scoped</strong>, meaning that they are only available in the scope they were declared in.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Labels are used by certain expressions, such as <a href="expressions.html#break-expression"><code>break</code></a>, <a href="expressions.html#continue-expression"><code>continue</code></a> and <a href="expressions.html#return-expressions"><code>return</code></a> to specify exactly what entity the expression corresponds to. </span><span class="sentence">Please refer to the corresponding sections for details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When resolving labels (i.e. determining which label current expression refers to) which have been redeclared, the <strong>closest</strong> label is chosen, i.e. the label with the innermost scope which is syntactically the closest to the point of its usage.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: this is a stub</span></p>
+</div>
+</div>
+<h3 id="visibility">Visibility</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: remove this? </span><span class="sentence">See <a href="declarations.html#declaration-visibility">Declaration visibility</a></span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Any entity declared in a declaration scope has an implicitly or explicitly defined <em>visibility</em>. </span><span class="sentence">The visibility of a declaration denotes whether the entity is <em>accessible</em> in other scopes of the program. </span><span class="sentence">If the entity declared in scope <code>A</code> is not accessible in scope <code>B</code>, it cannot be referred to in that scope, making such reference a compiler error. </span><span class="sentence">There are four basic types of visibility in kotlin: <code>public</code>, <code>private</code>, <code>internal</code> and <code>protected</code>, denoted by the corresponding visibility modifier keywords.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Entities that have <code>public</code> visibility are generally accessible anywhere outside or inside the scope they are declared in, by using imports or qualification when necessary. </span><span class="sentence">Entities that have <code>private</code> visibility are only accessible inside the scope they are declared in or any nested scopes. </span><span class="sentence">For top-level scopes (i.e. kotlin files) it means that such entities are only accessible in the same file. </span><span class="sentence">Entities with <code>internal</code> visibility are accessible inside the same <a href="packages-and-imports.html#modules">module</a> just like if the visibility was <code>public</code> and are inaccessible (as if the visibility was <code>private</code>) in any other scope. </span><span class="sentence">Entities with <code>protected</code> visibility are only allowed in the body scope of class declarations and are used as a means of encapsulation: such entities are accessible inside any scope as if the visibility was <code>private</code>, but are also accessible by any derived classes’ scopes as if they were declared <code>private</code> in the body scope of the derived class.</span></p>
+</div>
 </body>
 </html>
