@@ -1341,91 +1341,109 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="expressions.html#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> used instead of the identifier.</span></p>
+<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="expressions.html#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> instead of an identifier.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for a type. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is another expression and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="overload-resolution.html#overload-resolution">overload resolution</a> much like when accessing the value of a property using the usual navigation syntax. </span><span class="sentence">However, in some cases there are some differences which we cover in the corresponding paragraphs.</span></p>
+<p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for type <code>A</code>. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is an expression of type <code>E</code> and <code>c</code> is a name of a callable available for type <code>E</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="overload-resolution.html#overload-resolution">overload resolution</a> much like when accessing the value of a property using the <code>.</code> navigation operator. </span><span class="sentence">However, in some cases there are important differences which we cover in the corresponding paragraphs.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:</span></p>
+<p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of a callable reference <code>lhs::rhs</code>, the value of the whole expression is different:</span></p>
 </div>
 <ul>
-<li><span class="sentence">If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a property of the type on the left-hand side, then the expression is a type-property reference;</span></li>
-<li><span class="sentence">If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a function available for a receiver of the type on the left-hand side, then the expression is a type-function reference;</span></li>
-<li><span class="sentence">If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a property of the value on the left-hand side, then the expression is a value-property reference;</span></li>
-<li><span class="sentence">If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a function for the receiver being th value on the left-hand side, then the expression is a value-function reference.</span></li>
+<li><span class="sentence">If <code>lhs</code> is a type, but not a value (an example of a type which can also be used as a value is an object type), while <code>rhs</code> is resolved to refer to a property of <code>lhs</code>, <code>lhs::rhs</code> is a <em>type-property</em> reference;</span></li>
+<li><span class="sentence">If <code>lhs</code> is a type, but not a value (an example of a type which can also be used as a value is an object type), while <code>rhs</code> is resolved to refer to a function available on <code>rhs</code>, <code>lhs::rhs</code> is a <em>type-function</em> reference;</span></li>
+<li><span class="sentence">If <code>lhs</code> is a value, while <code>rhs</code> is resolved to refer to a property of <code>lhs</code>, <code>lhs::rhs</code> is a <em>value-property</em> reference;</span></li>
+<li><span class="sentence">If <code>lhs</code> is a value, while <code>rhs</code> is resolved to refer to a function available on <code>rhs</code>, <code>lhs::rhs</code> is a <em>value-function</em> reference.</span></li>
 </ul>
-<div class="TODO">
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">TODO(We might get new ambiguity between props and funs with the same name)</span></p>
+<p><span class="sentence">Examples:</span></p>
 </div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(References to members of companion objects work kinda explicitly)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Examples)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Everything is very-very messy here…)</span></p>
-</div>
-</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">class</span> A {</a>
+<a class="sourceLine" id="cb8-2" title="2">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Int</span> = <span class="dv">42</span></a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4">    <span class="kw">fun</span> <span class="fu">a</span>(): <span class="dt">String</span> = <span class="st">&quot;TODO()&quot;</span></a>
+<a class="sourceLine" id="cb8-5" title="5"></a>
+<a class="sourceLine" id="cb8-6" title="6">    <span class="kw">companion</span> <span class="kw">object</span> {</a>
+<a class="sourceLine" id="cb8-7" title="7">        <span class="kw">val</span> <span class="va">bProp</span>: <span class="kw">Int</span> = <span class="dv">42</span></a>
+<a class="sourceLine" id="cb8-8" title="8"></a>
+<a class="sourceLine" id="cb8-9" title="9">        <span class="kw">fun</span> <span class="fu">bFun</span>(): <span class="dt">String</span> = <span class="st">&quot;TODO()&quot;</span></a>
+<a class="sourceLine" id="cb8-10" title="10">    }</a>
+<a class="sourceLine" id="cb8-11" title="11">}</a>
+<a class="sourceLine" id="cb8-12" title="12"></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="kw">object</span> O {</a>
+<a class="sourceLine" id="cb8-14" title="14">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Int</span> = <span class="dv">42</span></a>
+<a class="sourceLine" id="cb8-15" title="15"></a>
+<a class="sourceLine" id="cb8-16" title="16">    <span class="kw">fun</span> <span class="fu">a</span>(): <span class="dt">String</span> = <span class="st">&quot;TODO()&quot;</span></a>
+<a class="sourceLine" id="cb8-17" title="17">}</a>
+<a class="sourceLine" id="cb8-18" title="18"></a>
+<a class="sourceLine" id="cb8-19" title="19"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
+<a class="sourceLine" id="cb8-20" title="20">    <span class="co">// Error: ambiguity between two possible callables</span></a>
+<a class="sourceLine" id="cb8-21" title="21">    <span class="co">// val errorAmbiguity = A::a</span></a>
+<a class="sourceLine" id="cb8-22" title="22"></a>
+<a class="sourceLine" id="cb8-23" title="23">    <span class="co">// Error: cannot reference companion object implicitly</span></a>
+<a class="sourceLine" id="cb8-24" title="24">    <span class="co">// val errorCompanion = A::bFun</span></a>
+<a class="sourceLine" id="cb8-25" title="25"></a>
+<a class="sourceLine" id="cb8-26" title="26">    <span class="kw">val</span> <span class="va">aTypePropRef</span>: (A) -&gt; <span class="kw">Int</span> = A::a</a>
+<a class="sourceLine" id="cb8-27" title="27"></a>
+<a class="sourceLine" id="cb8-28" title="28">    <span class="kw">val</span> <span class="va">aTypeFunRef</span>: (A) -&gt; <span class="kw">String</span> = A::a</a>
+<a class="sourceLine" id="cb8-29" title="29"></a>
+<a class="sourceLine" id="cb8-30" title="30">    <span class="kw">val</span> <span class="va">aValPropRef</span>: () -&gt; <span class="kw">Int</span> = A()::a</a>
+<a class="sourceLine" id="cb8-31" title="31"></a>
+<a class="sourceLine" id="cb8-32" title="32">    <span class="kw">val</span> <span class="va">aValFunRef</span>: () -&gt; <span class="kw">String</span> = A()::a</a>
+<a class="sourceLine" id="cb8-33" title="33"></a>
+<a class="sourceLine" id="cb8-34" title="34">    <span class="co">// Error: object type behave as values</span></a>
+<a class="sourceLine" id="cb8-35" title="35">    <span class="co">// val oTypePropRef: (O) -&gt; Int = O::a</span></a>
+<a class="sourceLine" id="cb8-36" title="36"></a>
+<a class="sourceLine" id="cb8-37" title="37">    <span class="co">// Error: object types behave as values</span></a>
+<a class="sourceLine" id="cb8-38" title="38">    <span class="co">// val oTypeFunRef: (O) -&gt; String = O::a</span></a>
+<a class="sourceLine" id="cb8-39" title="39"></a>
+<a class="sourceLine" id="cb8-40" title="40">    <span class="kw">val</span> <span class="va">oValPropRef</span>: () -&gt; <span class="kw">Int</span> = O::a</a>
+<a class="sourceLine" id="cb8-41" title="41"></a>
+<a class="sourceLine" id="cb8-42" title="42">    <span class="kw">val</span> <span class="va">oValFunRef</span>: () -&gt; <span class="kw">String</span> = O::a</a>
+<a class="sourceLine" id="cb8-43" title="43">}</a></code></pre></div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">The types of these expressions are implementation-defined, but the following constraints must hold:</span></p>
 </div>
 <ul>
-<li><span class="sentence">The type of any kind of property reference is a subtype of <code>kotlin.reflect.KProperty&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the type of the property;</span></li>
-<li><span class="sentence">The type of any kind of callable reference is a subtype of <a href="type-system.html#function-types">function type</a> that allows the corresponding callable to be accessed/called accordingly:</span>
+<li><span class="sentence">The type of any property reference is a subtype of <code>kotlin.reflect.KProperty&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the type of the property;</span></li>
+<li><span class="sentence">The type of any callable reference is a subtype of <a href="type-system.html#function-types">function type</a> which allows the corresponding callable to be accessed/called accordingly.</span>
 <ul>
-<li><span class="sentence">For a type-callable reference, it is a function type <code>(O, Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type same as the left-hand type of the expression, <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable;</span></li>
-<li><span class="sentence">For a value-callable reference, it is a normal function type <code>(Args) -&gt; R</code>, where <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and <code>R</code> is the result type of the callable. </span><span class="sentence">The receiver is bound to the left-hand side expression of the reference expression.</span></li>
+<li><span class="sentence">For a type-callable reference <code>lhs::rhs</code>, it is a function type <code>(O, Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type (type of <code>lhs</code>), <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or the types of function formal parameters (for a function reference), and <code>R</code> is the result type of the callable;</span></li>
+<li><span class="sentence">For a value-callable reference <code>lhs::rhs</code>, it is a function type <code>(Arg0 ... ArgN) -&gt; R</code>, where <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or the types of function formal parameters (for a function reference), and <code>R</code> is the result type of the callable. </span><span class="sentence">The receiver of such callable reference is bound to <code>lhs</code>.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Being of an appropriate function type also means that the values defined by these references are valid callables themselves, with an appropriate <code>operator invoke</code> overload, that allows using call syntax to evaluate the value of the callable with the appropriate arguments.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Please note that the above holds for <em>resolved</em> callable references, where it is known what entity a particular reference references. </span><span class="sentence">In the general case, however, it is unknown as the <a href="overload-resolution.html#overload-resolution">overload resolution</a> must be performed first. </span><span class="sentence">Please refer to the <a href="overload-resolution.html#resolving-callable-references">corresponding section</a> for details.</span></p>
+<p><span class="sentence">Being of a function type also means callable references are valid callables themselves, with an appropriate <code>operator invoke</code> overload which allows using call syntax to evaluate such callable with the suitable arguments.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.</span></p>
+<p><span class="sentence">Informally: one may say that any callable reference is essentially the same as a lambda literal with the corresponding number of arguments, delegating to the callable being referenced.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Include all the K(Mutable)Property(N) business, as it’s shared between BEs; we also need KProperty because of delegates)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need to update overload resolution section with these guys)</span></p>
-</div>
+<p><span class="sentence">Please note that the above holds for <em>resolved</em> callable references, where it is known what entity a particular reference references. </span><span class="sentence">In the general case, however, it is unknown as the <a href="overload-resolution.html#overload-resolution">overload resolution</a> must be performed first. </span><span class="sentence">Please refer to the <a href="overload-resolution.html#resolving-callable-references">corresponding section</a> for details.</span></p>
 </div>
 <h4 id="class-literals">Class literals</h4>
-<div class="paragraph">
-<p><span class="sentence">A class literal is very similar in syntax to a callable reference, with the difference being that it uses the keyword <code>class</code> instead of the referenced identifier. </span><span class="sentence">Similar to callable references, there are two forms of class literals: with a type used as the left-hand side argument of the expression and with another expression used as such. </span><span class="sentence">This is also one of the few cases where a parameterized type may (<strong>and must</strong>) be used without its type parameters.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">All class literals have type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the type given as the left-hand side of the expression or the <a href="runtime-type-information.html#runtime-type-information">runtime type</a> of the value given as the left-hand side of the expression. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="runtime-type-information.html#runtime-type-information">runtime-available non-nullable type</a> in the current scope. </span><span class="sentence">As the runtime type of the expression is not known at compile time, the compile-time type of the expression is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time of the expression.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.</span></p>
-</div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(this is a stub)</span></p>
 </div>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Identifiers, paths, that kinda stuff)</span></p>
+<p><span class="sentence">A class literal is very similar in syntax to a <a href="expressions.html#callable-references">callable reference</a>, with the difference being that it uses the keyword <code>class</code>. </span><span class="sentence">Similar to callable references, there are two forms of class literals: type and value class literals.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: class literals are one of the few cases where a parameterized type may (and actually <strong>must</strong>) be used without its type parameters.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">All class literals <code>lhs::class</code> are of type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the <code>lhs</code> type or the <a href="runtime-type-information.html#runtime-type-information">runtime type</a> of the <code>lhs</code> value. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="runtime-type-information.html#runtime-type-information">runtime-available non-nullable type</a> from the current scope. </span><span class="sentence">As the runtime type of any expression cannot be known at compile time, the compile-time type of a class literal is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time type of <code>lhs</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A class literal can be used to access platform-specific capabilities of the runtime type information available on the current platform, either directly or through reflection facilities.</span></p>
 </div>
 <h4 id="function-calls-and-property-access">Function calls and property access</h4>
 <div class="paragraph">
@@ -1450,17 +1468,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
-<a class="sourceLine" id="cb8-2" title="2">...</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="fu">f</span>() // $<span class="fu">1</span> = h(); $<span class="dv">2</span> = g(); $result = f($<span class="dv">1</span>, $<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb8-4" title="4">f(m(), n()) <span class="co">// $1 = m(); $2 = n(); $result = f($1, $2)</span></a>
-<a class="sourceLine" id="cb8-5" title="5">f(y = n(), x = m()) <span class="co">// $1 = n(); $2 = m(); $result = f($2, $1)</span></a>
-<a class="sourceLine" id="cb8-6" title="6">f(y = n()) <span class="co">// $1 = n(); $2 = h(); $result = f($2, $1)</span></a></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: () -&gt; <span class="dt">Int</span>)</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
 <a class="sourceLine" id="cb9-2" title="2">...</a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="fu">f</span>(<span class="va">y</span> = {2}) // $<span class="fu">1</span> = {<span class="dv">2</span>}; $<span class="dv">2</span> = h(); $result = f($<span class="dv">2</span>, $<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb9-4" title="4">f { <span class="dv">2</span> } <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
-<a class="sourceLine" id="cb9-5" title="5">f(m()) { <span class="dv">2</span> } <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
+<a class="sourceLine" id="cb9-3" title="3"><span class="fu">f</span>() // $<span class="fu">1</span> = h(); $<span class="dv">2</span> = g(); $result = f($<span class="dv">1</span>, $<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb9-4" title="4">f(m(), n()) <span class="co">// $1 = m(); $2 = n(); $result = f($1, $2)</span></a>
+<a class="sourceLine" id="cb9-5" title="5">f(y = n(), x = m()) <span class="co">// $1 = n(); $2 = m(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb9-6" title="6">f(y = n()) <span class="co">// $1 = n(); $2 = h(); $result = f($2, $1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: () -&gt; <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb10-2" title="2">...</a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="fu">f</span>(<span class="va">y</span> = {2}) // $<span class="fu">1</span> = {<span class="dv">2</span>}; $<span class="dv">2</span> = h(); $result = f($<span class="dv">2</span>, $<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb10-4" title="4">f { <span class="dv">2</span> } <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
+<a class="sourceLine" id="cb10-5" title="5">f(m()) { <span class="dv">2</span> } <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence"><a href="overloadable-operators.html#overloadable-operators">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
 </div>
