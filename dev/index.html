@@ -352,8 +352,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#bidirectional-resolution-for-function-calls">Bidirectional resolution for function calls</a></li>
 </ul></li>
 <li><a href="#about-type-inference">About type inference</a></li>
-</ul></li>
-<li><a href="#control--and-data-flow-analysis">Control- and data-flow analysis</a><ul>
 <li><a href="#control-flow-graph">Control flow graph</a><ul>
 <li><a href="#expressions-1">Expressions</a><ul>
 <li><a href="#function-calls-and-operators">Function calls and operators</a></li>
@@ -4991,7 +4989,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">control flow transfer</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Further details about how <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> should be handled are available <a href="#control--and-data-flow-analysis">here</a> and <a href="#type-inference">here</a>.</span></p>
+<p><span class="sentence">Further details about how <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> should be handled are available [here][Control- and data-flow analysis] and <a href="#type-inference">here</a>.</span></p>
 </div>
 <h3 id="kotlin.unit"><code>kotlin.Unit</code></h3>
 <div class="paragraph">
@@ -6198,7 +6196,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
-<p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="#control--and-data-flow-analysis">here</a>.</span></p>
+<p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -8342,7 +8340,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">All this happens <strong>before</strong> the function itself is invoked.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Some examples (here we use notation similar to the <a href="#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
+<p><span class="sentence">Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):</span></p>
 </div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
 <a class="sourceLine" id="cb47-2" title="2">...</a>
@@ -9028,7 +9026,7 @@ class A {
 <p><span class="sentence">The implicit receiver having the highest priority is also called the <em>default implicit receiver</em>. </span><span class="sentence">The default implicit receiver is available in the scope as <code>this</code>. </span><span class="sentence">Other available receivers may be accessed using <a href="#this-expressions">labeled this-expressions</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator. </span><span class="sentence">For <a href="#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver the extension itself is declared in is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
+<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator. </span><span class="sentence">For <a href="#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver the extension itself is declared in <span><span class="TODO">(TODO: wording)</span><span class="TODO-marker">*</span></span> is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9141,8 +9139,8 @@ class A {
 <p><span class="sentence">A call of callable <code>f</code> with an explicit receiver <code>e</code> is correct if one (or more) of the following holds:</span></p>
 </div>
 <ol type="1">
-<li><span class="sentence"><code>f</code> is a member callable of the classifier type of <code>e</code> or any of its supertypes;</span></li>
-<li><span class="sentence"><code>f</code> is an extension callable of the classifier type of <code>e</code> or any of its supertypes, including local and imported extensions.</span></li>
+<li><span class="sentence"><code>f</code> is an accessible member callable of the classifier type of <code>e</code> or any of its supertypes;</span></li>
+<li><span class="sentence"><code>f</code> is an accessible extension callable of the classifier type of <code>e</code> or any of its supertypes, including local and imported extensions.</span></li>
 </ol>
 <div class="TODO">
 <div class="paragraph">
@@ -9166,8 +9164,13 @@ class A {
 <li><span class="sentence">The sets of implicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>.</span></li>
 </ol>
 <div class="paragraph">
-<p><span class="sentence">There is a caveat here, however, as a callable may be a property with an <code>invoke</code> function (see previous section), and these may belong to different sets (for example, the property may be imported, while the <code>invoke</code> on it may be a local extension). </span><span class="sentence">In this situation, this callable belongs to the <strong>lowest priority</strong> set of its parts. </span><span class="sentence">For example, when trying to decide between an explicitly imported extension property with a member <code>invoke</code> and a local property with a star-imported extension <code>invoke</code>, the first one wins even though local property has more priority.</span></p>
+<p><span class="sentence">There is a caveat here, however, as a callable may be a property with an <code>invoke</code> function (see previous section), and these may belong to different sets (for example, the property may be imported, while the <code>invoke</code> on it may be a local extension). </span><span class="sentence">In this situation, this callable belongs to the <strong>lowest priority</strong> set of its parts.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">For example, when trying to decide between an explicitly imported extension property with a member <code>invoke</code> and a local property with a star-imported extension <code>invoke</code>, the first one wins even though local property has more priority.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="math inline">\(T &lt;: U\)</span>.</span></p>
@@ -9228,6 +9231,11 @@ class A {
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: this does not include calls using the <code>invoke</code> operator function where the left side of the call operator is not an identifier, but some other kind of expression. </span><span class="sentence">These cases are handled the same way as covered in the <a href="#operator-calls">previous section</a> and need no special treatment</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(is it better to say that (a + b)(2) is just the same as (a + b).invoke(2) and be done with it?)</span></p>
+</div>
 </div>
 </blockquote>
 <div class="TODO">
@@ -9383,7 +9391,7 @@ class A {
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: unlike the applicability test, the candidate comparison constraint system is <strong>not</strong> based on the actuall call, meaning that, when comparing two candidates, only constraints visible at <em>declaration site</em> apply.</span></p>
+<p><span class="sentence">Note: unlike the applicability test, the candidate comparison constraint system is <strong>not</strong> based on the actual call, meaning that, when comparing two candidates, only constraints visible at <em>declaration site</em> apply.</span></p>
 </div>
 </blockquote>
 <h3 id="resolving-callable-references">Resolving callable references</h3>
@@ -9413,7 +9421,7 @@ class A {
 <p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Let’s consider another example:</span></p>
+<p><span class="sentence">Let’s consider another example (using the same definitions for <code>foo</code>):</span></p>
 </div>
 <div class="sourceCode" id="cb62"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb62-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
 <a class="sourceLine" id="cb62-2" title="2"></a>
@@ -9439,7 +9447,7 @@ class A {
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still means that overload resolution for the called callable is performed only once.</span></p>
+<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still ensures that overload resolution for the called callable is performed only once.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -9448,9 +9456,8 @@ class A {
 </div>
 <h3 id="about-type-inference">About type inference</h3>
 <div class="paragraph">
-<p><span class="sentence"><a href="#type-inference">Type inference</a> in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates. </span><span class="sentence">Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up.</span></p>
+<p><span class="sentence"><a href="#type-inference">Type inference</a> in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates. </span><span class="sentence">Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up. </span><span class="sentence">## Control- and data-flow analysis</span></p>
 </div>
-<h2 id="control--and-data-flow-analysis">Control- and data-flow analysis</h2>
 <h3 id="control-flow-graph">Control flow graph</h3>
 <div class="paragraph">
 <p><span class="sentence">We define all kinds of control-flow analysis for Kotlin on a classic model called a control-flow graph (CFG). </span><span class="sentence">A CFG of a program is a graph that loosely defines all feasible paths the flow of a particular program can take during execution. </span><span class="sentence">All CFGs given in this section are <em>intraprocedural</em>, meaning that they describe the flow inside a single function, not taking function calls into account. </span><span class="sentence">It may, however, include multiple function bodies if said functions are <em>declared</em> inside each other (as is the case for <a href="#lambda-literals">lambdas</a>).</span></p>
