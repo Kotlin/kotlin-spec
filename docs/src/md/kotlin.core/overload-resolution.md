@@ -37,7 +37,7 @@ The default implicit receiver is available in the scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
 If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.
-For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver the extension itself is declared in is called *dispatch receiver*. 
+For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver the extension itself is declared in (TODO: wording) is called *dispatch receiver*. 
 For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.
 
 > Note: there may be situations in which *the same implicit receiver* is used as both the dispatch receiver and extension receiver for a particular callable access, for example:
@@ -134,8 +134,8 @@ If a function call is done via a [navigation operator][Navigation operators] (`.
 
 A call of callable `f` with an explicit receiver `e` is correct if one (or more) of the following holds:
 
-1. `f` is a member callable of the classifier type of `e` or any of its supertypes;
-2. `f` is an extension callable of the classifier type of `e` or any of its supertypes, including local and imported extensions.
+1. `f` is an accessible member callable of the classifier type of `e` or any of its supertypes;
+2. `f` is an accessible extension callable of the classifier type of `e` or any of its supertypes, including local and imported extensions.
 
 TODO(Handle `a.foo()` where `foo : A.() -> Unit`)
 
@@ -153,7 +153,8 @@ If a call is correct, for a callable named `f` with an explicit receiver `e` of 
 
 There is a caveat here, however, as a callable may be a property with an `invoke` function (see previous section), and these may belong to different sets (for example, the property may be imported, while the `invoke` on it may be a local extension).
 In this situation, this callable belongs to the **lowest priority** set of its parts.
-For example, when trying to decide between an explicitly imported extension property with a member `invoke` and a local property with a star-imported extension `invoke`, the first one wins even though local property has more priority.
+
+> For example, when trying to decide between an explicitly imported extension property with a member `invoke` and a local property with a star-imported extension `invoke`, the first one wins even though local property has more priority.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
 
@@ -200,6 +201,8 @@ It may have one or more implicit receivers or reference a top-level function.
 
 > Note: this does not include calls using the `invoke` operator function where the left side of the call operator is not an identifier, but some other kind of expression.
 > These cases are handled the same way as covered in the [previous section][Operator calls] and need no special treatment
+>
+> TODO(is it better to say that (a + b)(2) is just the same as (a + b).invoke(2) and be done with it?)
 
 TODO(Add an example to the above note)
 
@@ -339,7 +342,7 @@ If there are several callables which are more applicable than all other candidat
 
 If after this additional step there are still several candidates that are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
 
-> Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actuall call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
+> Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
 ### Resolving callable references
 
@@ -373,7 +376,7 @@ val x: (Int) -> Int = ::foo
 
 candidate (1) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Int) \rightarrow \Int$ and only one of the two types of corresponding functions abides this constraint.
 
-Let's consider another example:
+Let's consider another example (using the same definitions for `foo`):
 
 ```kotlin
 fun bar(f: (Double) -> Double) {}
@@ -400,7 +403,7 @@ Let's assume we have a call `f(::g, b, c)`:
 > Note: this may result in selecting a more specific candidate for `f` that has no available candidates for `g`, which means that the process fails when resolving `::g`
 
 When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2.
-This still means that overload resolution for the called callable is performed only once.
+This still ensures that overload resolution for the called callable is performed only once.
 
 TODO: examples
 
