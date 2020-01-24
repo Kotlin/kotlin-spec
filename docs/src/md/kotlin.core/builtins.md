@@ -2,6 +2,7 @@
 
 - TODO: `KClass`?
 - TODO: `KProperty`/`KFunction`?
+- TODO: `K(Mutable)Property(N)`? ('cause callable references)
 - TODO: `Throwable`?
 - TODO: `Comparable`?
 

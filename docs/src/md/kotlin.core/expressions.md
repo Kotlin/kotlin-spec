@@ -769,63 +769,97 @@ If followed by the call suffix (arguments in parentheses), `a.c()` may have one 
 TODO(this is a stub)
 
 Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them.
-It is not to be confused with [class literals][Class literals] that use similar syntax, but with the keyword `class` used instead of the identifier.
+It is not to be confused with [class literals][Class literals] that use similar syntax, but with the keyword `class` instead of an identifier.
 
-A callable reference `A::c` where `A` is a type name and `c` is a name of a callable available for type `A` is a *callable reference* for a type.
-A callable reference `e::c` where `e` is another expression and `c` is a name of a callable available for type `A` is a *callable reference* for expression `e`.
-The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the usual navigation syntax.
-However, in some cases there are some differences which we cover in the corresponding paragraphs.
+A callable reference `A::c` where `A` is a type name and `c` is a name of a callable available for type `A` is a *callable reference* for type `A`.
+A callable reference `e::c` where `e` is an expression of type `E` and `c` is a name of a callable available for type `E` is a *callable reference* for expression `e`.
+The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the `.` navigation operator.
+However, in some cases there are important differences which we cover in the corresponding paragraphs.
 
-Depending on the meaning of the left-hand and right-hand sides of the expressions, the value of the expression is different:
+Depending on the meaning of the left-hand and right-hand sides of a callable reference `lhs::rhs`, the value of the whole expression is different:
 
-- If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a property of the type on the left-hand side, then the expression is a type-property reference;
-- If the left-hand side of the expression is a type, but is not a value (an example of a type which is also used as a value is an object type), while the right-hand side of the expression is resolved to refer to a function available for a receiver of the type on the left-hand side, then the expression is a type-function reference;
-- If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a property of the value on the left-hand side, then the expression is a value-property reference;
-- If the left-hand side of the expression is a value, while the right-hand side of the expression is resolved to refer to a function for the receiver being th value on the left-hand side, then the expression is a value-function reference.
+- If `lhs` is a type, but not a value (an example of a type which can also be used as a value is an object type), while `rhs` is resolved to refer to a property of `lhs`, `lhs::rhs` is a *type-property* reference;
+- If `lhs` is a type, but not a value (an example of a type which can also be used as a value is an object type), while `rhs` is resolved to refer to a function available on `rhs`, `lhs::rhs` is a *type-function* reference;
+- If `lhs` is a value, while `rhs` is resolved to refer to a property of `lhs`, `lhs::rhs` is a *value-property* reference;
+- If `lhs` is a value, while `rhs` is resolved to refer to a function available on `rhs`, `lhs::rhs` is a *value-function* reference.
 
-TODO(We might get new ambiguity between props and funs with the same name)
-
-TODO(References to members of companion objects work kinda explicitly)
-
-TODO(Examples)
-
-TODO(Everything is very-very messy here...)
+> Examples:
+> ```kotlin
+> class A {
+>     val a: Int = 42
+> 
+>     fun a(): String = "TODO()"
+> 
+>     companion object {
+>         val bProp: Int = 42
+> 
+>         fun bFun(): String = "TODO()"
+>     }
+> }
+> 
+> object O {
+>     val a: Int = 42
+> 
+>     fun a(): String = "TODO()"
+> }
+> 
+> fun main() {
+>     // Error: ambiguity between two possible callables
+>     // val errorAmbiguity = A::a
+> 
+>     // Error: cannot reference companion object implicitly
+>     // val errorCompanion = A::bFun
+> 
+>     val aTypePropRef: (A) -> Int = A::a
+> 
+>     val aTypeFunRef: (A) -> String = A::a
+> 
+>     val aValPropRef: () -> Int = A()::a
+> 
+>     val aValFunRef: () -> String = A()::a
+> 
+>     // Error: object type behave as values
+>     // val oTypePropRef: (O) -> Int = O::a
+> 
+>     // Error: object types behave as values
+>     // val oTypeFunRef: (O) -> String = O::a
+> 
+>     val oValPropRef: () -> Int = O::a
+> 
+>     val oValFunRef: () -> String = O::a
+> }
+> ```
 
 The types of these expressions are implementation-defined, but the following constraints must hold:
 
-- The type of any kind of property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
-- The type of any kind of callable reference is a subtype of [function type][Function types] that allows the corresponding callable to be accessed/called accordingly:
-    - For a type-callable reference, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type same as the left-hand type of the expression, `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable;
-    - For a value-callable reference, it is a normal function type `(Args) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or are the types of function formal parameters (for a function reference) and `R` is the result type of the callable.
-    The receiver is bound to the left-hand side expression of the reference expression.
+- The type of any property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
+- The type of any callable reference is a subtype of [function type][Function types] which allows the corresponding callable to be accessed/called accordingly.
+    - For a type-callable reference `lhs::rhs`, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type (type of `lhs`), `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable;
+    - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
+    The receiver of such callable reference is bound to `lhs`.
 
-Being of an appropriate function type also means that the values defined by these references are valid callables themselves, with an appropriate `operator invoke` overload, that allows using call syntax to evaluate the value of the callable with the appropriate arguments.
+Being of a function type also means callable references are valid callables themselves, with an appropriate `operator invoke` overload which allows using call syntax to evaluate such callable with the suitable arguments.
+
+> Informally: one may say that any callable reference is essentially the same as a lambda literal with the corresponding number of arguments, delegating to the callable being referenced.
 
 Please note that the above holds for *resolved* callable references, where it is known what entity a particular reference references.
 In the general case, however, it is unknown as the [overload resolution][Overload resolution] must be performed first.
 Please refer to the [corresponding section][Resolving callable references] for details.
 
-> Note: one may say that any function reference is essentially the same as a lambda literal with the corresponding number of arguments, calling the callable being referenced.
-
-TODO(Include all the K(Mutable)Property(N) business, as it's shared between BEs; we also need KProperty because of delegates)
-
-TODO(We need to update overload resolution section with these guys)
-
 #### Class literals
-
-A class literal is very similar in syntax to a callable reference, with the difference being that it uses the keyword `class` instead of the referenced identifier.
-Similar to callable references, there are two forms of class literals: with a type used as the left-hand side argument of the expression and with another expression used as such.
-This is also one of the few cases where a parameterized type may (**and must**) be used without its type parameters.
-
-All class literals have type `kotlin.KClass<T>` and produce a platform-defined object associated with type `T`, which, in turn, is either the type given as the left-hand side of the expression or the [runtime type][Runtime type information] of the value given as the left-hand side of the expression.
-In both cases, `T` must be a [runtime-available non-nullable type][Runtime type information] in the current scope.
-As the runtime type of the expression is not known at compile time, the compile-time type of the expression is `kotlin.KClass<U>` where $T <: U$ and `U` is the compile-time of the expression.
-
-The produced object can be used to allow access to platform-specific capabilities of the runtime type information available on particular platform, either directly or through reflection facilities.
 
 TODO(this is a stub)
 
-TODO(Identifiers, paths, that kinda stuff)
+A class literal is very similar in syntax to a [callable reference][Callable references], with the difference being that it uses the keyword `class`.
+Similar to callable references, there are two forms of class literals: type and value class literals.
+
+> Note: class literals are one of the few cases where a parameterized type may (and actually **must**) be used without its type parameters.
+
+All class literals `lhs::class` are of type `kotlin.KClass<T>` and produce a platform-defined object associated with type `T`, which, in turn, is either the `lhs` type or the [runtime type][Runtime type information] of the `lhs` value.
+In both cases, `T` must be a [runtime-available non-nullable type][Runtime type information] from the current scope.
+As the runtime type of any expression cannot be known at compile time, the compile-time type of a class literal is `kotlin.KClass<U>` where $T <: U$ and `U` is the compile-time type of `lhs`.
+
+A class literal can be used to access platform-specific capabilities of the runtime type information available on the current platform, either directly or through reflection facilities.
 
 #### Function calls and property access
 
