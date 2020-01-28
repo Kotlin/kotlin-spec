@@ -1006,37 +1006,53 @@ TODO(Examples)
 
 Object literals are used to define anonymous objects in Kotlin.
 Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions.
-Anonymous objects, just like regular object declarations, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.
+Anonymous objects, just like [regular object declarations][Classifier declaration], can have at most one base class and zero or more base interfaces declared in its supertype specifiers.
 
-The main difference between the regular object declaration and an anonymous object is its type.
+The main difference between a regular object declaration and an anonymous object is its type.
 The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared.
-It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, with some interesting effects.
+It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, has some interesting effects.
 
 When a value of an anonymous object type escapes current scope:
 
 - If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;
 - If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.
 
-> Note: an implicit cast may arise, for example, from the results of the type inference.
+> Note: an implicit cast may arise, for example, from the results of [type inference][Type inference].
 
-> Note: in this context "escaping" current scope is performed immediately if the corresponding value is declared as a global- or classifier-scope property, as those are a part of package interface.
+> Note: in this context "escaping current scope" is performed immediately if the corresponding value is declared as a **non-private** global- or classifier-scope property, as those are parts of an externally accessible interface.
 
-TODO: This is more complex. From D.Petrov's comment:
-
-> This is a bit more complex for anonymous object return types of private functions and properties:
-> ```
-> class M {
-> private fun foo() = object {
-> fun bar() { println("foo.bar") }
-> }
+> Example:
+> ```kotlin
+> open class Base
+> interface I
 > 
-> fun test1() = foo().bar()
-> fun test2() = foo()
+> class M {
+>     fun bar() = object : Base(), I {}
+>     // Error, as public return type of `bar`
+>     //   cannot be anonymous
+> 
+>     fun baz(): Base = object : Base(), I {}
+>     // OK, as an anonymous type is implicitly
+>     //   cast to Base
+> 
+>     private fun qux() = object : Base(), I {}
+>     // OK, as an anonymous type does not escape
+>     //   via private functions
+> 
+>     private fun foo() = object {
+>         fun bar() { println("foo.bar") }
+>     }
+> 
+>     fun test1() = foo().bar()
+> 
+>     fun test2() = foo()
+>     // OK, as an anonymous type is implicitly
+>     //   cast to Any
 > }
 > 
 > fun main() {
-> M().test1() // OK, prints "foo.bar"
-> M().test2().bar() // Error: Unresolved reference: bar
+>     M().test1() // OK
+>     M().test2().bar() // Error: Unresolved reference: bar
 > }
 > ```
 
