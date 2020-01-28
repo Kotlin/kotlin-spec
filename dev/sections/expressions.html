@@ -126,10 +126,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 <h3 id="introduction-3">Introduction</h3>
 <div class="paragraph">
-<p><span class="sentence">Expressions (together with <a href="overload-resolution.html#statements-1">statements</a>) are one of the main building blocks of any program, as they represent ways to <em>compute</em> program values or <em>control</em> the program execution flow.</span></p>
+<p><span class="sentence">Expressions (together with <a href="control--and-data-flow-analysis.html#statements-1">statements</a>) are one of the main building blocks of any program, as they represent ways to <em>compute</em> program values or <em>control</em> the program execution flow.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In Kotlin, an expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid <a href="overload-resolution.html#statements-1">statements</a>, standalone expressions may be used as single statements or inside code blocks.</span></p>
+<p><span class="sentence">In Kotlin, an expression may be <em>used as a statement</em> or <em>used as an expression</em> depending on the context. </span><span class="sentence">As all expressions are valid <a href="control--and-data-flow-analysis.html#statements-1">statements</a>, standalone expressions may be used as single statements or inside code blocks.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call. </span><span class="sentence">An expression is used as a statement if it is encountered in any position where a statement is allowed.</span></p>
@@ -1466,7 +1466,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">All this happens <strong>before</strong> the function itself is invoked.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):</span></p>
+<p><span class="sentence">Some examples (here we use notation similar to the <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
 </div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">x</span>: <span class="dt">Int</span> = h(), <span class="va">y</span>: <span class="dt">Int</span> = g())</a>
 <a class="sourceLine" id="cb9-2" title="2">...</a>
@@ -1514,14 +1514,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><em>Anonymous function declarations</em>, despite their name, are not declarations per se, but rather expressions which resemble function declarations. </span><span class="sentence">They have a syntax very similar to function declarations, with the following key differences:</span></p>
+<p><span class="sentence"><em>Anonymous function declarations</em>, despite their name, are not declarations per se, but rather expressions which resemble <a href="declarations.html#function-declaration">function declarations</a>. </span><span class="sentence">They have a syntax very similar to function declarations, with the following key differences:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Anonymous functions do not have a name;</span></li>
 <li><span class="sentence">Anonymous functions cannot have type parameters;</span></li>
 <li><span class="sentence">Anonymous functions cannot have default parameters;</span></li>
-<li><span class="sentence">Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding <a href="type-system.html#array-types">array type</a> <span><span class="TODO">(TODO(how does this really work?))</span><span class="TODO-marker">*</span></span>;</span></li>
-<li><span class="sentence">Anonymous functions may omit formal parameter types, if they can be <a href="type-inference.html#type-inference">inferred</a> from the context.</span></li>
+<li><span class="sentence">Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding <a href="type-system.html#array-types">array type</a> via array type specialization;</span></li>
+<li><span class="sentence">Anonymous functions may omit formal parameter types and return type, if they can be <a href="type-inference.html#type-inference">inferred</a> from the context.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Anonymous function declaration can declare an anonymous extension function by following the <a href="declarations.html#extension-function-declaration">extension function declaration</a> convention.</span></p>
@@ -1559,47 +1559,57 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals are similar to anonymous function declarations in that they define a function with no name. </span><span class="sentence">Lambda also use very different syntax, similar to control structure bodies of other expressions.</span></p>
+<p><span class="sentence">Lambda literals are similar to <a href="expressions.html#anonymous-function-declarations">anonymous function declarations</a> in that they define a function with no name. </span><span class="sentence">Unlike them, however, lambdas use very different syntax, similar to <a href="statements.html#code-blocks">control structure bodies</a> of other expressions.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Every lambda literal consists of an optional lambda parameter list, specified before the arrow (<code>-&gt;</code>) operator and a body, which is everything after the arrow operator. </span><span class="sentence">Lambda body introduces a new statement scope.</span></p>
+<p><span class="sentence">Every lambda literal consists of an optional lambda parameter list, specified before the arrow (<code>-&gt;</code>) operator, and a body, which is everything after the arrow operator.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals has the same restrictions as anonymous function declarations, but also cannot have <code>vararg</code> parameters. </span><span class="sentence">They can, however, introduce destructuring parameters similar to destructuring property declarations.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(destructuring lambda parameters)</span></p>
-</div>
+<p><span class="sentence">Lambda body introduces a new <a href="scopes-and-identifiers.html#scopes-and-identifiers">statement scope</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If a lambda expression has no parameter list, it can actually be defining an anonymous function with either zero or one parameter, the exact case dependent on the context of the usage of this expression. </span><span class="sentence">The selection of number of parameters in this case is performed during <a href="type-inference.html#type-inference">type inference</a>. </span><span class="sentence">Any lambda may also define either a normal function or an expansion function, the exact case also dependent on the context of the usage of lambda expression.</span></p>
+<p><span class="sentence">Lambda literals have the same restrictions as anonymous function declarations, but additionally cannot have <code>vararg</code> parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the lambda expression has no parameter list, but has one parameter, this parameter can be accessed inside the lambda body using a special property called <code>it</code>. </span><span class="sentence">If the lambda expression defines an expansion function, the expansion receiver may be accessed using standard <code>this</code> syntax inside the lambda body.</span></p>
+<p><span class="sentence">Lambda literals can introduce destructuring parameters similar to <a href="declarations.html#local-property-declaration">destructuring property declarations</a>. </span><span class="sentence">Lambda parameter of the form <code>(a, b, ..., n)</code> (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its <code>componentN()</code> functions as follows.</span></p>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">plus</span>: (Pair&lt;<span class="kw">Int</span>, <span class="kw">Double</span>&gt;) -&gt; <span class="kw">String</span> = { (i, d) -&gt;</a>
+<a class="sourceLine" id="cb11-2" title="2">    <span class="st">&quot;$i + $d = ${i + d}&quot;</span></a>
+<a class="sourceLine" id="cb11-3" title="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">plus</span>: (Pair&lt;<span class="kw">Int</span>, <span class="kw">Double</span>&gt;) -&gt; <span class="kw">String</span> = { p -&gt;</a>
+<a class="sourceLine" id="cb12-2" title="2">    <span class="kw">val</span> <span class="va">i</span> = p.component1()</a>
+<a class="sourceLine" id="cb12-3" title="3">    <span class="kw">val</span> <span class="va">d</span> = p.component2()</a>
+<a class="sourceLine" id="cb12-4" title="4">    <span class="st">&quot;$i + $d = ${i + d}&quot;</span></a>
+<a class="sourceLine" id="cb12-5" title="5">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">If a lambda expression has no parameter list, it can be defining a function with either zero or one parameter, the exact case dependent on the use context of this lambda. </span><span class="sentence">The selection of number of parameters in this case is performed during <a href="type-inference.html#type-inference">type inference</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a lambda expression has no explicit parameter list, but does has one parameter, this parameter can be accessed inside the lambda body using a special property called <code>it</code>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: having no parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).</span></p>
+<p><span class="sentence">Note: having no explicit parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals are different from other forms of function definition in that the <code>return</code> expressions inside lambda body, unless qualified, refers to the outside non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such returns are only allowed if the function defined by the lambda and its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it should be a compile-time error.</span></p>
+<p><span class="sentence">Any lambda may define either a normal function or an extension function, the exact case dependent on the use context of the lambda. </span><span class="sentence">If a lambda expression defines an extension function, its extension receiver may be accessed using the standard <code>this</code> syntax inside the lambda body.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the lambda expression is labeled, it can also be returned from using the [labeled return expression][Labeled return expression]. </span><span class="sentence">In addition to this, if the lambda expression is used as a trailing lambda parameter to a function call, the name of the function used in the call may be used instead of the label. </span><span class="sentence">If a particular labeled <code>return</code> expression is used inside multiple lambda bodies invoked during the call of the same function, this is resolved as <code>return</code> from the nearest matching lambda.</span></p>
+<p><span class="sentence">Lambda literals are different from other forms of function declarations in that the <code>return</code> expressions inside lambda body, unless <a href="expressions.html#return-expressions">labeled</a>, refers to the outer non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such (non-labeled) returns are only allowed if the lambda and all its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a lambda expression is labeled, it can be returned from using the <a href="expressions.html#return-expressions">labeled return expression</a>. </span><span class="sentence">In addition, if a lambda expression is used as a parameter to a function call, the name of the function called may be used instead of an explicit label.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a labeled <code>return</code> expression is used when there are several matching labels available (e.g., inside several nested function calls with the same name), this is resolved as <code>return</code> to the nearest matching label.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Any properties used inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. <a href="type-inference.html#smart-casts">smart casts</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Typing)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Any properties used in any way inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how this properties are processed by other mechanisms, e.g. <a href="type-inference.html#smart-casts">smart casts</a>.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Rules of capturing + capture by “property”)</span></p>
+<p><span class="sentence">TODO(Examples)</span></p>
 </div>
 </div>
 <h3 id="object-literals">Object literals</h3>
