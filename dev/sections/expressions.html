@@ -1622,10 +1622,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Object literals are used to define anonymous objects in Kotlin. </span><span class="sentence">Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions. </span><span class="sentence">Anonymous objects, just like regular object declarations, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.</span></p>
+<p><span class="sentence">Object literals are used to define anonymous objects in Kotlin. </span><span class="sentence">Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions. </span><span class="sentence">Anonymous objects, just like <a href="declarations.html#classifier-declaration">regular object declarations</a>, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The main difference between the regular object declaration and an anonymous object is its type. </span><span class="sentence">The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared. </span><span class="sentence">It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, with some interesting effects.</span></p>
+<p><span class="sentence">The main difference between a regular object declaration and an anonymous object is its type. </span><span class="sentence">The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared. </span><span class="sentence">It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, has some interesting effects.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">When a value of an anonymous object type escapes current scope:</span></p>
@@ -1636,36 +1636,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: an implicit cast may arise, for example, from the results of the type inference.</span></p>
+<p><span class="sentence">Note: an implicit cast may arise, for example, from the results of <a href="type-inference.html#type-inference">type inference</a>.</span></p>
 </div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: in this context “escaping” current scope is performed immediately if the corresponding value is declared as a global- or classifier-scope property, as those are a part of package interface.</span></p>
+<p><span class="sentence">Note: in this context “escaping current scope” is performed immediately if the corresponding value is declared as a <strong>non-private</strong> global- or classifier-scope property, as those are parts of an externally accessible interface.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: This is more complex. </span><span class="sentence">From D.Petrov’s comment:</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">This is a bit more complex for anonymous object return types of private functions and properties:</span></p>
+<p><span class="sentence">Example:</span></p>
 </div>
-<pre><code>class M {
-private fun foo() = object {
-fun bar() { println(&quot;foo.bar&quot;) }
-}
-
-fun test1() = foo().bar()
-fun test2() = foo()
-}
-
-fun main() {
-M().test1() // OK, prints &quot;foo.bar&quot;
-M().test2().bar() // Error: Unresolved reference: bar
-}</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">open</span> <span class="kw">class</span> Base</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">interface</span> I</a>
+<a class="sourceLine" id="cb13-3" title="3"></a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="kw">class</span> M {</a>
+<a class="sourceLine" id="cb13-5" title="5">    <span class="kw">fun</span> <span class="fu">bar</span>() = <span class="kw">object</span> : <span class="dt">Base</span>(), <span class="dt">I</span> {}</a>
+<a class="sourceLine" id="cb13-6" title="6">    <span class="co">// Error, as public return type of `bar`</span></a>
+<a class="sourceLine" id="cb13-7" title="7">    <span class="co">//   cannot be anonymous</span></a>
+<a class="sourceLine" id="cb13-8" title="8"></a>
+<a class="sourceLine" id="cb13-9" title="9">    <span class="kw">fun</span> <span class="fu">baz</span>(): <span class="dt">Base</span> = <span class="kw">object</span> : <span class="dt">Base</span>(), <span class="dt">I</span> {}</a>
+<a class="sourceLine" id="cb13-10" title="10">    <span class="co">// OK, as an anonymous type is implicitly</span></a>
+<a class="sourceLine" id="cb13-11" title="11">    <span class="co">//   cast to Base</span></a>
+<a class="sourceLine" id="cb13-12" title="12"></a>
+<a class="sourceLine" id="cb13-13" title="13">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">qux</span>() = <span class="kw">object</span> : <span class="dt">Base</span>(), <span class="dt">I</span> {}</a>
+<a class="sourceLine" id="cb13-14" title="14">    <span class="co">// OK, as an anonymous type does not escape</span></a>
+<a class="sourceLine" id="cb13-15" title="15">    <span class="co">//   via private functions</span></a>
+<a class="sourceLine" id="cb13-16" title="16"></a>
+<a class="sourceLine" id="cb13-17" title="17">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">foo</span>() = <span class="kw">object</span> {</a>
+<a class="sourceLine" id="cb13-18" title="18">        <span class="kw">fun</span> <span class="fu">bar</span>() { println(<span class="st">&quot;foo.bar&quot;</span>) }</a>
+<a class="sourceLine" id="cb13-19" title="19">    }</a>
+<a class="sourceLine" id="cb13-20" title="20"></a>
+<a class="sourceLine" id="cb13-21" title="21">    <span class="kw">fun</span> <span class="fu">test1</span>() = foo().bar()</a>
+<a class="sourceLine" id="cb13-22" title="22"></a>
+<a class="sourceLine" id="cb13-23" title="23">    <span class="kw">fun</span> <span class="fu">test2</span>() = foo()</a>
+<a class="sourceLine" id="cb13-24" title="24">    <span class="co">// OK, as an anonymous type is implicitly</span></a>
+<a class="sourceLine" id="cb13-25" title="25">    <span class="co">//   cast to Any</span></a>
+<a class="sourceLine" id="cb13-26" title="26">}</a>
+<a class="sourceLine" id="cb13-27" title="27"></a>
+<a class="sourceLine" id="cb13-28" title="28"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
+<a class="sourceLine" id="cb13-29" title="29">    M().test1() <span class="co">// OK</span></a>
+<a class="sourceLine" id="cb13-30" title="30">    M().test2().bar() <span class="co">// Error: Unresolved reference: bar</span></a>
+<a class="sourceLine" id="cb13-31" title="31">}</a></code></pre></div>
 </blockquote>
 <h3 id="this-expressions">This-expressions</h3>
 <div id="grammar-rule-thisExpression-pasted-80" class="grammar-rule">
