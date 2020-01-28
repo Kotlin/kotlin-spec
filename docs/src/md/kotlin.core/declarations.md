@@ -172,7 +172,7 @@ As such, data classes allow Kotlin to reduce the boilerplate and generate a numb
     - It has the same number of parameters as the primary constructor with the same names and types;
     - It calls the primary constructor with the corresponding parameters at the corresponding positions;
     - It has defaults for all the parameters defaulting to the value of the corresponding property in `this` object.
-* A number of `componentN()` functions for [destructive declaration][Local property declaration]:
+* A number of `componentN()` functions for [destructuring declaration][Local property declaration]:
     - For the data property at position $N$ (**starting from 1**), the generated `component`$N$ function has the same type as this property and returns the value of this property;
     - It has an `operator` modifier, allowing it to be used in [destructuring declarations][Local property declaration];
     - The number of these functions is the same as the number of data properties.
@@ -540,7 +540,7 @@ in which case `x` is used as a synonym to the getter invocation when read from a
 If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations.
 However, local property declarations cannot have custom getters or setters.
 
-Local property declarations also support *destructive* declaration in the form of
+Local property declarations also support *destructuring* declaration in the form of
 
 ```kotlin
 val (a: T, b: U, c: V, ...) = e
