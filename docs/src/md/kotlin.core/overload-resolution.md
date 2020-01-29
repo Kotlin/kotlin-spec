@@ -17,12 +17,12 @@ In addition to the explicit receiver, each call may indirectly access zero or mo
 Implicit receivers are available in some syntactic scope according to the following rules:
 
 - Any receiver available in the outer statement scope is available in any directly nested scope;
-- Inside an [object declaration][object declaration], the object itself is an available receiver in this and any nested scope;
+- Inside an [object declaration][Classifier declaration], the object itself is an available receiver in this and any nested scope;
 - In the scope of a classifier declaration, the following receivers are available:
     - The implicit `this` object of the declared type;
     - The companion object (if one exists) of this class;
     - The companion objects (if any exist) of all its superclasses;
-- In an [inner class declaration][inner classes] all the receivers available in the outer declaration scope are also available in this declaration scope;
+- In an [inner class declaration][Nested and inner classifiers] all the receivers available in the outer declaration scope are also available in this declaration scope;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
 - The scope of a lambda expression, if it has an extension function type, contains `this` argument of the lambda expression.
 

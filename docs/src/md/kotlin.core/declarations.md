@@ -784,7 +784,7 @@ In order to be declared `const`, a property must meet the following requirements
     - `kotlin.Boolean`;
     - `kotlin.Char`;
     - `kotlin.String`;
-- It is declared in the top-level scope or inside [an object declaration][Object declarations];
+- It is declared in the top-level scope or inside [an object declaration][Classifier declaration];
 - It has an initializer expression and this initializer expression can be evaluated at compile-time.
   Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.
