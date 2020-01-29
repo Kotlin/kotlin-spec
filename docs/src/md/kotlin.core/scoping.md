@@ -84,8 +84,9 @@ Kotlin supports two kinds of paths.
 Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
 
 * `this` -- an identifier which references the default receiver available in the current scope, further details are available [here][This-expressions]
-* `this@label` -- an identifier which references the selected receiver available in the current scope, further details are available [here][This-expressions]
-* `super<Klazz>` -- an identifier which references the selected supertype available in the current scope, further details are available [here][Super-forms]
+* `this@label` -- an identifier which references the default receiver available in the selected scope, further details are available [here][This-expressions]
+* `super<Klazz>` -- an identifier which references the supertype `Klazz` available in the current scope, further details are available [here][Super-forms]
+* `super<Klazz>@label` -- an identifier which references the supertype `Klazz` available in the selected scope, further details are available [here][Super-forms]
 
 ### Labels
 
