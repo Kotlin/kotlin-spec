@@ -1690,49 +1690,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This-expressions are special kind of expressions used to access <a href="overload-resolution.html#receivers">receivers</a> available in current scope. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">This-expressions are special kind of expressions used to access <a href="overload-resolution.html#receivers">receivers</a> available in current <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the <a href="scopes-and-identifiers.html#scopes-and-identifiers">inner scope</a> of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
-<li><span class="sentence"><code>this@function</code>, where <code>function</code> is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;</span></li>
-<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a <a href="scopes-and-identifiers.html#labels">label</a> provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;</span></li>
-<li><span class="sentence"><code>this@outerFunction</code>, where <code>outerFunction</code> is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression. </span><span class="sentence">Note that this is exclusive with the previous case, meaning that if the lambda literal is labeled, this mechanism cannot be used.</span></li>
+<li><span class="sentence"><code>this@function</code>, where <code>function</code> is a name of any extension function currently being declared (that is, this-expression is located in the <a href="declarations.html#extension-function-declaration">function body</a>), refers to the implicit receiver object of the extension function;</span></li>
+<li><span class="sentence"><code>this@lambda</code>, where <code>lambda</code> is a <a href="scopes-and-identifiers.html#labels">label</a> provided for a <a href="expressions.html#lambda-literals">lambda literal</a> currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;</span></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>this@outerFunction</code>, where <code>outerFunction</code> is the name of a function which takes <a href="expressions.html#lambda-literals">lambda literal</a> currently being declared as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: <code>this@outerFunction</code> notation is exclusive with <code>this@lambda</code> notation, meaning if a lambda literal is labeled, <code>this@outerFunction</code> cannot be used.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: <code>this@outerFunction</code> and <code>this@label</code> notations can be used only in lambda literals which have an extension function type, i.e., have an implicit receiver.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: any other forms of this-expression are illegal and should result in a compile-time error.</span></p>
+</div>
+</blockquote></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">In case there are several entities the labeled <code>this</code> can refer to using the same name, the closest one syntactically is used.</span></p>
+<p><span class="sentence">In case there are several entities labeled <code>this</code> can refer to via the same name, the <a href="scopes-and-identifiers.html#labels">closest label</a> is used.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<pre><code>object C
-class A {
-    fun B.foo() {
-        // run is a standard library function with extension lambda parameter
-        C.run { 
-            this // refers to receiver of type C
-            this@A // refers to receiver of type A
-            this@B // refers to receiver of type B
-            this@foo // refers to receiver of type B
-            this@run // refers to receiver of type C
-        }
-        C.run label@ {
-            this // refers to receiver of type C
-            this@A // refers to receiver of type A
-            this@B // refers to receiver of type B
-            this@foo // refers to receiver of type B
-            this@label // refers to receiver of type C
-            this@run // illegal: lambda literal is labeled
-        }
-    }
-}</code></pre>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: check this example for errors</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Any other form of this-expression is illegal and must be a compile-time error.</span></p>
-</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">interface</span> B</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">object</span> C</a>
+<a class="sourceLine" id="cb14-3" title="3"></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="kw">class</span> A/* receiver (<span class="va">1</span>) */ {</a>
+<a class="sourceLine" id="cb14-5" title="5">    <span class="kw">fun</span> <span class="fu">B</span>/* <span class="fu">receiver</span> (<span class="va">2</span>) */.<span class="fu">foo</span>() {</a>
+<a class="sourceLine" id="cb14-6" title="6">        <span class="co">// `run` is a standard library function</span></a>
+<a class="sourceLine" id="cb14-7" title="7">        <span class="co">//   with an extension lambda parameter</span></a>
+<a class="sourceLine" id="cb14-8" title="8">        C<span class="co">/* receiver (3) */</span>.run {</a>
+<a class="sourceLine" id="cb14-9" title="9">            <span class="kw">this</span> <span class="co">// refers to receiver (3) of type C</span></a>
+<a class="sourceLine" id="cb14-10" title="10">            this<span class="at">@A</span> <span class="co">// refers to receiver (1) of type A</span></a>
+<a class="sourceLine" id="cb14-11" title="11">            <span class="co">// this@B // illegal: B is not being declared</span></a>
+<a class="sourceLine" id="cb14-12" title="12">            this<span class="at">@foo</span> <span class="co">// refers to receiver (2) of type B</span></a>
+<a class="sourceLine" id="cb14-13" title="13">            this<span class="at">@run</span> <span class="co">// refers to receiver (3) of type C</span></a>
+<a class="sourceLine" id="cb14-14" title="14">        }</a>
+<a class="sourceLine" id="cb14-15" title="15">        C<span class="co">/* receiver (4) */</span>.run label@{</a>
+<a class="sourceLine" id="cb14-16" title="16">            <span class="kw">this</span> <span class="co">// refers to receiver (4) of type C</span></a>
+<a class="sourceLine" id="cb14-17" title="17">            this<span class="at">@A</span> <span class="co">// refers to receiver (1) of type A</span></a>
+<a class="sourceLine" id="cb14-18" title="18">            <span class="co">// this@B // illegal: B is not being declared</span></a>
+<a class="sourceLine" id="cb14-19" title="19">            this<span class="at">@foo</span> <span class="co">// refers to receiver (2) of type B</span></a>
+<a class="sourceLine" id="cb14-20" title="20">            this<span class="at">@label</span> <span class="co">// refers to receiver (4) of type C</span></a>
+<a class="sourceLine" id="cb14-21" title="21">            <span class="co">// this@run // illegal: lambda literal is labeled</span></a>
+<a class="sourceLine" id="cb14-22" title="22">        }</a>
+<a class="sourceLine" id="cb14-23" title="23">    }</a>
+<a class="sourceLine" id="cb14-24" title="24">}</a></code></pre></div>
+</blockquote>
 <h3 id="super-forms">Super-forms</h3>
 <div id="grammar-rule-superExpression-pasted-81" class="grammar-rule">
 <dl>
@@ -1743,16 +1757,72 @@ class A {
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a function or property access expression. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
+<p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a <a href="expressions.html#call-and-property-access-expressions">call or property access expression</a>. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Super-forms are used in classifier declarations to access method implementations from the supertypes without invoking overriding behaviour.</span></p>
+<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour. </span><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(The rest…)</span></p>
+<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other receivers, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
+<ul>
+<li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations.</span></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>super&lt;Klazz&gt;@type</code>, where <code>type</code> is a name of any currently declared classifier and <code>Klazz</code> is a name of one of the immediate supertypes of the <code>type</code> classifier, refers to that supertype and its implementations.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: <code>super&lt;Klazz&gt;@type</code> notation can be used only in <a href="declarations.html#nested-and-inner-classifiers">inner classes</a>, as only inner class can have access to supertypes of other classes, i.e., supertypes of their parent class.</span></p>
+</div>
+</blockquote></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">interface</span> A {</a>
+<a class="sourceLine" id="cb15-2" title="2">    <span class="kw">fun</span> <span class="fu">foo</span>() { println(<span class="st">&quot;A&quot;</span>) }</a>
+<a class="sourceLine" id="cb15-3" title="3">}</a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="kw">interface</span> B {</a>
+<a class="sourceLine" id="cb15-5" title="5">    <span class="kw">fun</span> <span class="fu">foo</span>() { println(<span class="st">&quot;B&quot;</span>) }</a>
+<a class="sourceLine" id="cb15-6" title="6">}</a>
+<a class="sourceLine" id="cb15-7" title="7"></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="kw">open</span> <span class="kw">class</span> C : <span class="dt">A</span> {</a>
+<a class="sourceLine" id="cb15-9" title="9">    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">foo</span>() { println(<span class="st">&quot;C&quot;</span>) }</a>
+<a class="sourceLine" id="cb15-10" title="10">}</a>
+<a class="sourceLine" id="cb15-11" title="11"></a>
+<a class="sourceLine" id="cb15-12" title="12"><span class="kw">class</span> E : <span class="dt">C</span>() {</a>
+<a class="sourceLine" id="cb15-13" title="13">    init {</a>
+<a class="sourceLine" id="cb15-14" title="14">        <span class="kw">super</span>.foo() <span class="co">// &quot;C&quot;</span></a>
+<a class="sourceLine" id="cb15-15" title="15">        <span class="kw">super</span>&lt;C&gt;.foo() <span class="co">// &quot;C&quot;</span></a>
+<a class="sourceLine" id="cb15-16" title="16">    }</a>
+<a class="sourceLine" id="cb15-17" title="17">}</a>
+<a class="sourceLine" id="cb15-18" title="18"></a>
+<a class="sourceLine" id="cb15-19" title="19"><span class="kw">class</span> D : <span class="dt">C</span>(), <span class="dt">A</span>, <span class="dt">B</span> {</a>
+<a class="sourceLine" id="cb15-20" title="20">    init {</a>
+<a class="sourceLine" id="cb15-21" title="21">        <span class="co">// Error: ambiguity as several immediate supertypes</span></a>
+<a class="sourceLine" id="cb15-22" title="22">        <span class="co">//   are available here</span></a>
+<a class="sourceLine" id="cb15-23" title="23">        <span class="co">// super.foo()</span></a>
+<a class="sourceLine" id="cb15-24" title="24">        <span class="kw">super</span>&lt;C&gt;.foo() <span class="co">// &quot;C&quot;</span></a>
+<a class="sourceLine" id="cb15-25" title="25">        <span class="kw">super</span>&lt;B&gt;.foo() <span class="co">// &quot;B&quot;</span></a>
+<a class="sourceLine" id="cb15-26" title="26">        <span class="co">// Error: A is *not* an immediate supertype,</span></a>
+<a class="sourceLine" id="cb15-27" title="27">        <span class="co">//   as C inherits from A and is considered</span></a>
+<a class="sourceLine" id="cb15-28" title="28">        <span class="co">//   to be &quot;more immediate&quot;</span></a>
+<a class="sourceLine" id="cb15-29" title="29">        <span class="co">// super&lt;A&gt;.foo()</span></a>
+<a class="sourceLine" id="cb15-30" title="30">    }</a>
+<a class="sourceLine" id="cb15-31" title="31"></a>
+<a class="sourceLine" id="cb15-32" title="32">    inner <span class="kw">class</span> Inner {</a>
+<a class="sourceLine" id="cb15-33" title="33">        init {</a>
+<a class="sourceLine" id="cb15-34" title="34">            <span class="co">// Error: C is not available</span></a>
+<a class="sourceLine" id="cb15-35" title="35">            <span class="co">// super&lt;C&gt;.foo()</span></a>
+<a class="sourceLine" id="cb15-36" title="36">            <span class="kw">super</span>&lt;C&gt;<span class="at">@D</span>.foo() <span class="co">// &quot;C&quot;</span></a>
+<a class="sourceLine" id="cb15-37" title="37">            <span class="kw">super</span>&lt;B&gt;<span class="at">@D</span>.foo() <span class="co">// &quot;B&quot;</span></a>
+<a class="sourceLine" id="cb15-38" title="38">        }</a>
+<a class="sourceLine" id="cb15-39" title="39">    }</a>
+<a class="sourceLine" id="cb15-40" title="40"></a>
+<a class="sourceLine" id="cb15-41" title="41">    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">foo</span>() { println(<span class="st">&quot;D&quot;</span>) }</a>
+<a class="sourceLine" id="cb15-42" title="42">}</a></code></pre></div>
+</blockquote>
 <h3 id="jump-expressions">Jump expressions</h3>
 <div id="grammar-rule-jumpExpression-pasted-82" class="grammar-rule">
 <dl>
