@@ -19,9 +19,7 @@ val buildMode = "production" // production | development
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        setUrl("https://kotlin.bintray.com/js-externals")
-    }
+    maven { setUrl("https://kotlin.bintray.com/js-externals") }
 }
 
 dependencies {
@@ -32,7 +30,7 @@ dependencies {
 
 java.sourceSets {
     "main" {
-        java.srcDir("src/main")
+        java.srcDir("src/main/kotlin")
     }
 }
 

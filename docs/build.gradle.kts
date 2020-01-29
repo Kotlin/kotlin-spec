@@ -5,9 +5,8 @@ import java.nio.file.Paths
 plugins {
     application
     id("kotlin") version "1.3.41"
+    id("at.phatbl.shellexec")
 }
-
-apply(plugin="at.phatbl.shellexec")
 
 group = "org.jetbrains.kotlin.spec"
 version = "0.1"
@@ -27,15 +26,13 @@ fun getScriptText(scriptName: String): String {
 
 repositories {
     maven { setUrl("https://jitpack.io") }
-    maven {
-        setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven")
-    }
+    maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
     mavenCentral()
 }
 
 java.sourceSets {
     "main" {
-        java.srcDir("src/kotlin")
+        java.srcDir("src/main/kotlin")
     }
 }
 
@@ -118,10 +115,10 @@ tasks.create<JavaExec>("execute") {
     group = "internal"
 
     classpath = java.sourceSets["main"].runtimeClasspath
-    main = if (project.hasProperty("mainClass")) project.property("mainClass") as String else ""
-    if (project.hasProperty("args")) {
-        args = (project.property("args") as String).split(" ")
-    }
+
+    main = project.findProperty("mainClass") as? String ?: ""
+    args = (project.findProperty("args") as? String)?.split(" ") ?: emptyList()
+
     standardInput = System.`in`
     standardOutput = System.out
     errorOutput = System.err

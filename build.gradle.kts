@@ -17,6 +17,8 @@ tasks.create<Copy>("copyStatic") {
 tasks.create<Copy>("copyBuiltJs") {
     group = "internal"
 
+    mustRunAfter("front-end:webpack-bundle")
+
     from("$projectDir/front-end/build/js")
     into(jsBuildDir)
 }
@@ -24,12 +26,16 @@ tasks.create<Copy>("copyBuiltJs") {
 tasks.create<Copy>("copyHtml") {
     group = "internal"
 
+    mustRunAfter("docs:buildHtml", "docs:buildHtmlBySections")
+
     from("$projectDir/docs/build/spec/html")
     into(htmlBuildDir)
 }
 
 tasks.create<Copy>("copyPdf") {
     group = "internal"
+
+    mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
 
     from("$projectDir/docs/build/spec/pdf")
     into(pdfBuildDir)
@@ -40,7 +46,7 @@ tasks.create<Task>("buildJs") {
 
     dependsOn("copyStatic")
     dependsOn("front-end:webpack-bundle")
-    dependsOn("copyBuiltJs").mustRunAfter("front-end:webpack-bundle")
+    dependsOn("copyBuiltJs")
 
     doFirst {
         File(jsBuildDir).mkdirs()
@@ -52,10 +58,10 @@ tasks.create<Copy>("buildWeb") {
 
     dependsOn("docs:buildHtml")
     dependsOn("docs:buildHtmlBySections")
-    dependsOn("copyHtml").mustRunAfter("docs:buildHtml", "docs:buildHtmlBySections")
+    dependsOn("copyHtml")
     dependsOn("buildJs")
 
-    setFinalizedBy(listOf("front-end:clean", "docs:clean"))
+    finalizedBy("front-end:clean", "docs:clean")
 }
 
 tasks.create<Copy>("buildPdf") {
@@ -63,14 +69,16 @@ tasks.create<Copy>("buildPdf") {
 
     dependsOn("docs:buildPdf")
     dependsOn("docs:buildPdfBySections")
-    dependsOn("copyPdf").mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
+    dependsOn("copyPdf")
 
-    setFinalizedBy(listOf("front-end:clean", "docs:clean"))
+    finalizedBy("front-end:clean", "docs:clean")
 }
 
 tasks.create<Delete>("clean") {
     group = "build"
-    delete("$projectDir/build")
+
     dependsOn("front-end:clean")
     dependsOn("docs:clean")
+
+    delete("$projectDir/build")
 }
