@@ -33,7 +33,7 @@ These entities may be types or values, where values may refer to objects, functi
 Top-level scopes additionally allow to introduce such bindings using [`import` directive][Packages and imports] from other top-level scopes.
 
 In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. 
-An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by [signature][Function signatures] and allow defining several functions with the same name in the same scope. 
+An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by [signature][Function signature] and allow defining several functions with the same name in the same scope. 
 When [calling functions][Call and property access expressions] a process called [overloading resolution][Overload resolution] takes places that allows differentiating such functions. 
 Overloading resolution also applies to properties if they are used as functions through `invoke`-convention, but it does not mean several properties with the same name may be defined in the same scope.
 

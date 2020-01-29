@@ -151,7 +151,7 @@ while (__iterator.hasNext()) {
 ```
 
 where `iterator`, `hasNext`, `next` are all suitable operator functions available in the current scope.
-`VarDecl` here may be a variable name or a set of variable name as per [destructuring variable declarations][Destructuring declarations].
+`VarDecl` here may be a variable name or a set of variable name as per [destructuring variable declarations][Local property declaration].
 
 > Note: the expansion is hygienic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
 
