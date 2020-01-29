@@ -45,13 +45,13 @@ fun runAfterDocumentReady() {
         on("click", ".sentence.covered") { e, _ ->
             specTestsViewer.showViewer(`$`(e.currentTarget))
         }
-        on("change", ".test-coverage-view select[name='test-area']") { e, _ ->
+        on("change", ".test-coverage-view select[name='test-area']") { _, _ ->
             specTestsViewer.onTestAreaChange()
         }
-        on("change", ".test-coverage-view select[name='test-type']") { e, _ ->
+        on("change", ".test-coverage-view select[name='test-type']") { _, _ ->
             specTestsViewer.onTestTypeChange()
         }
-        on("change", ".test-coverage-view select[name='test-number']") { e, _ ->
+        on("change", ".test-coverage-view select[name='test-number']") { _, _ ->
             specTestsViewer.onTestNumberChange()
         }
         on("click", ".prev-testcase") { e, _ ->
