@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../resources/css/main.css">
+  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="overload-resolution">Overload resolution</h2>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports <em>function overloading</em>, that is, the ability for several functions of the same name to coexist in the same scope, with the compiler picking the most suitable one when such a function is called. </span><span class="sentence">This section describes this mechanism in detail.</span></p>
+</div>
+<h3 id="intro">Intro</h3>
+<div class="paragraph">
+<p><span class="sentence">Unlike other object-oriented languages, Kotlin does not only have object methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overloading process quite a lot. </span><span class="sentence">Kotlin also has infix functions, operator and property overloading which all work in a similar, but subtly different way.</span></p>
+</div>
+<h3 id="receivers">Receivers</h3>
+<div class="paragraph">
+<p><span class="sentence">Every function or property that is defined as a method or an extension has one or more special parameters called <em>receiver</em> parameters. </span><span class="sentence">When calling such a callable using navigation operators (<code>.</code> or <code>?.</code>) the left hand side parameter is called an <em>explicit receiver</em> of this particular call. </span><span class="sentence">In addition to the explicit receiver, each call may indirectly access zero or more <em>implicit receivers</em>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Implicit receivers are available in some syntactic scope according to the following rules:</span></p>
+</div>
+<ul>
+<li><span class="sentence">All receivers available in an outer scope are also available in the nested scope;</span></li>
+<li><span class="sentence">In the scope of a classifier declaration, the following receivers are available:</span>
+<ul>
+<li><span class="sentence">The implicit <code>this</code> object of the declared type;</span></li>
+<li><span class="sentence">The companion object (if one exists) of this class;</span></li>
+<li><span class="sentence">The companion objects (if any exist) of all its superclasses;</span></li>
+</ul></li>
+<li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
+<li><span class="sentence">The scope of a lambda expression, if it has an extension function type, contains <code>this</code> argument of the lambda expression.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The available receivers are prioritized in the following way:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The receivers provided in the most inner scope have higher priority;</span></li>
+<li><span class="sentence">In a classifier body, the implicit <code>this</code> receiver has higher priority than any companion object receiver;</span></li>
+<li><span class="sentence">Current class companion object receiver has higher priority than any of the base class companion objects.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The implicit receiver having the highest priority is also called the <em>default implicit receiver</em>. </span><span class="sentence">The default implicit receiver is available in the scope as <code>this</code>. </span><span class="sentence">Other available receivers may be accessed using <a href="expressions.html#this-expressions">labeled this-expressions</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.</span></p>
+</div>
+<h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
+<div class="paragraph">
+<p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A fully-qualified call: <code>package.foo()</code>;</span></li>
+<li><span class="sentence">A call with an explicit receiver: <code>a.foo()</code>;</span></li>
+<li><span class="sentence">An infix function call: <code>a foo b</code>;</span></li>
+<li><span class="sentence">An overloaded operator call: <code>a + b</code>;</span></li>
+<li><span class="sentence">A call without an explicit receiver: <code>foo()</code>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">For each of these cases, a compiler should first pick a number of <em>overload candidates</em>, which form a set of possibly intended callables (<em>overload candidate set</em>), and then <em>choose the most specific function</em> to call based on the types of the function and the call arguments.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: the overload candidates are picked <strong>before</strong> the most specific function is chosen.</span></p>
+</div>
+</blockquote>
+<h3 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h3>
+<div class="paragraph">
+<p><span class="sentence">A <em>callable</em> <span class="math inline">\(X\)</span> for the purpose of this section is one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Function-like callables:</span>
+<ul>
+<li><span class="sentence">A function named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence">A function named <span class="math inline">\(Y\)</span> at its declaration site, but imported into the current scope using <a href="packages-and-imports.html#importing">a renaming import</a> as <span class="math inline">\(X\)</span>;</span></li>
+<li><span class="sentence">A constructor of the type named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+</ul></li>
+<li><span class="sentence">Property-like callables, one of the following with an operator function called <code>invoke</code> available as member or extension in the current scope:</span>
+<ul>
+<li><span class="sentence">A property named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence"><a href="declarations.html#object-declaration">An object</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence"><a href="declarations.html#class-declaration">A companion object</a> of a classifier type named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence"><a href="declarations.html#enum-class-declaration">An enum entry</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence">Any of the above named <span class="math inline">\(Y\)</span> at its declaration site, but imported into the current scope using <a href="packages-and-imports.html#importing">a renaming import</a> as <span class="math inline">\(X\)</span>.</span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In the latter case a call <span class="math inline">\(X(Y_0,Y_1,\ldots,Y_N)\)</span> is an overloadable operator which is expanded to <span class="math inline">\(X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)\)</span>. </span><span class="sentence">The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding <code>invoke</code> function.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The set of explicit receivers itself (denoted by a <a href="expressions.html#this-expressions"><code>this</code></a> expression, labeled or not) may also be used as a property-like callable using <code>this</code> as the left-hand side of the call expression. </span><span class="sentence">As with normal property-like callables, <span class="math inline">\(\texttt{this@A}(Y_0,Y_1,\ldots,Y_N)\)</span> is an overloadable operator which is expanded to <span class="math inline">\(\texttt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>member callable</em> is either a member function-like callable or a member property-like callable with a member operator <code>invoke</code>. </span><span class="sentence">An <em>extension callable</em> is either an extension function-like callable, a member property-like callable with an extension operator <code>invoke</code> or an extension property-like callable with an extension operator <code>invoke</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When calculating overload candidate sets, member callables produce the following separate sets (ordered by higher priority first):</span></p>
+</div>
+<ul>
+<li><span class="sentence">Member function-like callables;</span></li>
+<li><span class="sentence">Member property-like callables.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Extension callables produce the following separate sets (ordered by higher priority first):</span></p>
+</div>
+<ul>
+<li><span class="sentence">Extension functions;</span></li>
+<li><span class="sentence">Member property-like callables with extension invoke;</span></li>
+<li><span class="sentence">Extension property-like callables with member invoke;</span></li>
+<li><span class="sentence">Extension property-like callables with extension invoke.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Let us define this partition as c-level partition (callable-level partition). </span><span class="sentence">As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed last, after all other applicable steps.</span></p>
+</div>
+<h3 id="overload-resolution-for-a-fully-qualified-call">Overload resolution for a fully-qualified call</h3>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Detection of fully-qualified vs explicit receiver calls)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a callable name is fully-qualified (that is, it contains a full package path), then the overload candidate set <span class="math inline">\(S\)</span> simply contains all the callables with the specified name in the specified package. </span><span class="sentence">As a package name can never clash with any other declared entity, after performing c-level partition on <span class="math inline">\(S\)</span>, the resulting sets are the only ones available for further processing.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>) {}</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Double</span>) {}</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">List</span>&lt;<span class="va">Char</span>&gt;) {}</a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="kw">val</span> <span class="va">foo</span> = {}</a>
+<a class="sourceLine" id="cb1-7" title="7">. . .</a>
+<a class="sourceLine" id="cb1-8" title="8">a.b.c.foo()</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here the resulting overload candidate set contains all the callables named <code>foo</code> from the package <code>a.b.c</code>.</span></p>
+</div>
+<h3 id="a-call-with-an-explicit-receiver">A call with an explicit receiver</h3>
+<div class="paragraph">
+<p><span class="sentence">If a function call is done via a <a href="expressions.html#navigation-operators">navigation operator</a> (<code>.</code> or <code>?.</code>, not to be confused with a <a href="overload-resolution.html#overload-resolution-for-a-fully-qualified-call">fully-qualified call</a>), then the left hand side operand of the call is the explicit receiver of this call.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A call of callable <code>f</code> with an explicit receiver <code>e</code> is correct if one (or more) of the following holds:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence"><code>f</code> is a member callable of the classifier type of <code>e</code> or any of its supertypes;</span></li>
+<li><span class="sentence"><code>f</code> is an extension callable of the classifier type of <code>e</code> or any of its supertypes, including local and imported extensions.</span></li>
+</ol>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Handle <code>a.foo()</code> where <code>foo : A.() -&gt; Unit</code>)</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: callables for case 2 include not only top-level extension callables, but also extension callables from any of the available implicit receivers. </span><span class="sentence">For example, if class <span class="math inline">\(P\)</span> contains a member extension function for another class <span class="math inline">\(T\)</span> and an object of class <span class="math inline">\(P\)</span> is available as an implicit receiver, this extension function may be used for the call if it has a suitable type.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If a call is correct, for a callable named <code>f</code> with an explicit receiver <code>e</code> of type <code>T</code> the following sets are analyzed (in the given order):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">The sets of non-extension member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">The sets of local extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, in all declaration scopes containing the current declaration scope, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
+<li><span class="sentence">The sets of explicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">The sets of extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, declared in the package scope;</span></li>
+<li><span class="sentence">The sets of star-imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">The sets of implicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>.</span></li>
+</ol>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="math inline">\(T &lt;: U\)</span>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set that contains <strong>any</strong> callable with the corresponding name and conforming types is picked. </span><span class="sentence">This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.</span></p>
+</div>
+<h3 id="infix-function-calls">Infix function calls</h3>
+<div class="paragraph">
+<p><span class="sentence">Infix function calls are a special case of function calls with an explicit receiver in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the <code>infix</code> modifier. </span><span class="sentence">All other functions (and any properties) are not even considered for inclusion. </span><span class="sentence">Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this also means that all properties available through the <code>invoke</code> convention are non-eligible for infix calls, as there is no way of specifying the <code>infix</code> modifier for them.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend the set of functions considered as infix functions for the overload candidate set.</span></p>
+</div>
+<h3 id="operator-calls">Operator calls</h3>
+<div class="paragraph">
+<p><span class="sentence">According to <a href="overloadable-operators.html#overloadable-operators">the overloadable operators section</a>, some operator expressions in Kotlin can be overloaded using specially-named functions. </span><span class="sentence">This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used. </span><span class="sentence">The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with <code>operator</code> modifier are considered for inclusion when building overload candidate sets. </span><span class="sentence">Any properties are never considered for the overload candidate sets of operator calls.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this also means that all the properties available through the <code>invoke</code> convention are non-eligible for operator calls, as there is no way of specifying the <code>operator</code> modifier for them, even though the <code>invoke</code> callable is required to always have such modifier. </span><span class="sentence">As <code>invoke</code> convention itself is an operator call, it is impossible to use more than one <code>invoke</code> conventions in a single call.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: these rules are valid not only for dedicated operator expressions, but also for any calls arising from expanding <a href="statements.html#for-loop-statement"><code>for</code>-loop</a> iteration conventions, <a href="statements.html#assignments">assignments</a> or <a href="declarations.html#delegated-property-declaration">property delegates</a>.</span></p>
+</div>
+</blockquote>
+<h3 id="a-call-without-an-explicit-receiver">A call without an explicit receiver</h3>
+<div class="paragraph">
+<p><span class="sentence">A call which is performed with unqualified function name and without using a navigation operator is a call without an explicit receiver. </span><span class="sentence">It may have one or more implicit receivers or reference a top-level function.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this does not include calls using the <code>invoke</code> operator function where the left side of the call operator is not an identifier, but some other kind of expression. </span><span class="sentence">These cases are handled the same way as covered in the <a href="overload-resolution.html#operator-calls">previous section</a> and need no special treatment</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Add an example to the above note)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">As with function calls with explicit receiver, we should first pick a valid overload candidate set and then search this set for the <em>most specific function</em> to match the call.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For an identifier named <code>f</code> the following sets are analyzed (in the given order):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">The sets of local non-extension functions named <code>f</code> available in the current scope, in order of the scope they are declared in, smallest scope first;</span></li>
+<li><span class="sentence">The overload candidate sets for each implicit receiver <code>r</code> and <code>f</code>, calculated as if <code>r</code> is the explicit receiver, in order of the receiver priority (see the <a href="overload-resolution.html#a-call-with-an-explicit-receiver">corresponding section</a>);</span></li>
+<li><span class="sentence">Top-level non-extension functions named <code>f</code>, in the order of:</span>
+<ol type="a">
+<li><span class="sentence">Functions explicitly imported into current file;</span></li>
+<li><span class="sentence">Functions declared in the same package;</span></li>
+<li><span class="sentence">Functions star-imported into current file;</span></li>
+<li><span class="sentence">Implicitly imported functions (either Kotlin standard library or platform-specific ones).</span></li>
+</ol></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> function with the corresponding name and conforming types is picked.</span></p>
+</div>
+<h3 id="calls-with-named-parameters">Calls with named parameters</h3>
+<div class="paragraph">
+<p><span class="sentence">Most of the calls in Kotlin may use named parameters in call expressions, e.g., <code>f(a = 2)</code>, where <code>a</code> is a parameter specified in the declaration of <code>f</code>. </span><span class="sentence">Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameters for all named parameters from the call.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for properties called via <code>invoke</code> convention, the named parameters must be present in the declaration of the <code>invoke</code> operator function.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate. </span><span class="sentence">While the number of defaults (see <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">the MSC selection process</a>) does affect resolution process, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Named parameters actually influence the applicability of candidates)</span></p>
+</div>
+</div>
+<h3 id="calls-with-trailing-lambda-expressions">Calls with trailing lambda expressions</h3>
+<div class="paragraph">
+<p><span class="sentence">A call expression may have a single lambda expression placed outside of the argument list parentheses or even completely replacing them (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable argument parameters or parameters with defaults.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: this means that calls <code>f(1,2) { g() }</code> and <code>f(1,2, body = { g() })</code> are completely equivalent w.r.t. the overload resolution, assuming <code>body</code> is the name of the last formal parameter of <code>f</code>.</span></p>
+</div>
+</blockquote>
+<h3 id="calls-with-specified-type-parameters">Calls with specified type parameters</h3>
+<div class="paragraph">
+<p><span class="sentence">A call expression may have a type argument list explicitly specified before the argument list (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">In this case all the potential overload sets only include callables which contain exactly the same number of formal type parameters at declaration site. </span><span class="sentence">In case of a property callable via <code>invoke</code> convention, type parameters must be present at the <code>invoke</code> operator function declaration instead.</span></p>
+</div>
+<h3 id="determining-function-applicability-for-a-specific-call">Determining function applicability for a specific call</h3>
+<h4 id="rationale">Rationale</h4>
+<div class="paragraph">
+<p><span class="sentence">A function is <em>applicable</em> for a specific call if and only if the function parameters may be assigned the values of the arguments specified at call site and all type constraints of the function hold.</span></p>
+</div>
+<h4 id="description">Description</h4>
+<div class="paragraph">
+<p><span class="sentence">Determining function applicability for a specific call is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem. </span><span class="sentence">First, for every non-lambda argument of the function supplied in the call, type inference is performed. </span><span class="sentence">Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Second, the following constraint system is built:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For every non-lambda parameter inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function argument of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
+<li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
+<li><span class="sentence">For every lambda parameter with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function argument of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh variables;</span></li>
+<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}&lt;: U_m\)</span> is added to the constraint system, where <a href="type-system.html#kotlin.function"><span class="math inline">\(\operatorname{\mathtt{kotlin.Function}}\)</span></a> is the common supertype of all <a href="type-system.html#function-types">function types</a>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.</span></p>
+</div>
+<h3 id="choosing-the-most-specific-function-from-the-overload-candidate-set">Choosing the most specific function from the overload candidate set</h3>
+<h4 id="rationale-1">Rationale</h4>
+<div class="paragraph">
+<p><span class="sentence">The main rationale in choosing the most specific function from the overload candidate set is the following:</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">The most specific function can forward itself to any other function from the overload candidate set, while the opposite is not true.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If there are several functions with this property, none of them are the most specific and an ambiguity error should be reported by the compiler.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Consider the following example with two functions:</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {}        <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {} <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb2-3" title="3">...</a>
+<a class="sourceLine" id="cb2-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The following snippet should explain this in more detail.</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {</a>
+<a class="sourceLine" id="cb3-2" title="2">    f2(arg, arg2) <span class="co">// valid: can forward both arguments</span></a>
+<a class="sourceLine" id="cb3-3" title="3">}</a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {</a>
+<a class="sourceLine" id="cb3-5" title="5">    f1(arg, arg2) <span class="co">// invalid: function f1 is not applicable</span></a>
+<a class="sourceLine" id="cb3-6" title="6">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The rest of this section will try to clarify this mechanism in more detail.</span></p>
+</div>
+<h4 id="description-1">Description</h4>
+<div class="paragraph">
+<p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> system of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>. </span><span class="sentence">For every two distinct members of the candidate set <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>, the following constraint system is constructed and solved:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For every non-default argument of the call, the corresponding value parameter types <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all type parameters <span class="math inline">\(T_1, T_2, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, T^{\sim}_2, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria). </span><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped. </span><span class="sentence">If <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> and <span class="math inline">\(F_2\)</span> is equally or more applicable than <span class="math inline">\(F_1\)</span>, this means that the two callables are equally applicable and additional decision steps are needed to choose the most specific overload candidate. </span><span class="sentence">If neither <span class="math inline">\(F_1\)</span> nor <span class="math inline">\(F_2\)</span> is equally or more applicable than its counterpart, it also means that <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable and additional decision steps are needed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All members of the overload candidate set are ranked according to the applicability criteria. </span><span class="sentence">If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Any non-generic (meaning that it does not have type parameters in its declaration) callable is a more specific candidate than any generic (containing type parameters in its declaration) callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
+<li><span class="sentence">For every non-default argument of the call consider the corresponding value parameter types <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>. </span><span class="sentence">If, for any <span class="math inline">\(K\)</span>, both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are different built-in integer types and one of them is <code>kotlin.Int</code>, then this parameter is preferred over the other parameter of the call. </span><span class="sentence">If all such parameters of <span class="math inline">\(F_1\)</span> are preferred based on this criteria over the parameters of <span class="math inline">\(F_2\)</span>, then <span class="math inline">\(F_1\)</span> is a more specific candidate than <span class="math inline">\(F_2\)</span>, and vice versa.</span></li>
+<li><span class="sentence">For each candidate, we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value);</span></li>
+<li><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
+<li><span class="sentence">If the number of non-specified default parameters is equal for several candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: it may seem strange to process built-in integer types in a way different from other types, but it is important in cases where the actual call argument is an integer literal having an <a href="type-system.html#integer-literal-types">integer literal type</a>. </span><span class="sentence">In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and it is preferred to have the <code>kotlin.Int</code> overload as the most specific.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If after this additional step there are still several candidates that are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compiler error.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: unlike the applicability test, the candidate comparison constraint system is <strong>not</strong> based on the actuall call, meaning that, when comparing two candidates, only constraints visible at <em>declaration site</em> apply.</span></p>
+</div>
+</blockquote>
+<h3 id="resolving-callable-references">Resolving callable references</h3>
+<div class="paragraph">
+<p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution that is similar to how function calls are resolved, but different in several aspects. </span><span class="sentence">First, property and function references are treated equally, as a property reference has a type that is a subtype of a function type. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">Third, and most important, is that in the case of a call receiving a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable getting called and the callable referenced are to be resolved <em>simultaneously</em>.</span></p>
+</div>
+<h4 id="resolving-callable-references-in-the-presence-of-an-expected-type">Resolving callable references in the presence of an expected type</h4>
+<div class="paragraph">
+<p><span class="sentence">In the simple case where there is no overloaded call performed, the resolution is performed as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For each callable reference candidate, the type constraints are built;</span></li>
+<li><span class="sentence">This constraints is added to the constraint system of the expression the callable reference is used in;</span></li>
+<li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
+<li><span class="sentence">Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">choosing candidates</a> for function calls.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">For example, let’s consider the two following functions:</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">In the following case</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\mathtt{kotlin.Int}}) \rightarrow \operatorname{\mathtt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Let’s consider another example:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
+<a class="sourceLine" id="cb6-2" title="2"></a>
+<a class="sourceLine" id="cb6-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">candidate (2) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\mathtt{kotlin.Double}}) \rightarrow \operatorname{\mathtt{kotlin.Double}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.</span></p>
+</div>
+<h4 id="bidirectional-resolution-for-function-calls">Bidirectional resolution for function calls</h4>
+<div class="paragraph">
+<p><span class="sentence">If the callable reference (or several callable references) are themselves arguments to an overloaded function call, the resolution process is performed for both callables simultaneously. </span><span class="sentence">Let’s assume we have a call <code>f(::g, b, c)</code>:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is performed as described in the other sections of this chapter, up to the point of picking the overload candidate sets. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
+<li><span class="sentence">For each candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described in <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">the previous case</a> and the most specific candidate is selected. </span><span class="sentence">Even if this process yields no applicable candidates for <code>::g</code>, it does not invalidate the corresponding canididate for <code>f</code>;</span></li>
+<li><span class="sentence">The overload resolution process for <code>f</code> is finished, selecting the most specific candidate for <code>f</code> of the available sets.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this may result in selecting a more specific candidate for <code>f</code> that has no available candidates for <code>g</code>, which means that the process fails when resolving <code>::g</code></span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still means that overload resolution for the called callable is performed only once.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: examples</span></p>
+</div>
+</div>
+<h3 id="about-type-inference">About type inference</h3>
+<div class="paragraph">
+<p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates. </span><span class="sentence">Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up.</span></p>
+</div>
+</body>
+</html>
