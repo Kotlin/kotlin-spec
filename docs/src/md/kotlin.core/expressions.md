@@ -1061,60 +1061,118 @@ When a value of an anonymous object type escapes current scope:
 :::{.paste target=grammar-rule-thisExpression}
 :::
 
-This-expressions are special kind of expressions used to access [receivers][Receivers] available in current scope.
+This-expressions are special kind of expressions used to access [receivers][Receivers] available in current [scope][Scopes and identifiers].
 The basic form of this expression, denoted by `this` keyword, is used to access the current implicit receiver according to the receiver overloading rules.
 In order to access other receivers, labeled `this` expressions are used.
 These may be any of the following:
 
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the [inner scope][Scopes and identifiers] of the classifier declaration), refers to the implicit object of the type being declared;
-- `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the function body), refers to the implicit receiver object of the extension function;
-- `this@lambda`, where `lambda` is a [label][Labels] provided for a lambda literal currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
-- `this@outerFunction`, where `outerFunction` is the name of the function lambda literal currently being declared is passed as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
-  Note that this is exclusive with the previous case, meaning that if the lambda literal is labeled, this mechanism cannot be used.
+- `this@function`, where `function` is a name of any extension function currently being declared (that is, this-expression is located in the [function body][Extension function declaration]), refers to the implicit receiver object of the extension function;
+- `this@lambda`, where `lambda` is a [label][Labels] provided for a [lambda literal][Lambda literals] currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
+- `this@outerFunction`, where `outerFunction` is the name of a function which takes [lambda literal][Lambda literals] currently being declared as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
+  
+  > Note: `this@outerFunction` notation is exclusive with `this@lambda` notation, meaning if a lambda literal is labeled, `this@outerFunction` cannot be used.
+  
+  > Note: `this@outerFunction` and `this@label` notations can be used only in lambda literals which have an extension function type, i.e., have an implicit receiver.
 
-In case there are several entities the labeled `this` can refer to using the same name, the closest one syntactically is used.
+  > Important: any other forms of this-expression are illegal and should result in a compile-time error.
 
-Example:
+In case there are several entities labeled `this` can refer to via the same name, the [closest label][Labels] is used.
 
-```
-object C
-class A {
-    fun B.foo() {
-        // run is a standard library function with extension lambda parameter
-        C.run { 
-            this // refers to receiver of type C
-            this@A // refers to receiver of type A
-            this@B // refers to receiver of type B
-            this@foo // refers to receiver of type B
-            this@run // refers to receiver of type C
-        }
-        C.run label@ {
-            this // refers to receiver of type C
-            this@A // refers to receiver of type A
-            this@B // refers to receiver of type B
-            this@foo // refers to receiver of type B
-            this@label // refers to receiver of type C
-            this@run // illegal: lambda literal is labeled
-        }
-    }
-}
-```
-
-TODO: check this example for errors
-
-Any other form of this-expression is illegal and must be a compile-time error.
+> Example:
+> 
+> ```kotlin
+> interface B
+> object C
+> 
+> class A/* receiver (1) */ {
+>     fun B/* receiver (2) */.foo() {
+>         // `run` is a standard library function
+>         //   with an extension lambda parameter
+>         C/* receiver (3) */.run {
+>             this // refers to receiver (3) of type C
+>             this@A // refers to receiver (1) of type A
+>             // this@B // illegal: B is not being declared
+>             this@foo // refers to receiver (2) of type B
+>             this@run // refers to receiver (3) of type C
+>         }
+>         C/* receiver (4) */.run label@{
+>             this // refers to receiver (4) of type C
+>             this@A // refers to receiver (1) of type A
+>             // this@B // illegal: B is not being declared
+>             this@foo // refers to receiver (2) of type B
+>             this@label // refers to receiver (4) of type C
+>             // this@run // illegal: lambda literal is labeled
+>         }
+>     }
+> }
+> ```
 
 ### Super-forms
 
 :::{.paste target=grammar-rule-superExpression}
 :::
 
-Super-forms are special kind of expression which can only be used as receivers in a function or property access expression.
+Super-forms are special kind of expression which can only be used as receivers in a [call or property access expression][Call and property access expressions].
 Any use of super-form expression in any other context is a compile-time error.
 
-Super-forms are used in classifier declarations to access method implementations from the supertypes without invoking overriding behaviour.
+Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.
+If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
 
-TODO(The rest...)
+The basic form of this expression, denoted by `super` keyword, is used to access the **single** immediate supertype of the currently declared classifier.
+In order to access other receivers, extended `super` expressions are used.
+These may be any of the following:
+
+* `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations.
+* `super<Klazz>@type`, where `type` is a name of any currently declared classifier and `Klazz` is a name of one of the immediate supertypes of the `type` classifier, refers to that supertype and its implementations.
+  
+  > Note: `super<Klazz>@type` notation can be used only in [inner classes][Nested and inner classifiers], as only inner class can have access to supertypes of other classes, i.e., supertypes of their parent class.
+
+> Example:
+> ```kotlin
+> interface A {
+>     fun foo() { println("A") }
+> }
+> interface B {
+>     fun foo() { println("B") }
+> }
+> 
+> open class C : A {
+>     override fun foo() { println("C") }
+> }
+> 
+> class E : C() {
+>     init {
+>         super.foo() // "C"
+>         super<C>.foo() // "C"
+>     }
+> }
+> 
+> class D : C(), A, B {
+>     init {
+>         // Error: ambiguity as several immediate supertypes
+>         //   are available here
+>         // super.foo()
+>         super<C>.foo() // "C"
+>         super<B>.foo() // "B"
+>         // Error: A is *not* an immediate supertype,
+>         //   as C inherits from A and is considered
+>         //   to be "more immediate"
+>         // super<A>.foo()
+>     }
+> 
+>     inner class Inner {
+>         init {
+>             // Error: C is not available
+>             // super<C>.foo()
+>             super<C>@D.foo() // "C"
+>             super<B>@D.foo() // "B"
+>         }
+>     }
+> 
+>     override fun foo() { println("D") }
+> }
+> ```
 
 ### Jump expressions
 

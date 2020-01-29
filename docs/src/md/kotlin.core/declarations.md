@@ -131,6 +131,8 @@ This association happens when instantiating an object of type $\ID$, as its cons
 
 For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
 
+> Note: inner classes cannot be declared in [objects][Classifier declaration].
+
 TODO(...)
 
 ##### Inheritance delegation
