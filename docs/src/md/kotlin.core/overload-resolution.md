@@ -58,11 +58,13 @@ For a particular callable invocation, any or both receivers may be involved, but
 
 Any function in Kotlin may be called in several different ways:
 
-- A fully-qualified call: `package.foo()`;
+- A fully-qualified call without receiver: `package.foo()`;
 - A call with an explicit receiver: `a.foo()`;
 - An infix function call: `a foo b`;
 - An overloaded operator call: `a + b`;
 - A call without an explicit receiver: `foo()`.
+
+Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, `package` is a name of a [kotlin package][Packages and imports], while in the second case, `a` is a value.
 
 For each of these cases, a compiler should first pick a number of _overload candidates_, which form a set of possibly intended callables (_overload candidate set_), and then _choose the most specific function_ to call based on the types of the function and the call arguments.
 
@@ -374,7 +376,7 @@ In the following case
 val x: (Int) -> Int = ::foo
 ```
 
-candidate (1) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Int) \rightarrow \Int$ and only one of the two types of corresponding functions abides this constraint.
+candidate (1) is picked up, because (assuming the type of the callable reference is called $\operatorname{CRT}$) the following constraint is built: $\operatorname{CRT} <: \FT(\Int) \rightarrow \Int$ and only one of the two types of corresponding functions abides this constraint.
 
 Let's consider another example (using the same definitions for `foo`):
 
@@ -384,7 +386,7 @@ fun bar(f: (Double) -> Double) {}
 bar(::foo)
 ```
 
-candidate (2) is picked up, because (assuming the type of the callable reference is called $CRT$) the following constraint is built: $CRT <: \FT(\Double) \rightarrow \Double$ and only one of the two types of corresponding functions abides this constraint.
+candidate (2) is picked up, because (assuming the type of the callable reference is called $\operatorname{CRT}$) the following constraint is built: $\operatorname{CRT} <: \FT(\Double) \rightarrow \Double$ and only one of the two types of corresponding functions abides this constraint.
 
 Please note that no bidirectional resolution is performed here as there is only one candidate for `bar`.
 If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.
@@ -403,7 +405,7 @@ Let's assume we have a call `f(::g, b, c)`:
 > Note: this may result in selecting a more specific candidate for `f` that has no available candidates for `g`, which means that the process fails when resolving `::g`
 
 When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2.
-This still ensures that overload resolution for the called callable is performed only once.
+This still ensures that overload resolution for the callable being called is performed only once.
 
 TODO: examples
 

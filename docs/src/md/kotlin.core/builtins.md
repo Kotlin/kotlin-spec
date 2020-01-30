@@ -92,7 +92,7 @@ If an arithmetic operation on `kotlin.Byte` results in arithmetic overflow, the 
 `kotlin.Long` is the type of integer numbers that is required to be able to hold the values at least in the range from $-2^{63}$ to $2^{63} - 1$.
 If an arithmetic operation on `kotlin.Long` results in arithmetic overflow, the result is unspecified.
 
-> Note: by "arithmetic overflow" we assume both positive and negative integer overflows.
+> Note: by "arithmetic overflow" we assume both positive and negative integer overflows.   
 
 > Important: a platform implementation may specify behaviour for an arithmetic overflow.
 

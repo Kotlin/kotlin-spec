@@ -40,5 +40,3 @@ Throwing an exception results in checking active `try`-blocks as described above
 
 > Note: Kotlin does not specify whether throwing exceptions involves construction of a program stack trace and how the actual exception handling is performed internally.
 > This is a platform-dependent mechanism.
-
-TODO: control flow?
