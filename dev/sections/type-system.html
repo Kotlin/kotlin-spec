@@ -117,6 +117,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="type-system">Type system</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -389,6 +390,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><span class="math inline">\(T\)</span> is a valid type name</span></li>
 <li><span class="sentence"><span class="math inline">\(\forall i \in [1,m]: S_i\)</span> must be concrete, <a href="type-system.html#nullable-types">non-nullable</a>, well-formed type</span></li>
+<li><span class="sentence">the transitive closure <span class="math inline">\(\mathbb{S}^*(T)\)</span> of the set of type supertypes <span class="math inline">\(\mathbb{S}(T : S_1, \ldots, S_m) = \{S_1, \ldots, S_m\} \cup \mathbb{S}(S_1) \cup \ldots \cup \mathbb{S}(S_m)\)</span> is <em>consistent</em>, i.e., does not contain two <a href="type-system.html#parameterized-classifier-types">parameterized types</a> with different type arguments.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -420,11 +422,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: <code>Number</code> is actually a built-in abstract class; we use it as an interface for illustrative purposes.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need to forbid situations like this: Inv&lt;T&gt; + A : Inv&lt;String&gt; + B : A, Inv&lt;Int&gt;)</span></p>
-</div>
-</div>
 <h5 id="parameterized-classifier-types">Parameterized classifier types</h5>
 <div class="paragraph">
 <p><span class="sentence">A classifier type constructor</span></p>
@@ -469,6 +466,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: A_i\)</span> must be well-formed concrete type</span></li>
 <li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]:\)</span> variance of <span class="math inline">\(A_i\)</span> does not <a href="type-system.html#use-site-variance">contradict</a> variance of <span class="math inline">\(F_i\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(\forall i \in [1,n]: A_i &lt;: \tau U_i\)</span>, where <span class="math inline">\(U_i\)</span> is the upper bound for <span class="math inline">\(F_i\)</span> and captured substitution <span class="math inline">\(\tau : F_1 = K_1, \ldots, F_n = K_n\)</span> manipulates <a href="type-system.html#type-capturing">captured types</a>.</span></li>
+<li><span class="sentence">the transitive closure <span class="math inline">\(\mathbb{S}^*(T)\)</span> of the set of type supertypes <span class="math inline">\(\mathbb{S}(T\langle \tau \rangle : \tau S_1, \ldots, \tau S_m) = \{\tau S_1, \ldots, \tau S_m\} \cup \mathbb{S}(\tau S_1) \cup \ldots \cup \mathbb{S}(\tau S_m)\)</span> is <em>consistent</em>, i.e., does not contain two <a href="type-system.html#parameterized-classifier-types">parameterized types</a> with different type arguments.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
