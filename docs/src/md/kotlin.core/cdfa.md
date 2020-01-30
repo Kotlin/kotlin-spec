@@ -936,7 +936,7 @@ After running this analysis, for every backedge $b$ and every variable $x$ prese
 
 #### Variable initialization analysis
 
-Kotlin allows [non-delegated properties][Property declarations] to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
+Kotlin allows [non-delegated properties][Property declaration] to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
 This property is checked by the variable initialization analysis (VIA).
 VIA operates on abstract values from a flat lattice of two values $\{\Assigned, \Unassigned\}$.
 The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the lattice given above.

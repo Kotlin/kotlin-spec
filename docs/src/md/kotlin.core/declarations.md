@@ -905,7 +905,7 @@ For example, all `private` top-level declarations in a file may only be accessed
 TODO: clarify all this
 
 Some `private` declarations are special in that they have an even more restricted visibility, called "`private` to `this`".
-These include declarations that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside `this` object, meaning that they can be accessed using `this` as the receiver, but are not visible on other instances of the same class even in the methods of this class.
+These include declarations that are allowed to lift certain [variance][Mixed-site variance] rules in their types as long as they are never accessed outside `this` object, meaning that they can be accessed using `this` as the receiver, but are not visible on other instances of the same class even in the methods of this class.
 For example, for a class declaration $C$ with type parameter $T$ it is not allowed to introduce declarations involving $T$ with conflicting variance, unless they are declared `private`.
 That is, if $T$ is declared as covariant, any declarations with a type using $T$ in a contravariant position (including properties with type $T$ itself if they are mutable) and if $T$ is declared as contravariant, any declarations with a type using $T$ in a covariant position (including properties with type $T$ itself) are forbidden, unless they are declared using `private` visibility, in which case they are instead treated as "`private` to `this`".
 

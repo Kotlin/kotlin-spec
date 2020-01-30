@@ -282,7 +282,7 @@ In fact, it supports three different condition forms:
 - *Any other expression* (`Expr`) besides the following.
     + [Simple continue expression][Continue expression]
     + [Simple break expression][Break expression]
-    + [Spread operator expression][Spread operator expression]
+    + [Spread operator expression][Spread operator]
 
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
@@ -702,8 +702,7 @@ It is an [overloadable][Overloadable operators] operator with the following expa
 
 An indexing expression has the same type as the corresponding `get` expression.
 
-Indexing expressions are [assignable][Assignments].
-For a corresponding assignment form, see [indexing assignment][Indexing assignment].
+Indexing expressions are assignable, for a corresponding assignment form, see [here][Simple assignments].
 
 ### Call and property access expressions
 
@@ -870,7 +869,7 @@ For details on how a particular candidate and receiver for a particular call/pro
 Please note that in some cases function calls are indistinguishable from property access with `invoke`-convention call suffix. 
 
 From this point on in this section we well refer to both as function calls.
-As described in [the function declaration section][Function declarations], function calls receive arguments of several different kinds:
+As described in [the function declaration section][Function declaration], function calls receive arguments of several different kinds:
 
 - Explicit receiver argument, used in calls with explicit receivers;
 - Normal arguments, provided directly inside the parentheses part of the call;
