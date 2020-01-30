@@ -23,6 +23,8 @@
 
 \newcommand{\sur}{\mathrel{\operatorname{\cancel{<:>}}}}
 
+\newcommand{\Ss}{\mathbb{S}}
+
 \opMathTEXT{\LUB}{LUB}
 \opMathTEXT{\GLB}{GLB}
 
