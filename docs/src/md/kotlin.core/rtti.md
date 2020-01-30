@@ -4,8 +4,8 @@ The _runtime type information_ (RTTI) is the information about Kotlin types of v
 RTTI affects the semantics of certain expressions, changing their evaluation depending on the amount of RTTI available for particular values, implementation, and platform:
 
 - [The type checking operator][Type-checking expression]
-- [The cast expression][cast expression], expecially the `as?` operator
-- [Class literals][class literal] and the values they evaluate to
+- [The cast expression][Cast expression], expecially the `as?` operator
+- [Class literals][Class literals] and the values they evaluate to
 
 _Runtime types_ are particular instances of RTTI for a particular value at runtime. 
 These model a subset of the Kotlin [type system][Type system]. 

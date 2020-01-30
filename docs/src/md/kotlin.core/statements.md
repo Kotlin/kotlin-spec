@@ -86,7 +86,7 @@ All of these operators are overloadable operator functions with the following ex
 
 > Note: as of Kotlin version 1.2.31, there are additional overloadable functions for `%` called `mod`/`modAssign`, which are deprecated.
 
-After the expansion, the resulting [function call expression][Function call expressions] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
+After the expansion, the resulting [function call expression][Function calls and property access] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
 
 > Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions] of this specification.
 

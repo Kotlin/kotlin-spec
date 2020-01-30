@@ -52,7 +52,7 @@ The expression `C[0][0]++` is expanded (see the [Expressions][expressions] secti
     ```kotlin
     C[0].set(C[0].get(0).inc())
     ```
-- Third, the [indexing expression][Indexing expression] is expanded, resulting in:
+- Third, the [indexing expression][Indexing expressions] is expanded, resulting in:
     
     ```kotlin
     C.get(0).set(C.get(0).get(0).inc())
