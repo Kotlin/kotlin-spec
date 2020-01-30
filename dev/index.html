@@ -6226,7 +6226,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>kotlin.Char</code>;</span></li>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 </ul></li>
-<li><span class="sentence">It is declared in the top-level scope or inside [an object declaration][Object declarations];</span></li>
+<li><span class="sentence">It is declared in the top-level scope or inside <a href="#classifier-declaration">an object declaration</a>;</span></li>
 <li><span class="sentence">It has an initializer expression and this initializer expression can be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
@@ -6372,7 +6372,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include declarations that are allowed to lift certain [variance][Variance] rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any declarations with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any declarations with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
+<p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include declarations that are allowed to lift certain <a href="#mixed-site-variance">variance</a> rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any declarations with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any declarations with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -6478,7 +6478,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">A <code>sealed</code> class is implicitly abstract (and these two modifiers are exclusive);</span></li>
 <li><span class="sentence">It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);</span></li>
-<li><span class="sentence">It allows for [exhaustiveness checking of when expressions][When-expression] for values of this type.</span></li>
+<li><span class="sentence">It allows for <a href="#when-expression">exhaustiveness checking of when expressions</a> for values of this type.</span></li>
 </ul>
 <h4 id="inheritance-from-built-in-types">Inheritance from built-in types</h4>
 <div class="paragraph">
@@ -6541,7 +6541,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of [function overloading][Overloading resolution].</span></p>
+<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of <a href="#overload-resolution">function overloading</a>.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -6593,7 +6593,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">All the declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values may refer to objects, functions or properties (that may be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce such bindings using <a href="#packages-and-imports"><code>import</code> directive</a> from other top-level scopes.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by [signature][Function signatures] and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="#call-and-property-access-expressions">calling functions</a> a process called <a href="#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
+<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through outer scopes or imports. </span><span class="sentence">An exception to this rule are function declarations, that, in addition to identifier bound to, also may differ by <a href="#function-signature">signature</a> and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="#call-and-property-access-expressions">calling functions</a> a process called <a href="#overload-resolution">overloading resolution</a> takes places that allows differentiating such functions. </span><span class="sentence">Overloading resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not mean several properties with the same name may be defined in the same scope.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Platforms may introduce additional restrictions on which identifiers may be declared together in the same or related scopes.</span></p>
@@ -6830,7 +6830,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">After the expansion, the resulting [function call expression][Function call expressions] or <a href="#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
+<p><span class="sentence">After the expansion, the resulting <a href="#function-calls-and-property-access">function call expression</a> or <a href="#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -6937,7 +6937,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb39-4" title="4">    &lt;... all the statements from Body&gt;</a>
 <a class="sourceLine" id="cb39-5" title="5">}</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable name as per [destructuring variable declarations][Destructuring declarations].</span></p>
+<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable name as per <a href="#local-property-declaration">destructuring variable declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -7443,7 +7443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><a href="#continue-expression">Simple continue expression</a></span></li>
 <li><span class="sentence"><a href="#break-expression">Simple break expression</a></span></li>
-<li><span class="sentence">[Spread operator expression][Spread operator expression]</span></li>
+<li><span class="sentence">[Spread operator expression][Spread operator]</span></li>
 </ul>
 <span class="sentence">The resulting condition is an <a href="#equality-expressions">equality check</a> of the form <code>boundValue == Expr</code>.</span></li>
 <li><span class="sentence">The <code>else</code> condition, which is a special condition which evaluates to <code>true</code> if none of the branches above it evaluated to <code>true</code>. </span><span class="sentence">The <code>else</code> condition <strong>must</strong> also be in the last when entry of when expression, otherwise it is a compile-time error.</span></li>
@@ -8093,7 +8093,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">An indexing expression has the same type as the corresponding <code>get</code> expression.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Indexing expressions are <a href="#assignments">assignable</a>. </span><span class="sentence">For a corresponding assignment form, see [indexing assignment][Indexing assignment].</span></p>
+<p><span class="sentence">Indexing expressions are assignable, for a corresponding assignment form, see <a href="#simple-assignments">here</a>.</span></p>
 </div>
 <h3 id="call-and-property-access-expressions">Call and property access expressions</h3>
 <div id="grammar-rule-postfixUnaryExpression-pasted-65" class="grammar-rule">
@@ -8353,7 +8353,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Function call expression is the expression used to invoke functions. </span><span class="sentence">Property access expression is the expression used to access properties. </span><span class="sentence">There are two kinds of both: with and without explicit receiver (the left-hand side of the <code>.</code> operator). </span><span class="sentence">For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the <a href="#overload-resolution">overloading</a> section. </span><span class="sentence">Please note that in some cases function calls are indistinguishable from property access with <code>invoke</code>-convention call suffix.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">From this point on in this section we well refer to both as function calls. </span><span class="sentence">As described in [the function declaration section][Function declarations], function calls receive arguments of several different kinds:</span></p>
+<p><span class="sentence">From this point on in this section we well refer to both as function calls. </span><span class="sentence">As described in <a href="#function-declaration">the function declaration section</a>, function calls receive arguments of several different kinds:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
@@ -8978,7 +8978,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb57-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span>(C[<span class="dv">0</span>].<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
 <li><div class="paragraph">
-<p><span class="sentence">Third, the [indexing expression][Indexing expression] is expanded, resulting in:</span></p>
+<p><span class="sentence">Third, the <a href="#indexing-expressions">indexing expression</a> is expanded, resulting in:</span></p>
 </div>
 <div class="sourceCode" id="cb58"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb58-1" title="1">C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">set</span>(C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
 </ul>
@@ -9125,14 +9125,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">Any receiver available in the outer statement scope is available in any directly nested scope;</span></li>
-<li><span class="sentence">Inside an <a href="#object-declaration">object declaration</a>, the object itself is an available receiver in this and any nested scope;</span></li>
+<li><span class="sentence">Inside an <a href="#classifier-declaration">object declaration</a>, the object itself is an available receiver in this and any nested scope;</span></li>
 <li><span class="sentence">In the scope of a classifier declaration, the following receivers are available:</span>
 <ul>
 <li><span class="sentence">The implicit <code>this</code> object of the declared type;</span></li>
 <li><span class="sentence">The companion object (if one exists) of this class;</span></li>
 <li><span class="sentence">The companion objects (if any exist) of all its superclasses;</span></li>
 </ul></li>
-<li><span class="sentence">In an [inner class declaration][inner classes] all the receivers available in the outer declaration scope are also available in this declaration scope;</span></li>
+<li><span class="sentence">In an <a href="#nested-and-inner-classifiers">inner class declaration</a> all the receivers available in the outer declaration scope are also available in this declaration scope;</span></li>
 <li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
 <li><span class="sentence">The scope of a lambda expression, if it has an extension function type, contains <code>this</code> argument of the lambda expression.</span></li>
 </ul>
@@ -9957,7 +9957,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="variable-initialization-analysis">Variable initialization analysis</h4>
 <div class="paragraph">
-<p><span class="sentence">Kotlin allows [non-delegated properties][Property declarations] to not have initializers in their declaration as long as the property is <em>definitely assigned</em> before its first usage. </span><span class="sentence">This property is checked by the variable initialization analysis (VIA). </span><span class="sentence">VIA operates on abstract values from a flat lattice of two values <span class="math inline">\(\{\operatorname{\mathit{Assigned}}, \operatorname{\mathit{Unassigned}}\}\)</span>. </span><span class="sentence">The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the lattice given above. </span><span class="sentence">The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.</span></p>
+<p><span class="sentence">Kotlin allows <a href="#property-declaration">non-delegated properties</a> to not have initializers in their declaration as long as the property is <em>definitely assigned</em> before its first usage. </span><span class="sentence">This property is checked by the variable initialization analysis (VIA). </span><span class="sentence">VIA operates on abstract values from a flat lattice of two values <span class="math inline">\(\{\operatorname{\mathit{Assigned}}, \operatorname{\mathit{Unassigned}}\}\)</span>. </span><span class="sentence">The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the lattice given above. </span><span class="sentence">The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The CFG nodes relevant to VIA include only property declarations and direct assignments. </span><span class="sentence">Every property declaration adds itself to the domain by setting the <span class="math inline">\(\operatorname{\mathit{Unassigned}}\)</span> value to itself. </span><span class="sentence">Every direct assignment of a property changes the value for this property to <span class="math inline">\(\operatorname{\mathit{Assigned}}\)</span>.</span></p>
@@ -10659,7 +10659,7 @@ P_2 \times N_2
 <ul>
 <li><span class="sentence"><a href="#type-checking-expression">The type checking operator</a></span></li>
 <li><span class="sentence"><a href="#cast-expression">The cast expression</a>, expecially the <code>as?</code> operator</span></li>
-<li><span class="sentence">[Class literals][class literal] and the values they evaluate to</span></li>
+<li><span class="sentence"><a href="#class-literals">Class literals</a> and the values they evaluate to</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><em>Runtime types</em> are particular instances of RTTI for a particular value at runtime. </span><span class="sentence">These model a subset of the Kotlin <a href="#type-system">type system</a>. </span><span class="sentence">Namely, the runtime types are limited to <a href="#classifier-types">classifier types</a>, <a href="#function-types">function types</a> and a special case of <code>kotlin.Nothing?</code> which is the type of <a href="#null-literal"><code>null</code> reference</a> and the only nullable runtime type. </span><span class="sentence">This includes the classifier types created by <a href="#object-literals">anonymous object literals</a>. </span><span class="sentence">There is a slight distinction between a Kotlin type system type and its runtime counterpart:</span></p>
