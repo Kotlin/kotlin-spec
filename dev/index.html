@@ -7012,12 +7012,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="todo">TODO</h3>
 <ul>
-<li><span class="sentence">Labels</span></li>
-<li><span class="sentence">Are declarations statements or not?</span>
-<ul>
-<li><span class="sentence">In the current grammar, they are</span></li>
-<li><span class="sentence">If yes, what does it mean to the spec?</span></li>
-</ul></li>
 <li><span class="sentence">How expansions with new variables actually work</span></li>
 </ul>
 <h2 id="expressions">Expressions</h2>
@@ -9168,12 +9162,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A fully-qualified call: <code>package.foo()</code>;</span></li>
+<li><span class="sentence">A fully-qualified call without receiver: <code>package.foo()</code>;</span></li>
 <li><span class="sentence">A call with an explicit receiver: <code>a.foo()</code>;</span></li>
 <li><span class="sentence">An infix function call: <code>a foo b</code>;</span></li>
 <li><span class="sentence">An overloaded operator call: <code>a + b</code>;</span></li>
 <li><span class="sentence">A call without an explicit receiver: <code>foo()</code>.</span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, <code>package</code> is a name of a <a href="#packages-and-imports">kotlin package</a>, while in the second case, <code>a</code> is a value.</span></p>
+</div>
 <div class="paragraph">
 <p><span class="sentence">For each of these cases, a compiler should first pick a number of <em>overload candidates</em>, which form a set of possibly intended callables (<em>overload candidate set</em>), and then <em>choose the most specific function</em> to call based on the types of the function and the call arguments.</span></p>
 </div>
@@ -9540,7 +9537,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb65"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb65-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+<p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(\operatorname{CRT}\)</span>) the following constraint is built: <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Let’s consider another example (using the same definitions for <code>foo</code>):</span></p>
@@ -9549,7 +9546,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb66-2" title="2"></a>
 <a class="sourceLine" id="cb66-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">candidate (2) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(CRT\)</span>) the following constraint is built: <span class="math inline">\(CRT &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+<p><span class="sentence">candidate (2) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(\operatorname{CRT}\)</span>) the following constraint is built: <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.</span></p>
@@ -9569,7 +9566,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still ensures that overload resolution for the called callable is performed only once.</span></p>
+<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still ensures that overload resolution for the callable being called is performed only once.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
