@@ -194,8 +194,4 @@ The type of a control structure body is the type of its value.
 
 ### TODO
 
-- Labels
-- Are declarations statements or not?
-    - In the current grammar, they are
-    - If yes, what does it mean to the spec?
 - How expansions with new variables actually work
