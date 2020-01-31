@@ -179,6 +179,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#iterator-types">Iterator types</a><ul>
 <li><a href="#specialized-iterator-types">Specialized iterator types</a></li>
 </ul></li>
+<li><a href="#kotlin.throwable"><code>kotlin.Throwable</code></a></li>
+<li><a href="#kotlin.comparable"><code>kotlin.Comparable</code></a></li>
+<li><a href="#kotlin.function-1"><code>kotlin.Function</code></a></li>
+<li><a href="#reflection-support-builtin-types">Reflection support builtin types</a><ul>
+<li><a href="#kotlin.reflect.kclass"><code>kotlin.reflect.KClass</code></a></li>
+<li><a href="#kotlin.reflect.kcallable"><code>kotlin.reflect.KCallable</code></a></li>
+<li><a href="#kotlin.reflect.kproperty"><code>kotlin.reflect.KProperty</code></a></li>
+<li><a href="#kotlin.reflect.kfunction"><code>kotlin.reflect.KFunction</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="#declarations">Declarations</a><ul>
 <li><a href="#glossary-2">Glossary</a></li>
@@ -4355,7 +4364,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Furthermore, all function types <span class="math inline">\(\operatorname{\text{FunctionN}}\)</span> are subtypes of a general argument-agnostic type <a href="#kotlin.function"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}\)</span></a> for the purpose of unification; this subtyping relation is also used in <a href="#determining-function-applicability-for-a-specific-call">overload resolution</a>.</span></p>
+<p><span class="sentence">Furthermore, all function types <span class="math inline">\(\operatorname{\text{FunctionN}}\)</span> are subtypes of a general argument-agnostic type <a href="#kotlin.function-1"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}\)</span></a> for the purpose of unification; this subtyping relation is also used in <a href="#determining-function-applicability-for-a-specific-call">overload resolution</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -4925,23 +4934,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
-<ul>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>KClass</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>KProperty</code>/<code>KFunction</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>K(Mutable)Property(N)</code>? </span><span class="sentence">(’cause callable references)</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>Throwable</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>Comparable</code>?</span>
-</div></li>
-</ul>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
 </div>
@@ -5004,7 +4996,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="built-in-integer-types-1">Built-in integer types</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="#built-in-integer-types">type system</a> and <a href="#integer-literals">integer literals</a>.</span></p>
+<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="#built-in-integer-types">type system</a> and <a href="#integer-literals">integer literals</a>. </span><span class="sentence">Every built-in integer type <code>I</code> is a subtype of <a href="#kotlin.comparable"><code>kotlin.Comparable&lt;I&gt;</code></a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The signed integer types are the following.</span></p>
@@ -5060,10 +5052,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision.</span></p>
+<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Float</code> is a subtype of <a href="#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Float&gt;</code></a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision.</span></p>
+<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Double</code> is a subtype of <a href="#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Double&gt;</code></a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -5099,7 +5091,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> has the following characteristics.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <code>kotlin.Comparable&lt;T&gt;</code></span></li>
+<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <a href="#kotlin.comparable"><code>kotlin.Comparable&lt;T&gt;</code></a></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following properties.</span></p>
@@ -5259,10 +5251,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote></li>
 </ul>
-<div class="TODO">
+<h3 id="kotlin.throwable"><code>kotlin.Throwable</code></h3>
 <div class="paragraph">
-<p><span class="sentence">TODO([Kotlin.*] <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">Depends on how we plan to approach the interpolation expansion)</span></p>
+<p><span class="sentence"><code>kotlin.Throwable</code> is the built-in classifier type that is the base type of all <a href="#exceptions">exception types</a>. </span><span class="sentence">Any value that is used in a <a href="#throw-expressions"><code>throw</code> expression</a> must have a static type that is a subtype of <code>kotlin.Throwable</code>. </span><span class="sentence">Any type that is used in a <code>catch</code> part of the <a href="#try-expression"><code>try</code> expression</a> must be a subtype of (or equal to) <code>kotlin.Throwable</code>.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">It provides at least the following properties:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>public val message: String?</code> An optional message depicting the cause of the throw.</span></li>
+<li><span class="sentence"><code>public val cause: Throwable?</code> An optional other value of type <code>kotlin.Throwable</code> allowing for nested throwables to be constructed.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Other members may exist, please refer to the standard library documentation for details. </span><span class="sentence">No subtype of <code>kotlin.Throwable</code> is allowed to have type parameters. </span><span class="sentence">Declaring such a type is a compile-time error.</span></p>
+</div>
+<h3 id="kotlin.comparable"><code>kotlin.Comparable</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Comparable&lt;in T&gt;</code> is a built-in parameterized type which represents values that may be compared for total ordering. </span><span class="sentence">It provides the following member function:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>public operator fun compareTo(other: T): Int</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This function is used to implement <a href="#comparison-expressions">comparison operators</a> through <a href="#overloadable-operators">overloadable operator convention</a> for standard library classes.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a type is not required to be a subtype of <code>kotlin.Comparable</code> in order to implement total ordering operations</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.function-1"><code>kotlin.Function</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Function&lt;out R&gt;</code> is the base classifier type of all <a href="#function-types">function types</a>. </span><span class="sentence">See the relevant section for details.</span></p>
+</div>
+<h3 id="reflection-support-builtin-types">Reflection support builtin types</h3>
+<h4 id="kotlin.reflect.kclass"><code>kotlin.reflect.KClass</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KClass&lt;T: Any&gt;</code> is the class used to represent runtime type information for <a href="#runtime-available-types">runtime-available classifier types</a>. </span><span class="sentence">It is also used in platform-specific reflection facilities.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This is the type of <a href="#class-literals">class literals</a>. </span><span class="sentence">This type is required to introduce <code>equals</code> and <code>hashCode</code> member function implementations (see <a href="#kotlin.any-1"><code>kotlin.Any</code></a>) that allow for comparison and hashing of runtime type information, e.g., that class literals are equal if they represent the same runtime type and not equal otherwise. </span><span class="sentence">Platform definitions, as well as particular implementations, may introduce additional members for this type.</span></p>
+</div>
+<h4 id="kotlin.reflect.kcallable"><code>kotlin.reflect.KCallable</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KCallable&lt;out R&gt;</code> is the class used to represent runtime information for callables (i.e. properties and functions). </span><span class="sentence">It is mainly used as base type for other types described in this section. </span><span class="sentence">It provides at least the following property:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>public val name: String</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This property contains the name of the callable. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kproperty"><code>kotlin.reflect.KProperty</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KProperty&lt;out R&gt;</code> is the class used to represent runtime information for <a href="#property-declaration">properties</a>. </span><span class="sentence">It is the base type of <a href="#callable-references">property references</a>. </span><span class="sentence">This type is used in <a href="#delegated-property-declaration">property delegation</a>. </span><span class="sentence"><code>kotlin.reflect.KProperty&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kfunction"><code>kotlin.reflect.KFunction</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KFunction&lt;out R&gt;</code> is the class used to represent runtime information for <a href="#function-declaration">functions</a>. </span><span class="sentence">It is the base type of <a href="#callable-references">function references</a>. </span><span class="sentence"><code>kotlin.reflect.KFunction&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code> and <code>kotlin.Function&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>
 <h2 id="declarations">Declarations</h2>
 <h3 id="glossary-2">Glossary</h3>
@@ -6988,7 +7034,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>control structure body</em> is either a single statement or a code block. </span><span class="sentence">A <em>last expression</em> of a control structure body <code>CSB</code> is either the last expression of a code block (if <code>CSB</code> is a code block) or the single statement itself (if <code>CSB</code> is an expression). </span><span class="sentence">If a control structure body is not a code block or an expression, it has no last expression.</span></p>
+<p><span class="sentence">A <em>control structure body</em> is either a single statement or a code block. </span><span class="sentence">A <em>last expression</em> of a control structure body <span class="math inline">\(\operatorname{CSB}\)</span> is either the last expression of a code block (if <span class="math inline">\(\operatorname{CSB}\)</span> is a code block) or the single statement itself (if <span class="math inline">\(\operatorname{CSB}\)</span> is an expression). </span><span class="sentence">If a control structure body is not a code block or an expression, it has no last expression.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8300,6 +8346,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">The type of any property reference is a subtype of <code>kotlin.reflect.KProperty&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the type of the property;</span></li>
+<li><span class="sentence">The type of any function reference is a subtype of <code>kotlin.reflect.KFunction&lt;T&gt;</code>, where the type parameter <code>T</code> is fixed to the return type of the function;</span></li>
 <li><span class="sentence">The type of any callable reference is a subtype of <a href="#function-types">function type</a> which allows the corresponding callable to be accessed/called accordingly.</span>
 <ul>
 <li><span class="sentence">For a type-callable reference <code>lhs::rhs</code>, it is a function type <code>(O, Arg0 ... ArgN) -&gt; R</code>, where <code>O</code> is a receiver type (type of <code>lhs</code>), <code>Arg0, ... , ArgN</code> are either empty (for a property reference) or the types of function formal parameters (for a function reference), and <code>R</code> is the result type of the callable;</span></li>
@@ -9423,7 +9470,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For every non-lambda parameter inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function argument of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
 <li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
 <li><span class="sentence">For every lambda parameter with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function argument of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh variables;</span></li>
-<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(U_m &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="#kotlin.function"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
+<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(U_m &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="#kotlin.function-1"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.</span></p>

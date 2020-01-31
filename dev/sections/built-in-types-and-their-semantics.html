@@ -56,23 +56,6 @@
 
 
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
-<ul>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>KClass</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>KProperty</code>/<code>KFunction</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>K(Mutable)Property(N)</code>? </span><span class="sentence">(’cause callable references)</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>Throwable</code>?</span>
-</div></li>
-<li><div class="TODO">
-<span class="sentence">TODO: <code>Comparable</code>?</span>
-</div></li>
-</ul>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="type-system.html#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
 </div>
@@ -135,7 +118,7 @@
 </div>
 <h3 id="built-in-integer-types-1">Built-in integer types</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="type-system.html#built-in-integer-types">type system</a> and <a href="expressions.html#integer-literals">integer literals</a>.</span></p>
+<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="type-system.html#built-in-integer-types">type system</a> and <a href="expressions.html#integer-literals">integer literals</a>. </span><span class="sentence">Every built-in integer type <code>I</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;I&gt;</code></a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The signed integer types are the following.</span></p>
@@ -191,10 +174,10 @@
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision.</span></p>
+<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Float</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Float&gt;</code></a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision.</span></p>
+<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Double</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Double&gt;</code></a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -230,7 +213,7 @@
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> has the following characteristics.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <code>kotlin.Comparable&lt;T&gt;</code></span></li>
+<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;T&gt;</code></a></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following properties.</span></p>
@@ -390,10 +373,64 @@
 </div>
 </blockquote></li>
 </ul>
-<div class="TODO">
+<h3 id="kotlin.throwable"><code>kotlin.Throwable</code></h3>
 <div class="paragraph">
-<p><span class="sentence">TODO([Kotlin.*] <code>Appendable</code>/<code>StringBuilder</code>? </span><span class="sentence">Depends on how we plan to approach the interpolation expansion)</span></p>
+<p><span class="sentence"><code>kotlin.Throwable</code> is the built-in classifier type that is the base type of all <a href="exceptions.html#exceptions">exception types</a>. </span><span class="sentence">Any value that is used in a <a href="expressions.html#throw-expressions"><code>throw</code> expression</a> must have a static type that is a subtype of <code>kotlin.Throwable</code>. </span><span class="sentence">Any type that is used in a <code>catch</code> part of the <a href="expressions.html#try-expression"><code>try</code> expression</a> must be a subtype of (or equal to) <code>kotlin.Throwable</code>.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">It provides at least the following properties:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>public val message: String?</code> An optional message depicting the cause of the throw.</span></li>
+<li><span class="sentence"><code>public val cause: Throwable?</code> An optional other value of type <code>kotlin.Throwable</code> allowing for nested throwables to be constructed.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Other members may exist, please refer to the standard library documentation for details. </span><span class="sentence">No subtype of <code>kotlin.Throwable</code> is allowed to have type parameters. </span><span class="sentence">Declaring such a type is a compile-time error.</span></p>
+</div>
+<h3 id="kotlin.comparable"><code>kotlin.Comparable</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Comparable&lt;in T&gt;</code> is a built-in parameterized type which represents values that may be compared for total ordering. </span><span class="sentence">It provides the following member function:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>public operator fun compareTo(other: T): Int</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This function is used to implement <a href="expressions.html#comparison-expressions">comparison operators</a> through <a href="overloadable-operators.html#overloadable-operators">overloadable operator convention</a> for standard library classes.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a type is not required to be a subtype of <code>kotlin.Comparable</code> in order to implement total ordering operations</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.function-1"><code>kotlin.Function</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Function&lt;out R&gt;</code> is the base classifier type of all <a href="type-system.html#function-types">function types</a>. </span><span class="sentence">See the relevant section for details.</span></p>
+</div>
+<h3 id="reflection-support-builtin-types">Reflection support builtin types</h3>
+<h4 id="kotlin.reflect.kclass"><code>kotlin.reflect.KClass</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KClass&lt;T: Any&gt;</code> is the class used to represent runtime type information for <a href="runtime-type-information.html#runtime-available-types">runtime-available classifier types</a>. </span><span class="sentence">It is also used in platform-specific reflection facilities.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This is the type of <a href="expressions.html#class-literals">class literals</a>. </span><span class="sentence">This type is required to introduce <code>equals</code> and <code>hashCode</code> member function implementations (see <a href="built-in-types-and-their-semantics.html#kotlin.any-1"><code>kotlin.Any</code></a>) that allow for comparison and hashing of runtime type information, e.g., that class literals are equal if they represent the same runtime type and not equal otherwise. </span><span class="sentence">Platform definitions, as well as particular implementations, may introduce additional members for this type.</span></p>
+</div>
+<h4 id="kotlin.reflect.kcallable"><code>kotlin.reflect.KCallable</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KCallable&lt;out R&gt;</code> is the class used to represent runtime information for callables (i.e. properties and functions). </span><span class="sentence">It is mainly used as base type for other types described in this section. </span><span class="sentence">It provides at least the following property:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>public val name: String</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This property contains the name of the callable. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kproperty"><code>kotlin.reflect.KProperty</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KProperty&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#property-declaration">properties</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">property references</a>. </span><span class="sentence">This type is used in <a href="declarations.html#delegated-property-declaration">property delegation</a>. </span><span class="sentence"><code>kotlin.reflect.KProperty&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kfunction"><code>kotlin.reflect.KFunction</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KFunction&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#function-declaration">functions</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">function references</a>. </span><span class="sentence"><code>kotlin.reflect.KFunction&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code> and <code>kotlin.Function&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>
 </body>
 </html>
