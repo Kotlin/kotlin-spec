@@ -179,7 +179,7 @@ A code block is said to contain no last expression if it does not contain any st
 TODO(COERSION_TO_UNIT?)
 
 A *control structure body* is either a single statement or a code block.
-A *last expression* of a control structure body `CSB` is either the last expression of a code block (if `CSB` is a code block) or the single statement itself (if `CSB` is an expression).
+A *last expression* of a control structure body $\operatorname{CSB}$ is either the last expression of a code block (if  $\operatorname{CSB}$ is a code block) or the single statement itself (if $\operatorname{CSB}$ is an expression).
 If a control structure body is not a code block or an expression, it has no last expression.
 
 > Note: this is equivalent to wrapping the single statement in a new synthetic code block.
