@@ -236,6 +236,7 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 
 * $T$ is a valid type name
 * $\forall i \in [1,m]: S_i$ must be concrete, [non-nullable][Nullable types], well-formed type
+* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T : S_1, \ldots, S_m) = \{S_1, \ldots, S_m\} \cup \Ss(S_1) \cup \ldots \cup \Ss(S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized claSsifier types] with different type arguments.
 
 > Example:
 > 
@@ -259,9 +260,6 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 > * class `Double` $<:$ `Number`
 
 > Note: `Number` is actually a built-in abstract class; we use it as an interface for illustrative purposes.
-
-TODO(We need to forbid situations like this:
-     Inv<T> + A : Inv<String> + B : A, Inv<Int>)
 
 ##### Parameterized classifier types
 
@@ -296,6 +294,7 @@ To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should sati
 * $\forall i \in [1,n]: A_i$ must be well-formed concrete type
 * $\forall i \in [1,n]:$ variance of $A_i$ does not [contradict][Use-site variance] variance of $F_i$
 * $\forall i \in [1,n]: A_i <: \tau U_i$, where $U_i$ is the upper bound for $F_i$ and captured substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates [captured types][Type capturing].
+* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T\langle \tau \rangle : \tau S_1, \ldots, \tau S_m) = \{\tau S_1, \ldots, \tau S_m\} \cup \Ss(\tau S_1) \cup \ldots \cup \Ss(\tau S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized claSsifier types] with different type arguments.
 
 > Example:
 > 
