@@ -832,6 +832,7 @@ Depending on the meaning of the left-hand and right-hand sides of a callable ref
 The types of these expressions are implementation-defined, but the following constraints must hold:
 
 - The type of any property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
+- The type of any function reference is a subtype of `kotlin.reflect.KFunction<T>`, where the type parameter `T` is fixed to the return type of the function;
 - The type of any callable reference is a subtype of [function type][Function types] which allows the corresponding callable to be accessed/called accordingly.
     - For a type-callable reference `lhs::rhs`, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type (type of `lhs`), `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable;
     - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.

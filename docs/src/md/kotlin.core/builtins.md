@@ -1,11 +1,5 @@
 ## Built-in types and their semantics
 
-- TODO: `KClass`?
-- TODO: `KProperty`/`KFunction`?
-- TODO: `K(Mutable)Property(N)`? ('cause callable references)
-- TODO: `Throwable`?
-- TODO: `Comparable`?
-
 Kotlin has several built-in classifier types, which are important for the rest of this document.
 Some information about these types is given in the [type system section][Built-in types], here we extend it with additional non-type-system-relevant details.
 
@@ -63,6 +57,7 @@ It is the type of [boolean literals][Boolean literals] as well as the type retur
 
 Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size.
 These types are important w.r.t. [type system][Built-in integer types-ts] and [integer literals][Integer literals].
+Every built-in integer type `I` is a subtype of  [`kotlin.Comparable<I>`][`kotlin.Comparable`].
 
 The signed integer types are the following.
 
@@ -105,8 +100,10 @@ These types may or may not have different runtime representations, depending on 
 Consult the specific platform reference for further details.
 
 `kotlin.Float` is the type of floating-point number that is able to contain all the numbers as a [IEEE 754][IEEE754] single-precision binary floating number with the same precision.
+`kotlin.Float` is a subtype of  [`kotlin.Comparable<kotlin.Float>`][`kotlin.Comparable`].
 
 `kotlin.Double` is the type of floating-point number that is able to contain all the numbers as a [IEEE 754][IEEE754] double-precision binary floating number with the same precision.
+`kotlin.Double` is a subtype of  [`kotlin.Comparable<kotlin.Double>`][`kotlin.Comparable`].
 
 TODO([Kotlin.JVM] Specify IEEE 754 quirks w.r.t. smart casts, cc @dmitry.petrov)
 
@@ -136,7 +133,7 @@ It is the type of the result of [string interpolation][String interpolation expr
 
 `kotlin.Enum<T>` has the following characteristics.
 
-* `kotlin.Enum<T>` is a subtype of `kotlin.Comparable<T>`
+* `kotlin.Enum<T>` is a subtype of [`kotlin.Comparable<T>`][`kotlin.Comparable`]
 
 `kotlin.Enum<T>` provides the following properties.
 
@@ -241,4 +238,73 @@ They inherit `kotlin.Iterator<out T>` for their type (i.e., `kotlin.CharIterator
 
     > Note: this additional method allows the compiler and/or developer to avoid unneeded platform-specific boxing/unboxing conversions.
 
-TODO([Kotlin.*] `Appendable`/`StringBuilder`? Depends on how we plan to approach the interpolation expansion)
+### `kotlin.Throwable`
+
+`kotlin.Throwable` is the built-in classifier type that is the base type of all [exception types][Exceptions].
+Any value that is used in a [`throw` expression][Throw expressions] must have a static type that is a subtype of `kotlin.Throwable`.
+Any type that is used in a `catch` part of the [`try` expression][Try-expression] must be a subtype of (or equal to) `kotlin.Throwable`.
+
+It provides at least the following properties:
+
+* `public val message: String?` 
+  An optional message depicting the cause of the throw.
+* `public val cause: Throwable?`
+  An optional other value of type `kotlin.Throwable` allowing for nested throwables to be constructed.
+
+Other members may exist, please refer to the standard library documentation for details.
+No subtype of `kotlin.Throwable` is allowed to have type parameters.
+Declaring such a type is a compile-time error.
+
+### `kotlin.Comparable`
+
+`kotlin.Comparable<in T>` is a built-in parameterized type which represents values that may be compared for total ordering.
+It provides the following member function:
+
+`public operator fun compareTo(other: T): Int`
+
+This function is used to implement [comparison operators][Comparison expressions] through [overloadable operator convention][Overloadable operators] for standard library classes.
+
+> Note: a type is not required to be a subtype of `kotlin.Comparable` in order to implement total ordering operations
+
+### `kotlin.Function`
+
+`kotlin.Function<out R>` is the base classifier type of all [function types][Function types].
+See the relevant section for details.
+
+### Reflection support builtin types
+
+#### `kotlin.reflect.KClass`
+
+`kotlin.reflect.KClass<T: Any>` is the class used to represent runtime type information for [runtime-available classifier types][Runtime-available types].
+It is also used in platform-specific reflection facilities.
+
+This is the type of [class literals][Class literals].
+This type is required to introduce `equals` and `hashCode` member function implementations (see [`kotlin.Any`][`kotlin.Any`]) that allow for comparison and hashing of runtime type information, e.g., that class literals are equal if they represent the same runtime type and not equal otherwise.
+Platform definitions, as well as particular implementations, may introduce additional members for this type.
+
+#### `kotlin.reflect.KCallable`
+
+`kotlin.reflect.KCallable<out R>` is the class used to represent runtime information for callables (i.e. properties and functions).
+It is mainly used as base type for other types described in this section.
+It provides at least the following property:
+
+`public val name: String`
+
+This property contains the name of the callable.
+Other members or base types for this class may be provided by platform and/or implementation.
+
+#### `kotlin.reflect.KProperty`
+
+`kotlin.reflect.KProperty<out R>` is the class used to represent runtime information for [properties][Property declaration].
+It is the base type of [property references][Callable references].
+This type is used in [property delegation][Delegated property declaration].
+`kotlin.reflect.KProperty<R>` is a subtype of `kotlin.reflect.KCallable<R>`.
+Other members or base types for this class may be provided by platform and/or implementation.
+
+#### `kotlin.reflect.KFunction`
+
+`kotlin.reflect.KFunction<out R>` is the class used to represent runtime information for [functions][Function declaration].
+It is the base type of [function references][Callable references].
+`kotlin.reflect.KFunction<R>` is a subtype of `kotlin.reflect.KCallable<R>` and `kotlin.Function<R>`.
+Other members or base types for this class may be provided by platform and/or implementation.
+
