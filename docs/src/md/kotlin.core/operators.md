@@ -1,6 +1,4 @@
-## Overloadable operators
-
-TODO(rename this and all the refs to smth)
+## Operator overloading
 
 Some syntax forms in Kotlin are defined *by convention*, meaning that their semantics are defined through syntactic expansion of current syntax form into another syntax form. 
 The expansion of a particular syntax form is a different piece of code usually defined in the terms of operator functions. 

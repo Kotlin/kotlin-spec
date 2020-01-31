@@ -47,7 +47,7 @@ Simple expressions, like literals and references, do not affect the control-flow
 
 ##### Function calls and operators
 
-> Note: we do not consider [operator calls][Overloadable operators] as being different from function calls, as they are just special types of function calls.
+> Note: we do not consider [operator calls][Operator overloading] as being different from function calls, as they are just special types of function calls.
 > Henceforth, they are not treated separately.
 
 ```kotlin

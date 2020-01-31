@@ -381,7 +381,7 @@ Reference equality expressions always have type `kotlin.Boolean`.
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are different from [other overloadable operators][Overloadable operators] and have the following expansion:
+These operators are different from [other overloadable operators][Operator overloading] and have the following expansion:
 
 - `A == B` is exactly the same as `(A as? Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
 - `A != B` is exactly the same as `!((A as? Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
@@ -403,7 +403,7 @@ Specifically, it uses the following basic principle.
 :::
 
 *Comparison expressions* are binary expressions which use the comparison operators: `<`, `>`, `<=` and `>=`.
-These operators are [overloadable][Overloadable operators] with the following expansion:
+These operators are [overloadable][Operator overloading] with the following expansion:
 
 - `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
 - `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
@@ -443,7 +443,7 @@ Type-checking expression always has type `kotlin.Boolean`.
 #### Containment-checking expression
 
 A *containment-checking expression* is a binary expression which uses a containment operator `in` or `!in`.
-These operators are [overloadable][Overloadable operators] with the following expansion:
+These operators are [overloadable][Operator overloading] with the following expansion:
 
 - `A in B` is exactly the same as `B.contains(A)`;
 - `A !in B` is exactly the same as `!(B.contains(A))`.
@@ -475,7 +475,7 @@ The type of elvis operator expression is the [least upper bound][Least upper bou
 :::
 
 A *range expression* is a binary expression which uses a range operator `..`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `A..B` is exactly the same as `A.rangeTo(B)`
 
@@ -492,7 +492,7 @@ A range expression has the same type as the return type of the corresponding `ra
 :::
 
 An *additive expression* is a binary expression which uses the addition (`+`) or subtraction (`-`) operators.
-These are [overloadable][Overloadable operators] operators with the following expansions:
+These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A + B` is exactly the same as `A.plus(B)`
 - `A - B` is exactly the same as `A.minus(B)`
@@ -510,7 +510,7 @@ An additive expression has the same type as the return type of the corresponding
 :::
 
 A *multiplicative expression* is a binary expression which uses the multiplication (`*`), division (`/`) or remainder (`%`) operators.
-These are [overloadable][Overloadable operators] operators with the following expansions:
+These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A * B` is exactly the same as `A.times(B)`
 - `A / B` is exactly the same as `A.div(B)`
@@ -569,7 +569,7 @@ These do not change the value of the expression and can be used by external tool
 #### Prefix increment expression
 
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `++A` is exactly the same as `val $freshId = A.inc(); A = $freshId; $freshId` where `inc` is a valid operator function available in the current scope.
 
@@ -586,7 +586,7 @@ A prefix increment expression has the same type as the return type of the corres
 #### Prefix decrement expression
 
 A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `--A` is exactly the same as `val $freshId = A.dec(); A = $freshId; $freshId` where `dec` is a valid operator function available in the current scope.
 
@@ -603,7 +603,7 @@ A prefix decrement expression has the same type as the return type of the corres
 #### Unary minus expression
 
 An *unary minus* expression is an expression which uses the prefix form of operator `-`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `-A` is exactly the same as `A.unaryMinus()` where `unaryMinus` is a valid operator function available in the current scope.
 
@@ -612,7 +612,7 @@ No additional restrictions apply.
 #### Unary plus expression
 
 An *unary plus* expression is an expression which uses the prefix form of operator `+`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `+A` is exactly the same as `A.unaryPlus()` where `unaryPlus` is a valid operator function available in the current scope.
 
@@ -621,7 +621,7 @@ No additional restrictions apply.
 #### Logical not expression
 
 A *logical not* expression is an expression which uses the prefix operator `!`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `!A` is exactly the same as `A.not()` where `not` is a valid operator function available in the current scope.
 
@@ -639,7 +639,7 @@ No additional restrictions apply.
 #### Postfix increment expression
 
 A *postfix increment* expression is an expression which uses the postfix form of operator `++`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `A++` is exactly the same as `val $freshId = A; A = A.inc(); $freshId` where `inc` is a valid operator function available in the current scope.
 
@@ -656,7 +656,7 @@ A postfix increment expression has the same type as its operand expression (`A` 
 #### Postfix decrement expression
 
 A *postfix decrement* expression is an expression which uses the postfix form of operator `--`.
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `A--` is exactly the same as `val $freshId = A; A = A.dec(); $freshId` where `dec` is a valid operator function available in the current scope.
 
@@ -695,7 +695,7 @@ TODO(Examples)
 
 An *indexing expression* is a suffix expression which uses one or more subexpression as *indices* between square brackets (`[` and `]`).
 
-It is an [overloadable][Overloadable operators] operator with the following expansion:
+It is an [overloadable][Operator overloading] operator with the following expansion:
 
 - `A[I_0,I_1,...,I_N]` is exactly the same as `A.get(I_0,I_1,...,I_N)`, where `get` is a valid operator function available in the current scope.
 
@@ -904,7 +904,7 @@ f { 2 } // $1 = {2}; $2 = h(); $result = f($2, $1)
 f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
 ```
 
-[Operator calls][Overloadable operators] work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.
+[Operator calls][Operator overloading] work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.
 
 > Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments.
 > See [corresponding section for details][Containment-checking expression]

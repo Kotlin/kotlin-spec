@@ -633,7 +633,7 @@ val x: T
     get(): T = x$delegate.getValue(thisRef, ::x)
 ```
 
-Here every access to such property (`x` in this case) becomes an [overloadable][Overloadable operators] form which is expanded into the following:
+Here every access to such property (`x` in this case) becomes an [overloadable][Operator overloading] form which is expanded into the following:
 
 ```kotlin
 e.getValue(thisRef, property)

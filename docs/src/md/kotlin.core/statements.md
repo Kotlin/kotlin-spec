@@ -57,7 +57,7 @@ if(__tmp !== null) __tmp.x = y
 
 TODO(just use setters for everything?)
 
-If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Overloadable operators] with the following expansion:
+If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Operator overloading] with the following expansion:
 
 $A[B_1,B_2,B_3,\ldots,B_N] = C$ is the same as calling $A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)$ where `set` is a suitable operator function.
 
@@ -137,7 +137,7 @@ A *for-loop statement* is a special kind of loop statement used to iterate over
 some data structure viewed as an iterable collection of elements.
 A for-loop statement consists of a loop body, a **container expression** and an **iteration variable declaration**.
 
-The for-loop is actually an [overloadable][Overloadable operators] syntax form
+The for-loop is actually an [overloadable][Operator overloading] syntax form
 with the following expansion:
 
 `for(VarDecl in C) Body` is the same as
