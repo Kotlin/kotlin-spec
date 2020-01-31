@@ -184,7 +184,7 @@ Different platform implementations may extend the set of functions considered as
 
 ### Operator calls
 
-According to [the overloadable operators section][Overloadable operators], some operator expressions in Kotlin can be overloaded using specially-named functions.
+According to [the operator overloading section][Operator overloading], some operator expressions in Kotlin can be overloaded using specially-named functions.
 This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used.
 The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with `operator` modifier are considered for inclusion when building overload candidate sets.
 Any properties are never considered for the overload candidate sets of operator calls.
