@@ -33,7 +33,7 @@ private val visitor = object : PandocVisitor() {
     override fun visit(b: Block.CodeBlock): Block {
         if ("diagram" !in b.attr.classes) return super.visit(b)
 
-        val props = b.attr.propertiesMap()
+        val props = b.attr.propertiesMap
         val altText = props["alt-text"]
         val format = props["format"] ?: Main.defaultFormat ?: "svg"
 

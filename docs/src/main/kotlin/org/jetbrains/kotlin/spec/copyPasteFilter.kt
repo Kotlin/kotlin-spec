@@ -49,7 +49,7 @@ private object SpecCopyPasteFilterVisitor : PandocVisitor() {
     override fun visit(b: Block.Div): Block {
         when {
             "paste" in b.attr.classes -> {
-                val props = b.attr.propertiesMap()
+                val props = b.attr.propertiesMap
                 val target = props["target"] ?: return super.visit(b)
                 val block = getBlock(target)
 
@@ -66,7 +66,7 @@ private object SpecCopyPasteFilterVisitor : PandocVisitor() {
     override fun visit(i: Inline.Span): Inline {
         when {
             "paste" in i.attr.classes -> {
-                val props = i.attr.propertiesMap()
+                val props = i.attr.propertiesMap
                 val target = props["target"] ?: return super.visit(i)
                 val inline = getInline(target)
 
