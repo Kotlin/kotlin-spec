@@ -10859,14 +10859,109 @@ P_2 \times N_2
 </div>
 <h3 id="built-in-annotations">Built-in annotations</h3>
 <ul>
-<li><span class="sentence">Deprecated / ReplaceWith</span></li>
-<li><span class="sentence">Suppress</span></li>
-<li><span class="sentence">SinceKotlin</span></li>
-<li><span class="sentence">UnsafeVariance</span></li>
-<li><span class="sentence">DslMarker</span></li>
-<li><span class="sentence">PublishedApi</span></li>
-<li><span class="sentence">Experimental / UseExperimental</span></li>
-<li><span class="sentence">Contract-related stuff???</span></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.Experimental</code> / <code>kotlin.UseExperimental</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Experimental</code> is an annotation class with a single field:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb95"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb95-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
+<span class="sentence">The severity level of the experimental status with two values: <code>Level.WARNING</code> and <code>Level.ERROR</code></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features. </span><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb96"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb96-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
+<span class="sentence">The classes this annotation is allowing to use</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">This annotation is used to explicitly mark declarations that use experimental features marked by <code>kotlin.Experimental</code> .</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It is implementation-defined on how these annotations are processed.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(experimental status is still experimental itself)</span></p>
+</div>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code> <code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb97"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb97-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The message supporting the deprecation</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb98"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb98-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">An optional replacement for deprecated code</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb99"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb99-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The deprecation level</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb100"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb100-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The replacement code</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb101"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The array of imports needed for the replacement code to work correctly</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.DeprecationLevel</code> is an enum class with three values: <code>WARNING</code>, <code>ERROR</code> and <code>HIDDEN</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Deprecated</code> is a builtin annotation supporting the deprecation cycle for declarations: marking that some declarations are outdated, soon to be replaced with other declarations or not recommended. </span><span class="sentence">It is implementation-defined how this annotation is handled, with the following recommendations:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>kotlin.DeprecationLevel.WARNING</code> should produce a compile-time warning;</span></li>
+<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>kotlin.DeprecationLevel.ERROR</code> should produce a compile-time error.</span></li>
+</ul></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.Suppress</code> <code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb102"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb102-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
+<span class="sentence">The names of features this annotation is suppressing</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Suppress</code> is used to optionally mark any piece of code as suppressing some language feature, such as a compiler warning, an IDE mechanism or a language feature. </span><span class="sentence">The names of features that one can suppress with this annotation is implementation-defined, as is the processing of this annotation itself.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.SinceKotlin</code> <code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb103"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb103-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
+<span class="sentence">The version of Kotlin language</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.SinceKotlin</code> is used to mark that a specific declaration is only available since some particular version of the language and above it. </span><span class="sentence">These mostly refer to standard library declarations. </span><span class="sentence">It is implementation-defined how this annotations are processed.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.UnsafeVariance</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.UnsafeVariance</code> is an annotation class with no fields that is only applicable to types. </span><span class="sentence">Any declaration marked by this annotation explicitly states that the <a href="#mixed-site-variance">variance</a> errors arising for this particular type are to be ignored by the compiler.</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.DslMarker</code> TODO(sync with receivers???)</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.PublishedApi</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.PublishedApi</code> is an annotation class with no fields that is applicable to any declarations. </span><span class="sentence">This may be applied to any declarations with <code>internal</code> visibility to be visible to <code>public</code> <code>inline</code> declarations. </span><span class="sentence">See <a href="#declaration-visibility">the visibility section</a> for details.</span></p>
+</div></li>
 </ul>
 <h2 id="coroutines">Coroutines</h2>
 <div class="TODO">
