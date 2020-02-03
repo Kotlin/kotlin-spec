@@ -88,6 +88,7 @@ TODO(Anything else?)
   TODO(experimental status is still experimental itself)
 
 * `kotlin.Deprecated` / `kotlin.ReplaceWith`
+
   `kotlin.Deprecated` is an annotation class with the following fields:
 
   * ```kotlin
@@ -132,6 +133,7 @@ TODO(Anything else?)
   * Attempting to use a declaration with deprecation level of `kotlin.DeprecationLevel.ERROR` should produce a compile-time error.
 
 * `kotlin.Suppress`
+
   `kotlin.Suppress` is an annotation class with the following single field:
 
   * ```kotlin
@@ -144,6 +146,7 @@ TODO(Anything else?)
   The names of features that one can suppress with this annotation is implementation-defined, as is the processing of this annotation itself.
 
 * `kotlin.SinceKotlin`
+
   `kotlin.SinceKotlin` is an annotation class with the following single field:
 
   * ```kotlin
@@ -162,6 +165,7 @@ TODO(Anything else?)
   Any declaration marked by this annotation explicitly states that the [variance][Mixed-site variance] errors arising for this particular type are to be ignored by the compiler.
 
 * `kotlin.DslMarker`
+
   TODO(sync with receivers???)
 
 * `kotlin.PublishedApi`
