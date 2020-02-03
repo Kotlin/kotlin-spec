@@ -25,7 +25,6 @@ fun getScriptText(scriptName: String): String {
 }
 
 repositories {
-    maven { setUrl("https://jitpack.io") }
     maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
     mavenCentral()
 }
