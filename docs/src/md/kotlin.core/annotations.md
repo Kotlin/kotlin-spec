@@ -62,11 +62,113 @@ TODO(Anything else?)
 
 ### Built-in annotations
 
-* Deprecated / ReplaceWith
-* Suppress
-* SinceKotlin
-* UnsafeVariance
-* DslMarker
-* PublishedApi
-* Experimental / UseExperimental
-* Contract-related stuff???
+* `kotlin.Experimental` / `kotlin.UseExperimental`
+
+  `kotlin.Experimental` is an annotation class with a single field:
+
+  * ```kotlin
+    val level: Level = Level.ERROR
+    ```
+
+    The severity level of the experimental status with two values: `Level.WARNING` and `Level.ERROR`
+
+  This annotation is used to introduce implementation-defined experimental language or standard library features.
+  `kotlin.UseExperimental` is an annotation class with a single field:
+
+  * ```kotlin
+    vararg val markerClass: KClass<out Annotation>
+    ```
+
+    The classes this annotation is allowing to use
+
+  This annotation is used to explicitly mark declarations that use experimental features marked by `kotlin.Experimental` .
+
+  It is implementation-defined on how these annotations are processed.
+
+  TODO(experimental status is still experimental itself)
+
+* `kotlin.Deprecated` / `kotlin.ReplaceWith`
+  `kotlin.Deprecated` is an annotation class with the following fields:
+
+  * ```kotlin
+    val message: String
+    ```
+
+    The message supporting the deprecation
+
+  * ```kotlin
+    val replaceWith: ReplaceWith = ReplaceWith("")
+    ```
+
+    An optional replacement for deprecated code
+
+  * ```kotlin
+    val level: DeprecationLevel = DeprecationLevel.WARNING
+    ```
+
+    The deprecation level
+
+  `kotlin.ReplaceWith` is itself an annotation class containing the information on how to perform the replacement in case it is provided.
+  It has the following fields:
+
+  * ```kotlin
+    val expression: String
+    ```
+
+    The replacement code
+
+  * ```kotlin
+    vararg val imports: String
+    ```
+
+    The array of imports needed for the replacement code to work correctly
+
+  `kotlin.DeprecationLevel` is an enum class with three values: `WARNING`, `ERROR` and `HIDDEN`.
+
+  `kotlin.Deprecated` is a builtin annotation supporting the deprecation cycle for declarations: marking that some declarations are outdated, soon to be replaced with other declarations or not recommended.
+  It is implementation-defined how this annotation is handled, with the following recommendations:
+
+  * Attempting to use a declaration with deprecation level of `kotlin.DeprecationLevel.WARNING` should produce a compile-time warning;
+  * Attempting to use a declaration with deprecation level of `kotlin.DeprecationLevel.ERROR` should produce a compile-time error.
+
+* `kotlin.Suppress`
+  `kotlin.Suppress` is an annotation class with the following single field:
+
+  * ```kotlin
+    vararg val names: String
+    ```
+
+    The names of features this annotation is suppressing
+
+  `kotlin.Suppress` is used to optionally mark any piece of code as suppressing some language feature, such as a compiler warning, an IDE mechanism or a language feature.
+  The names of features that one can suppress with this annotation is implementation-defined, as is the processing of this annotation itself.
+
+* `kotlin.SinceKotlin`
+  `kotlin.SinceKotlin` is an annotation class with the following single field:
+
+  * ```kotlin
+    val version: String
+    ```
+
+    The version of Kotlin language
+
+  `kotlin.SinceKotlin` is used to mark that a specific declaration is only available since some particular version of the language and above it.
+  These mostly refer to standard library declarations.
+  It is implementation-defined how this annotations are processed.
+
+* `kotlin.UnsafeVariance`
+
+  `kotlin.UnsafeVariance` is an annotation class with no fields that is only applicable to types.
+  Any declaration marked by this annotation explicitly states that the [variance][Mixed-site variance] errors arising for this particular type are to be ignored by the compiler.
+
+* `kotlin.DslMarker`
+  TODO(sync with receivers???)
+
+* `kotlin.PublishedApi`
+
+  `kotlin.PublishedApi` is an annotation class with no fields that is applicable to any declarations.
+  This may be applied to any declarations with `internal` visibility to be visible to `public` `inline` declarations.
+  See [the visibility section][Declaration visibility] for details.
+
+
+
