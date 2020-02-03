@@ -7,7 +7,7 @@ import ru.spbstu.pandoc.makeFilter
 private object InlineCodeIndenter : PandocVisitor() {
     const val INDENT = "indent"
     override fun visit(i: Inline.Code): Inline {
-        val props = i.attr.propertiesMap()
+        val props = i.attr.propertiesMap
         val indentation = props[INDENT]?.toIntOrNull()
                 ?: i.attr.classes.find { it == INDENT }?.let { 1 }
                 ?: return i
