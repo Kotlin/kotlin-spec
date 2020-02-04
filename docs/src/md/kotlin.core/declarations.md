@@ -451,7 +451,7 @@ If a variable length parameter is not last in the parameter list, all subsequent
 
 If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
 
-An array of type `Array<Q>`$\: <: \:$`ATS(Array<out `$P_i$`>)` may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position.
+An array of type `Array<Q>`$\: <: \:$`ATS(Array<out `$P_i$`>)` may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator expressions]; in this case array elements are considered to be separate arguments in the variable length parameter position.
 
 > Note: this means that, for variable length parameters corresponding to specialized array types, unpacking is possible only for these specialized versions; for a variable length parameter of type `Int`, for example, unpacking is valid only for `IntArray`, and not for `Array<Int>`.
 
