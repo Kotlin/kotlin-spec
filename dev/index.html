@@ -331,7 +331,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#string-interpolation-expressions">String interpolation expressions</a></li>
 </ul></li>
 <li><a href="#todos">TODOs()</a></li>
-<li><a href="#overloadable-operators">Overloadable operators</a></li>
+<li><a href="#operator-overloading">Operator overloading</a></li>
 <li><a href="#packages-and-imports">Packages and imports</a><ul>
 <li><a href="#importing">Importing</a></li>
 <li><a href="#modules">Modules</a></li>
@@ -5275,7 +5275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>public operator fun compareTo(other: T): Int</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This function is used to implement <a href="#comparison-expressions">comparison operators</a> through <a href="#overloadable-operators">overloadable operator convention</a> for standard library classes.</span></p>
+<p><span class="sentence">This function is used to implement <a href="#comparison-expressions">comparison operators</a> through [overloadable operator convention][Overloadable operators] for standard library classes.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -6135,7 +6135,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb20-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
 <a class="sourceLine" id="cb20-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="#overloadable-operators">overloadable</a> form which is expanded into the following:</span></p>
+<p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="#operator-overloading">overloadable</a> form which is expanded into the following:</span></p>
 </div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
 <div class="paragraph">
@@ -6826,7 +6826,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="#overloadable-operators">overloaded operator</a> with the following expansion:</span></p>
+<p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="#operator-overloading">overloaded operator</a> with the following expansion:</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(A[B_1,B_2,B_3,\ldots,B_N] = C\)</span> is the same as calling <span class="math inline">\(A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)\)</span> where <code>set</code> is a suitable operator function.</span></p>
@@ -6969,7 +6969,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>for-loop statement</em> is a special kind of loop statement used to iterate over some data structure viewed as an iterable collection of elements. </span><span class="sentence">A for-loop statement consists of a loop body, a <strong>container expression</strong> and an <strong>iteration variable declaration</strong>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The for-loop is actually an <a href="#overloadable-operators">overloadable</a> syntax form with the following expansion:</span></p>
+<p><span class="sentence">The for-loop is actually an <a href="#operator-overloading">overloadable</a> syntax form with the following expansion:</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
@@ -7610,7 +7610,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="#overloadable-operators">other overloadable operators</a> and have the following expansion:</span></p>
+<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="#operator-overloading">other overloadable operators</a> and have the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as? Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
@@ -7651,7 +7651,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are <a href="#overloadable-operators">overloadable</a> with the following expansion:</span></p>
+<p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are <a href="#operator-overloading">overloadable</a> with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
@@ -7719,7 +7719,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="containment-checking-expression">Containment-checking expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>containment-checking expression</em> is a binary expression which uses a containment operator <code>in</code> or <code>!in</code>. </span><span class="sentence">These operators are <a href="#overloadable-operators">overloadable</a> with the following expansion:</span></p>
+<p><span class="sentence">A <em>containment-checking expression</em> is a binary expression which uses a containment operator <code>in</code> or <code>!in</code>. </span><span class="sentence">These operators are <a href="#operator-overloading">overloadable</a> with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A in B</code> is exactly the same as <code>B.contains(A)</code>;</span></li>
@@ -7767,7 +7767,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A..B</code> is exactly the same as <code>A.rangeTo(B)</code></span></li>
@@ -7795,7 +7795,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses the addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are <a href="#overloadable-operators">overloadable</a> operators with the following expansions:</span></p>
+<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses the addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A + B</code> is exactly the same as <code>A.plus(B)</code></span></li>
@@ -7825,7 +7825,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses the multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are <a href="#overloadable-operators">overloadable</a> operators with the following expansions:</span></p>
+<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses the multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A * B</code> is exactly the same as <code>A.times(B)</code></span></li>
@@ -7923,7 +7923,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="prefix-increment-expression">Prefix increment expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>++A</code> is exactly the same as <code>val $freshId = A.inc(); A = $freshId; $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
@@ -7944,7 +7944,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="prefix-decrement-expression">Prefix decrement expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>--A</code> is exactly the same as <code>val $freshId = A.dec(); A = $freshId; $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
@@ -7965,7 +7965,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="unary-minus-expression">Unary minus expression</h4>
 <div class="paragraph">
-<p><span class="sentence">An <em>unary minus</em> expression is an expression which uses the prefix form of operator <code>-</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">An <em>unary minus</em> expression is an expression which uses the prefix form of operator <code>-</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>-A</code> is exactly the same as <code>A.unaryMinus()</code> where <code>unaryMinus</code> is a valid operator function available in the current scope.</span></li>
@@ -7975,7 +7975,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="unary-plus-expression">Unary plus expression</h4>
 <div class="paragraph">
-<p><span class="sentence">An <em>unary plus</em> expression is an expression which uses the prefix form of operator <code>+</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">An <em>unary plus</em> expression is an expression which uses the prefix form of operator <code>+</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>+A</code> is exactly the same as <code>A.unaryPlus()</code> where <code>unaryPlus</code> is a valid operator function available in the current scope.</span></li>
@@ -7985,7 +7985,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="logical-not-expression">Logical not expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>logical not</em> expression is an expression which uses the prefix operator <code>!</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>logical not</em> expression is an expression which uses the prefix operator <code>!</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>!A</code> is exactly the same as <code>A.not()</code> where <code>not</code> is a valid operator function available in the current scope.</span></li>
@@ -8024,7 +8024,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="postfix-increment-expression">Postfix increment expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>postfix increment</em> expression is an expression which uses the postfix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>postfix increment</em> expression is an expression which uses the postfix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A++</code> is exactly the same as <code>val $freshId = A; A = A.inc(); $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
@@ -8045,7 +8045,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="postfix-decrement-expression">Postfix decrement expression</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A--</code> is exactly the same as <code>val $freshId = A; A = A.dec(); $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
@@ -8120,7 +8120,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">An <em>indexing expression</em> is a suffix expression which uses one or more subexpression as <em>indices</em> between square brackets (<code>[</code> and <code>]</code>).</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">It is an <a href="#overloadable-operators">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A[I_0,I_1,...,I_N]</code> is exactly the same as <code>A.get(I_0,I_1,...,I_N)</code>, where <code>get</code> is a valid operator function available in the current scope.</span></li>
@@ -8266,7 +8266,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>a?.c</code> is a <em>safe navigation</em> operator, which has the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>a?.c</code> is exactly the same as <code>if (a != null) a.c else null</code>.</span></li>
+<li><span class="sentence"><code>a?.c</code> is exactly the same as <code>a?.run { c }</code>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -8420,7 +8420,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb46-4" title="4">f { <span class="dv">2</span> } <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
 <a class="sourceLine" id="cb46-5" title="5">f(m()) { <span class="dv">2</span> } <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence"><a href="#overloadable-operators">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
+<p><span class="sentence"><a href="#operator-overloading">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8969,14 +8969,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Object literal types look just like restricted union types. </span><span class="sentence">Are there any traps hidden here?</span></li>
 <li><span class="sentence">The last paragraph in <a href="#object-literals">object literals</a> is also pretty shady</span></li>
 </ul>
-<h2 id="overloadable-operators">Overloadable operators</h2>
+<h2 id="operator-overloading">Operator overloading</h2>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(rename this and all the refs to smth)</span></p>
+<p><span class="sentence">TODO(This is a stub)</span></p>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Some syntax forms in Kotlin are defined <em>by convention</em>, meaning that their semantics are defined through syntactic expansion of current syntax form into another syntax form. </span><span class="sentence">The expansion of a particular syntax form is a different piece of code usually defined in the terms of operator functions. </span><span class="sentence">Operator functions are function that are <a href="#function-declaration">declared</a> with a special keyword <code>operator</code> and are not different from normal functions when called normally, but allow themselves to be employed by syntactic expansion. </span><span class="sentence">Different platforms may add other criteria on whether a function may be considered a suitable candidate for operator convention.</span></p>
+<p><span class="sentence">Some syntax forms in Kotlin are <em>defined by convention</em>, meaning that their semantics are defined through syntactic expansion of one syntax form into another syntax form.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Particular cases of definition by convention include:</span></p>
@@ -8990,15 +8990,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span class="sentence">TODO(anything else?)</span>
 </div></li>
 </ul>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">There are several common points among all the syntax forms defined using this mechanism:</span></p>
+<p><span class="sentence">Important: another case of definition by convention is <a href="#navigation-operators">safe navigation</a>, which is covered in more detail in its respective section.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">There are several points shared among all the syntax forms defined using definition by convention:</span></p>
 </div>
 <ul>
-<li><span class="sentence">The expansions are hygenic: if they seemingly introduce new identifiers that were not present in original syntax, all such identifiers are not accessible outside the expansion and cannot clash with any other declarations in the program;</span></li>
-<li><span class="sentence">The expressions captured by an expansion are using call-by-need evaluation strategy, meaning that they are evaluated only once during first usage specified in the expansion even if the expansion itself has more than one usage of such an expression;</span></li>
+<li><span class="sentence">The expansions are hygienic: if they introduce new identifiers that were not present in original syntax, all such identifiers are not accessible outside the expansion and cannot clash with any other declarations in the program;</span></li>
+<li><span class="sentence">The expressions captured by an expansion are using <em>call-by-need</em> evaluation strategy, meaning that they are evaluated only once during first usage specified in the expansion even if the expansion itself has more than one usage of such an expression;</span></li>
 <li><span class="sentence">An expansion may lead to another expansion, following the same rules;</span></li>
-<li><span class="sentence">All the new call expressions that are produced by expansion are only allowed to use operator functions.</span></li>
+<li><span class="sentence">All call expressions that are produced by expansion are only allowed to use operator functions.</span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">This expansion of a particular syntax form to a different piece of code is usually defined in the terms of <em>operator</em> functions.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Operator functions are function which are <a href="#function-declaration">declared</a> with a special keyword <code>operator</code> and are not different from regular functions when called via <a href="#function-calls-and-property-access">function calls</a>. </span><span class="sentence">However, operator functions can also be used in definition by convention.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: different platforms may add additional criteria on whether a function may be considered a suitable candidate for operator convention.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The details of individual expansions are available in the sections of their respective operators, here we would like to describe how they <em>interoperate</em>.</span></p>
+</div>
 <div class="paragraph">
 <p><span class="sentence">For example, take the following declarations:</span></p>
 </div>
@@ -9019,15 +9038,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="paragraph">
+<p><span class="sentence">The operations are expanded in order of their priority <span><span class="TODO">(TODO(Where and how to specify this priority?))</span><span class="TODO-marker">*</span></span>.</span></p>
+</div></li>
+<li><div class="paragraph">
 <p><span class="sentence">First, the <a href="#postfix-increment-expression">increment operator</a> is expanded, resulting in:</span></p>
 </div>
 <div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb53-1" title="1">C[<span class="dv">0</span>][<span class="dv">0</span>] = C[<span class="dv">0</span>][<span class="dv">0</span>].inc()</a></code></pre></div></li>
 <li><div class="paragraph">
-<p><span class="sentence">Second, the <a href="#assignments">assigment</a> to an indexing expression (produced by the previous expansion) is expanded, resulting in:</span></p>
+<p><span class="sentence">Second, the <a href="#assignments">assignment</a> to an indexing expression (produced by the previous expansion) is expanded, resulting in:</span></p>
 </div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb54-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span>(C[<span class="dv">0</span>].<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
+<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb54-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span>(C[<span class="dv">0</span>][<span class="dv">0</span>].inc())</a></code></pre></div></li>
 <li><div class="paragraph">
-<p><span class="sentence">Third, the <a href="#indexing-expressions">indexing expression</a> is expanded, resulting in:</span></p>
+<p><span class="sentence">Third, the <a href="#indexing-expressions">indexing expressions</a> are expanded, resulting in:</span></p>
 </div>
 <div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb55-1" title="1">C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">set</span>(C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
 </ul>
@@ -9036,16 +9058,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(Specify when we run the overload resolution to know what we’re expanding to)</span></p>
 </div>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Although the resulting expression contains several invocations of the subexpression <code>C.get(0)</code>, it is evaluated only once, making this code roughly equivalent to:</span></p>
+<p><span class="sentence">Important: although the resulting expression contains several instances of the subexpression <code>C.get(0)</code>, as all these instances were created from the same original syntax form, the subexpression is evaluated only once, making this code roughly equivalent to:</span></p>
 </div>
 <div class="sourceCode" id="cb56"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = C.<span class="kw">get</span>(<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb56-2" title="2">$tmp.<span class="kw">set</span>($tmp.<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO()</span></p>
-</div>
-</div>
+</blockquote>
 <h2 id="packages-and-imports">Packages and imports</h2>
 <div class="paragraph">
 <p><span class="sentence">Any Kotlin project is structured into <strong>packages</strong>. </span><span class="sentence">A package may contain one or more Kotlin files and each file is related to the corresponding package using the <em>package header</em>. </span><span class="sentence">A file may contain only one (or zero) package headers, meaning that each file belongs to exactly one package.</span></p>
@@ -9383,7 +9402,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="operator-calls">Operator calls</h3>
 <div class="paragraph">
-<p><span class="sentence">According to <a href="#overloadable-operators">the overloadable operators section</a>, some operator expressions in Kotlin can be overloaded using specially-named functions. </span><span class="sentence">This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used. </span><span class="sentence">The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with <code>operator</code> modifier are considered for inclusion when building overload candidate sets. </span><span class="sentence">Any properties are never considered for the overload candidate sets of operator calls.</span></p>
+<p><span class="sentence">According to <a href="#operator-overloading">the operator overloading section</a>, some operator expressions in Kotlin can be overloaded using specially-named functions. </span><span class="sentence">This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used. </span><span class="sentence">The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with <code>operator</code> modifier are considered for inclusion when building overload candidate sets. </span><span class="sentence">Any properties are never considered for the overload candidate sets of operator calls.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9675,7 +9694,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h5 id="function-calls-and-operators">Function calls and operators</h5>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: we do not consider <a href="#overloadable-operators">operator calls</a> as being different from function calls, as they are just special types of function calls. </span><span class="sentence">Henceforth, they are not treated separately.</span></p>
+<p><span class="sentence">Note: we do not consider <a href="#operator-overloading">operator calls</a> as being different from function calls, as they are just special types of function calls. </span><span class="sentence">Henceforth, they are not treated separately.</span></p>
 </div>
 </blockquote>
 <div class="sourceCode" id="cb64"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb64-1" title="1">x.f(arg1,..., argN)</a></code></pre></div>
