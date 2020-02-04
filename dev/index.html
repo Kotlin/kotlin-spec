@@ -313,6 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#callable-references">Callable references</a></li>
 <li><a href="#class-literals">Class literals</a></li>
 <li><a href="#function-calls-and-property-access">Function calls and property access</a></li>
+<li><a href="#spread-operator-expressions">Spread operator expressions</a></li>
 </ul></li>
 <li><a href="#function-literals">Function literals</a><ul>
 <li><a href="#anonymous-function-declarations">Anonymous function declarations</a></li>
@@ -5930,7 +5931,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of <a href="#array-types"><em>array type specialization</em></a> of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An array of type <code>Array&lt;Q&gt;</code><span class="math inline">\(\: &lt;: \:\)</span><code>ATS(Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;)</code> may be <em>unpacked</em> to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position.</span></p>
+<p><span class="sentence">An array of type <code>Array&lt;Q&gt;</code><span class="math inline">\(\: &lt;: \:\)</span><code>ATS(Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;)</code> may be <em>unpacked</em> to a variable length parameter in function invocation using <a href="#spread-operator-expressions">spread operator</a>; in this case array elements are considered to be separate arguments in the variable length parameter position.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -7475,11 +7476,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><em>Type test condition</em>: <a href="#type-checking-expression">type checking operator</a> followed by a type (<code>is T</code>). </span><span class="sentence">The resulting condition is a <a href="#type-checking-expression">type check expression</a> of the form <code>boundValue is T</code>.</span></li>
 <li><span class="sentence"><em>Contains test condition</em>: <a href="#containment-checking-expression">containment operator</a> followed by an expression (<code>in Expr</code>). </span><span class="sentence">The resulting condition is a <a href="#containment-checking-expression">containment check expression</a> of the form <code>boundValue in Expr</code>.</span></li>
-<li><span class="sentence"><em>Any other expression</em> (<code>Expr</code>) besides the following.</span>
+<li><span class="sentence"><em>Any other applicable expression</em> (<code>Expr</code>) besides the following.</span>
 <ul>
 <li><span class="sentence"><a href="#continue-expression">Simple continue expression</a></span></li>
 <li><span class="sentence"><a href="#break-expression">Simple break expression</a></span></li>
-<li><span class="sentence">[Spread operator expression][Spread operator]</span></li>
 </ul>
 <span class="sentence">The resulting condition is an <a href="#equality-expressions">equality check</a> of the form <code>boundValue == Expr</code>.</span></li>
 <li><span class="sentence">The <code>else</code> condition, which is a special condition which evaluates to <code>true</code> if none of the branches above it evaluated to <code>true</code>. </span><span class="sentence">The <code>else</code> condition <strong>must</strong> also be in the last when entry of when expression, otherwise it is a compile-time error.</span></li>
@@ -8427,6 +8427,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments. </span><span class="sentence">See <a href="#containment-checking-expression">corresponding section for details</a></span></p>
 </div>
 </blockquote>
+<h4 id="spread-operator-expressions">Spread operator expressions</h4>
+<div id="grammar-rule-postfixUnaryExpression-pasted-75" class="grammar-rule">
+<dl>
+<dt><strong><em>postfixUnaryExpression</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em><br />
+| (<em><a href="#grammar-rule-primaryExpression">primaryExpression</a></em> (<em><a href="#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em> {<em><a href="#grammar-rule-postfixUnarySuffix">postfixUnarySuffix</a></em>}))</span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><em>Spread operator expression</em> is a special kind of expression that is only applicable in the context of calling a function with variable-argument parameters. </span><span class="sentence">For expression <code>*E</code> it is required that <code>E</code> is of <a href="#array-types">an array type</a> and the expression itself is used as a value argument to a call. </span><span class="sentence">This allows passing the array as a <em>spreaded</em> value argument, providing the elements of the array as the variable-size argument of a callable. </span><span class="sentence">Spread operator expressions are not allowed in any other context. </span><span class="sentence">See <a href="#variable-length-parameters">variable length parameter section</a> for details.</span></p>
+</div>
 <h3 id="function-literals">Function literals</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>
@@ -8440,7 +8452,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="anonymous-function-declarations">Anonymous function declarations</h4>
-<div id="grammar-rule-anonymousFunction-pasted-75" class="grammar-rule">
+<div id="grammar-rule-anonymousFunction-pasted-76" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
 <dd><span class="sentence"><code>'fun'</code><br />
@@ -8475,7 +8487,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The type of an anonymous function declaration is the function type constructed similarly to a <a href="#function-declaration">named function declaration</a>.</span></p>
 </div>
 <h4 id="lambda-literals">Lambda literals</h4>
-<div id="grammar-rule-lambdaLiteral-pasted-76" class="grammar-rule">
+<div id="grammar-rule-lambdaLiteral-pasted-77" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaLiteral</em>:</strong></dt>
 <dd><span class="sentence">(<code>'{'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-statements">statements</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'}'</code>)<br />
@@ -8483,14 +8495,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lambdaParameters-pasted-77" class="grammar-rule">
+<div id="grammar-rule-lambdaParameters-pasted-78" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameters</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lambdaParameter-pasted-78" class="grammar-rule">
+<div id="grammar-rule-lambdaParameter-pasted-79" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameter</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
@@ -8553,7 +8565,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h3 id="object-literals">Object literals</h3>
-<div id="grammar-rule-objectLiteral-pasted-79" class="grammar-rule">
+<div id="grammar-rule-objectLiteral-pasted-80" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
 <dd><span class="sentence">(<code>'object'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>)<br />
@@ -8621,7 +8633,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb49-31" title="31">}</a></code></pre></div>
 </blockquote>
 <h3 id="this-expressions">This-expressions</h3>
-<div id="grammar-rule-thisExpression-pasted-80" class="grammar-rule">
+<div id="grammar-rule-thisExpression-pasted-81" class="grammar-rule">
 <dl>
 <dt><strong><em>thisExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'this'</code><br />
@@ -8688,7 +8700,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb50-24" title="24">}</a></code></pre></div>
 </blockquote>
 <h3 id="super-forms">Super-forms</h3>
-<div id="grammar-rule-superExpression-pasted-81" class="grammar-rule">
+<div id="grammar-rule-superExpression-pasted-82" class="grammar-rule">
 <dl>
 <dt><strong><em>superExpression</em>:</strong></dt>
 <dd><span class="sentence">(<code>'super'</code> [<code>'&lt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'&gt;'</code>] [<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>])<br />
@@ -8764,7 +8776,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb51-42" title="42">}</a></code></pre></div>
 </blockquote>
 <h3 id="jump-expressions">Jump expressions</h3>
-<div id="grammar-rule-jumpExpression-pasted-82" class="grammar-rule">
+<div id="grammar-rule-jumpExpression-pasted-83" class="grammar-rule">
 <dl>
 <dt><strong><em>jumpExpression</em>:</strong></dt>
 <dd><span class="sentence">(<code>'throw'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em>)<br />
@@ -8849,7 +8861,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h3 id="string-interpolation-expressions">String interpolation expressions</h3>
-<div id="grammar-rule-stringLiteral-pasted-83" class="grammar-rule">
+<div id="grammar-rule-stringLiteral-pasted-84" class="grammar-rule">
 <dl>
 <dt><strong><em>stringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-lineStringLiteral">lineStringLiteral</a></em><br />
@@ -8857,21 +8869,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringLiteral-pasted-84" class="grammar-rule">
+<div id="grammar-rule-lineStringLiteral-pasted-85" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringLiteral-pasted-85" class="grammar-rule">
+<div id="grammar-rule-multiLineStringLiteral-pasted-86" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringContent-pasted-86" class="grammar-rule">
+<div id="grammar-rule-lineStringContent-pasted-87" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-LineStrText">LineStrText</a></em><br />
@@ -8880,14 +8892,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-lineStringExpression-pasted-87" class="grammar-rule">
+<div id="grammar-rule-lineStringExpression-pasted-88" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringContent-pasted-88" class="grammar-rule">
+<div id="grammar-rule-multiLineStringContent-pasted-89" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
@@ -8896,7 +8908,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-multiLineStringExpression-pasted-89" class="grammar-rule">
+<div id="grammar-rule-multiLineStringExpression-pasted-90" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringExpression</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />
@@ -9038,7 +9050,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Any Kotlin project is structured into <strong>packages</strong>. </span><span class="sentence">A package may contain one or more Kotlin files and each file is related to the corresponding package using the <em>package header</em>. </span><span class="sentence">A file may contain only one (or zero) package headers, meaning that each file belongs to exactly one package.</span></p>
 </div>
-<div id="grammar-rule-packageHeader-pasted-90" class="grammar-rule">
+<div id="grammar-rule-packageHeader-pasted-91" class="grammar-rule">
 <dl>
 <dt><strong><em>packageHeader</em>:</strong></dt>
 <dd><span class="sentence">[<code>'package'</code> <em><a href="#grammar-rule-identifier">identifier</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>]]</span>
@@ -9067,21 +9079,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being <a href="#modules">module</a> boundaries and <a href="#visibility">visibility</a> constraints. </span><span class="sentence">In order to use an entity from a file belonging to a different package, the programmer must use <em>import directives</em>.</span></p>
 </div>
-<div id="grammar-rule-importList-pasted-91" class="grammar-rule">
+<div id="grammar-rule-importList-pasted-92" class="grammar-rule">
 <dl>
 <dt><strong><em>importList</em>:</strong></dt>
 <dd><span class="sentence">{<em><a href="#grammar-rule-importHeader">importHeader</a></em>}</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-importHeader-pasted-92" class="grammar-rule">
+<div id="grammar-rule-importHeader-pasted-93" class="grammar-rule">
 <dl>
 <dt><strong><em>importHeader</em>:</strong></dt>
 <dd><span class="sentence"><code>'import'</code> <em><a href="#grammar-rule-identifier">identifier</a></em> [(<code>'.'</code> <code>'*'</code>) | <em><a href="#grammar-rule-importAlias">importAlias</a></em>] [<em><a href="#grammar-rule-semi">semi</a></em>]</span>
 </dd>
 </dl>
 </div>
-<div id="grammar-rule-importAlias-pasted-93" class="grammar-rule">
+<div id="grammar-rule-importAlias-pasted-94" class="grammar-rule">
 <dl>
 <dt><strong><em>importAlias</em>:</strong></dt>
 <dd><span class="sentence"><code>'as'</code> <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em></span>
