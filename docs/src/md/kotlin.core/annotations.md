@@ -162,7 +162,7 @@ TODO(Anything else?)
 * `kotlin.UnsafeVariance`
 
   `kotlin.UnsafeVariance` is an annotation class with no fields that is only applicable to types.
-  Any declaration marked by this annotation explicitly states that the [variance][Mixed-site variance] errors arising for this particular type are to be ignored by the compiler.
+  Any declaration marked by this annotation explicitly states that the [variance][Type parameter variance] errors arising for this particular type are to be ignored by the compiler.
 
 * `kotlin.DslMarker`
 

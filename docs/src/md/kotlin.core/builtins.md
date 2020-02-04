@@ -137,7 +137,7 @@ It is the type of the result of [string interpolation][String interpolation expr
 
 `kotlin.Enum<T>` provides the following properties.
 
-* `public final val name: String`
+* ```public final val name: String```
 
     Contains the name of this enumeration constant, exactly as declared in its declaration.
 
