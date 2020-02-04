@@ -279,10 +279,9 @@ In fact, it supports three different condition forms:
   The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
 - *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
   The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
-- *Any other expression* (`Expr`) besides the following.
+- *Any other applicable expression* (`Expr`) besides the following.
     + [Simple continue expression][Continue expression]
     + [Simple break expression][Break expression]
-    + [Spread operator expression][Spread operator]
 
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
@@ -909,6 +908,17 @@ f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
 
 > Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments.
 > See [corresponding section for details][Containment-checking expression]
+
+#### Spread operator expressions
+
+:::{.paste target=grammar-rule-postfixUnaryExpression}
+:::
+
+*Spread operator expression* is a special kind of expression that is only applicable in the context of calling a function with variable-argument parameters.
+For expression `*E` it is required that `E` is of [an array type][Array types] and the expression itself is used as a value argument to a call. 
+This allows passing the array as a *spreaded* value argument, providing the elements of the array as the variable-size argument of a callable.
+Spread operator expressions are not allowed in any other context.
+See [variable length parameter section][Variable length parameters] for details.
 
 ### Function literals
 
