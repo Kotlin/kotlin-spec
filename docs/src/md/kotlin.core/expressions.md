@@ -758,7 +758,7 @@ If followed by the call suffix (arguments in parentheses), `a.c()` may have one 
 
 `a?.c` is a *safe navigation* operator, which has the following expansion:
 
-- `a?.c` is exactly the same as `if (a != null) a.c else null`.
+- `a?.c` is exactly the same as `a?.run { c }`.
 
 > Note: this means the type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
 
