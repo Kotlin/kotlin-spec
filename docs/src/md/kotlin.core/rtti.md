@@ -38,3 +38,8 @@ star-projected type notation or a special parameter-less notation (TODO: link?))
 
 Only non-nullable runtime types may be used in `class` literal expressions. 
 These include reified type parameters with non-nullable upper bounds, as well as all classifier and function types.
+
+### Reflection
+
+Particular platforms may provide more complex facilities for runtime type introspection through the means of *reflection* --- special platform-provided part of the standard library that allows to access more detailed information about types and declarations at runtime.
+It is, however, platform-specific and one must refer to particular platform documentation for details.
