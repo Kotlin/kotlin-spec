@@ -7949,7 +7949,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>++A</code> is exactly the same as <code>val $freshId = A.inc(); A = $freshId; $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>++A</code> is exactly the same as <code>when(val $tmp = A.inc()) { else -&gt; A = $tmp; $tmp }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -7970,7 +7970,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>--A</code> is exactly the same as <code>val $freshId = A.dec(); A = $freshId; $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>--A</code> is exactly the same as <code>when(val $tmp = A.dec()) { else -&gt; A = $tmp; $tmp }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -8050,7 +8050,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>postfix increment</em> expression is an expression which uses the postfix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A++</code> is exactly the same as <code>val $freshId = A; A = A.inc(); $freshId</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>A++</code> is exactly the same as <code>when(val $tmp = A) { else -&gt; A = $tmp.inc(); $tmp }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -8071,7 +8071,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>postfix decrement</em> expression is an expression which uses the postfix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A--</code> is exactly the same as <code>val $freshId = A; A = A.dec(); $freshId</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>A--</code> is exactly the same as <code>when(val $tmp = A) { else -&gt; A = $tmp.dec(); $tmp }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
