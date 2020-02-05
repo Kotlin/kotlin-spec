@@ -26,9 +26,9 @@ Both left-hand and right-hand sides of an assignment must be expressions, more s
 
 For an expression to be *assignable*, i.e. be allowed to occur on the left-hand side of an assignment, it **must** be one of the following:
 
-- an identifier referring to a mutable property;
-- a [navigation expression][Navigation operators] referring to a mutable property;
-- an indexing expression.
+- An identifier referring to a mutable property;
+- A [navigation expression][Navigation operators] referring to a mutable property. If this navigation operator is the safe navigation operator, this introduces a special case of *safe assignment*;
+- An indexing expression.
 
 TODO(switch to navigation paths when we have them?)
 
@@ -41,21 +41,6 @@ If the left-hand side of an assignment refers to a mutable property, a value of 
 
 - If a property has a [setter][Getters and setters] (including [delegated properties][Delegated property declaration]), it is called using the right-hand side expression as its argument;
 - Otherwise, if a property is a [mutable property][Mutable property declaration], its value is changed to the evaluation result of the right-hand side expression.
-
-If the left-hand side of an assignment refers to a mutable property through the usage of safe navigation operator (`?.`), the same rules apply to it, but only if the left-hand side of the navigation operator is not referentially equal to `null` reference, e.g.:
-
-```kotlin
-a?.b?.z?.x = y 
-```
-
-is semantically the same as
-
-```kotlin
-val __tmp = a?.b?.z
-if(__tmp !== null) __tmp.x = y
-```
-
-TODO(just use setters for everything?)
 
 If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an [overloaded operator][Operator overloading] with the following expansion:
 
@@ -89,6 +74,45 @@ All of these operators are overloadable operator functions with the following ex
 After the expansion, the resulting [function call expression][Function calls and property access] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
 
 > Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions] of this specification.
+
+#### Safe assignments
+
+If the left-hand side of an assignment involves a safe-navigation operator, it is treated as a special case of *safe assignment*.
+Safe assignments are expanded similar to [safe navigation operator expressions][Navigation operators]:
+
+- `a?.c` is exactly the same as 
+  ```kotlin
+  when(val $tmp = a) {
+      null -> null
+      else -> { $tmp.c }
+  }
+  ```
+  For any right-hand combinations of operators present in `c`, which are expanded further, [as usual][Operator overloading].
+
+> Example:
+> The assignment
+>
+> ```kotlin
+> x?.y[0] = z
+> ```
+> 
+> is expanded to
+> ```kotlin
+> when(val $tmp = x) {
+>     null -> null
+>     else -> { $tmp.y[0] = z }
+> }
+> ``` 
+> 
+> which, according to expansion rules for indexing assigments is, in turn, expanded to
+> 
+> ```kotlin
+> when(val $tmp = x) {
+>     null -> null
+>     else -> { $tmp.y.set(0, z) }
+> }
+> ```
+>
 
 ### Loop statements
 

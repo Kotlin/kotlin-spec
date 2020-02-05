@@ -758,7 +758,14 @@ If followed by the call suffix (arguments in parentheses), `a.c()` may have one 
 
 `a?.c` is a *safe navigation* operator, which has the following expansion:
 
-- `a?.c` is exactly the same as `a?.run { c }`.
+- `a?.c` is exactly the same as 
+  ```kotlin
+  when(val $tmp = a) {
+      null -> null
+      else -> { $tmp.c }
+  }
+  ```
+  For any right-hand combinations of operators present in `c`, which are expanded further, [as usual][Operator overloading].
 
 > Note: this means the type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
 
