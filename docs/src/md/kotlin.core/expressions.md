@@ -571,7 +571,7 @@ These do not change the value of the expression and can be used by external tool
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `++A` is exactly the same as `val $freshId = A.inc(); A = $freshId; $freshId` where `inc` is a valid operator function available in the current scope.
+- `++A` is exactly the same as `when(val $tmp = A.inc()) { else -> A = $tmp; $tmp }` where `inc` is a valid operator function available in the current scope.
 
 > Note: informally, `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
 
@@ -588,7 +588,7 @@ A prefix increment expression has the same type as the return type of the corres
 A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `--A` is exactly the same as `val $freshId = A.dec(); A = $freshId; $freshId` where `dec` is a valid operator function available in the current scope.
+- `--A` is exactly the same as `when(val $tmp = A.dec()) { else -> A = $tmp; $tmp }` where `dec` is a valid operator function available in the current scope.
 
 > Note: informally, `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
 
@@ -641,7 +641,7 @@ No additional restrictions apply.
 A *postfix increment* expression is an expression which uses the postfix form of operator `++`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `A++` is exactly the same as `val $freshId = A; A = A.inc(); $freshId` where `inc` is a valid operator function available in the current scope.
+- `A++` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.inc(); $tmp }` where `inc` is a valid operator function available in the current scope.
 
 > Note: informally, `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
 
@@ -658,7 +658,7 @@ A postfix increment expression has the same type as its operand expression (`A` 
 A *postfix decrement* expression is an expression which uses the postfix form of operator `--`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `A--` is exactly the same as `val $freshId = A; A = A.dec(); $freshId` where `dec` is a valid operator function available in the current scope.
+- `A--` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.dec(); $tmp }` where `dec` is a valid operator function available in the current scope.
 
 > Note: informally, `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
 
