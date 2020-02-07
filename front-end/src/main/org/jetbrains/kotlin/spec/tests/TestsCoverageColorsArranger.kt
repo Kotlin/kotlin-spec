@@ -2,7 +2,7 @@ package org.jetbrains.kotlin.spec.tests
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
-import org.jetbrains.kotlin.spec.utils.TestTypeInfo
+import org.jetbrains.kotlin.spec.utils.TestArea
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.getValueByObjectPath
 import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
@@ -11,13 +11,13 @@ import org.w3c.dom.HTMLElement
 object TestsCoverageColorsArranger {
     val testTypes = mapOf("pos" to "positive", "neg" to "negative")
 
-    private val testAreas = mapOf("diagnostics" to "Front-end diagnostics tests", "box" to "Black box tests")
+    private val testAreas = mapOf("diagnostics" to "Front-end diagnostics tests", "box" to "Codegen box tests")
 
     const val TEMPLATE = """
             <div class='test-coverage-view'>
                 <select name='test-area'>
                     <option value='diagnostics'>Front-end diagnostics tests</option>
-                    <option value='box'>Black box tests</option>
+                    <option value='box'>Codegen box tests</option>
                 </select>
                 <select name='test-type'></select>
                 <select name='test-number'></select>
@@ -90,13 +90,13 @@ object TestsCoverageColorsArranger {
                 .addClass("covered")
     }
 
-    private fun showParagraphCoverage(paragraph: JQuery, paragraphNumber: Int, tests: Map<TestTypeInfo, MutableMap<String, Any>>, sectionPath: String) {
+    private fun showParagraphCoverage(paragraph: JQuery, paragraphNumber: Int, tests: Map<TestArea, MutableMap<String, Any>>, sectionPath: String) {
         val sentences = `$`(paragraph).find(".sentence")
         var sentenceCounter = 1
-        val paragraphTestsDiag =
-                tests[TestTypeInfo.DIAG]?.let { getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(it, sectionPath)?.get("p-$paragraphNumber") }
-        val paragraphTestsBOX =
-                tests[TestTypeInfo.BOX]?.let { getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(it, sectionPath)?.get("p-$paragraphNumber") }
+        val paragraphDiagnosticTests =
+                tests[TestArea.DIAGNOSTICS]?.let { getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(it, sectionPath)?.get("p-$paragraphNumber") }
+        val paragraphCodegenBoxTests =
+                tests[TestArea.CODEGEN_BOX]?.let { getValueByObjectPath<Map<String, Map<String, Map<String, String>>>?>(it, sectionPath)?.get("p-$paragraphNumber") }
 
         insertParagraphNumber(`$`(paragraph), paragraphNumber, sectionPath, paragraphNumber)
 
@@ -110,8 +110,8 @@ object TestsCoverageColorsArranger {
                 existingNumberInfo.remove()
             }
 
-            if (paragraphTestsDiag != null) {
-                for ((testType, testsByType) in paragraphTestsDiag) {
+            if (paragraphDiagnosticTests != null) {
+                for ((testType, testsByType) in paragraphDiagnosticTests) {
                     val sentenceTestsByTestTypes = testsByType[sentenceCounter.toString()]
                     if (sentenceTestsByTestTypes != null) {
                         setValueByObjectPath(sentenceTests.unsafeCast<MutableMap<String, Any>>(), sentenceTestsByTestTypes, "diagnostics.$testType")
@@ -121,8 +121,8 @@ object TestsCoverageColorsArranger {
                     showSentenceCoverage(sentence, sentenceTests)
                 }
             }
-            if (paragraphTestsBOX != null) {
-                for ((testType, testsByType) in paragraphTestsBOX) {
+            if (paragraphCodegenBoxTests != null) {
+                for ((testType, testsByType) in paragraphCodegenBoxTests) {
                     val sentenceTestsByTestTypes = testsByType[sentenceCounter.toString()]
                     if (sentenceTestsByTestTypes != null) {
                         setValueByObjectPath(sentenceTests.unsafeCast<MutableMap<String, Any>>(), sentenceTestsByTestTypes, "box.$testType")
@@ -138,7 +138,7 @@ object TestsCoverageColorsArranger {
         }
     }
 
-    fun showCoverage(paragraphsInfo: List<Map<String, Any>>, tests: Map<TestTypeInfo, MutableMap<String, Any>>, sectionsPath: String) {
+    fun showCoverage(paragraphsInfo: List<Map<String, Any>>, tests: Map<TestArea, MutableMap<String, Any>>, sectionsPath: String) {
         paragraphsInfo.forEachIndexed { paragraphIndex, paragraph ->
             val paragraphNumber = paragraphIndex + 1
             val paragraphEl = `$`(paragraph["paragraphElement"] as HTMLElement).apply { addClass("with-tests") }

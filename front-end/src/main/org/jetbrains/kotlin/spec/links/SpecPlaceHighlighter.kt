@@ -3,7 +3,6 @@ package org.jetbrains.kotlin.spec.links
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
-import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.format
@@ -18,17 +17,18 @@ data class SpecPlaceComponents(
 
 
 object SpecPlaceHighlighter {
-    private const val paragraphNotFound = "Paragraph \"{1}\" of section \"{2}\" is not found."
-    private const val sentenceNotFound = "Sentence \"{1}\" is not found."
+    private const val PARAGRAPH_NOT_FOUND = "Paragraph \"{1}\" of section \"{2}\" is not found."
+    private const val SENTENCE_NOT_FOUND = "Sentence \"{1}\" is not found."
+    private const val ESCAPED_SECTION_ID_SEPARATOR = """\."""
 
     private fun findParagraph(sectionId: String, paragraphNumber: Int): JQuery? {
-        val sectionElement = `$`("#${sectionId.replace(".", """\.""")}")
+        val sectionElement = `$`("#${sectionId.replace(".", ESCAPED_SECTION_ID_SEPARATOR)}")
         val paragraphsInfo = SpecTestsLoader.getParagraphsInfo(sectionElement) ?: return null
 
         return if (paragraphsInfo.size > paragraphNumber - 1) {
              `$`(paragraphsInfo[paragraphNumber - 1]["paragraphElement"] as HTMLElement)
         } else {
-            window.alert(paragraphNotFound.format(paragraphNumber, sectionId))
+            window.alert(PARAGRAPH_NOT_FOUND.format(paragraphNumber, sectionId))
             null
         }
     }
@@ -39,7 +39,7 @@ object SpecPlaceHighlighter {
         return if (sentences.length.toInt() > sentenceNumber - 1) {
             `$`(sentences[sentenceNumber - 1]!!)
         } else {
-            window.alert(sentenceNotFound.format(sentenceNumber))
+            window.alert(SENTENCE_NOT_FOUND.format(sentenceNumber))
             null
         }
     }
@@ -54,7 +54,7 @@ object SpecPlaceHighlighter {
     }
 
     fun highlightParagraph(paragraphToBeHighlighted: String) =
-            highlightParagraph(getParagraphInfo(paragraphToBeHighlighted))
+            highlightParagraph(getParagraphInfo(paragraphToBeHighlighted.trimEnd()))
 
     fun highlightParagraph(sentencePath: SpecPlaceComponents) {
         highlightParagraph(sentencePath.sectionId, sentencePath.paragraphNumber)

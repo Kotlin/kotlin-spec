@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader.Companion.LINKE
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader.Companion.SPEC_TEST_DATA_PATH
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader.Companion.getBranch
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader.Companion.loadFileFromRawGithub
+import org.jetbrains.kotlin.spec.utils.TestArea
 import org.jetbrains.kotlin.spec.utils.format
 import kotlin.js.Promise
 
@@ -68,13 +69,13 @@ class LoaderByGithubApi: GithubTestsLoader {
         val promises = mutableListOf<Promise<Map<String, Any>>>()
 
         tree.forEach { testFile ->
-            if (SpecTestsParser.testPathStartingParagraphRegexp.matches(testFile.jsonObject["path1"]!!.toString())) {
+            if (SpecTestsParser.testPathStartingParagraphRegexp.matches(testFile.jsonObject[TestArea.DIAGNOSTICS.path]!!.toString())) {
                 promises.add(
                         loadFileFromRawGithub(
                                 "{1}/{2}/{3}".format(
                                         sectionsPath.joinToString("/"),
                                         currentSection,
-                                        testFile.jsonObject["path1"]!!.toString()
+                                        testFile.jsonObject[TestArea.DIAGNOSTICS.path]!!.toString()
                                 ),
                                 null,
                                 GithubTestsLoader.TestFileType.SPEC_TEST

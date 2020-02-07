@@ -3,7 +3,7 @@ package org.jetbrains.kotlin.spec.tests
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.loaders.*
-import org.jetbrains.kotlin.spec.utils.TestTypeInfo
+import org.jetbrains.kotlin.spec.utils.TestArea
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
 import kotlin.browser.window
@@ -26,6 +26,8 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
 
         private const val LOAD_TESTS_TEXT = "Load tests"
         private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
+
+        const val SECTION_PATH_SEPARATOR = ", "
 
         fun insertLoadIcon(headerElement: JQuery) {
             headerElement.append("""
@@ -121,32 +123,29 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                 sectionsPath: List<String>,
                 paragraphsInfo: List<Map<String, Any>>
         ) {
-            val pathPrefix = "${sectionsPath.joinToString(".")}.$currentSection"
-
-
+            val pathPrefix = "${sectionsPath.joinToString(SECTION_PATH_SEPARATOR)}$SECTION_PATH_SEPARATOR$currentSection"
             val testsScope = mutableMapOf(
-                    TestTypeInfo.DIAG to getTestsByTestTypeInfo(responses, TestTypeInfo.DIAG),
-                    TestTypeInfo.BOX to getTestsByTestTypeInfo(responses, TestTypeInfo.BOX))
+                    TestArea.DIAGNOSTICS to getTestsByTestTypeInfo(responses, TestArea.DIAGNOSTICS),
+                    TestArea.CODEGEN_BOX to getTestsByTestTypeInfo(responses, TestArea.CODEGEN_BOX))
             TestsCoverageColorsArranger.showCoverage(paragraphsInfo, testsScope, pathPrefix)
-
         }
 
         /**
          * @param responses
-         * @param testTypeInfo diagnostics or box type
+         * @param testArea diagnostics or box type
          *
          * @return Map of tests depends on the testType
          */
-        private fun getTestsByTestTypeInfo(responses: Array<out Map<String, Any>>, testTypeInfo: TestTypeInfo): MutableMap<String, Any> {
-            val testsDiag = mutableMapOf<String, Any>()
+        private fun getTestsByTestTypeInfo(responses: Array<out Map<String, Any>>, testArea: TestArea): MutableMap<String, Any> {
+            val tests = mutableMapOf<String, Any>()
             responses.forEach { response ->
-                val objectPath = response[testTypeInfo.contentPath]?.toString() ?: return@forEach
-                val parsedTest = response[testTypeInfo.content]?.let {
-                    SpecTestsParser.parseSpecTest(response, testTypeInfo)
+                val objectPath = response[testArea.contentPath]?.toString() ?: return@forEach
+                val parsedTest = response[testArea.content]?.let {
+                    SpecTestsParser.parseSpecTest(response, testArea)
                 } ?: return@forEach
-                setValueByObjectPath(testsDiag, parsedTest, objectPath)
+                setValueByObjectPath(tests, parsedTest, objectPath)
             }
-            return testsDiag
+            return tests
         }
 
         fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")

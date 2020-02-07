@@ -1,6 +1,6 @@
 package org.jetbrains.kotlin.spec.utils
 
-import org.w3c.dom.CanvasDrawPath
+import org.jetbrains.kotlin.spec.tests.SpecTestsLoader.Companion.SECTION_PATH_SEPARATOR
 import org.w3c.dom.Location
 
 fun String.format(vararg args: Any): String {
@@ -31,14 +31,14 @@ fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: Stri
 
 }
 
-fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.split("."))
+fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.replace(SECTION_PATH_SEPARATOR, ".").split("."))
 
 fun <T> getValueByObjectPath(obj: Map<String, Any>, path: List<String>): T? {
     var soughtForObj = obj
 
     path.forEach {
         if (it !in soughtForObj) return null
-        soughtForObj = soughtForObj[it].unsafeCast<MutableMap<String, Any>>() //todo  (<MutableMap<String, List<Any>>>)
+        soughtForObj = soughtForObj[it].unsafeCast<MutableMap<String, Any>>()
     }
 
     return soughtForObj.unsafeCast<T>()
@@ -57,11 +57,6 @@ val Location.searchMap: MutableMap<String, String>
 
         return objURL
     }
-
-enum class TestTypeInfo(val path: String, val content: String, val contentPath: String) {
-    DIAG("diagnostics", "content1", "path1"),
-    BOX("codegen/box", "content2", "path2")
-}
 
 
 
