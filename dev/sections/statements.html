@@ -380,13 +380,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()</a>
-<a class="sourceLine" id="cb5-2" title="2"><span class="cf">while</span> (__iterator.hasNext()) {</a>
-<a class="sourceLine" id="cb5-3" title="3">    <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
-<a class="sourceLine" id="cb5-4" title="4">    &lt;... all the statements from Body&gt;</a>
-<a class="sourceLine" id="cb5-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()) {</a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> (__iterator.hasNext()) {</a>
+<a class="sourceLine" id="cb5-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
+<a class="sourceLine" id="cb5-4" title="4">                &lt;... all the statements from Body&gt;</a>
+<a class="sourceLine" id="cb5-5" title="5">            }</a>
+<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable name as per <a href="declarations.html#local-property-declaration">destructuring variable declarations</a>.</span></p>
+<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable names as per <a href="declarations.html#local-property-declaration">destructuring variable declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -459,9 +460,5 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of a control structure body is the type of its value.</span></p>
 </div>
-<h3 id="todo">TODO</h3>
-<ul>
-<li><span class="sentence">How expansions with new variables actually work</span></li>
-</ul>
 </body>
 </html>

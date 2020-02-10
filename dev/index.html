@@ -256,7 +256,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#for-loop-statement">For-loop statement</a></li>
 </ul></li>
 <li><a href="#code-blocks">Code blocks</a></li>
-<li><a href="#todo">TODO</a></li>
 </ul></li>
 <li><a href="#expressions">Expressions</a><ul>
 <li><a href="#glossary-3">Glossary</a></li>
@@ -406,7 +405,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#bound-smart-casts">Bound smart casts</a></li>
 </ul></li>
 <li><a href="#local-type-inference">Local type inference</a></li>
-<li><a href="#todo-1">TODO</a></li>
+<li><a href="#todo">TODO</a></li>
 </ul></li>
 <li><a href="#runtime-type-information">Runtime type information</a><ul>
 <li><a href="#runtime-available-types">Runtime-available types</a></li>
@@ -6997,13 +6996,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb38-1" title="1"><span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()</a>
-<a class="sourceLine" id="cb38-2" title="2"><span class="cf">while</span> (__iterator.hasNext()) {</a>
-<a class="sourceLine" id="cb38-3" title="3">    <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
-<a class="sourceLine" id="cb38-4" title="4">    &lt;... all the statements from Body&gt;</a>
-<a class="sourceLine" id="cb38-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb38-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()) {</a>
+<a class="sourceLine" id="cb38-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> (__iterator.hasNext()) {</a>
+<a class="sourceLine" id="cb38-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
+<a class="sourceLine" id="cb38-4" title="4">                &lt;... all the statements from Body&gt;</a>
+<a class="sourceLine" id="cb38-5" title="5">            }</a>
+<a class="sourceLine" id="cb38-6" title="6">}</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable name as per <a href="#local-property-declaration">destructuring variable declarations</a>.</span></p>
+<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable names as per <a href="#local-property-declaration">destructuring variable declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -7076,10 +7076,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of a control structure body is the type of its value.</span></p>
 </div>
-<h3 id="todo">TODO</h3>
-<ul>
-<li><span class="sentence">How expansions with new variables actually work</span></li>
-</ul>
 <h2 id="expressions">Expressions</h2>
 <h3 id="glossary-3">Glossary</h3>
 <dl>
@@ -9152,11 +9148,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An import directive contains dot-separated <em>path</em> to an entity, as well as the name of the entity itself (the last argument of the navigation dot operator). </span><span class="sentence">A path may include not only the package the import is importing from, but also an object or a type (referring to companion object of this type). </span><span class="sentence">Any named declaration within that scope (that is, top-level scope of all files in the package or, in the object case, the object declararion scope) may be imported using their names. </span><span class="sentence">There are two special kinds of imports: star-imports ending in an asterisk (<code>*</code>) and renaming imports employing the use of <code>as</code> operator. </span><span class="sentence">Star-imports import all the named entities inside the corresponding scope, but have weaker priority during <a href="#overload-resolution">resolution</a> of functions and properties. </span><span class="sentence">Renaming imports work just as regular imports, but introduce the entity into current file with a name different from the name it has at declaration site.</span></p>
+<p><span class="sentence">An import directive contains dot-separated <em>path</em> to an entity, as well as the name of the entity itself (the last argument of the navigation dot operator). </span><span class="sentence">A path may include not only the package the import is importing from, but also an object or a type (referring to companion object of this type). </span><span class="sentence">Any named declaration within that scope (that is, top-level scope of all files in the package or, in the object case, the object declaration scope) may be imported using their names. </span><span class="sentence">There are two special kinds of imports: star-imports ending in an asterisk (<code>*</code>) and renaming imports employing the use of <code>as</code> operator. </span><span class="sentence">Star-imports import all the named entities inside the corresponding scope, but have weaker priority during <a href="#overload-resolution">resolution</a> of functions and properties. </span><span class="sentence">Renaming imports work just as regular imports, but introduce the entity into current file with a name different from the name it has at declaration site.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">There are certain limitations for imports from objects: only members of the object may be imported and star-imports are not allowed.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Add specifics about imports from objects)</span></p>
+<p><span class="sentence">TODO(statics)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(imports from objects from objects from objects)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -9195,11 +9199,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Availability declaration from current package)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Scopes and priorities)</span></p>
 </div>
 </div>
 <h3 id="modules">Modules</h3>
@@ -10750,7 +10749,7 @@ P_2 \times N_2
 <p><span class="sentence">Note: this is valid even if <span class="math inline">\(T\)</span> is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint <span class="math inline">\(\mathtt{kotlin.Nothing} &lt;: T &lt;: \mathtt{kotlin.Any?}\)</span>.</span></p>
 </div>
 </blockquote>
-<h3 id="todo-1">TODO</h3>
+<h3 id="todo">TODO</h3>
 <ul>
 <li><span class="sentence">Type approximation for public API</span></li>
 <li><span class="sentence">Lambda analysis order (and the order of overloading vs type inference in general)</span></li>
