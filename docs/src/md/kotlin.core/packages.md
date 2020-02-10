@@ -32,12 +32,16 @@ In order to use an entity from a file belonging to a different package, the prog
 
 An import directive contains dot-separated *path* to an entity, as well as the name of the entity itself (the last argument of the navigation dot operator).
 A path may include not only the package the import is importing from, but also an object or a type (referring to companion object of this type).
-Any named declaration within that scope (that is, top-level scope of all files in the package or, in the object case, the object declararion scope) may be imported using their names.
+Any named declaration within that scope (that is, top-level scope of all files in the package or, in the object case, the object declaration scope) may be imported using their names.
 There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the use of `as` operator. 
 Star-imports import all the named entities inside the corresponding scope, but have weaker priority during [resolution][Overload resolution] of functions and properties. 
 Renaming imports work just as regular imports, but introduce the entity into current file with a name different from the name it has at declaration site.
 
-TODO(Add specifics about imports from objects)
+There are certain limitations for imports from objects: only members of the object may be imported and star-imports are not allowed.
+
+TODO(statics)
+
+TODO(imports from objects from objects from objects)
 
 Imports are file-based, meaning that if an entity is introduced into file A.kt belonging to package `kotlinx.foo`, it does not introduce this entity to all other files belonging to `kotlinx.foo`.
 
@@ -64,8 +68,6 @@ Importing certain entities may be disallowed by their [visibility modifiers][Vis
 TODO(Clarify all this)
 
 TODO(Availability declaration from current package)
-
-TODO(Scopes and priorities)
 
 ### Modules
 
