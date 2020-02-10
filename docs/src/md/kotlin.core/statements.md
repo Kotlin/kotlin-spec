@@ -167,15 +167,16 @@ with the following expansion:
 `for(VarDecl in C) Body` is the same as
 
 ```kotlin
-val __iterator = C.iterator()
-while (__iterator.hasNext()) {
-    val VarDecl = __iterator.next()
-    <... all the statements from Body>
+when(val __iterator = C.iterator()) {
+    else -> while (__iterator.hasNext()) {
+                val VarDecl = __iterator.next()
+                <... all the statements from Body>
+            }
 }
 ```
 
 where `iterator`, `hasNext`, `next` are all suitable operator functions available in the current scope.
-`VarDecl` here may be a variable name or a set of variable name as per [destructuring variable declarations][Local property declaration].
+`VarDecl` here may be a variable name or a set of variable names as per [destructuring variable declarations][Local property declaration].
 
 > Note: the expansion is hygienic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
 
@@ -216,6 +217,3 @@ The value of a control structure body is:
 
 The type of a control structure body is the type of its value.
 
-### TODO
-
-- How expansions with new variables actually work
