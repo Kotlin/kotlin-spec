@@ -396,7 +396,29 @@ For the following loop configurations, we consider their bodies to be definitely
 
 #### Bound smart casts
 
-TODO(Everything)
+TODO(this is a stub)
+
+In some cases, it is possible to introduce smart casting *between properties* if it is known at compile-time that these properties are *bound* to each other.
+For instance, if a variable `a` is initialized as a copy of variable `b` and both are [stable][Smart cast sink stability], they are guaranteed to reference the same runtime value and any assumption about `a` may be also applied to `b` and vice versa.
+
+For example:
+
+```kotlin
+val a: Any? = ...
+val b = a
+if(b is Int) {
+    // as a and b point to the same value, a is also an Int
+    a.inc()
+}
+```
+
+TODO(as a matter of fact, the example above does not work)
+
+In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object.
+This relation is known as *must-alias* relation between program references and it is implementation-defined in which cases a particular kotlin compiler may safely assume this relation between two particular properties at a particular program point, but it must guarantee that if two properties are considered bound together it is completely impossible for these properties to reference two different values at runtime.
+Effectively, the space of stable program properties  is divided into disjoint *alias sets* of properties, and the analysis described above links the smart cast data flow information to sets of properties rather than properties.
+
+TODO(we still don't cover cases such as `a?.b?.c !== null` => `a !== null`)
 
 ### Local type inference
 
