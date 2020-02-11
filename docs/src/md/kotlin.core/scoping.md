@@ -71,6 +71,31 @@ Example:
 - TODO(rewrite expressions and statements as references to this part)
 - TODO(identifier lifetime & such)
 
+### Linked scopes
+
+Scopes `A` and `B` in a Kotlin program may be *downwards-linked* (`A ~> B`), meaning identifiers from `A` can be used in `B` without the need for additional qualification.
+If scopes `A` and `B` are downwards-linked, scopes `B` and `A` are considered *upwards-linked* (`B <~ A`).
+
+> Note: link relation is transitive, unless specified otherwise.
+
+Scopes are downwards-linked (DLD) or upwards-linked (ULD) as follows:
+
+- A statement scope is DLD to any directly nested scope;
+- An [object declaration][Classifier declaration] scope is DLD to any nested scopes;
+- An [object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its superclasses;
+- An [object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;
+- An [object declaration][Classifier declaration] scope is ULD to the companion object declaration scope of its parent classifier;
+- A [companion object declaration][Classifier declaration] scope is DLD to any nested scopes;
+- A [companion object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its superclasses;
+- A [companion object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;
+- A [companion object declaration][Classifier declaration] scope is ULD to the companion object declaration scope of the *parent* of its parent classifier;
+- A [classifier or nested class declaration][Classifier declaration] scope is DLD to any nested statement scopes;
+- A [classifier or nested class declaration][Classifier declaration] scope is ULD to its companion object declaration scope;
+- An [inner class declaration][Nested and inner classifiers] scope is DLD to any nested statement scopes;
+- An [inner class declaration][Nested and inner classifiers] scope is ULD to the classifier declaration scope of its parent classifier.
+
+> Important: linked scopes **do not** cover cases when identifiers from supertypes are used in subtypes, as this is covered by the [inheritance][Inheritance] rules.
+
 ### Identifiers and paths
 
 Kotlin program operates with different *entities*, such as classes, interfaces, values, etc.
@@ -78,8 +103,8 @@ An entity can be referenced using its *path*: a sequence of identifiers which re
 
 Kotlin supports two kinds of paths.
 
-* Simple paths $P$, which consist of a single identifier
-* Qualified paths $P.m$, which consist of a path $P$ and a member identifier $m$
+* Simple paths `P`, which consist of a single identifier
+* Qualified paths `P.m`, which consist of a path `P` and a member identifier `m`
 
 Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.
 
