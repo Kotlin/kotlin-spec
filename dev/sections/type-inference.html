@@ -577,7 +577,32 @@ P_2 \times N_2
 <h4 id="bound-smart-casts">Bound smart casts</h4>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Everything)</span></p>
+<p><span class="sentence">TODO(this is a stub)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In some cases, it is possible to introduce smart casting <em>between properties</em> if it is known at compile-time that these properties are <em>bound</em> to each other. </span><span class="sentence">For instance, if a variable <code>a</code> is initialized as a copy of variable <code>b</code> and both are <a href="type-inference.html#smart-cast-sink-stability">stable</a>, they are guaranteed to reference the same runtime value and any assumption about <code>a</code> may be also applied to <code>b</code> and vice versa.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For example:</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">a</span>: Any? = ...</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">val</span> <span class="va">b</span> = a</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="cf">if</span>(b <span class="kw">is</span> <span class="kw">Int</span>) {</a>
+<a class="sourceLine" id="cb5-4" title="4">    <span class="co">// as a and b point to the same value, a is also an Int</span></a>
+<a class="sourceLine" id="cb5-5" title="5">    a.inc()</a>
+<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(as a matter of fact, the example above does not work)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object. </span><span class="sentence">This relation is known as <em>must-alias</em> relation between program references and it is implementation-defined in which cases a particular kotlin compiler may safely assume this relation between two particular properties at a particular program point, but it must guarantee that if two properties are considered bound together it is completely impossible for these properties to reference two different values at runtime. </span><span class="sentence">Effectively, the space of stable program properties is divided into disjoint <em>alias sets</em> of properties, and the analysis described above links the smart cast data flow information to sets of properties rather than properties.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(we still don’t cover cases such as <code>a?.b?.c !== null</code> =&gt; <code>a !== null</code>)</span></p>
 </div>
 </div>
 <h3 id="local-type-inference">Local type inference</h3>

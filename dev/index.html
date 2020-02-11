@@ -10714,7 +10714,32 @@ P_2 \times N_2
 <h4 id="bound-smart-casts">Bound smart casts</h4>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(Everything)</span></p>
+<p><span class="sentence">TODO(this is a stub)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In some cases, it is possible to introduce smart casting <em>between properties</em> if it is known at compile-time that these properties are <em>bound</em> to each other. </span><span class="sentence">For instance, if a variable <code>a</code> is initialized as a copy of variable <code>b</code> and both are <a href="#smart-cast-sink-stability">stable</a>, they are guaranteed to reference the same runtime value and any assumption about <code>a</code> may be also applied to <code>b</code> and vice versa.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For example:</span></p>
+</div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb98-1" title="1"><span class="kw">val</span> <span class="va">a</span>: Any? = ...</a>
+<a class="sourceLine" id="cb98-2" title="2"><span class="kw">val</span> <span class="va">b</span> = a</a>
+<a class="sourceLine" id="cb98-3" title="3"><span class="cf">if</span>(b <span class="kw">is</span> <span class="kw">Int</span>) {</a>
+<a class="sourceLine" id="cb98-4" title="4">    <span class="co">// as a and b point to the same value, a is also an Int</span></a>
+<a class="sourceLine" id="cb98-5" title="5">    a.inc()</a>
+<a class="sourceLine" id="cb98-6" title="6">}</a></code></pre></div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(as a matter of fact, the example above does not work)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object. </span><span class="sentence">This relation is known as <em>must-alias</em> relation between program references and it is implementation-defined in which cases a particular kotlin compiler may safely assume this relation between two particular properties at a particular program point, but it must guarantee that if two properties are considered bound together it is completely impossible for these properties to reference two different values at runtime. </span><span class="sentence">Effectively, the space of stable program properties is divided into disjoint <em>alias sets</em> of properties, and the analysis described above links the smart cast data flow information to sets of properties rather than properties.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(we still don’t cover cases such as <code>a?.b?.c !== null</code> =&gt; <code>a !== null</code>)</span></p>
 </div>
 </div>
 <h3 id="local-type-inference">Local type inference</h3>
@@ -10933,14 +10958,14 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Experimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb98"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb98-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
+<li><div class="sourceCode" id="cb99"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb99-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
 <span class="sentence">The severity level of the experimental status with two values: <code>Level.WARNING</code> and <code>Level.ERROR</code></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features. </span><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb99"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb99-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
+<li><div class="sourceCode" id="cb100"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb100-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
 <span class="sentence">The classes this annotation is allowing to use</span></li>
 </ul>
 <div class="paragraph">
@@ -10961,15 +10986,15 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb100"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb100-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb101"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The message supporting the deprecation</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb101"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<li><div class="sourceCode" id="cb102"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb102-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional replacement for deprecated code</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb102"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb102-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
+<li><div class="sourceCode" id="cb103"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb103-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The deprecation level</span></p>
 </div></li>
@@ -10978,11 +11003,11 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb103"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb103-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb104"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb104-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The replacement code</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb104"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb104-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb105"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb105-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The array of imports needed for the replacement code to work correctly</span></p>
 </div></li>
@@ -11004,7 +11029,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb105"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb105-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb106"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb106-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
 <span class="sentence">The names of features this annotation is suppressing</span></li>
 </ul>
 <div class="paragraph">
@@ -11017,7 +11042,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb106"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb106-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb107"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb107-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
 <span class="sentence">The version of Kotlin language</span></li>
 </ul>
 <div class="paragraph">
