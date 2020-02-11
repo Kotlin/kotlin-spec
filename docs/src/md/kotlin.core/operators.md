@@ -7,6 +7,7 @@ Some syntax forms in Kotlin are *defined by convention*, meaning that their sema
 Particular cases of definition by convention include:
 
 - Arithmetic and comparison operators;
+- `invoke` convention;
 - Operator-form [assignments][Assignments];
 - [For-loop statements][For-loop statement];
 - [Delegated properties][Delegated property declaration];
