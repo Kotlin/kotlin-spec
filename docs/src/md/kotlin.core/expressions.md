@@ -275,10 +275,10 @@ The `else` condition **must** also be in the last when entry of when expression,
 **When expression with bound value** (the form where the expression enclosed in parentheses after the `when` keyword is present) are similar to the form without bound value, but use a different syntax for conditions.
 In fact, it supports three different condition forms:
 
-- *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T`).
-  The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T`.
-- *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr`).
-  The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr`.
+- *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T` or `!is T`).
+  The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T` or `boundValue !is T`.
+- *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr` or `!in Expr`).
+  The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr` or `boundValue !in Expr`.
 - *Any other applicable expression* (`Expr`) besides the following.
     + [Simple continue expression][Continue expression]
     + [Simple break expression][Break expression]
