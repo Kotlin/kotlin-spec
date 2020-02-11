@@ -1,58 +1,60 @@
 ## Overload resolution
 
-Kotlin supports _function overloading_, that is, the ability for several functions of the same name to coexist in the same scope, with the compiler picking the most suitable one when such a function is called.
-This section describes this mechanism in detail.
+Kotlin supports _callable overloading_, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called.
+This section describes *overload resolution process* in detail.
 
 ### Intro
 
-Unlike other object-oriented languages, Kotlin does not only have object methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overloading process quite a lot.
-Kotlin also has infix functions, operator and property overloading which all work in a similar, but subtly different way.
+Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
+Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.
 
 ### Receivers
 
 Every function or property that is defined as a method or an extension has one or more special parameters called _receiver_ parameters.
-When calling such a callable using navigation operators (`.` or `?.`) the left hand side parameter is called an _explicit receiver_ of this particular call.
+When calling such a callable using [navigation operators][Navigation operators] (`.` or `?.`) the left hand side value is called an _explicit receiver_ of this particular call.
 In addition to the explicit receiver, each call may indirectly access zero or more _implicit receivers_.
 
-Implicit receivers are available in some syntactic scope according to the following rules:
+Implicit receivers are available in a syntactic scope according to the following rules:
 
-- Any receiver available in the outer statement scope is available in any directly nested scope;
-- Inside an [object declaration][Classifier declaration], the object itself is an available receiver in this and any nested scope;
-- In the scope of a classifier declaration, the following receivers are available:
-    - The implicit `this` object of the declared type;
-    - The companion object (if one exists) of this class;
-    - The companion objects (if any exist) of all its superclasses;
-- In an [inner class declaration][Nested and inner classifiers] all the receivers available in the outer declaration scope are also available in this declaration scope;
+- Any receiver available in a scope is available in its [downwards-linked scopes][Linked scopes];
+- In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the declared object is available as implicit `this`;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
-- The scope of a lambda expression, if it has an extension function type, contains `this` argument of the lambda expression.
+- If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
 
 The available receivers are prioritized in the following way:
 
-- The receivers provided in the most inner scope have higher priority;
-- In a classifier body, the implicit `this` receiver has higher priority than any companion object receiver;
-- Current class companion object receiver has higher priority than any of the base class companion objects.
+- Receivers provided in the most inner scope have higher priority;
+- The implicit `this` receiver has higher priority than any companion object receiver;
+- Current class companion object receiver has higher priority than any of the superclass companion objects;
+- Superclass companion object receivers are prioritized according to the inheritance order;
+- Otherwise, receivers are ordered w.r.t. [link relation][Linked scopes].
+
+> Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.
 
 The implicit receiver having the highest priority is also called the _default implicit receiver_.
-The default implicit receiver is available in the scope as `this`.
+The default implicit receiver is available in a scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
-If an implicit receiver is available in a given scope, it may be used to call functions implicitly in that scope without using the navigation operator.
-For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver the extension itself is declared in (TODO: wording) is called *dispatch receiver*. 
-For a particular callable invocation, any or both receivers may be involved, but if an extension receiver is involved, the dispatch receiver must be implicit.
+If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.
 
-> Note: there may be situations in which *the same implicit receiver* is used as both the dispatch receiver and extension receiver for a particular callable access, for example:
->
+For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver the extension itself is declared in is called *dispatch receiver*. 
+For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.
+
+> Note: there may be situations in which *the same implicit receiver* is used as both the dispatch receiver and the extension receiver for a particular callable invocation, for example:
+> 
 > ```kotlin
 > interface Y
-> class X: Y {
->        fun Y.foo() {} // foo is an extension for Y, needs extension receiver to be called
->    
->        fun bar() {
->            foo() // this reference is both the extension and the dispatch receiver
->        }
+> 
+> class X : Y {
+>     fun Y.foo() {} // `foo` is an extension for Y,
+>                    //   needs extension receiver to be called
+> 
+>     fun bar() {
+>         foo() // `this` reference is both
+>               //   the extension and the dispatch receiver
+>     }
 > }
 > ```
->
 
 ### The forms of call-expression
 
@@ -64,9 +66,9 @@ Any function in Kotlin may be called in several different ways:
 - An overloaded operator call: `a + b`;
 - A call without an explicit receiver: `foo()`.
 
-Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, `package` is a name of a [kotlin package][Packages and imports], while in the second case, `a` is a value.
+Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, `package` is a name of a [Kotlin package][Packages and imports], while in the second case `a` is a value.
 
-For each of these cases, a compiler should first pick a number of _overload candidates_, which form a set of possibly intended callables (_overload candidate set_), and then _choose the most specific function_ to call based on the types of the function and the call arguments.
+For each of these cases, a compiler should first pick a number of _overload candidates_, which form a set of possibly intended callables (_overload candidate set_, OCS), and then _choose the most specific function_ to call based on the types of the function and the call arguments.
 
 > Important: the overload candidates are picked **before** the most specific function is chosen.
 
@@ -76,177 +78,207 @@ A *callable* $X$ for the purpose of this section is one of the following:
 
 - Function-like callables:
     - A function named $X$ at its declaration site;
-    - A function named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$;
-    - A constructor of the type named $X$ at its declaration site;
-- Property-like callables, one of the following with an operator function called `invoke` available as member or extension in the current scope:
+    - A constructor of a type named $X$ at its declaration site;
+    - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
+- Property-like callables with an operator function `invoke` available as a member or an extension in the current scope:
     - A property named $X$ at its declaration site;
     - [An object][Object declaration] named $X$ at its declaration site;
     - [A companion object][Class declaration] of a classifier type named $X$ at its declaration site;
     - [An enum entry][Enum class declaration] named $X$ at its declaration site;
     - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
 
-In the latter case a call $X(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $X\text{.invoke}(Y_0,Y_1,\ldots,Y_N)$.
-The call may contain type parameters, named parameters, variable argument parameter expansion and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
+For property-like callables, a call $X(Y_0, \ldots, Y_N)$ is an [overloadable operator][Operator overloading] which is expanded to $X\text{.invoke}(Y_0, \ldots, Y_N)$.
+The call may contain type parameters, named parameters, [variable argument parameter expansion][Spread operator] and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
-The set of explicit receivers itself (denoted by a [`this`][This-expressions] expression, labeled or not) may also be used as a property-like callable using `this` as the left-hand side of the call expression. 
-As with normal property-like callables, $\texttt{this@A}(Y_0,Y_1,\ldots,Y_N)$ is an overloadable operator which is expanded to $\texttt{this@A.invoke}(Y_0,Y_1,\ldots,Y_N)$.
+The set of explicit receivers itself (denoted by [`this`][This-expressions] expression) may also be used as a property-like callable using `this` as the left-hand side of the call expression.
+As with normal property-like callables, $\texttt{this@A}(Y_0, \ldots, Y_N)$ is an overloadable operator which is expanded to $\texttt{this@A.invoke}(Y_0, \ldots, Y_N)$.
 
-A *member callable* is either a member function-like callable or a member property-like callable with a member operator `invoke`.
-An *extension callable* is either an extension function-like callable, a member property-like callable with an extension operator `invoke` or an extension property-like callable with an extension operator `invoke`.
+A *member callable* is one of the following:
 
-When calculating overload candidate sets, member callables produce the following separate sets (ordered by higher priority first):
+* a member function-like callable (including constructors);
+* a member property-like callable with a member operator `invoke`.
+
+An *extension callable* is one of the following:
+
+* an extension function-like callable;
+* a member property-like callable with an extension operator `invoke`;
+* an extension property-like callable with a member operator `invoke`;
+* an extension property-like callable with an extension operator `invoke`.
+
+### c-level partition
+
+When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:
 
 - Member function-like callables;
 - Member property-like callables.
 
-Extension callables produce the following separate sets (ordered by higher priority first):
+Extension callables produce the following sets, considered separately, ordered by higher priority first:
 
-- Extension functions;
-- Member property-like callables with extension invoke;
-- Extension property-like callables with member invoke;
-- Extension property-like callables with extension invoke.
+- Extension function-like callables;
+- Member property-like callables with extension `invoke`;
+- Extension property-like callables with member `invoke`;
+- Extension property-like callables with extension `invoke`.
 
-Let us define this partition as c-level partition (callable-level partition).
-As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed last, after all other applicable steps.
+Let us define this partition of callables to overload candidate sets as *c-level partition* (callable-level partition).
+As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed **last**, after all other applicable steps.
 
-### Overload resolution for a fully-qualified call
+### Building the overload candidate set (OCS)
 
-TODO(Detection of fully-qualified vs explicit receiver calls)
+#### Fully-qualified call
 
-If a callable name is fully-qualified (that is, it contains a full package path), then the overload candidate set $S$ simply contains all the callables with the specified name in the specified package.
-As a package name can never clash with any other declared entity, after performing c-level partition on $S$, the resulting sets are the only ones available for further processing.
+If a callable name is fully-qualified (that is, it contains a complete package [path][Identifiers and paths]), then the overload candidate set $S$ simply contains all the top-level callables with the specified name in the specified package.
+As a package name can never clash with any other declared entity, after performing [c-level partition][c-level partition] on $S$, the resulting sets are the only ones available for further processing.
 
-Example:
-```kotlin
-package a.b.c
+> Example:
+> 
+> ```kotlin
+> package a.b.c
+> 
+> fun foo(a: Int) {}
+> fun foo(a: Double) {}
+> fun foo(a: List<Char>) {}
+> val foo = {}
+> . . .
+> a.b.c.foo()
+> ```
+> 
+> Here the resulting overload candidate set contains all the callables named `foo` from the package `a.b.c`.
 
-fun foo(a: Int) {}
-fun foo(a: Double) {}
-fun foo(a: List<Char>) {}
-val foo = {}
-. . .
-a.b.c.foo()
-```
+> Important: a fully-qualified callable name has the form `P.n()`, where `n` is a simple callable name and `P` is a complete package [path][Identifiers and paths] referencing an existing [package][Packages and imports].
 
-Here the resulting overload candidate set contains all the callables named `foo` from the package `a.b.c`.
+#### Call with an explicit receiver
 
-### A call with an explicit receiver
+If a function call is done via a [navigation operator][Navigation operators] (`.` or `?.`), but is not a [fully-qualified call][Fully-qualified call], then the left hand side value of the call is the explicit receiver of this call.
 
-If a function call is done via a [navigation operator][Navigation operators] (`.` or `?.`, not to be confused with a [fully-qualified call][Overload resolution for a fully-qualified call]), then the left hand side operand of the call is the explicit receiver of this call.
-
-A call of callable `f` with an explicit receiver `e` is correct if one (or more) of the following holds:
+A call of callable `f` with an explicit receiver `e` is correct if at least one of the following holds:
 
 1. `f` is an accessible member callable of the classifier type of `e` or any of its supertypes;
-2. `f` is an accessible extension callable of the classifier type of `e` or any of its supertypes, including local and imported extensions.
+2. `f` is an accessible extension callable of the classifier type of `e` or any of its supertypes, including top-level, local and imported extensions.
 
-TODO(Handle `a.foo()` where `foo : A.() -> Unit`)
+> Important: callables for case 2 include not only regular extension callables, but also extension callables from any of the available implicit receivers.
+> For example, if class `P` contains a member extension function `f` for another class `T` and an object of class `P` is available as an implicit receiver, extension function `f` may be used for such call if `T` conforms to the type of `e`.
 
-> Important: callables for case 2 include not only top-level extension callables, but also extension callables from any of the available implicit receivers.
-> For example, if class $P$ contains a member extension function for another class $T$ and an object of class $P$ is available as an implicit receiver, this extension function may be used for the call if it has a suitable type.
+If a call is correct, for a callable `f` with an explicit receiver `e` of type `T` the following sets are analyzed (**in the given order**):
 
-If a call is correct, for a callable named `f` with an explicit receiver `e` of type `T` the following sets are analyzed (in the given order):
-
-1. The sets of non-extension member callables named `f` of type `T`;
-2. The sets of local extension callables named `f`, whose receiver type conforms to type `T`, in all declaration scopes containing the current declaration scope, ordered by the size of the scope (smallest first), excluding the package scope;
-3. The sets of explicitly imported extension callables named `f`, whose receiver type conforms to type `T`;
-4. The sets of extension callables named `f`, whose receiver type conforms to type `T`, declared in the package scope;
-5. The sets of star-imported extension callables named `f`, whose receiver type conforms to type `T`;
-6. The sets of implicitly imported extension callables named `f`, whose receiver type conforms to type `T`.
-
-There is a caveat here, however, as a callable may be a property with an `invoke` function (see previous section), and these may belong to different sets (for example, the property may be imported, while the `invoke` on it may be a local extension).
-In this situation, this callable belongs to the **lowest priority** set of its parts.
-
-> For example, when trying to decide between an explicitly imported extension property with a member `invoke` and a local property with a star-imported extension `invoke`, the first one wins even though local property has more priority.
+1. Non-extension member callables named `f` of type `T`;
+2. Local extension callables named `f`, whose receiver type conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+3. Explicitly imported extension callables named `f`, whose receiver type conforms to type `T`;
+4. Extension callables named `f`, whose receiver type conforms to type `T`, declared in the package scope;
+5. Star-imported extension callables named `f`, whose receiver type conforms to type `T`;
+6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
 
-When analyzing these sets, the **first** set that contains **any** callable with the corresponding name and conforming types is picked.
-This means, among other things, that if the set constructed on step 2 contains the overall most suitable candidate function, but the set constructed on step 1 is not empty, the functions from set 1 will be picked despite them being less suitable overload candidates.
+> Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
+> In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
+> These sets are considered in the order of the implicit [receiver priority][Receivers].
 
-TODO(think about moving the following somewhere else (separate subsec???))
+There is a important special case here, however, as a callable may be a [property-like callable with an `invoke` function][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
+In this situation, such callable belongs to the **lowest priority** set of its parts (e.g., for the above case, priority 5 set).
 
-An extension callable access with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
-In this case, for each such receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][A call without an explicit receiver], with non-extension callables having priority, as noted above.
+> Example: when trying to resolve between an explicitly imported extension property (priority 3) with a member `invoke` (priority 1) and a local property (priority 2) with a star-imported extension `invoke` (priority 5), the first one wins (`max(3, 1) < max(2, 5)`).
 
-TODO(example???)
+When analyzing these sets, the **first** set which contains **any** callable with the corresponding name and conforming types is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
 
-### Infix function calls
+> Important: this means, among other things, that if the set constructed on step $Y$ contains the overall most suitable candidate function, but the set constructed on step $X < Y$ is not empty, the callables from set $X$ will be picked despite them being less suitable overload candidates.
 
-Infix function calls are a special case of function calls with an explicit receiver in the left hand side position, i.e., `a foo b` may be an infix form of `a.foo(b)`.
+After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific function from the overload candidate set].
+
+#### Infix function call
+
+Infix function calls are a special case of function [calls with explicit receiver][Call with an explicit receiver] in the left hand side position, i.e., `a foo b` may be an infix form of `a.foo(b)`.
 
 However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the `infix` modifier.
-All other functions (and any properties) are not even considered for inclusion.
+All other functions (and any properties) are not considered for inclusion.
 Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.
+
+> Important: this filtering is done **before** we perform selection of the overload candidate set w.r.t. rules for calls with explicit receiver.
 
 > Note: this also means that all properties available through the `invoke` convention are non-eligible for infix calls, as there is no way of specifying the `infix` modifier for them.
 
 Different platform implementations may extend the set of functions considered as infix functions for the overload candidate set.
 
-### Operator calls
+#### Operator call
 
-According to [the operator overloading section][Operator overloading], some operator expressions in Kotlin can be overloaded using specially-named functions.
-This makes operator expressions semantically equivalent to function calls with explicit receiver, where the receiver expression is selected based on the operator used.
-The selection of an exact function called in each particular case is based on the same rules as for function calls with explicit receivers, the only difference being that only functions with `operator` modifier are considered for inclusion when building overload candidate sets.
-Any properties are never considered for the overload candidate sets of operator calls.
+According to [the operator overloading section][Operator overloading], some operator expressions in Kotlin can be overloaded using definition-by-convention via specifically-named functions.
+This makes operator expressions semantically equivalent to function [calls with explicit receiver][Call with an explicit receiver], where the receiver expression is selected based on the operator used.
 
-> Note: this also means that all the properties available through the `invoke` convention are non-eligible for operator calls, as there is no way of specifying the `operator` modifier for them, even though the `invoke` callable is required to always have such modifier.
+However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the `operator` modifier.
+All other functions (and any properties) are not considered for inclusion.
+Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.
+
+> Important: this filtering is done **before** we perform selection of the overload candidate set w.r.t. rules for calls with explicit receiver.
+
+> Note: this also means that all the properties available through the `invoke` convention are non-eligible for operator calls, as there is no way of specifying the `operator` modifier for them; even though the `invoke` callable is required to always have such modifier.
 > As `invoke` convention itself is an operator call, it is impossible to use more than one `invoke` conventions in a single call.
 
 Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.
 
-> Note: these rules are valid not only for dedicated operator expressions, but also for any calls arising from expanding [`for`-loop][For-loop statement] iteration conventions, [assignments][Assignments] or [property delegates][Delegated property declaration].
+> Note: these rules are valid not only for dedicated operator expressions, but also for other operator-based defined-by-convention calls, e.g., [`for`-loop][For-loop statement] iteration conventions, operator-form [assignments][Assignments] or [property delegation][Delegated property declaration].
 
-### A call without an explicit receiver
+#### Call without an explicit receiver
 
-A call which is performed with unqualified function name and without using a navigation operator is a call without an explicit receiver.
-It may have one or more implicit receivers or reference a top-level function.
+A call which is performed with a [simple path][Identifiers and paths] is a call **without** an explicit receiver.
+As such, it may either have one or more implicit receivers or reference a top-level function.
 
-> Note: this does not include calls using the `invoke` operator function where the left side of the call operator is not an identifier, but some other kind of expression.
-> These cases are handled the same way as covered in the [previous section][Operator calls] and need no special treatment
+> Note: this case does not include calls using the `invoke` operator function where the left-land side of the call is not an identifier, but some other kind of expression (as this is not a simple path).
+> These cases are handled the same way as [operator calls][Operator call] and need no further special treatment.
 >
-> TODO(is it better to say that (a + b)(2) is just the same as (a + b).invoke(2) and be done with it?)
+> Example:
+> 
+> ```kotlin
+> fun foo(a: Foo, b: Bar) {
+>     (a + b)(42)
+>     // Such a call is handled as if it is
+>     //   (a + b).invoke(42)
+> }
+> ```
 
-TODO(Add an example to the above note)
+As with [calls with explicit receiver][Call with an explicit receiver], we first pick an overload candidate set and then search this set for the most specific function to match the call.
 
-As with function calls with explicit receiver, we should first pick a valid overload candidate set and then search this set for the _most specific function_ to match the call.
+For an identifier named `f` the following sets are analyzed (**in the given order**):
 
-For an identifier named `f` the following sets are analyzed (in the given order):
-
-1. The sets of local non-extension callables named `f` available in the current scope, in order of the scope they are declared in, smallest scope first;
-2. The overload candidate sets for each implicit receiver `r` and `f`, calculated as if `r` is the explicit receiver, in order of the receiver priority (see the [corresponding section][A call with an explicit receiver]);
+1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+2. The overload candidate sets for each pair of implicit receivers `e` and `d` available in the current scope, calculated as if `e` is the [explicit receiver][Call with an explicit receiver], in order of the [receiver priority][Receivers];
 3. Top-level non-extension functions named `f`, in the order of:
-   a. Callables explicitly imported into current file;
+   a. Callables explicitly imported into the current file;
    b. Callables declared in the same package;
-   c. Callables star-imported into current file;
-   d. Implicitly imported callables (either Kotlin standard library or platform-specific ones).
+   c. Callables star-imported into the current file;
+   d. Implicitly imported callables (either from the Kotlin standard library or platform-specific ones).
 
-When analyzing these sets, the **first** set which contains **any** function with the corresponding name and conforming types is picked.
-As with calls with explicit receiver, for a callable that is a property with an `invoke` function available, the resulting set is chosen as the *lowest priority set* of the set for the property and the `invoke`.
+Similarly to how it works for [calls with explicit receiver][Call with an explicit receiver], a property-like callable with an `invoke function` belongs to the **lowest priority** set of its parts.
 
-### Calls with named parameters
+When analyzing these sets, the **first** set which contains **any** callable with the corresponding name and conforming types is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
 
-Most of the calls in Kotlin may use named parameters in call expressions, e.g., `f(a = 2)`, where `a` is a parameter specified in the declaration of `f`.
-Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameters for all named parameters from the call.
+After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific function from the overload candidate set].
+
+#### Call with named parameters
+
+Calls in Kotlin may use named parameters in call expressions, e.g., `f(a = 2)`, where `a` is a parameter specified in the declaration of `f`.
+Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameter names for all named parameters from the call.
+
+> Important: this filtering is done **before** we perform selection of the overload candidate set w.r.t. rules for the respective type of call.
 
 > Note: for properties called via `invoke` convention, the named parameters must be present in the declaration of the `invoke` operator function.
 
 Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.
-While the number of defaults (see [the MSC selection process][Choosing the most specific function from the overload candidate set]) does affect resolution process, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
 
-TODO(Named parameters actually influence the applicability of candidates)
+While the *number of defaults* does affect [resolution process][Choosing the most specific function from the overload candidate set], the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
 
-### Calls with trailing lambda expressions
+#### Call with trailing lambda expressions
 
-A call expression may have a single lambda expression placed outside of the argument list parentheses or even completely replacing them (see [this section][Function calls and property access] for further details).
-This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable argument parameters or parameters with defaults.
+A call expression may have a single lambda expression placed outside of the argument list or even completely replacing it (see [this section][Function calls and property access] for further details).
+This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable length parameters or parameters with defaults.
 
-> Example: this means that calls `f(1,2) { g() } ` and `f(1,2, body = { g() })` are completely equivalent w.r.t. the overload resolution, assuming `body` is the name of the last formal parameter of `f`.
+> Example: this means that calls `f(1, 2) { g() } ` and `f(1, 2, body = { g() })` are completely equivalent w.r.t. the overload resolution, assuming `body` is the name of the last formal parameter of `f`.
 
-### Calls with specified type parameters
+#### Call with specified type parameters
 
 A call expression may have a type argument list explicitly specified before the argument list (see [this section][Function calls and property access] for further details).
-In this case all the potential overload sets only include callables which contain exactly the same number of formal type parameters at declaration site.
-In case of a property callable via `invoke` convention, type parameters must be present at the `invoke` operator function declaration instead.
+Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which contain exactly the same number of formal type parameters at declaration site.
+In case of a property-like callable with `invoke`, type parameters must be present at the `invoke` operator function declaration instead.
+
+> Important: this filtering is done **before** we perform selection of the overload candidate set w.r.t. rules for the respective type of call.
 
 ### Determining function applicability for a specific call
 
