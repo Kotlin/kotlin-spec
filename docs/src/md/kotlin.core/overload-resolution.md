@@ -182,7 +182,7 @@ When analyzing these sets, the **first** set which contains **any** callable wit
 
 > Important: this means, among other things, that if the set constructed on step $Y$ contains the overall most suitable candidate function, but the set constructed on step $X < Y$ is not empty, the callables from set $X$ will be picked despite them being less suitable overload candidates.
 
-After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific function from the overload candidate set].
+After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific candidate from the overload candidate set].
 
 #### Infix function call
 
@@ -250,7 +250,7 @@ Similarly to how it works for [calls with explicit receiver][Call with an explic
 
 When analyzing these sets, the **first** set which contains **any** callable with the corresponding name and conforming types is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
 
-After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific function from the overload candidate set].
+After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific candidate from the overload candidate set].
 
 #### Call with named parameters
 
@@ -263,7 +263,7 @@ Such calls are treated the same way as normal calls, but the overload resolution
 
 Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.
 
-While the *number of defaults* does affect [resolution process][Choosing the most specific function from the overload candidate set], the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
+While the *number of defaults* does affect [resolution process][Choosing the most specific candidate from the overload candidate set], the fact that some argument was or was not mapped as a named argument does not affect this process in any way.
 
 #### Call with trailing lambda expressions
 
@@ -284,31 +284,32 @@ In case of a property-like callable with `invoke`, type parameters must be prese
 
 #### Rationale
 
-A function is *applicable* for a specific call if and only if the function parameters may be assigned the values of the arguments specified at call site and all type constraints of the function hold.
+A function is *applicable* for a specific call if and only if the function parameters may be assigned the arguments values specified at the call site and all type constraints of the function type parameters hold w.r.t. supplied or [inferred][Type inference] type arguments.
 
 #### Description
 
 Determining function applicability for a specific call is a [type constraint][Kotlin type constraints] problem.
-First, for every non-lambda argument of the function supplied in the call, type inference is performed.
+
+First, for every non-lambda argument of the function called, type inference is performed.
 Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
 Second, the following constraint system is built:
 
-- For every non-lambda parameter inferred to have type $T_i$, corresponding to the function argument of type $U_j$, a constraint $T_i <: U_j$ is constructed;
+- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter of type $U_j$, a constraint $T_i <: U_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
-- For every lambda parameter with the number of lambda arguments known to be $K$, corresponding to the function argument of type $U_m$, a special constraint of the form $\FT(L_1, \ldots, L_K) \rightarrow R <: U_m$ is added to the constraint system, where $R, L_1, \ldots, L_K$ are fresh variables;
-- For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form $U_m <: \Function(R)$ is added to the constraint system, where [$\Function(R)$][`kotlin.Function`] is the common supertype of all [function types][Function types] and $R$ is a fresh type variable.
+- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter of type $U_m$, a special constraint of the form [$\FT(L_1, \ldots, L_K) \rightarrow R <: U_m$][Function types] is added to the constraint system, where $R, L_1, \ldots, L_K$ are fresh type variables;
+- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type $U_n$, a special constraint of the form $U_n <: \Function(R)$ is added to the constraint system, where [$\Function(R)$][`kotlin.Function`] is the common supertype of all [function types][Function types] and $R$ is a fresh type variable.
 
 If this constraint system is sound, the function is applicable for the call.
-Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.
+Only applicable functions are considered for the next step: [choosing the most specific candidate from the overload candidate set][Choosing the most specific candidate from the overload candidate set].
 
 Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type $\Nothing$ is deemed not applicable for any member callables, regardless of other parameters.
-This is due to the fact that, as $\Nothing$ is the subtype of any other type in kotlin type system, it would have allow **all** the member callables of all the currently available types to participate in the overload resolution, which is practically possible, but very resource-consuming and does not make much sense.
-Extension callables are still available because they are naturally limited to the declarations available or imported in the current scope.
+This is due to the fact that, as $\Nothing$ is the subtype of any other type in Kotlin type system, it would have allowed **all** member callables of **all** available types to participate in the overload resolution, which is theoretically possible, but very resource-consuming and does not make much sense from the practical point of view.
+Extension callables are still available, because they are limited to the declarations available or imported in the current scope.
 
-> Note: although it's impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such a value is necessary, for example, when doing safe navigation on values of type $\NothingQ$
+> Note: although it is impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type $\NothingQ$.
 
-### Choosing the most specific function from the overload candidate set
+### Choosing the most specific candidate from the overload candidate set
 
 #### Rationale
 
@@ -393,7 +394,7 @@ In the simple case where there is no overloaded call performed, the resolution i
 - This constraints is added to the constraint system of the expression the callable reference is used in;
 - A callable reference is deemed applicable if the constraint system is sound;
 - Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen.
-  This process is performed the same way as for [choosing candidates][Choosing the most specific function from the overload candidate set] for function calls.
+  This process is performed the same way as for [choosing candidates][Choosing the most specific candidate from the overload candidate set] for function calls.
 
 For example, let's consider the two following functions:
 
