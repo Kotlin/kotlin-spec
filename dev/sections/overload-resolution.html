@@ -343,7 +343,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">most specific callable</a>.</span></p>
+<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
 </div>
 <h4 id="infix-function-call">Infix function call</h4>
 <div class="paragraph">
@@ -431,7 +431,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> callable with the corresponding name and conforming types is picked for <a href="overload-resolution.html#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">most specific callable</a>.</span></p>
+<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
 </div>
 <h4 id="call-with-named-parameters">Call with named parameters</h4>
 <div class="paragraph">
@@ -451,7 +451,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">While the <em>number of defaults</em> does affect <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">resolution process</a>, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.</span></p>
+<p><span class="sentence">While the <em>number of defaults</em> does affect <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">resolution process</a>, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.</span></p>
 </div>
 <h4 id="call-with-trailing-lambda-expressions">Call with trailing lambda expressions</h4>
 <div class="paragraph">
@@ -474,33 +474,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="determining-function-applicability-for-a-specific-call">Determining function applicability for a specific call</h3>
 <h4 id="rationale">Rationale</h4>
 <div class="paragraph">
-<p><span class="sentence">A function is <em>applicable</em> for a specific call if and only if the function parameters may be assigned the values of the arguments specified at call site and all type constraints of the function hold.</span></p>
+<p><span class="sentence">A function is <em>applicable</em> for a specific call if and only if the function parameters may be assigned the arguments values specified at the call site and all type constraints of the function type parameters hold w.r.t. supplied or <a href="type-inference.html#type-inference">inferred</a> type arguments.</span></p>
 </div>
 <h4 id="description">Description</h4>
 <div class="paragraph">
-<p><span class="sentence">Determining function applicability for a specific call is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem. </span><span class="sentence">First, for every non-lambda argument of the function supplied in the call, type inference is performed. </span><span class="sentence">Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.</span></p>
+<p><span class="sentence">Determining function applicability for a specific call is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, for every non-lambda argument of the function called, type inference is performed. </span><span class="sentence">Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Second, the following constraint system is built:</span></p>
 </div>
 <ul>
-<li><span class="sentence">For every non-lambda parameter inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function argument of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
+<li><span class="sentence">For every non-lambda argument inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function parameter of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
 <li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
-<li><span class="sentence">For every lambda parameter with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function argument of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh variables;</span></li>
-<li><span class="sentence">For each lambda parameter with an unknown number of lambda arguments (that is, being equal to 0 or 1), a special constraint of the form <span class="math inline">\(U_m &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="built-in-types-and-their-semantics.html#kotlin.function-1"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="type-system.html#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
+<li><span class="sentence">For every lambda argument with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function parameter of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <a href="type-system.html#function-types"><span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span></a> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh type variables;</span></li>
+<li><span class="sentence">For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type <span class="math inline">\(U_n\)</span>, a special constraint of the form <span class="math inline">\(U_n &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="built-in-types-and-their-semantics.html#kotlin.function-1"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="type-system.html#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: finding the most specific overload candidate from the candidate set.</span></p>
+<p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is deemed not applicable for any member callables, regardless of other parameters. </span><span class="sentence">This is due to the fact that, as <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is the subtype of any other type in kotlin type system, it would have allow <strong>all</strong> the member callables of all the currently available types to participate in the overload resolution, which is practically possible, but very resource-consuming and does not make much sense. </span><span class="sentence">Extension callables are still available because they are naturally limited to the declarations available or imported in the current scope.</span></p>
+<p><span class="sentence">Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is deemed not applicable for any member callables, regardless of other parameters. </span><span class="sentence">This is due to the fact that, as <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is the subtype of any other type in Kotlin type system, it would have allowed <strong>all</strong> member callables of <strong>all</strong> available types to participate in the overload resolution, which is theoretically possible, but very resource-consuming and does not make much sense from the practical point of view. </span><span class="sentence">Extension callables are still available, because they are limited to the declarations available or imported in the current scope.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: although it’s impossible to create a value of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> directly, there may be situations where performing overload resolution on such a value is necessary, for example, when doing safe navigation on values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing?}}\)</span></span></p>
+<p><span class="sentence">Note: although it is impossible to create a value of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing?}}\)</span>.</span></p>
 </div>
 </blockquote>
-<h3 id="choosing-the-most-specific-function-from-the-overload-candidate-set">Choosing the most specific function from the overload candidate set</h3>
+<h3 id="choosing-the-most-specific-candidate-from-the-overload-candidate-set">Choosing the most specific candidate from the overload candidate set</h3>
 <h4 id="rationale-1">Rationale</h4>
 <div class="paragraph">
 <p><span class="sentence">The main rationale in choosing the most specific function from the overload candidate set is the following:</span></p>
@@ -584,7 +587,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For each callable reference candidate, the type constraints are built;</span></li>
 <li><span class="sentence">This constraints is added to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
-<li><span class="sentence">Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-function-from-the-overload-candidate-set">choosing candidates</a> for function calls.</span></li>
+<li><span class="sentence">Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing candidates</a> for function calls.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">For example, let’s consider the two following functions:</span></p>
