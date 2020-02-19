@@ -223,13 +223,13 @@ Enum entries have their own bodies that may contain their own declarations, simi
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
 
-TODO(The following are actually static methods)
-
-In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):
+In addition to these, every enum class type has the following **static** member functions declared implicitly:
 
 - `valueOf(value: String)` returning an object corresponding to the entry with the name equal to `value` parameter of the call;
 - `values()` returning an [array][Array types] of all possible enum values.
   Every invocation of this function returns a new array to disallow changing its contents.
+
+> Note: these static member functions are handled differently by the [overload resolution][Overload resolution].
 
 > Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>`.
 > Please refer to the standard library documentation for details.
