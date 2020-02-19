@@ -338,6 +338,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#modules">Modules</a></li>
 </ul></li>
 <li><a href="#overload-resolution">Overload resolution</a><ul>
+<li><a href="#glossary-4">Glossary</a></li>
 <li><a href="#intro">Intro</a></li>
 <li><a href="#receivers">Receivers</a></li>
 <li><a href="#the-forms-of-call-expression">The forms of call-expression</a></li>
@@ -345,7 +346,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#c-level-partition">c-level partition</a></li>
 <li><a href="#building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</a><ul>
 <li><a href="#fully-qualified-call">Fully-qualified call</a></li>
-<li><a href="#call-with-an-explicit-receiver">Call with an explicit receiver</a></li>
+<li><a href="#call-with-an-explicit-receiver">Call with an explicit receiver</a><ul>
+<li><a href="#call-with-an-explicit-type-receiver">Call with an explicit type receiver</a></li>
+</ul></li>
 <li><a href="#infix-function-call">Infix function call</a></li>
 <li><a href="#operator-call">Operator call</a></li>
 <li><a href="#call-without-an-explicit-receiver">Call without an explicit receiver</a></li>
@@ -5622,18 +5625,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: an enum class can have zero enum entries. </span><span class="sentence">This makes objects of this class impossible to construct.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(The following are actually static methods)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):</span></p>
+<p><span class="sentence">In addition to these, every enum class type has the following <strong>static</strong> member functions declared implicitly:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>valueOf(value: String)</code> returning an object corresponding to the entry with the name equal to <code>value</code> parameter of the call;</span></li>
 <li><span class="sentence"><code>values()</code> returning an <a href="#array-types">array</a> of all possible enum values. </span><span class="sentence">Every invocation of this function returns a new array to disallow changing its contents.</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: these static member functions are handled differently by the <a href="#overload-resolution">overload resolution</a>.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called <code>kotlin.enumValues&lt;T&gt;</code>. </span><span class="sentence">Please refer to the standard library documentation for details.</span></p>
@@ -9245,10 +9248,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <h2 id="overload-resolution">Overload resolution</h2>
+<h3 id="glossary-4">Glossary</h3>
+<dl>
+<dt><code>type(e)</code></dt>
+<dd><span class="sentence"><a href="#type-system">Type</a> of expression <code>e</code></span>
+</dd>
+</dl>
+<h3 id="intro">Intro</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports <em>callable overloading</em>, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
 </div>
-<h3 id="intro">Intro</h3>
 <div class="paragraph">
 <p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
 </div>
@@ -9262,6 +9271,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">Any receiver available in a scope is available in its <a href="#linked-scopes">downwards-linked scopes</a>;</span></li>
 <li><span class="sentence">In a <a href="#classifier-declaration">classifier declaration</a> scope (including object and companion object declarations), the declared object is available as implicit <code>this</code>;</span></li>
+<li><span class="sentence">In a <a href="#classifier-declaration">classifier declaration</a> scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit <code>this</code>;</span></li>
 <li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
 <li><span class="sentence">If a lambda expression has an extension function type, <code>this</code> argument of the lambda expression is also available inside the lambda expression declaration.</span></li>
 </ul>
@@ -9269,11 +9279,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The available receivers are prioritized in the following way:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Receivers provided in the most inner scope have higher priority;</span></li>
-<li><span class="sentence">The implicit <code>this</code> receiver has higher priority than any companion object receiver;</span></li>
+<li><span class="sentence">Receivers provided in the most inner scope have higher priority as ordered w.r.t. <a href="#linked-scopes">link relation</a>;</span></li>
+<li><span class="sentence">The implicit <code>this</code> receiver has higher priority than phantom static implicit <code>this</code>;</span></li>
+<li><span class="sentence">The phantom static implicit <code>this</code> receiver has higher priority than the current class companion object receiver;</span></li>
 <li><span class="sentence">Current class companion object receiver has higher priority than any of the superclass companion objects;</span></li>
-<li><span class="sentence">Superclass companion object receivers are prioritized according to the inheritance order;</span></li>
-<li><span class="sentence">Otherwise, receivers are ordered w.r.t. <a href="#linked-scopes">link relation</a>.</span></li>
+<li><span class="sentence">Superclass companion object receivers are prioritized according to the inheritance order.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -9287,8 +9297,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For <a href="#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver the extension itself is declared in is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
+<p><span class="sentence">For <a href="#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver associated with the declaration scope the extension is declared in is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: by definition, local extension callables do not have a dispatch receiver, as they are declared in a statement scope.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: there may be situations in which <em>the same implicit receiver</em> is used as both the dispatch receiver and the extension receiver for a particular callable invocation, for example:</span></p>
@@ -9303,7 +9318,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb60-8" title="8">        foo() <span class="co">// `this` reference is both</span></a>
 <a class="sourceLine" id="cb60-9" title="9">              <span class="co">//   the extension and the dispatch receiver</span></a>
 <a class="sourceLine" id="cb60-10" title="10">    }</a>
-<a class="sourceLine" id="cb60-11" title="11">}</a></code></pre></div>
+<a class="sourceLine" id="cb60-11" title="11">}</a>
+<a class="sourceLine" id="cb60-12" title="12"></a>
+<a class="sourceLine" id="cb60-13" title="13"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">mk</span>(): <span class="dt">T</span> = <span class="al">TODO()</span></a>
+<a class="sourceLine" id="cb60-14" title="14"></a>
+<a class="sourceLine" id="cb60-15" title="15"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
+<a class="sourceLine" id="cb60-16" title="16">    <span class="kw">val</span> <span class="va">x</span>: X = mk()</a>
+<a class="sourceLine" id="cb60-17" title="17">    <span class="kw">val</span> <span class="va">y</span>: Y = mk()</a>
+<a class="sourceLine" id="cb60-18" title="18"></a>
+<a class="sourceLine" id="cb60-19" title="19">    <span class="co">// y.foo()</span></a>
+<a class="sourceLine" id="cb60-20" title="20">    <span class="co">// Error, as there is no implicit receiver</span></a>
+<a class="sourceLine" id="cb60-21" title="21">    <span class="co">//   of type X available</span></a>
+<a class="sourceLine" id="cb60-22" title="22"></a>
+<a class="sourceLine" id="cb60-23" title="23">    with (x) {</a>
+<a class="sourceLine" id="cb60-24" title="24">        y.foo() <span class="co">// OK!</span></a>
+<a class="sourceLine" id="cb60-25" title="25">    }</a>
+<a class="sourceLine" id="cb60-26" title="26">}</a></code></pre></div>
 </blockquote>
 <h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
 <div class="paragraph">
@@ -9317,7 +9347,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A call without an explicit receiver: <code>foo()</code>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, <code>package</code> is a name of a <a href="#packages-and-imports">Kotlin package</a>, while in the second case <code>a</code> is a value.</span></p>
+<p><span class="sentence">Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, <code>package</code> is a name of a <a href="#packages-and-imports">Kotlin package</a>, while in the second case <code>a</code> is a value or a type.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For each of these cases, a compiler should first pick a number of <em>overload candidates</em>, which form a set of possibly intended callables (<em>overload candidate set</em>, OCS), and then <em>choose the most specific function</em> to call based on the types of the function and the call arguments.</span></p>
@@ -9341,9 +9371,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Property-like callables with an operator function <code>invoke</code> available as a member or an extension in the current scope:</span>
 <ul>
 <li><span class="sentence">A property named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
-<li><span class="sentence"><a href="#object-declaration">An object</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
-<li><span class="sentence"><a href="#class-declaration">A companion object</a> of a classifier type named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
-<li><span class="sentence"><a href="#enum-class-declaration">An enum entry</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence">An <a href="#object-declaration">object</a> or a <a href="#class-declaration">companion object</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence">A <a href="#class-declaration">companion object</a> of a <a href="#classifier-declaration">classifier type</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
+<li><span class="sentence">An <a href="#enum-class-declaration">enum entry</a> named <span class="math inline">\(X\)</span> at its declaration site;</span></li>
 <li><span class="sentence">Any of the above named <span class="math inline">\(Y\)</span> at its declaration site, but imported into the current scope using <a href="#importing">a renaming import</a> as <span class="math inline">\(X\)</span>.</span></li>
 </ul></li>
 </ul>
@@ -9351,7 +9381,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For property-like callables, a call <span class="math inline">\(X(Y_0, \ldots, Y_N)\)</span> is an <a href="#operator-overloading">overloadable operator</a> which is expanded to <span class="math inline">\(X\text{.invoke}(Y_0, \ldots, Y_N)\)</span>. </span><span class="sentence">The call may contain type parameters, named parameters, [variable argument parameter expansion][Spread operator] and trailing lambda parameters, all of which are forwarded as-is to the corresponding <code>invoke</code> function.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The set of explicit receivers itself (denoted by <a href="#this-expressions"><code>this</code></a> expression) may also be used as a property-like callable using <code>this</code> as the left-hand side of the call expression. </span><span class="sentence">As with normal property-like callables, <span class="math inline">\(\texttt{this@A}(Y_0, \ldots, Y_N)\)</span> is an overloadable operator which is expanded to <span class="math inline">\(\texttt{this@A.invoke}(Y_0, \ldots, Y_N)\)</span>.</span></p>
+<p><span class="sentence">The set of implicit receivers itself (denoted by <a href="#this-expressions"><code>this</code></a> expression) may also be used as a property-like callable using <code>this</code> as the left-hand side of the call expression. </span><span class="sentence">As with normal property-like callables, <span class="math inline">\(\texttt{this@A}(Y_0, \ldots, Y_N)\)</span> is an overloadable operator which is expanded to <span class="math inline">\(\texttt{this@A.invoke}(Y_0, \ldots, Y_N)\)</span>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A <em>member callable</em> is one of the following:</span></p>
@@ -9369,6 +9399,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">an extension property-like callable with a member operator <code>invoke</code>;</span></li>
 <li><span class="sentence">an extension property-like callable with an extension operator <code>invoke</code>.</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: the mnemonic rule to remember this order is “functions before properties, members before extensions”.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A <em>local callable</em> is any callable which is declared in a <a href="#scopes-and-identifiers">statement scope</a>.</span></p>
+</div>
 <h3 id="c-level-partition">c-level partition</h3>
 <div class="paragraph">
 <p><span class="sentence">When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
@@ -9392,7 +9430,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</h3>
 <h4 id="fully-qualified-call">Fully-qualified call</h4>
 <div class="paragraph">
-<p><span class="sentence">If a callable name is fully-qualified (that is, it contains a complete package <a href="#identifiers-and-paths">path</a>), then the overload candidate set <span class="math inline">\(S\)</span> simply contains all the top-level callables with the specified name in the specified package. </span><span class="sentence">As a package name can never clash with any other declared entity, after performing <a href="#c-level-partition">c-level partition</a> on <span class="math inline">\(S\)</span>, the resulting sets are the only ones available for further processing.</span></p>
+<p><span class="sentence">If a call is fully-qualified (that is, it contains a complete <a href="#identifiers-and-paths">package path</a>), then the overload candidate set <span class="math inline">\(S\)</span> simply contains all the top-level callables with the specified name in the specified package. </span><span class="sentence">As a package name can never clash with any other declared entity, after performing <a href="#c-level-partition">c-level partition</a> on <span class="math inline">\(S\)</span>, the resulting sets are the only ones available for further processing.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9412,23 +9450,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: a fully-qualified callable name has the form <code>P.n()</code>, where <code>n</code> is a simple callable name and <code>P</code> is a complete package <a href="#identifiers-and-paths">path</a> referencing an existing <a href="#packages-and-imports">package</a>.</span></p>
+<p><span class="sentence">Important: a fully-qualified callable name has the form <code>P.n()</code>, where <code>n</code> is a simple callable name and <code>P</code> is a complete <a href="#identifiers-and-paths">package path</a> referencing an existing <a href="#packages-and-imports">package</a>.</span></p>
 </div>
 </blockquote>
 <h4 id="call-with-an-explicit-receiver">Call with an explicit receiver</h4>
 <div class="paragraph">
-<p><span class="sentence">If a function call is done via a <a href="#navigation-operators">navigation operator</a> (<code>.</code> or <code>?.</code>), but is not a <a href="#fully-qualified-call">fully-qualified call</a>, then the left hand side value of the call is the explicit receiver of this call.</span></p>
+<p><span class="sentence">If a call is done via a <a href="#navigation-operators">navigation operator</a> (<code>.</code> or <code>?.</code>), but is not a <a href="#fully-qualified-call">fully-qualified call</a>, then the left hand side value of the call is the explicit receiver of this call.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A call of callable <code>f</code> with an explicit receiver <code>e</code> is correct if at least one of the following holds:</span></p>
 </div>
 <ol type="1">
-<li><span class="sentence"><code>f</code> is an accessible member callable of the classifier type of <code>e</code> or any of its supertypes;</span></li>
-<li><span class="sentence"><code>f</code> is an accessible extension callable of the classifier type of <code>e</code> or any of its supertypes, including top-level, local and imported extensions.</span></li>
+<li><span class="sentence"><code>f</code> is an accessible member callable of the classifier type <code>type(e)</code> or any of its supertypes;</span></li>
+<li><span class="sentence"><code>f</code> is an accessible extension callable of the classifier type <code>type(e)</code> or any of its supertypes, including top-level, local and imported extensions.</span></li>
+<li><span class="sentence"><code>f</code> is an accessible static member callable of the classifier type <code>e</code>.</span></li>
 </ol>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: callables for case 2 include not only regular extension callables, but also extension callables from any of the available implicit receivers. </span><span class="sentence">For example, if class <code>P</code> contains a member extension function <code>f</code> for another class <code>T</code> and an object of class <code>P</code> is available as an implicit receiver, extension function <code>f</code> may be used for such call if <code>T</code> conforms to the type of <code>e</code>.</span></p>
+<p><span class="sentence">Important: callables for case 2 include not only regular extension callables, but also extension callables from any of the available implicit receivers. </span><span class="sentence">For example, if class <code>P</code> contains a member extension function <code>f</code> for another class <code>T</code> and an object of class <code>P</code> is available as an implicit receiver, extension function <code>f</code> may be used for such call if <code>T</code> conforms to the type <code>type(e)</code>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -9453,7 +9492,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">There is a important special case here, however, as a callable may be a <a href="#callables-and-invoke-convention">property-like callable with an <code>invoke</code> function</a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
+<p><span class="sentence">There is a important special case here, however, as a callable may be a [property-like callable with an operator function <a href="#callables-and-invoke-convention"><code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9461,7 +9500,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> callable with the corresponding name and conforming types is picked for <a href="#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> <a href="#determining-function-applicability-for-a-specific-call">applicable callable</a> is picked for <a href="#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9471,21 +9510,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
 </div>
+<h5 id="call-with-an-explicit-type-receiver">Call with an explicit type receiver</h5>
+<div class="paragraph">
+<p><span class="sentence">A call with an explicit receiver may be performed not only on a value receiver, but also on a <em>type</em> receiver.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: type receivers can appear when working with <a href="#enum-class-declaration">enum classes</a> or interoperating with platform-dependent code.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">They mostly follow the same rules as <a href="#call-with-an-explicit-receiver">calls with an explicit value receiver</a>. </span><span class="sentence">However, for a callable <code>f</code> with an explicit type receiver <code>T</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
+</ol>
 <h4 id="infix-function-call">Infix function call</h4>
 <div class="paragraph">
 <p><span class="sentence">Infix function calls are a special case of function <a href="#call-with-an-explicit-receiver">calls with explicit receiver</a> in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the <code>infix</code> modifier. </span><span class="sentence">All other functions (and any properties) are not considered for inclusion. </span><span class="sentence">Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.</span></p>
+<p><span class="sentence">However, there is an important difference: during the overload candidate set construction the only callables considered for inclusion are the ones with the <code>infix</code> modifier. </span><span class="sentence">This means we consider only function-like callables with <code>infix</code> modifier and property-like callables with an <code>infix</code> operator function <code>invoke</code>. </span><span class="sentence">All other callables are not considered for inclusion. </span><span class="sentence">Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for calls with explicit receiver.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: this also means that all properties available through the <code>invoke</code> convention are non-eligible for infix calls, as there is no way of specifying the <code>infix</code> modifier for them.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -9505,7 +9555,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this also means that all the properties available through the <code>invoke</code> convention are non-eligible for operator calls, as there is no way of specifying the <code>operator</code> modifier for them; even though the <code>invoke</code> callable is required to always have such modifier. </span><span class="sentence">As <code>invoke</code> convention itself is an operator call, it is impossible to use more than one <code>invoke</code> conventions in a single call.</span></p>
+<p><span class="sentence">Note: this also means that all the properties available through the <code>invoke</code> convention are non-eligible for operator calls, as there is no way of specifying the <code>operator</code> modifier for them; even though the <code>invoke</code> callable is required to always have such modifier. </span><span class="sentence">As <code>invoke</code> convention itself is an operator call, it is impossible to use more than one <code>invoke</code> convention in a single call.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
