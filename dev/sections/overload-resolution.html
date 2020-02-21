@@ -553,18 +553,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="choosing-the-most-specific-candidate-from-the-overload-candidate-set">Choosing the most specific candidate from the overload candidate set</h3>
 <h4 id="rationale-1">Rationale</h4>
 <div class="paragraph">
-<p><span class="sentence">The main rationale in choosing the most specific function from the overload candidate set is the following:</span></p>
+<p><span class="sentence">The main rationale for choosing the most specific candidate from the overload candidate set is the following:</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">The most specific function can forward itself to any other function from the overload candidate set, while the opposite is not true.</span></p>
+<p><span class="sentence">The most specific callable can forward itself to any other callable from the overload candidate set, while the opposite is not true.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If there are several functions with this property, none of them are the most specific and an ambiguity error should be reported by the compiler.</span></p>
+<p><span class="sentence">If there are several functions with this property, none of them are the most specific and an overload resolution ambiguity error should be reported by the compiler.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Consider the following example with two functions:</span></p>
+<p><span class="sentence">Consider the following example.</span></p>
 </div>
 <div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {}        <span class="co">// (1)</span></a>
 <a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {} <span class="co">// (2)</span></a>
@@ -573,49 +573,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence">The following snippet should explain this in more detail.</span></p>
-</div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {</a>
-<a class="sourceLine" id="cb5-2" title="2">    f2(arg, arg2) <span class="co">// valid: can forward both arguments</span></a>
+<a class="sourceLine" id="cb5-2" title="2">    f2(arg, arg2) <span class="co">// VALID: can forward both arguments</span></a>
 <a class="sourceLine" id="cb5-3" title="3">}</a>
 <a class="sourceLine" id="cb5-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {</a>
-<a class="sourceLine" id="cb5-5" title="5">    f1(arg, arg2) <span class="co">// invalid: function f1 is not applicable</span></a>
+<a class="sourceLine" id="cb5-5" title="5">    f1(arg, arg2) <span class="co">// INVALID: function f1 is not applicable</span></a>
 <a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">The rest of this section will try to clarify this mechanism in more detail.</span></p>
+<p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
 <h4 id="description-1">Description</h4>
 <div class="paragraph">
-<p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.</span></p>
+<p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, we need to choose the most specific candidate from these callables. </span><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> facilities of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> system of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>. </span><span class="sentence">For every two distinct members of the candidate set <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>, the following constraint system is constructed and solved:</span></p>
+<p><span class="sentence">For every two distinct members of the candidate set <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>, the following constraint system is constructed and solved:</span></p>
 </div>
 <ul>
-<li><span class="sentence">For every non-default argument of the call, the corresponding value parameter types <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all type parameters <span class="math inline">\(T_1, T_2, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, T^{\sim}_2, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
-<li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria). </span><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped. </span><span class="sentence">If <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> and <span class="math inline">\(F_2\)</span> is equally or more applicable than <span class="math inline">\(F_1\)</span>, this means that the two callables are equally applicable and additional decision steps are needed to choose the most specific overload candidate. </span><span class="sentence">If neither <span class="math inline">\(F_1\)</span> nor <span class="math inline">\(F_2\)</span> is equally or more applicable than its counterpart, it also means that <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable and additional decision steps are needed.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">All members of the overload candidate set are ranked according to the applicability criteria. </span><span class="sentence">If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.</span></p>
-</div>
-<ul>
-<li><span class="sentence">Any non-generic (meaning that it does not have type parameters in its declaration) callable is a more specific candidate than any generic (containing type parameters in its declaration) callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
-<li><span class="sentence">For every non-default argument of the call consider the corresponding value parameter types <span class="math inline">\(X_1, X_2, X_3, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, Y_2, Y_3, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>. </span><span class="sentence">If, for any <span class="math inline">\(K\)</span>, both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are different built-in integer types and one of them is <code>kotlin.Int</code>, then this parameter is preferred over the other parameter of the call. </span><span class="sentence">If all such parameters of <span class="math inline">\(F_1\)</span> are preferred based on this criteria over the parameters of <span class="math inline">\(F_2\)</span>, then <span class="math inline">\(F_1\)</span> is a more specific candidate than <span class="math inline">\(F_2\)</span>, and vice versa.</span></li>
-<li><span class="sentence">For each candidate, we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value);</span></li>
-<li><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
-<li><span class="sentence">If the number of non-specified default parameters is equal for several candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
+<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: it may seem strange to process built-in integer types in a way different from other types, but it is important in cases where the actual call argument is an integer literal having an <a href="type-system.html#integer-literal-types">integer literal type</a>. </span><span class="sentence">In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and it is preferred to have the <code>kotlin.Int</code> overload as the most specific.</span></p>
+<p><span class="sentence">Note: this constraint system checks whether <span class="math inline">\(F_1\)</span> can forward itself to <span class="math inline">\(F_2\)</span>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If after this additional step there are still several candidates that are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compiler error.</span></p>
+<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> and <span class="math inline">\(F_2\)</span> is equally or more applicable than <span class="math inline">\(F_1\)</span>, this means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed to choose the most specific overload candidate. </span><span class="sentence">If neither <span class="math inline">\(F_1\)</span> nor <span class="math inline">\(F_2\)</span> is equally or more applicable than its counterpart, this also means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All members of the overload candidate set are pairwise-ranked according to the applicability criteria. </span><span class="sentence">If there are several callables which are more applicable than all other candidates and equally applicable to each other, the following additional steps are performed in order.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Any non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
+<li><span class="sentence">For every non-default argument of the call, consider the corresponding parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>. </span><span class="sentence">If, for any <span class="math inline">\(K\)</span>, both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are different <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a> and one of them is <code>kotlin.Int</code>, this parameter is preferred over the other parameter of the call. </span><span class="sentence">If all such parameters of <span class="math inline">\(F_1\)</span> are preferred based on this criteria over the parameters of <span class="math inline">\(F_2\)</span>, <span class="math inline">\(F_1\)</span> is a more specific candidate than <span class="math inline">\(F_2\)</span>, and vice versa;</span></li>
+<li><span class="sentence">For each candidate we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value). </span><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
+<li><span class="sentence">For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an <a href="type-system.html#integer-literal-types">integer literal type</a>. </span><span class="sentence">In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the <code>kotlin.Int</code> overload is selected to be the most specific.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compiler error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
