@@ -352,13 +352,13 @@ Extension callables are still available, because they are limited to the declara
 
 #### Rationale
 
-The main rationale in choosing the most specific function from the overload candidate set is the following:
+The main rationale for choosing the most specific candidate from the overload candidate set is the following:
 
-> The most specific function can forward itself to any other function from the overload candidate set, while the opposite is not true.
+> The most specific callable can forward itself to any other callable from the overload candidate set, while the opposite is not true.
 
-If there are several functions with this property, none of them are the most specific and an ambiguity error should be reported by the compiler.
+If there are several functions with this property, none of them are the most specific and an overload resolution ambiguity error should be reported by the compiler.
 
-Consider the following example with two functions:
+Consider the following example.
 
 ```kotlin
 fun f(arg: Int, arg2: String) {}        // (1)
@@ -370,51 +370,53 @@ f(2, "Hello")
 Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible.
 As a result, function (1) is more specific of the two.
 
-The following snippet should explain this in more detail.
-
 ```kotlin
 fun f1(arg: Int, arg2: String) {
-    f2(arg, arg2) // valid: can forward both arguments
+    f2(arg, arg2) // VALID: can forward both arguments
 }
 fun f2(arg: Any?, arg2: CharSequence) {
-    f1(arg, arg2) // invalid: function f1 is not applicable
+    f1(arg, arg2) // INVALID: function f1 is not applicable
 }
 ```
 
-The rest of this section will try to clarify this mechanism in more detail.
+The rest of this section will describe how the Kotlin compiler checks for this property in more detail.
 
 #### Description
 
-When an overload resolution set $S$ is selected and it contains more than one callable, the next step is to choose the most appropriate candidate from these callables.
+When an overload resolution set $S$ is selected and it contains more than one callable, we need to choose the most specific candidate from these callables.
+The selection process uses the [type constraint][Kotlin type constraints] facilities of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 
-The selection process uses the [type constraint][Kotlin type constraints] system of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
-- For every non-default argument of the call, the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
-  During construction of these constraints, all type parameters $T_1, T_2, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, T^{\sim}_2, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
-- All declaration-site type constraints of $X_1, X_2, X_3, \ldots, X_N$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ are also added to the constraint system.
+- For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
+  During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
+- All declaration-site type constraints of $X_1, \ldots, X_N$ and $Y_1, \ldots, Y_N$ are also added to the constraint system.
+
+> Note: this constraint system checks whether $F_1$ can forward itself to $F_2$.
 
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
+
 The check is then repeated with $F_1$ and $F_2$ swapped.
-If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means that the two callables are equally applicable and additional decision steps are needed to choose the most specific overload candidate.
-If neither $F_1$ nor $F_2$ is equally or more applicable than its counterpart, it also means that $F_1$ and $F_2$ are equally applicable and additional decision steps are needed.
 
-All members of the overload candidate set are ranked according to the applicability criteria.
-If there are several callables which are more applicable than all other candidates and equally applicable to each other, an additional step is performed.
+If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means $F_1$ and $F_2$ are equally applicable, and additional decision steps are needed to choose the most specific overload candidate.
+If neither $F_1$ nor $F_2$ is equally or more applicable than its counterpart, this also means $F_1$ and $F_2$ are equally applicable, and additional decision steps are needed.
 
-- Any non-generic (meaning that it does not have type parameters in its declaration) callable is a more specific candidate than any generic (containing type parameters in its declaration) callable.
+All members of the overload candidate set are pairwise-ranked according to the applicability criteria.
+If there are several callables which are more applicable than all other candidates and equally applicable to each other, the following additional steps are performed in order.
+
+- Any non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable.
   If there are several non-generic candidates, further steps are limited to those candidates;
-- For every non-default argument of the call consider the corresponding value parameter types $X_1, X_2, X_3, \ldots, X_N$ of $F_1$ and $Y_1, Y_2, Y_3, \ldots, Y_N$ of $F_2$.
-  If, for any $K$, both $X_K$ and $Y_K$ are different built-in integer types and one of them is `kotlin.Int`, then this parameter is preferred over the other parameter of the call. 
-  If all such parameters of $F_1$ are preferred based on this criteria over the parameters of $F_2$, then $F_1$ is a more specific candidate than $F_2$, and vice versa.
-- For each candidate, we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value);
-- The candidate with the least number of non-specified default parameters is a more specific candidate;
-- If the number of non-specified default parameters is equal for several candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
+- For every non-default argument of the call, consider the corresponding parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$.
+  If, for any $K$, both $X_K$ and $Y_K$ are different [built-in integer types][Built-in integer types] and one of them is `kotlin.Int`, this parameter is preferred over the other parameter of the call.
+  If all such parameters of $F_1$ are preferred based on this criteria over the parameters of $F_2$, $F_1$ is a more specific candidate than $F_2$, and vice versa;
+- For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
+  The candidate with the least number of non-specified default parameters is a more specific candidate;
+- For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
 
-> Note: it may seem strange to process built-in integer types in a way different from other types, but it is important in cases where the actual call argument is an integer literal having an [integer literal type][Integer literal types].
-> In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and it is preferred to have the `kotlin.Int` overload as the most specific.
+> Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
+> In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
 
-If after this additional step there are still several candidates that are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
+If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
