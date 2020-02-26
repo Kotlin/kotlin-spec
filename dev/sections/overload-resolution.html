@@ -631,67 +631,81 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
-<p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution that is similar to how function calls are resolved, but different in several aspects. </span><span class="sentence">First, property and function references are treated equally, as a property reference has a type that is a subtype of a function type. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">Third, and most important, is that in the case of a call receiving a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable getting called and the callable referenced are to be resolved <em>simultaneously</em>.</span></p>
+<p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
 </div>
 <h4 id="resolving-callable-references-in-the-presence-of-an-expected-type">Resolving callable references in the presence of an expected type</h4>
 <div class="paragraph">
-<p><span class="sentence">In the simple case where there is no overloaded call performed, the resolution is performed as follows:</span></p>
+<p><span class="sentence">In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:</span></p>
 </div>
 <ul>
-<li><span class="sentence">For each callable reference candidate, the type constraints are built;</span></li>
-<li><span class="sentence">This constraints is added to the constraint system of the expression the callable reference is used in;</span></li>
+<li><span class="sentence">For each callable reference candidate, we perform the following steps:</span>
+<ul>
+<li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
-<li><span class="sentence">Of all the applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing candidates</a> for function calls.</span></li>
+</ul></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing candidates</a> for regular calls.</span></li>
 </ul>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">For example, let’s consider the two following functions:</span></p>
+<p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
 <div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
 <a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">In the following case</span></p>
+<p><span class="sentence">In the following case:</span></p>
 </div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">candidate (1) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(\operatorname{CRT}\)</span>) the following constraint is built: <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+<p><span class="sentence">candidate (1) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> is built and only candidate (1) is applicable w.r.t. this constraint.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Let’s consider another example (using the same definitions for <code>foo</code>):</span></p>
+<p><span class="sentence">In another case:</span></p>
 </div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
 <a class="sourceLine" id="cb8-2" title="2"></a>
 <a class="sourceLine" id="cb8-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">candidate (2) is picked up, because (assuming the type of the callable reference is called <span class="math inline">\(\operatorname{CRT}\)</span>) the following constraint is built: <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> and only one of the two types of corresponding functions abides this constraint.</span></p>
+<p><span class="sentence">candidate (2) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> is built and only candidate (2) is applicable w.r.t. this constraint.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the bidirectional resolution process described in the following section would apply, possibly resulting in overload resolution failure.</span></p>
+<p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the <a href="overload-resolution.html#bidirectional-resolution-for-callable-calls">bidirectional resolution process</a> would apply, possibly resulting in an overload resolution failure.</span></p>
 </div>
-<h4 id="bidirectional-resolution-for-function-calls">Bidirectional resolution for function calls</h4>
+</blockquote>
+<h4 id="bidirectional-resolution-for-callable-calls">Bidirectional resolution for callable calls</h4>
 <div class="paragraph">
-<p><span class="sentence">If the callable reference (or several callable references) are themselves arguments to an overloaded function call, the resolution process is performed for both callables simultaneously. </span><span class="sentence">Let’s assume we have a call <code>f(::g, b, c)</code>:</span></p>
+<p><span class="sentence">If a callable reference (or several callable references) is itself an argument to an overloaded function call, the resolution process is performed for both callables <em>simultaneously</em>.</span></p>
 </div>
-<ul>
-<li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is performed as described in the other sections of this chapter, up to the point of picking the overload candidate sets. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
-<li><span class="sentence">For each candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described in <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">the previous case</a> and the most specific candidate is selected. </span><span class="sentence">Even if this process yields no applicable candidates for <code>::g</code>, it does not invalidate the corresponding candidate for <code>f</code>;</span></li>
-<li><span class="sentence">The overload resolution process for <code>f</code> is finished, selecting the most specific candidate for <code>f</code> of the available sets.</span></li>
-</ul>
+<div class="paragraph">
+<p><span class="sentence">Assume we have a call <code>f(::g, b, c)</code>.</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
+<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
+</ol>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this may result in selecting a more specific candidate for <code>f</code> that has no available candidates for <code>g</code>, which means that the process fails when resolving <code>::g</code></span></p>
+<p><span class="sentence">Note: this may result in selecting the most specific candidate for <code>f</code> which has no available candidates for <code>::g</code>, meaning the bidirectional resolution process fails when resolving <code>::g</code>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This still ensures that overload resolution for the callable being called is performed only once.</span></p>
+<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This ensures the overload resolution process for every callable being called is performed only once.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: examples</span></p>
+<p><span class="sentence">TODO(Examples)</span></p>
 </div>
 </div>
-<h3 id="about-type-inference">About type inference</h3>
+<h3 id="type-inference-and-overload-resolution">Type inference and overload resolution</h3>
 <div class="paragraph">
-<p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a pretty complicated process, which is performed after resolving all the overload candidates. </span><span class="sentence">Due to the complexity of the process, type inference may not affect the way overload resolution candidate is picked up.</span></p>
+<p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a very complicated process, and it is performed <em>after</em> overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.</span></p>
+</div>
+</blockquote>
 </body>
 </html>
