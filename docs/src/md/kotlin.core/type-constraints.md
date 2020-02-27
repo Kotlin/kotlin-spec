@@ -1,36 +1,36 @@
 ## Kotlin type constraints
 
-Some complex tasks that need to be solved when compiling Kotlin code are formulated best using *constraint systems* on Kotlin types. 
+Some complex tasks that need to be solved when compiling Kotlin code are formulated best using *constraint systems* over Kotlin types.
 These are solved using constraint solvers.
 
 ### Type constraint definition
 
-A *type constraint* in general is an inequation of the following form: $T <: U$ where $T$ and $U$ are Kotlin types (see [type system][Type system]).
-It is important, however, that Kotlin has parameterized types and type parameters of $T$ and $U$ (or type parameters of their parameters, or $T$ and $U$ themselves) may be *type variables*, that are unknown types that may be substituted by any other type in Kotlin.
+A *type constraint* in general is an inequation of the following form: $T <: U$ where $T$ and $U$ are [concrete Kotlin types][Type system].
+As Kotlin has [parameterized types][Parameterized classifier types], $T$ and $U$ may be *free type variables*: unknown types which may be substituted by any other type in Kotlin.
 
-Please note that, in general, type variables of the constraint system are not the same as type parameters of a type or a callable. 
-Some type parameters may be *bound* in the constraint system, meaning that, although they are not known yet in Kotlin code, they are not type variables and are not to be substituted.
+Please note that, in general, not all type parameters are considered as free type variables in a constraint system.
+Some type variables may be *fixed* in a constraint system; for example, type parameters of a parameterized class *inside* its body are not concrete types, but are not free type variables either.
+A fixed type variable describes an unknown, but fixed type which is not to be substituted.
 
-When such an ambiguity arises, we will use the notation $T_i$ for a type variable and $\tilde{T_i}$ for a bound type parameter. 
-The main difference between bound parameters and concrete types is that different concrete types may not be equal, but a bound parameter may be equal to another bound parameter or a concrete type.
+We will use the notation $T_i$ for a type variable and $\tilde{T_i}$ for a fixed type variable.
+The main difference between fixed type variables and concrete types is that different concrete types may not be equal, but a fixed type variable may be equal to another fixed type variable or a concrete type.
 
-> Several examples of valid type constraints:
+> Examples of valid type constraints:
 >
 > - $\texttt{List<}\widetilde{X}\texttt{>} <: Y$
 > - $\texttt{List<}\widetilde{X}\texttt> <: \texttt{List<}\texttt{List<}\texttt{Int}\texttt>\texttt>$
 > - $\widetilde{X} <: Y$
 
-Every constraint system has implicit constraints $\texttt{Any} <: T_j$ and $T_j <: \texttt{Nothing?}$ for every type $T_j$ mentioned in constraint, including type variables.
+Every constraint system has general implicit constraints $T_j <: \AnyQ$ and $\Nothing <: T_j$ for every type $T_j$ mentioned in the system, including type variables.
 
 ### Type constraint solving
 
-There are two tasks that a type constraint solver may perform: checking constraint system for soundness and solving the system, e.g. inferring viable values for all the type variables that have themselves no type variables in them.
+There are two tasks which a type constraint solver may perform: [checking constraint system for soundness][Checking constraint system soundness], i.e., if a solution exists, and [solving constraint system][Finding optimal constraint system solution], i.e., inferring a satisfying substitution of concrete types for all free type variables.
 
-Checking a constraint system for soundness can be viewed as a simpler case of solving a constraint, as if there is a solution, then the system is sound. 
-It is, however, a much simpler task with only two possible outcomes. 
-Solving a constraint system, on the other hand, may have several different results as there may be several valid solutions.
+Checking a constraint system for soundness can be viewed as a much simpler case of solving that constraint system: if there is a solution, the system is sound, meaning there are only two possible outcomes.
+Solving a constraint system, on the other hand, may have multiple possible outcomes, as there may be multiple valid solutions.
 
-> Constraint examples that are sound yet no relevant solutions exist:
+> Example: constraint systems which are sound yet no relevant solutions exist.
 >
 > - $X <: Y$
 > - $\texttt{List<}X\texttt> <: \texttt{Collection}\texttt<X\texttt>$
@@ -39,26 +39,26 @@ Solving a constraint system, on the other hand, may have several different resul
 
 TODO()
 
-#### Finding optimal solution
+#### Finding optimal constraint system solution
 
-As any constraint system may have several valid solutions, finding one that is "optimal" in some sense is not possible in general, because the notion of the best solution for a task depends on a particular use-case. 
-To solve this problem, the constraint system allows two additional types of constraints:
+As any constraint system may have multiple valid solutions, finding one which is "optimal" in some sense is not possible in general, because the notion of the best solution for a task depends on the said task. 
+To deal with this, a constraint system allows two additional types of constraints:
 
-- A pull-up constraint for type variable $T$, denoted $\uparrow T$, signifying that when finding a substitution for this variable, the optimal solution is the least one according to subtyping relation;
-- A push-down constraint for type variable $T$, denoted $\downarrow T$, signifying that when finding a substitution for this variable, the optimal solution is the biggest one according to subtyping relation.
+- A *pull-up* constraint for type variable $T$, denoted $\uparrow T$, signifying that when finding a substitution for this variable, the optimal solution is the largest one according to [subtyping relation][Subtyping];
+- A *push-down* constraint for type variable $T$, denoted $\downarrow T$, signifying that when finding a substitution for this variable, the optimal solution is the smallest one according to [subtyping relation][Subtyping].
 
-If a variable have no constraints of these two kinds associated with it, it is assumed to have a pull-up constraint, that is, in an ambigious situation, the biggest possible type is chosen.
+If a variable has no constraints of these kinds associated with it, it is assumed to have a pull-up implicit constraint.
 
 TODO()
 
 #### The relations on types as constraints
 
-In the other chapters (see [expressions] and [statements] for example) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.
-Not all of these relations are easily converted into their constraint form.
+In other sections (for example, [Expressions] and [Statements]) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.
 
-The greatest lower bound of two types is converted directly, as the greatest lower bound is always an intersection type.
-The least upper bound, however, is a little bit tricky.
-If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these types being either known, unknown or containing type variables, the following constraints are produced:
+The [greatest lower bound] of two types is converted directly as-is, as the greatest lower bound is always an intersection type.
+
+The [least upper bound] of two types is converted as follows.
+If type $T$ is defined to be the least upper bound of $A$ and $B$, the following constraints are produced:
 
 - $A <: T$
 - $B <: T$
@@ -66,19 +66,25 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 - $\uparrow A$
 - $\uparrow B$
 
-> Example:  
+> Important: the results of finding GLB or LUB via a constraint system may be different from the results of finding them via a normalization procedure (i.e., imprecise); however, they are sound w.r.t. bound, meaning a constraint system GLB is still a lower bound and a constraint system LUB is still an upper bound.
+
+> Example:
+> 
 > Let's assume we have the following code:
+> 
 > ```kotlin
-> val e = if(c) a else b
+> val e = if (c) a else b
 > ```
-> where `a`, `b`, `c` are some expressions with types completely unknown (having no other type constraints besides the implicit ones).
-> Let's assume the type variables generated for them to be $A$, $B$ and $C$ respectively and the type variable for `e` being $E$.
-> This, according to [the conditional expression chapter][Conditional expression], produces the following relations:
+> 
+> where `a`, `b`, `c` are some expressions with unknown types (having no other type constraints besides the implicit ones).
+> 
+> Assume the type variables generated for them are $A$, $B$ and $C$ respectively, the type variable for `e` is $E$.
+> According to [the conditional expression rules][Conditional expression], this produces the following relations:
 >
 > - $C <: \texttt{kotlin.Boolean}$
 > - $E = \LUB(A, B)$
 > 
-> These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with `kotlin.Any?` and `kotlin.Nothing`):
+> These, in turn, produce the following explicit constraints:
 > 
 > - $C <: \texttt{kotlin.Boolean}$
 > - $A <: E$
@@ -87,15 +93,9 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$ with all these
 > - $\uparrow A$
 > - $\uparrow B$
 >
-> Which, according to the semantics of additional constraints (and the default pull-up constraint for $C$), produce the following solution:
+> which, w.r.t. general and pull-up implicit constraints, produce the following solution:
 >
 > - $C \rightarrow \texttt{kotlin.Boolean}$
 > - $A \rightarrow \AnyQ$
 > - $B \rightarrow \AnyQ$
 > - $E \rightarrow \AnyQ$
-
-TODO(prove that these constraints are equivalent to LUB from type system?)
-
-TODO(are they actually?)
-
-TODO(does that matter?)
