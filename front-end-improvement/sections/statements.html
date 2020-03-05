@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../resources/css/main.css">
+  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="statements">Statements</h2>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO()</span></p>
+</div>
+</div>
+<div id="grammar-rule-statements-pasted-6" class="grammar-rule">
+<dl>
+<dt><strong><em>statements</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax.html#grammar-rule-semis">semis</a></em> <em><a href="syntax.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax.html#grammar-rule-semis">semis</a></em>]]</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-statement-pasted-7" class="grammar-rule">
+<dl>
+<dt><strong><em>statement</em>:</strong></dt>
+<dd><span class="sentence">{<em><a href="syntax.html#grammar-rule-label">label</a></em> | <em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>} (<em><a href="syntax.html#grammar-rule-declaration">declaration</a></em> | <em><a href="syntax.html#grammar-rule-assignment">assignment</a></em> | <em><a href="syntax.html#grammar-rule-loopStatement">loopStatement</a></em> | <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Unlike some other languages, Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions. </span><span class="sentence">This section focuses only on those statements that are <em>not</em> expressions or declarations. </span><span class="sentence">For information on those parts of Kotlin, please refer to the <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> and <a href="control--and-data-flow-analysis.html#declarations-1">Declarations</a> sections of the specification.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: Kotlin supports using <a href="expressions.html#conditional-expression">conditionals</a> both as expressions and as statements. </span><span class="sentence">As their use as expressions is more general, detailed information about conditionals is available in the <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> section of the specification.</span></p>
+</div>
+</blockquote>
+<h3 id="assignments">Assignments</h3>
+<div id="grammar-rule-assignment-pasted-8" class="grammar-rule">
+<dl>
+<dt><strong><em>assignment</em>:</strong></dt>
+<dd><span class="sentence">(<em><a href="syntax.html#grammar-rule-directlyAssignableExpression">directlyAssignableExpression</a></em> <code>'='</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)<br />
+| (<em><a href="syntax.html#grammar-rule-assignableExpression">assignableExpression</a></em> <em><a href="syntax.html#grammar-rule-assignmentAndOperator">assignmentAndOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-assignmentAndOperator-pasted-9" class="grammar-rule">
+<dl>
+<dt><strong><em>assignmentAndOperator</em>:</strong></dt>
+<dd><span class="sentence"><code>'+='</code><br />
+| <code>'-='</code><br />
+| <code>'*='</code><br />
+| <code>'/='</code><br />
+| <code>'%='</code></span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">An <em>assignment</em> is a statement that writes a new value to some program entity, denoted by its left-hand side. </span><span class="sentence">Both left-hand and right-hand sides of an assignment must be expressions, more so, there are several restrictions for the expression on the left-hand side.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For an expression to be <em>assignable</em>, i.e. be allowed to occur on the left-hand side of an assignment, it <strong>must</strong> be one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">An identifier referring to a mutable property;</span></li>
+<li><span class="sentence">A <a href="expressions.html#navigation-operators">navigation expression</a> referring to a mutable property. </span><span class="sentence">If this navigation operator is the safe navigation operator, this introduces a special case of <em>safe assignment</em>;</span></li>
+<li><span class="sentence">An indexing expression.</span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(switch to navigation paths when we have them?)</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin assignments <strong>are not</strong> expressions and cannot be used as such.</span></p>
+</div>
+</blockquote>
+<h4 id="simple-assignments">Simple assignments</h4>
+<div class="paragraph">
+<p><span class="sentence">A <em>simple assigment</em> is an assignment which uses the assign operator <code>=</code>. </span><span class="sentence">If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).</span></p>
+</div>
+<ul>
+<li><span class="sentence">If a property has a <a href="declarations.html#getters-and-setters">setter</a> (including <a href="declarations.html#delegated-property-declaration">delegated properties</a>), it is called using the right-hand side expression as its argument;</span></li>
+<li><span class="sentence">Otherwise, if a property is a <a href="declarations.html#mutable-property-declaration">mutable property</a>, its value is changed to the evaluation result of the right-hand side expression.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="operator-overloading.html#operator-overloading">overloaded operator</a> with the following expansion:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><span class="math inline">\(A[B_1,B_2,B_3,\ldots,B_N] = C\)</span> is the same as calling <span class="math inline">\(A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)\)</span> where <code>set</code> is a suitable operator function.</span></p>
+</div>
+<h4 id="operator-assignments">Operator assignments</h4>
+<div class="paragraph">
+<p><span class="sentence">An <em>operator assignment</em> is a combined-form assignment which involves one of the following operators: <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>. </span><span class="sentence">All of these operators are overloadable operator functions with the following expansions (applied in order):</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{+=}\ B\)</span> is exactly the same as one of the following:</span>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.plusAssign(}B\texttt{)}\)</span> if a suitable <code>plusAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.plus(}B\texttt{)}\)</span> if a suitable <code>plus</code> operator function exists and is available.</span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{-=}\ B\)</span> is exactly the same as one of the following:</span>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.minusAssign(}B\texttt{)}\)</span> if a suitable <code>minusAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.minus(}B\texttt{)}\)</span> if a suitable <code>minus</code> operator function exists and is available.</span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{*=}\ B\)</span> is exactly the same as one of the following:</span>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.timesAssign(}B\texttt{)}\)</span> if a suitable <code>timesAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.times(}B\texttt{)}\)</span> if a suitable <code>times</code> operator function exists and is available.</span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{/=}\ B\)</span> is exactly the same as one of the following:</span>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.divAssign(}B\texttt{)}\)</span> if a suitable <code>divAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.div(}B\texttt{)}\)</span> if a suitable <code>div</code> operator function exists and is available;</span></li>
+</ul></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{\%=}\ B\)</span> is exactly the same as one of the following:</span>
+<ul>
+<li><span class="sentence"><span class="math inline">\(A\texttt{.remAssign(}B\texttt{)}\)</span> if a suitable <code>remAssign</code> operator function exists and is available;</span></li>
+<li><span class="sentence"><span class="math inline">\(A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}\)</span> if a suitable <code>rem</code> operator function exists and is available.</span></li>
+</ul></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: second expansions of the form <span class="math inline">\(A\ \texttt{=}\ \ldots\)</span> are applicable only if <span class="math inline">\(A\)</span> is a mutable property.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: as of Kotlin version 1.2.31, there are additional overloadable functions for <code>%</code> called <code>mod</code>/<code>modAssign</code>, which are deprecated.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">After the expansion, the resulting <a href="expressions.html#function-calls-and-property-access">function call expression</a> or <a href="statements.html#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: although for most real-world use cases operators <code>++</code> and <code>--</code> are similar to operator assignments, in Kotlin they are expressions and are described in the <a href="control--and-data-flow-analysis.html#expressions-1">corresponding section</a> of this specification.</span></p>
+</div>
+</blockquote>
+<h4 id="safe-assignments">Safe assignments</h4>
+<div class="paragraph">
+<p><span class="sentence">If the left-hand side of an assignment involves a safe-navigation operator, it is treated as a special case of <em>safe assignment</em>. </span><span class="sentence">Safe assignments are expanded similar to <a href="expressions.html#navigation-operators">safe navigation operator expressions</a>:</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>a?.c</code> is exactly the same as</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = a) {</a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb1-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.c }</a>
+<a class="sourceLine" id="cb1-4" title="4">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">For any right-hand combinations of operators present in <code>c</code>, which are expanded further, <a href="operator-overloading.html#operator-overloading">as usual</a>.</span></p>
+</div></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: The assignment</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1">x?.y[<span class="dv">0</span>] = z</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<a class="sourceLine" id="cb3-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y[<span class="dv">0</span>] = z }</a>
+<a class="sourceLine" id="cb3-4" title="4">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">which, according to expansion rules for indexing assigments is, in turn, expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<a class="sourceLine" id="cb4-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y.<span class="kw">set</span>(<span class="dv">0</span>, z) }</a>
+<a class="sourceLine" id="cb4-4" title="4">}</a></code></pre></div>
+</blockquote>
+<h3 id="loop-statements">Loop statements</h3>
+<div class="paragraph">
+<p><span class="sentence">Loop statements describe an evaluation of a certain number of statements repeatedly until a <em>loop exit condition</em> applies.</span></p>
+</div>
+<div id="grammar-rule-loopStatement-pasted-10" class="grammar-rule">
+<dl>
+<dt><strong><em>loopStatement</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-forStatement">forStatement</a></em><br />
+| <em><a href="syntax.html#grammar-rule-whileStatement">whileStatement</a></em><br />
+| <em><a href="syntax.html#grammar-rule-doWhileStatement">doWhileStatement</a></em></span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Loops are closely related to the semantics of <a href="expressions.html#jump-expressions">jump expressions</a>, as these expressions, namely <a href="expressions.html#break-expression"><code>break</code></a> and <a href="expressions.html#continue-expression"><code>continue</code></a>, are only allowed in a body of a loop. </span><span class="sentence">Please refer to the corresponding sections for details.</span></p>
+</div>
+<h4 id="while-loop-statement">While-loop statement</h4>
+<div id="grammar-rule-whileStatement-pasted-11" class="grammar-rule">
+<dl>
+<dt><strong><em>whileStatement</em>:</strong></dt>
+<dd><span class="sentence">(<code>'while'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>)<br />
+| (<code>'while'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>';'</code>)</span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>while-loop statement</em> is similar to an <a href="expressions.html#conditional-expression"><code>if</code> expression</a> in that it also has a condition expression and a body consisting of zero or more statements. </span><span class="sentence">While-loop statement evaluating its body repeatedly for as long as its condition expression evaluates to true or a <a href="expressions.html#jump-expressions">jump expression</a> is evaluated to finish the loop.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this also means that the condition expression is evaluated before every evaluation of the body, including the first one.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The while-loop condition expression <strong>must be a subtype</strong> of <code>kotlin.Boolean</code>.</span></p>
+</div>
+<h4 id="do-while-loop-statement">Do-while-loop statement</h4>
+<div id="grammar-rule-doWhileStatement-pasted-12" class="grammar-rule">
+<dl>
+<dt><strong><em>doWhileStatement</em>:</strong></dt>
+<dd><span class="sentence"><code>'do'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]<br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'while'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>do-while-loop statement</em>, similarly to a while-loop statement, also describes a loop, with the following differences. </span><span class="sentence">First, it has a different syntax. </span><span class="sentence">Second, it evaluates the loop condition expression <strong>after</strong> evaluating the loop body.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this also means that the body is always evaluated at least once.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The do-while-loop condition expression <strong>must be a subtype</strong> of <code>kotlin.Boolean</code>.</span></p>
+</div>
+<h4 id="for-loop-statement">For-loop statement</h4>
+<div id="grammar-rule-forStatement-pasted-13" class="grammar-rule">
+<dl>
+<dt><strong><em>forStatement</em>:</strong></dt>
+<dd><span class="sentence"><code>'for'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>}<br />
+(<em><a href="syntax.html#grammar-rule-variableDeclaration">variableDeclaration</a></em> | <em><a href="syntax.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em>)<br />
+<em><a href="syntax.html#grammar-rule-IN">IN</a></em><br />
+<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+<code>')'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]</span>
+</dd>
+</dl>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: unlike most other languages, Kotlin does not have a free-form condition-based for loops. </span><span class="sentence">The only form of a for-loop available in Kotlin is the “foreach” loop, which iterates over lists, arrays and other data structures.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A <em>for-loop statement</em> is a special kind of loop statement used to iterate over some data structure viewed as an iterable collection of elements. </span><span class="sentence">A for-loop statement consists of a loop body, a <strong>container expression</strong> and an <strong>iteration variable declaration</strong>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The for-loop is actually an <a href="operator-overloading.html#operator-overloading">overloadable</a> syntax form with the following expansion:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()) {</a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> (__iterator.hasNext()) {</a>
+<a class="sourceLine" id="cb5-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
+<a class="sourceLine" id="cb5-4" title="4">                &lt;... all the statements from Body&gt;</a>
+<a class="sourceLine" id="cb5-5" title="5">            }</a>
+<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable names as per <a href="declarations.html#local-property-declaration">destructuring variable declarations</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the expansion is hygienic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(What about iterator value life-time and such?)</span></p>
+</div>
+</div>
+<h3 id="code-blocks">Code blocks</h3>
+<div id="grammar-rule-block-pasted-14" class="grammar-rule">
+<dl>
+<dt><strong><em>block</em>:</strong></dt>
+<dd><span class="sentence"><code>'{'</code><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax.html#grammar-rule-statements">statements</a></em><br />
+{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'}'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-statements-pasted-15" class="grammar-rule">
+<dl>
+<dt><strong><em>statements</em>:</strong></dt>
+<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax.html#grammar-rule-semis">semis</a></em> <em><a href="syntax.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax.html#grammar-rule-semis">semis</a></em>]]</span>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>code block</em> is a sequence of zero or more statements between curly braces separated by newlines or/and semicolons. </span><span class="sentence">Evaluating a code block means evaluating all its statements in the order they appear inside of it.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin does <strong>not</strong> support code blocks as statements; a curly-braces code block in a statement position is a <a href="expressions.html#lambda-literals">lambda literal</a>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A <em>last expression</em> of a code block is the last statement in it (if any) if and only if this statement is also an expression. </span><span class="sentence">The last expressions are important when defining functions and control structure expressions.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A code block is said to contain no last expression if it does not contain any statements or its last statement is not an expression (e.g., it is an assignment, a loop or a declaration).</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: you may consider the case of a missing last expression as if a synthetic last expression with no runtime semantics and type <code>kotlin.Unit</code> is introduced in its place.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(COERSION_TO_UNIT?)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>control structure body</em> is either a single statement or a code block. </span><span class="sentence">A <em>last expression</em> of a control structure body <span class="math inline">\(\operatorname{CSB}\)</span> is either the last expression of a code block (if <span class="math inline">\(\operatorname{CSB}\)</span> is a code block) or the single statement itself (if <span class="math inline">\(\operatorname{CSB}\)</span> is an expression). </span><span class="sentence">If a control structure body is not a code block or an expression, it has no last expression.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this is equivalent to wrapping the single statement in a new synthetic code block.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">In some contexts, a control structure body is expected to have a value and/or a type. </span><span class="sentence">The value of a control structure body is:</span></p>
+</div>
+<ul>
+<li><span class="sentence">the value of its last expression if it exists;</span></li>
+<li><span class="sentence">the singleton <code>kotlin.Unit</code> object otherwise.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The type of a control structure body is the type of its value.</span></p>
+</div>
+</body>
+</html>
