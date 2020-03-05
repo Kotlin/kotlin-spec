@@ -532,7 +532,7 @@ A multiplicative expression has the same type as the return type of the correspo
 
 A *cast expression* is a binary expression which uses the cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
 
-An **`as` cast expression** `E as T` is called *a unchecked cast* expression.
+An **`as` cast expression** `E as T` is called *an unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
 If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
 
@@ -546,7 +546,7 @@ If type $T$ is not a [runtime-available][Runtime-available types] type, then the
 This situation should be reported as a compile-time warning.
 
 > Note: if type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
-> This is another porentially erroneous situation, which should be reported as a compile-time warning.
+> This is another potentially erroneous situation, which should be reported as a compile-time warning.
 
 The checked cast expression type is the [nullable][Nullable types] variant of the type $T$.
 
@@ -771,8 +771,6 @@ If followed by the call suffix (arguments in parentheses), `a.c()` may have one 
 
 #### Callable references
 
-TODO(this is a stub)
-
 Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them.
 It is not to be confused with [class literals][Class literals] that use similar syntax, but with the keyword `class` instead of an identifier.
 
@@ -853,8 +851,6 @@ In the general case, however, it is unknown as the [overload resolution][Overloa
 Please refer to the [corresponding section][Resolving callable references] for details.
 
 #### Class literals
-
-TODO(this is a stub)
 
 A class literal is very similar in syntax to a [callable reference][Callable references], with the difference being that it uses the keyword `class`.
 Similar to callable references, there are two forms of class literals: type and value class literals.
@@ -1012,9 +1008,62 @@ In addition, if a lambda expression is used as a parameter to a function call, t
 
 If a labeled `return` expression is used when there are several matching labels available (e.g., inside several nested function calls with the same name), this is resolved as `return` to the nearest matching label.
 
-Any properties used inside the lambda body are **captured** by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
+For example:
 
-TODO(Examples)
+```kotlin
+// kotlin.run is a standard library inline function receiving a lambda parameter
+
+fun a() { // (1)
+    run b@ { // (2)
+        run b@ { // (3)
+            return; // returns from (1)
+        }
+    }
+}
+
+fun a() { // (1)
+    run b@ { // (2)
+        run b@ { // (3)
+            return@b; // returns from (3)
+        }
+    }
+}
+
+fun a() { // (1)
+    run b@ { // (2)
+        run c@ { // (3)
+            return@b; // returns from (2)
+        }
+    }
+}
+
+fun a() { // (1)
+    run { // (2)
+        run { // (3)
+            return@run; // returns from (3)
+        }
+    }
+}
+
+fun a() { // (1)
+    run { // (2)
+        run b@ { // (3)
+            return@run; // returns from (2)
+        }
+    }
+}
+
+fun a() { // (1)
+    run b@ { // (2)
+        run b@ { // (3)
+            return@run; // illegal: both run invocations are labeled
+        }
+    }
+}
+```
+
+Any properties used inside the lambda body are **captured** by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
+See corresponding sections for examples.
 
 ### Object literals
 
@@ -1204,27 +1253,31 @@ All these expressions have several things in common:
 
 #### Throw expressions
 
-TODO([Exceptions] go first)
+Throw expression `throw e` allows throwing [exception objects][Exceptions].
+A valid throw expression `throw e` requires that:
+
+- `e` is a value of a [runtime-available type][Runtime-available types];
+- `e` is a value of an [exception type][Exceptions].
+
+Throwing an exception results in [checking active `try`-blocks][Catching exceptions].
+See the [exception section][Exceptions] section for details.
 
 #### Return expressions
 
-A *return expression*, when used inside a function body, immediately
-stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
+A *return expression*, when used inside a function body, immediately stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
 A return expression with no value implicitly returns the `kotlin.Unit` object.
 
 There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [Anonymous function declaration][Anonymous function declarations]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
 
 - The name of one of the enclosing function declarations, which refers to this function.
   If several declarations match one name, the `return` is considered to be from the nearest matching function;
-- If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself.
-- TODO(return from a labeled lambda)
+- If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself, unless this lambda literal is [*labeled*][Lambda literals], in which case the label may be used as `Context`.
 
 > Note: these rules mean that a simple return expression inside a lambda expression returns **from the innermost function**, in which this lambda expression is defined.
 
-If returning from the referred function is allowed in the current context, the return is performed as usual.
-If returning from the referred function is not allowed, it is a compile-time error.
+If a return expression is used in the context of a lambda literal that is not [*inlined*][Inlining] in the current context and refers to any function scope that is declared outside this lambda literal, it is disallowed and should result in a compile-time error.
 
-TODO(What does it mean for returns to be disallowed?)
+TODO(Better wording)
 
 #### Continue expression
 
@@ -1234,9 +1287,11 @@ When evaluated, this expression passes the control to the start of the next loop
 There are two forms of continue expressions:
 
 - A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
-- A labeled continue expression, denoted `continue@Loop`, where `Loop` is a   label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
+- A labeled continue expression, denoted `continue@Loop`, where `Loop` is a label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
 > Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside `when` expressions.
+
+If a continue expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
 
 #### Break expression
 
@@ -1249,6 +1304,10 @@ There are two forms of break expressions:
 - A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
 > Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.
+
+If a break expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+
+TODO: not that simple
 
 ### String interpolation expressions
 
@@ -1291,15 +1350,8 @@ On the other hand, multiline interpolation expressions allow such symbols inside
 
 String interpolation expression always has type `kotlin.String`.
 
-TODO(define this using actual `kotlin.StringBuilder` business?)
-
-TODO(list all the allowed escapes here?)
-
 ## TODOs()
 
-- Class literals
-- Smart casts vs compile-time types
 - What does `decaying` for vararg actually mean?
-- Where to define spread operator?
 - Object literal types look just like restricted union types. Are there any traps hidden here?
 - The last paragraph in [object literals][Object literals] is also pretty shady
