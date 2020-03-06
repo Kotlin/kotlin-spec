@@ -112,6 +112,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
 <h2 id="statements">Statements</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -167,9 +173,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For an expression to be <em>assignable</em>, i.e. be allowed to occur on the left-hand side of an assignment, it <strong>must</strong> be one of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence">an identifier referring to a mutable property;</span></li>
-<li><span class="sentence">a <a href="expressions.html#navigation-operators">navigation expression</a> referring to a mutable property;</span></li>
-<li><span class="sentence">an indexing expression.</span></li>
+<li><span class="sentence">An identifier referring to a mutable property;</span></li>
+<li><span class="sentence">A <a href="expressions.html#navigation-operators">navigation expression</a> referring to a mutable property. </span><span class="sentence">If this navigation operator is the safe navigation operator, this introduces a special case of <em>safe assignment</em>;</span></li>
+<li><span class="sentence">An indexing expression.</span></li>
 </ul>
 <div class="TODO">
 <div class="paragraph">
@@ -190,21 +196,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Otherwise, if a property is a <a href="declarations.html#mutable-property-declaration">mutable property</a>, its value is changed to the evaluation result of the right-hand side expression.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If the left-hand side of an assignment refers to a mutable property through the usage of safe navigation operator (<code>?.</code>), the same rules apply to it, but only if the left-hand side of the navigation operator is not referentially equal to <code>null</code> reference, e.g.:</span></p>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1">a?.b?.z?.x = y </a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">is semantically the same as</span></p>
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">val</span> <span class="va">__tmp</span> = a?.b?.z</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="cf">if</span>(__tmp !== <span class="kw">null</span>) __tmp.x = y</a></code></pre></div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(just use setters for everything?)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="overloadable-operators.html#overloadable-operators">overloaded operator</a> with the following expansion:</span></p>
+<p><span class="sentence">If the left-hand side of an assignment is an indexing expression, the whole statement is treated as an <a href="operator-overloading.html#operator-overloading">overloaded operator</a> with the following expansion:</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(A[B_1,B_2,B_3,\ldots,B_N] = C\)</span> is the same as calling <span class="math inline">\(A\texttt{.set}(B_1,B_2,B_3,\ldots,B_N,C)\)</span> where <code>set</code> is a suitable operator function.</span></p>
@@ -251,12 +243,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">After the expansion, the resulting [function call expression][Function call expressions] or <a href="statements.html#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
+<p><span class="sentence">After the expansion, the resulting <a href="expressions.html#function-calls-and-property-access">function call expression</a> or <a href="statements.html#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: although for most real-world use cases operators <code>++</code> and <code>--</code> are similar to operator assignments, in Kotlin they are expressions and are described in the <a href="control--and-data-flow-analysis.html#expressions-1">corresponding section</a> of this specification.</span></p>
 </div>
+</blockquote>
+<h4 id="safe-assignments">Safe assignments</h4>
+<div class="paragraph">
+<p><span class="sentence">If the left-hand side of an assignment involves a safe-navigation operator, it is treated as a special case of <em>safe assignment</em>. </span><span class="sentence">Safe assignments are expanded similar to <a href="expressions.html#navigation-operators">safe navigation operator expressions</a>:</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence"><code>a?.c</code> is exactly the same as</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = a) {</a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb1-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.c }</a>
+<a class="sourceLine" id="cb1-4" title="4">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">For any right-hand combinations of operators present in <code>c</code>, which are expanded further, <a href="operator-overloading.html#operator-overloading">as usual</a>.</span></p>
+</div></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: The assignment</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1">x?.y[<span class="dv">0</span>] = z</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<a class="sourceLine" id="cb3-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y[<span class="dv">0</span>] = z }</a>
+<a class="sourceLine" id="cb3-4" title="4">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">which, according to expansion rules for indexing assigments is, in turn, expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<a class="sourceLine" id="cb4-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y.<span class="kw">set</span>(<span class="dv">0</span>, z) }</a>
+<a class="sourceLine" id="cb4-4" title="4">}</a></code></pre></div>
 </blockquote>
 <h3 id="loop-statements">Loop statements</h3>
 <div class="paragraph">
@@ -347,18 +375,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>for-loop statement</em> is a special kind of loop statement used to iterate over some data structure viewed as an iterable collection of elements. </span><span class="sentence">A for-loop statement consists of a loop body, a <strong>container expression</strong> and an <strong>iteration variable declaration</strong>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The for-loop is actually an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> syntax form with the following expansion:</span></p>
+<p><span class="sentence">The for-loop is actually an <a href="operator-overloading.html#operator-overloading">overloadable</a> syntax form with the following expansion:</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()</a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="cf">while</span> (__iterator.hasNext()) {</a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
-<a class="sourceLine" id="cb3-4" title="4">    &lt;... all the statements from Body&gt;</a>
-<a class="sourceLine" id="cb3-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> <span class="va">__iterator</span> = C.iterator()) {</a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> (__iterator.hasNext()) {</a>
+<a class="sourceLine" id="cb5-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
+<a class="sourceLine" id="cb5-4" title="4">                &lt;... all the statements from Body&gt;</a>
+<a class="sourceLine" id="cb5-5" title="5">            }</a>
+<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable name as per [destructuring variable declarations][Destructuring declarations].</span></p>
+<p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable names as per <a href="declarations.html#local-property-declaration">destructuring variable declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -414,7 +443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>control structure body</em> is either a single statement or a code block. </span><span class="sentence">A <em>last expression</em> of a control structure body <code>CSB</code> is either the last expression of a code block (if <code>CSB</code> is a code block) or the single statement itself (if <code>CSB</code> is an expression). </span><span class="sentence">If a control structure body is not a code block or an expression, it has no last expression.</span></p>
+<p><span class="sentence">A <em>control structure body</em> is either a single statement or a code block. </span><span class="sentence">A <em>last expression</em> of a control structure body <span class="math inline">\(\operatorname{CSB}\)</span> is either the last expression of a code block (if <span class="math inline">\(\operatorname{CSB}\)</span> is a code block) or the single statement itself (if <span class="math inline">\(\operatorname{CSB}\)</span> is an expression). </span><span class="sentence">If a control structure body is not a code block or an expression, it has no last expression.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -431,15 +460,5 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of a control structure body is the type of its value.</span></p>
 </div>
-<h3 id="todo">TODO</h3>
-<ul>
-<li><span class="sentence">Labels</span></li>
-<li><span class="sentence">Are declarations statements or not?</span>
-<ul>
-<li><span class="sentence">In the current grammar, they are</span></li>
-<li><span class="sentence">If yes, what does it mean to the spec?</span></li>
-</ul></li>
-<li><span class="sentence">How expansions with new variables actually work</span></li>
-</ul>
 </body>
 </html>

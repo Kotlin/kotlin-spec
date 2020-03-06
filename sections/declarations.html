@@ -112,22 +112,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
 <h2 id="declarations">Declarations</h2>
 <h3 id="glossary-2">Glossary</h3>
 <dl>
 <dt>Entity</dt>
-<dd><span class="sentence">A distinguishable part of a program</span>
+<dd><span class="sentence">Distinguishable part of a program</span>
+</dd>
+<dt>Identifier</dt>
+<dd><span class="sentence">Name of a program entity</span>
 </dd>
 <dt>Path</dt>
-<dd><span class="sentence">A sequence of names which identifies a program entity</span>
+<dd><span class="sentence">Sequence of identifiers which references a program entity in a given <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a></span>
 </dd>
 </dl>
-<h3 id="identifiers-names-and-paths">Identifiers, names and paths</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Explain paths)</span></p>
-</div>
-</div>
 <h3 id="introduction-2">Introduction</h3>
 <div class="TODO">
 <div class="paragraph">
@@ -176,27 +179,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">interface declarations;</span></li>
 <li><span class="sentence">object declarations.</span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(abstract classifiers)</span></p>
-</div>
-</div>
 <h4 id="class-declaration">Class declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">A simple class declaration consists of the following parts.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Name <span class="math inline">\(c\)</span>;</span></li>
-<li><span class="sentence">Optional primary constructor declaration <span class="math inline">\(ptor\)</span>;</span></li>
+<li><span class="sentence">Optional primary constructor declaration <span class="math inline">\(\operatorname{\mathit{ptor}}\)</span>;</span></li>
 <li><span class="sentence">Optional supertype specifiers <span class="math inline">\(S_1, \ldots, S_s\)</span>;</span></li>
 <li><span class="sentence">Optional body <span class="math inline">\(b\)</span>, which may include the following:</span>
 <ul>
-<li><span class="sentence">secondary constructor declarations <span class="math inline">\(stor_1, \ldots, stor_c\)</span>;</span></li>
-<li><span class="sentence">instance initialization blocks <span class="math inline">\(init_1, \ldots, init_i\)</span>;</span></li>
-<li><span class="sentence">property declarations <span class="math inline">\(prop_1, \ldots, prop_p\)</span>;</span></li>
-<li><span class="sentence">function declarations <span class="math inline">\(md_1, \ldots, md_m\)</span>;</span></li>
-<li><span class="sentence">companion object declaration <span class="math inline">\(companionObj\)</span>;</span></li>
-<li><span class="sentence">nested classifier declarations <span class="math inline">\(nested\)</span>.</span></li>
+<li><span class="sentence">secondary constructor declarations <span class="math inline">\(\operatorname{\mathit{stor}}_1, \ldots, \operatorname{\mathit{stor}}_c\)</span>;</span></li>
+<li><span class="sentence">instance initialization blocks <span class="math inline">\(\operatorname{\mathit{init}}_1, \ldots, \operatorname{\mathit{init}}_i\)</span>;</span></li>
+<li><span class="sentence">property declarations <span class="math inline">\(\operatorname{\mathit{prop}}_1, \ldots, \operatorname{\mathit{prop}}_p\)</span>;</span></li>
+<li><span class="sentence">function declarations <span class="math inline">\(\operatorname{\mathit{md}}_1, \ldots, \operatorname{\mathit{md}}_m\)</span>;</span></li>
+<li><span class="sentence">companion object declaration <span class="math inline">\(\operatorname{\mathit{companionObj}}\)</span>;</span></li>
+<li><span class="sentence">nested classifier declarations <span class="math inline">\(\operatorname{\mathit{nested}}\)</span>.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
@@ -205,6 +203,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. </span><span class="sentence">You can use classes and interfaces as supertypes, but not objects.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: if supertype specifiers are absent, the declared type is considered to be implicitly derived from <code>kotlin.Any</code>.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">It is allowed to inherit from a single class only, i.e., multiple class inheritance is not supported. </span><span class="sentence">Multiple interface inheritance is allowed.</span></p>
 </div>
@@ -218,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Companion object declaration <code>companion object CO { ... }</code> for class <code>C</code> introduces an object, which is available under this class’ name or under the path <code>C.CO</code>. </span><span class="sentence">Companion object name may be omitted, in which case it is considered to be equal to <code>Companion</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ path. </span><span class="sentence">Further details are available <a href="declarations.html#nested-and-inner-classifiers">here</a>.</span></p>
+<p><span class="sentence">Nested classifier declarations introduce new classifiers, available under this class’ name. </span><span class="sentence">Further details are available <a href="declarations.html#nested-and-inner-classifiers">here</a>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> and extends the rules for a simple class declaration w.r.t. this type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
@@ -236,22 +239,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A primary constructor is a concise way of describing class properties together with constructor parameters, and has the following form</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[ptor : (p_1, \ldots, p_n)\]</span></span></p>
+<p><span class="sentence"><span class="math display">\[\operatorname{\mathit{ptor}}: (p_1, \ldots, p_n)\]</span></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">where each of <span class="math inline">\(p_i\)</span> may be one of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence">regular constructor parameter <span class="math inline">\(name: type\)</span>;</span></li>
-<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\texttt{val}\ name: type\)</span>;</span></li>
-<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\texttt{var}\ name: type\)</span>.</span></li>
+<li><span class="sentence">regular constructor parameter <span class="math inline">\(\operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>;</span></li>
+<li><span class="sentence">read-only property constructor parameter <span class="math inline">\(\texttt{val}\ \operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>;</span></li>
+<li><span class="sentence">mutable property constructor parameter <span class="math inline">\(\texttt{var}\ \operatorname{\mathit{name}}: \operatorname{\mathit{type}}\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Property constructor parameters, together with being regular constructor parameters, also declare class properties of the same name and type.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: if a property constructor parameter with type <span class="math inline">\(T\)</span> is specified as <code>vararg</code>, its corresponding class property type is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;</code><span class="math inline">\(\operatorname{\mathtt{out\ }}T\)</span><code>&gt;</code>.</span></p>
+<p><span class="sentence">Important: if a property constructor parameter with type <span class="math inline">\(T\)</span> is specified as <code>vararg</code>, its corresponding class property type is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;</code><span class="math inline">\(\operatorname{\texttt{out\,}}T\)</span><code>&gt;</code>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -270,7 +273,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a class declaration has a primary constructor and also includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters. </span><span class="sentence">If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via <code>this(...)</code>.</span></p>
+<p><span class="sentence">A secondary constructor describes an alternative way of creating a class instance and has only regular constructor parameters.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a class has a primary constructor, any secondary constructor must delegate to either the primary constructor or to another secondary constructor via <code>this(...)</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If a class does not have a primary constructor, its secondary constructors must delegate to either the superclass constructor via <code>super(...)</code> (if the superclass is present in the supertype specifier list) or to another secondary constructor via <code>this(...)</code>. </span><span class="sentence">If the only superclass is <code>kotlin.Any</code>, delegation is optional.</span></p>
@@ -288,19 +294,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="nested-and-inner-classifiers">Nested and inner classifiers</h5>
 <div class="paragraph">
-<p><span class="sentence">If a classifier declaration <span class="math inline">\(ND\)</span> is <em>nested</em> in another classifier declaration <span class="math inline">\(PD\)</span>, it creates a nested classifier type — a classifier type available under the path <span class="math inline">\(PD.ND\)</span>. </span><span class="sentence">In all other aspects, nested classifiers are equivalent to regular ones.</span></p>
+<p><span class="sentence">If a classifier declaration <span class="math inline">\(\operatorname{\text{ND}}\)</span> is <em>nested</em> in another classifier declaration <span class="math inline">\(\operatorname{\text{PD}}\)</span>, it creates a nested classifier type — a classifier type available under the path <span class="math inline">\(\operatorname{\text{PD}}.\operatorname{\text{ND}}\)</span>. </span><span class="sentence">In all other aspects, nested classifiers are equivalent to regular ones.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Inner classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. </span><span class="sentence">An inner class declaration <span class="math inline">\(ID\)</span> nested in another classifier declaration <span class="math inline">\(PD\)</span> may reference an <em>object</em> of type <span class="math inline">\(ID\)</span> associated with it.</span></p>
+<p><span class="sentence"><em>Inner</em> classes are a special kind of nested classifiers, which introduce types of objects associated (linked) with other (parent) objects. </span><span class="sentence">An inner class declaration <span class="math inline">\(\operatorname{\text{ID}}\)</span> nested in another classifier declaration <span class="math inline">\(\operatorname{\text{PD}}\)</span> may reference an <em>object</em> of type <span class="math inline">\(\operatorname{\text{ID}}\)</span> associated with it.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This association happens when instantiating an object of type <span class="math inline">\(ID\)</span>, as its constructor may be invoked only when a receiver of type <span class="math inline">\(PD\)</span> is available, and this receiver becomes associated with the new instantiated object of type <span class="math inline">\(ID\)</span>.</span></p>
+<p><span class="sentence">This association happens when instantiating an object of type <span class="math inline">\(\operatorname{\text{ID}}\)</span>, as its constructor may be invoked only when a receiver of type <span class="math inline">\(\operatorname{\text{PD}}\)</span> is available, and this receiver becomes associated with the new instantiated object of type <span class="math inline">\(\operatorname{\text{ID}}\)</span>.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(the relation between containing and nested classifiers if generics are involved)</span></p>
+<p><span class="sentence">For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the <a href="type-system.html#inner-and-nested-type-contexts">type system</a> section of the specification.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: inner classes cannot be declared in <a href="declarations.html#classifier-declaration">objects</a>.</span></p>
 </div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(…)</span></p>
@@ -328,23 +337,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(…)</span></p>
 </div>
 </div>
+<h5 id="abstract-classes">Abstract classes</h5>
+<div class="paragraph">
+<p><span class="sentence">A <a href="declarations.html#class-declaration">class declaration</a> can be marked <code>abstract</code>. </span><span class="sentence">Such classes <em>cannot</em> be instantiated directly; they are used as superclasses for other classes or objects.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Abstract classes may contain one or more abstract members: members without implementation, which should be implemented in a subtype of this abstract class.</span></p>
+</div>
 <h4 id="data-class-declaration">Data class declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">A data class <span class="math inline">\(dataClass\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((dp_1, \ldots, dp_m)\)</span>, described in its primary constructor. </span><span class="sentence">Non-property constructor parameters are not allowed in the primary constructor of a data class. </span><span class="sentence">As such, it allows Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions. </span><span class="sentence">Each one of these functions is generated if and only if a matching signature function is not present in the class body.</span></p>
+<p><span class="sentence">A data class <span class="math inline">\(\operatorname{\mathit{dataClass}}\)</span> is a special kind of class, which represents a product type constructed from a number of data properties <span class="math inline">\((\operatorname{\mathit{dp}}_1, \ldots, \operatorname{\mathit{dp}}_m)\)</span>, described in its primary constructor. </span><span class="sentence">Non-property constructor parameters are not allowed in the primary constructor of a data class. </span><span class="sentence">As such, data classes allow Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with their contracts:</span>
+<li><span class="sentence"><code>equals() / hashCode() / toString()</code> functions compliant with <a href="built-in-types-and-their-semantics.html#kotlin.any-1">their contracts</a>:</span>
 <ul>
 <li><span class="sentence"><code>equals(that)</code> returns true iff:</span>
 <ul>
 <li><span class="sentence"><code>that</code> has the same runtime type as <code>this</code>;</span></li>
-<li><span class="sentence"><code>this.prop.equals(that.prop)</code> returns <code>true</code> for every data property <code>prop</code>;</span></li>
+<li><span class="sentence"><code>this.prop == that.prop</code> returns <code>true</code> for every data property <code>prop</code>;</span></li>
 </ul></li>
 <li><span class="sentence"><code>hashCode()</code> returns the same numbers for objects <code>A</code> and <code>B</code> if they are equal w.r.t. the generated <code>equals</code>;</span></li>
 <li><span class="sentence"><code>toString</code> returns a string representations which is guaranteed to include the class name along with all the data properties’ string representations.</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Be more specific?).</span>
-</div></li>
 </ul></li>
 <li><span class="sentence">A <code>copy()</code> function for shallow object copying with the following properties:</span>
 <ul>
@@ -352,30 +365,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">It calls the primary constructor with the corresponding parameters at the corresponding positions;</span></li>
 <li><span class="sentence">It has defaults for all the parameters defaulting to the value of the corresponding property in <code>this</code> object.</span></li>
 </ul></li>
-<li><span class="sentence">A number of <code>componentN()</code> functions for destructive declaration:</span>
+<li><span class="sentence">A number of <code>componentN()</code> functions for <a href="declarations.html#local-property-declaration">destructuring declaration</a>:</span>
 <ul>
-<li><span class="sentence">For the data property at position <span class="math inline">\(N\)</span> (<strong>starting with 1</strong>), the generated <code>component</code><span class="math inline">\(N\)</span> function has the same type as this property and returns the value of this property;</span></li>
+<li><span class="sentence">For the data property at position <span class="math inline">\(N\)</span> (<strong>starting from 1</strong>), the generated <code>component</code><span class="math inline">\(N\)</span> function has the same type as this property and returns the value of this property;</span></li>
 <li><span class="sentence">It has an <code>operator</code> modifier, allowing it to be used in <a href="declarations.html#local-property-declaration">destructuring declarations</a>;</span></li>
 <li><span class="sentence">The number of these functions is the same as the number of data properties.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">These generated declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be overriden the same way they may be overriden in normal classes. </span><span class="sentence">The overriding version is preferred, as normally. </span><span class="sentence">In addition, for every other function, if any of the base types provide an open function with a matching signature, it is automatically overriden by the generated function as if it was generated with an <code>override</code> modifier, unless the function was declared <code>final</code> in the base type declaration. </span><span class="sentence">In this case, the function is not generated and does not override anything, making the final version the preferred one.</span></p>
+<p><span class="sentence">All these functions consider only data properties <span class="math inline">\(\{\operatorname{\mathit{dp}}_i\}\)</span>; e.g., your data class may include regular property declarations in its body, however, they will <em>not</em> be considered in the <code>equals()</code> implementation or have a <code>componentN()</code> generated for them.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">There are several rules as to how these generated functions may be explicified or inherited.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: base classes may also have functions that are either not open or have a conflicting signature with the same function name. </span><span class="sentence">As expected, these cases result in override or overload conflicts the same way they would do with a normal class declaration.</span></p>
+<p><span class="sentence">Note: a generated function is explicified, if its implementation is provided explicitly in the body of the data class. </span><span class="sentence">A generated function is inherited, if its implementation is taken from a supertype of the data class.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">All these functions consider only data properties <span class="math inline">\(\{dp_i\}\)</span>; e.g., your data class may include regular property declarations in its body, however, they will <em>not</em> be considered in the <code>equals()</code> implementation or have a <code>componentN()</code> generated for them.</span></p>
+<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be explicified similarly to how overriding works in normal classes. </span><span class="sentence">If a correct explicit implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be explicified.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">The declarations of <code>equals</code>, <code>hashCode</code> and <code>toString</code> may be inherited from the base class, if it provides a <code>final</code> version with a <a href="declarations.html#function-signature">matching signature</a>. </span><span class="sentence">If a correct inherited implementation is available, no function is generated. </span><span class="sentence">Other functions (<code>copy</code>, <code>componentN</code>) <strong>cannot</strong> be inherited.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In addition, for every generated function, if any of the base types provide an open function with a <a href="declarations.html#function-signature">matching signature</a>, it is automatically overridden by the generated function as if it was generated with an <code>override</code> modifier.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: base classes may also have functions that have a conflicting signature with the same function name. </span><span class="sentence">As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Data classes have the following restrictions:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Data classes are closed and cannot be <a href="inheritance.html#inheritance">inherited</a> from;</span></li>
-<li><span class="sentence">Data classes must have a primary constructor with only property constructor parameters, which become data properties for the data class;</span></li>
+<li><span class="sentence">Data classes must have a primary constructor with property constructor parameters only, which become data properties for the data class;</span></li>
 <li><span class="sentence">There must be at least one data property in the primary constructor.</span></li>
 </ul>
 <h4 id="enum-class-declaration">Enum class declaration</h4>
@@ -385,12 +412,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">It has a number of predefined values that are declared in the class itself (<em>enum entries</em>);</span></li>
 <li><span class="sentence">No other values of this class can be constructed;</span></li>
-<li><span class="sentence">It implicitly inherits the built-in class <code>kotlin.Enum</code> (and cannot have any other base classes);</span></li>
+<li><span class="sentence">It implicitly inherits the built-in class <a href="built-in-types-and-their-semantics.html#kotlin.enum"><code>kotlin.Enum</code></a> (and cannot have any other base classes);</span></li>
 <li><span class="sentence">It it implicitly final and cannot be inherited from;</span></li>
 <li><span class="sentence">It has special syntax to accommodate for the properties described above.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body. </span><span class="sentence">Enum entries have their own bodies that may contain their own declarations, similar to <a href="declarations.html#object-declaration">object declarations</a>.</span></p>
+<p><span class="sentence">Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body. </span><span class="sentence">Enum entries have their own bodies that may contain their own declarations, similar to <a href="declarations.html#classifier-declaration">object declarations</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -398,12 +425,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">In addition to this, every enum class has an implicit companion object declaration with the following member functions (in addition to the ones the object declaration specified explicitly has):</span></p>
+<p><span class="sentence">In addition to these, every enum class type has the following <strong>static</strong> member functions declared implicitly:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>valueOf(value: String)</code> returning an object corresponding to the entry with the name equal to <code>value</code> parameter of the call;</span></li>
-<li><span class="sentence"><code>values()</code> returning an <a href="type-system.html#array-types">array</a> of all the possible enum values. </span><span class="sentence">Every invocation of this function returns a new array to disallow changing its contents.</span></li>
+<li><span class="sentence"><code>values()</code> returning an <a href="type-system.html#array-types">array</a> of all possible enum values. </span><span class="sentence">Every invocation of this function returns a new array to disallow changing its contents.</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: these static member functions are handled differently by the <a href="overload-resolution.html#overload-resolution">overload resolution</a>.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called <code>kotlin.enumValues&lt;T&gt;</code>. </span><span class="sentence">Please refer to the standard library documentation for details.</span></p>
@@ -412,11 +444,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(<code>kotlin.Comparable</code> generation?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
 </div>
 </div>
 <h4 id="annotation-class-declaration">Annotation class declaration</h4>
@@ -593,8 +620,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Return type <span class="math inline">\(R\)</span>, if omitted, is calculated as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the expression form and it may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv \operatorname{\mathtt{kotlin.Nothing}}\)</span>, <span class="math inline">\(R \equiv B\)</span>.</span></li>
-<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the block form, <span class="math inline">\(R \equiv \operatorname{\mathtt{kotlin.Unit}}\)</span>.</span></li>
+<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the expression form and it may be inferred to have a valid type <span class="math inline">\(B : B \not \equiv \operatorname{\texttt{kotlin.Nothing}}\)</span>, <span class="math inline">\(R \equiv B\)</span>.</span></li>
+<li><span class="sentence">If function body <span class="math inline">\(b\)</span> is present in the block form, <span class="math inline">\(R \equiv \operatorname{\texttt{kotlin.Unit}}\)</span>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">In other cases return type <span class="math inline">\(R\)</span> cannot be omitted and must be specified explicitly.</span></p>
@@ -605,7 +632,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is ommited, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="declarations.html#classifier-declaration">abstract classifier declaration</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
+<p><span class="sentence">Function body <span class="math inline">\(b\)</span> is optional; if it is omitted, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="inheritance.html#abstract-classes-1">abstract class</a>. </span><span class="sentence">If a function body <span class="math inline">\(b\)</span> is present, it should evaluate to type <span class="math inline">\(B\)</span> which should satisfy <span class="math inline">\(B &lt;: R\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -624,6 +651,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="paragraph">
 <p><span class="sentence">and extends the rules for a simple function declaration w.r.t. type parameter list. </span><span class="sentence">Further details are described <a href="declarations.html#declarations-with-type-parameters">here</a>.</span></p>
+</div>
+<h4 id="function-signature">Function signature</h4>
+<div class="paragraph">
+<p><span class="sentence">In some cases we need to establish whether one function declaration <em>matches</em> another, e.g., for checking <a href="inheritance.html#overriding">overridability</a>. </span><span class="sentence">To do that, we compare <em>function signatures</em>, which consist of the following.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Name <span class="math inline">\(f\)</span>;</span></li>
+<li><span class="sentence">Type parameter list <span class="math inline">\(T_1, \ldots, T_m\)</span> (if present);</span></li>
+<li><span class="sentence">Parameter list <span class="math inline">\(P_1, \ldots, P_n\)</span>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Two function signatures <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are considered <em>matching</em>, if the following is true.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Name of <span class="math inline">\(A\)</span> is the same as the name of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Type parameters of <span class="math inline">\(A\)</span> are pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may change which function signatures are considered matching, depending on the platform’s specifics.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Investigate how this actually works)</span></p>
+</div>
 </div>
 <h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
 <div class="paragraph">
@@ -683,7 +737,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of <a href="type-system.html#array-types"><em>array type specialization</em></a> of type <code>Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An array of type <code>Array&lt;Q&gt;</code><span class="math inline">\(\: &lt;: \:\)</span><code>ATS(Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;)</code> may be <em>unpacked</em> to a variable length parameter in function invocation using [spread operator][Spread operator]; in this case array elements are considered to be separate arguments in the variable length parameter position.</span></p>
+<p><span class="sentence">An array of type <code>Array&lt;Q&gt;</code><span class="math inline">\(\: &lt;: \:\)</span><code>ATS(Array&lt;out</code><span class="math inline">\(P_i\)</span><code>&gt;)</code> may be <em>unpacked</em> to a variable length parameter in function invocation using <a href="expressions.html#spread-operator-expressions">spread operator</a>; in this case array elements are considered to be separate arguments in the variable length parameter position.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -792,7 +846,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. </span><span class="sentence">However, local property declarations cannot have custom getters or setters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Local property declarations also support <em>destructive</em> declaration in the form of</span></p>
+<p><span class="sentence">Local property declarations also support <em>destructuring</em> declaration in the form of</span></p>
 </div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
 <div class="paragraph">
@@ -887,7 +941,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb12-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
 <a class="sourceLine" id="cb12-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="overloadable-operators.html#overloadable-operators">overloadable</a> form which is expanded into the following:</span></p>
+<p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="operator-overloading.html#operator-overloading">overloadable</a> form which is expanded into the following:</span></p>
 </div>
 <div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
 <div class="paragraph">
@@ -1024,7 +1078,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>kotlin.Char</code>;</span></li>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 </ul></li>
-<li><span class="sentence">It is declared in the top-level scope or inside [an object declaration][Object declarations];</span></li>
+<li><span class="sentence">It is declared in the top-level scope or inside <a href="declarations.html#classifier-declaration">an object declaration</a>;</span></li>
 <li><span class="sentence">It has an initializer expression and this initializer expression can be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
@@ -1078,7 +1132,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="visibility.html#visibility"><em>visibility modifiers</em></a>.</span></p>
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="scopes-and-identifiers.html#visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="TODO">
@@ -1123,6 +1177,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The <a href="type-system.html#mixed-site-variance">declaration-site variance</a> of a particular type parameter for a classifier declaration is specified using special keywords <code>in</code> (for covariant parameters) and <code>out</code> (for contravariant parameters). </span><span class="sentence">If the variance is not specified, the parameter is implicitly declared invariant. </span><span class="sentence">See <a href="type-system.html#mixed-site-variance">the type system section</a> for details.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is <strong>used in covariant position</strong> in the following cases:</span></p>
+</div>
+<ul>
+<li><span class="sentence">It is used as an argument in another generic type and the corresponding parameter in that type is covariant;</span></li>
+<li><span class="sentence">It is the return type of a function;</span></li>
+<li><span class="sentence">It is a type of a property.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is <strong>used in contravariant position</strong> in the following cases:</span></p>
+</div>
+<ul>
+<li><span class="sentence">It is used as an argument in another generic type and the corresponding parameter in that type is contravariant;</span></li>
+<li><span class="sentence">It is a type of an parameter of a function;</span></li>
+<li><span class="sentence">It is a type of a mutable property.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in <strong>variance conflict</strong> and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the <a href="declarations.html#declaration-visibility">visibility</a> section for details).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This restrictions may be lifted in particular cases by <a href="annotations.html#annotations">annotating</a> the corresponding type parameter usage with a special built-in annotation <code>kotlin.UnsafeVariance</code>. </span><span class="sentence">By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: account for more complex cases</span></p>
+</div>
+</div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
@@ -1136,7 +1220,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(PRIVATE_TO_THIS)</span></p>
+<p><span class="sentence">TODO: clarify all this</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include declarations that are allowed to lift certain <a href="type-system.html#mixed-site-variance">variance</a> rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any declarations with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any declarations with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the above does not account for <code>@UnsafeVariance</code> annotation that lifts any variance restrictions on type parameters</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: examples</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -1169,7 +1266,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overriden in the classes derived from it (see the <a href="inheritance.html#overriding">inheritance section</a> for details).</span></p>
+<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the <a href="inheritance.html#overriding">inheritance section</a> for details).</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">

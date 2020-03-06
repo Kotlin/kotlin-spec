@@ -112,6 +112,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
 <h2 id="inheritance">Inheritance</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -120,89 +126,111 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="classifier-type-inheritance">Classifier type inheritance</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin is an object-oriented language with its object model based on <strong>inheritance</strong>. </span><span class="sentence">Classifier types may be inherited from each other: the type inherited <em>from</em> is called the base type, while the type that inherits the base type is called the derived type. </span><span class="sentence">A class or object type is allowed to inherit from only one class type (called its <strong>direct superclass</strong>) and multiple interface types. </span><span class="sentence">Object types cannot be inherited from. </span><span class="sentence">As specified in the declaration section, if the superclass of a class or object type is not specified, it is assumed to be <code>kotlin.Any</code> as all the types are inherited from it. </span><span class="sentence">This means, among other things, that every class or object type has a direct superclass type.</span></p>
+<p><span class="sentence">Kotlin is an object-oriented language with its object model based on <strong>inheritance</strong>. </span><span class="sentence">Classifier types may be inherited from each other: the type inherited <em>from</em> is called the <em>base type</em>, while the type which inherits the base type is called the <em>derived type</em>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A class is called <strong>closed</strong> and is forbidden to be inherited from if it is declared not <code>open</code> or <code>abstract</code> (please note that classes are neither <code>open</code> nor <code>abstract</code> by default). </span><span class="sentence">A <code>data class</code>, <code>enum class</code> or <code>annotation class</code> cannot be declared <code>open</code> or <code>abstract</code> and cannot be inherited from.</span></p>
+<p><span class="sentence">The following limitations are imposed on the possible inheritance structure.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is <a href="type-system.html#type-system">well-formed</a>.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: there are limitations, for example, generic interfaces with different parameters make things complicated</span></p>
-</div>
+<p><span class="sentence">A class or object type is allowed to inherit from only one class type (called its <strong>direct superclass</strong>) and multiple interface types. </span><span class="sentence">As specified in the <a href="declarations.html#class-declaration">declaration section</a>, if the superclass of a class or object type is not specified, it is assumed to be <a href="built-in-types-and-their-semantics.html#kotlin.any-1"><code>kotlin.Any</code></a>. </span><span class="sentence">This means, among other things, that every class or object type always has a direct superclass.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Inheritance is the primary mechanism of introducing <a href="type-system.html#subtyping">subtyping relations</a> between user-defined types in Kotlin. </span><span class="sentence">When a classifier type <span class="math inline">\(A\)</span> is declared with base types <span class="math inline">\(B_1, \dots, B_i\)</span> it introduces subtyping relations <span class="math inline">\(A &lt;: B_1, \ldots, A &lt;: B_i\)</span>, which are then used in <a href="overload-resolution.html#overload-resolution">overload resolution</a> and <a href="type-inference.html#type-inference">type inference</a> mechanisms.</span></p>
+<p><span class="sentence">A class is called <strong>closed</strong> and cannot be inherited from if it is not explicitly declared as either <code>open</code> or <code>abstract</code>.</span></p>
 </div>
-<h4 id="abstract-classes">Abstract classes</h4>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">A class declared <code>abstract</code> cannot be instantiated, i.e. an object of this class cannot be created directly. </span><span class="sentence">Abstract classes are implicitly open and their primary purpose is to be inherited from. </span><span class="sentence">Only abstract classes allow for <code>abstract</code> property and function declarations in its scope.</span></p>
+<p><span class="sentence">Note: classes are neither <code>open</code> nor <code>abstract</code> by default.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A <a href="declarations.html#data-class-declaration"><code>data class</code></a>, <a href="declarations.html#enum-class-declaration"><code>enum class</code></a> or <a href="declarations.html#annotation-class-declaration"><code>annotation class</code></a> cannot be declared <code>open</code> or <code>abstract</code>, i.e., are always closed and cannot be inherited from.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is <a href="type-system.html#parameterized-classifier-types">well-formed</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Object types cannot be inherited from.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Inheritance is the primary mechanism of introducing <a href="type-system.html#subtyping">subtyping relations</a> between user-defined types in Kotlin. </span><span class="sentence">When a classifier type <span class="math inline">\(A\)</span> is declared with base types <span class="math inline">\(B_1, \dots, B_m\)</span>, it introduces subtyping relations <span class="math inline">\(A &lt;: B_1, \ldots, A &lt;: B_m\)</span>, which are then used in <a href="overload-resolution.html#overload-resolution">overload resolution</a> and <a href="type-inference.html#type-inference">type inference</a> mechanisms.</span></p>
+</div>
+<h4 id="abstract-classes-1">Abstract classes</h4>
+<div class="paragraph">
+<p><span class="sentence">A class declared <code>abstract</code> cannot be instantiated, i.e., an object of this class cannot be created directly. </span><span class="sentence">Abstract classes are implicitly <code>open</code> and their primary purpose is to be inherited from. </span><span class="sentence">Only abstract classes allow for <code>abstract</code> <a href="declarations.html#property-declaration">property</a> and <a href="declarations.html#function-declaration">function</a> declarations in their scope.</span></p>
 </div>
 <h4 id="sealed-classes">Sealed classes</h4>
 <div class="paragraph">
-<p><span class="sentence">A class may be declared <code>sealed</code>, making it special from the inheritance point-of-view:</span></p>
+<p><span class="sentence">A class may be declared <code>sealed</code>, making it special from the inheritance point-of-view.</span></p>
 </div>
 <ul>
-<li><span class="sentence">A <code>sealed</code> class is implicitly abstract (and these two modifiers are exclusive);</span></li>
-<li><span class="sentence">It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes for other classes);</span></li>
-<li><span class="sentence">It allows for [exhaustiveness checking of when expressions][When-expressions] for values of this type.</span></li>
+<li><span class="sentence">A <code>sealed</code> class is implicitly <code>abstract</code> (and these two modifiers are exclusive);</span></li>
+<li><span class="sentence">It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);</span></li>
+<li><span class="sentence">It allows for exhaustiveness checking of <a href="expressions.html#when-expression">when expressions</a> for values of this type.</span></li>
 </ul>
 <h4 id="inheritance-from-built-in-types">Inheritance from built-in types</h4>
 <div class="paragraph">
-<p><span class="sentence"><a href="type-system.html#built-in-types">Built-in types</a> follow the same rules user-defined types do. </span><span class="sentence">Most of them are closed class types and cannot be inherited from. </span><span class="sentence"><a href="type-system.html#function-types">Function types</a> are treated as interfaces and can be inherited from as such.</span></p>
+<p><span class="sentence"><a href="type-system.html#built-in-types">Built-in types</a> follow the same rules as user-defined types do. </span><span class="sentence">Most of them are closed class types and cannot be inherited from. </span><span class="sentence"><a href="type-system.html#function-types">Function types</a> are treated as interfaces and can be inherited from as such.</span></p>
 </div>
 <h3 id="overriding">Overriding</h3>
 <div class="paragraph">
-<p><span class="sentence">A callable declaration (that is, a property or member function declaration) inside a classifier declaration is said to be <em>overridable</em> if:</span></p>
+<p><span class="sentence">A callable declaration (that is, a <a href="declarations.html#property-declaration">property</a> or <a href="declarations.html#function-declaration">member function</a> declaration) inside a classifier declaration is said to be <em>overridable</em> if:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Its visibility (and the visibility of its getter and/or setter) is not <code>private</code>;</span></li>
+<li><span class="sentence">Its visibility (and the visibility of its getter and setter, if present) is not <code>private</code>;</span></li>
 <li><span class="sentence">It is declared as <code>open</code>, <code>abstract</code> or <code>override</code> (interface methods and properties are implicitly <code>abstract</code> if they don’t have a body or <code>open</code> if they do).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
+<p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and either <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of the return type of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Formal parameter types of <span class="math inline">\(D\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Type parameters of <span class="math inline">\(D\)</span> are pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Name of <span class="math inline">\(D\)</span> is the same as the name of <span class="math inline">\(B\)</span>.</span></li>
+<li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of return type of <span class="math inline">\(B\)</span>;</span></li>
+<li><span class="sentence"><a href="declarations.html#function-signature">Function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the overriding declaration does not have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overriden declaration. </span><span class="sentence">If the overriding declaration does have its visibility specified, it must be weaker than the visibility of the overriden declaration.</span></p>
+<p><span class="sentence">If the overriding declaration <em>does not</em> have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the overriding declaration <em>does</em> have its visibility specified, it must not be stronger than the visibility of the overridden declaration.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Example: base class <span class="math inline">\(B\)</span> contains declaration</span></p>
+<p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">protected</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">f</span>() {}</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">Class <span class="math inline">\(C\)</span> is derived from <span class="math inline">\(B\)</span> and contains the following declaration</span></p>
-</div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">override</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">f</span>() {}</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">This makes <code>f</code> <code>protected</code> inside <span class="math inline">\(C\)</span> even though the visibility is not specified directly. </span><span class="sentence">If <code>f</code> in <span class="math inline">\(C\)</span> was declared <code>public</code>, it would be correct as public visibility is weaker than protected visibility.</span></p>
-</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">open</span> <span class="kw">class</span> B {</a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">protected</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">f</span>() {}</a>
+<a class="sourceLine" id="cb1-3" title="3">}</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">class</span> C : <span class="dt">B</span>() {</a>
+<a class="sourceLine" id="cb1-5" title="5">    <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">f</span>() {}</a>
+<a class="sourceLine" id="cb1-6" title="6">    <span class="co">// `f` is protected, as its visibility is</span></a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="co">//   inherited from the base declaration</span></a>
+<a class="sourceLine" id="cb1-8" title="8">}</a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="kw">class</span> D : <span class="dt">B</span>() {</a>
+<a class="sourceLine" id="cb1-10" title="10">    <span class="kw">public</span> <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">f</span>() {}</a>
+<a class="sourceLine" id="cb1-11" title="11">    <span class="co">// this is correct, as public visibility is</span></a>
+<a class="sourceLine" id="cb1-12" title="12">    <span class="co">//   weaker that protected visibility</span></a>
+<a class="sourceLine" id="cb1-13" title="13">    <span class="co">//   from the base declaration</span></a>
+<a class="sourceLine" id="cb1-14" title="14">}</a>
+<a class="sourceLine" id="cb1-15" title="15"></a>
+<a class="sourceLine" id="cb1-16" title="16"><span class="kw">open</span> <span class="kw">class</span> P {</a>
+<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">g</span>() {}</a>
+<a class="sourceLine" id="cb1-18" title="18">}</a>
+<a class="sourceLine" id="cb1-19" title="19"></a>
+<a class="sourceLine" id="cb1-20" title="20"><span class="kw">class</span> Q : <span class="dt">P</span>() {</a>
+<a class="sourceLine" id="cb1-21" title="21">    <span class="kw">protected</span> <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">g</span>() {}</a>
+<a class="sourceLine" id="cb1-22" title="22">    <span class="co">// this is an error, as protected visibility is</span></a>
+<a class="sourceLine" id="cb1-23" title="23">    <span class="co">//   stronger that public visibility</span></a>
+<a class="sourceLine" id="cb1-24" title="24">    <span class="co">//   from the base declaration</span></a>
+<a class="sourceLine" id="cb1-25" title="25">}</a></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Another example: base class <span class="math inline">\(B\)</span> contains declaration</span></p>
-</div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">open</span> <span class="kw">fun</span> <span class="fu">g</span>() {}</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">Class <span class="math inline">\(C\)</span> is derived from <span class="math inline">\(B\)</span> and contains the following declaration</span></p>
-</div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">override</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">g</span>() {}</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">This makes <code>g</code> <code>public</code> inside <span class="math inline">\(C\)</span>, and, if it was declared as <code>protected</code>, it would be a compiler error.</span></p>
+<p><span class="sentence">Important: platforms may introduce additional cases of both <em>overridability</em> and <em>subsumption</em> of declarations, as well as limit the overriding mechanism due to implementation limitations.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -210,18 +238,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: Kotlin does not have a concept of full shadowing of declarations.</span></p>
 </div>
 </blockquote>
-<div class="paragraph">
-<p><span class="sentence">Platforms may introduce additional cases of both <em>overridability</em> and <em>subsumption</em> of declarations, as well as limit the overriding mechanism due to internal representation limitations.</span></p>
-</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but does not subsume it, it is neither a compiler error nor an overriding declaration. </span><span class="sentence">In this case these two declarations just follow the normal rules of [function overloading][Overloading resolution].</span></p>
+<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of <a href="overload-resolution.html#overload-resolution">function overloading</a>.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
-</div>
-</div>
 </body>
 </html>

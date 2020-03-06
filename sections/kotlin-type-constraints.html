@@ -112,23 +112,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
+
+
+
+
+
 <h2 id="kotlin-type-constraints">Kotlin type constraints</h2>
 <div class="paragraph">
-<p><span class="sentence">Some complex tasks that need to be solved when compiling Kotlin code are formulated best using <em>constraint systems</em> on Kotlin types. </span><span class="sentence">These are solved using constraint solvers.</span></p>
+<p><span class="sentence">Some complex tasks that need to be solved when compiling Kotlin code are formulated best using <em>constraint systems</em> over Kotlin types. </span><span class="sentence">These are solved using constraint solvers.</span></p>
 </div>
 <h3 id="type-constraint-definition">Type constraint definition</h3>
 <div class="paragraph">
-<p><span class="sentence">A <em>type constraint</em> in general is an inequation of the following form: <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> are Kotlin types (see <a href="type-system.html#type-system">type system</a>). </span><span class="sentence">It is important, however, that Kotlin has parameterized types and type parameters of <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> (or type parameters of their parameters, or <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> themselves) may be <em>type variables</em>, that are unknown types that may be substituted by any other type in Kotlin.</span></p>
+<p><span class="sentence">A <em>type constraint</em> in general is an inequation of the following form: <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> are <a href="type-system.html#type-system">concrete Kotlin types</a>. </span><span class="sentence">As Kotlin has <a href="type-system.html#parameterized-classifier-types">parameterized types</a>, <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> may be <em>free type variables</em>: unknown types which may be substituted by any other type in Kotlin.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Please note that, in general, type variables of the constraint system are not the same as type parameters of a type or a callable. </span><span class="sentence">Some type parameters may be <em>bound</em> in the constraint system, meaning that, although they are not known yet in Kotlin code, they are not type variables and are not to be substituted.</span></p>
+<p><span class="sentence">Please note that, in general, not all type parameters are considered as free type variables in a constraint system. </span><span class="sentence">Some type variables may be <em>fixed</em> in a constraint system; for example, type parameters of a parameterized class <em>inside</em> its body are not concrete types, but are not free type variables either. </span><span class="sentence">A fixed type variable describes an unknown, but fixed type which is not to be substituted.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">When such an ambiguity arises, we will use the notation <span class="math inline">\(T_i\)</span> for a type variable and <span class="math inline">\(\tilde{T_i}\)</span> for a bound type parameter. </span><span class="sentence">The main difference between bound parameters and concrete types is that different concrete types may not be equal, but a bound parameter may be equal to another bound parameter or a concrete type.</span></p>
+<p><span class="sentence">We will use the notation <span class="math inline">\(T_i\)</span> for a type variable and <span class="math inline">\(\tilde{T_i}\)</span> for a fixed type variable. </span><span class="sentence">The main difference between fixed type variables and concrete types is that different concrete types may not be equal, but a fixed type variable may be equal to another fixed type variable or a concrete type.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Several examples of valid type constraints:</span></p>
+<p><span class="sentence">Examples of valid type constraints:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}\widetilde{X}\texttt{&gt;} &lt;: Y\)</span></span></li>
@@ -137,18 +143,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Every constraint system has implicit constraints <span class="math inline">\(\texttt{Any} &lt;: T_j\)</span> and <span class="math inline">\(T_j &lt;: \texttt{Nothing?}\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in constraint, including type variables.</span></p>
+<p><span class="sentence">Every constraint system has general implicit constraints <span class="math inline">\(T_j &lt;: \operatorname{\texttt{kotlin.Any?}}\)</span> and <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}&lt;: T_j\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in the system, including type variables.</span></p>
 </div>
 <h3 id="type-constraint-solving">Type constraint solving</h3>
 <div class="paragraph">
-<p><span class="sentence">There are two tasks that a type constraint solver may perform: checking constraint system for soundness and solving the system, e.g. inferring viable values for all the type variables that have themselves no type variables in them.</span></p>
+<p><span class="sentence">There are two tasks which a type constraint solver may perform: <a href="kotlin-type-constraints.html#checking-constraint-system-soundness">checking constraint system for soundness</a>, i.e., if a solution exists, and <a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution">solving constraint system</a>, i.e., inferring a satisfying substitution of concrete types for all free type variables.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Checking a constraint system for soundness can be viewed as a simpler case of solving a constraint, as if there is a solution, then the system is sound. </span><span class="sentence">It is, however, a much simpler task with only two possible outcomes. </span><span class="sentence">Solving a constraint system, on the other hand, may have several different results as there may be several valid solutions.</span></p>
+<p><span class="sentence">Checking a constraint system for soundness can be viewed as a much simpler case of solving that constraint system: if there is a solution, the system is sound, meaning there are only two possible outcomes. </span><span class="sentence">Solving a constraint system, on the other hand, may have multiple possible outcomes, as there may be multiple valid solutions.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Constraint examples that are sound yet no relevant solutions exist:</span></p>
+<p><span class="sentence">Example: constraint systems which are sound yet no relevant solutions exist.</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(X &lt;: Y\)</span></span></li>
@@ -161,16 +167,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO()</span></p>
 </div>
 </div>
-<h4 id="finding-optimal-solution">Finding optimal solution</h4>
+<h4 id="finding-optimal-constraint-system-solution">Finding optimal constraint system solution</h4>
 <div class="paragraph">
-<p><span class="sentence">As any constraint system may have several valid solutions, finding one that is “optimal” in some sense is not possible in general, because the notion of the best solution for a task depends on a particular use-case. </span><span class="sentence">To solve this problem, the constraint system allows two additional types of constraints:</span></p>
+<p><span class="sentence">As any constraint system may have multiple valid solutions, finding one which is “optimal” in some sense is not possible in general, because the notion of the best solution for a task depends on the said task. </span><span class="sentence">To deal with this, a constraint system allows two additional types of constraints:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A pull-up constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\uparrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the least one according to subtyping relation;</span></li>
-<li><span class="sentence">A push-down constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\downarrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the biggest one according to subtyping relation.</span></li>
+<li><span class="sentence">A <em>pull-up</em> constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\uparrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the largest one according to <a href="type-system.html#subtyping">subtyping relation</a>;</span></li>
+<li><span class="sentence">A <em>push-down</em> constraint for type variable <span class="math inline">\(T\)</span>, denoted <span class="math inline">\(\downarrow T\)</span>, signifying that when finding a substitution for this variable, the optimal solution is the smallest one according to <a href="type-system.html#subtyping">subtyping relation</a>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If a variable have no constraints of these two kinds associated with it, it is assumed to have a pull-up constraint, that is, in an ambigious situation, the biggest possible type is chosen.</span></p>
+<p><span class="sentence">If a variable has no constraints of these kinds associated with it, it is assumed to have a pull-up implicit constraint.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
@@ -179,10 +185,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="the-relations-on-types-as-constraints">The relations on types as constraints</h4>
 <div class="paragraph">
-<p><span class="sentence">In the other chapters (see <a href="control--and-data-flow-analysis.html#expressions-1">expressions</a> and <a href="control--and-data-flow-analysis.html#statements-1">statements</a> for example) the relations between types may be expressed using the type operations found in the <a href="type-system.html#type-system">type system section</a> of this document. </span><span class="sentence">Not all of these relations are easily converted into their constraint form.</span></p>
+<p><span class="sentence">In other sections (for example, <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> and <a href="control--and-data-flow-analysis.html#statements-1">Statements</a>) the relations between types may be expressed using the type operations found in the <a href="type-system.html#type-system">type system section</a> of this document.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The greatest lower bound of two types is converted directly, as the greatest lower bound is always an intersection type. </span><span class="sentence">The least upper bound, however, is a little bit tricky. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is defined to be the least upper bound of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> with all these types being either known, unknown or containing type variables, the following constraints are produced:</span></p>
+<p><span class="sentence">The <a href="type-system.html#greatest-lower-bound">greatest lower bound</a> of two types is converted directly as-is, as the greatest lower bound is always an intersection type.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The <a href="type-system.html#least-upper-bound">least upper bound</a> of two types is converted as follows. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is defined to be the least upper bound of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, the following constraints are produced:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(A &lt;: T\)</span></span></li>
@@ -193,19 +202,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Example:<br />
-Let’s assume we have the following code:</span></p>
+<p><span class="sentence">Important: the results of finding GLB or LUB via a constraint system may be different from the results of finding them via a normalization procedure (i.e., imprecise); however, they are sound w.r.t. bound, meaning a constraint system GLB is still a lower bound and a constraint system LUB is still an upper bound.</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">e</span> = <span class="cf">if</span>(c) a <span class="cf">else</span> b</a></code></pre></div>
+</blockquote>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with types completely unknown (having no other type constraints besides the implicit ones). </span><span class="sentence">Let’s assume the type variables generated for them to be <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively and the type variable for <code>e</code> being <span class="math inline">\(E\)</span>. </span><span class="sentence">This, according to <a href="expressions.html#conditional-expression">the conditional expression chapter</a>, produces the following relations:</span></p>
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Let’s assume we have the following code:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">e</span> = <span class="cf">if</span> (c) a <span class="cf">else</span> b</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>a</code>, <code>b</code>, <code>c</code> are some expressions with unknown types (having no other type constraints besides the implicit ones).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Assume the type variables generated for them are <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> respectively, the type variable for <code>e</code> is <span class="math inline">\(E\)</span>. </span><span class="sentence">According to <a href="expressions.html#conditional-expression">the conditional expression rules</a>, this produces the following relations:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
 <li><span class="sentence"><span class="math inline">\(E = \operatorname{\text{LUB}}(A, B)\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">These, in turn, produce the following constraints (here we omit the implicit relations of all type variables with <code>kotlin.Any?</code> and <code>kotlin.Nothing</code>):</span></p>
+<p><span class="sentence">These, in turn, produce the following explicit constraints:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(C &lt;: \texttt{kotlin.Boolean}\)</span></span></li>
@@ -216,29 +235,14 @@ Let’s assume we have the following code:</span></p>
 <li><span class="sentence"><span class="math inline">\(\uparrow B\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Which, according to the semantics of additional constraints (and the default pull-up constraint for <span class="math inline">\(C\)</span>), produce the following solution:</span></p>
+<p><span class="sentence">which, w.r.t. general and pull-up implicit constraints, produce the following solution:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><span class="math inline">\(C \rightarrow \texttt{kotlin.Boolean}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(A \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(B \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(E \rightarrow \operatorname{\mathtt{kotlin.Any?}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(A \rightarrow \operatorname{\texttt{kotlin.Any?}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(B \rightarrow \operatorname{\texttt{kotlin.Any?}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(E \rightarrow \operatorname{\texttt{kotlin.Any?}}\)</span></span></li>
 </ul>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(prove that these constraints are equivalent to LUB from type system?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(are they actually?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(does that matter?)</span></p>
-</div>
-</div>
 </body>
 </html>
