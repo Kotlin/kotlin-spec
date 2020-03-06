@@ -25,6 +25,8 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
         private const val LOAD_TESTS_TEXT = "Load tests"
         private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
 
+        const val SECTION_PATH_SEPARATOR = ", "
+
         fun insertLoadIcon(headerElement: JQuery) {
             headerElement.append("""
                 <a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="${this.SET_BRANCH_ICON}" /></a></span>
@@ -122,23 +124,29 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                 sectionsPath: List<String>,
                 paragraphsInfo: List<Map<String, Any>>
         ) {
-            val pathPrefix = "${sectionsPath.joinToString(".")}.$currentSection"
+            val pathPrefix = "${sectionsPath.joinToString(SECTION_PATH_SEPARATOR)}$SECTION_PATH_SEPARATOR$currentSection"
+            val testsScope = mutableMapOf(
+                    TestArea.DIAGNOSTICS to getTestsByTestTypeInfo(responses, TestArea.DIAGNOSTICS),
+                    TestArea.CODEGEN_BOX to getTestsByTestTypeInfo(responses, TestArea.CODEGEN_BOX))
+            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, testsScope, pathPrefix)
+        }
+
+        /**
+         * @param responses
+         * @param testArea diagnostics or box type
+         *
+         * @return Map of tests depends on the testType
+         */
+        private fun getTestsByTestTypeInfo(responses: Array<out Map<String, Any>>, testArea: TestArea): MutableMap<String, Any> {
             val tests = mutableMapOf<String, Any>()
-
             responses.forEach { response ->
-                val objectPath = response["path"]?.toString() ?: return@forEach
-                val parsedTest = response["content"]?.let {
-                    if (response.contains("testInfo")) {
-                        SpecTestsParser.getInfoForImplementationTest(response)
-                    } else {
-                        SpecTestsParser.parseSpecTest(it.toString())
-                    }
+                val objectPath = response[testArea.contentPath]?.toString() ?: return@forEach
+                val parsedTest = response[testArea.content]?.let {
+                    SpecTestsParser.parseSpecTest(response, testArea)
                 } ?: return@forEach
-
                 setValueByObjectPath(tests, parsedTest, objectPath)
             }
-
-            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, tests, pathPrefix)
+            return tests
         }
 
         fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")

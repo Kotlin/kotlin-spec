@@ -1,5 +1,6 @@
 package org.jetbrains.kotlin.spec.utils
 
+import org.jetbrains.kotlin.spec.tests.SpecTestsLoader.Companion.SECTION_PATH_SEPARATOR
 import org.w3c.dom.Location
 
 fun String.format(vararg args: Any): String {
@@ -29,7 +30,7 @@ fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: Stri
     soughtForObj[pathComponents.last()] = value
 }
 
-fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.split("."))
+fun <T> getValueByObjectPath(obj: Map<String, Any>, path: String): T? = getValueByObjectPath(obj, path.replace(SECTION_PATH_SEPARATOR, ".").split("."))
 
 fun <T> getValueByObjectPath(obj: Map<String, Any>, path: List<String>): T? {
     var soughtForObj = obj
