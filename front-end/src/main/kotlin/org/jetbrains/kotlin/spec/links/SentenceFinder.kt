@@ -19,7 +19,7 @@ object SentenceFinder {
             findSentence(`$`(".spec-location-search input[name=\"spec-sentence-location\"]").`val`().toString())
 
     private fun findSentence(place: String) {
-        val specPlaceComponents = getSentenceInfoFromSearchField(place)
+        val specPlaceComponents = getSentenceInfoFromSearchField(place.trimEnd())
 
         if (specPlaceComponents.sentenceNumber != null) {
             highlightSentence(specPlaceComponents)
