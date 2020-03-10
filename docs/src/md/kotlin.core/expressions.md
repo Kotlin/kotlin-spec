@@ -17,8 +17,6 @@ An expression is used as a statement if it is encountered in any position where 
 
 Some expressions are only allowed to be used as statements, if certain restrictions are met; this may affect the semantics, the compile-time type information or/and the safety of these expressions.
 
-TODO(strong/soft keywords?)
-
 ### Constant literals
 
 Constant literals are expressions which describe constant values.

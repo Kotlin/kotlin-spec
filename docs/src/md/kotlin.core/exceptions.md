@@ -1,7 +1,5 @@
 ## Exceptions
 
-TODO(This is a stub)
-
 An *exception* type declaration is any type declaration that meets the following criteria:
 
 - It is a [class or object declaration][Classifier declaration];
