@@ -166,6 +166,12 @@ TODO(Anything else?)
 
 * `kotlin.DslMarker`
 
+  `kotlin.DslMarker` is an annotation class with no fields that is applicable only to other annotation classes.
+  An annotation class annotated with `kotlin.DslMarker` is marked as a marker of a specific DSL (domain-specific language).
+  Any type annotated with such a marker is said to belong to that specific DSL.
+  This affects [overload resolution][Overload resolution] in the following way: no two implicit receivers with types belonging to the same DSL are available in the same scope.
+  See [overload resolution section][Overload resolution] for details.
+  
   TODO(sync with receivers???)
 
 * `kotlin.PublishedApi`

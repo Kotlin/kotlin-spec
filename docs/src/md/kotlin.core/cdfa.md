@@ -787,12 +787,24 @@ val a = b
 val a by b
 ```
 
-```diagram
-+-------+------+
-|              |
-|     TODO     |
-|              |
-+-------+------+
+```diagram      
+         +
+         |
+         v
++~~~~~~~~+~~~~~~~~+
+:                 :
+:   $1 = eval b   :
+:                 :
++~~~~~~~~+~~~~~~~~+
+         |
+         v
+  +------+-------+
+  |              |
+  |    a = $1    |
+  |              |
+  +------+-------+
+         |
+         v
 ```
 
 ```kotlin
@@ -800,11 +812,14 @@ fun f() { body... }
 ```
 
 ```diagram
-+-------+------+
-|              |
-|     TODO     |
-|              |
-+-------+------+
+          +
+          |
+          v
++~~~~~~~~~+~~~~~~~~~~+
+:                    :
+:   $1 = eval body   :
+:                    :
++~~~~~~~~~~~~~~~~~~~~+
 ```
 
 ```kotlin
@@ -949,8 +964,6 @@ Every direct assignment of a property changes the value for this property to $\A
 The results of the analysis are interpreted as follows. 
 For every property, any usage of the said property in any statement is a compile-time error unless the abstract state of this property at this statement is $\Assigned$.
 For every immutable property (declared using `val` keyword), any assignment to this property is a compile-time error unless the abstract state of this property is $\Unassigned$.
-
-TODO(example?)
 
 Let's consider the following example:
 
