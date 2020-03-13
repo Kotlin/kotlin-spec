@@ -243,7 +243,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#linked-scopes">Linked scopes</a></li>
 <li><a href="#identifiers-and-paths">Identifiers and paths</a></li>
 <li><a href="#labels">Labels</a></li>
-<li><a href="#visibility">Visibility</a></li>
 </ul></li>
 <li><a href="#statements">Statements</a><ul>
 <li><a href="#assignments">Assignments</a><ul>
@@ -4533,7 +4532,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="type-contexts-and-scopes">Type contexts and scopes</h3>
 <div class="paragraph">
-<p><span class="sentence">The way types and <a href="#scopes-and-identifiers">scopes</a> interoperate is very similar to how values and scopes work; this includes <a href="#visibility">visibility</a>, accessing types via qualified names or <a href="#importing">imports</a>. </span><span class="sentence">This means, in many cases, type contexts are equivalent to the corresponding scopes. </span><span class="sentence">However, there are several important differences, which we outline below.</span></p>
+<p><span class="sentence">The way types and <a href="#scopes-and-identifiers">scopes</a> interoperate is very similar to how values and scopes work; this includes <a href="#declaration-visibility">visibility</a>, accessing types via qualified names or <a href="#importing">imports</a>. </span><span class="sentence">This means, in many cases, type contexts are equivalent to the corresponding scopes. </span><span class="sentence">However, there are several important differences, which we outline below.</span></p>
 </div>
 <h4 id="inner-and-nested-type-contexts">Inner and nested type contexts</h4>
 <div class="paragraph">
@@ -6333,7 +6332,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="#visibility"><em>visibility modifiers</em></a>.</span></p>
+<p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="#declaration-visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="TODO">
@@ -6693,21 +6692,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(qualified names?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(extensions?)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(receivers)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
 <p><span class="sentence">TODO(rewrite expressions and statements as references to this part)</span></p>
 </div>
 </div>
@@ -6769,31 +6753,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>super&lt;Klazz&gt;@label</code> – an identifier which references the supertype <code>Klazz</code> available in the selected scope, further details are available <a href="#super-forms">here</a></span></li>
 </ul>
 <h3 id="labels">Labels</h3>
+<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">Labels are special syntactic marks that mark certain code elements. </span><span class="sentence">Any <a href="#annotated-and-labeled-expression">expression</a> (including <a href="#lambda-literals">lambda expressions</a>), as well as <a href="#loop-statements">loop statements</a>, can be labeled, with label identifier assigned to the corresponding entity. </span><span class="sentence">Labels can be <strong>redeclared</strong>, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times. </span><span class="sentence">Labels are <strong>scoped</strong>, meaning that they are only available in the scope they were declared in.</span></p>
+<p><span class="sentence">TODO(This is a stub)</span></p>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Labels are used by certain expressions, such as <a href="#break-expression"><code>break</code></a>, <a href="#continue-expression"><code>continue</code></a> and <a href="#return-expressions"><code>return</code></a> to specify exactly what entity the expression corresponds to. </span><span class="sentence">Please refer to the corresponding sections for details.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">When resolving labels (i.e. determining which label current expression refers to) which have been redeclared, the <strong>closest</strong> label is chosen, i.e. the label with the innermost scope which is syntactically the closest to the point of its usage.</span></p>
+<p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence">Any <a href="#annotated-and-labeled-expression">expression</a> or <a href="#statements-1">statement</a> (including <a href="#lambda-literals">lambda expressions</a>) and <a href="#loop-statements">loop statements</a> can be labeled, with label identifier associated with the corresponding entity.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: this is a stub</span></p>
-</div>
-</div>
-<h3 id="visibility">Visibility</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: remove this? </span><span class="sentence">See <a href="#declaration-visibility">Declaration visibility</a></span></p>
+<p><span class="sentence">TODO([Kotlin 1.4] Labels are allowed only on lambdas and loops)</span></p>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Any entity declared in a declaration scope has an implicitly or explicitly defined <em>visibility</em>. </span><span class="sentence">The visibility of a declaration denotes whether the entity is <em>accessible</em> in other scopes of the program. </span><span class="sentence">If the entity declared in scope <code>A</code> is not accessible in scope <code>B</code>, it cannot be referred to in that scope, making such reference a compiler error. </span><span class="sentence">There are four basic types of visibility in kotlin: <code>public</code>, <code>private</code>, <code>internal</code> and <code>protected</code>, denoted by the corresponding visibility modifier keywords.</span></p>
+<p><span class="sentence">Labels can be <em>redeclared</em>, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times. </span><span class="sentence">Labels are *scoped, meaning that they are only available in the scope they were declared in.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Entities that have <code>public</code> visibility are generally accessible anywhere outside or inside the scope they are declared in, by using imports or qualification when necessary. </span><span class="sentence">Entities that have <code>private</code> visibility are only accessible inside the scope they are declared in or any nested scopes. </span><span class="sentence">For top-level scopes (i.e. kotlin files) it means that such entities are only accessible in the same file. </span><span class="sentence">Entities with <code>internal</code> visibility are accessible inside the same <a href="#modules">module</a> just like if the visibility was <code>public</code> and are inaccessible (as if the visibility was <code>private</code>) in any other scope. </span><span class="sentence">Entities with <code>protected</code> visibility are only allowed in the body scope of class declarations and are used as a means of encapsulation: such entities are accessible inside any scope as if the visibility was <code>private</code>, but are also accessible by any derived classes’ scopes as if they were declared <code>private</code> in the body scope of the derived class.</span></p>
+<p><span class="sentence">Labels are used by certain expressions, such as <a href="#break-expression"><code>break</code></a>, <a href="#continue-expression"><code>continue</code></a> and <a href="#return-expressions"><code>return</code></a>, to specify exactly what entity the expression corresponds to. </span><span class="sentence">Please refer to the corresponding sections for details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When resolving labels (determining which label an expression refers to), the <em>closest</em> label with the matching identifier is chosen, i.e., a label in an innermost scope syntactically closest to the point of its use.</span></p>
 </div>
 <h2 id="statements">Statements</h2>
 <div class="TODO">
@@ -9218,7 +9198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h3 id="importing">Importing</h3>
 <div class="paragraph">
-<p><span class="sentence">Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being <a href="#modules">module</a> boundaries and <a href="#visibility">visibility</a> constraints. </span><span class="sentence">In order to use an entity from a file belonging to a different package, the programmer must use <em>import directives</em>.</span></p>
+<p><span class="sentence">Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being <a href="#modules">module</a> boundaries and <a href="#declaration-visibility">visibility</a> constraints. </span><span class="sentence">In order to use an entity from a file belonging to a different package, the programmer must use <em>import directives</em>.</span></p>
 </div>
 <div id="grammar-rule-importList-pasted-92" class="grammar-rule">
 <dl>
@@ -9283,7 +9263,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Importing certain entities may be disallowed by their <a href="#visibility">visibility modifiers</a>.</span></p>
+<p><span class="sentence">Importing certain entities may be disallowed by their <a href="#declaration-visibility">visibility modifiers</a>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
