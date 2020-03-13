@@ -69,12 +69,6 @@ Examples:
   val x = 3
   ```
 
-TODO(qualified names?)
-
-TODO(extensions?)
-
-TODO(receivers)
-
 TODO(rewrite expressions and statements as references to this part)
 
 TODO(identifier lifetime & such)
@@ -123,30 +117,17 @@ Besides identifiers which are introduced by the developer (e.g., via declaring c
 
 ### Labels
 
-Labels are special syntactic marks that mark certain code elements.
-Any [expression][Annotated and labeled expression] (including [lambda expressions][Lambda literals]), as well as [loop statements][Loop statements], can be labeled, with label identifier assigned to the corresponding entity.
-Labels can be **redeclared**, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
-Labels are **scoped**, meaning that they are only available in the scope they were declared in.
+TODO(This is a stub)
 
-Labels are used by certain expressions, such as [`break`][Break expression], [`continue`][Continue expression] and
-[`return`][Return expressions] to specify exactly what entity the expression corresponds to.
+Labels are special syntactic marks which allow one to reference certain code fragments or elements.
+Any [expression][Annotated and labeled expression] or [statement][Statements] (including [lambda expressions][Lambda literals]) and [loop statements][Loop statements] can be labeled, with label identifier associated with the corresponding entity.
+
+TODO([Kotlin 1.4] Labels are allowed only on lambdas and loops)
+
+Labels can be *redeclared*, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
+Labels are *scoped, meaning that they are only available in the scope they were declared in.
+
+Labels are used by certain expressions, such as [`break`][Break expression], [`continue`][Continue expression] and [`return`][Return expressions], to specify exactly what entity the expression corresponds to.
 Please refer to the corresponding sections for details.
 
-When resolving labels (i.e. determining which label current expression refers to) which have been redeclared, the **closest** label is chosen, i.e. the label with the innermost scope which is syntactically the closest to the point of its usage.
-
-TODO: this is a stub
-
-### Visibility
-
-TODO: remove this? See [Declaration visibility]
-
-Any entity declared in a declaration scope has an implicitly or explicitly defined *visibility*.
-The visibility of a declaration denotes whether the entity is *accessible* in other scopes of the program.
-If the entity declared in scope `A` is not accessible in scope `B`, it cannot be referred to in that scope, making such reference a compiler error.
-There are four basic types of visibility in kotlin: `public`, `private`, `internal` and `protected`, denoted by the corresponding visibility modifier keywords.
-
-Entities that have `public` visibility are generally accessible anywhere outside or inside the scope they are declared in, by using imports or qualification when necessary.
-Entities that have `private` visibility are only accessible inside the scope they are declared in or any nested scopes. 
-For top-level scopes (i.e. kotlin files) it means that such entities are only accessible in the same file.
-Entities with `internal` visibility are accessible inside the same [module][Modules] just like if the visibility was `public` and are inaccessible (as if the visibility was `private`) in any other scope.
-Entities with `protected` visibility are only allowed in the body scope of class declarations and are used as a means of encapsulation: such entities are accessible inside any scope as if the visibility was `private`, but are also accessible by any derived classes' scopes as if they were declared `private` in the body scope of the derived class.
+When resolving labels (determining which label an expression refers to), the *closest* label with the matching identifier is chosen, i.e., a label in an innermost scope syntactically closest to the point of its use.
