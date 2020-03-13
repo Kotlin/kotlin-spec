@@ -801,7 +801,7 @@ Moreover, as union types are *not* used in Kotlin, the compiler always *decays* 
 
 ### Type contexts and scopes
 
-The way types and [scopes][Scopes and identifiers] interoperate is very similar to how values and scopes work; this includes [visibility][Visibility], accessing types via qualified names or [imports][Importing].
+The way types and [scopes][Scopes and identifiers] interoperate is very similar to how values and scopes work; this includes [visibility][Declaration visibility], accessing types via qualified names or [imports][Importing].
 This means, in many cases, type contexts are equivalent to the corresponding scopes.
 However, there are several important differences, which we outline below.
 

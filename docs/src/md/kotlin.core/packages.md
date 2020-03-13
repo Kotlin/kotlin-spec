@@ -20,7 +20,7 @@ Unlike Java and some other languages, Kotlin does not restrict the package hiera
 
 ### Importing
 
-Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being [module][Modules] boundaries and [visibility][Visibility] constraints.
+Program entities declared in one package may be freely used in any file in the same package with the only two restrictions being [module][Modules] boundaries and [visibility][Declaration visibility] constraints.
 In order to use an entity from a file belonging to a different package, the programmer must use *import directives*.
 
 :::{.paste target=grammar-rule-importList}
@@ -63,7 +63,7 @@ Platform implementations may introduce additional implicitly imported packages, 
 
 > Note: an example of this would be `java.lang` package implicitly imported on the JVM platform
 
-Importing certain entities may be disallowed by their [visibility modifiers][Visibility].
+Importing certain entities may be disallowed by their [visibility modifiers][Declaration visibility].
 
 TODO(Clarify all this)
 
