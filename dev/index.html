@@ -11068,6 +11068,7 @@ P_2 \times N_2
 </div>
 <ul>
 <li><span class="sentence"><a href="#built-in-integer-types-1">Integer types</a>;</span></li>
+<li><span class="sentence">[Enum types][Enum class declarations];</span></li>
 <li><span class="sentence"><a href="#kotlin.string">String type</a>;</span></li>
 <li><span class="sentence">Other annotation types;</span></li>
 <li><span class="sentence"><a href="#array-types">Arrays</a> of any type listed above.</span></li>
@@ -11128,20 +11129,68 @@ P_2 \times N_2
 <h3 id="built-in-annotations">Built-in annotations</h3>
 <ul>
 <li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Retention</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Retention</code> is an annotation that is only used in annotation classes to specify annotation retention. </span><span class="sentence">It has the following single field:</span></p>
+</div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">val</span> <span class="va">value</span>: AnnotationRetention = AnnotationRetention.RUNTIME</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.AnnotationRetention</code> is an enum class with the following values (see <a href="#annotation-targets">annotation targets section</a> for details):</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>SOURCE</code>;</span></li>
+<li><span class="sentence"><code>BINARY</code>;</span></li>
+<li><span class="sentence"><code>RUNTIME</code>.</span></li>
+</ul></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Target</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Target</code> is an annotation that is only used in annotation classes to specify targets this annotation is valid for. </span><span class="sentence">It has the following single field:</span></p>
+</div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb102-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span>: AnnotationTarget</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.AnnotationTarget</code> is an enum class with the following values (see <a href="#annotation-retention">annotation retention section</a> for details):</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>CLASS</code>;</span></li>
+<li><span class="sentence"><code>ANNOTATION_CLASS</code>;</span></li>
+<li><span class="sentence"><code>TYPE_PARAMETER</code>;</span></li>
+<li><span class="sentence"><code>PROPERTY</code>;</span></li>
+<li><span class="sentence"><code>FIELD</code>;</span></li>
+<li><span class="sentence"><code>LOCAL_VARIABLE</code>;</span></li>
+<li><span class="sentence"><code>VALUE_PARAMETER</code>;</span></li>
+<li><span class="sentence"><code>CONSTRUCTOR</code>;</span></li>
+<li><span class="sentence"><code>FUNCTION</code>;</span></li>
+<li><span class="sentence"><code>PROPERTY_GETTER</code>;</span></li>
+<li><span class="sentence"><code>PROPERTY_SETTER</code>;</span></li>
+<li><span class="sentence"><code>TYPE</code>;</span></li>
+<li><span class="sentence"><code>EXPRESSION</code>;</span></li>
+<li><span class="sentence"><code>FILE</code>;</span></li>
+<li><span class="sentence"><code>TYPEALIAS</code>.</span></li>
+</ul></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Repeatable</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.annotation.Repeatable</code> is an annotation that is only used in annotation classes to specify whether this particular annotation is repeatable. </span><span class="sentence">Annotations are non-repeatable by default.</span></p>
+</div></li>
+<li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.Experimental</code> / <code>kotlin.UseExperimental</code></span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Experimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb101"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb101-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
+<li><div class="sourceCode" id="cb103"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb103-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
 <span class="sentence">The severity level of the experimental status with two values: <code>Level.WARNING</code> and <code>Level.ERROR</code></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features. </span><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb102"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb102-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
+<li><div class="sourceCode" id="cb104"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb104-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
 <span class="sentence">The classes this annotation is allowing to use</span></li>
 </ul>
 <div class="paragraph">
@@ -11162,15 +11211,15 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb103"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb103-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb105"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb105-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The message supporting the deprecation</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb104"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb104-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<li><div class="sourceCode" id="cb106"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb106-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional replacement for deprecated code</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb105"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb105-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
+<li><div class="sourceCode" id="cb107"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb107-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The deprecation level</span></p>
 </div></li>
@@ -11179,11 +11228,11 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb106"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb106-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb108"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb108-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The replacement code</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb107"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb107-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb109"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb109-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The array of imports needed for the replacement code to work correctly</span></p>
 </div></li>
@@ -11205,7 +11254,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb108"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb108-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb110"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb110-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
 <span class="sentence">The names of features this annotation is suppressing</span></li>
 </ul>
 <div class="paragraph">
@@ -11218,7 +11267,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb109"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb109-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb111"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb111-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
 <span class="sentence">The version of Kotlin language</span></li>
 </ul>
 <div class="paragraph">
