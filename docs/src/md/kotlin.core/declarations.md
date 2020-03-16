@@ -826,7 +826,7 @@ If type alias is parameterized, its type parameters must be [unbounded][Type par
 Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
 At the moment, Kotlin supports only top-level type aliases. 
-The scope where it is accessible is defined by its [*visibility modifiers*][Visibility].
+The scope where it is accessible is defined by its [*visibility modifiers*][Declaration visibility].
 
 ### Declarations with type parameters
 
