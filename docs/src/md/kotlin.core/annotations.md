@@ -10,6 +10,7 @@ An annotation value is a value of a special [annotation type][Annotation declara
 An annotation type is a special kind of class type which is allowed to include properties of the following types:
 
 - [Integer types][Built-in integer types];
+- [Enum types][Enum class declarations];
 - [String type][`kotlin.String`];
 - Other annotation types;
 - [Arrays][Array types] of any type listed above.
@@ -61,6 +62,51 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
 TODO(Anything else?)
 
 ### Built-in annotations
+
+* `kotlin.annotation.Retention`
+
+  `kotlin.annotation.Retention` is an annotation that is only used in annotation classes to specify annotation retention.
+  It has the following single field:
+  ```kotlin
+  val value: AnnotationRetention = AnnotationRetention.RUNTIME
+  ```
+  
+  `kotlin.annotation.AnnotationRetention` is an enum class with the following values (see [annotation targets section][Annotation targets] for details):
+  
+  * `SOURCE`;
+  * `BINARY`;
+  * `RUNTIME`.
+
+* `kotlin.annotation.Target`
+
+  `kotlin.annotation.Target` is an annotation that is only used in annotation classes to specify targets this annotation is valid for.
+  It has the following single field:
+  ```kotlin
+  vararg val allowedTargets: AnnotationTarget
+  ```
+  
+  `kotlin.annotation.AnnotationTarget` is an enum class with the following values (see [annotation retention section][Annotation retention] for details):
+  
+  * `CLASS`;
+  * `ANNOTATION_CLASS`;
+  * `TYPE_PARAMETER`;
+  * `PROPERTY`;
+  * `FIELD`;
+  * `LOCAL_VARIABLE`;
+  * `VALUE_PARAMETER`;
+  * `CONSTRUCTOR`;
+  * `FUNCTION`;
+  * `PROPERTY_GETTER`;
+  * `PROPERTY_SETTER`;
+  * `TYPE`;
+  * `EXPRESSION`;
+  * `FILE`;
+  * `TYPEALIAS`.
+
+* `kotlin.annotation.Repeatable`
+
+  `kotlin.annotation.Repeatable` is an annotation that is only used in annotation classes to specify whether this particular annotation is repeatable.
+  Annotations are non-repeatable by default.
 
 * `kotlin.Experimental` / `kotlin.UseExperimental`
 
