@@ -29,7 +29,7 @@ All constant literals are evaluated immediately.
 :::
 
 Keywords `true` and `false` denote boolean literals of the same values.
-These are strong keywords which cannot be used as identifiers unless [escaped][Escaped identifiers].
+These are strong keywords which cannot be used as identifiers unless [escaped](#escaped-identifiers).
 Values `true` and `false` always have the type `kotlin.Boolean`.
 
 #### Integer literals
