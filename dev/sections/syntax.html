@@ -11,6 +11,69 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
   <link rel="stylesheet" href="../resources/css/main.css">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -1202,6 +1265,19 @@
 </dd>
 </dl>
 </div>
+<div id="escaped-identifiers">
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports <em>escaping</em> identifiers by enclosing any sequence of characters into backtick (<code>`</code>) characters, allowing to use any name as an identifier. </span><span class="sentence">This allows not only using non-alphanumeric characters (like <code>@</code> or <code>#</code>) in names, but also using keywords like <code>if</code> or <code>when</code> as identifiers. </span><span class="sentence">Actual set of characters that is allowed to be escaped may, however, be a subject to platform restrictions. </span><span class="sentence">Consult particular platform sections for details.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code>, <code>[</code>, <code>]</code>, <code>.</code></span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Escaped identifiers are treated the same as corresponding non-escaped identifier if it is allowed. </span><span class="sentence">For example, an escaped identifier <code>`foo`</code> and non-escaped identifier <code>foo</code> may be used interchangeably and refer to the same program entity.</span></p>
+</div>
+</div>
 <div id="grammar-rule-IdentifierOrSoftKey" class="grammar-rule">
 <dl>
 <dt><strong><em>IdentifierOrSoftKey</em></strong></dt>
@@ -1255,6 +1331,18 @@
 </dd>
 </dl>
 </div>
+<div class="paragraph">
+<p><span class="sentence">Some of the keywords used in Kotlin are allowed to be used as identifiers even when not escaped. </span><span class="sentence">Such keywords are called <em>soft keywords</em>. </span><span class="sentence">You can see the complete list of soft keyword in the rule above. </span><span class="sentence">All other keywords are considered <em>hard keywords</em> and may only be used as identifiers if escaped.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for example, this is a valid property declaration in Kotlin:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">field</span> = <span class="dv">2</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">even though <code>field</code> is a keyword</span></p>
+</div>
+</blockquote>
 <h5 id="string-mode-grammar">String mode grammar</h5>
 <div id="grammar-rule-QUOTE_OPEN" class="grammar-rule">
 <dl>
