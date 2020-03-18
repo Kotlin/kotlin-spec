@@ -8,6 +8,7 @@ export PROJECT_DIR
 cd ${PROJECT_DIR}/src/md
 
 gpp -H ./index.md | pandoc \
+--syntax-definition=./kotlin.xml \
 --filter ${FILTERS_DIR}/processTodoFilter.sh \
 --filter ${FILTERS_DIR}/markSentencesFilter.sh \
 --filter ${FILTERS_DIR}/copyPasteFilter.sh \
