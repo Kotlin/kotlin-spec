@@ -111,7 +111,7 @@ A *callable* $X$ for the purpose of this section is one of the following:
     - Any of the above named $Y$ at its declaration site, but imported into the current scope using [a renaming import][Importing] as $X$.
 
 For property-like callables, a call $X(Y_0, \ldots, Y_N)$ is an [overloadable operator][Operator overloading] which is expanded to $X\text{.invoke}(Y_0, \ldots, Y_N)$.
-The call may contain type parameters, named parameters, [variable argument parameter expansion][Spread operator] and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
+The call may contain type parameters, named parameters, [variable argument parameter expansion][Spread operator expressions] and trailing lambda parameters, all of which are forwarded as-is to the corresponding `invoke` function.
 
 The set of implicit receivers itself (denoted by [`this`][This-expressions] expression) may also be used as a property-like callable using `this` as the left-hand side of the call expression.
 As with normal property-like callables, $\texttt{this@A}(Y_0, \ldots, Y_N)$ is an overloadable operator which is expanded to $\texttt{this@A.invoke}(Y_0, \ldots, Y_N)$.
@@ -473,7 +473,7 @@ If a callable reference (or several callable references) is itself an argument t
 Assume we have a call `f(::g, b, c)`.
 
 1. For each overload candidate `f`, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate.
-  During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
+    During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
 2. For the most specific candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described [here][Resolving callable references in the presence of an expected type] and the most specific candidate for `::g` is selected.
 
 > Note: this may result in selecting the most specific candidate for `f` which has no available candidates for `::g`, meaning the bidirectional resolution process fails when resolving `::g`.

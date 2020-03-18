@@ -672,6 +672,21 @@
   ~ ([_Letter_](#grammar-rule-Letter) | `'_'`) {[_Letter_](#grammar-rule-Letter) | `'_'` | [_UnicodeDigit_](#grammar-rule-UnicodeDigit)}  
   | ``'`'`` [_QuotedSymbol_](#grammar-rule-QuotedSymbol) {[_QuotedSymbol_](#grammar-rule-QuotedSymbol)} ``'`'``
 :::
+
+:::{ #escaped-identifiers }
+
+Kotlin supports *escaping* identifiers by enclosing any sequence of characters into backtick (``` ` ```) characters, allowing to use any name as an identifier.
+This allows not only using non-alphanumeric characters (like `@` or `#`) in names, but also using keywords like `if` or `when` as identifiers.
+Actual set of characters that is allowed to be escaped may, however, be a subject to platform restrictions.
+Consult particular platform sections for details.
+
+> Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: `(`, `)`, `{`, `}`, `[`, `]`, `.`
+
+Escaped identifiers are treated the same as corresponding non-escaped identifier if it is allowed.
+For example, an escaped identifier ``` `foo` ``` and non-escaped identifier `foo` may be used interchangeably and refer to the same program entity.
+
+:::
+
 :::{ .grammar-rule #grammar-rule-IdentifierOrSoftKey }
 **_IdentifierOrSoftKey_**  
   ~ [_Identifier_](#grammar-rule-Identifier)  
@@ -722,6 +737,19 @@
   | [_CONST_](#grammar-rule-CONST)  
   | [_SUSPEND_](#grammar-rule-SUSPEND)
 :::
+
+Some of the keywords used in Kotlin are allowed to be used as identifiers even when not escaped.
+Such keywords are called *soft keywords*.
+You can see the complete list of soft keyword in the rule above.
+All other keywords are considered *hard keywords* and may only be used as identifiers if escaped.
+
+> Note: for example, this is a valid property declaration in Kotlin:
+>
+> ```kotlin
+> val field = 2
+> ```
+>
+> even though `field` is a keyword
 
 ##### String mode grammar
 

@@ -262,7 +262,7 @@ It provides the following member function:
 
 `public operator fun compareTo(other: T): Int`
 
-This function is used to implement [comparison operators][Comparison expressions] through [overloadable operator convention][Overloadable operators] for standard library classes.
+This function is used to implement [comparison operators][Comparison expressions] through [overloadable operator convention][Operator overloading] for standard library classes.
 
 > Note: a type is not required to be a subtype of `kotlin.Comparable` in order to implement total ordering operations
 
