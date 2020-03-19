@@ -30,7 +30,7 @@ In order to use an entity from a file belonging to a different package, the prog
 :::
 
 An import directive contains [a simple or a qualified path][Identifiers and paths], with the name of an imported entity as its last component.
-A path may include not only a package, but also an [object][Classifier declaration] or a type, in which case it refers to the [companion object][Companion object declaration] of that type.
+A path may include not only a package, but also an [object][Classifier declaration] or a type, in which case it refers to the [companion object][Class declaration] of that type.
 The last component may reference any named declaration within that scope (that is, top-level scope of all files in the package or an object declaration scope) may be imported using their names.
 
 There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the `as` operator.
@@ -74,4 +74,18 @@ TODO(Availability declaration from current package)
 
 ### Modules
 
-TODO(Here be THE DRAGONS)
+TODO(This is a stub)
+
+A module is a concept on the boundary between the code itself and the resulting application, thus it depends on and influences both of them.
+A Kotlin module is a set of Kotlin files which are considered to be interdependent and must be handled together during compilation.
+
+In a simple case, a module is a set of files compiled at the same time in a given project.
+
+* A set of files being compiled with a single Kotlin compiler invocation
+* A Maven module
+* A Gradle project
+
+In a more complicated case involving multi-platform projects, a module may be distributed across several compilations, projects and/or platforms.
+
+For the purposes of Kotlin/Core, modules are important for [`internal` visibility][Declaration visibility].
+How modules influence particular platforms is described in their respective sections of this specification.
