@@ -27,6 +27,9 @@ Implicit receivers are available in a syntactic scope according to the following
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
 - If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
 
+> Important: a phantom static implicit `this` is a special receiver, which is included in the receiver chain for the purposes of handling static functions from [enum classes][Enum class declaration].
+> It may also be used on platforms to handle their static-like entities, e.g., static methods on JVM platform.
+
 The available receivers are prioritized in the following way:
 
 - Receivers provided in the most inner scope have higher priority as ordered w.r.t. [link relation][Linked scopes];
