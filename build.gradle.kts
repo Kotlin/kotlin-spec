@@ -64,6 +64,14 @@ tasks.create<Copy>("buildWeb") {
     finalizedBy("front-end:clean", "docs:clean")
 }
 
+tasks.create<Copy>("buildWebFast") {
+    group = "build"
+
+    dependsOn("docs:buildHtml")
+    dependsOn("copyHtml")
+    dependsOn("buildJs")
+}
+
 tasks.create<Copy>("buildPdf") {
     group = "build"
 
