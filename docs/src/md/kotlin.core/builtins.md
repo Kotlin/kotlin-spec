@@ -271,6 +271,10 @@ This function is used to implement [comparison operators][Comparison expressions
 `kotlin.Function<out R>` is the base classifier type of all [function types][Function types].
 See the relevant section for details.
 
+### Built-in annotation types
+
+Kotlin has a number of built-in [annotation types][Annotations], which are covered in more detail [here][Built-in annotations].
+
 ### Reflection support builtin types
 
 #### `kotlin.reflect.KClass`
