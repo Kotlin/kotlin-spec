@@ -40,6 +40,8 @@ The available receivers are prioritized in the following way:
 
 > Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.
 
+> Important: DSL-specific annotations (marked with [`kotlin.DslMarker`][Built-in annotations] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope. 
+
 The implicit receiver having the highest priority is also called the _default implicit receiver_.
 The default implicit receiver is available in a scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
