@@ -1,7 +1,5 @@
 ## Operator overloading
 
-TODO(This is a stub)
-
 Some syntax forms in Kotlin are *defined by convention*, meaning that their semantics are defined through syntactic expansion of one syntax form into another syntax form.
 
 Particular cases of definition by convention include:
@@ -10,8 +8,7 @@ Particular cases of definition by convention include:
 - `invoke` convention;
 - Operator-form [assignments][Assignments];
 - [For-loop statements][For-loop statement];
-- [Delegated properties][Delegated property declaration];
-- TODO(anything else?)
+- [Delegated properties][Delegated property declaration].
 
 > Important: another case of definition by convention is [safe navigation][Navigation operators], which is covered in more detail in its respective section.
 
@@ -54,17 +51,17 @@ The expression `C[0][0]++` is expanded (see the [Expressions][expressions] secti
 - The operations are expanded in order of their priority (TODO(Where and how to specify this priority?)).
 
 - First, the [increment operator][Postfix increment expression] is expanded, resulting in:
-    
+  
     ```kotlin
     C[0][0] = C[0][0].inc()
     ```
 - Second, the [assignment][Assignments] to an indexing expression (produced by the previous expansion) is expanded, resulting in:
-    
+  
     ```kotlin
     C[0].set(C[0][0].inc())
     ```
 - Third, the [indexing expressions][Indexing expressions] are expanded, resulting in:
-    
+  
     ```kotlin
     C.get(0).set(C.get(0).get(0).inc())
     ```

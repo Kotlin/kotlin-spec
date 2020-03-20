@@ -917,9 +917,31 @@ f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
 
 *Spread operator expression* is a special kind of expression that is only applicable in the context of calling a function with variable-argument parameters.
 For expression `*E` it is required that `E` is of [an array type][Array types] and the expression itself is used as a value argument to a call. 
-This allows passing the array as a *spreaded* value argument, providing the elements of the array as the variable-size argument of a callable.
+This allows passing the array as a *spreaded* value argument, providing the elements of the array as the variable-size argument of a callable. 
+It is allowed to mix spreaded arguments with normal arguments, all fitting into the same variable argument slot, with elements of all spreaded arguments supplied in direct sequence.
+
+For example:
+
+```kotlin
+fun foo(vararg c: String) { ... }
+...
+val a: String = "a"
+val b: Array<String> = arrayOf("b", "c", "d")
+val c: String = "e"
+val d: Array<String> = arrayOf()
+val e: Array<String> = arrayOf("f", "g")
+...
+foo(a, *b, c, *d, *e) 
+// is equivalent to
+foo("a", "b", "c", "d", "e", "f", "g")
+```
+
 Spread operator expressions are not allowed in any other context.
 See [variable length parameter section][Variable length parameters] for details.
+
+The type of a spreaded argument must be a subtype of $\ATS(T)$ for a variable argument parameter of type $T$.
+
+> Note: for example, for a variable parameter `vararg a: Int` the type of corresponding argument being spreaded into its position must be a subtype of `IntArray` and for parameter `vararg b: T` where `T` is a classifier type the argument being spreaded must be a subtype of `Array<out T>`.
 
 ### Function literals
 
