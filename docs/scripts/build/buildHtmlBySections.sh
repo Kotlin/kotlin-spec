@@ -12,7 +12,7 @@ TMP_DIR=${BUILD_DIR}/~tmp
 mkdir -p $TMP_DIR
 
 gpp -H ./index.md \
-| pandoc ${PREAMBLE_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json \
+| pandoc ${PREAMBLE_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json --syntax-definition=./kotlin.xml \
 | bash ${FILTERS_DIR}/processTodoFilter.sh html \
 | bash ${FILTERS_DIR}/markSentencesFilter.sh html \
 | bash ${FILTERS_DIR}/copyPasteFilter.sh html \

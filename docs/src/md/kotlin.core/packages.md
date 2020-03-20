@@ -1,22 +1,21 @@
 ## Packages and imports
 
-Any Kotlin project is structured into **packages**. 
-A package may contain one or more Kotlin files and each file is related to the corresponding package using the *package header*. 
-A file may contain only one (or zero) package headers, meaning that each file belongs to exactly one package.
+A Kotlin project is structured into **packages**.
+A package contains one or more Kotlin files, with files linked to a package using a *package header*.
+A file may contain exactly one or zero package headers, meaning each file belongs to exactly one package.
+
+> Note: an absence of a package header in a file means it belongs to the special *root package*.
 
 :::{.paste target=grammar-rule-packageHeader}
 :::
 
-> Note: an absence of a package header in a file means that is belongs to the special *root package*
+> Note: Packages are orthogonal from [modules][Modules].
+> A module may contain many packages, and a single package can be spread across several modules.
 
-> Note: Packages are different from [modules][Modules].
-> A module may contain many packages, while a single package can be spread across several modules.
+The name of a package is [a simple or a qualified path][Identifiers and paths], which creates a package hierarchy.
 
-The name of a package is a dot (`.`)-separated sequence of identifiers, introducing a package hierarchy. 
-Unlike Java and some other languages, Kotlin does not restrict the package hierarchy to correspond directly to the folder structure of the project.
-
-> Note: this means that the hierarchy itself is only notational, not affecting the code in any way.
-> It is strongly recommended, however, that the folder structure of the project does correspond to the package hierarchy.
+> Note: unlike many other languages, Kotlin packages *do not* require files to have any specific locations w.r.t. itself; the connection between a file and its package is established only via a package header.
+> It is strongly recommended, however, that the folder structure of a project does correspond to the package hierarchy.
 
 ### Importing
 
@@ -30,24 +29,25 @@ In order to use an entity from a file belonging to a different package, the prog
 :::{.paste target=grammar-rule-importAlias}
 :::
 
-An import directive contains dot-separated *path* to an entity, as well as the name of the entity itself (the last argument of the navigation dot operator).
-A path may include not only the package the import is importing from, but also an object or a type (referring to companion object of this type).
-Any named declaration within that scope (that is, top-level scope of all files in the package or, in the object case, the object declaration scope) may be imported using their names.
-There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the use of `as` operator. 
-Star-imports import all the named entities inside the corresponding scope, but have weaker priority during [resolution][Overload resolution] of functions and properties. 
-Renaming imports work just as regular imports, but introduce the entity into current file with a name different from the name it has at declaration site.
+An import directive contains [a simple or a qualified path][Identifiers and paths], with the name of an imported entity as its last component.
+A path may include not only a package, but also an [object][Classifier declaration] or a type, in which case it refers to the [companion object][Class declaration] of that type.
+The last component may reference any named declaration within that scope (that is, top-level scope of all files in the package or an object declaration scope) may be imported using their names.
 
-There are certain limitations for imports from objects: only members of the object may be imported and star-imports are not allowed.
+There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the `as` operator.
+Star-imports import all named entities inside the corresponding scope, but have weaker priority during [overload resolution][Overload resolution] of functions and properties.
+Renaming imports work just like regular imports, but introduce the entity into the current file with the specified name.
+
+Imports from objects have certain limitations: only object members may be imported and star-imports are not allowed.
 
 TODO(statics)
 
-TODO(imports from objects from objects from objects)
+Imports are local to their files, meaning if an entity is introduced into file A.kt from package `foo.bar`, it does not introduce that entity to any other file from package `foo.bar`.
 
-Imports are file-based, meaning that if an entity is introduced into file A.kt belonging to package `kotlinx.foo`, it does not introduce this entity to all other files belonging to `kotlinx.foo`.
+There are some packages which have all their entities *implicitly imported* into any Kotlin file, meaning one can access such entity without explicitly using import directives.
 
-There are some packages that have all their entities *implicitly imported* into any Kotlin file, meaning one can access this entity without explicitly using import directives.
-One may, however, import this entities explicitly if they choose to.
-These are the following packages of the standard library: 
+> Note: one may, however, import these entities explicitly if they choose to do so.
+
+The following packages of the standard library are implicitely imported:
 
 - `kotlin`
 - `kotlin.annotation`
@@ -59,16 +59,33 @@ These are the following packages of the standard library:
 - `kotlin.text`
 - `kotlin.math`
 
-Platform implementations may introduce additional implicitly imported packages, for example, adding standard platform functionality into Kotlin code.
-
-> Note: an example of this would be `java.lang` package implicitly imported on the JVM platform
+> Note: platform implementations may introduce additional implicitly imported packages, for example, to extend Kotlin code with the platform-specific functionality.
+> An example of this would be `java.lang` package implicitly imported on the JVM platform.
 
 Importing certain entities may be disallowed by their [visibility modifiers][Declaration visibility].
 
-TODO(Clarify all this)
+* `public` entities can be imported anywhere
+* `internal` entities can be imported only within the same [module][Modules]
+* `protected` entities cannot be imported
+* top-level `private` entities can be imported within their declaring file
+* other `private` entities cannot be imported
 
 TODO(Availability declaration from current package)
 
 ### Modules
 
-TODO(Here be THE DRAGONS)
+TODO(This is a stub)
+
+A module is a concept on the boundary between the code itself and the resulting application, thus it depends on and influences both of them.
+A Kotlin module is a set of Kotlin files which are considered to be interdependent and must be handled together during compilation.
+
+In a simple case, a module is a set of files compiled at the same time in a given project.
+
+* A set of files being compiled with a single Kotlin compiler invocation
+* A Maven module
+* A Gradle project
+
+In a more complicated case involving multi-platform projects, a module may be distributed across several compilations, projects and/or platforms.
+
+For the purposes of Kotlin/Core, modules are important for [`internal` visibility][Declaration visibility].
+How modules influence particular platforms is described in their respective sections of this specification.
