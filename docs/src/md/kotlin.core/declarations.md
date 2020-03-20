@@ -497,7 +497,7 @@ It is unspecified whether inlining will actually be performed, however.
 
 Declaring a function `inline` has two additional effects:
 
-- It allows type parameters of the function to be declared `reified`, making them [runtime-available][Runtime-available types] and allowing usage of specific expressions involving these parameters, such as [type checks][Type checking expression] and [class literals][Class literal expressions].
+- It allows type parameters of the function to be declared `reified`, making them [runtime-available][Runtime-available types] and allowing usage of specific expressions involving these parameters, such as [type checks][Type-checking expression] and [class literals][Class literals].
   Calling such a function is only allowed in a context where a particular type argument provided for this type parameter is also a runtime-available type.
 - Any parameter of this function of a [function type][Function types] is treated as *inlined* parameter unless it has one of two special modifiers: `crossinline` or `noinline`.
   If a particular argument corresponding to inline parameter is a [lambda literal][Lambda literals], this lambda literal is considered *inlined* and, in particular, affects the way the [return expressions][Return expressions] are handled in its body. See the corresponding section for details.
