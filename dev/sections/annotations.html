@@ -121,7 +121,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h3 id="annotation-values">Annotation values</h3>
 <div class="paragraph">
-<p><span class="sentence">An annotation value is a value of a special <a href="annotations.html#annotation-declarations">annotation type</a>. </span><span class="sentence">An annotation type is a special kind of class type which is allowed to include properties of the following types:</span></p>
+<p><span class="sentence">An annotation value is a value of a special <a href="annotations.html#annotation-declarations">annotation type</a>. </span><span class="sentence">An annotation type is a special kind of class type which is allowed to include read-only properties of the following types:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">Integer types</a>;</span></li>
@@ -131,11 +131,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><a href="type-system.html#array-types">Arrays</a> of any type listed above.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Annotation classes are not allowed to have any member functions, constructors or mutable properties. </span><span class="sentence">They are also not allowed to have base classes and are considered to be implicitly derived from <code>kotlin.Annotation</code>.</span></p>
+<p><span class="sentence">Annotation classes are not allowed to have any member functions, constructors or mutable properties. </span><span class="sentence">They are also not allowed to have declared supertypes and are considered to be implicitly derived from <code>kotlin.Annotation</code>.</span></p>
 </div>
 <h3 id="annotation-retention">Annotation retention</h3>
 <div class="paragraph">
-<p><span class="sentence">The retention level of an annotation declares which compilation artifacts a particular compiler on a particular platform <em>retain</em> this kind of annotation. </span><span class="sentence">There are the following types of retention available:</span></p>
+<p><span class="sentence">The retention level of an annotation declares which compilation artifacts (for a particular compiler on a particular platform) <em>retain</em> this kind of annotation. </span><span class="sentence">There are the following types of retention available:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Source retention (accessible by source-processing tools);</span></li>
@@ -143,16 +143,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">Runtime retention (accessible at runtime).</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
 <p><span class="sentence">Each subsequent level inherits what is accessible on the previous levels.</span></p>
-</div></li>
+</div>
+</blockquote></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">For availability and particular ways of accessing the metadata specified by these annotations please refer to the corresponding platforms’ documentation.</span></p>
+<p><span class="sentence">For availability and particular ways of accessing the metadata specified by these annotations please refer to the corresponding platform-specific documentation.</span></p>
 </div>
 <h3 id="annotation-targets">Annotation targets</h3>
 <div class="paragraph">
-<p><span class="sentence">The <em>targets</em> of a particular type of annotations is the kind of program entity which this annotations may be placed on. </span><span class="sentence">There are the following targets available:</span></p>
+<p><span class="sentence">The <em>target</em> of a particular type of annotations is the kind of program entity which this annotations may be placed on. </span><span class="sentence">There are the following targets available:</span></p>
 </div>
 <ul>
 <li><span class="sentence">A <a href="declarations.html#class-declaration">class declaration</a> (including annotation classes);</span></li>
@@ -189,11 +191,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Retention</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.annotation.Retention</code> is an annotation that is only used in annotation classes to specify annotation retention. </span><span class="sentence">It has the following single field:</span></p>
+<p><span class="sentence"><code>kotlin.annotation.Retention</code> is an annotation which is only used on annotation classes to specify their annotation retention level. </span><span class="sentence">It has the following single field:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">value</span>: AnnotationRetention = AnnotationRetention.RUNTIME</a></code></pre></div>
+<ul>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">value</span>: AnnotationRetention = AnnotationRetention.RUNTIME</a></code></pre></div>
+<span class="sentence">The retention level of the annotated annotation.</span></li>
+</ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.annotation.AnnotationRetention</code> is an enum class with the following values (see <a href="annotations.html#annotation-targets">annotation targets section</a> for details):</span></p>
+<p><span class="sentence"><code>kotlin.annotation.AnnotationRetention</code> is an enum class with the following values (see <a href="annotations.html#annotation-retention">Annotation retention section</a> for details):</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>SOURCE</code>;</span></li>
@@ -204,11 +209,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Target</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.annotation.Target</code> is an annotation that is only used in annotation classes to specify targets this annotation is valid for. </span><span class="sentence">It has the following single field:</span></p>
+<p><span class="sentence"><code>kotlin.annotation.Target</code> is an annotation which is only used on annotation classes to specify targets those annotations are valid for. </span><span class="sentence">It has the following single field:</span></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span>: AnnotationTarget</a></code></pre></div>
+<ul>
+<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span>: AnnotationTarget</a></code></pre></div>
+<span class="sentence">The allowed annotation targets of the annotated annotation.</span></li>
+</ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.annotation.AnnotationTarget</code> is an enum class with the following values (see <a href="annotations.html#annotation-retention">annotation retention section</a> for details):</span></p>
+<p><span class="sentence"><code>kotlin.annotation.AnnotationTarget</code> is an enum class with the following values (see <a href="annotations.html#annotation-targets">Annotation targets section</a> for details):</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>CLASS</code>;</span></li>
@@ -231,7 +239,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Repeatable</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.annotation.Repeatable</code> is an annotation that is only used in annotation classes to specify whether this particular annotation is repeatable. </span><span class="sentence">Annotations are non-repeatable by default.</span></p>
+<p><span class="sentence"><code>kotlin.annotation.Repeatable</code> is an annotation which is only used on annotation classes to specify whether this particular annotation is repeatable. </span><span class="sentence">Annotations are non-repeatable by default.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.Experimental</code> / <code>kotlin.UseExperimental</code></span></p>
@@ -241,24 +249,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">val</span> <span class="va">level</span>: Level = Level.ERROR</a></code></pre></div>
-<span class="sentence">The severity level of the experimental status with two values: <code>Level.WARNING</code> and <code>Level.ERROR</code></span></li>
+<span class="sentence">The severity level of the experimental status with two possible values: <code>Level.WARNING</code> and <code>Level.ERROR</code>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features. </span><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
+<p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
 <li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span>: KClass&lt;<span class="kw">out</span> Annotation&gt;</a></code></pre></div>
-<span class="sentence">The classes this annotation is allowing to use</span></li>
+<span class="sentence">The classes which this annotation allows to use.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">This annotation is used to explicitly mark declarations that use experimental features marked by <code>kotlin.Experimental</code> .</span></p>
+<p><span class="sentence">This annotation is used to explicitly mark declarations which use experimental features marked by <code>kotlin.Experimental</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">It is implementation-defined on how these annotations are processed.</span></p>
+<p><span class="sentence">It is implementation-defined how this annotation is processed.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(experimental status is still experimental itself)</span></p>
+<p><span class="sentence">TODO(Experimental status is still experimental itself)</span></p>
 </div>
 </div></li>
 <li><div class="paragraph">
@@ -270,15 +281,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">The message supporting the deprecation</span></p>
+<p><span class="sentence">A message supporting the deprecation.</span></p>
 </div></li>
 <li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span>: ReplaceWith = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">An optional replacement for deprecated code</span></p>
+<p><span class="sentence">An optional replacement for the deprecated code.</span></p>
 </div></li>
 <li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">level</span>: DeprecationLevel = DeprecationLevel.WARNING</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">The deprecation level</span></p>
+<p><span class="sentence">The deprecation level with three possible values: <code>DeprecationLevel.WARNING</code>, <code>DeprecationLevel.ERROR</code> and <code>DeprecationLevel.HIDDEN</code>.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
@@ -287,22 +298,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">expression</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">The replacement code</span></p>
+<p><span class="sentence">The replacement code.</span></p>
 </div></li>
 <li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span>: <span class="kw">String</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">The array of imports needed for the replacement code to work correctly</span></p>
+<p><span class="sentence">An array of imports needed for the replacement code to work correctly.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.DeprecationLevel</code> is an enum class with three values: <code>WARNING</code>, <code>ERROR</code> and <code>HIDDEN</code>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><code>kotlin.Deprecated</code> is a builtin annotation supporting the deprecation cycle for declarations: marking that some declarations are outdated, soon to be replaced with other declarations or not recommended. </span><span class="sentence">It is implementation-defined how this annotation is handled, with the following recommendations:</span></p>
+<p><span class="sentence"><code>kotlin.Deprecated</code> is a built-in annotation supporting the deprecation cycle for declarations: marking some declarations as outdated, soon to be replaced with other declarations, or not recommended for use. </span><span class="sentence">It is implementation-defined how this annotation is processed, with the following recommendations:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>kotlin.DeprecationLevel.WARNING</code> should produce a compile-time warning;</span></li>
-<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>kotlin.DeprecationLevel.ERROR</code> should produce a compile-time error.</span></li>
+<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>DeprecationLevel.WARNING</code> should produce a compile-time warning;</span></li>
+<li><span class="sentence">Attempting to use a declaration with deprecation level of <code>DeprecationLevel.ERROR</code> should produce a compile-time error.</span></li>
 </ul></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.Suppress</code></span></p>
@@ -312,10 +320,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span>: <span class="kw">String</span></a></code></pre></div>
-<span class="sentence">The names of features this annotation is suppressing</span></li>
+<span class="sentence">The names of features this annotation is suppressing.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Suppress</code> is used to optionally mark any piece of code as suppressing some language feature, such as a compiler warning, an IDE mechanism or a language feature. </span><span class="sentence">The names of features that one can suppress with this annotation is implementation-defined, as is the processing of this annotation itself.</span></p>
+<p><span class="sentence"><code>kotlin.Suppress</code> is used to optionally mark any piece of code as suppressing some language feature, such as a compiler warning, an IDE mechanism or a language feature. </span><span class="sentence">The names of features which one can suppress with this annotation are implementation-defined, as is the processing of this annotation itself.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.SinceKotlin</code></span></p>
@@ -325,33 +333,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">version</span>: <span class="kw">String</span></a></code></pre></div>
-<span class="sentence">The version of Kotlin language</span></li>
+<span class="sentence">The version of Kotlin language.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.SinceKotlin</code> is used to mark that a specific declaration is only available since some particular version of the language and above it. </span><span class="sentence">These mostly refer to standard library declarations. </span><span class="sentence">It is implementation-defined how this annotations are processed.</span></p>
+<p><span class="sentence"><code>kotlin.SinceKotlin</code> is used to mark a declaration which is only available since a particular version of the language. </span><span class="sentence">These mostly refer to standard library declarations. </span><span class="sentence">It is implementation-defined how this annotation is processed.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.UnsafeVariance</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.UnsafeVariance</code> is an annotation class with no fields that is only applicable to types. </span><span class="sentence">Any declaration marked by this annotation explicitly states that the <a href="declarations.html#type-parameter-variance">variance</a> errors arising for this particular type are to be ignored by the compiler.</span></p>
+<p><span class="sentence"><code>kotlin.UnsafeVariance</code> is an annotation class with no fields which is only applicable to types. </span><span class="sentence">Any type instance marked by this annotation explicitly states that the <a href="declarations.html#type-parameter-variance">variance</a> errors arising for this particular type instance are to be ignored by the compiler.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.DslMarker</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.DslMarker</code> is an annotation class with no fields that is applicable only to other annotation classes. </span><span class="sentence">An annotation class annotated with <code>kotlin.DslMarker</code> is marked as a marker of a specific DSL (domain-specific language). </span><span class="sentence">Any type annotated with such a marker is said to belong to that specific DSL. </span><span class="sentence">This affects <a href="overload-resolution.html#overload-resolution">overload resolution</a> in the following way: no two implicit receivers with types belonging to the same DSL are available in the same scope. </span><span class="sentence">See <a href="overload-resolution.html#overload-resolution">overload resolution section</a> for details.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(sync with receivers???)</span></p>
-</div>
+<p><span class="sentence"><code>kotlin.DslMarker</code> is an annotation class with no fields which is applicable only to other annotation classes. </span><span class="sentence">An annotation class annotated with <code>kotlin.DslMarker</code> is marked as a marker of a specific DSL (domain-specific language). </span><span class="sentence">Any type annotated with such a marker is said to belong to that specific DSL. </span><span class="sentence">This affects <a href="overload-resolution.html#overload-resolution">overload resolution</a> in the following way: no two implicit receivers with types belonging to the same DSL are available in the same scope. </span><span class="sentence">See <a href="overload-resolution.html#receivers">Overload resolution section</a> for details.</span></p>
 </div></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.PublishedApi</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.PublishedApi</code> is an annotation class with no fields that is applicable to any declarations. </span><span class="sentence">This may be applied to any declarations with <code>internal</code> visibility to be visible to <code>public</code> <code>inline</code> declarations. </span><span class="sentence">See <a href="declarations.html#declaration-visibility">the visibility section</a> for details.</span></p>
+<p><span class="sentence"><code>kotlin.PublishedApi</code> is an annotation class with no fields which is applicable to any declaration. </span><span class="sentence">It may be applied to any declaration with <code>internal</code> visibility to make it available to <code>public</code> <code>inline</code> declarations. </span><span class="sentence">See <a href="declarations.html#declaration-visibility">Declaration visibility section</a> for details.</span></p>
 </div></li>
 </ul>
 </body>
