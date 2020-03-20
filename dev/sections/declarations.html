@@ -778,6 +778,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-8" title="8">    <span class="kw">fun</span> <span class="fu">foo</span>() { println(<span class="kw">this</span>) } <span class="co">// this has type Bar</span></a>
 <a class="sourceLine" id="cb4-9" title="9">    <span class="kw">fun</span> <span class="fu">Int</span>.<span class="fu">foo</span>() { println(<span class="kw">this</span>) } <span class="co">// this has type Int</span></a>
 <a class="sourceLine" id="cb4-10" title="10">}</a></code></pre></div>
+<h4 id="inlining">Inlining</h4>
+<div class="paragraph">
+<p><span class="sentence">A function may be declared <code>inline</code> using a special <code>inline</code> modifier. </span><span class="sentence">This allows the compiler to inline the function at call-site, replacing the call with the body of the function with arguments mapped to corresponding parameters. </span><span class="sentence">It is unspecified whether inlining will actually be performed, however.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declaring a function <code>inline</code> has two additional effects:</span></p>
+</div>
+<ul>
+<li><span class="sentence">It allows type parameters of the function to be declared <code>reified</code>, making them <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> and allowing usage of specific expressions involving these parameters, such as [type checks][Type checking expression] and [class literals][Class literal expressions]. </span><span class="sentence">Calling such a function is only allowed in a context where a particular type argument provided for this type parameter is also a runtime-available type.</span></li>
+<li><span class="sentence">Any parameter of this function of a <a href="type-system.html#function-types">function type</a> is treated as <em>inlined</em> parameter unless it has one of two special modifiers: <code>crossinline</code> or <code>noinline</code>. </span><span class="sentence">If a particular argument corresponding to inline parameter is a <a href="expressions.html#lambda-literals">lambda literal</a>, this lambda literal is considered <em>inlined</em> and, in particular, affects the way the <a href="expressions.html#return-expressions">return expressions</a> are handled in its body. </span><span class="sentence">See the corresponding section for details.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values. </span><span class="sentence">They may only be called inside the function body.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by <a href="expressions.html#object-literals">object literals</a> or other non-inlined lambda litreals).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Noinline parameters may be treated as any other values.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Particular platforms may introduce additional restrictions or guarantees for the inlining mechanism.</span></p>
+</div>
 <h3 id="property-declaration">Property declaration</h3>
 <div id="grammar-rule-propertyDeclaration-pasted-4" class="grammar-rule">
 <dl>
