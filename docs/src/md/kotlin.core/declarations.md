@@ -203,17 +203,18 @@ Data classes have the following restrictions:
 
 * Data classes are closed and cannot be [inherited][Inheritance] from;
 * Data classes must have a primary constructor with property constructor parameters only, which become data properties for the data class;
-* There must be at least one data property in the primary constructor.
+* There must be at least one data property in the primary constructor;
+* Data properties cannot be specified as `vararg` constructor arguments.
 
 [`kotlin.Any`-bi]: #kotlin.any-1
 
 #### Enum class declaration
 
-Enum class is a special kind of class with the following properties:
+Enum class $E$ is a special kind of class with the following properties:
 
 - It has a number of predefined values that are declared in the class itself (*enum entries*);
 - No other values of this class can be constructed;
-- It implicitly inherits the built-in class [`kotlin.Enum`][`kotlin.Enum`] (and cannot have any other base classes);
+- It implicitly inherits the built-in class [`kotlin.Enum<E>`][`kotlin.Enum`] (and cannot have any other base classes);
 - It it implicitly final and cannot be inherited from;
 - It has special syntax to accommodate for the properties described above.
 
@@ -222,6 +223,32 @@ Enum entries have their own bodies that may contain their own declarations, simi
 
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
+
+Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` in the following way:
+
+- ```kotlin
+  public final val name: String
+  ```
+
+  defined to be the same as the name of the entry as declared in code;
+
+- ```kotlin
+  public final val ordinal: Int
+  ```
+
+  defined to be the ordinal of the entry, e.g. the position of this entry in the list of entries, starting with 0;
+
+- ```kotlin
+  public override final fun compareTo(other: E): Int
+  ```
+
+  (a member of `kotlin.Comparable<E>`) defined by default to compare entries by their ordinals, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations;
+
+- ```kotlin
+  public override fun toString(): String
+  ```
+
+  (a member of `kotlin.Any`) defined by default to return the entry name, but may be overriden  to have different behaviour both in the enum class declaration and in entry declarations.
 
 In addition to these, every enum class type has the following **static** member functions declared implicitly:
 
@@ -233,8 +260,6 @@ In addition to these, every enum class type has the following **static** member 
 
 > Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>`.
 > Please refer to the standard library documentation for details.
-
-TODO(`kotlin.Comparable` generation?)
 
 #### Annotation class declaration
 
@@ -269,6 +294,7 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * An interface cannot have a class as its supertype;
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
+* Interface properties cannot be delegated;
 * An interface cannot have inner classes (but can have nested classes and companion objects);
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
@@ -442,16 +468,16 @@ Missing arguments are bound to their default values, if they exist.
 
 One of the parameters may be designated as being variable length (aka *vararg*).
 A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position.
-These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
+These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type $\Array(\outV P_i)$.
 
 > Important: we also consider variable length parameters to have such types for the purposes of type inference.
 > TODO(Something else?)
 
 If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.
 
-If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type `Array<out `$P_i$`>`.
+If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type  $\Array(\outV P_i)$.
 
-An array of type `Array<Q>`$\: <: \:$`ATS(Array<out `$P_i$`>)` may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator expressions]; in this case array elements are considered to be separate arguments in the variable length parameter position.
+A value of type $Q <: \Array(\outV P_i)$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator expressions]; in this case array elements are considered to be separate arguments in the variable length parameter position.
 
 > Note: this means that, for variable length parameters corresponding to specialized array types, unpacking is possible only for these specialized versions; for a variable length parameter of type `Int`, for example, unpacking is valid only for `IntArray`, and not for `Array<Int>`.
 
@@ -505,7 +531,7 @@ Declaring a function `inline` has two additional effects:
 Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values.
 They may only be called inside the function body.
 
-Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by [object literals][Object literals] or other non-inlined lambda litreals).
+Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by [object literals][Object literals] or other non-inlined lambda literals).
 
 Noinline parameters may be treated as any other values.
 
@@ -629,7 +655,7 @@ However, the backing field is created for a property only in the following cases
 * A property has no custom accessors;
 * A property has a default accessor;
 * A property has a custom accessor, and it uses `field` property;
-* A mutable property has a custom getter or setter, but not both/
+* A mutable property has a custom getter or setter, but not both.
 
 In all other cases a property has no backing field.
 Properties without backing fields are not allowed to have initializer expressions.
@@ -867,6 +893,9 @@ The following declarations are not allowed to have type parameters:
 - Object declarations (including companion object declarations);
 - Constructor declarations;
 - Getters and setters of property declarations;
+- Enum class declarations;
+- Annotation class declarations;
+- Classifier declarations inheriting from `kotlin.Throwable`;
 - TODO: anything else?
 
 Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
@@ -954,9 +983,9 @@ There is a partial order of *weakness* between different visibility modifiers:
 
 TODO(this is a stub)
 
+TODO(do we need this section at all? Seems like modifiers should be covered in their respective sections)
+
 A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the [inheritance section][Overriding] for details).
 
 TODO(declaration scope)
-
-TODO(overriding vs overloading vs shadowing)
 
