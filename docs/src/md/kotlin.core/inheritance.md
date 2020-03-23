@@ -18,6 +18,7 @@ A class is called **closed** and cannot be inherited from if it is not explicitl
 > Note: classes are neither `open` nor `abstract` by default.
 
 A [`data class`][Data class declaration], [`enum class`][Enum class declaration] or [`annotation class`][Annotation class declaration] cannot be declared `open` or `abstract`, i.e., are always closed and cannot be inherited from.
+Declaring a class `sealed` also implicitly declares it `abstract`.
 
 An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is [well-formed][Parameterized classifier types].
 
