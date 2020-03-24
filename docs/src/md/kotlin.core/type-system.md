@@ -1014,6 +1014,8 @@ This normalization procedure, if finite, creates a *canonical* representation of
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\LUB(A, B) = (\LUB(L_A, L_B)..\LUB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\LUB(A, B) = (\LUB(L_A, B)..\LUB(U_A, B))$
 
+> Important: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
+
 TODO(actual algorithm for computing LUB)
 
 TODO(LUB for 3+ types)
@@ -1074,6 +1076,8 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 - if $A = (L_A..U_A)$ and $B = (L_B..U_B)$, $\GLB(A, B) = (\GLB(L_A, L_B)..\GLB(U_A, U_B))$
 - if $A = (L_A..U_A)$ and $B$ is not flexible, $\GLB(A, B) = (\GLB(L_A, B)..\GLB(U_A, B))$
+
+> Important: in some cases, the greatest lower bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
 TODO(actual algorithm for computing GLB)
 
