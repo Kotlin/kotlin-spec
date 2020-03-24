@@ -250,11 +250,22 @@ Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` i
 
   (a member of `kotlin.Any`) defined by default to return the entry name, but may be overriden  to have different behaviour both in the enum class declaration and in entry declarations.
 
-In addition to these, every enum class type has the following **static** member functions declared implicitly:
+In addition to these, every enum class type `E` has the following **static** member functions declared implicitly:
 
-- `valueOf(value: String)` returning an object corresponding to the entry with the name equal to `value` parameter of the call;
-- `values()` returning an [array][Array types] of all possible enum values.
+- ```kotlin
+  public final static fun valueOf(value: String): E
+  ```
+
+   returning an object corresponding to the entry with the name equal to `value` parameter of the call;
+
+- ```kotlin
+  public final static fun values(): kotlin.Array<E>
+  ```
+  
+  returning an [array][Array types] of all possible enum values.
   Every invocation of this function returns a new array to disallow changing its contents.
+
+> Important: `static` is not a valid Kotlin keyword and is only used here for clarity
 
 > Note: these static member functions are handled differently by the [overload resolution][Overload resolution].
 
@@ -477,7 +488,7 @@ If a variable length parameter is not last in the parameter list, all subsequent
 
 If a variable length parameter has a default value, it should be an expression which evaluates to a value of type, which is the result of [*array type specialization*][Array types] of type  $\Array(\outV P_i)$.
 
-A value of type $Q <: \Array(\outV P_i)$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator expressions]; in this case array elements are considered to be separate arguments in the variable length parameter position.
+A value of type $Q <: \ATS(\Array(\outV P_i))$ may be *unpacked* to a variable length parameter in function invocation using [spread operator][Spread operator expressions]; in this case array elements are considered to be separate arguments in the variable length parameter position.
 
 > Note: this means that, for variable length parameters corresponding to specialized array types, unpacking is possible only for these specialized versions; for a variable length parameter of type `Int`, for example, unpacking is valid only for `IntArray`, and not for `Array<Int>`.
 

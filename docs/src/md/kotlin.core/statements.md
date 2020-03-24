@@ -102,7 +102,7 @@ Safe assignments are expanded similar to [safe navigation operator expressions][
 >     null -> null
 >     else -> { $tmp.y[0] = z }
 > }
-> ``` 
+> ```
 > 
 > which, according to expansion rules for indexing assigments is, in turn, expanded to
 > 
@@ -179,8 +179,6 @@ where `iterator`, `hasNext`, `next` are all suitable operator functions availabl
 `VarDecl` here may be a variable name or a set of variable names as per [destructuring variable declarations][Local property declaration].
 
 > Note: the expansion is hygienic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
-
-TODO(What about iterator value life-time and such?)
 
 ### Code blocks
 
