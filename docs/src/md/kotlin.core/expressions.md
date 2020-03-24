@@ -15,7 +15,7 @@ As all expressions are valid [statements][Statements], standalone expressions ma
 An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call.
 An expression is used as a statement if it is encountered in any position where a statement is allowed.
 
-Some expressions are only allowed to be used as statements, if certain restrictions are met; this may affect the semantics, the compile-time type information or/and the safety of these expressions.
+Some expressions are allowed to be used as statements, only if certain restrictions are met; this may affect the semantics, the compile-time type information or/and the safety of these expressions.
 
 ### Constant literals
 
@@ -75,12 +75,12 @@ Any of the decimal, hexadecimal or binary literals may be suffixed by the long l
 An integer literal with the long literal mark has type `kotlin.Long`.
 A literal without the mark has a special [integer literal type][Integer literal types] dependent on the value of the literal:
 
-- If the value is greater than maximum `kotlin.Long` value (see [built-in integer types][Built-in integer types]), it is an illegal integer literal and a compiler error;
+- If the value is greater than maximum `kotlin.Long` value (see [built-in integer types][Built-in integer types]), it is an illegal integer literal and should be a compile-time error;
 - Otherwise, if the value is greater than maximum `kotlin.Int` value (see [built-in integer types][Built-in integer types]), it has type `kotlin.Long`;
-- Otherwise, it has an integer literal type containing all the built-in integer types that are guaranteed to be able to represent this value.
+- Otherwise, it has an integer literal type containing all the built-in integer types guaranteed to be able to represent this value.
 
-> Note: for example, integer literal `0x01` has value $1$ and therefore has type $\LTS(\mathtt{kotlin.Byte}, \mathtt{kotlin.Short}, \mathtt{kotlin.Int}, \mathtt{kotlin.Long})$.
-> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\LTS(\mathtt{kotlin.Int}, \mathtt{kotlin.Long})$.
+> Example: integer literal `0x01` has value $1$ and therefore has type $\LTS(\Byte, \Short, \Int, \Long)$.
+> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\LTS(\Int, \Long)$.
 
 #### Real literals
 
@@ -187,8 +187,6 @@ All other situations mean that an exception is going to be propagated up the cal
 
 The type of the try-expression is the [least upper bound][Least upper bound] of the types of the last expressions of the try body and the last expressions of all the catch blocks.
 
-> Note: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
-
 > Note: these rules mean the try-expression always may be used as an expression, as it always has a corresponding result value.
 
 ### Conditional expression
@@ -207,40 +205,40 @@ If the condition evaluates to `true`, the first branch (the *true branch*) is ev
 The value of the resulting expression is the same as the value of the chosen branch.
 
 The type of the resulting expression is the [least upper bound][Least upper bound] of the types of two branches, if both branches are present.
-If either of the branches are omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and may used only as a statement.
+If either of the branches are omitted, the resulting conditional expression has type [`kotlin.Unit`][`kotlin.Unit`] and may be used only as a statement.
 
-Let's illustrate it with some examples:
+> Example:
+> 
+> ```kotlin
+> // x has type kotlin.Int and value 1
+> val x = if (true) 1 else 2 
+> // illegal, as if expression without false branch
+> //   cannot be used as an expression
+> val y = if (true) 1 
+> ```
 
-```kotlin
-// x has type kotlin.Int and value 1
-val x = if(true) 1 else 2 
-// illegal, if expression without false branch cannot be used as an expression
-val y = if(true) 1 
-```
-
-The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is an error.
+The type of the condition expression must be a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 
 > Note: when used as expressions, conditional expressions are special w.r.t. operator precedence: they have the highest priority (the same as for all primary expressions) when placed on the right side of any binary expression, but when placed on the left side, they have the lowest priority.
 > For details, see Kotlin [grammar][Syntax grammar].
 >
-> For example:
+> Example:
 > 
 > ```kotlin
-> x = if(true) 1 else 2
+> x = if (true) 1 else 2
 > ```
 > is the same as
 > ```kotlin
-> x = (if(true) 1 else 2)
+> x = (if (true) 1 else 2)
 > ```
-> while
+> At the same time
 > ```kotlin
-> if(true) x = 1 else x = 2
+> if (true) x = 1 else x = 2
 > ```
 > is the same as
 > ```kotlin
-> if(true) (x = 1) else (x = 2)
+> if (true) (x = 1) else (x = 2)
 > ```
->
 
 ### When expression
 
@@ -256,7 +254,7 @@ The type of the condition expression must be a subtype of `kotlin.Boolean`, othe
 :::
 
 *When expression* is similar to a [conditional expression][Conditional expression] in that it allows one of several different [control structure bodies][Code blocks] (*cases*) to be evaluated, depending on some boolean conditions.
-The key difference is exactly that a when expressions may include several different conditions with their corresponding control structure bodies.
+The key difference is that a when expressions may include *several* different conditions with their corresponding control structure bodies.
 When expression has two different forms: with bound value and without it.
 
 **When expression without bound value** (the form where the expression enclosed in parentheses after the `when` keyword is absent) evaluates one of the different CSBs based on its condition from the *when entry*.
@@ -268,31 +266,79 @@ All remaining conditions and expressions are not evaluated.
 The `else` condition is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
 The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
 
-> Note: informally, you can always replace the `else` condition with an always-`true` condition (e.g., boolean literal `true`) with no change to the resulting semantics.
+> Note: informally, you can always replace the `else` condition with an always-`true` condition (e.g., boolean literal `true`) with no changes to the result of when expression.
 
-**When expression with bound value** (the form where the expression enclosed in parentheses after the `when` keyword is present) are similar to the form without bound value, but use a different syntax for conditions.
-In fact, it supports three different condition forms:
+**When expression with bound value** (the form where the expression enclosed in parentheses after the `when` keyword is present) is similar to the form without bound value, but uses a different syntax and semantics for conditions.
+In fact, it supports four different condition forms:
 
 - *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T` or `!is T`).
   The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T` or `boundValue !is T`.
 - *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr` or `!in Expr`).
   The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr` or `boundValue !in Expr`.
-- *Any other applicable expression* (`Expr`) besides the following.
-    + [Simple continue expression][Continue expression]
-    + [Simple break expression][Break expression]
-
+- *Any other applicable expression* (`Expr`)
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
   The `else` condition **must** also be in the last when entry of when expression, otherwise it is a compile-time error.
 
-TODO([Kotlin 1.3+] break and continue in when)
-
 > Note: the rule for "any other expression" means that if a when expression with bound value contains a boolean condition, this condition is **checked for equality** with the bound value, instead of being used directly for when entry selection.
 
-TODO(Examples)
+> Note: in Kotlin version 1.3 and earlier, simple (unlabeled) `break` and `continue` expressions were disallowed in when expressions.
 
-The type of the resulting expression is the [least upper bound][Least upper bound] of the types of all its entries.
-If the when expression is not [exhaustive][Exhaustive when expressions], it has type [`kotlin.Unit`][`kotlin.Unit`] and may only be used as a statement.
+The type of the resulting when expression is the [least upper bound][Least upper bound] of the types of all its entries.
+If when expression is not [exhaustive][Exhaustive when expressions], it has type [`kotlin.Unit`][`kotlin.Unit`] and may be used only as a statement.
+
+> Examples:
+> 
+> ```kotlin
+> val a = 42
+> val b = -1
+> 
+> when {
+>   a == b -> {}
+>   a != b -> {}
+> }
+> 
+> // Error, as it is a non-exhaustive when expression
+> val c = when {
+>   a == b -> {}
+>   a != b -> {}
+> }
+> 
+> val d = when {
+>   a == b -> {}
+>   a != b -> {}
+>   else -> {}
+> }
+> 
+> when {
+>   a == b || a != b -> {}
+>   42 > 0 -> {}
+> }
+> ```
+> 
+> ```kotlin
+> val a = 42
+> val b = -1
+> 
+> val l = (1..10).toList()
+> 
+> when (a) {
+>   is Int, !is Int -> {}
+>   in l, !in l -> {}
+> }
+> 
+> // Error, as it is a non-exhaustive when expression
+> val c = when (a) {
+>   is Int, !is Int -> {}
+>   in l, !in l -> {}
+> }
+> 
+> val d = when (a) {
+>   is Int, !is Int -> {}
+>   in l, !in l -> {}
+>   else -> {}
+> }
+> ```
 
 #### Exhaustive when expressions
 
@@ -309,23 +355,26 @@ A when expression is called **_exhaustive_** if at least one of the following is
     - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
-For object types, the type test condition may be replaced with equality check with the object value:
+For object types, the type test condition may be replaced with equality check with the object value.
+
+> Note: if one were to override `equals` for an object type incorrectly (i.e., so that an object is not equal to itself), it would break the exhaustiveness check.
+> Such situations are considered to have undefined behaviour.
 
 ```kotlin
 sealed class Base
-class Derived1(): Base()
-object Derived2(): Base
+class Derived1: Base()
+object Derived2: Base()
 
-...
 val b: Base = ...
-... = when(b) {
+
+val c = when(b) {
     is Derived1 -> ...
     Derived2 -> ...
     // no else needed here
 }
 ```
 
-> Note: informally, an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
+> Informally: an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
 ### Logical disjunction expression
 
