@@ -115,13 +115,17 @@ with the type suffix has type `kotlin.Float`.
 :::
 :::{.paste target=grammar-rule-EscapeSeq}
 :::
-:::{.paste target=grammar-rule-UnicodeCharacterLiteral}
+:::{.paste target=grammar-rule-UniCharacterLiteral}
 :::
-:::{.paste target=grammar-rule-EscapedCharacter}
+:::{.paste target=grammar-rule-EscapedIdentifier}
 :::
 
 A *character literal* defines a constant holding a unicode character value.
 A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character `'`), excluding newline symbols (*CR* and *LF*), the single quotation mark itself and the escaping mark (ASCII backslash character `\`).
+
+All character literals have type `kotlin.Char`.
+
+##### Escaped characters
 
 A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint.
 Simple escaped symbols include:
@@ -140,8 +144,6 @@ It represents the unicode symbol with the codepoint equal to the number represen
 
 > Note: this means unicode codepoint escaped symbols support only unicode symbols in range from U+0000 to U+FFFF.
 
-All character literals have type `kotlin.Char`.
-
 #### String literals
 
 Kotlin supports [string interpolation][String interpolation expressions] which supersedes traditional string literals.
@@ -151,6 +153,47 @@ For further details, please refer to the corresponding section.
 
 The keyword `null` denotes the **null reference**, which represents an absence of a value and is a valid value only for [nullable types][Nullable types].
 Null reference has type [`kotlin.Nothing?`][`kotlin.Nothing`] and is, by definition, the only value of this type.
+
+### String interpolation expressions
+
+:::{.paste target=grammar-rule-stringLiteral}
+:::
+:::{.paste target=grammar-rule-lineStringLiteral}
+:::
+:::{.paste target=grammar-rule-multiLineStringLiteral}
+:::
+:::{.paste target=grammar-rule-lineStringContent}
+:::
+:::{.paste target=grammar-rule-lineStringExpression}
+:::
+:::{.paste target=grammar-rule-multiLineStringContent}
+:::
+:::{.paste target=grammar-rule-multiLineStringExpression}
+:::
+
+_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol.
+
+Interpolated expressions can be specified via two forms.
+
+* `$id`, where `id` is a single identifier available in the current scope;
+* `${e}`, where `e` is a valid Kotlin expression.
+
+In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
+The resulting value of a string interpolation expression is the joining of all fragments in the expression.
+
+An interpolated value $v$ is converted to `kotlin.String` according to the following convention:
+
+- If it is equal to the [null reference][Null literal], the result is `"null"`;
+- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
+
+There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions.
+The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be [escaped][Escaped characters] in the same way they are escaped in character literals.
+On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.
+
+> Note: among other things, this means that the escaping of the `$` symbol is impossible in multiline strings. 
+> If you need an escaped `$` symbol, use an interpolation fragment instead: `"${'$'}"`
+
+String interpolation expression always has type `kotlin.String`.
 
 ### Try-expression
 
@@ -1378,49 +1421,5 @@ If a break expression is used in the context of a lambda literal that refers to 
 
 TODO: not that simple
 
-### String interpolation expressions
 
-:::{.paste target=grammar-rule-stringLiteral}
-:::
-:::{.paste target=grammar-rule-lineStringLiteral}
-:::
-:::{.paste target=grammar-rule-multiLineStringLiteral}
-:::
-:::{.paste target=grammar-rule-lineStringContent}
-:::
-:::{.paste target=grammar-rule-lineStringExpression}
-:::
-:::{.paste target=grammar-rule-multiLineStringContent}
-:::
-:::{.paste target=grammar-rule-multiLineStringExpression}
-:::
 
-_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol.
-
-Interpolated expressions can be specified via two forms.
-
-* `$id`, where `id` is a single identifier available in the current scope;
-* `${e}`, where `e` is a valid Kotlin expression.
-
-In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
-The resulting value of a string interpolation expression is the joining of all fragments in the expression.
-
-An interpolated value $v$ is converted to `kotlin.String` according to the following convention:
-
-- If it is equal to the [null reference][Null literal], the result is `"null"`;
-- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
-
-There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions.
-The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be escaped (see [grammar][Grammar] for details).
-On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.
-
-> Note: among other things, this means that the escaping of the `$` symbol is impossible in multiline strings. 
-> If you need an escaped `$` symbol, use an interpolation fragment instead: `"${'$'}"`
-
-String interpolation expression always has type `kotlin.String`.
-
-## TODOs()
-
-- What does `decaying` for vararg actually mean?
-- Object literal types look just like restricted union types. Are there any traps hidden here?
-- The last paragraph in [object literals][Object literals] is also pretty shady
