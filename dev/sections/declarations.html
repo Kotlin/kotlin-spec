@@ -500,11 +500,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Annotation classes cannot be constructed directly, but their primary constructors are used when specifying <a href="annotations.html#annotations">code annotations</a> for other entities.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
-</div>
-</div>
 <h4 id="interface-declaration">Interface declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface’s subtypes. </span><span class="sentence">In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.</span></p>
@@ -829,6 +824,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="paragraph">
 <p><span class="sentence">Particular platforms may introduce additional restrictions or guarantees for the inlining mechanism.</span></p>
+</div>
+<h4 id="tail-recursion-optimization">Tail recursion optimization</h4>
+<div class="paragraph">
+<p><span class="sentence">A function may be declared <em>tail-recursive</em> by using a special <code>tailrec</code> modifier. </span><span class="sentence">A tail-recursive function that contains a recursive call to itself may be optimized to a non-recursive form by a particular platform in order to avoid problems of recursion such as a possibility of stack overflows possible on some platforms.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function. </span><span class="sentence">If a function declaration is marked with the <code>tailrec</code> modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.</span></p>
 </div>
 <h3 id="property-declaration">Property declaration</h3>
 <div id="grammar-rule-propertyDeclaration-pasted-4" class="grammar-rule">
@@ -1314,24 +1316,5 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: there is a certain restriction regarding <code>inline</code> functions that have a different visibility from entities they access. </span><span class="sentence">In particular, an <code>inline</code> function cannot access entities with a stronger visibility (i.e. </span><span class="sentence"><code>public inline</code> function accessing a <code>private</code> property). </span><span class="sentence">There is one exception to this: a <code>public inline</code> function can access <code>internal</code> entities which are marked with a special builtin <a href="annotations.html#annotations">annotation</a> <code>@PublishedApi</code>.</span></p>
 </div>
 </blockquote>
-<h3 id="declaration-modifiers">Declaration modifiers</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(this is a stub)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(do we need this section at all? </span><span class="sentence">Seems like modifiers should be covered in their respective sections)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A member function of a classifier declaration may be declared <code>abstract</code>, <code>open</code> or <code>override</code>, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the <a href="inheritance.html#overriding">inheritance section</a> for details).</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(declaration scope)</span></p>
-</div>
-</div>
 </body>
 </html>
