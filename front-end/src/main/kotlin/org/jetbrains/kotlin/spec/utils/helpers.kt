@@ -13,10 +13,10 @@ fun String.format(vararg args: Any): String {
 
 fun String.escapeHtml(): String {
     return this.replace(Regex("&", RegexOption.MULTILINE), "&amp;")
-        .replace(Regex("<", RegexOption.MULTILINE), "&lt;")
-        .replace(Regex(">"), "&gt;")
-        .replace(Regex("\"", RegexOption.MULTILINE), "&quot;")
-        .replace(Regex("'", RegexOption.MULTILINE), "&#039;")
+            .replace(Regex("<", RegexOption.MULTILINE), "&lt;")
+            .replace(Regex(">"), "&gt;")
+            .replace(Regex("\"", RegexOption.MULTILINE), "&quot;")
+            .replace(Regex("'", RegexOption.MULTILINE), "&#039;")
 }
 
 fun setValueByObjectPath(target: MutableMap<String, Any>, value: Any, path: String) {
