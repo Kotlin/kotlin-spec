@@ -7488,31 +7488,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><em>String interpolation expressions</em> replace the traditional string literals and supersede them. </span><span class="sentence">A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and <em>interpolated expressions</em>, delimited by the special syntax using the <code>$</code> symbol.</span></p>
+<p><span class="sentence"><em>String interpolation expressions</em> replace the traditional string literals and supersede them. </span><span class="sentence">A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content inside the quoted literal) and <em>interpolated expression fragments</em>, specified by a special syntax using the <code>$</code> symbol.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Interpolated expressions can be specified via two forms.</span></p>
+<p><span class="sentence">Interpolated expressions support two different forms.</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>$id</code>, where <code>id</code> is a single identifier available in the current scope;</span></li>
+<li><span class="sentence"><code>$id</code>, where <code>id</code> is a <a href="#identifiers-and-paths">simple path</a> available in the current scope;</span></li>
 <li><span class="sentence"><code>${e}</code>, where <code>e</code> is a valid Kotlin expression.</span></li>
 </ul>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">In either case, the interpolated value is evaluated and converted into a <code>kotlin.String</code> by a process defined below. </span><span class="sentence">The resulting value of a string interpolation expression is the joining of all fragments in the expression.</span></p>
+<p><span class="sentence">Note: the first form requires <code>id</code> to be a simple path; if you want to reference a qualified path (e.g., <code>foo.bar</code>), you should use the second form as <code>${foo.bar}</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">In either case, the interpolated value is evaluated and converted into <code>kotlin.String</code> by a process defined below. </span><span class="sentence">The resulting value of a string interpolation expression is the concatenation of all fragments in the expression.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An interpolated value <span class="math inline">\(v\)</span> is converted to <code>kotlin.String</code> according to the following convention:</span></p>
 </div>
 <ul>
 <li><span class="sentence">If it is equal to the <a href="#null-literal">null reference</a>, the result is <code>&quot;null&quot;</code>;</span></li>
-<li><span class="sentence">Otherwise, the result is <span class="math inline">\(v\)</span><code>.toString()</code> where <code>toString</code> is the <code>kotlin.Any</code> member function (no overloading resolution is performed to choose the function in this context).</span></li>
+<li><span class="sentence">Otherwise, the result is <span class="math inline">\(v\)</span><code>.toString()</code> where <code>toString</code> is the <a href="#kotlin.any-1"><code>kotlin.Any</code></a> member function (no overloading resolution is performed to choose this function in this context).</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions. </span><span class="sentence">The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be <a href="#escaped-characters">escaped</a> in the same way they are escaped in character literals. </span><span class="sentence">On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: among other things, this means that the escaping of the <code>$</code> symbol is impossible in multiline strings. </span><span class="sentence">If you need an escaped <code>$</code> symbol, use an interpolation fragment instead: <code>&quot;${'$'}&quot;</code></span></p>
+<p><span class="sentence">Note: among other things, this means that escaping of the <code>$</code> symbol is impossible in multiline strings. </span><span class="sentence">If you need an escaped <code>$</code> symbol, use an interpolated expression <code>&quot;${'$'}&quot;</code> instead.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -7827,7 +7832,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Operator symbol <code>||</code> performs logical disjunction over two values of type <code>kotlin.Boolean</code>. </span><span class="sentence">This operator is <strong>lazy</strong>, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to <code>false</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Both operands of a logical disjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
+<p><span class="sentence">Both operands of a logical disjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a compile-time error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="logical-conjunction-expression">Logical conjunction expression</h3>
 <div id="grammar-rule-conjunction-pasted-49" class="grammar-rule">
@@ -7841,7 +7846,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Operator symbol <code>&amp;&amp;</code> performs logical conjunction over two values of type <code>kotlin.Boolean</code>. </span><span class="sentence">This operator is <strong>lazy</strong>, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to <code>true</code>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Both operands of a logical conjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a type error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
+<p><span class="sentence">Both operands of a logical conjunction expression must have a type which is a subtype of <code>kotlin.Boolean</code>, otherwise it is a compile-time error. </span><span class="sentence">The type of logical disjunction expression is <code>kotlin.Boolean</code>.</span></p>
 </div>
 <h3 id="equality-expressions">Equality expressions</h3>
 <div id="grammar-rule-equality-pasted-50" class="grammar-rule">
@@ -7869,7 +7874,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value. </span><span class="sentence">In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:</span></p>
+<p><span class="sentence">For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:</span></p>
 </div>
 <ul>
 <li><span class="sentence">If these values are <a href="#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>
@@ -7879,14 +7884,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Reference equality expressions always have type <code>kotlin.Boolean</code>.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin checks the applicability of reference equality operators at compile-time and may reject certain combinations of types for <code>A</code> and <code>B</code>. </span><span class="sentence">Specifically, it uses the following basic principle.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: in the current version of Kotlin, using the reference equality expression to compare <a href="#built-in-integer-types-1">built-in integer values</a> or <a href="#built-in-floating-point-arithmetic-types">built-in floating-point values</a> is deprecated as these have no available constructors and such a comparison is meaningless and error-prone due to the reasons stated above</span></p>
+<p><span class="sentence">If type of <code>A</code> and type of <code>B</code> are definitely distinct and not related by subtyping, <code>A === B</code> is an invalid expression and should result in a compile-time error.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: this principle means “no two objects of different types can be equal by reference”.</span></p>
 </div>
 </blockquote>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are different from <a href="#operator-overloading">other overloadable operators</a> and have the following expansion:</span></p>
+<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are overloadable, but are different from <a href="#operator-overloading">other overloadable operators</a> and have the following expansion:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as? Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
@@ -7900,7 +7913,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">If type of <code>A</code> (and all of its possible subtypes) and type of <code>B</code> are definitely not related by subtyping (or vice versa), <code>A == B</code> is an invalid expression and should result in a compile-time error.</span></p>
+<p><span class="sentence">If type of <code>A</code> and type of <code>B</code> are definitely distinct and not related by subtyping, <code>A == B</code> is an invalid expression and should result in a compile-time error.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -7932,7 +7945,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
 <li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>integerLess(0, A.compareTo(B))</code></span></li>
-<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B),0)</code></span></li>
+<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B), 0)</code></span></li>
 <li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
 </ul>
 <div class="paragraph">
@@ -7973,7 +7986,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A type-checking expression uses a type-checking operator <code>is</code> or <code>!is</code> and has an expression <span class="math inline">\(E\)</span> as a left-hand side operand and a type name <span class="math inline">\(T\)</span> as a right-hand side operand. </span><span class="sentence">A type-checking expression checks whether the runtime type of <span class="math inline">\(E\)</span> is a subtype of <span class="math inline">\(T\)</span> for <code>is</code> operator, or not a subtype of <span class="math inline">\(T\)</span> for <code>!is</code> operator.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="#runtime-available-types">runtime-available</a>, otherwise it is a compiler error.</span></p>
+<p><span class="sentence">The type <span class="math inline">\(T\)</span> must be <a href="#runtime-available-types">runtime-available</a>, otherwise it is a compile-time error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8029,11 +8042,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The type of elvis operator expression is the <a href="#least-upper-bound">least upper bound</a> of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: in some cases, the least upper bound is handled as described <a href="#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
-</div>
-</blockquote>
 <h3 id="range-expression">Range expression</h3>
 <div id="grammar-rule-rangeExpression-pasted-58" class="grammar-rule">
 <dl>
@@ -8071,7 +8079,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses the addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
+<p><span class="sentence">An <em>additive expression</em> is a binary expression which uses an addition (<code>+</code>) or subtraction (<code>-</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A + B</code> is exactly the same as <code>A.plus(B)</code></span></li>
@@ -8101,7 +8109,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses the multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
+<p><span class="sentence">A <em>multiplicative expression</em> is a binary expression which uses a multiplication (<code>*</code>), division (<code>/</code>) or remainder (<code>%</code>) operators. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A * B</code> is exactly the same as <code>A.times(B)</code></span></li>
@@ -8113,7 +8121,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin version 1.2.31, there exists an additional overloadable operator for <code>%</code> called <code>mod</code>, which is deprecated.</span></p>
+<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, there was an additional overloadable operator for <code>%</code> called <code>mod</code>, which has been removed in Kotlin 1.4.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8136,7 +8144,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>cast expression</em> is a binary expression which uses the cast operators <code>as</code> or <code>as?</code> and has the form <code>E as/as? T</code>, where <span class="math inline">\(E\)</span> is an expression and <span class="math inline">\(T\)</span> is a type name.</span></p>
+<p><span class="sentence">A <em>cast expression</em> is a binary expression which uses cast operators <code>as</code> or <code>as?</code> and has the form <code>E as/as? T</code>, where <span class="math inline">\(E\)</span> is an expression and <span class="math inline">\(T\)</span> is a type name.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">An <strong><code>as</code> cast expression</strong> <code>E as T</code> is called <em>an unchecked cast</em> expression. </span><span class="sentence">This expression perform a runtime check whether the runtime type of <span class="math inline">\(E\)</span> is a <a href="#subtyping">subtype</a> of <span class="math inline">\(T\)</span> and throws an exception otherwise. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is a <a href="#runtime-available-types">runtime-available</a> type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.</span></p>
@@ -8152,13 +8160,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">An <strong><code>as?</code> cast expression</strong> <code>E as? T</code> is called <em>a checked cast</em> expression. </span><span class="sentence">This expression is similar to the unchecked cast expression in that it also does a runtime type check, but does not throw an exception if the types do not match, it returns <code>null</code> instead. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is not a <a href="#runtime-available-types">runtime-available</a> type, then the check is not performed and <code>null</code> is never returned, leading to potential runtime errors later in the program execution. </span><span class="sentence">This situation should be reported as a compile-time warning.</span></p>
 </div>
-<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: if type <span class="math inline">\(T\)</span> is a <a href="#runtime-available-types">runtime-available</a> type <strong>with</strong> generic parameters, type parameters are <strong>not</strong> checked w.r.t. subtyping. </span><span class="sentence">This is another potentially erroneous situation, which should be reported as a compile-time warning.</span></p>
+<p><span class="sentence">If type <span class="math inline">\(T\)</span> is a <a href="#runtime-available-types">runtime-available</a> type <strong>with</strong> generic parameters, type parameters are <strong>not</strong> checked w.r.t. subtyping. </span><span class="sentence">This is another potentially erroneous situation, which should be reported as a compile-time warning.</span></p>
 </div>
-</blockquote>
 <div class="paragraph">
-<p><span class="sentence">The checked cast expression type is the <a href="#nullable-types">nullable</a> variant of the type <span class="math inline">\(T\)</span>.</span></p>
+<p><span class="sentence">The checked cast expression result has the type which is the <a href="#nullable-types">nullable</a> variant of the type <span class="math inline">\(T\)</span> specified in the expression.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8197,6 +8203,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Any expression in Kotlin may be prefixed with any number of <a href="#annotations">annotations</a> and <a href="#labels">labels</a>. </span><span class="sentence">These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.</span></p>
 </div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO([Kotlin 1.4] Update to no labels)</span></p>
+</div>
+</div>
 <h4 id="prefix-increment-expression">Prefix increment expression</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
@@ -8206,7 +8217,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8227,7 +8238,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8307,7 +8318,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>A++</code> stores the value of A to a temporary variable, assigns the result of <code>A.inc()</code> to <code>A</code> and then returns the temporary variable as the result.</span></p>
+<p><span class="sentence">Informally: <code>A++</code> stores the value of A to a temporary variable, assigns the result of <code>A.inc()</code> to <code>A</code> and then returns the temporary variable as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8317,7 +8328,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">As the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix increment expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
+<p><span class="sentence">A postfix increment expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h4 id="postfix-decrement-expression">Postfix decrement expression</h4>
 <div class="paragraph">
@@ -8328,7 +8339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, <code>A--</code> stores the value of A to a temporary variable, assigns the result of <code>A.dec()</code> to <code>A</code> and then returns the temporary variable as the result.</span></p>
+<p><span class="sentence">Informally: <code>A--</code> stores the value of A to a temporary variable, assigns the result of <code>A.dec()</code> to <code>A</code> and then returns the temporary variable as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8338,11 +8349,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">As the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A postfix decrement expression has the same type as its operand expression (<code>A</code> in our examples).</span></p>
+<p><span class="sentence">A postfix decrement expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h3 id="not-null-assertion-expression">Not-null assertion expression</h3>
 <div class="paragraph">
-<p><span class="sentence">A <em>not-null assertion expression</em> is a postfix expression which uses an operator <code>!!</code>. </span><span class="sentence">For an expression <code>e!!</code>, if the type of <code>e</code> is nullable, a not-null assertion expression checks, whether the evaluation result of <code>e</code> is equal to <code>null</code> and, if it is, throws a runtime exception. </span><span class="sentence">If the evaluation result of <code>e</code> is not equal to <code>null</code>, the result of <code>e!!</code> is the evaluation result of <code>e</code>.</span></p>
+<p><span class="sentence">A <em>not-null assertion expression</em> is a postfix expression which uses an operator <code>!!</code>. </span><span class="sentence">For an expression <code>e!!</code>, if the type of <code>e</code> is nullable, a not-null assertion expression checks whether the evaluation result of <code>e</code> is equal to <code>null</code> and, if it is, throws a runtime exception. </span><span class="sentence">If the evaluation result of <code>e</code> is not equal to <code>null</code>, the result of <code>e!!</code> is the evaluation result of <code>e</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the type of <code>e</code> is non-nullable, not-null assertion expression <code>e!!</code> has no effect.</span></p>
