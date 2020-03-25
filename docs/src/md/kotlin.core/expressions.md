@@ -171,27 +171,30 @@ Null reference has type [`kotlin.Nothing?`][`kotlin.Nothing`] and is, by definit
 :::{.paste target=grammar-rule-multiLineStringExpression}
 :::
 
-_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol.
+_String interpolation expressions_ replace the traditional string literals and supersede them.
+A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content inside the quoted literal) and _interpolated expression fragments_, specified by a special syntax using the `$` symbol.
 
-Interpolated expressions can be specified via two forms.
+Interpolated expressions support two different forms.
 
-* `$id`, where `id` is a single identifier available in the current scope;
+* `$id`, where `id` is a [simple path][Identifiers and paths] available in the current scope;
 * `${e}`, where `e` is a valid Kotlin expression.
 
-In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
-The resulting value of a string interpolation expression is the joining of all fragments in the expression.
+> Note: the first form requires `id` to be a simple path; if you want to reference a qualified path (e.g., `foo.bar`), you should use the second form as `${foo.bar}`.
+
+In either case, the interpolated value is evaluated and converted into `kotlin.String` by a process defined below. 
+The resulting value of a string interpolation expression is the concatenation of all fragments in the expression.
 
 An interpolated value $v$ is converted to `kotlin.String` according to the following convention:
 
 - If it is equal to the [null reference][Null literal], the result is `"null"`;
-- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
+- Otherwise, the result is $v$`.toString()` where `toString` is the [`kotlin.Any`][`kotlin.Any`] member function (no overloading resolution is performed to choose this function in this context).
 
 There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions.
 The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be [escaped][Escaped characters] in the same way they are escaped in character literals.
 On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.
 
-> Note: among other things, this means that the escaping of the `$` symbol is impossible in multiline strings. 
-> If you need an escaped `$` symbol, use an interpolation fragment instead: `"${'$'}"`
+> Note: among other things, this means that escaping of the `$` symbol is impossible in multiline strings.
+> If you need an escaped `$` symbol, use an interpolated expression `"${'$'}"` instead.
 
 String interpolation expression always has type `kotlin.String`.
 
@@ -427,7 +430,7 @@ val c = when(b) {
 Operator symbol `||` performs logical disjunction over two values of type `kotlin.Boolean`.
 This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `false`.
 
-Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 The type of logical disjunction expression is `kotlin.Boolean`.
 
 ### Logical conjunction expression
@@ -438,7 +441,7 @@ The type of logical disjunction expression is `kotlin.Boolean`.
 Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
 This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `true`.
 
-Both operands of a logical conjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+Both operands of a logical conjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 The type of logical disjunction expression is `kotlin.Boolean`.
 
 ### Equality expressions
@@ -457,7 +460,7 @@ There are two kinds of equality operators: *reference equality operators* and *v
 These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference*: two values are equal by reference if and only if they represent the same runtime value.
 In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
 
-For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:
+For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
@@ -466,12 +469,17 @@ For special values created without explicit constructor calls, notably, the cons
 
 Reference equality expressions always have type `kotlin.Boolean`.
 
-> Note: in the current version of Kotlin, using the reference equality expression to compare [built-in integer values][Built-in integer types] or [built-in floating-point values][Built-in floating point arithmetic types] is deprecated as these have no available constructors and such a comparison is meaningless and error-prone due to the reasons stated above
+Kotlin checks the applicability of reference equality operators at compile-time and may reject certain combinations of types for `A` and `B`.
+Specifically, it uses the following basic principle.
+
+> If type of `A` and type of `B` are definitely distinct and not related by subtyping, `A === B` is an invalid expression and should result in a compile-time error.
+
+> Informally: this principle means "no two objects of different types can be equal by reference".
 
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are different from [other overloadable operators][Operator overloading] and have the following expansion:
+These operators are overloadable, but are different from [other overloadable operators][Operator overloading] and have the following expansion:
 
 - `A == B` is exactly the same as `(A as? Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
 - `A != B` is exactly the same as `!((A as? Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
@@ -481,7 +489,7 @@ Value equality expressions always have type `kotlin.Boolean` as does the `equals
 Kotlin checks the applicability of value equality operators at compile-time and may reject certain combinations of types for `A` and `B`.
 Specifically, it uses the following basic principle.
 
-> If type of `A` (and all of its possible subtypes) and type of `B` are definitely not related by subtyping (or vice versa), `A == B` is an invalid expression and should result in a compile-time error.
+> If type of `A` and type of `B` are definitely distinct and not related by subtyping, `A == B` is an invalid expression and should result in a compile-time error.
 
 > Informally: this principle means "no two objects unrelated by subtyping can ever be considered equal by `==`".
 
@@ -497,7 +505,7 @@ These operators are [overloadable][Operator overloading] with the following expa
 
 - `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
 - `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
-- `A <= B` is exactly the same as `!integerLess(A.compareTo(B),0)`
+- `A <= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
 - `A >= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
 
 where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
@@ -520,7 +528,7 @@ All comparison expressions always have type `kotlin.Boolean`.
 A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
-The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
+The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
 
 > Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), we allow the type $T$ to include non-runtime-available components.
 
@@ -557,8 +565,6 @@ This operator is **lazy**, meaning that if the left-hand side expression is not 
 
 The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.
 
-> Note: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
-
 ### Range expression
 
 :::{.paste target=grammar-rule-rangeExpression}
@@ -581,7 +587,7 @@ A range expression has the same type as the return type of the corresponding `ra
 :::{.paste target=grammar-rule-additiveOperator}
 :::
 
-An *additive expression* is a binary expression which uses the addition (`+`) or subtraction (`-`) operators.
+An *additive expression* is a binary expression which uses an addition (`+`) or subtraction (`-`) operators.
 These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A + B` is exactly the same as `A.plus(B)`
@@ -599,7 +605,7 @@ An additive expression has the same type as the return type of the corresponding
 :::{.paste target=grammar-rule-multiplicativeOperator}
 :::
 
-A *multiplicative expression* is a binary expression which uses the multiplication (`*`), division (`/`) or remainder (`%`) operators.
+A *multiplicative expression* is a binary expression which uses a multiplication (`*`), division (`/`) or remainder (`%`) operators.
 These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A * B` is exactly the same as `A.times(B)`
@@ -608,7 +614,7 @@ These are [overloadable][Operator overloading] operators with the following expa
 
 where `times`, `div`, `rem` is a valid operator function available in the current scope.
 
-> Note: as of Kotlin version 1.2.31, there exists an additional overloadable operator for `%` called `mod`, which is deprecated.
+> Note: in Kotlin version 1.3 and earlier, there was an additional overloadable operator for `%` called `mod`, which has been removed in Kotlin 1.4.
 
 The return type of these functions is not restricted.
 A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.
@@ -620,7 +626,7 @@ A multiplicative expression has the same type as the return type of the correspo
 :::{.paste target=grammar-rule-asOperator}
 :::
 
-A *cast expression* is a binary expression which uses the cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
+A *cast expression* is a binary expression which uses cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
 
 An **`as` cast expression** `E as T` is called *an unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
@@ -635,10 +641,10 @@ This expression is similar to the unchecked cast expression in that it also does
 If type $T$ is not a [runtime-available][Runtime-available types] type, then the check is not performed and `null` is never returned, leading to potential runtime errors later in the program execution.
 This situation should be reported as a compile-time warning.
 
-> Note: if type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
-> This is another potentially erroneous situation, which should be reported as a compile-time warning.
+If type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
+This is another potentially erroneous situation, which should be reported as a compile-time warning.
 
-The checked cast expression type is the [nullable][Nullable types] variant of the type $T$.
+The checked cast expression result has the type which is the [nullable][Nullable types] variant of the type $T$ specified in the expression.
 
 > Note: cast expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.
 
@@ -656,6 +662,8 @@ The checked cast expression type is the [nullable][Nullable types] variant of th
 Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
 
+TODO([Kotlin 1.4] Update to no labels)
+
 #### Prefix increment expression
 
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
@@ -663,7 +671,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `++A` is exactly the same as `when(val $tmp = A.inc()) { else -> A = $tmp; $tmp }` where `inc` is a valid operator function available in the current scope.
 
-> Note: informally, `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
+> Informally: `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
 
 For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -680,7 +688,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `--A` is exactly the same as `when(val $tmp = A.dec()) { else -> A = $tmp; $tmp }` where `dec` is a valid operator function available in the current scope.
 
-> Note: informally, `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
+> Informally: `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
 
 For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -733,7 +741,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `A++` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.inc(); $tmp }` where `inc` is a valid operator function available in the current scope.
 
-> Note: informally, `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
+> Informally: `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
 
 For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
@@ -741,7 +749,7 @@ Otherwise, it is a compile-time error.
 As the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A postfix increment expression has the same type as its operand expression (`A` in our examples).
+A postfix increment expression has the same type as its operand expression (for our examples, the type of `A`).
 
 #### Postfix decrement expression
 
@@ -750,7 +758,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `A--` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.dec(); $tmp }` where `dec` is a valid operator function available in the current scope.
 
-> Note: informally, `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
+> Informally: `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
 
 For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
@@ -758,12 +766,12 @@ Otherwise, it is a compile-time error.
 As the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A postfix decrement expression has the same type as its operand expression (`A` in our examples).
+A postfix decrement expression has the same type as its operand expression (for our examples, the type of `A`).
 
 ### Not-null assertion expression
 
 A *not-null assertion expression* is a postfix expression which uses an operator `!!`.
-For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks, whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
+For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
 If the evaluation result of `e` is not equal to `null`, the result of `e!!` is the evaluation result of `e`.
 
 If the type of `e` is non-nullable, not-null assertion expression `e!!` has no effect.
