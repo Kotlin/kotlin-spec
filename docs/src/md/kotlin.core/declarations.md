@@ -295,8 +295,6 @@ Annotation classes have the following properties:
 
 Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
 
-TODO(...)
-
 #### Interface declaration
 
 Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 
@@ -547,6 +545,14 @@ Crossinline parameters may not be stored or returned from the function, but may 
 Noinline parameters may be treated as any other values.
 
 Particular platforms may introduce additional restrictions or guarantees for the inlining mechanism.
+
+#### Tail recursion optimization
+
+A function may be declared *tail-recursive* by using a special `tailrec` modifier.
+A tail-recursive function that contains a recursive call to itself may be optimized to a non-recursive form by a particular platform in order to avoid problems of recursion such as a possibility of stack overflows possible on some platforms.
+
+In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function.
+If a function declaration is marked with the `tailrec` modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.
 
 ### Property declaration
 
@@ -990,13 +996,5 @@ There is a partial order of *weakness* between different visibility modifiers:
 > In particular, an `inline` function cannot access entities with a stronger visibility (i.e. `public inline` function accessing a `private` property).
 > There is one exception to this: a `public inline` function can access `internal` entities which are marked with a special builtin [annotation][Annotations] `@PublishedApi`.
 
-### Declaration modifiers
 
-TODO(this is a stub)
-
-TODO(do we need this section at all? Seems like modifiers should be covered in their respective sections)
-
-A member function of a classifier declaration may be declared `abstract`, `open` or `override`, which means that it can be (or is supposed to) be overridden in the classes derived from it (see the [inheritance section][Overriding] for details).
-
-TODO(declaration scope)
 
