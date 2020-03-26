@@ -8404,7 +8404,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An <em>indexing expression</em> is a suffix expression which uses one or more subexpression as <em>indices</em> between square brackets (<code>[</code> and <code>]</code>).</span></p>
+<p><span class="sentence">An <em>indexing expression</em> is a suffix expression which uses one or more subexpressions as <em>indices</em> between square brackets (<code>[</code> and <code>]</code>).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
@@ -8556,28 +8556,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence"><code>a?.c</code> is exactly the same as</span></p>
 </div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb55-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = a) <span class="op">{</span></a>
+<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb55-1" title="1"><span class="cf">when</span> (<span class="kw">val</span> $<span class="va">tmp</span> = a) <span class="op">{</span></a>
 <a class="sourceLine" id="cb55-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
 <a class="sourceLine" id="cb55-3" title="3">    <span class="cf">else</span> -&gt; <span class="op">{</span> $tmp.c <span class="op">}</span></a>
 <a class="sourceLine" id="cb55-4" title="4"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">For any right-hand combinations of operators present in <code>c</code>, which are expanded further, <a href="#operator-overloading">as usual</a>.</span></p>
+<p><span class="sentence">for any right-hand combinations of operators present in <code>c</code>, which are expanded further, <a href="#operator-overloading">as usual</a>.</span></p>
 </div></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">The type of <code>a?.c</code> is the <a href="#nullable-types">nullable</a> variant of the type of <code>a.c</code>.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this means the type of <code>a?.c</code> is the <a href="#nullable-types">nullable</a> variant of the type of <code>a.c</code>.</span></p>
+<p><span class="sentence">Note: safe navigation expression may also include the call suffix as <code>a?.c()</code>and is expanded in a similar fashion.</span></p>
 </div>
 </blockquote>
 <h4 id="callable-references">Callable references</h4>
 <div class="paragraph">
-<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">It is not to be confused with <a href="#class-literals">class literals</a> that use similar syntax, but with the keyword <code>class</code> instead of an identifier.</span></p>
+<p><span class="sentence">Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them. </span><span class="sentence">They are not to be confused with <a href="#class-literals">class literals</a> which use similar syntax, but with the keyword <code>class</code> instead of an identifier.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A callable reference <code>A::c</code> where <code>A</code> is a type name and <code>c</code> is a name of a callable available for type <code>A</code> is a <em>callable reference</em> for type <code>A</code>. </span><span class="sentence">A callable reference <code>e::c</code> where <code>e</code> is an expression of type <code>E</code> and <code>c</code> is a name of a callable available for type <code>E</code> is a <em>callable reference</em> for expression <code>e</code>. </span><span class="sentence">The exact callable selected when using this syntax is based on <a href="#overload-resolution">overload resolution</a> much like when accessing the value of a property using the <code>.</code> navigation operator. </span><span class="sentence">However, in some cases there are important differences which we cover in the corresponding paragraphs.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of a callable reference <code>lhs::rhs</code>, the value of the whole expression is different:</span></p>
+<p><span class="sentence">Depending on the meaning of the left-hand and right-hand sides of a callable reference <code>lhs::rhs</code>, the value of the whole expression is defined as follows.</span></p>
 </div>
 <ul>
 <li><span class="sentence">If <code>lhs</code> is a type, but not a value (an example of a type which can also be used as a value is an object type), while <code>rhs</code> is resolved to refer to a property of <code>lhs</code>, <code>lhs::rhs</code> is a <em>type-property</em> reference;</span></li>
@@ -8646,7 +8649,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Being of a function type also means callable references are valid callables themselves, with an appropriate <code>operator invoke</code> overload which allows using call syntax to evaluate such callable with the suitable arguments.</span></p>
+<p><span class="sentence">Being of a function type also means callable references are valid callables themselves, with an appropriate operator <code>invoke</code> overload, which allows using call syntax to evaluate such callable with the suitable arguments.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8658,7 +8661,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="class-literals">Class literals</h4>
 <div class="paragraph">
-<p><span class="sentence">A class literal is very similar in syntax to a <a href="#callable-references">callable reference</a>, with the difference being that it uses the keyword <code>class</code>. </span><span class="sentence">Similar to callable references, there are two forms of class literals: type and value class literals.</span></p>
+<p><span class="sentence">A class literal is similar in syntax to a <a href="#callable-references">callable reference</a>, with the difference being that it uses the keyword <code>class</code>. </span><span class="sentence">Similar to callable references, there are two forms of class literals: type and value class literals.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8666,15 +8669,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">All class literals <code>lhs::class</code> are of type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the <code>lhs</code> type or the <a href="#runtime-type-information">runtime type</a> of the <code>lhs</code> value. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="#runtime-type-information">runtime-available non-nullable type</a> from the current scope. </span><span class="sentence">As the runtime type of any expression cannot be known at compile time, the compile-time type of a class literal is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time type of <code>lhs</code>.</span></p>
+<p><span class="sentence">All class literals <code>lhs::class</code> are of type <code>kotlin.KClass&lt;T&gt;</code> and produce a platform-defined object associated with type <code>T</code>, which, in turn, is either the <code>lhs</code> type or the <a href="#runtime-type-information">runtime type</a> of the <code>lhs</code> value. </span><span class="sentence">In both cases, <code>T</code> must be a <a href="#runtime-type-information">runtime-available non-nullable type</a>. </span><span class="sentence">As the runtime type of any expression cannot be known at compile time, the compile-time type of a class literal is <code>kotlin.KClass&lt;U&gt;</code> where <span class="math inline">\(T &lt;: U\)</span> and <code>U</code> is the compile-time type of <code>lhs</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A class literal can be used to access platform-specific capabilities of the runtime type information available on the current platform, either directly or through reflection facilities.</span></p>
 </div>
 <h4 id="function-calls-and-property-access">Function calls and property access</h4>
 <div class="paragraph">
-<p><span class="sentence">Function call expression is the expression used to invoke functions. </span><span class="sentence">Property access expression is the expression used to access properties. </span><span class="sentence">There are two kinds of both: with and without explicit receiver (the left-hand side of the <code>.</code> operator). </span><span class="sentence">For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the <a href="#overload-resolution">overloading</a> section. </span><span class="sentence">Please note that in some cases function calls are indistinguishable from property access with <code>invoke</code>-convention call suffix.</span></p>
+<p><span class="sentence">Function call expression is an expression used to invoke functions. </span><span class="sentence">Property access expression is an expression used to access properties.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">There are two kinds of both: with and without explicit receiver (the left-hand side of the <code>.</code> operator). </span><span class="sentence">For details on how a particular candidate and receiver for a particular call / property access is chosen, please refer to the <a href="#overload-resolution">Overload resolution</a> section.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: in some cases function calls are syntactically indistinguishable from property accesses with <code>invoke</code>-convention call suffix.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">From this point on in this section we well refer to both as function calls. </span><span class="sentence">As described in <a href="#function-declaration">the function declaration section</a>, function calls receive arguments of several different kinds:</span></p>
 </div>
@@ -8682,17 +8693,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
 <li><span class="sentence">Normal arguments, provided directly inside the parentheses part of the call;</span></li>
 <li><span class="sentence">Named arguments in the form <code>identifier = value</code>, where <code>identifier</code> is a parameter name used at declaration-site of the function;</span></li>
-<li><span class="sentence">Variable-argument arguments, provided the same way as normal arguments;</span></li>
-<li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="#lambda-literals">lambda literal section</a>) for details.</span></li>
+<li><span class="sentence"><a href="#variable-length-parameters">Variable length arguments</a>, provided the same way as normal arguments;</span></li>
+<li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="#lambda-literals">lambda literal section</a> for details).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.</span></p>
+<p><span class="sentence">In addition to these, a function declaration may specify a number of default parameters, which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all the provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">All this happens <strong>before</strong> the function itself is invoked.</span></p>
+<p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">Afterwards, the function itself is invoked.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Some examples (here we use notation similar to the <a href="#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order):</span></p>
+<p><span class="sentence">Examples: we use a notation similar to the <a href="#control--and-data-flow-analysis">control-flow section</a> to illustrate the evaluation order.</span></p>
 </div>
 <div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb57-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">x</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> h<span class="op">(),</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> g<span class="op">())</span></a>
 <a class="sourceLine" id="cb57-2" title="2"><span class="op">...</span></a>
@@ -8705,12 +8717,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb58-3" title="3"><span class="fu">f</span><span class="op">(</span><span class="va">y</span> <span class="op">=</span> <span class="op">{</span>2<span class="op">})</span> <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
 <a class="sourceLine" id="cb58-4" title="4"><span class="fu">f</span> <span class="op">{</span> <span class="dv">2</span> <span class="op">}</span> <span class="co">// $1 = {2}; $2 = h(); $result = f($2, $1)</span></a>
 <a class="sourceLine" id="cb58-5" title="5">f(m()) <span class="op">{</span> <span class="dv">2</span> <span class="op">}</span> <span class="co">// $1 = m(); $2 = {2}; $result = f($1, $2)</span></a></code></pre></div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence"><a href="#operator-overloading">Operator calls</a> work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments. </span><span class="sentence">See <a href="#containment-checking-expression">corresponding section for details</a></span></p>
+<p><span class="sentence">Note: this means that the <a href="#containment-checking-expression">containment-checking operators</a> are effectively evaluated right-to-left w.r.t. their expansion.</span></p>
 </div>
 </blockquote>
 <h4 id="spread-operator-expressions">Spread operator expressions</h4>
@@ -8723,10 +8736,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><em>Spread operator expression</em> is a special kind of expression that is only applicable in the context of calling a function with variable-argument parameters. </span><span class="sentence">For expression <code>*E</code> it is required that <code>E</code> is of <a href="#array-types">an array type</a> and the expression itself is used as a value argument to a call. </span><span class="sentence">This allows passing the array as a <em>spreaded</em> value argument, providing the elements of the array as the variable-size argument of a callable. </span><span class="sentence">It is allowed to mix spreaded arguments with normal arguments, all fitting into the same variable argument slot, with elements of all spreaded arguments supplied in direct sequence.</span></p>
+<p><span class="sentence"><em>Spread operator expression</em> is a special kind of expression which is only applicable in the context of calling a function with <a href="#variable-length-parameters">variable length parameters</a>. </span><span class="sentence">For a spread operator expression <code>*E</code> it is required that <code>E</code> is of an <a href="#array-types">array type</a> and the expression itself is used as a value argument to a <a href="#function-calls-and-property-access">function call</a>. </span><span class="sentence">This allows passing an array as a <em>spread</em> value argument, providing the elements of an array as the variable length argument of a callable. </span><span class="sentence">It is allowed to mix spread arguments with regular arguments, all fitting into the same variable length argument slot, with elements of all spread arguments supplied in sequence.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">For example:</span></p>
+<p><span class="sentence">Example:</span></p>
 </div>
 <div class="sourceCode" id="cb59"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb59-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="kw">vararg</span> <span class="va">c</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span> ... <span class="op">}</span></a>
 <a class="sourceLine" id="cb59-2" title="2">...</a>
@@ -8739,29 +8753,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb59-9" title="9">foo(a, *b, c, *d, *e) </a>
 <a class="sourceLine" id="cb59-10" title="10"><span class="co">// is equivalent to</span></a>
 <a class="sourceLine" id="cb59-11" title="11">foo(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>, <span class="st">&quot;e&quot;</span>, <span class="st">&quot;f&quot;</span>, <span class="st">&quot;g&quot;</span>)</a></code></pre></div>
+</blockquote>
 <div class="paragraph">
-<p><span class="sentence">Spread operator expressions are not allowed in any other context. </span><span class="sentence">See <a href="#variable-length-parameters">variable length parameter section</a> for details.</span></p>
+<p><span class="sentence">Spread operator expressions are not allowed in any other context. </span><span class="sentence">See <a href="#variable-length-parameters">Variable length parameter</a> section for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of a spreaded argument must be a subtype of <span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span> for a variable argument parameter of type <span class="math inline">\(T\)</span>.</span></p>
+<p><span class="sentence">The type of a spread argument must be a subtype of <a href="#array-types"><span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span></a> for a variable length parameter of type <span class="math inline">\(T\)</span>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: for example, for a variable parameter <code>vararg a: Int</code> the type of corresponding argument being spreaded into its position must be a subtype of <code>IntArray</code> and for parameter <code>vararg b: T</code> where <code>T</code> is a classifier type the argument being spreaded must be a subtype of <code>Array&lt;out T&gt;</code>.</span></p>
+<p><span class="sentence">Example: for parameter <code>vararg a: Int</code> the type of a corresponding spread argument must be a subtype of <code>IntArray</code>, for parameter <code>vararg b: T</code> where <code>T</code> is a classifier type the type of a corresponding spread argument must be a subtype of <code>Array&lt;out T&gt;</code>.</span></p>
 </div>
 </blockquote>
 <h3 id="function-literals">Function literals</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>
+<p><span class="sentence">Kotlin supports using functions as values. </span><span class="sentence">This includes, among other things, being able to use named functions (via <a href="#callable-references">function references</a>) as parts of expressions. </span><span class="sentence">However, sometimes it does not make much sense to provide a separate <a href="#function-declaration">function declaration</a>, when one would rather define a function in-place. </span><span class="sentence">This is implemented using <em>function literals</em>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">There are two types of function literals in Kotlin: <em>lambda literals</em> and <em>anonymous function declarations</em>. </span><span class="sentence">Both of these provide a way of defining a function in-place, but have subtle differences.</span></p>
+<p><span class="sentence">There are two types of function literals in Kotlin: <a href="#lambda-literals"><em>lambda literals</em></a> and <a href="#anonymous-function-declarations"><em>anonymous function declarations</em></a>. </span><span class="sentence">Both of these provide a way of defining a function in-place, but have a number of differences which we discuss in their respective sections.</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as some may consider function literals to be closely related to function declarations, <a href="#function-declaration">here</a> is the corresponding section of the specification.</span></p>
-</div>
-</blockquote>
 <h4 id="anonymous-function-declarations">Anonymous function declarations</h4>
 <div id="grammar-rule-anonymousFunction-pasted-85" class="grammar-rule">
 <dl>
@@ -8783,7 +8793,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Anonymous functions do not have a name;</span></li>
 <li><span class="sentence">Anonymous functions cannot have type parameters;</span></li>
 <li><span class="sentence">Anonymous functions cannot have default parameters;</span></li>
-<li><span class="sentence">Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding <a href="#array-types">array type</a> via array type specialization;</span></li>
+<li><span class="sentence">Anonymous functions may have variable length parameters, but they are automatically decayed to non-variable length parameters of the corresponding <a href="#array-types">array type</a> via array type specialization;</span></li>
 <li><span class="sentence">Anonymous functions may omit formal parameter types and return type, if they can be <a href="#type-inference">inferred</a> from the context.</span></li>
 </ul>
 <div class="paragraph">
@@ -8848,79 +8858,85 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If a lambda expression has no parameter list, it can be defining a function with either zero or one parameter, the exact case dependent on the use context of this lambda. </span><span class="sentence">The selection of number of parameters in this case is performed during <a href="#type-inference">type inference</a>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If a lambda expression has no explicit parameter list, but does has one parameter, this parameter can be accessed inside the lambda body using a special property called <code>it</code>.</span></p>
+<p><span class="sentence">If a lambda expression has no explicit parameter list, but does have one parameter, this parameter can be accessed inside the lambda body using a special property called <code>it</code>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: having no explicit parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).</span></p>
+<p><span class="sentence">Note: having no explicit parameter list (no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">Any lambda may define either a normal function or an extension function, the exact case dependent on the use context of the lambda. </span><span class="sentence">If a lambda expression defines an extension function, its extension receiver may be accessed using the standard <code>this</code> syntax inside the lambda body.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals are different from other forms of function declarations in that the <code>return</code> expressions inside lambda body, unless <a href="#return-expressions">labeled</a>, refers to the outer non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such (non-labeled) returns are only allowed if the lambda and all its parent lambdas (if present) are guaranteed to be <a href="#inlining">inlined</a>, otherwise it is a compile-time error.</span></p>
+<p><span class="sentence">Lambda literals are different from other forms of function declarations in that non-labeled <code>return</code> expressions inside lambda body refer to the outer non-lambda function the expression is used in rather than the lambda expression itself. </span><span class="sentence">Such non-labeled returns are only allowed if the lambda and all its parent lambdas (if present) are guaranteed to be <a href="#inlining">inlined</a>, otherwise it is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If a lambda expression is labeled, it can be returned from using the <a href="#return-expressions">labeled return expression</a>. </span><span class="sentence">In addition, if a lambda expression is used as a parameter to a function call, the name of the function called may be used instead of an explicit label.</span></p>
+<p><span class="sentence">If a lambda expression is labeled, it can be returned from using a <a href="#return-expressions">labeled return expression</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a <strong>non-labeled</strong> lambda expression is used as a parameter to a function call, the name of the function called may be used as a label.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If a labeled <code>return</code> expression is used when there are several matching labels available (e.g., inside several nested function calls with the same name), this is resolved as <code>return</code> to the nearest matching label.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">For example:</span></p>
+<p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb62"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb62-1" title="1"><span class="co">// kotlin.run is a standard library inline function receiving a lambda parameter</span></a>
-<a class="sourceLine" id="cb62-2" title="2"></a>
-<a class="sourceLine" id="cb62-3" title="3"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-4" title="4">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-5" title="5">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-6" title="6">            <span class="kw">return</span>; <span class="co">// returns from (1)</span></a>
-<a class="sourceLine" id="cb62-7" title="7">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-8" title="8">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-9" title="9"><span class="op">}</span></a>
-<a class="sourceLine" id="cb62-10" title="10"></a>
-<a class="sourceLine" id="cb62-11" title="11"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-12" title="12">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-13" title="13">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-14" title="14">            <span class="kw">return@b</span>; <span class="co">// returns from (3)</span></a>
-<a class="sourceLine" id="cb62-15" title="15">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-16" title="16">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-17" title="17"><span class="op">}</span></a>
-<a class="sourceLine" id="cb62-18" title="18"></a>
-<a class="sourceLine" id="cb62-19" title="19"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-20" title="20">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-21" title="21">        run <span class="at">c@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-22" title="22">            <span class="kw">return@b</span>; <span class="co">// returns from (2)</span></a>
-<a class="sourceLine" id="cb62-23" title="23">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-24" title="24">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-25" title="25"><span class="op">}</span></a>
-<a class="sourceLine" id="cb62-26" title="26"></a>
-<a class="sourceLine" id="cb62-27" title="27"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-28" title="28">    run <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-29" title="29">        run <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-30" title="30">            <span class="kw">return@run</span>; <span class="co">// returns from (3)</span></a>
-<a class="sourceLine" id="cb62-31" title="31">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-32" title="32">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-33" title="33"><span class="op">}</span></a>
-<a class="sourceLine" id="cb62-34" title="34"></a>
-<a class="sourceLine" id="cb62-35" title="35"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-36" title="36">    run <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-37" title="37">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-38" title="38">            <span class="kw">return@run</span>; <span class="co">// returns from (2)</span></a>
-<a class="sourceLine" id="cb62-39" title="39">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-40" title="40">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-41" title="41"><span class="op">}</span></a>
-<a class="sourceLine" id="cb62-42" title="42"></a>
-<a class="sourceLine" id="cb62-43" title="43"><span class="kw">fun</span> <span class="fu">a</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb62-44" title="44">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb62-45" title="45">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
-<a class="sourceLine" id="cb62-46" title="46">            <span class="kw">return@run</span>; <span class="co">// illegal: both run invocations are labeled</span></a>
-<a class="sourceLine" id="cb62-47" title="47">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-48" title="48">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb62-49" title="49"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb62-1" title="1"><span class="co">// kotlin.run is a standard library inline function</span></a>
+<a class="sourceLine" id="cb62-2" title="2"><span class="co">//   receiving a lambda parameter</span></a>
+<a class="sourceLine" id="cb62-3" title="3"></a>
+<a class="sourceLine" id="cb62-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-5" title="5">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-6" title="6">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-7" title="7">            <span class="kw">return</span>; <span class="co">// returns from (1)</span></a>
+<a class="sourceLine" id="cb62-8" title="8">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-9" title="9">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-10" title="10"><span class="op">}</span></a>
+<a class="sourceLine" id="cb62-11" title="11"></a>
+<a class="sourceLine" id="cb62-12" title="12"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-13" title="13">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-14" title="14">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-15" title="15">            <span class="kw">return@b</span>; <span class="co">// returns from (3)</span></a>
+<a class="sourceLine" id="cb62-16" title="16">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-17" title="17">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-18" title="18"><span class="op">}</span></a>
+<a class="sourceLine" id="cb62-19" title="19"></a>
+<a class="sourceLine" id="cb62-20" title="20"><span class="kw">fun</span> <span class="fu">baz</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-21" title="21">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-22" title="22">        run <span class="at">c@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-23" title="23">            <span class="kw">return@b</span>; <span class="co">// returns from (2)</span></a>
+<a class="sourceLine" id="cb62-24" title="24">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-25" title="25">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-26" title="26"><span class="op">}</span></a>
+<a class="sourceLine" id="cb62-27" title="27"></a>
+<a class="sourceLine" id="cb62-28" title="28"><span class="kw">fun</span> <span class="fu">qux</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-29" title="29">    run <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-30" title="30">        run <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-31" title="31">            <span class="kw">return@run</span>; <span class="co">// returns from (3)</span></a>
+<a class="sourceLine" id="cb62-32" title="32">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-33" title="33">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-34" title="34"><span class="op">}</span></a>
+<a class="sourceLine" id="cb62-35" title="35"></a>
+<a class="sourceLine" id="cb62-36" title="36"><span class="kw">fun</span> <span class="fu">quux</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-37" title="37">    run <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-38" title="38">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-39" title="39">            <span class="kw">return@run</span>; <span class="co">// returns from (2)</span></a>
+<a class="sourceLine" id="cb62-40" title="40">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-41" title="41">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-42" title="42"><span class="op">}</span></a>
+<a class="sourceLine" id="cb62-43" title="43"></a>
+<a class="sourceLine" id="cb62-44" title="44"><span class="kw">fun</span> <span class="fu">quz</span><span class="op">()</span> <span class="op">{</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb62-45" title="45">    run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb62-46" title="46">        run <span class="at">b@</span> <span class="op">{</span> <span class="co">// (3)</span></a>
+<a class="sourceLine" id="cb62-47" title="47">            <span class="kw">return@run</span>; <span class="co">// illegal: both run invocations are labeled</span></a>
+<a class="sourceLine" id="cb62-48" title="48">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-49" title="49">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb62-50" title="50"><span class="op">}</span></a></code></pre></div>
+</blockquote>
 <div class="paragraph">
-<p><span class="sentence">Any properties used inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. <a href="#smart-casts">smart casts</a>. </span><span class="sentence">See corresponding sections for examples.</span></p>
+<p><span class="sentence">Any properties used inside the lambda body are <strong>captured</strong> by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. <a href="#smart-casts">smart casts</a>. </span><span class="sentence">See corresponding sections for details.</span></p>
 </div>
 <h3 id="object-literals">Object literals</h3>
 <div id="grammar-rule-objectLiteral-pasted-89" class="grammar-rule">
@@ -8935,7 +8951,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Object literals are used to define anonymous objects in Kotlin. </span><span class="sentence">Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions. </span><span class="sentence">Anonymous objects, just like <a href="#classifier-declaration">regular object declarations</a>, can have at most one base class and zero or more base interfaces declared in its supertype specifiers.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The main difference between a regular object declaration and an anonymous object is its type. </span><span class="sentence">The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared. </span><span class="sentence">It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, has some interesting effects.</span></p>
+<p><span class="sentence">The main difference between a regular object declaration and an anonymous object is its type. </span><span class="sentence">The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared. </span><span class="sentence">It is similar to a type of a regular object declaration, but, as it cannot be used outside the declaring scope, has some interesting effects.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">When a value of an anonymous object type escapes current scope:</span></p>
@@ -8944,6 +8960,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;</span></li>
 <li><span class="sentence">If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Explain how escaping actually works for locals and stuff…)</span></p>
+</div>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: an implicit cast may arise, for example, from the results of <a href="#type-inference">type inference</a>.</span></p>
