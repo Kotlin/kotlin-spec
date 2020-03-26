@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.spec.utils.format
 import kotlin.js.Promise
 
 
-class DirectLoader: GithubTestsLoader {
+class DirectLoader : GithubTestsLoader {
     private val testFileContents = mutableListOf<Map<String, Any>>()
     private var promisesQueueLength = 0
 

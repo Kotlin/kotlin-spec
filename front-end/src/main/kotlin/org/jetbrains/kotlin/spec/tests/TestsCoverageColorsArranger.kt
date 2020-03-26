@@ -109,7 +109,7 @@ object TestsCoverageColorsArranger {
             if (existingNumberInfo.length.toInt() > 0) {
                 existingNumberInfo.remove()
             }
-            showSentenceCoverageForTestArea(paragraphDiagnosticTests, "diagnostics", sentence, sentenceTests, sentenceCounter )
+            showSentenceCoverageForTestArea(paragraphDiagnosticTests, "diagnostics", sentence, sentenceTests, sentenceCounter)
             showSentenceCoverageForTestArea(paragraphCodegenBoxTests, "box", sentence, sentenceTests, sentenceCounter)
             insertSentenceNumber(sentence, sentenceCounter, sectionPath, paragraphNumber, sentenceCounter)
             sentenceCounter++

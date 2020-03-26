@@ -3,12 +3,10 @@ package org.jetbrains.kotlin.spec.tests
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.utils.*
-import kotlin.browser.window
-import kotlin.js.Json
 import kotlin.js.Promise
 import kotlin.js.json
 
-external fun require(module:String): dynamic
+external fun require(module: String): dynamic
 
 val KotlinPlayground = require("kotlin-playground")
 
@@ -98,11 +96,11 @@ class SpecTestsViewer {
         currentSentenceTests = tests
         testPopup = Popup(
                 PopupConfig(
-                title = "Test coverage of $sentenceText",
-                content = TestsCoverageColorsArranger.TEMPLATE,
-                width = 800,
-                height = 300
-            )
+                        title = "Test coverage of $sentenceText",
+                        content = TestsCoverageColorsArranger.TEMPLATE,
+                        width = 800,
+                        height = 300
+                )
         ).apply { open() }
 
         `$`(TEST_AREA_OPTION_SELECTOR).each { _, el ->
@@ -123,7 +121,8 @@ class SpecTestsViewer {
 
         //TODO: fix appends if test type option is not appended yet
         tests.keys.reversed().forEach { testType ->
-            `$`(TEST_TYPE_SELECTOR).append(TEST_TYPE_OPTION_TEMPLATE.format(testType, testTypes[testType] ?: return@forEach))
+            `$`(TEST_TYPE_SELECTOR).append(TEST_TYPE_OPTION_TEMPLATE.format(testType, testTypes[testType]
+                    ?: return@forEach))
         }
 
         `$`(TEST_TYPE_SELECTOR).show().`val`(`$`(TEST_TYPE_OPTION_SELECTOR).eq(0).`val`().toString())
@@ -138,7 +137,8 @@ class SpecTestsViewer {
 
         `$`(TEST_NUMBER_SELECTOR).empty()
         for ((testNumber, test) in tests) {
-            `$`(TEST_NUMBER_SELECTOR).append(TEST_NUMBER_OPTION_TEMPLATE.format(testNumber, test["description"] ?: continue))
+            `$`(TEST_NUMBER_SELECTOR).append(TEST_NUMBER_OPTION_TEMPLATE.format(testNumber, test["description"]
+                    ?: continue))
         }
 
         `$`(TEST_NUMBER_SELECTOR).show().`val`(`$`(TEST_NUMBER_OPTION_SELECTOR).eq(0).`val`().toString())

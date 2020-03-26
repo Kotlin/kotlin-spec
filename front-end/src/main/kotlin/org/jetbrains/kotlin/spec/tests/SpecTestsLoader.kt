@@ -3,7 +3,9 @@ package org.jetbrains.kotlin.spec.tests
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.tests.loaders.*
-import org.jetbrains.kotlin.spec.utils.*
+import org.jetbrains.kotlin.spec.utils.TestArea
+import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
 import kotlin.browser.window
 
 class SpecTestsLoader(loadType: GithubTestsLoaderType) {
