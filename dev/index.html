@@ -9021,7 +9021,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This-expressions are special kind of expressions used to access <a href="#receivers">receivers</a> available in current <a href="#scopes-and-identifiers">scope</a>. </span><span class="sentence">The basic form of this expression, denoted by <code>this</code> keyword, is used to access the current implicit receiver according to the receiver overloading rules. </span><span class="sentence">In order to access other receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">This-expressions are special kind of expressions used to access <a href="#receivers">receivers</a> available in the current <a href="#scopes-and-identifiers">scope</a>. </span><span class="sentence">The basic form of this expression, denoted by a non-labeled <code>this</code> keyword, is used to access the default implicit receiver according to the receiver priority. </span><span class="sentence">In order to access other implicit receivers, labeled <code>this</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>this@type</code>, where <code>type</code> is a name of any classifier currently being declared (that is, this-expression is located in the <a href="#scopes-and-identifiers">inner scope</a> of the classifier declaration), refers to the implicit object of the type being declared;</span></li>
@@ -9032,7 +9032,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>this@outerFunction</code> notation is exclusive with <code>this@lambda</code> notation, meaning if a lambda literal is labeled, <code>this@outerFunction</code> cannot be used.</span></p>
+<p><span class="sentence">Note: <code>this@outerFunction</code> notation is mutually exclusive with <code>this@lambda</code> notation, meaning if a lambda literal is labeled <code>this@outerFunction</code> cannot be used.</span></p>
 </div>
 </blockquote>
 <blockquote>
@@ -9047,7 +9047,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">In case there are several entities labeled <code>this</code> can refer to via the same name, the <a href="#labels">closest label</a> is used.</span></p>
+<p><span class="sentence">In case there are several entities with the same label, labeled <code>this</code> refers to the <a href="#labels">closest label</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9094,16 +9094,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour. </span><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other receivers, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations.</span></li>
+<li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;</span></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>super&lt;Klazz&gt;@type</code>, where <code>type</code> is a name of any currently declared classifier and <code>Klazz</code> is a name of one of the immediate supertypes of the <code>type</code> classifier, refers to that supertype and its implementations.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: <code>super&lt;Klazz&gt;@type</code> notation can be used only in <a href="#nested-and-inner-classifiers">inner classes</a>, as only inner class can have access to supertypes of other classes, i.e., supertypes of their parent class.</span></p>
+<p><span class="sentence">Note: <code>super&lt;Klazz&gt;@type</code> notation can be used only in <a href="#nested-and-inner-classifiers">inner classes</a>, as only inner classes can have access to supertypes of other classes, i.e., supertypes of their parent class.</span></p>
 </div>
 </blockquote></li>
 </ul>
@@ -9183,32 +9183,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>e</code> is a value of an <a href="#exceptions">exception type</a>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Throwing an exception results in <a href="#catching-exceptions">checking active <code>try</code>-blocks</a>. </span><span class="sentence">See the <a href="#exceptions">exception section</a> section for details.</span></p>
+<p><span class="sentence">Throwing an exception results in <a href="#catching-exceptions">checking active <code>try</code>-blocks</a>. </span><span class="sentence">See the <a href="#exceptions">Exceptions</a> section for details.</span></p>
 </div>
 <h4 id="return-expressions">Return expressions</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>return expression</em>, when used inside a function body, immediately stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any). </span><span class="sentence">A return expression with no value implicitly returns the <code>kotlin.Unit</code> object.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">There are two forms of return expression: a simple return expression, specified using the <code>return</code> keyword, which returns from the innermost <a href="#function-declaration">function declaration</a> (or <a href="#anonymous-function-declarations">Anonymous function declaration</a>) and a labeled return expression of the form <code>return@Context</code> where <code>Context</code> may be one of the following:</span></p>
+<p><span class="sentence">There are two forms of return expression: a simple return expression, specified using the non-labeled <code>return</code> keyword, which returns from the innermost <a href="#function-declaration">function declaration</a> (or <a href="#anonymous-function-declarations">anonymous function declaration</a>), and a labeled return expression of the form <code>return@Context</code> which works as follows.</span></p>
 </div>
 <ul>
-<li><span class="sentence">The name of one of the enclosing function declarations, which refers to this function. </span><span class="sentence">If several declarations match one name, the <code>return</code> is considered to be from the nearest matching function;</span></li>
-<li><span class="sentence">If <code>return@Context</code> is inside a lambda expression body, the name of the function <strong>using</strong> this lambda expression as its argument may be used as <code>Context</code> to refer to the lambda literal itself, unless this lambda literal is <a href="#lambda-literals"><em>labeled</em></a>, in which case the label may be used as <code>Context</code>.</span></li>
+<li><span class="sentence">If <code>return@Context</code> is used inside a named function declaration, the name of the declared function may be used as <code>Context</code> to refer to that function. </span><span class="sentence">If several declarations match the same name, the <code>return@Context</code> is considered to be from the nearest matching function;</span></li>
+<li><span class="sentence">If <code>return@Context</code> is used inside a non-labeled lambda literal, the name of the function <strong>using</strong> this lambda expression as its argument may be used as <code>Context</code> to refer to the lambda literal;</span></li>
+<li><span class="sentence">If <code>return@Context</code> is used inside a labeled lambda literal, the label may be used as <code>Context</code> to refer to the lambda literal.</span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">If a return expression is used in the context of a lambda literal which is <em>not</em> <a href="#inlining"><em>inlined</em></a> in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: these rules mean that a simple return expression inside a lambda expression returns <strong>from the innermost function</strong>, in which this lambda expression is defined.</span></p>
+<p><span class="sentence">Note: these rules mean a simple return expression inside a lambda expression returns <strong>from the innermost function</strong> in which this lambda expression is defined. </span><span class="sentence">They also mean such return expression is allowed only inside <strong>inlined</strong> lambda expressions.</span></p>
 </div>
 </blockquote>
-<div class="paragraph">
-<p><span class="sentence">If a return expression is used in the context of a lambda literal that is not <a href="#inlining"><em>inlined</em></a> in the current context and refers to any function scope that is declared outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Better wording)</span></p>
-</div>
-</div>
 <h4 id="continue-expression">Continue expression</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>continue expression</em> is a jump expression allowed only within loop bodies. </span><span class="sentence">When evaluated, this expression passes the control to the start of the next loop iteration (aka “continue-jumps”).</span></p>
@@ -9220,13 +9216,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A simple continue expression, specified using the <code>continue</code> keyword, which continue-jumps to the innermost loop statement in the current scope;</span></li>
 <li><span class="sentence">A labeled continue expression, denoted <code>continue@Loop</code>, where <code>Loop</code> is a label of a labeled loop statement <code>L</code>, which continue-jumps to the loop <code>L</code>.</span></li>
 </ul>
-<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside <code>when</code> expressions.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">If a continue expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
+<p><span class="sentence">If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
 </div>
 <h4 id="break-expression">Break expression</h4>
 <div class="paragraph">
@@ -9239,18 +9230,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A simple break expression, specified using the <code>break</code> keyword, which break-jumps to the innermost loop statement in the current scope;</span></li>
 <li><span class="sentence">A labeled break expression, denoted <code>break@Loop</code>, where <code>Loop</code> is a label of a labeled loop statement <code>L</code>, which break-jumps to the loop <code>L</code>.</span></li>
 </ul>
-<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">If a break expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: not that simple</span></p>
-</div>
+<p><span class="sentence">If a break expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.</span></p>
 </div>
 <h2 id="operator-overloading">Operator overloading</h2>
 <div class="paragraph">
