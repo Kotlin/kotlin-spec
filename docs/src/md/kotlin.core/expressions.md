@@ -1252,9 +1252,9 @@ TODO(Explain how escaping actually works for locals and stuff...)
 :::{.paste target=grammar-rule-thisExpression}
 :::
 
-This-expressions are special kind of expressions used to access [receivers][Receivers] available in current [scope][Scopes and identifiers].
-The basic form of this expression, denoted by `this` keyword, is used to access the current implicit receiver according to the receiver overloading rules.
-In order to access other receivers, labeled `this` expressions are used.
+This-expressions are special kind of expressions used to access [receivers][Receivers] available in the current [scope][Scopes and identifiers].
+The basic form of this expression, denoted by a non-labeled `this` keyword, is used to access the default implicit receiver according to the receiver priority.
+In order to access other implicit receivers, labeled `this` expressions are used.
 These may be any of the following:
 
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the [inner scope][Scopes and identifiers] of the classifier declaration), refers to the implicit object of the type being declared;
@@ -1262,13 +1262,13 @@ These may be any of the following:
 - `this@lambda`, where `lambda` is a [label][Labels] provided for a [lambda literal][Lambda literals] currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
 - `this@outerFunction`, where `outerFunction` is the name of a function which takes [lambda literal][Lambda literals] currently being declared as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
   
-  > Note: `this@outerFunction` notation is exclusive with `this@lambda` notation, meaning if a lambda literal is labeled, `this@outerFunction` cannot be used.
+  > Note: `this@outerFunction` notation is mutually exclusive with `this@lambda` notation, meaning if a lambda literal is labeled `this@outerFunction` cannot be used.
   
   > Note: `this@outerFunction` and `this@label` notations can be used only in lambda literals which have an extension function type, i.e., have an implicit receiver.
 
   > Important: any other forms of this-expression are illegal and should result in a compile-time error.
 
-In case there are several entities labeled `this` can refer to via the same name, the [closest label][Labels] is used.
+In case there are several entities with the same label, labeled `this` refers to the [closest label][Labels].
 
 > Example:
 > 
@@ -1311,13 +1311,13 @@ Super-forms are used in classifier declarations to access implementations from t
 If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
 
 The basic form of this expression, denoted by `super` keyword, is used to access the **single** immediate supertype of the currently declared classifier.
-In order to access other receivers, extended `super` expressions are used.
+In order to access other supertype implementations, extended `super` expressions are used.
 These may be any of the following:
 
-* `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations.
+* `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;
 * `super<Klazz>@type`, where `type` is a name of any currently declared classifier and `Klazz` is a name of one of the immediate supertypes of the `type` classifier, refers to that supertype and its implementations.
   
-  > Note: `super<Klazz>@type` notation can be used only in [inner classes][Nested and inner classifiers], as only inner class can have access to supertypes of other classes, i.e., supertypes of their parent class.
+  > Note: `super<Klazz>@type` notation can be used only in [inner classes][Nested and inner classifiers], as only inner classes can have access to supertypes of other classes, i.e., supertypes of their parent class.
 
 > Example:
 > ```kotlin
@@ -1385,24 +1385,24 @@ A valid throw expression `throw e` requires that:
 - `e` is a value of an [exception type][Exceptions].
 
 Throwing an exception results in [checking active `try`-blocks][Catching exceptions].
-See the [exception section][Exceptions] section for details.
+See the [Exceptions][Exceptions] section for details.
 
 #### Return expressions
 
 A *return expression*, when used inside a function body, immediately stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
 A return expression with no value implicitly returns the `kotlin.Unit` object.
 
-There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [Anonymous function declaration][Anonymous function declarations]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
+There are two forms of return expression: a simple return expression, specified using the non-labeled `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function declaration][Anonymous function declarations]), and a labeled return expression of the form `return@Context` which works as follows.
 
-- The name of one of the enclosing function declarations, which refers to this function.
-  If several declarations match one name, the `return` is considered to be from the nearest matching function;
-- If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself, unless this lambda literal is [*labeled*][Lambda literals], in which case the label may be used as `Context`.
+- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function.
+  If several declarations match the same name, the `return@Context` is considered to be from the nearest matching function;
+- If `return@Context` is used inside a non-labeled lambda literal, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal;
+- If `return@Context` is used inside a labeled lambda literal, the label may be used as `Context` to refer to the lambda literal.
 
-> Note: these rules mean that a simple return expression inside a lambda expression returns **from the innermost function**, in which this lambda expression is defined.
+If a return expression is used in the context of a lambda literal which is *not* [*inlined*][Inlining] in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.
 
-If a return expression is used in the context of a lambda literal that is not [*inlined*][Inlining] in the current context and refers to any function scope that is declared outside this lambda literal, it is disallowed and should result in a compile-time error.
-
-TODO(Better wording)
+> Note: these rules mean a simple return expression inside a lambda expression returns **from the innermost function** in which this lambda expression is defined.
+> They also mean such return expression is allowed only inside **inlined** lambda expressions.
 
 #### Continue expression
 
@@ -1414,9 +1414,7 @@ There are two forms of continue expressions:
 - A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
 - A labeled continue expression, denoted `continue@Loop`, where `Loop` is a label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-> Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside `when` expressions.
-
-If a continue expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
 
 #### Break expression
 
@@ -1428,11 +1426,4 @@ There are two forms of break expressions:
 - A simple break expression, specified using the `break` keyword, which break-jumps to the innermost loop statement in the current scope;
 - A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
-> Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.
-
-If a break expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
-
-TODO: not that simple
-
-
-
+If a break expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
