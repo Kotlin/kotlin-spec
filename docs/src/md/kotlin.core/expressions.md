@@ -171,27 +171,30 @@ Null reference has type [`kotlin.Nothing?`][`kotlin.Nothing`] and is, by definit
 :::{.paste target=grammar-rule-multiLineStringExpression}
 :::
 
-_String interpolation expressions_ replace the traditional string literals and supersede them. A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content found inside the quoted literal) and _interpolated expressions_, delimited by the special syntax using the `$` symbol.
+_String interpolation expressions_ replace the traditional string literals and supersede them.
+A string interpolation expression consists of one or more fragments of two different kinds: string content fragments (raw pieces of string content inside the quoted literal) and _interpolated expression fragments_, specified by a special syntax using the `$` symbol.
 
-Interpolated expressions can be specified via two forms.
+Interpolated expressions support two different forms.
 
-* `$id`, where `id` is a single identifier available in the current scope;
+* `$id`, where `id` is a [simple path][Identifiers and paths] available in the current scope;
 * `${e}`, where `e` is a valid Kotlin expression.
 
-In either case, the interpolated value is evaluated and converted into a `kotlin.String` by a process defined below. 
-The resulting value of a string interpolation expression is the joining of all fragments in the expression.
+> Note: the first form requires `id` to be a simple path; if you want to reference a qualified path (e.g., `foo.bar`), you should use the second form as `${foo.bar}`.
+
+In either case, the interpolated value is evaluated and converted into `kotlin.String` by a process defined below. 
+The resulting value of a string interpolation expression is the concatenation of all fragments in the expression.
 
 An interpolated value $v$ is converted to `kotlin.String` according to the following convention:
 
 - If it is equal to the [null reference][Null literal], the result is `"null"`;
-- Otherwise, the result is $v$`.toString()` where `toString` is the `kotlin.Any` member function (no overloading resolution is performed to choose the function in this context).
+- Otherwise, the result is $v$`.toString()` where `toString` is the [`kotlin.Any`][`kotlin.Any`] member function (no overloading resolution is performed to choose this function in this context).
 
 There are two kinds of string interpolation expressions: line interpolation expressions and multiline (or raw) interpolation expressions.
 The difference is that some symbols (namely, newline symbols) are not allowed to be used inside line interpolation expressions and they need to be [escaped][Escaped characters] in the same way they are escaped in character literals.
 On the other hand, multiline interpolation expressions allow such symbols inside them, but do not allow single character escaping of any kind.
 
-> Note: among other things, this means that the escaping of the `$` symbol is impossible in multiline strings. 
-> If you need an escaped `$` symbol, use an interpolation fragment instead: `"${'$'}"`
+> Note: among other things, this means that escaping of the `$` symbol is impossible in multiline strings.
+> If you need an escaped `$` symbol, use an interpolated expression `"${'$'}"` instead.
 
 String interpolation expression always has type `kotlin.String`.
 
@@ -427,7 +430,7 @@ val c = when(b) {
 Operator symbol `||` performs logical disjunction over two values of type `kotlin.Boolean`.
 This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `false`.
 
-Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 The type of logical disjunction expression is `kotlin.Boolean`.
 
 ### Logical conjunction expression
@@ -438,7 +441,7 @@ The type of logical disjunction expression is `kotlin.Boolean`.
 Operator symbol `&&` performs logical conjunction over two values of type `kotlin.Boolean`.
 This operator is **lazy**, meaning that it does not evaluate the right hand side argument unless the left hand side argument evaluated to `true`.
 
-Both operands of a logical conjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a type error.
+Both operands of a logical conjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 The type of logical disjunction expression is `kotlin.Boolean`.
 
 ### Equality expressions
@@ -458,7 +461,7 @@ These expressions check if two values are equal (`===`) or non-equal (`!==`) *by
 In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
 A value created by any constructor call is never equal by reference to a null reference.
 
-For special values created without explicit constructor calls, notably, the constant literals and constant expressions composed of those literals, the following holds:
+For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
@@ -467,12 +470,17 @@ For special values created without explicit constructor calls, notably, the cons
 
 Reference equality expressions always have type `kotlin.Boolean`.
 
-> Note: in the current version of Kotlin, using the reference equality expression to compare [built-in integer values][Built-in integer types] or [built-in floating-point values][Built-in floating point arithmetic types] is deprecated as these have no available constructors and such a comparison is meaningless and error-prone due to the reasons stated above
+Kotlin checks the applicability of reference equality operators at compile-time and may reject certain combinations of types for `A` and `B`.
+Specifically, it uses the following basic principle.
+
+> If type of `A` and type of `B` are definitely distinct and not related by subtyping, `A === B` is an invalid expression and should result in a compile-time error.
+
+> Informally: this principle means "no two objects of different types can be equal by reference".
 
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are different from [other overloadable operators][Operator overloading] and have the following expansion:
+These operators are overloadable, but are different from [other overloadable operators][Operator overloading] and have the following expansion:
 
 - `A == B` is exactly the same as `(A as? Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
 - `A != B` is exactly the same as `!((A as? Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
@@ -482,7 +490,7 @@ Value equality expressions always have type `kotlin.Boolean` as does the `equals
 Kotlin checks the applicability of value equality operators at compile-time and may reject certain combinations of types for `A` and `B`.
 Specifically, it uses the following basic principle.
 
-> If type of `A` (and all of its possible subtypes) and type of `B` are definitely not related by subtyping (or vice versa), `A == B` is an invalid expression and should result in a compile-time error.
+> If type of `A` and type of `B` are definitely distinct and not related by subtyping, `A == B` is an invalid expression and should result in a compile-time error.
 
 > Informally: this principle means "no two objects unrelated by subtyping can ever be considered equal by `==`".
 
@@ -498,7 +506,7 @@ These operators are [overloadable][Operator overloading] with the following expa
 
 - `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
 - `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
-- `A <= B` is exactly the same as `!integerLess(A.compareTo(B),0)`
+- `A <= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
 - `A >= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
 
 where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
@@ -521,7 +529,7 @@ All comparison expressions always have type `kotlin.Boolean`.
 A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
-The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compiler error.
+The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
 
 > Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), we allow the type $T$ to include non-runtime-available components.
 
@@ -558,8 +566,6 @@ This operator is **lazy**, meaning that if the left-hand side expression is not 
 
 The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.
 
-> Note: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
-
 ### Range expression
 
 :::{.paste target=grammar-rule-rangeExpression}
@@ -582,7 +588,7 @@ A range expression has the same type as the return type of the corresponding `ra
 :::{.paste target=grammar-rule-additiveOperator}
 :::
 
-An *additive expression* is a binary expression which uses the addition (`+`) or subtraction (`-`) operators.
+An *additive expression* is a binary expression which uses an addition (`+`) or subtraction (`-`) operators.
 These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A + B` is exactly the same as `A.plus(B)`
@@ -600,7 +606,7 @@ An additive expression has the same type as the return type of the corresponding
 :::{.paste target=grammar-rule-multiplicativeOperator}
 :::
 
-A *multiplicative expression* is a binary expression which uses the multiplication (`*`), division (`/`) or remainder (`%`) operators.
+A *multiplicative expression* is a binary expression which uses a multiplication (`*`), division (`/`) or remainder (`%`) operators.
 These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A * B` is exactly the same as `A.times(B)`
@@ -609,7 +615,7 @@ These are [overloadable][Operator overloading] operators with the following expa
 
 where `times`, `div`, `rem` is a valid operator function available in the current scope.
 
-> Note: as of Kotlin version 1.2.31, there exists an additional overloadable operator for `%` called `mod`, which is deprecated.
+> Note: in Kotlin version 1.3 and earlier, there was an additional overloadable operator for `%` called `mod`, which has been removed in Kotlin 1.4.
 
 The return type of these functions is not restricted.
 A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.
@@ -621,7 +627,7 @@ A multiplicative expression has the same type as the return type of the correspo
 :::{.paste target=grammar-rule-asOperator}
 :::
 
-A *cast expression* is a binary expression which uses the cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
+A *cast expression* is a binary expression which uses cast operators `as` or `as?` and has the form `E as/as? T`, where $E$ is an expression and $T$ is a type name.
 
 An **`as` cast expression** `E as T` is called *an unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
@@ -636,10 +642,10 @@ This expression is similar to the unchecked cast expression in that it also does
 If type $T$ is not a [runtime-available][Runtime-available types] type, then the check is not performed and `null` is never returned, leading to potential runtime errors later in the program execution.
 This situation should be reported as a compile-time warning.
 
-> Note: if type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
-> This is another potentially erroneous situation, which should be reported as a compile-time warning.
+If type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
+This is another potentially erroneous situation, which should be reported as a compile-time warning.
 
-The checked cast expression type is the [nullable][Nullable types] variant of the type $T$.
+The checked cast expression result has the type which is the [nullable][Nullable types] variant of the type $T$ specified in the expression.
 
 > Note: cast expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.
 
@@ -657,6 +663,8 @@ The checked cast expression type is the [nullable][Nullable types] variant of th
 Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
 
+TODO([Kotlin 1.4] Update to no labels)
+
 #### Prefix increment expression
 
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
@@ -664,7 +672,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `++A` is exactly the same as `when(val $tmp = A.inc()) { else -> A = $tmp; $tmp }` where `inc` is a valid operator function available in the current scope.
 
-> Note: informally, `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
+> Informally: `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
 
 For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -681,7 +689,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `--A` is exactly the same as `when(val $tmp = A.dec()) { else -> A = $tmp; $tmp }` where `dec` is a valid operator function available in the current scope.
 
-> Note: informally, `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
+> Informally: `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
 
 For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -734,7 +742,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `A++` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.inc(); $tmp }` where `inc` is a valid operator function available in the current scope.
 
-> Note: informally, `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
+> Informally: `A++` stores the value of A to a temporary variable, assigns the result of `A.inc()` to `A` and then returns the temporary variable as the result.
 
 For a postfix increment expression `A++` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
@@ -742,7 +750,7 @@ Otherwise, it is a compile-time error.
 As the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A postfix increment expression has the same type as its operand expression (`A` in our examples).
+A postfix increment expression has the same type as its operand expression (for our examples, the type of `A`).
 
 #### Postfix decrement expression
 
@@ -751,7 +759,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 - `A--` is exactly the same as `when(val $tmp = A) { else -> A = $tmp.dec(); $tmp }` where `dec` is a valid operator function available in the current scope.
 
-> Note: informally, `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
+> Informally: `A--` stores the value of A to a temporary variable, assigns the result of `A.dec()` to `A` and then returns the temporary variable as the result.
 
 For a postfix decrement expression `A--` expression `A` must be [assignable expressions][Assignments].
 Otherwise, it is a compile-time error.
@@ -759,12 +767,12 @@ Otherwise, it is a compile-time error.
 As the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A postfix decrement expression has the same type as its operand expression (`A` in our examples).
+A postfix decrement expression has the same type as its operand expression (for our examples, the type of `A`).
 
 ### Not-null assertion expression
 
 A *not-null assertion expression* is a postfix expression which uses an operator `!!`.
-For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks, whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
+For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
 If the evaluation result of `e` is not equal to `null`, the result of `e!!` is the evaluation result of `e`.
 
 If the type of `e` is non-nullable, not-null assertion expression `e!!` has no effect.
@@ -784,7 +792,7 @@ TODO(Examples)
 :::{.paste target=grammar-rule-indexingSuffix}
 :::
 
-An *indexing expression* is a suffix expression which uses one or more subexpression as *indices* between square brackets (`[` and `]`).
+An *indexing expression* is a suffix expression which uses one or more subexpressions as *indices* between square brackets (`[` and `]`).
 
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
@@ -851,26 +859,28 @@ If followed by the call suffix (arguments in parentheses), `a.c()` may have one 
 
 - `a?.c` is exactly the same as 
   ```kotlin
-  when(val $tmp = a) {
+  when (val $tmp = a) {
       null -> null
       else -> { $tmp.c }
   }
   ```
-  For any right-hand combinations of operators present in `c`, which are expanded further, [as usual][Operator overloading].
+  for any right-hand combinations of operators present in `c`, which are expanded further, [as usual][Operator overloading].
 
-> Note: this means the type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
+The type of `a?.c` is the [nullable][Nullable types] variant of the type of `a.c`.
+
+> Note: safe navigation expression may also include the call suffix as `a?.c()`and is expanded in a similar fashion.
 
 #### Callable references
 
 Callable references are a special kind of expressions used to refer to callables (properties and functions) without actually calling/accessing them.
-It is not to be confused with [class literals][Class literals] that use similar syntax, but with the keyword `class` instead of an identifier.
+They are not to be confused with [class literals][Class literals] which use similar syntax, but with the keyword `class` instead of an identifier.
 
 A callable reference `A::c` where `A` is a type name and `c` is a name of a callable available for type `A` is a *callable reference* for type `A`.
 A callable reference `e::c` where `e` is an expression of type `E` and `c` is a name of a callable available for type `E` is a *callable reference* for expression `e`.
 The exact callable selected when using this syntax is based on [overload resolution][Overload resolution] much like when accessing the value of a property using the `.` navigation operator.
 However, in some cases there are important differences which we cover in the corresponding paragraphs.
 
-Depending on the meaning of the left-hand and right-hand sides of a callable reference `lhs::rhs`, the value of the whole expression is different:
+Depending on the meaning of the left-hand and right-hand sides of a callable reference `lhs::rhs`, the value of the whole expression is defined as follows.
 
 - If `lhs` is a type, but not a value (an example of a type which can also be used as a value is an object type), while `rhs` is resolved to refer to a property of `lhs`, `lhs::rhs` is a *type-property* reference;
 - If `lhs` is a type, but not a value (an example of a type which can also be used as a value is an object type), while `rhs` is resolved to refer to a function available on `rhs`, `lhs::rhs` is a *type-function* reference;
@@ -933,7 +943,7 @@ The types of these expressions are implementation-defined, but the following con
     - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
     The receiver of such callable reference is bound to `lhs`.
 
-Being of a function type also means callable references are valid callables themselves, with an appropriate `operator invoke` overload which allows using call syntax to evaluate such callable with the suitable arguments.
+Being of a function type also means callable references are valid callables themselves, with an appropriate operator `invoke` overload, which allows using call syntax to evaluate such callable with the suitable arguments.
 
 > Informally: one may say that any callable reference is essentially the same as a lambda literal with the corresponding number of arguments, delegating to the callable being referenced.
 
@@ -943,24 +953,26 @@ Please refer to the [corresponding section][Resolving callable references] for d
 
 #### Class literals
 
-A class literal is very similar in syntax to a [callable reference][Callable references], with the difference being that it uses the keyword `class`.
+A class literal is similar in syntax to a [callable reference][Callable references], with the difference being that it uses the keyword `class`.
 Similar to callable references, there are two forms of class literals: type and value class literals.
 
 > Note: class literals are one of the few cases where a parameterized type may (and actually **must**) be used without its type parameters.
 
 All class literals `lhs::class` are of type `kotlin.KClass<T>` and produce a platform-defined object associated with type `T`, which, in turn, is either the `lhs` type or the [runtime type][Runtime type information] of the `lhs` value.
-In both cases, `T` must be a [runtime-available non-nullable type][Runtime type information] from the current scope.
+In both cases, `T` must be a [runtime-available non-nullable type][Runtime type information].
 As the runtime type of any expression cannot be known at compile time, the compile-time type of a class literal is `kotlin.KClass<U>` where $T <: U$ and `U` is the compile-time type of `lhs`.
 
 A class literal can be used to access platform-specific capabilities of the runtime type information available on the current platform, either directly or through reflection facilities.
 
 #### Function calls and property access
 
-Function call expression is the expression used to invoke functions.
-Property access expression is the expression used to access properties.
+Function call expression is an expression used to invoke functions.
+Property access expression is an expression used to access properties.
+
 There are two kinds of both: with and without explicit receiver (the left-hand side of the `.` operator).
-For details on how a particular candidate and receiver for a particular call/property access is chosen, please refer to the [overloading][Overload resolution] section.
-Please note that in some cases function calls are indistinguishable from property access with `invoke`-convention call suffix. 
+For details on how a particular candidate and receiver for a particular call / property access is chosen, please refer to the [Overload resolution][Overload resolution] section.
+
+> Important: in some cases function calls are syntactically indistinguishable from property accesses with `invoke`-convention call suffix.
 
 From this point on in this section we well refer to both as function calls.
 As described in [the function declaration section][Function declaration], function calls receive arguments of several different kinds:
@@ -968,85 +980,82 @@ As described in [the function declaration section][Function declaration], functi
 - Explicit receiver argument, used in calls with explicit receivers;
 - Normal arguments, provided directly inside the parentheses part of the call;
 - Named arguments in the form `identifier = value`, where `identifier` is a parameter name used at declaration-site of the function;
-- Variable-argument arguments, provided the same way as normal arguments;
-- A trailing lambda literal argument, specified outside the parentheses (see [lambda literal section][Lambda literals]) for details.
+- [Variable length arguments][Variable length parameters], provided the same way as normal arguments;
+- A trailing lambda literal argument, specified outside the parentheses (see [lambda literal section][Lambda literals] for details).
 
-In addition to these, a function declaration may specify a number of default arguments, with values not provided at call-site, but evaluated when the call is evaluated none the less.
+In addition to these, a function declaration may specify a number of default parameters, which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.
 
 The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present.
 Function arguments are then evaluated **in the order of their appearance in the function call** left-to-right, with no consideration on how the parameters of the function were specified during function declaration.
 This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given.
-Default arguments not specified in the call are all evaluated **after** all the provided arguments, in the order of their appearance in function declaration.
-All this happens **before** the function itself is invoked.
+Default arguments not specified in the call are all evaluated **after** all provided arguments, in the order of their appearance in function declaration.
+Afterwards, the function itself is invoked.
 
-Some examples (here we use notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order):
-
-```kotlin
-fun f(x: Int = h(), y: Int = g())
-...
-f() // $1 = h(); $2 = g(); $result = f($1, $2)
-f(m(), n()) // $1 = m(); $2 = n(); $result = f($1, $2)
-f(y = n(), x = m()) // $1 = n(); $2 = m(); $result = f($2, $1)
-f(y = n()) // $1 = n(); $2 = h(); $result = f($2, $1)
-```
-
-```kotlin
-fun f(x: Int = h(), y: () -> Int)
-...
-f(y = {2}) // $1 = {2}; $2 = h(); $result = f($2, $1)
-f { 2 } // $1 = {2}; $2 = h(); $result = f($2, $1)
-f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
-```
+> Examples: we use a notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order.
+> 
+> ```kotlin
+> fun f(x: Int = h(), y: Int = g())
+> ...
+> f() // $1 = h(); $2 = g(); $result = f($1, $2)
+> f(m(), n()) // $1 = m(); $2 = n(); $result = f($1, $2)
+> f(y = n(), x = m()) // $1 = n(); $2 = m(); $result = f($2, $1)
+> f(y = n()) // $1 = n(); $2 = h(); $result = f($2, $1)
+> ```
+> 
+> ```kotlin
+> fun f(x: Int = h(), y: () -> Int)
+> ...
+> f(y = {2}) // $1 = {2}; $2 = h(); $result = f($2, $1)
+> f { 2 } // $1 = {2}; $2 = h(); $result = f($2, $1)
+> f(m()) { 2 } // $1 = m(); $2 = {2}; $result = f($1, $2)
+> ```
 
 [Operator calls][Operator overloading] work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.
 
-> Note: this means that the containment-checking operators are effectively evaluated right-to-left because their expansion swaps their arguments.
-> See [corresponding section for details][Containment-checking expression]
+> Note: this means that the [containment-checking operators][Containment-checking expression] are effectively evaluated right-to-left w.r.t. their expansion.
 
 #### Spread operator expressions
 
 :::{.paste target=grammar-rule-postfixUnaryExpression}
 :::
 
-*Spread operator expression* is a special kind of expression that is only applicable in the context of calling a function with variable-argument parameters.
-For expression `*E` it is required that `E` is of [an array type][Array types] and the expression itself is used as a value argument to a call. 
-This allows passing the array as a *spreaded* value argument, providing the elements of the array as the variable-size argument of a callable. 
-It is allowed to mix spreaded arguments with normal arguments, all fitting into the same variable argument slot, with elements of all spreaded arguments supplied in direct sequence.
+*Spread operator expression* is a special kind of expression which is only applicable in the context of calling a function with [variable length parameters][Variable length parameters].
+For a spread operator expression `*E` it is required that `E` is of an [array type][Array types] and the expression itself is used as a value argument to a [function call][Function calls and property access].
+This allows passing an array as a *spread* value argument, providing the elements of an array as the variable length argument of a callable.
+It is allowed to mix spread arguments with regular arguments, all fitting into the same variable length argument slot, with elements of all spread arguments supplied in sequence.
 
-For example:
-
-```kotlin
-fun foo(vararg c: String) { ... }
-...
-val a: String = "a"
-val b: Array<String> = arrayOf("b", "c", "d")
-val c: String = "e"
-val d: Array<String> = arrayOf()
-val e: Array<String> = arrayOf("f", "g")
-...
-foo(a, *b, c, *d, *e) 
-// is equivalent to
-foo("a", "b", "c", "d", "e", "f", "g")
-```
+> Example:
+> 
+> ```kotlin
+> fun foo(vararg c: String) { ... }
+> ...
+> val a: String = "a"
+> val b: Array<String> = arrayOf("b", "c", "d")
+> val c: String = "e"
+> val d: Array<String> = arrayOf()
+> val e: Array<String> = arrayOf("f", "g")
+> ...
+> foo(a, *b, c, *d, *e) 
+> // is equivalent to
+> foo("a", "b", "c", "d", "e", "f", "g")
+> ```
 
 Spread operator expressions are not allowed in any other context.
-See [variable length parameter section][Variable length parameters] for details.
+See [Variable length parameter][Variable length parameters] section for details.
 
-The type of a spreaded argument must be a subtype of $\ATS(T)$ for a variable argument parameter of type $T$.
+The type of a spread argument must be a subtype of [$\ATS(T)$][Array types] for a variable length parameter of type $T$.
 
-> Note: for example, for a variable parameter `vararg a: Int` the type of corresponding argument being spreaded into its position must be a subtype of `IntArray` and for parameter `vararg b: T` where `T` is a classifier type the argument being spreaded must be a subtype of `Array<out T>`.
+> Example: for parameter `vararg a: Int` the type of a corresponding spread argument must be a subtype of `IntArray`, for parameter `vararg b: T` where `T` is a classifier type the type of a corresponding spread argument must be a subtype of `Array<out T>`.
 
 ### Function literals
 
 Kotlin supports using functions as values.
 This includes, among other things, being able to use named functions (via [function references][Callable references]) as parts of expressions.
-Sometimes it does not make much sense to provide a separate function declaration, but rather define a function in-place.
+However, sometimes it does not make much sense to provide a separate [function declaration][Function declaration], when one would rather define a function in-place.
 This is implemented using *function literals*.
 
-There are two types of function literals in Kotlin: *lambda literals* and *anonymous function declarations*.
-Both of these provide a way of defining a function in-place, but have subtle differences.
-
-> Note: as some may consider function literals to be closely related to function declarations, [here][Function declaration] is the corresponding section of the specification.
+There are two types of function literals in Kotlin: [*lambda literals*][Lambda literals] and [*anonymous function declarations*][Anonymous function declarations].
+Both of these provide a way of defining a function in-place, but have a number of differences which we discuss in their respective sections.
 
 #### Anonymous function declarations
 
@@ -1059,7 +1068,7 @@ They have a syntax very similar to function declarations, with the following key
 - Anonymous functions do not have a name;
 - Anonymous functions cannot have type parameters;
 - Anonymous functions cannot have default parameters;
-- Anonymous functions may have variable argument parameters, but they are automatically decayed to non-variable argument parameters of the corresponding [array type][Array types] via array type specialization;
+- Anonymous functions may have variable length parameters, but they are automatically decayed to non-variable length parameters of the corresponding [array type][Array types] via array type specialization;
 - Anonymous functions may omit formal parameter types and return type, if they can be [inferred][Type inference] from the context.
 
 Anonymous function declaration can declare an anonymous extension function by following the [extension function declaration][Extension function declaration] convention.
@@ -1106,77 +1115,79 @@ val plus: (Pair<Int, Double>) -> String = { p ->
 If a lambda expression has no parameter list, it can be defining a function with either zero or one parameter, the exact case dependent on the use context of this lambda.
 The selection of number of parameters in this case is performed during [type inference][Type inference].
 
-If a lambda expression has no explicit parameter list, but does has one parameter, this parameter can be accessed inside the lambda body using a special property called `it`.
+If a lambda expression has no explicit parameter list, but does have one parameter, this parameter can be accessed inside the lambda body using a special property called `it`.
 
-> Note: having no explicit parameter list (and no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).
+> Note: having no explicit parameter list (no arrow operator) in a lambda is different from having zero parameters (nothing preceding the arrow operator).
 
 Any lambda may define either a normal function or an extension function, the exact case dependent on the use context of the lambda.
 If a lambda expression defines an extension function, its extension receiver may be accessed using the standard `this` syntax inside the lambda body.
 
-Lambda literals are different from other forms of function declarations in that the `return` expressions inside lambda body, unless [labeled][Return expressions], refers to the outer non-lambda function the expression is used in rather than the lambda expression itself.
-Such (non-labeled) returns are only allowed if the lambda and all its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it is a compile-time error.
+Lambda literals are different from other forms of function declarations in that non-labeled `return` expressions inside lambda body refer to the outer non-lambda function the expression is used in rather than the lambda expression itself.
+Such non-labeled returns are only allowed if the lambda and all its parent lambdas (if present) are guaranteed to be [inlined][Inlining], otherwise it is a compile-time error.
 
-If a lambda expression is labeled, it can be returned from using the [labeled return expression][Return expressions].
-In addition, if a lambda expression is used as a parameter to a function call, the name of the function called may be used instead of an explicit label.
+If a lambda expression is labeled, it can be returned from using a [labeled return expression][Return expressions].
+
+If a **non-labeled** lambda expression is used as a parameter to a function call, the name of the function called may be used as a label.
 
 If a labeled `return` expression is used when there are several matching labels available (e.g., inside several nested function calls with the same name), this is resolved as `return` to the nearest matching label.
 
-For example:
-
-```kotlin
-// kotlin.run is a standard library inline function receiving a lambda parameter
-
-fun a() { // (1)
-    run b@ { // (2)
-        run b@ { // (3)
-            return; // returns from (1)
-        }
-    }
-}
-
-fun a() { // (1)
-    run b@ { // (2)
-        run b@ { // (3)
-            return@b; // returns from (3)
-        }
-    }
-}
-
-fun a() { // (1)
-    run b@ { // (2)
-        run c@ { // (3)
-            return@b; // returns from (2)
-        }
-    }
-}
-
-fun a() { // (1)
-    run { // (2)
-        run { // (3)
-            return@run; // returns from (3)
-        }
-    }
-}
-
-fun a() { // (1)
-    run { // (2)
-        run b@ { // (3)
-            return@run; // returns from (2)
-        }
-    }
-}
-
-fun a() { // (1)
-    run b@ { // (2)
-        run b@ { // (3)
-            return@run; // illegal: both run invocations are labeled
-        }
-    }
-}
-```
+> Example:
+> 
+> ```kotlin
+> // kotlin.run is a standard library inline function
+> //   receiving a lambda parameter
+> 
+> fun foo() { // (1)
+>     run b@ { // (2)
+>         run b@ { // (3)
+>             return; // returns from (1)
+>         }
+>     }
+> }
+> 
+> fun bar() { // (1)
+>     run b@ { // (2)
+>         run b@ { // (3)
+>             return@b; // returns from (3)
+>         }
+>     }
+> }
+> 
+> fun baz() { // (1)
+>     run b@ { // (2)
+>         run c@ { // (3)
+>             return@b; // returns from (2)
+>         }
+>     }
+> }
+> 
+> fun qux() { // (1)
+>     run { // (2)
+>         run { // (3)
+>             return@run; // returns from (3)
+>         }
+>     }
+> }
+> 
+> fun quux() { // (1)
+>     run { // (2)
+>         run b@ { // (3)
+>             return@run; // returns from (2)
+>         }
+>     }
+> }
+> 
+> fun quz() { // (1)
+>     run b@ { // (2)
+>         run b@ { // (3)
+>             return@run; // illegal: both run invocations are labeled
+>         }
+>     }
+> }
+> ```
 
 Any properties used inside the lambda body are **captured** by the lambda expression and, depending on whether it is inlined or not, affect how these properties are processed by other mechanisms, e.g. [smart casts][Smart casts].
-See corresponding sections for examples.
+See corresponding sections for details.
 
 ### Object literals
 
@@ -1189,12 +1200,14 @@ Anonymous objects, just like [regular object declarations][Classifier declaratio
 
 The main difference between a regular object declaration and an anonymous object is its type.
 The type of an anonymous object is a special kind of type which is usable (and visible) only in the scope where it is declared.
-It is similar to a type of a regular object declaration, but, as it cannot be used outside the scope, has some interesting effects.
+It is similar to a type of a regular object declaration, but, as it cannot be used outside the declaring scope, has some interesting effects.
 
 When a value of an anonymous object type escapes current scope:
 
 - If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;
 - If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.
+
+TODO(Explain how escaping actually works for locals and stuff...)
 
 > Note: an implicit cast may arise, for example, from the results of [type inference][Type inference].
 
@@ -1240,9 +1253,9 @@ When a value of an anonymous object type escapes current scope:
 :::{.paste target=grammar-rule-thisExpression}
 :::
 
-This-expressions are special kind of expressions used to access [receivers][Receivers] available in current [scope][Scopes and identifiers].
-The basic form of this expression, denoted by `this` keyword, is used to access the current implicit receiver according to the receiver overloading rules.
-In order to access other receivers, labeled `this` expressions are used.
+This-expressions are special kind of expressions used to access [receivers][Receivers] available in the current [scope][Scopes and identifiers].
+The basic form of this expression, denoted by a non-labeled `this` keyword, is used to access the default implicit receiver according to the receiver priority.
+In order to access other implicit receivers, labeled `this` expressions are used.
 These may be any of the following:
 
 - `this@type`, where `type` is a name of any classifier currently being declared (that is, this-expression is located in the [inner scope][Scopes and identifiers] of the classifier declaration), refers to the implicit object of the type being declared;
@@ -1250,13 +1263,13 @@ These may be any of the following:
 - `this@lambda`, where `lambda` is a [label][Labels] provided for a [lambda literal][Lambda literals] currently being declared (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression;
 - `this@outerFunction`, where `outerFunction` is the name of a function which takes [lambda literal][Lambda literals] currently being declared as an immediate argument (that is, this-expression is located in the lambda expression body), refers to the implicit receiver object of the lambda expression.
   
-  > Note: `this@outerFunction` notation is exclusive with `this@lambda` notation, meaning if a lambda literal is labeled, `this@outerFunction` cannot be used.
+  > Note: `this@outerFunction` notation is mutually exclusive with `this@lambda` notation, meaning if a lambda literal is labeled `this@outerFunction` cannot be used.
   
   > Note: `this@outerFunction` and `this@label` notations can be used only in lambda literals which have an extension function type, i.e., have an implicit receiver.
 
   > Important: any other forms of this-expression are illegal and should result in a compile-time error.
 
-In case there are several entities labeled `this` can refer to via the same name, the [closest label][Labels] is used.
+In case there are several entities with the same label, labeled `this` refers to the [closest label][Labels].
 
 > Example:
 > 
@@ -1299,13 +1312,13 @@ Super-forms are used in classifier declarations to access implementations from t
 If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
 
 The basic form of this expression, denoted by `super` keyword, is used to access the **single** immediate supertype of the currently declared classifier.
-In order to access other receivers, extended `super` expressions are used.
+In order to access other supertype implementations, extended `super` expressions are used.
 These may be any of the following:
 
-* `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations.
+* `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;
 * `super<Klazz>@type`, where `type` is a name of any currently declared classifier and `Klazz` is a name of one of the immediate supertypes of the `type` classifier, refers to that supertype and its implementations.
   
-  > Note: `super<Klazz>@type` notation can be used only in [inner classes][Nested and inner classifiers], as only inner class can have access to supertypes of other classes, i.e., supertypes of their parent class.
+  > Note: `super<Klazz>@type` notation can be used only in [inner classes][Nested and inner classifiers], as only inner classes can have access to supertypes of other classes, i.e., supertypes of their parent class.
 
 > Example:
 > ```kotlin
@@ -1373,24 +1386,24 @@ A valid throw expression `throw e` requires that:
 - `e` is a value of an [exception type][Exceptions].
 
 Throwing an exception results in [checking active `try`-blocks][Catching exceptions].
-See the [exception section][Exceptions] section for details.
+See the [Exceptions][Exceptions] section for details.
 
 #### Return expressions
 
 A *return expression*, when used inside a function body, immediately stops evaluating the current function and returns to its caller, effectively making the function call expression evaluate to the value specified in this return expression (if any).
 A return expression with no value implicitly returns the `kotlin.Unit` object.
 
-There are two forms of return expression: a simple return expression, specified using the `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [Anonymous function declaration][Anonymous function declarations]) and a labeled return expression of the form `return@Context` where `Context` may be one of the following:
+There are two forms of return expression: a simple return expression, specified using the non-labeled `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function declaration][Anonymous function declarations]), and a labeled return expression of the form `return@Context` which works as follows.
 
-- The name of one of the enclosing function declarations, which refers to this function.
-  If several declarations match one name, the `return` is considered to be from the nearest matching function;
-- If `return@Context` is inside a lambda expression body, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal itself, unless this lambda literal is [*labeled*][Lambda literals], in which case the label may be used as `Context`.
+- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function.
+  If several declarations match the same name, the `return@Context` is considered to be from the nearest matching function;
+- If `return@Context` is used inside a non-labeled lambda literal, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal;
+- If `return@Context` is used inside a labeled lambda literal, the label may be used as `Context` to refer to the lambda literal.
 
-> Note: these rules mean that a simple return expression inside a lambda expression returns **from the innermost function**, in which this lambda expression is defined.
+If a return expression is used in the context of a lambda literal which is *not* [*inlined*][Inlining] in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.
 
-If a return expression is used in the context of a lambda literal that is not [*inlined*][Inlining] in the current context and refers to any function scope that is declared outside this lambda literal, it is disallowed and should result in a compile-time error.
-
-TODO(Better wording)
+> Note: these rules mean a simple return expression inside a lambda expression returns **from the innermost function** in which this lambda expression is defined.
+> They also mean such return expression is allowed only inside **inlined** lambda expressions.
 
 #### Continue expression
 
@@ -1402,9 +1415,7 @@ There are two forms of continue expressions:
 - A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
 - A labeled continue expression, denoted `continue@Loop`, where `Loop` is a label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-> Future use: as of Kotlin 1.2.60, a simple continue expression is not allowed inside `when` expressions.
-
-If a continue expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
 
 #### Break expression
 
@@ -1416,11 +1427,4 @@ There are two forms of break expressions:
 - A simple break expression, specified using the `break` keyword, which break-jumps to the innermost loop statement in the current scope;
 - A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
-> Future use: as of Kotlin 1.2.60, a simple break expression is not allowed inside when expressions.
-
-If a break expression is used in the context of a lambda literal that refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
-
-TODO: not that simple
-
-
-
+If a break expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.

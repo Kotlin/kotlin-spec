@@ -20,7 +20,7 @@ interface GitHubApiSection {
     val git_url: String
 }
 
-class LoaderByGithubApi: GithubTestsLoader {
+class LoaderByGithubApi : GithubTestsLoader {
     private val githubGetContentsUrl = "https://api.github.com/repos/JetBrains/Kotlin/contents"
 
     private fun getTestFilesTreeUrl(currentSection: String, sectionsPath: List<String>): Promise<String> {
@@ -33,7 +33,7 @@ class LoaderByGithubApi: GithubTestsLoader {
                     getBranch()
             )
             override val success: ((data: Any, textStatus: String, jqXHR: JQueryXHR) -> Any)?
-                get() = get@ { data, _, _ ->
+                get() = get@{ data, _, _ ->
                     val response = JSON.parse<List<GitHubApiSection>>(data as String)
 
                     for (section in response) {

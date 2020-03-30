@@ -12,9 +12,10 @@ data class PopupConfig(
         val content: String,
         val maxHeight: Int? = null
 ) {
-    val optimizedWidth get() = `$`(document.body!!).run {
-        width().toInt().let { bodyWidth -> if (bodyWidth - 50 < width) bodyWidth - 50 else width }
-    }
+    val optimizedWidth
+        get() = `$`(document.body!!).run {
+            width().toInt().let { bodyWidth -> if (bodyWidth - 50 < width) bodyWidth - 50 else width }
+        }
 }
 
 private data class PopupSelectors(
@@ -41,17 +42,17 @@ class Popup(private val config: PopupConfig) {
         private const val OFFSET_AROUND_BODY = 50
 
         private val selectors = PopupSelectors(
-            main = ".box",
-            body = ".box .body",
-            close = ".box .title .close",
-            title = ".box .title .text",
-            shadow = ".box_shadow"
+                main = ".box",
+                body = ".box .body",
+                close = ".box .title .close",
+                title = ".box .title .text",
+                shadow = ".box_shadow"
         )
         private val templates = PopupTemplates(
-            wrap = "<div class=\"box_shadow\"></div><div class=\"box\" style=\"width:{1}px;opacity:0.0\">{2}{3}</div>",
-            title = "<div class=\"title\">{1}<div class=\"text\">{2}</div></div>",
-            close = "<a href=\"#\" class=\"close\"></a>",
-            body = "<div class=\"body\" style=\"min-height:{1}px\">{2}</div>"
+                wrap = "<div class=\"box_shadow\"></div><div class=\"box\" style=\"width:{1}px;opacity:0.0\">{2}{3}</div>",
+                title = "<div class=\"title\">{1}<div class=\"text\">{2}</div></div>",
+                close = "<a href=\"#\" class=\"close\"></a>",
+                body = "<div class=\"body\" style=\"min-height:{1}px\">{2}</div>"
         )
     }
 
@@ -77,7 +78,7 @@ class Popup(private val config: PopupConfig) {
         val ownHeight = `$`(selectors.main).height().toFloat()
         val ownWidth = `$`(selectors.main).width().toFloat()
 
-        `$`(selectors.main).css("maxHeight",  "`${maxHeight}px")
+        `$`(selectors.main).css("maxHeight", "`${maxHeight}px")
         `$`(selectors.body).css("maxHeight", "${maxHeight - TITLE_HEIGHT}px")
         `$`(selectors.main).css("top", "${round((windowHeight - ownHeight) / 2)}px")
         `$`(selectors.main).css("left", "${round((windowWidth - ownWidth) / 2)}px")

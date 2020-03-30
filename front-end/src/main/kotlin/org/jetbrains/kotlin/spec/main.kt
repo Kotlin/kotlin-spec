@@ -1,6 +1,5 @@
 package org.jetbrains.kotlin.spec
 
-import kotlin.browser.document
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.links.SentenceFinder
 import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter
@@ -10,6 +9,7 @@ import org.jetbrains.kotlin.spec.tests.SpecTestsViewer
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoaderType
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
+import kotlin.browser.document
 import kotlin.browser.localStorage
 import kotlin.browser.window
 
@@ -93,7 +93,7 @@ fun runAfterDocumentReady() {
         }
 
         mutableMapOf(18 to false, 69 to false).let { keys ->
-            `$`(document).keydown{ e ->
+            `$`(document).keydown { e ->
                 keys[e.keyCode.toInt()] = true
                 true
             }.keyup { e ->

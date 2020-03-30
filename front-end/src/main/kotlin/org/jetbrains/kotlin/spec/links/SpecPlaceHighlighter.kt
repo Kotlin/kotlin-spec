@@ -25,7 +25,7 @@ object SpecPlaceHighlighter {
         val paragraphsInfo = SpecTestsLoader.getParagraphsInfo(sectionElement) ?: return null
 
         return if (paragraphsInfo.size > paragraphNumber - 1) {
-             `$`(paragraphsInfo[paragraphNumber - 1]["paragraphElement"] as HTMLElement)
+            `$`(paragraphsInfo[paragraphNumber - 1]["paragraphElement"] as HTMLElement)
         } else {
             window.alert(PARAGRAPH_NOT_FOUND.format(paragraphNumber, sectionId))
             null

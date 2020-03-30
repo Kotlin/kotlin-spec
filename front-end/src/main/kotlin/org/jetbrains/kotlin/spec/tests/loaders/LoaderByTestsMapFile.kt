@@ -3,14 +3,13 @@ package org.jetbrains.kotlin.spec.tests.loaders
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoader.Companion.loadFileFromRawGithub
 import org.jetbrains.kotlin.spec.utils.TestArea
 import org.jetbrains.kotlin.spec.utils.format
 import kotlin.js.Promise
 
 
-class LoaderByTestsMapFile: GithubTestsLoader {
+class LoaderByTestsMapFile : GithubTestsLoader {
     private val testsMapFilename = "testsMap.json"
 
     private fun loadTestsMapFile(sectionsPath: String) =
