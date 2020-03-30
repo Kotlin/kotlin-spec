@@ -658,12 +658,10 @@ The checked cast expression result has the type which is the [nullable][Nullable
 :::{.paste target=grammar-rule-prefixUnaryOperator}
 :::
 
-#### Annotated and labeled expression
+#### Annotated expression
 
-Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels].
+Any expression in Kotlin may be prefixed with any number of [annotations][Annotations].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
-
-TODO([Kotlin 1.4] Update to no labels)
 
 #### Prefix increment expression
 
