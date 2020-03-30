@@ -3807,7 +3807,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence"><em>Array type specialization</em> <span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span> is a transformation of a generic <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span> type to a corresponding specialized version, which works as follows.</span></p>
+<p><span class="sentence"><em>Array type specialization</em> <span class="math inline">\(\operatorname{\text{ATS}}(A)\)</span> is a transformation of a generic <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span> type to a corresponding specialized version, which works as follows.</span></p>
 </div>
 <ul>
 <li><span class="sentence">if <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span> has a specialized version <code>TArray</code>, <span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\texttt{kotlin.Array}}(T)) = \texttt{TArray}\)</span></span></li>
@@ -5971,6 +5971,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
+<p><span class="sentence">If one needs to provide a named argument to a <a href="#variable-length-parameters">variable length parameter</a>, it can be achieved via either regular named argument <code>arg = arr</code> or a spread operator expression form <code>arg = *arr</code>. </span><span class="sentence">In both cases type of <code>arr</code> must be a subtype of <a href="#array-types"><span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\texttt{kotlin.Array}}(\operatorname{\texttt{out\,}}T))\)</span></a> for a variable length parameter of type <span class="math inline">\(T\)</span>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, only the spread operator expression form for named variable length arguments was supported.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
 <p><span class="sentence">Kotlin also supports <em>default</em> parameters — parameters which have a default value used in function invocation, if the corresponding argument is missing. </span><span class="sentence">Note that default parameters cannot be used to provide a value for positional argument <em>in the middle</em> of the positional argument list; allowing this would create an ambiguity of which argument for position <span class="math inline">\(i\)</span> is the correct one: explicit one provided by the developer or implicit one from the default value.</span></p>
 </div>
 <div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">,</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> 42.0<span class="op">,</span> <span class="va">s</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;Hello&quot;</span><span class="op">):</span> <span class="dt">Double</span> =</a>
@@ -6003,7 +6011,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: we also consider variable length parameters to have such types for the purposes of type inference. </span><span class="sentence">TODO(Something else?)</span></p>
+<p><span class="sentence">Important: we also consider variable length parameters to have such types for the purposes of type inference and named parameters. </span><span class="sentence">TODO(Something else?)</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -8697,12 +8705,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">Explicit receiver argument, used in calls with explicit receivers;</span></li>
 <li><span class="sentence">Normal arguments, provided directly inside the parentheses part of the call;</span></li>
-<li><span class="sentence">Named arguments in the form <code>identifier = value</code>, where <code>identifier</code> is a parameter name used at declaration-site of the function;</span></li>
+<li><span class="sentence"><a href="#named-positional-and-default-parameters">Named arguments</a> in the form <code>identifier = value</code>, where <code>identifier</code> is a parameter name used at declaration-site of the function;</span></li>
 <li><span class="sentence"><a href="#variable-length-parameters">Variable length arguments</a>, provided the same way as normal arguments;</span></li>
 <li><span class="sentence">A trailing lambda literal argument, specified outside the parentheses (see <a href="#lambda-literals">lambda literal section</a> for details).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">In addition to these, a function declaration may specify a number of default parameters, which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.</span></p>
+<p><span class="sentence">In addition to these, a function declaration may specify a number of <a href="#named-positional-and-default-parameters">default parameters</a>, which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present. </span><span class="sentence">Function arguments are then evaluated <strong>in the order of their appearance in the function call</strong> left-to-right, with no consideration on how the parameters of the function were specified during function declaration. </span><span class="sentence">This means that, even if the order at declaration-site was different, arguments at call-site are evaluated in the order they are given. </span><span class="sentence">Default arguments not specified in the call are all evaluated <strong>after</strong> all provided arguments, in the order of their appearance in function declaration. </span><span class="sentence">Afterwards, the function itself is invoked.</span></p>
@@ -8763,7 +8771,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Spread operator expressions are not allowed in any other context. </span><span class="sentence">See <a href="#variable-length-parameters">Variable length parameter</a> section for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of a spread argument must be a subtype of <a href="#array-types"><span class="math inline">\(\operatorname{\text{ATS}}(T)\)</span></a> for a variable length parameter of type <span class="math inline">\(T\)</span>.</span></p>
+<p><span class="sentence">The type of a spread argument must be a subtype of <a href="#array-types"><span class="math inline">\(\operatorname{\text{ATS}}(\operatorname{\texttt{kotlin.Array}}(\operatorname{\texttt{out\,}}T))\)</span></a> for a variable length parameter of type <span class="math inline">\(T\)</span>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
