@@ -443,9 +443,13 @@ fun main(args: Array<String>) {
 }
 ```
 
-All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compiler error.
+> Note: it is prohibited to bind the same named parameter to an argument several times, such invocations should result in a compile-time error.
 
-If one wants to mix named and positional arguments, the argument list must conform to the following form: $P_1, \ldots, P_M, N_1, \ldots, N_Q$, where $P_i$ is a positional argument, $N_j$ is a named argument; i.e., positional arguments must precede all of the named ones.
+All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compile-time error.
+
+If one wants to mix named and positional arguments, the argument list must conform to the following form: $PoN_1, \ldots, PoN_M, N_1, \ldots, N_Q$, where $PoN_i$ is an i-th argument in either positional or named form, $N_j$ is a named argument irregardless of its position.
+
+> Note: in Kotlin version 1.3 and earlier, $PoN_i$ were restricted to positional arguments only.
 
 Kotlin also supports *default* parameters --- parameters which have a default value used in function invocation, if the corresponding argument is missing. Note that default parameters cannot be used to provide a value for positional argument *in the middle* of the positional argument list; allowing this would create an ambiguity of which argument for position $i$ is the correct one: explicit one provided by the developer or implicit one from the default value.
 
@@ -468,7 +472,7 @@ fun main(args: Array<String>) {
 
 In summary, argument list should have the following form:
 
-* Zero or more positional arguments;
+* Zero or more arguments in either positional or named form;
 * Zero or more named arguments.
 
 Missing arguments are bound to their default values, if they exist.
