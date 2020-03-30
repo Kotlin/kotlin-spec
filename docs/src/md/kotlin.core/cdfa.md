@@ -13,8 +13,6 @@ To represent intermediate values created during computation, we use *implicit re
 These are considered to be unique in each CFG fragment (assigning the same register twice in the same CFG may only occur in unrelated program paths) and in the complete CFG, too.
 The numbers given are only notational.
 
-TODO(register reduction (`$1` = `$2` should be removed))
-
 TODO(maybe we do need phi-nodes in the end?)
 
 We introduce a special kind of `eval` nodes, represented in dashed lines, to connect CFG fragments into bigger fragments.
@@ -901,7 +899,155 @@ fun f() = listOf(1, 2).map { it + 2 }.filter { it > 0 }
                v               +---------------------+
 ```
 
-#### `kotlin.Nothing` and its influence on the CFG
+
+
+```kotlin
+fun f(x: Int) {
+    var y = x
+    loop@ while(y != 500) {
+        y++
+        if(y % 20 == 3) break@loop
+    }
+}
+```
+
+```diagram
+           +------------+
+           |            |
+           |   $1 = x   |                             
+           |            |
+           +------+-----+
+                  |                                   
+                  v
+           +------+-----+
+           |            |                        
+           |   y = $1   |
+           |            |
+           +------+-----+
+                  |                              
+                  v
+         +--------+--------+
+         |                 |
+         |   @loop.entry   +<----------------------------+                     
+         |                 |                             |
+         +--------+--------+                             |
+                  |                                      |
+                  v                                      |
+            +-----+------+                               |
+            |            |                               |
+            |   $2 = y   |                               |
+            |            |                               |
+            +-----+------+                               |
+                  |                                      |
+                  v                                      |
+           +------+-------+                              |
+           |              |                              |
+           |   $3 = 500   |                              |
+           |              |                              |
+           +------+-------+                              |
+                  |                                      |
+                  v                                      |
+      +-----------+------------+                         |
+      |                        |                         |
+      |   $4 = $2.equals($3)   |                         |
+      |                        |                         |
+      +----+--------------+----+                         |
+           |              |                              |
+           v              v                              |
++----------+----+    +----+-----------+                  |
+|               |    |                |                  |
+|   assume $4   |    |   assume !$4   |                  |
+|               |    |                |                  |
++-------+-------+    +--------+-------+                  |
+        |                     |                          |
+        v                     v                          |
++-------+-------+     +-------+-------+                  |
+|               |     |               |                  |
+|   $5 = false  |     |   $5 = true   |                  |
+|               |     |               |                  |
++-------+-------+     +-------+-------+                  |
+        |                     |                          |
+        v                     v                          |
++-------+--------+    +-------+-------+                  |
+|                |    |               |                  |
+|   assume !$5   |    |   assume $5   |                  |
+|                |    |               |                  |
++-------+--------+    +-------+-------+                  |
+        |                     |                          |
+        v                     v                          |
++-------+--------+      +-----+------+                   |
+|                |      |            |                   |
+|   @loop.exit   |      |   $6 = y   |                   |
+|                |      |            |                   |
++---+------------+      +-----+------+                   |
+    ^                         |                          |
+    |                         v                          |
+    |                +--------+----------+               |
+    |                |                   |               |
+    |                |   $7 = $6.inc()   |               |
+    |                |                   |               |
+    |                +--------+----------+               |
+    |                         |                          |
+    |                         v                          |
+    |                   +-----+------+                   |
+    |                   |            |                   |
+    |                   |   y = $7   |                   |
+    |                   |            |                   |
+    |                   +-----+------+                   |
+    |                         |                          |
+    |                         v                          |
+    |                   +-----+------+                   |
+    |                   |            |                   |
+    |                   |   $8 = y   |                   |
+    |                   |            |                   |
+    |                   +-----+------+                   |
+    |                         |                          |
+    |                         v                          |
+    |                   +-----+-------+                  |
+    |                   |             |                  |
+    |                   |   $9 = 20   |                  |
+    |                   |             |                  |
+    |                   +-----+-------+                  |
+    |                         |                          |
+    |                         v                          |
+    |               +---------+------------+             |
+    |               |                      |             |
+    |               |   $10 = $8.rem($9)   |             |
+    |               |                      |             |
+    |               +---------+------------+             |
+    |                         |                          |
+    |                         v                          |
+    |                  +------+------+                   |
+    |                  |             |                   |
+    |                  |   $11 = 3   |                   |
+    |                  |             |                   |
+    |                  +------+------+                   |
+    |                         |                          |
+    |                         v                          |
+    |           +-------------+-------------+            |
+    |           |                           |            |
+    |           |   $12 = $10.equals($11)   |            |
+    |           |                           |            |
+    |           +----+----------------+-----+            | 
+    |                |                |                  |
+    |                v                v                  |
+    |    +-----------+----+      +----+------------+     |
+    |    |                |      |                 |     |
+    |    |   assume $12   |      |   assume !$12   |     |
+    |    |                |      |                 |     |
+    |    +-------+--------+      +--------+--------+     |
+    |            |                        |              |
+    +------------+                        +--------------+
+
+
+
+
+
+```
+
+
+
+#### kotlin.Nothing` and its influence on the CFG
 
 As discussed in the [type system][`kotlin.Nothing`] section of this specification, `kotlin.Nothing` is an uninhabited type, meaning an instance of this type can never exist at runtime.
 For the purposes of control-flow graph (and related analyses) this means as soon as an expression is known statically to have `kotlin.Nothing` type it makes all subsequent code **unreachable**.
