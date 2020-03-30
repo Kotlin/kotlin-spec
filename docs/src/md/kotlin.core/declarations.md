@@ -451,6 +451,11 @@ If one wants to mix named and positional arguments, the argument list must confo
 
 > Note: in Kotlin version 1.3 and earlier, $PoN_i$ were restricted to positional arguments only.
 
+If one needs to provide a named argument to a [variable length parameter][Variable length parameters], it can be achieved via either regular named argument `arg = arr` or a spread operator expression form `arg = *arr`.
+In both cases type of `arr` must be a subtype of [$\ATS(\Array(\outV T))$][Array types] for a variable length parameter of type $T$.
+
+> Note: in Kotlin version 1.3 and earlier, only the spread operator expression form for named variable length arguments was supported.
+
 Kotlin also supports *default* parameters --- parameters which have a default value used in function invocation, if the corresponding argument is missing. Note that default parameters cannot be used to provide a value for positional argument *in the middle* of the positional argument list; allowing this would create an ambiguity of which argument for position $i$ is the correct one: explicit one provided by the developer or implicit one from the default value.
 
 ```kotlin
@@ -483,7 +488,7 @@ One of the parameters may be designated as being variable length (aka *vararg*).
 A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position.
 These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type $\Array(\outV P_i)$.
 
-> Important: we also consider variable length parameters to have such types for the purposes of type inference.
+> Important: we also consider variable length parameters to have such types for the purposes of type inference and named parameters.
 > TODO(Something else?)
 
 If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.
