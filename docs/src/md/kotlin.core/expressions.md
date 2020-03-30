@@ -459,6 +459,7 @@ There are two kinds of equality operators: *reference equality operators* and *v
 *Reference equality expressions* are binary expressions which use reference equality operators: `===` and `!==`.
 These expressions check if two values are equal (`===`) or non-equal (`!==`) *by reference*: two values are equal by reference if and only if they represent the same runtime value.
 In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
+A value created by any constructor call is never equal by reference to a null reference.
 
 For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:
 
