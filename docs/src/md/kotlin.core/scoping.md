@@ -120,9 +120,9 @@ Besides identifiers which are introduced by the developer (e.g., via declaring c
 TODO(This is a stub)
 
 Labels are special syntactic marks which allow one to reference certain code fragments or elements.
-Any [expression][Annotated and labeled expression] or [statement][Statements] (including [lambda expressions][Lambda literals]) and [loop statements][Loop statements] can be labeled, with label identifier associated with the corresponding entity.
+[Lambda expressions][Lambda literals]) and [loop statements][Loop statements] are allowed to be labeled, with label identifier associated with the corresponding entity.
 
-TODO([Kotlin 1.4] Labels are allowed only on lambdas and loops)
+> Note: in Kotlin version 1.3 and earlier, labels were allowed to be placed on any expression or statement.
 
 Labels can be *redeclared*, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
 Labels are *scoped, meaning that they are only available in the scope they were declared in.

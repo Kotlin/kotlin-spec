@@ -658,12 +658,10 @@ The checked cast expression result has the type which is the [nullable][Nullable
 :::{.paste target=grammar-rule-prefixUnaryOperator}
 :::
 
-#### Annotated and labeled expression
+#### Annotated expression
 
-Any expression in Kotlin may be prefixed with any number of [annotations][Annotations] and [labels][Labels].
+Any expression in Kotlin may be prefixed with any number of [annotations][Annotations].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
-
-TODO([Kotlin 1.4] Update to no labels)
 
 #### Prefix increment expression
 
@@ -979,11 +977,11 @@ As described in [the function declaration section][Function declaration], functi
 
 - Explicit receiver argument, used in calls with explicit receivers;
 - Normal arguments, provided directly inside the parentheses part of the call;
-- Named arguments in the form `identifier = value`, where `identifier` is a parameter name used at declaration-site of the function;
+- [Named arguments][Named, positional and default parameters] in the form `identifier = value`, where `identifier` is a parameter name used at declaration-site of the function;
 - [Variable length arguments][Variable length parameters], provided the same way as normal arguments;
 - A trailing lambda literal argument, specified outside the parentheses (see [lambda literal section][Lambda literals] for details).
 
-In addition to these, a function declaration may specify a number of default parameters, which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.
+In addition to these, a function declaration may specify a number of [default parameters][Named, positional and default parameters], which allow one to omit specifying them at call-site, in which case their default value is used during the evaluation.
 
 The evaluation of a function call begins with the evaluation of its explicit receiver, if it is present.
 Function arguments are then evaluated **in the order of their appearance in the function call** left-to-right, with no consideration on how the parameters of the function were specified during function declaration.
@@ -1043,7 +1041,7 @@ It is allowed to mix spread arguments with regular arguments, all fitting into t
 Spread operator expressions are not allowed in any other context.
 See [Variable length parameter][Variable length parameters] section for details.
 
-The type of a spread argument must be a subtype of [$\ATS(T)$][Array types] for a variable length parameter of type $T$.
+The type of a spread argument must be a subtype of [$\ATS(\Array(\outV T))$][Array types] for a variable length parameter of type $T$.
 
 > Example: for parameter `vararg a: Int` the type of a corresponding spread argument must be a subtype of `IntArray`, for parameter `vararg b: T` where `T` is a classifier type the type of a corresponding spread argument must be a subtype of `Array<out T>`.
 

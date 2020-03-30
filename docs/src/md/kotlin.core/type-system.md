@@ -205,7 +205,7 @@ However, they are **not** related by subtyping; meaning one cannot pass a `Boole
 
 > Note: specialized and non-specialized array types match modulo their iterator types, which are also specialized; `Iterator<Int>` is specialized to `IntIterator`.
 
-*Array type specialization* $\ATS(T)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
+*Array type specialization* $\ATS(A)$ is a transformation of a generic $\Array(T)$ type to a corresponding specialized version, which works as follows.
 
 * if $\Array(T)$ has a specialized version `TArray`, $\ATS(\Array(T)) = \texttt{TArray}$
 * if $\Array(T)$ does not have a specialized version, $\ATS(\Array(T)) = \Array(T)$
