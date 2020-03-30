@@ -712,12 +712,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb8-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
 <a class="sourceLine" id="cb8-4" title="4">    println(bar(b = <span class="fl">42.0</span>, a = <span class="dv">5</span>, s = <span class="st">&quot;13&quot;</span>))</a>
 <a class="sourceLine" id="cb8-5" title="5">}</a></code></pre></div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compiler error.</span></p>
+<p><span class="sentence">Note: it is prohibited to bind the same named parameter to an argument several times, such invocations should result in a compile-time error.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">All the names of named parameters are resolved at compile-time, meaning that performing a call with a parameter name not used at declaration-site is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If one wants to mix named and positional arguments, the argument list must conform to the following form: <span class="math inline">\(P_1, \ldots, P_M, N_1, \ldots, N_Q\)</span>, where <span class="math inline">\(P_i\)</span> is a positional argument, <span class="math inline">\(N_j\)</span> is a named argument; i.e., positional arguments must precede all of the named ones.</span></p>
+<p><span class="sentence">If one wants to mix named and positional arguments, the argument list must conform to the following form: <span class="math inline">\(PoN_1, \ldots, PoN_M, N_1, \ldots, N_Q\)</span>, where <span class="math inline">\(PoN_i\)</span> is an i-th argument in either positional or named form, <span class="math inline">\(N_j\)</span> is a named argument irregardless of its position.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, <span class="math inline">\(PoN_i\)</span> were restricted to positional arguments only.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Kotlin also supports <em>default</em> parameters — parameters which have a default value used in function invocation, if the corresponding argument is missing. </span><span class="sentence">Note that default parameters cannot be used to provide a value for positional argument <em>in the middle</em> of the positional argument list; allowing this would create an ambiguity of which argument for position <span class="math inline">\(i\)</span> is the correct one: explicit one provided by the developer or implicit one from the default value.</span></p>
 </div>
@@ -739,7 +749,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In summary, argument list should have the following form:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Zero or more positional arguments;</span></li>
+<li><span class="sentence">Zero or more arguments in either positional or named form;</span></li>
 <li><span class="sentence">Zero or more named arguments.</span></li>
 </ul>
 <div class="paragraph">
