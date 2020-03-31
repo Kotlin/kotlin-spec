@@ -819,15 +819,72 @@ fun f() { body... }
 ```
 
 ```kotlin
-class A() { ... }
+class A (...) { 
+    <declaration 1>
+    <declaration 2>
+    <init-block 1>
+    <declaration 3>
+    <init-block 2>
+    ...
+}
 ```
 
+For every declaration and init block in a class body, the control flow is propagated through every element in the order of their appearance.
+Here we give a simplified example.
+
+TODO: in fact, init analysis does work like this, while smart casting does not
+
+TODO: function decls are order-agnostic???
+
 ```diagram
-+-------+------+
-|              |
-|     TODO     |
-|              |
-+-------+------+
+             +
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+:                          :
+:   eval <declaration 1>   :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+:                          :
+:   eval <declaration 2>   :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~+
+:                         :
+:   eval <init-block 1>   :
+:                         :
++~~~~~~~~~~~~+~~~~~~~~~~~~+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+:                          :
+:   eval <declaration 3>   :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~+
+:                         :
+:   eval <init-block 2>   :
+:                         :
++~~~~~~~~~~~~+~~~~~~~~~~~~+
+             |
+             v
+
+            ...
+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~-+
+:                          :
+:   eval <declaration n>   :
+:                          :
++~~~~~~~~~~~~~~~~~~~~~~~~~~+
+
 ```
 
 #### Examples
@@ -1038,7 +1095,9 @@ fun f(x: Int) {
 +---------------------+                        +--------------+
 ```
 
-#### kotlin.Nothing` and its influence on the CFG
+
+
+#### `kotlin.Nothing` and its influence on the CFG
 
 As discussed in the [type system][`kotlin.Nothing`] section of this specification, `kotlin.Nothing` is an uninhabited type, meaning an instance of this type can never exist at runtime.
 For the purposes of control-flow graph (and related analyses) this means as soon as an expression is known statically to have `kotlin.Nothing` type it makes all subsequent code **unreachable**.
