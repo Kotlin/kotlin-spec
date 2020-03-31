@@ -1169,11 +1169,11 @@ Which results in the following diagram (annotated with the analysis results wher
                                               +-----+------+
                                                     |
                                                     v
-                                            +-------+--------+
-                                            |                |
-                                            |   var x = $1   +<~~~    {x -> 1, y -> 0}
-                                            |                |
-                                            +-------+--------+
+                                              +-----+------+
+                                              |            |
+                                              |   x = $1   +<~~~  {x -> 1, y -> 0}
+                                              |            |
+                                              +-----+------+
                                                     |
                                                     v
                                               +-----+------+
@@ -1183,11 +1183,11 @@ Which results in the following diagram (annotated with the analysis results wher
                                               +-----+------+
                                                     |
                                                     v
-                                            +-------+--------+
-                                            |                |
-                                            |   var y = $2   +<~~~    {x -> 1, y -> 1}
-                                            |                |
-                                            +-------+--------+
+                                              +-----+------+
+                                              |            |
+                                              |   y = $2   +<~~~  {x -> 1, y -> 1}
+                                              |            |
+                                              +-----+------+
                                                     |
                                                     v
                                            +--------+---------+
@@ -1200,7 +1200,7 @@ Which results in the following diagram (annotated with the analysis results wher
                               |                 v   v
                       +-------+------+       +--+---+------+
                       |              |       |             |
-       {* -> 0}   ~~~>+   backedge   |       |   $3 = b1   +<~~~   {x -> 1, y -> 1}
+        {* -> 0}  ~~~>+   backedge   |       |   $3 = b1   +<~~~  {x -> 1, y -> 1}
                       |              |       |             |
                       +-------+------+       +---+-----+---+
                               ^                  |     |
@@ -1222,7 +1222,7 @@ Which results in the following diagram (annotated with the analysis results wher
 |                                         v                     |
 |                                   +-----+------+              v
 |                                   |            |
-|                {x -> 1, y -> 2}   |   y = $4   |
+|             {x -> 1, y -> 2}  ~~~>+   y = $4   |
 |                                   |            |
 |                                   +-----+------+
 |                                         |
@@ -1232,19 +1232,19 @@ Which results in the following diagram (annotated with the analysis results wher
 |                                |   @loop2.entry   |
 |                                |                  |
 |                                +--------+---------+
-|   {* -> 0}   ~~+                        |
+|    {* -> 0}  ~~+                        |
 |                :  +-----------------+   |
 |                v  |                 v   v
 |           +----+--+------+       +--+---+-------+
 |           |              |       |              |
-|           |   backedge   |       |   $6 = g()   +<~~~   {x -> 1, y -> 2}
+|           |   backedge   |       |   $6 = g()   +<~~~  {x -> 1, y -> 2}
 |           |              |       |              |
 |           +-------+------+       +------+-------+
 |                   ^                     |
 |                   |                     v
 |                   |               +-----+------+
 |                   |               |            |
-|                   |               |   x = $6   +<~~~   {x -> 2, y -> 2}
+|                   |               |   x = $6   +<~~~  {x -> 2, y -> 2}
 |                   |               |            |
 |                   |               +-----+------+
 |                   |                     |
@@ -1266,7 +1266,7 @@ Which results in the following diagram (annotated with the analysis results wher
 |                   +--+--------+                     v
 |                      ^                     +--------+--------+
 |                      :                     |                 |
-|                                            |   @loop2.exit   +<~~~   {x -> 2, y -> 2}
+|                                            |   @loop2.exit   +<~~~  {x -> 2, y -> 2}
 |                {x -> 2, y -> 2}            |                 |
 |                                            +--------+--------+
 |                                                     |
