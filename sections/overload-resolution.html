@@ -146,6 +146,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
 <li><span class="sentence">If a lambda expression has an extension function type, <code>this</code> argument of the lambda expression is also available inside the lambda expression declaration.</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a phantom static implicit <code>this</code> is a special receiver, which is included in the receiver chain for the purposes of handling static functions from <a href="declarations.html#enum-class-declaration">enum classes</a>. </span><span class="sentence">It may also be used on platforms to handle their static-like entities, e.g., static methods on JVM platform.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">The available receivers are prioritized in the following way:</span></p>
 </div>
@@ -159,6 +164,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: DSL-specific annotations (marked with <a href="annotations.html#built-in-annotations"><code>kotlin.DslMarker</code></a> annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -249,7 +259,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">For property-like callables, a call <span class="math inline">\(X(Y_0, \ldots, Y_N)\)</span> is an <a href="operator-overloading.html#operator-overloading">overloadable operator</a> which is expanded to <span class="math inline">\(X\text{.invoke}(Y_0, \ldots, Y_N)\)</span>. </span><span class="sentence">The call may contain type parameters, named parameters, [variable argument parameter expansion][Spread operator] and trailing lambda parameters, all of which are forwarded as-is to the corresponding <code>invoke</code> function.</span></p>
+<p><span class="sentence">For property-like callables, a call <span class="math inline">\(X(Y_0, \ldots, Y_N)\)</span> is an <a href="operator-overloading.html#operator-overloading">overloadable operator</a> which is expanded to <span class="math inline">\(X\text{.invoke}(Y_0, \ldots, Y_N)\)</span>. </span><span class="sentence">The call may contain type parameters, named parameters, <a href="expressions.html#spread-operator-expressions">variable argument parameter expansion</a> and trailing lambda parameters, all of which are forwarded as-is to the corresponding <code>invoke</code> function.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The set of implicit receivers itself (denoted by <a href="expressions.html#this-expressions"><code>this</code></a> expression) may also be used as a property-like callable using <code>this</code> as the left-hand side of the call expression. </span><span class="sentence">As with normal property-like callables, <span class="math inline">\(\texttt{this@A}(Y_0, \ldots, Y_N)\)</span> is an overloadable operator which is expanded to <span class="math inline">\(\texttt{this@A.invoke}(Y_0, \ldots, Y_N)\)</span>.</span></p>
