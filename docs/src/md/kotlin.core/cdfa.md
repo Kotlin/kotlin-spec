@@ -985,12 +985,12 @@ fun f(x: Int) {
               |                 |
               |   @loop.entry   +<----------------------------+
               |                 |                             |
-              +--------+--------+                             |
-                       |                                      |
-                       v                                      |
-                 +-----+------+                               |
-                 |            |                               |
-                 |   $2 = y   |                               |
+              +--------+--------+                     +-------+------+
+                       |                              |              |
+                       v                              |   backedge   |
+                 +-----+------+                       |              |
+                 |            |                       +-------+------+
+                 |   $2 = y   |                               ^
                  |            |                               |
                  +-----+------+                               |
                        |                                      |
@@ -1093,9 +1093,8 @@ fun f(x: Int) {
 |             +-------+--------+      +--------+--------+     |
 |                     |                        |              |
 +---------------------+                        +--------------+
+
 ```
-
-
 
 #### `kotlin.Nothing` and its influence on the CFG
 
@@ -1144,6 +1143,140 @@ After running this analysis, for every backedge $b$ and every variable $x$ prese
 
 > Note: this analysis does involve a possibly **infinite** lattice (a lattice of natural numbers) and may seem to diverge on some graphs.
 > However, if we assume that every backedge in an arbitrary CFG is marked with a `backedge` instruction, it is trivial to prove that no number in the lattice will ever exceed the number of assignments (which is **finite**) in the analyzed program as any loop in the graph will contain at least one backedge.
+
+Example: 
+
+Consider the following Kotlin code:
+
+```kotlin
+var x: Int = 0 // {x -> 1}
+var y: Int = 0 // {x -> 1, y -> 1}
+while(b1) { // {x -> 1, y -> 1}
+    y = f() // {x -> 1, y -> 2}
+    do { // {x -> 1, y -> 2}
+        x = g() // {x -> 2, y -> 2}
+    } while(b2) // backedge: killDataFlow(x)
+} // backedge: killDataFlow(y), killDataFlow(x)
+```
+
+Which results in the following diagram (annotated with the analysis results where it is important):
+
+```diagram
+                                              +------------+
+                                              |            |
+                                              |   $1 = 0   |
+                                              |            |
+                                              +-----+------+
+                                                    |
+                                                    v
+                                            +-------+--------+
+                                            |                |
+                                            |   var x = $1   +<~~~    {x -> 1, y -> 0}
+                                            |                |
+                                            +-------+--------+
+                                                    |
+                                                    v
+                                              +-----+------+
+                                              |            |
+                                              |   $2 = 0   |
+                                              |            |
+                                              +-----+------+
+                                                    |
+                                                    v
+                                            +-------+--------+
+                                            |                |
+                                            |   var y = $2   +<~~~    {x -> 1, y -> 1}
+                                            |                |
+                                            +-------+--------+
+                                                    |
+                                                    v
+                                           +--------+---------+
+                                           |                  |
+                                           |   @loop1:entry   |
+                                           |                  |
+                                           +--------+---------+
+                                                    |
+                              +-----------------+   |
+                              |                 v   v
+                      +-------+------+       +--+---+------+
+                      |              |       |             |
+       {* -> 0}   ~~~>+   backedge   |       |   $3 = b1   +<~~~   {x -> 1, y -> 1}
+                      |              |       |             |
+                      +-------+------+       +---+-----+---+
+                              ^                  |     |
+                              |           +------+     +--------+
+                              |           v                     v
+                              |   +-------+-------+    +--------+-------+
+                              |   |               |    |                |
+                              |   |   assume $3   |    |   assume !$3   |
+                              |   |               |    |                |
+    {x -> 2, y -> 2}          |   +-------+-------+    +--------+-------+
+           :                  |           |                     |
+           v                  |           v                     v
++----------+------------------+    +------+-------+    +--------+--------+
+|                                  |              |    |                 |
+|                                  |   $4 = f()   |    |   @loop1:exit   |
+|                                  |              |    |                 |
+|                                  +------+-------+    +--------+--------+
+|                                         |                     |
+|                                         v                     |
+|                                   +-----+------+              v
+|                                   |            |
+|                {x -> 1, y -> 2}   |   y = $4   |
+|                                   |            |
+|                                   +-----+------+
+|                                         |
+|                                         v
+|                                +--------+---------+
+|                                |                  |
+|                                |   @loop2.entry   |
+|                                |                  |
+|                                +--------+---------+
+|   {* -> 0}   ~~+                        |
+|                :  +-----------------+   |
+|                v  |                 v   v
+|           +----+--+------+       +--+---+-------+
+|           |              |       |              |
+|           |   backedge   |       |   $6 = g()   +<~~~   {x -> 1, y -> 2}
+|           |              |       |              |
+|           +-------+------+       +------+-------+
+|                   ^                     |
+|                   |                     v
+|                   |               +-----+------+
+|                   |               |            |
+|                   |               |   x = $6   +<~~~   {x -> 2, y -> 2}
+|                   |               |            |
+|                   |               +-----+------+
+|                   |                     |
+|                   |                     v
+|                   |              +------+------+
+|                   |              |             |
+|                   |              |   $5 = b2   |
+|                   |              |             |
+|                   |              +---+-----+---+
+|                   |                  |     |
+|                   |           +------+     +--------+
+|                   |           v                     v
+|                   |   +-------+-------+    +--------+-------+
+|                   |   |               |    |                |
+|                   |   |   assume $5   |    |   assume !$5   |
+|                   |   |               |    |                |
+|                   |   +-------+-------+    +--------+-------+
+|                   |           |                     |
+|                   +--+--------+                     v
+|                      ^                     +--------+--------+
+|                      :                     |                 |
+|                                            |   @loop2.exit   +<~~~   {x -> 2, y -> 2}
+|                {x -> 2, y -> 2}            |                 |
+|                                            +--------+--------+
+|                                                     |
+|                                                     |
++-----------------------------------------------------+
+```
+
+There are two backedges: one for the inner loop (the inner backedge) and one for the outer loop (the outer backedge).
+The inner backedge has one predecessor with state $\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}$ and one successor with state $\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 2 \}$ with the value for `x` being less in the successor, meaning that we need to insert $\killDataFlow(\texttt{x})$ after the backedge.
+The outer backedge has one predecessor with state $\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}$ and one successor with state $\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 1 \}$ with values for both variables being less in the successor, meaning we need to insert  $\killDataFlow(\texttt{x})$ and  $\killDataFlow(\texttt{y})$ after the backedge. 
 
 #### Variable initialization analysis
 
