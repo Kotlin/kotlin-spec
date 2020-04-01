@@ -123,18 +123,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin has a concept of <em>type inference</em> for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler. </span><span class="sentence">There are two kinds of type inference supported by Kotlin.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Local type inference, for inferring types of expressions locally, in statement/expression scope;</span></li>
+<li><span class="sentence"><a href="type-inference.html#local-type-inference">Local type inference</a>, for inferring types of expressions locally, in statement/expression scope;</span></li>
 <li><span class="sentence">Function signature type inference, for inferring types of function return values and/or parameters.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Where do we talk about the function signature type inference?)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver. </span><span class="sentence">For this reason, type inference is applicable in situations when the type context contains enough information for the type constraint solver to create an <a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution">optimal constraint system solution</a> w.r.t. type inference problem.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver.</span></p>
+<p><span class="sentence">Note: for the purposes of type inference, an optimal solution is the one which does not contain any free type variables with no explicit constraints on them.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(write about when type inference works and when it does not)</span></p>
+<p><span class="sentence">TODO(Is this true?)</span></p>
 </div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin also supports flow-sensitive types in the form of <a href="type-inference.html#smart-casts">smart casts</a>, which have direct effect on type inference. </span><span class="sentence">Therefore, we will discuss them first, before talking about type inference itself.</span></p>
 </div>
 <h3 id="smart-casts">Smart casts</h3>
 <div class="paragraph">
@@ -290,7 +301,7 @@ P_2 \times N_2
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: transfer function for <code>==</code> and <code>!=</code> are used only if the corresponding <a href="expressions.html#value-equality-expressions"><code>equals</code> implementation</a> is known to be equivalent to <a href="expressions.html#reference-equality-expressions">reference equality check</a>. </span><span class="sentence">For example, generated <code>equals</code> implementation for <a href="declarations.html#data-class-declaration">data classes</a> is considered to be equivalent to reference equality check.</span></p>
+<p><span class="sentence">Important: transfer functions for <code>==</code> and <code>!=</code> are used only if the corresponding <a href="expressions.html#value-equality-expressions"><code>equals</code> implementation</a> is known to be equivalent to <a href="expressions.html#reference-equality-expressions">reference equality check</a>. </span><span class="sentence">For example, generated <code>equals</code> implementation for <a href="declarations.html#data-class-declaration">data classes</a> is considered to be equivalent to reference equality check.</span></p>
 </div>
 </blockquote>
 <div class="TODO">
@@ -376,22 +387,18 @@ P_2 \times N_2
 <p><span class="sentence">Smart casts are introduced by the following Kotlin constructions.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Conditional expressions (<code>if</code> and <code>when</code>);</span></li>
-<li><span class="sentence">Elvis operator (operator <code>?:</code>);</span></li>
-<li><span class="sentence">Safe navigation operator (operator <code>?.</code>);</span></li>
-<li><span class="sentence">Logical conjunction expressions (operator <code>&amp;&amp;</code>);</span></li>
-<li><span class="sentence">Logical disjunction expressions (operator <code>||</code>);</span></li>
-<li><span class="sentence">Not-null assertion expressions (operator <code>!!</code>);</span></li>
-<li><span class="sentence">Direct casting expression (operator <code>as</code>);</span></li>
-<li><span class="sentence">Type checking expression (operator <code>is</code>);</span></li>
-<li><span class="sentence">Direct assignments;</span></li>
+<li><span class="sentence"><a href="expressions.html#conditional-expression">Conditional expressions</a> (<code>if</code>)</span></li>
+<li><span class="sentence"><a href="expressions.html#when-expression">When expressions</a> (<code>when</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#elvis-operator-expression">Elvis operator</a> (operator <code>?:</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#navigation-operators">Safe navigation operator</a> (operator <code>?.</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#logical-conjunction-expression">Logical conjunction expressions</a> (operator <code>&amp;&amp;</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#logical-disjunction-expression">Logical disjunction expressions</a> (operator <code>||</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#not-null-assertion-expression">Not-null assertion expressions</a> (operator <code>!!</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#cast-expression">Cast expressions</a> (operator <code>as</code>);</span></li>
+<li><span class="sentence"><a href="expressions.html#type-checking-expression">Type-checking expressions</a> (operator <code>is</code>);</span></li>
+<li><span class="sentence"><a href="statements.html#assignments">Direct assignments</a>;</span></li>
 <li><span class="sentence">Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.</span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: links for all these</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: property declarations are not listed here, as their types are derived from initializers.</span></p>
@@ -583,60 +590,69 @@ P_2 \times N_2
 <div class="paragraph">
 <p><span class="sentence">In some cases, it is possible to introduce smart casting <em>between properties</em> if it is known at compile-time that these properties are <em>bound</em> to each other. </span><span class="sentence">For instance, if a variable <code>a</code> is initialized as a copy of variable <code>b</code> and both are <a href="type-inference.html#smart-cast-sink-stability">stable</a>, they are guaranteed to reference the same runtime value and any assumption about <code>a</code> may be also applied to <code>b</code> and vice versa.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">For example:</span></p>
+<p><span class="sentence">Example:</span></p>
 </div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">a</span>: Any? = ...</a>
 <a class="sourceLine" id="cb5-2" title="2"><span class="kw">val</span> <span class="va">b</span> = a</a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="cf">if</span>(b <span class="kw">is</span> <span class="kw">Int</span>) {</a>
-<a class="sourceLine" id="cb5-4" title="4">    <span class="co">// as a and b point to the same value, a is also an Int</span></a>
-<a class="sourceLine" id="cb5-5" title="5">    a.inc()</a>
-<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
+<a class="sourceLine" id="cb5-3" title="3"></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="cf">if</span> (b <span class="kw">is</span> <span class="kw">Int</span>) {</a>
+<a class="sourceLine" id="cb5-5" title="5">    <span class="co">// as a and b point to the same value,</span></a>
+<a class="sourceLine" id="cb5-6" title="6">    <span class="co">// a also is Int</span></a>
+<a class="sourceLine" id="cb5-7" title="7">    a.inc()</a>
+<a class="sourceLine" id="cb5-8" title="8">}</a></code></pre></div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(as a matter of fact, the example above does not work)</span></p>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object. </span><span class="sentence">This relation is known as <em>must-alias</em> relation between program references and it is implementation-defined in which cases a particular kotlin compiler may safely assume this relation between two particular properties at a particular program point, but it must guarantee that if two properties are considered bound together it is completely impossible for these properties to reference two different values at runtime. </span><span class="sentence">Effectively, the space of stable program properties is divided into disjoint <em>alias sets</em> of properties, and the analysis described above links the smart cast data flow information to sets of properties rather than properties.</span></p>
+<p><span class="sentence">In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object. </span><span class="sentence">This relation is known as <em>must-alias</em> relation between program references and it is implementation-defined in which cases a particular Kotlin compiler may safely assume this relation holds between two particular properties at a particular program point. </span><span class="sentence">However, it must guarantee that if two properties are considered bound, it is impossible for these properties to reference two different values at runtime.</span></p>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(we still don’t cover cases such as <code>a?.b?.c !== null</code> =&gt; <code>a !== null</code>)</span></p>
+<p><span class="sentence">One way of implementing bound smart casts would be to divide the space of stable program properties into disjoint <em>alias sets</em> of properties, and the <a href="type-inference.html#data-flow-framework">analysis described above</a> links the smart cast data flow information to sets of properties instead of single properties.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">Such view could be further refined by considering special <em>alias sets</em> separately; e.g., an alias set of definitely non-null properties, which would allow the compiler to infer that <code>a?.b !== null</code> implies <code>a !== null</code> (for non-nullable <code>b</code>).</span></p>
 </div>
 <h3 id="local-type-inference">Local type inference</h3>
 <div class="paragraph">
-<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As mentioned before, type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver.</span></p>
+<p><span class="sentence">Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties. </span><span class="sentence">As previously mentioned, type inference is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem, and is usually solved by a type constraint solver.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression. </span><span class="sentence">You can use the <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> part of this specification as a reference point on how the types for different expressions are constructed.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">However, there are some additional clarifications on how these types are constructed. </span><span class="sentence">First, the additional effects of <a href="type-inference.html#smart-casts">smart casts</a> are considered in local type inference, if applicable. </span><span class="sentence">Second, there are several special cases.</span></p>
+<p><span class="sentence">Important: additional effects of <a href="type-inference.html#smart-casts">smart casts</a> are considered in local type inference, if applicable.</span></p>
 </div>
-<ul>
-<li><span class="sentence">If a type <span class="math inline">\(T\)</span> is described as the least upper bound of types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it is represented as a pair of constraints <span class="math inline">\(A &lt;: T\)</span> and <span class="math inline">\(B &lt;: T\)</span>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Are there other special cases?)</span>
-</div></li>
-</ul>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well. </span><span class="sentence">Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement <span class="math inline">\(S_1\)</span> that goes before statement <span class="math inline">\(S_2\)</span> cannot be inferred based on how <span class="math inline">\(S_1\)</span> is used in <span class="math inline">\(S_2\)</span>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given <a href="kotlin-type-constraints.html#type-constraint-solving">constraint system</a>), type inference may create several valid solutions. </span><span class="sentence">In particular, one may always derive a constraint <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every type variable <span class="math inline">\(T\)</span>, where types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solutions. </span><span class="sentence">One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:</span></p>
+<p><span class="sentence">As solving a type constraint system is not a definite process (there may be more than one valid solution for a given <a href="kotlin-type-constraints.html#type-constraint-solving">constraint system</a>), type inference may create several valid solutions. </span><span class="sentence">In particular, one may always derive a constraint <span class="math inline">\(A &lt;: T &lt;: B\)</span> for every free type variable <span class="math inline">\(T\)</span>, where types <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are both valid solutions.</span></p>
 </div>
-<ul>
-<li><div class="TODO">
-<span class="sentence">TODO(What are the rules?)</span>
-</div></li>
-</ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this is valid even if <span class="math inline">\(T\)</span> is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint <span class="math inline">\(\mathtt{kotlin.Nothing} &lt;: T &lt;: \mathtt{kotlin.Any?}\)</span>.</span></p>
+<p><span class="sentence">Note: this is valid even if <span class="math inline">\(T\)</span> is a free type variable without any explicit constraints, as every type in Kotlin has an implicit constraint <span class="math inline">\(\mathtt{kotlin.Nothing} &lt;: T &lt;: \mathtt{kotlin.Any?}\)</span>.</span></p>
 </div>
 </blockquote>
+<div class="paragraph">
+<p><span class="sentence">In these cases an <a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution">optimal constraint system solution</a> is picked w.r.t. local type inference.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for the purposes of local type inference, an optimal solution is the one which does not contain any free type variables with no explicit constraints on them.</span></p>
+</div>
+</blockquote>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Is this true?)</span></p>
+</div>
+</div>
 <h3 id="todo">TODO</h3>
 <ul>
 <li><span class="sentence">Type approximation for public API</span></li>
