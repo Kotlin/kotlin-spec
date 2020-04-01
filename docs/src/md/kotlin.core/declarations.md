@@ -632,6 +632,7 @@ val c: V = e.component3()
 ```
 
 where `componentN()` should be a valid operator function available on the result of `e`.
+Some of the entries in the destructuring declaration may be replaced with an *ignore marker* `_`, which signifies that no variable is declared and no `componentN()` function is called.
 
 As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding `componentN()` function.
 
