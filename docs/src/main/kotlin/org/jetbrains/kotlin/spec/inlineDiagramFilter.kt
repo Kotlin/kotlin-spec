@@ -40,7 +40,7 @@ private val visitor = object : PandocVisitor() {
         val dprops = DiagramProperties(
                 fontSpec = "Fira Mono;Consolas;Monospaced",
                 textScale = 1.5,
-                diagramScale = 0.7
+                diagramScale = 0.35
         )
         val diag = Diagram.fromMatrix(
                 CharMatrix.read(b.text.reader().buffered()),
