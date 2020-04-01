@@ -3,12 +3,20 @@
 Kotlin has a concept of *type inference* for compile-time type information, meaning some type information in the code may be omitted, to be inferred by the compiler.
 There are two kinds of type inference supported by Kotlin.
 
-- Local type inference, for inferring types of expressions locally, in statement/expression scope;
+- [Local type inference], for inferring types of expressions locally, in statement/expression scope;
 - Function signature type inference, for inferring types of function return values and/or parameters.
 
-> Note: type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
+TODO(Where do we talk about the function signature type inference?)
 
-TODO(write about when type inference works and when it does not)
+Type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
+For this reason, type inference is applicable in situations when the type context contains enough information for the type constraint solver to create an [optimal constraint system solution][Finding optimal constraint system solution] w.r.t. type inference problem.
+
+> Note: for the purposes of type inference, an optimal solution is the one which does not contain any free type variables with no explicit constraints on them.
+
+TODO(Is this true?)
+
+Kotlin also supports flow-sensitive types in the form of [smart casts][Smart casts], which have direct effect on type inference.
+Therefore, we will discuss them first, before talking about type inference itself.
 
 ### Smart casts
 
@@ -149,7 +157,7 @@ $$
 \end{alignedat}
 $$
 
-> Important: transfer function for `==` and `!=` are used only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
+> Important: transfer functions for `==` and `!=` are used only if the corresponding [`equals` implementation][Value equality expressions] is known to be equivalent to [reference equality check][Reference equality expressions].
 > For example, generated `equals` implementation for [data classes][Data class declaration] is considered to be equivalent to reference equality check.
 
 TODO(A complete list of when `equals` is OK?)
@@ -192,6 +200,7 @@ $$
 As a result, $\smartCastTypeOf(e)$ is used as a compile-time type of $e$ for most purposes (including, but not limited to, function overloading and type inference of other values).
 
 > Note: the most important exception to when smart casts are used in type inference is direct property declaration.
+> 
 > ```kotlin
 > fun noSmartCastInInference() {
 >     var a: Any? = null
@@ -219,18 +228,17 @@ As a result, $\smartCastTypeOf(e)$ is used as a compile-time type of $e$ for mos
 
 Smart casts are introduced by the following Kotlin constructions.
 
-- Conditional expressions (`if` and `when`);
-- Elvis operator (operator `?:`);
-- Safe navigation operator (operator `?.`);
-- Logical conjunction expressions (operator `&&`);
-- Logical disjunction expressions (operator `||`);
-- Not-null assertion expressions (operator `!!`);
-- Direct casting expression (operator `as`);
-- Type checking expression (operator `is`);
-- Direct assignments;
+- [Conditional expressions][Conditional expression] (`if`)
+- [When expressions][When expression] (`when`);
+- [Elvis operator][Elvis operator expression] (operator `?:`);
+- [Safe navigation operator][Navigation operators] (operator `?.`);
+- [Logical conjunction expressions][Logical conjunction expression] (operator `&&`);
+- [Logical disjunction expressions][Logical disjunction expression] (operator `||`);
+- [Not-null assertion expressions][Not-null assertion expression] (operator `!!`);
+- [Cast expressions][Cast expression] (operator `as`);
+- [Type-checking expressions][Type-checking expression] (operator `is`);
+- [Direct assignments][Assignments];
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
-
-TODO: links for all these
 
 > Note: property declarations are not listed here, as their types are derived from initializers.
 
@@ -401,50 +409,52 @@ TODO(this is a stub)
 In some cases, it is possible to introduce smart casting *between properties* if it is known at compile-time that these properties are *bound* to each other.
 For instance, if a variable `a` is initialized as a copy of variable `b` and both are [stable][Smart cast sink stability], they are guaranteed to reference the same runtime value and any assumption about `a` may be also applied to `b` and vice versa.
 
-For example:
-
-```kotlin
-val a: Any? = ...
-val b = a
-if(b is Int) {
-    // as a and b point to the same value, a is also an Int
-    a.inc()
-}
-```
+> Example:
+> 
+> ```kotlin
+> val a: Any? = ...
+> val b = a
+> 
+> if (b is Int) {
+>     // as a and b point to the same value,
+>     // a also is Int
+>     a.inc()
+> }
+> ```
 
 TODO(as a matter of fact, the example above does not work)
 
 In more complex cases, however, it may not be trivial to deduce that two (or more) properties point to the same runtime object.
-This relation is known as *must-alias* relation between program references and it is implementation-defined in which cases a particular kotlin compiler may safely assume this relation between two particular properties at a particular program point, but it must guarantee that if two properties are considered bound together it is completely impossible for these properties to reference two different values at runtime.
-Effectively, the space of stable program properties  is divided into disjoint *alias sets* of properties, and the analysis described above links the smart cast data flow information to sets of properties rather than properties.
+This relation is known as *must-alias* relation between program references and it is implementation-defined in which cases a particular Kotlin compiler may safely assume this relation holds between two particular properties at a particular program point.
+However, it must guarantee that if two properties are considered bound, it is impossible for these properties to reference two different values at runtime.
 
-TODO(we still don't cover cases such as `a?.b?.c !== null` => `a !== null`)
+One way of implementing bound smart casts would be to divide the space of stable program properties into disjoint *alias sets* of properties, and the [analysis described above][Data-flow framework] links the smart cast data flow information to sets of properties instead of single properties.
+
+Such view could be further refined by considering special *alias sets* separately; e.g., an alias set of definitely non-null properties, which would allow the compiler to infer that `a?.b !== null` implies `a !== null` (for non-nullable `b`).
 
 ### Local type inference
 
 Local type inference in Kotlin is the process of deducing the compile-time types of expressions, lambda expression parameters and properties.
-As mentioned before, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
+As previously mentioned, type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
 
 In addition to the types of intermediate expressions, local type inference also performs deduction and substitution for generic type parameters of functions and types involved in every expression.
 You can use the [Expressions][Expressions] part of this specification as a reference point on how the types for different expressions are constructed.
 
-However, there are some additional clarifications on how these types are constructed.
-First, the additional effects of [smart casts][Smart casts] are considered in local type inference, if applicable.
-Second, there are several special cases.
-
-- If a type $T$ is described as the least upper bound of types $A$ and $B$, it is represented as a pair of constraints $A <: T$ and $B <: T$;
-- TODO(Are there other special cases?)
+> Important: additional effects of [smart casts][Smart casts] are considered in local type inference, if applicable.
 
 Type inference in Kotlin is bidirectional; meaning the types of expressions may be derived not only from their arguments, but from their usage as well.
 Note that, albeit bidirectional, this process is still local, meaning it processes one statement at a time, strictly in the order of their appearance in a scope; e.g., the type of property in statement $S_1$ that goes before statement $S_2$ cannot be inferred based on how $S_1$ is used in $S_2$.
 
 As solving a type constraint system is not a definite process (there may be more than one valid solution for a given [constraint system][Type constraint solving]), type inference may create several valid solutions.
-In particular, one may always derive a constraint $A <: T <: B$ for every type variable $T$, where types $A$ and $B$ are both valid solutions.
-One of these types is always picked as a solution in Kotlin (although from the constraint viewpoint, there are usually more solutions available); this choice is done according to the following rules:
+In particular, one may always derive a constraint $A <: T <: B$ for every free type variable $T$, where types $A$ and $B$ are both valid solutions.
 
-- TODO(What are the rules?)
+> Note: this is valid even if $T$ is a free type variable without any explicit constraints, as every type in Kotlin has an implicit constraint $\mathtt{kotlin.Nothing} <: T <: \mathtt{kotlin.Any?}$.
 
-> Note: this is valid even if $T$ is a variable without any explicit constraints, as every type in Kotlin has an implicit constraint $\mathtt{kotlin.Nothing} <: T <: \mathtt{kotlin.Any?}$.
+In these cases an [optimal constraint system solution][Finding optimal constraint system solution] is picked w.r.t. local type inference.
+
+> Note: for the purposes of local type inference, an optimal solution is the one which does not contain any free type variables with no explicit constraints on them.
+
+TODO(Is this true?)
 
 ### TODO
 
