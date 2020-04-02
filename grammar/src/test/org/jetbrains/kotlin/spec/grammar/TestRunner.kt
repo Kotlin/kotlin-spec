@@ -24,9 +24,13 @@ class TestRunner {
     companion object {
         private const val ERROR_EXPECTED_MARKER = "WITH_ERRORS"
         private const val MUTE_MARKER = "MUTE"
+        private const val MUTE_PSI_ERRORS_MARKER = "MUTE_PSI_ERRORS"
+
+        private const val FORCE_APPLY_CHANGES = false
+        private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = false
 
         private val antlrTreeFileHeaderPattern =
-                Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER)\))?$""")
+                Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
 
         @org.junit.runners.Parameterized.Parameters(name = "{0}")
         @JvmStatic
@@ -57,19 +61,30 @@ class TestRunner {
                 }
             else null
 
-        if (header != null)
-            assumeFalse(header.marker == MUTE_MARKER || header.hash != testData.sourceCodeHash)
+        if (header != null) {
+            if (!FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE) {
+                assumeFalse(header.hash != testData.sourceCodeHash)
+            }
+            assumeFalse(header.marker == MUTE_MARKER)
+        }
 
         val (parseTree, errors) = ParseTreeUtil.parse(testData.sourceCode)
         val (lexerErrors, parserErrors) = errors
-        val errorExpected = header?.marker == ERROR_EXPECTED_MARKER
-        val dumpParseTree = parseTree.stringifyTree("File: ${testFile.name} - ${testData.sourceCodeHash}" + (if (errorExpected) " ($ERROR_EXPECTED_MARKER)" else ""))
+
+        val isErrorExpected = header?.marker == ERROR_EXPECTED_MARKER
+        val isMutedPsiError = header?.marker == MUTE_PSI_ERRORS_MARKER
+        val errorExpectedText = (if (isErrorExpected) " ($ERROR_EXPECTED_MARKER)" else "")
+        val mutedPsiErrorText = (if (isMutedPsiError) " ($MUTE_PSI_ERRORS_MARKER)" else "")
+
+        val dumpParseTree = parseTree.stringifyTree(
+                "File: ${testFile.name} - ${testData.sourceCodeHash}" + errorExpectedText + mutedPsiErrorText
+        )
 
         assertEqualsToFile(
                 "Expected and actual ANTLR parsetree are not equals",
                 testData.antlrParseTreeText,
                 dumpParseTree,
-                false
+                FORCE_APPLY_CHANGES
         )
 
         val lexerHasErrors = lexerErrors.isNotEmpty()
@@ -89,11 +104,11 @@ class TestRunner {
 
                 println("HAS PSI ERROR ELEMENTS: ${if (psiHasErrorElements) "YES" else "NO"}")
                 psiErrorElements.forEach { println("    - Line ${it.second.first}:${it.second.second} ${it.first}") }
-                assertTrue((verdictsEquals && !errorExpected) || (errorExpected && !psiHasErrorElements))
+                assertTrue((verdictsEquals && !isErrorExpected) || (isErrorExpected && !psiHasErrorElements) || (psiHasErrorElements && isMutedPsiError))
             }
             is DiagnosticTestData -> {
                 val hasAnyErrors = lexerHasErrors || parserHasErrors
-                assertTrue((!hasAnyErrors && !errorExpected) || errorExpected && hasAnyErrors)
+                assertTrue((!hasAnyErrors && !isErrorExpected) || isErrorExpected && hasAnyErrors)
             }
         }
     }
