@@ -36,11 +36,12 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  literalConstant
-                                                    BooleanLiteral("true")
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    literalConstant
+                                                      BooleanLiteral("true")
                     RPAREN(")")
                     controlStructureBody
                       block
@@ -60,20 +61,77 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                               additiveExpression
                                                 multiplicativeExpression
                                                   asExpression
-                                                    prefixUnaryExpression
-                                                      postfixUnaryExpression
-                                                        primaryExpression
-                                                          tryExpression
-                                                            TRY("try")
-                                                            block
-                                                              LCURL("{")
-                                                              NL("\n")
-                                                              statements
-                                                                statement
-                                                                  loopStatement
-                                                                    whileStatement
-                                                                      WHILE("while")
-                                                                      LPAREN("(")
+                                                    comparisonWithLiteralRightSide
+                                                      prefixUnaryExpression
+                                                        postfixUnaryExpression
+                                                          primaryExpression
+                                                            tryExpression
+                                                              TRY("try")
+                                                              block
+                                                                LCURL("{")
+                                                                NL("\n")
+                                                                statements
+                                                                  statement
+                                                                    loopStatement
+                                                                      whileStatement
+                                                                        WHILE("while")
+                                                                        LPAREN("(")
+                                                                        expression
+                                                                          disjunction
+                                                                            conjunction
+                                                                              equality
+                                                                                comparison
+                                                                                  infixOperation
+                                                                                    elvisExpression
+                                                                                      infixFunctionCall
+                                                                                        rangeExpression
+                                                                                          additiveExpression
+                                                                                            multiplicativeExpression
+                                                                                              asExpression
+                                                                                                comparisonWithLiteralRightSide
+                                                                                                  prefixUnaryExpression
+                                                                                                    postfixUnaryExpression
+                                                                                                      primaryExpression
+                                                                                                        literalConstant
+                                                                                                          BooleanLiteral("true")
+                                                                        RPAREN(")")
+                                                                        controlStructureBody
+                                                                          block
+                                                                            LCURL("{")
+                                                                            NL("\n")
+                                                                            statements
+                                                                              statement
+                                                                                expression
+                                                                                  disjunction
+                                                                                    conjunction
+                                                                                      equality
+                                                                                        comparison
+                                                                                          infixOperation
+                                                                                            elvisExpression
+                                                                                              infixFunctionCall
+                                                                                                rangeExpression
+                                                                                                  additiveExpression
+                                                                                                    multiplicativeExpression
+                                                                                                      asExpression
+                                                                                                        comparisonWithLiteralRightSide
+                                                                                                          prefixUnaryExpression
+                                                                                                            postfixUnaryExpression
+                                                                                                              primaryExpression
+                                                                                                                jumpExpression
+                                                                                                                  CONTINUE_AT("continue@outer")
+                                                                              semis
+                                                                                NL("\n")
+                                                                            RCURL("}")
+                                                                  semis
+                                                                    NL("\n")
+                                                                RCURL("}")
+                                                              finallyBlock
+                                                                FINALLY("finally")
+                                                                block
+                                                                  LCURL("{")
+                                                                  NL("\n")
+                                                                  statements
+                                                                    statement
                                                                       expression
                                                                         disjunction
                                                                           conjunction
@@ -86,68 +144,15 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                                                                         additiveExpression
                                                                                           multiplicativeExpression
                                                                                             asExpression
-                                                                                              prefixUnaryExpression
-                                                                                                postfixUnaryExpression
-                                                                                                  primaryExpression
-                                                                                                    literalConstant
-                                                                                                      BooleanLiteral("true")
-                                                                      RPAREN(")")
-                                                                      controlStructureBody
-                                                                        block
-                                                                          LCURL("{")
-                                                                          NL("\n")
-                                                                          statements
-                                                                            statement
-                                                                              expression
-                                                                                disjunction
-                                                                                  conjunction
-                                                                                    equality
-                                                                                      comparison
-                                                                                        infixOperation
-                                                                                          elvisExpression
-                                                                                            infixFunctionCall
-                                                                                              rangeExpression
-                                                                                                additiveExpression
-                                                                                                  multiplicativeExpression
-                                                                                                    asExpression
-                                                                                                      prefixUnaryExpression
-                                                                                                        postfixUnaryExpression
-                                                                                                          primaryExpression
-                                                                                                            jumpExpression
-                                                                                                              CONTINUE_AT("continue@outer")
-                                                                            semis
-                                                                              NL("\n")
-                                                                          RCURL("}")
-                                                                semis
-                                                                  NL("\n")
-                                                              RCURL("}")
-                                                            finallyBlock
-                                                              FINALLY("finally")
-                                                              block
-                                                                LCURL("{")
-                                                                NL("\n")
-                                                                statements
-                                                                  statement
-                                                                    expression
-                                                                      disjunction
-                                                                        conjunction
-                                                                          equality
-                                                                            comparison
-                                                                              infixOperation
-                                                                                elvisExpression
-                                                                                  infixFunctionCall
-                                                                                    rangeExpression
-                                                                                      additiveExpression
-                                                                                        multiplicativeExpression
-                                                                                          asExpression
-                                                                                            prefixUnaryExpression
-                                                                                              postfixUnaryExpression
-                                                                                                primaryExpression
-                                                                                                  jumpExpression
-                                                                                                    BREAK("break")
-                                                                  semis
-                                                                    NL("\n")
-                                                                RCURL("}")
+                                                                                              comparisonWithLiteralRightSide
+                                                                                                prefixUnaryExpression
+                                                                                                  postfixUnaryExpression
+                                                                                                    primaryExpression
+                                                                                                      jumpExpression
+                                                                                                        BREAK("break")
+                                                                    semis
+                                                                      NL("\n")
+                                                                  RCURL("}")
                           semis
                             NL("\n")
                         RCURL("}")
@@ -166,26 +171,27 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                   additiveExpression
                                     multiplicativeExpression
                                       asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              stringLiteral
-                                                lineStringLiteral
-                                                  QUOTE_OPEN(""")
-                                                  lineStringContent
-                                                    LineStrText("OK")
-                                                  QUOTE_CLOSE(""")
-                                            postfixUnarySuffix
-                                              navigationSuffix
-                                                memberAccessOperator
-                                                  DOT(".")
-                                                simpleIdentifier
-                                                  Identifier("hashCode")
-                                            postfixUnarySuffix
-                                              callSuffix
-                                                valueArguments
-                                                  LPAREN("(")
-                                                  RPAREN(")")
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                stringLiteral
+                                                  lineStringLiteral
+                                                    QUOTE_OPEN(""")
+                                                    lineStringContent
+                                                      LineStrText("OK")
+                                                    QUOTE_CLOSE(""")
+                                              postfixUnarySuffix
+                                                navigationSuffix
+                                                  memberAccessOperator
+                                                    DOT(".")
+                                                  simpleIdentifier
+                                                    Identifier("hashCode")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")
@@ -234,11 +240,12 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  literalConstant
-                                                    BooleanLiteral("true")
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    literalConstant
+                                                      BooleanLiteral("true")
                     RPAREN(")")
                     controlStructureBody
                       block
@@ -258,20 +265,77 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                               additiveExpression
                                                 multiplicativeExpression
                                                   asExpression
-                                                    prefixUnaryExpression
-                                                      postfixUnaryExpression
-                                                        primaryExpression
-                                                          tryExpression
-                                                            TRY("try")
-                                                            block
-                                                              LCURL("{")
-                                                              NL("\n")
-                                                              statements
-                                                                statement
-                                                                  loopStatement
-                                                                    whileStatement
-                                                                      WHILE("while")
-                                                                      LPAREN("(")
+                                                    comparisonWithLiteralRightSide
+                                                      prefixUnaryExpression
+                                                        postfixUnaryExpression
+                                                          primaryExpression
+                                                            tryExpression
+                                                              TRY("try")
+                                                              block
+                                                                LCURL("{")
+                                                                NL("\n")
+                                                                statements
+                                                                  statement
+                                                                    loopStatement
+                                                                      whileStatement
+                                                                        WHILE("while")
+                                                                        LPAREN("(")
+                                                                        expression
+                                                                          disjunction
+                                                                            conjunction
+                                                                              equality
+                                                                                comparison
+                                                                                  infixOperation
+                                                                                    elvisExpression
+                                                                                      infixFunctionCall
+                                                                                        rangeExpression
+                                                                                          additiveExpression
+                                                                                            multiplicativeExpression
+                                                                                              asExpression
+                                                                                                comparisonWithLiteralRightSide
+                                                                                                  prefixUnaryExpression
+                                                                                                    postfixUnaryExpression
+                                                                                                      primaryExpression
+                                                                                                        literalConstant
+                                                                                                          BooleanLiteral("true")
+                                                                        RPAREN(")")
+                                                                        controlStructureBody
+                                                                          block
+                                                                            LCURL("{")
+                                                                            NL("\n")
+                                                                            statements
+                                                                              statement
+                                                                                expression
+                                                                                  disjunction
+                                                                                    conjunction
+                                                                                      equality
+                                                                                        comparison
+                                                                                          infixOperation
+                                                                                            elvisExpression
+                                                                                              infixFunctionCall
+                                                                                                rangeExpression
+                                                                                                  additiveExpression
+                                                                                                    multiplicativeExpression
+                                                                                                      asExpression
+                                                                                                        comparisonWithLiteralRightSide
+                                                                                                          prefixUnaryExpression
+                                                                                                            postfixUnaryExpression
+                                                                                                              primaryExpression
+                                                                                                                jumpExpression
+                                                                                                                  CONTINUE_AT("continue@outer")
+                                                                              semis
+                                                                                NL("\n")
+                                                                            RCURL("}")
+                                                                  semis
+                                                                    NL("\n")
+                                                                RCURL("}")
+                                                              finallyBlock
+                                                                FINALLY("finally")
+                                                                block
+                                                                  LCURL("{")
+                                                                  NL("\n")
+                                                                  statements
+                                                                    statement
                                                                       expression
                                                                         disjunction
                                                                           conjunction
@@ -284,89 +348,37 @@ File: breakContinueInTryFinally.kt - 6f70a374de057c4d54ed37ec9d55951f
                                                                                         additiveExpression
                                                                                           multiplicativeExpression
                                                                                             asExpression
-                                                                                              prefixUnaryExpression
-                                                                                                postfixUnaryExpression
-                                                                                                  primaryExpression
-                                                                                                    literalConstant
-                                                                                                      BooleanLiteral("true")
-                                                                      RPAREN(")")
-                                                                      controlStructureBody
-                                                                        block
-                                                                          LCURL("{")
-                                                                          NL("\n")
-                                                                          statements
-                                                                            statement
-                                                                              expression
-                                                                                disjunction
-                                                                                  conjunction
-                                                                                    equality
-                                                                                      comparison
-                                                                                        infixOperation
-                                                                                          elvisExpression
-                                                                                            infixFunctionCall
-                                                                                              rangeExpression
-                                                                                                additiveExpression
-                                                                                                  multiplicativeExpression
-                                                                                                    asExpression
-                                                                                                      prefixUnaryExpression
-                                                                                                        postfixUnaryExpression
-                                                                                                          primaryExpression
-                                                                                                            jumpExpression
-                                                                                                              CONTINUE_AT("continue@outer")
-                                                                            semis
-                                                                              NL("\n")
-                                                                          RCURL("}")
-                                                                semis
-                                                                  NL("\n")
-                                                              RCURL("}")
-                                                            finallyBlock
-                                                              FINALLY("finally")
-                                                              block
-                                                                LCURL("{")
-                                                                NL("\n")
-                                                                statements
-                                                                  statement
-                                                                    expression
-                                                                      disjunction
-                                                                        conjunction
-                                                                          equality
-                                                                            comparison
-                                                                              infixOperation
-                                                                                elvisExpression
-                                                                                  infixFunctionCall
-                                                                                    rangeExpression
-                                                                                      additiveExpression
-                                                                                        multiplicativeExpression
-                                                                                          asExpression
-                                                                                            prefixUnaryExpression
-                                                                                              postfixUnaryExpression
-                                                                                                primaryExpression
-                                                                                                  jumpExpression
-                                                                                                    RETURN("return")
-                                                                                                    expression
-                                                                                                      disjunction
-                                                                                                        conjunction
-                                                                                                          equality
-                                                                                                            comparison
-                                                                                                              infixOperation
-                                                                                                                elvisExpression
-                                                                                                                  infixFunctionCall
-                                                                                                                    rangeExpression
-                                                                                                                      additiveExpression
-                                                                                                                        multiplicativeExpression
-                                                                                                                          asExpression
-                                                                                                                            prefixUnaryExpression
-                                                                                                                              postfixUnaryExpression
-                                                                                                                                primaryExpression
-                                                                                                                                  stringLiteral
-                                                                                                                                    lineStringLiteral
-                                                                                                                                      QUOTE_OPEN(""")
-                                                                                                                                      lineStringContent
-                                                                                                                                        LineStrText("OK")
-                                                                                                                                      QUOTE_CLOSE(""")
-                                                                  semis
-                                                                    NL("\n")
-                                                                RCURL("}")
+                                                                                              comparisonWithLiteralRightSide
+                                                                                                prefixUnaryExpression
+                                                                                                  postfixUnaryExpression
+                                                                                                    primaryExpression
+                                                                                                      jumpExpression
+                                                                                                        RETURN("return")
+                                                                                                        expression
+                                                                                                          disjunction
+                                                                                                            conjunction
+                                                                                                              equality
+                                                                                                                comparison
+                                                                                                                  infixOperation
+                                                                                                                    elvisExpression
+                                                                                                                      infixFunctionCall
+                                                                                                                        rangeExpression
+                                                                                                                          additiveExpression
+                                                                                                                            multiplicativeExpression
+                                                                                                                              asExpression
+                                                                                                                                comparisonWithLiteralRightSide
+                                                                                                                                  prefixUnaryExpression
+                                                                                                                                    postfixUnaryExpression
+                                                                                                                                      primaryExpression
+                                                                                                                                        stringLiteral
+                                                                                                                                          lineStringLiteral
+                                                                                                                                            QUOTE_OPEN(""")
+                                                                                                                                            lineStringContent
+                                                                                                                                              LineStrText("OK")
+                                                                                                                                            QUOTE_CLOSE(""")
+                                                                    semis
+                                                                      NL("\n")
+                                                                  RCURL("}")
                           semis
                             NL("\n")
                         RCURL("}")

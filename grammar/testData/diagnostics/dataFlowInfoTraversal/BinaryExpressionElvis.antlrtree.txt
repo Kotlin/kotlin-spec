@@ -47,16 +47,17 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                             additiveExpression
                               multiplicativeExpression
                                 asExpression
-                                  prefixUnaryExpression
-                                    postfixUnaryExpression
-                                      primaryExpression
-                                        simpleIdentifier
-                                          Identifier("x")
-                                      postfixUnarySuffix
-                                        postfixUnaryOperator
-                                          EXCL_NO_WS("!")
-                                          excl
+                                  comparisonWithLiteralRightSide
+                                    prefixUnaryExpression
+                                      postfixUnaryExpression
+                                        primaryExpression
+                                          simpleIdentifier
+                                            Identifier("x")
+                                        postfixUnarySuffix
+                                          postfixUnaryOperator
                                             EXCL_NO_WS("!")
+                                            excl
+                                              EXCL_NO_WS("!")
     semis
       NL("\n")
       NL("\n")
@@ -115,40 +116,42 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  parenthesizedExpression
-                                                    LPAREN("(")
-                                                    expression
-                                                      disjunction
-                                                        conjunction
-                                                          equality
-                                                            comparison
-                                                              infixOperation
-                                                                elvisExpression
-                                                                  infixFunctionCall
-                                                                    rangeExpression
-                                                                      additiveExpression
-                                                                        multiplicativeExpression
-                                                                          asExpression
-                                                                            prefixUnaryExpression
-                                                                              postfixUnaryExpression
-                                                                                primaryExpression
-                                                                                  simpleIdentifier
-                                                                                    Identifier("x")
-                                                                            asOperator
-                                                                              AS("as")
-                                                                            type
-                                                                              nullableType
-                                                                                typeReference
-                                                                                  userType
-                                                                                    simpleUserType
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    parenthesizedExpression
+                                                      LPAREN("(")
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                infixOperation
+                                                                  elvisExpression
+                                                                    infixFunctionCall
+                                                                      rangeExpression
+                                                                        additiveExpression
+                                                                          multiplicativeExpression
+                                                                            asExpression
+                                                                              comparisonWithLiteralRightSide
+                                                                                prefixUnaryExpression
+                                                                                  postfixUnaryExpression
+                                                                                    primaryExpression
                                                                                       simpleIdentifier
-                                                                                        Identifier("Int")
-                                                                                quest
-                                                                                  QUEST_NO_WS("?")
-                                                    RPAREN(")")
+                                                                                        Identifier("x")
+                                                                              asOperator
+                                                                                AS("as")
+                                                                              type
+                                                                                nullableType
+                                                                                  typeReference
+                                                                                    userType
+                                                                                      simpleUserType
+                                                                                        simpleIdentifier
+                                                                                          Identifier("Int")
+                                                                                  quest
+                                                                                    QUEST_NO_WS("?")
+                                                      RPAREN(")")
                                   elvis
                                     QUEST_NO_WS("?")
                                     COLON(":")
@@ -157,34 +160,95 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  simpleIdentifier
-                                                    Identifier("foo")
-                                                postfixUnarySuffix
-                                                  callSuffix
-                                                    valueArguments
-                                                      LPAREN("(")
-                                                      valueArgument
-                                                        expression
-                                                          disjunction
-                                                            conjunction
-                                                              equality
-                                                                comparison
-                                                                  infixOperation
-                                                                    elvisExpression
-                                                                      infixFunctionCall
-                                                                        rangeExpression
-                                                                          additiveExpression
-                                                                            multiplicativeExpression
-                                                                              asExpression
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    simpleIdentifier
+                                                      Identifier("foo")
+                                                  postfixUnarySuffix
+                                                    callSuffix
+                                                      valueArguments
+                                                        LPAREN("(")
+                                                        valueArgument
+                                                          expression
+                                                            disjunction
+                                                              conjunction
+                                                                equality
+                                                                  comparison
+                                                                    infixOperation
+                                                                      elvisExpression
+                                                                        infixFunctionCall
+                                                                          rangeExpression
+                                                                            additiveExpression
+                                                                              multiplicativeExpression
+                                                                                asExpression
+                                                                                  comparisonWithLiteralRightSide
+                                                                                    prefixUnaryExpression
+                                                                                      postfixUnaryExpression
+                                                                                        primaryExpression
+                                                                                          simpleIdentifier
+                                                                                            Identifier("x")
+                                                        RPAREN(")")
+              semis
+                NL("\n")
+              statement
+                expression
+                  disjunction
+                    conjunction
+                      equality
+                        comparison
+                          infixOperation
+                            elvisExpression
+                              infixFunctionCall
+                                rangeExpression
+                                  additiveExpression
+                                    multiplicativeExpression
+                                      asExpression
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                simpleIdentifier
+                                                  Identifier("checkSubtype")
+                                              postfixUnarySuffix
+                                                typeArguments
+                                                  LANGLE("<")
+                                                  typeProjection
+                                                    type
+                                                      nullableType
+                                                        typeReference
+                                                          userType
+                                                            simpleUserType
+                                                              simpleIdentifier
+                                                                Identifier("Int")
+                                                        quest
+                                                          QUEST_NO_WS("?")
+                                                  RANGLE(">")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    valueArgument
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                infixOperation
+                                                                  elvisExpression
+                                                                    infixFunctionCall
+                                                                      rangeExpression
+                                                                        additiveExpression
+                                                                          multiplicativeExpression
+                                                                            asExpression
+                                                                              comparisonWithLiteralRightSide
                                                                                 prefixUnaryExpression
                                                                                   postfixUnaryExpression
                                                                                     primaryExpression
                                                                                       simpleIdentifier
                                                                                         Identifier("x")
-                                                      RPAREN(")")
+                                                    RPAREN(")")
               semis
                 NL("\n")
               statement
@@ -200,85 +264,30 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                   additiveExpression
                                     multiplicativeExpression
                                       asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              simpleIdentifier
-                                                Identifier("checkSubtype")
-                                            postfixUnarySuffix
-                                              typeArguments
-                                                LANGLE("<")
-                                                typeProjection
-                                                  type
-                                                    nullableType
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Int")
-                                                      quest
-                                                        QUEST_NO_WS("?")
-                                                RANGLE(">")
-                                            postfixUnarySuffix
-                                              callSuffix
-                                                valueArguments
-                                                  LPAREN("(")
-                                                  valueArgument
-                                                    expression
-                                                      disjunction
-                                                        conjunction
-                                                          equality
-                                                            comparison
-                                                              infixOperation
-                                                                elvisExpression
-                                                                  infixFunctionCall
-                                                                    rangeExpression
-                                                                      additiveExpression
-                                                                        multiplicativeExpression
-                                                                          asExpression
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                jumpExpression
+                                                  RETURN("return")
+                                                  expression
+                                                    disjunction
+                                                      conjunction
+                                                        equality
+                                                          comparison
+                                                            infixOperation
+                                                              elvisExpression
+                                                                infixFunctionCall
+                                                                  rangeExpression
+                                                                    additiveExpression
+                                                                      multiplicativeExpression
+                                                                        asExpression
+                                                                          comparisonWithLiteralRightSide
                                                                             prefixUnaryExpression
                                                                               postfixUnaryExpression
                                                                                 primaryExpression
                                                                                   simpleIdentifier
-                                                                                    Identifier("x")
-                                                  RPAREN(")")
-              semis
-                NL("\n")
-              statement
-                expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              jumpExpression
-                                                RETURN("return")
-                                                expression
-                                                  disjunction
-                                                    conjunction
-                                                      equality
-                                                        comparison
-                                                          infixOperation
-                                                            elvisExpression
-                                                              infixFunctionCall
-                                                                rangeExpression
-                                                                  additiveExpression
-                                                                    multiplicativeExpression
-                                                                      asExpression
-                                                                        prefixUnaryExpression
-                                                                          postfixUnaryExpression
-                                                                            primaryExpression
-                                                                              simpleIdentifier
-                                                                                Identifier("result")
+                                                                                    Identifier("result")
               semis
                 NL("\n")
             RCURL("}")
@@ -344,11 +353,12 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  simpleIdentifier
-                                                    Identifier("x")
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    simpleIdentifier
+                                                      Identifier("x")
                                   elvis
                                     QUEST_NO_WS("?")
                                     COLON(":")
@@ -357,16 +367,17 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                       additiveExpression
                                         multiplicativeExpression
                                           asExpression
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  simpleIdentifier
-                                                    Identifier("x")
-                                                postfixUnarySuffix
-                                                  postfixUnaryOperator
-                                                    EXCL_NO_WS("!")
-                                                    excl
+                                            comparisonWithLiteralRightSide
+                                              prefixUnaryExpression
+                                                postfixUnaryExpression
+                                                  primaryExpression
+                                                    simpleIdentifier
+                                                      Identifier("x")
+                                                  postfixUnarySuffix
+                                                    postfixUnaryOperator
                                                       EXCL_NO_WS("!")
+                                                      excl
+                                                        EXCL_NO_WS("!")
               semis
                 NL("\n")
               statement
@@ -382,85 +393,89 @@ File: BinaryExpressionElvis.kt - 5c044673d42b27fa798eb4e9b7481a14
                                   additiveExpression
                                     multiplicativeExpression
                                       asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              simpleIdentifier
-                                                Identifier("checkSubtype")
-                                            postfixUnarySuffix
-                                              typeArguments
-                                                LANGLE("<")
-                                                typeProjection
-                                                  type
-                                                    nullableType
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Int")
-                                                      quest
-                                                        QUEST_NO_WS("?")
-                                                RANGLE(">")
-                                            postfixUnarySuffix
-                                              callSuffix
-                                                valueArguments
-                                                  LPAREN("(")
-                                                  valueArgument
-                                                    expression
-                                                      disjunction
-                                                        conjunction
-                                                          equality
-                                                            comparison
-                                                              infixOperation
-                                                                elvisExpression
-                                                                  infixFunctionCall
-                                                                    rangeExpression
-                                                                      additiveExpression
-                                                                        multiplicativeExpression
-                                                                          asExpression
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                simpleIdentifier
+                                                  Identifier("checkSubtype")
+                                              postfixUnarySuffix
+                                                typeArguments
+                                                  LANGLE("<")
+                                                  typeProjection
+                                                    type
+                                                      nullableType
+                                                        typeReference
+                                                          userType
+                                                            simpleUserType
+                                                              simpleIdentifier
+                                                                Identifier("Int")
+                                                        quest
+                                                          QUEST_NO_WS("?")
+                                                  RANGLE(">")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    valueArgument
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                infixOperation
+                                                                  elvisExpression
+                                                                    infixFunctionCall
+                                                                      rangeExpression
+                                                                        additiveExpression
+                                                                          multiplicativeExpression
+                                                                            asExpression
+                                                                              comparisonWithLiteralRightSide
+                                                                                prefixUnaryExpression
+                                                                                  postfixUnaryExpression
+                                                                                    primaryExpression
+                                                                                      simpleIdentifier
+                                                                                        Identifier("x")
+                                                    RPAREN(")")
+              semis
+                NL("\n")
+              statement
+                expression
+                  disjunction
+                    conjunction
+                      equality
+                        comparison
+                          infixOperation
+                            elvisExpression
+                              infixFunctionCall
+                                rangeExpression
+                                  additiveExpression
+                                    multiplicativeExpression
+                                      asExpression
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                jumpExpression
+                                                  RETURN("return")
+                                                  expression
+                                                    disjunction
+                                                      conjunction
+                                                        equality
+                                                          comparison
+                                                            infixOperation
+                                                              elvisExpression
+                                                                infixFunctionCall
+                                                                  rangeExpression
+                                                                    additiveExpression
+                                                                      multiplicativeExpression
+                                                                        asExpression
+                                                                          comparisonWithLiteralRightSide
                                                                             prefixUnaryExpression
                                                                               postfixUnaryExpression
                                                                                 primaryExpression
                                                                                   simpleIdentifier
-                                                                                    Identifier("x")
-                                                  RPAREN(")")
-              semis
-                NL("\n")
-              statement
-                expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              jumpExpression
-                                                RETURN("return")
-                                                expression
-                                                  disjunction
-                                                    conjunction
-                                                      equality
-                                                        comparison
-                                                          infixOperation
-                                                            elvisExpression
-                                                              infixFunctionCall
-                                                                rangeExpression
-                                                                  additiveExpression
-                                                                    multiplicativeExpression
-                                                                      asExpression
-                                                                        prefixUnaryExpression
-                                                                          postfixUnaryExpression
-                                                                            primaryExpression
-                                                                              simpleIdentifier
-                                                                                Identifier("result")
+                                                                                    Identifier("result")
               semis
                 NL("\n")
             RCURL("}")
