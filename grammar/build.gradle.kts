@@ -94,7 +94,9 @@ tasks.create("prepareDiagnosticsCompilerTests") {
         val sourceCodeByFilePattern = Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
 
         File("${project.rootDir}/${project.name}/testData/diagnostics").walkTopDown().forEach {
-            if (it.extension == "kt") {
+            if (it.name.endsWith(".fir.kt")) {
+                it.delete()
+            } else if (it.extension == "kt") {
                 val sourceCode = it.readText()
                 val sourceCodeByFiles = sourceCode.split(filePattern)
 
