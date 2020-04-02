@@ -59,11 +59,12 @@ File: lambdaAndArgumentFun.kt - 2a414e544e93ce378f084ec601c67768
                             additiveExpression
                               multiplicativeExpression
                                 asExpression
-                                  prefixUnaryExpression
-                                    postfixUnaryExpression
-                                      primaryExpression
-                                        simpleIdentifier
-                                          Identifier("t1")
+                                  comparisonWithLiteralRightSide
+                                    prefixUnaryExpression
+                                      postfixUnaryExpression
+                                        primaryExpression
+                                          simpleIdentifier
+                                            Identifier("t1")
                         elvis
                           QUEST_NO_WS("?")
                           COLON(":")
@@ -72,11 +73,12 @@ File: lambdaAndArgumentFun.kt - 2a414e544e93ce378f084ec601c67768
                             additiveExpression
                               multiplicativeExpression
                                 asExpression
-                                  prefixUnaryExpression
-                                    postfixUnaryExpression
-                                      primaryExpression
-                                        simpleIdentifier
-                                          Identifier("t2")
+                                  comparisonWithLiteralRightSide
+                                    prefixUnaryExpression
+                                      postfixUnaryExpression
+                                        primaryExpression
+                                          simpleIdentifier
+                                            Identifier("t2")
     semis
       NL("\n")
       NL("\n")
@@ -143,16 +145,17 @@ File: lambdaAndArgumentFun.kt - 2a414e544e93ce378f084ec601c67768
                             additiveExpression
                               multiplicativeExpression
                                 asExpression
-                                  prefixUnaryExpression
-                                    postfixUnaryExpression
-                                      primaryExpression
-                                        literalConstant
-                                          NullLiteral("null")
-                                      postfixUnarySuffix
-                                        postfixUnaryOperator
-                                          EXCL_NO_WS("!")
-                                          excl
+                                  comparisonWithLiteralRightSide
+                                    prefixUnaryExpression
+                                      postfixUnaryExpression
+                                        primaryExpression
+                                          literalConstant
+                                            NullLiteral("null")
+                                        postfixUnarySuffix
+                                          postfixUnaryOperator
                                             EXCL_NO_WS("!")
+                                            excl
+                                              EXCL_NO_WS("!")
     semis
       NL("\n")
       NL("\n")
@@ -207,43 +210,45 @@ File: lambdaAndArgumentFun.kt - 2a414e544e93ce378f084ec601c67768
                                     additiveExpression
                                       multiplicativeExpression
                                         asExpression
+                                          comparisonWithLiteralRightSide
+                                            prefixUnaryExpression
+                                              postfixUnaryExpression
+                                                primaryExpression
+                                                  literalConstant
+                                                    IntegerLiteral("5")
+              semis
+                NL("\n")
+                NL("\n")
+              statement
+                expression
+                  disjunction
+                    conjunction
+                      equality
+                        comparison
+                          infixOperation
+                            elvisExpression
+                              infixFunctionCall
+                                rangeExpression
+                                  additiveExpression
+                                    multiplicativeExpression
+                                      asExpression
+                                        comparisonWithLiteralRightSide
                                           prefixUnaryExpression
                                             postfixUnaryExpression
                                               primaryExpression
-                                                literalConstant
-                                                  IntegerLiteral("5")
-              semis
-                NL("\n")
-                NL("\n")
-              statement
-                expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              simpleIdentifier
-                                                Identifier("x")
-                                            postfixUnarySuffix
-                                              navigationSuffix
-                                                memberAccessOperator
-                                                  DOT(".")
                                                 simpleIdentifier
-                                                  Identifier("hashCode")
-                                            postfixUnarySuffix
-                                              callSuffix
-                                                valueArguments
-                                                  LPAREN("(")
-                                                  RPAREN(")")
+                                                  Identifier("x")
+                                              postfixUnarySuffix
+                                                navigationSuffix
+                                                  memberAccessOperator
+                                                    DOT(".")
+                                                  simpleIdentifier
+                                                    Identifier("hashCode")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    RPAREN(")")
               semis
                 NL("\n")
                 NL("\n")
@@ -260,94 +265,98 @@ File: lambdaAndArgumentFun.kt - 2a414e544e93ce378f084ec601c67768
                                   additiveExpression
                                     multiplicativeExpression
                                       asExpression
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              simpleIdentifier
-                                                Identifier("foo")
-                                            postfixUnarySuffix
-                                              callSuffix
-                                                valueArguments
-                                                  LPAREN("(")
-                                                  valueArgument
-                                                    expression
-                                                      disjunction
-                                                        conjunction
-                                                          equality
-                                                            comparison
-                                                              infixOperation
-                                                                elvisExpression
-                                                                  infixFunctionCall
-                                                                    rangeExpression
-                                                                      additiveExpression
-                                                                        multiplicativeExpression
-                                                                          asExpression
-                                                                            prefixUnaryExpression
-                                                                              postfixUnaryExpression
-                                                                                primaryExpression
-                                                                                  simpleIdentifier
-                                                                                    Identifier("bar")
-                                                                                postfixUnarySuffix
-                                                                                  callSuffix
-                                                                                    annotatedLambda
-                                                                                      lambdaLiteral
-                                                                                        LCURL("{")
-                                                                                        statements
-                                                                                          statement
-                                                                                            assignment
-                                                                                              directlyAssignableExpression
-                                                                                                simpleIdentifier
-                                                                                                  Identifier("x")
-                                                                                              ASSIGNMENT("=")
-                                                                                              expression
-                                                                                                disjunction
-                                                                                                  conjunction
-                                                                                                    equality
-                                                                                                      comparison
-                                                                                                        infixOperation
-                                                                                                          elvisExpression
-                                                                                                            infixFunctionCall
-                                                                                                              rangeExpression
-                                                                                                                additiveExpression
-                                                                                                                  multiplicativeExpression
-                                                                                                                    asExpression
-                                                                                                                      prefixUnaryExpression
-                                                                                                                        postfixUnaryExpression
-                                                                                                                          primaryExpression
-                                                                                                                            literalConstant
-                                                                                                                              NullLiteral("null")
-                                                                                        RCURL("}")
-                                                  COMMA(",")
-                                                  valueArgument
-                                                    expression
-                                                      disjunction
-                                                        conjunction
-                                                          equality
-                                                            comparison
-                                                              infixOperation
-                                                                elvisExpression
-                                                                  infixFunctionCall
-                                                                    rangeExpression
-                                                                      additiveExpression
-                                                                        multiplicativeExpression
-                                                                          asExpression
-                                                                            prefixUnaryExpression
-                                                                              postfixUnaryExpression
-                                                                                primaryExpression
-                                                                                  simpleIdentifier
-                                                                                    Identifier("x")
-                                                                                postfixUnarySuffix
-                                                                                  navigationSuffix
-                                                                                    memberAccessOperator
-                                                                                      DOT(".")
-                                                                                    simpleIdentifier
-                                                                                      Identifier("hashCode")
-                                                                                postfixUnarySuffix
-                                                                                  callSuffix
-                                                                                    valueArguments
-                                                                                      LPAREN("(")
-                                                                                      RPAREN(")")
-                                                  RPAREN(")")
+                                        comparisonWithLiteralRightSide
+                                          prefixUnaryExpression
+                                            postfixUnaryExpression
+                                              primaryExpression
+                                                simpleIdentifier
+                                                  Identifier("foo")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    valueArgument
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                infixOperation
+                                                                  elvisExpression
+                                                                    infixFunctionCall
+                                                                      rangeExpression
+                                                                        additiveExpression
+                                                                          multiplicativeExpression
+                                                                            asExpression
+                                                                              comparisonWithLiteralRightSide
+                                                                                prefixUnaryExpression
+                                                                                  postfixUnaryExpression
+                                                                                    primaryExpression
+                                                                                      simpleIdentifier
+                                                                                        Identifier("bar")
+                                                                                    postfixUnarySuffix
+                                                                                      callSuffix
+                                                                                        annotatedLambda
+                                                                                          lambdaLiteral
+                                                                                            LCURL("{")
+                                                                                            statements
+                                                                                              statement
+                                                                                                assignment
+                                                                                                  directlyAssignableExpression
+                                                                                                    simpleIdentifier
+                                                                                                      Identifier("x")
+                                                                                                  ASSIGNMENT("=")
+                                                                                                  expression
+                                                                                                    disjunction
+                                                                                                      conjunction
+                                                                                                        equality
+                                                                                                          comparison
+                                                                                                            infixOperation
+                                                                                                              elvisExpression
+                                                                                                                infixFunctionCall
+                                                                                                                  rangeExpression
+                                                                                                                    additiveExpression
+                                                                                                                      multiplicativeExpression
+                                                                                                                        asExpression
+                                                                                                                          comparisonWithLiteralRightSide
+                                                                                                                            prefixUnaryExpression
+                                                                                                                              postfixUnaryExpression
+                                                                                                                                primaryExpression
+                                                                                                                                  literalConstant
+                                                                                                                                    NullLiteral("null")
+                                                                                            RCURL("}")
+                                                    COMMA(",")
+                                                    valueArgument
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                infixOperation
+                                                                  elvisExpression
+                                                                    infixFunctionCall
+                                                                      rangeExpression
+                                                                        additiveExpression
+                                                                          multiplicativeExpression
+                                                                            asExpression
+                                                                              comparisonWithLiteralRightSide
+                                                                                prefixUnaryExpression
+                                                                                  postfixUnaryExpression
+                                                                                    primaryExpression
+                                                                                      simpleIdentifier
+                                                                                        Identifier("x")
+                                                                                    postfixUnarySuffix
+                                                                                      navigationSuffix
+                                                                                        memberAccessOperator
+                                                                                          DOT(".")
+                                                                                        simpleIdentifier
+                                                                                          Identifier("hashCode")
+                                                                                    postfixUnarySuffix
+                                                                                      callSuffix
+                                                                                        valueArguments
+                                                                                          LPAREN("(")
+                                                                                          RPAREN(")")
+                                                    RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")

@@ -421,7 +421,11 @@ multiplicativeExpression
     ;
 
 asExpression
-    : prefixUnaryExpression (NL* asOperator NL* type)?
+    : comparisonWithLiteralRightSide (NL* asOperator NL* type)?
+    ;
+
+comparisonWithLiteralRightSide
+    : prefixUnaryExpression (NL* LANGLE NL* literalConstant NL* RANGLE NL* (expression | parenthesizedExpression))*
     ;
 
 prefixUnaryExpression
