@@ -59,7 +59,7 @@ declaration
 // SECTION: classes
 
 classDeclaration
-    : modifiers? (CLASS | INTERFACE) NL* simpleIdentifier
+    : modifiers? (CLASS | (FUN NL*)? INTERFACE) NL* simpleIdentifier
     (NL* typeParameters)? (NL* primaryConstructor)?
     (NL* COLON NL* delegationSpecifiers)?
     (NL* typeConstraints)?
