@@ -1246,6 +1246,12 @@ TODO(Explain how escaping actually works for locals and stuff...)
 > }
 > ```
 
+#### Functional interface lambda literals
+
+If a [lambda literal][Lambda literals] is preceeded with a [functional interface][Functional interface declaration] name, this expression defines аn anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).
+
+To be a well-formed functional interface lambda literal, the type of lambda literal must be a subtype of the associated function type of the specified functional interface.
+
 ### This-expressions
 
 :::{.paste target=grammar-rule-thisExpression}
