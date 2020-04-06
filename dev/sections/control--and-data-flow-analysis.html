@@ -524,14 +524,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Consider the following Kotlin code:</span></p>
 </div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">var</span> <span class="va">x</span>: <span class="kw">Int</span> = <span class="dv">0</span> <span class="co">// {x -&gt; 1}</span></a>
-<a class="sourceLine" id="cb28-2" title="2"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span> = <span class="dv">0</span> <span class="co">// {x -&gt; 1, y -&gt; 1}</span></a>
-<a class="sourceLine" id="cb28-3" title="3"><span class="cf">while</span>(b1) { <span class="co">// {x -&gt; 1, y -&gt; 1}</span></a>
-<a class="sourceLine" id="cb28-4" title="4">    y = f() <span class="co">// {x -&gt; 1, y -&gt; 2}</span></a>
-<a class="sourceLine" id="cb28-5" title="5">    <span class="cf">do</span> { <span class="co">// {x -&gt; 1, y -&gt; 2}</span></a>
-<a class="sourceLine" id="cb28-6" title="6">        x = g() <span class="co">// {x -&gt; 2, y -&gt; 2}</span></a>
-<a class="sourceLine" id="cb28-7" title="7">    } <span class="cf">while</span>(b2) <span class="co">// backedge: killDataFlow(x)</span></a>
-<a class="sourceLine" id="cb28-8" title="8">} <span class="co">// backedge: killDataFlow(y), killDataFlow(x)</span></a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">var</span> <span class="va">x</span>: <span class="kw">Int</span> = <span class="dv">0</span></a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span> = <span class="dv">0</span></a>
+<a class="sourceLine" id="cb28-3" title="3"><span class="cf">while</span>(b1) {</a>
+<a class="sourceLine" id="cb28-4" title="4">    y = f()</a>
+<a class="sourceLine" id="cb28-5" title="5">    <span class="cf">do</span> {</a>
+<a class="sourceLine" id="cb28-6" title="6">        x = g()</a>
+<a class="sourceLine" id="cb28-7" title="7">    } <span class="cf">while</span>(b2)</a>
+<a class="sourceLine" id="cb28-8" title="8">}</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Which results in the following diagram (annotated with the analysis results where it is important):</span></p>
 </div>
