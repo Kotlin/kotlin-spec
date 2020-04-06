@@ -1149,14 +1149,14 @@ Example:
 Consider the following Kotlin code:
 
 ```kotlin
-var x: Int = 0 // {x -> 1}
-var y: Int = 0 // {x -> 1, y -> 1}
-while(b1) { // {x -> 1, y -> 1}
-    y = f() // {x -> 1, y -> 2}
-    do { // {x -> 1, y -> 2}
-        x = g() // {x -> 2, y -> 2}
-    } while(b2) // backedge: killDataFlow(x)
-} // backedge: killDataFlow(y), killDataFlow(x)
+var x: Int = 0
+var y: Int = 0
+while(b1) {
+    y = f()
+    do {
+        x = g()
+    } while(b2)
+}
 ```
 
 Which results in the following diagram (annotated with the analysis results where it is important):
