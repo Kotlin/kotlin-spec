@@ -13,19 +13,25 @@ In this section we describe these types and their semantics.
 
 Besides being the [unified supertype][`kotlin.Any`-ts] of all non-nullable types, $\Any$ must also provide the following methods.
 
-- `public open operator fun equals(other: Any?): Boolean`
+- ```kotlin
+  public open operator fun equals(other: Any?): Boolean
+  ```
 
     Returns `true` iff a value is equal to some other value.
     Implementations of `equals` must satisfy the properties of reflexivity (`x.equals(x)` is always true), symmetry (`x.equals(y) == y.equals(x)`), transitivity (if `x.equals(y)` is true and `y.equals(z)` is true, `x.equals(z)` is also true) and consistency (`x.equals(y)` should not change its result between multiple invocations).
     A non-null value also must never be considered equal to `null`, i.e., `x.equals(null)` must be `false`.
 
-- `public open fun hashCode(): Int`
+- ```kotlin
+  public open fun hashCode(): Int
+  ```
 
     Returns the hash code for a value.
     Implementations of `hashCode` must satisfy the following property: if two values are equals w.r.t. `equals`, `hashCode` must consistently produce the same result.
 
-- `public open fun toString(): String`
-
+- ```kotlin
+  public open fun toString(): String
+  ```
+    
     Returns a string representation of a value.
 
 [`kotlin.Any`-ts]: #kotlin.any
@@ -137,24 +143,38 @@ It is the type of the result of [string interpolation][String interpolation expr
 
 `kotlin.Enum<T>` provides the following properties.
 
-* ```public final val name: String```
+* ```kotlin
+  public final val name: String
+  ```
 
     Contains the name of this enumeration constant, exactly as declared in its declaration.
 
-* `public final val ordinal: Int`
-
+* ```kotlin
+  public final val ordinal: Int
+  ```
+  
     Contains the ordinal of this enumeration constant, i.e., its position in the declaration, starting from zero.
 
 `kotlin.Enum<T>` provides the following methods.
 
-* `public override final fun compareTo(other: T): Int`
-* `public override final fun equals(other: Any?): Boolean`
-* `public override final fun hashCode(): Int`
+* ```kotlin
+  public override final fun compareTo(other: T): Int
+  ```
+
+* ```kotlin
+  public override final fun equals(other: Any?): Boolean
+  ```
+
+* ```kotlin
+  public override final fun hashCode(): Int
+  ```
 
     > Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.
 
-* `protected final fun clone(): Any`
-
+* ```kotlin
+  protected final fun clone(): Any
+  ```
+  
     > Note: the `clone()` implementation throws an exception, as enumeration objects cannot be copied.
 
 ### Built-in array types
@@ -163,29 +183,39 @@ It is the type of the result of [string interpolation][String interpolation expr
 
 It is final (i.e., cannot be inherited from) and has the following public constructor.
 
-* `public inline constructor(size: Int, init: (Int) -> T)`
-
-     Creates a new array with the specified size, where each element is calculated by calling the specified `init` function with the corresponding element's index.
-     The function `init` is called for each array element sequentially starting from the first one.
+* ```kotlin
+  public inline constructor(size: Int, init: (Int) -> T)
+  ```
+  
+    Creates a new array with the specified size, where each element is calculated by calling the specified `init` function with the corresponding element's index.
+    The function `init` is called for each array element sequentially starting from the first one.
 
 `kotlin.Array<T>` provides the following methods and properties.
 
-* `public operator fun get(index: Int): T`
+* ```kotlin
+  public operator fun get(index: Int): T
+  ```
 
     Returns the array element at the specified index.
     If the [index] is out of bounds of this array, throws an `IndexOutOfBoundsException`.
 
-* `public operator fun set(index: Int, value: T): Unit`
+* ```kotlin
+  public operator fun set(index: Int, value: T): Unit
+  ```
 
     Sets the array element at the specified index to the specified value.
     If the [index] is out of bounds of this array, throws an `IndexOutOfBoundsException`.
 
-* `public val size: Int`
+* ```kotlin
+  public val size: Int
+  ```
 
     Returns the array size.
 
-* `public operator fun iterator(): Iterator<T>`
-
+* ```kotlin
+  public operator fun iterator(): Iterator<T>
+  ```
+  
     Creates an [iterator][Iterator types] for iterating over the elements of the array.
 
 #### Specialized array types
@@ -203,14 +233,18 @@ In addition to the general `kotlin.Array<T>` type, Kotlin also has the following
 
 These array types are similar to the corresponding `kotlin.Array<T>` type; i.e., `kotlin.IntArray` has the same methods and properties as `kotlin.Array<Int>`, with the following changes.
 
-* `public constructor(size: Int)`
+* ```kotlin
+  public constructor(size: Int)
+  ```
 
-     Creates a new array with the specified size, where each element is set to the corresponding built-in type default value.
+    Creates a new array with the specified size, where each element is set to the corresponding built-in type default value.
 
-     > Note: default values are platform-specific.
+    > Note: default values are platform-specific.
 
-* `public operator fun iterator(): {TYPE}Iterator`
-
+* ```kotlin
+  public operator fun iterator(): {TYPE}Iterator
+  ```
+  
     Creates a [specialized iterator][Specialized iterator types] for iterating over the elements of the array.
 
 ### Iterator types
@@ -219,12 +253,16 @@ These array types are similar to the corresponding `kotlin.Array<T>` type; i.e.,
 
 It provides the following methods.
 
-* `public operator fun next(): T`
+* ```kotlin
+  public operator fun next(): T
+  ```
 
     Returns the next element in the sequence.
 
-* `public operator fun hasNext(): Boolean`
-
+* ```kotlin
+  public operator fun hasNext(): Boolean
+  ```
+  
     Returns `true` if the sequence has more elements.
 
 #### Specialized iterator types
@@ -232,10 +270,12 @@ It provides the following methods.
 Specialized iterator types are iterator types used for [specialized array types][Specialized array types].
 They inherit `kotlin.Iterator<out T>` for their type (i.e., `kotlin.CharIterator` inherits `kotlin.Iterator<Char>`) and provide the following methods.
 
-* `public operator fun next{TYPE}(): {TYPE}`
+* ```kotlin
+  public operator fun next{TYPE}(): {TYPE}
+  ```
 
     Returns the next element in the sequence as a specific type.
-
+  
     > Note: this additional method allows the compiler and/or developer to avoid unneeded platform-specific boxing/unboxing conversions.
 
 ### `kotlin.Throwable`
@@ -246,9 +286,16 @@ Any type that is used in a `catch` part of the [`try` expression][Try-expression
 
 It provides at least the following properties:
 
-* `public val message: String?` 
+* ```kotlin
+  public val message: String?
+  ```
+  
   An optional message depicting the cause of the throw.
-* `public val cause: Throwable?`
+  
+* ```kotlin
+  public val cause: Throwable?
+  ```
+  
   An optional other value of type `kotlin.Throwable` allowing for nested throwables to be constructed.
 
 Other members may exist, please refer to the standard library documentation for details.
@@ -260,7 +307,9 @@ Declaring such a type is a compile-time error.
 `kotlin.Comparable<in T>` is a built-in parameterized type which represents values that may be compared for total ordering.
 It provides the following member function:
 
-`public operator fun compareTo(other: T): Int`
+```kotlin
+public operator fun compareTo(other: T): Int
+```
 
 This function is used to implement [comparison operators][Comparison expressions] through [overloadable operator convention][Operator overloading] for standard library classes.
 
@@ -292,7 +341,9 @@ Platform definitions, as well as particular implementations, may introduce addit
 It is mainly used as base type for other types described in this section.
 It provides at least the following property:
 
-`public val name: String`
+```kotlin
+public val name: String
+```
 
 This property contains the name of the callable.
 Other members or base types for this class may be provided by platform and/or implementation.
