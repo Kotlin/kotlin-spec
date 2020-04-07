@@ -206,7 +206,7 @@ If a call is correct, for a callable `f` with an explicit receiver `e` of type `
 > In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
 > These sets are considered in the order of the implicit [receiver priority][Receivers].
 
-There is a important special case here, however, as a callable may be a [property-like callable with an operator function [`invoke`][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
+There is a important special case here, however, as a callable may be a [property-like callable with an operator function `invoke`][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
 In this situation, such callable belongs to the **lowest priority** set of its parts (e.g., for the above case, priority 5 set).
 
 > Example: when trying to resolve between an explicitly imported extension property (priority 3) with a member `invoke` (priority 1) and a local property (priority 2) with a star-imported extension `invoke` (priority 5), the first one wins (`max(3, 1) < max(2, 5)`).
@@ -397,6 +397,7 @@ For every two distinct members of the candidate set $F_1$ and $F_2$, the followi
 
 - For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
   During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
+- If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. For non-extension callables, only declaration-site parameters are considered;
 - All declaration-site type constraints of $X_1, \ldots, X_N$ and $Y_1, \ldots, Y_N$ are also added to the constraint system.
 
 > Note: this constraint system checks whether $F_1$ can forward itself to $F_2$.

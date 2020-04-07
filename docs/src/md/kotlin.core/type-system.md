@@ -178,8 +178,6 @@ Besides their use as types, integer types are important w.r.t. [integer literal 
 
 [Built-in integer types-bi]: #built-in-integer-types-1
 
-TODO([Kotlin 1.3] Add unsigned types)
-
 ##### Array types
 
 Kotlin arrays are represented as a [parameterized type][Parameterized classifier types] $\Array(T)$, where $T$ is the type of the stored elements, which supports `get`/`set` operations.
