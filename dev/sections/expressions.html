@@ -714,8 +714,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">The bound expression is of type <code>kotlin.Boolean</code> and the conditions contain both:</span>
 <ul>
-<li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>true</code>;</span></li>
-<li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>false</code>;</span></li>
+<li><div class="paragraph">
+<p><span class="sentence">A constant expression evaluating to <code>true</code>;</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence">A constant expression evaluating to <code>false</code>;</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: here the term “constant expression” refers to any expression constructed of <a href="expressions.html#constant-literals">constant literals</a>, <a href="expressions.html#string-interpolation-expressions">string interpolation</a> over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time</span></p>
+</div>
+</blockquote></li>
 </ul></li>
 <li><span class="sentence">The bound expression is of a <a href="inheritance.html#sealed-classes"><code>sealed class</code></a> type and all of its subtypes are covered using type test conditions in this expression. </span><span class="sentence">This should include checks for all direct subtypes of this sealed class. </span><span class="sentence">If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;</span></li>
 <li><span class="sentence">The bound expression is of an <a href="declarations.html#enum-class-declaration"><code>enum class</code></a> type and all its enumerated values are checked for equality using constant expression;</span></li>
@@ -1765,7 +1774,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Lambda literals have the same restrictions as anonymous function declarations, but additionally cannot have <code>vararg</code> parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals can introduce destructuring parameters similar to <a href="declarations.html#local-property-declaration">destructuring property declarations</a>. </span><span class="sentence">Lambda parameter of the form <code>(a, b, ..., n)</code> (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its <code>componentN()</code> functions as follows.</span></p>
+<p><span class="sentence">Lambda literals can introduce <a href="operator-overloading.html#destructuring-declarations">destructuring parameters</a>. </span><span class="sentence">Lambda parameter of the form <code>(a, b, ..., n)</code> (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its <code>componentN()</code> functions as follows (see the <a href="operator-overloading.html#destructuring-declarations">operator overloading section</a> for details).</span></p>
 </div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">val</span> <span class="va">plus</span>: (Pair&lt;<span class="kw">Int</span>, <span class="kw">Double</span>&gt;) -&gt; <span class="kw">String</span> = { (i, d) -&gt;</a>
 <a class="sourceLine" id="cb15-2" title="2">    <span class="st">&quot;$i + $d = ${i + d}&quot;</span></a>

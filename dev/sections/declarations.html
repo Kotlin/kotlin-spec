@@ -551,7 +551,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Example:</span></p>
 </div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="kw">interface</span> <span class="fu">FI</span> {</a>
-<a class="sourceLine" id="cb8-2" title="2">    <span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">s</span>: <span class="dt">Int</span>): <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb8-2" title="2">     <span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">s</span>: <span class="dt">Int</span>): <span class="dt">Int</span></a>
 <a class="sourceLine" id="cb8-3" title="3">}</a>
 <a class="sourceLine" id="cb8-4" title="4"></a>
 <a class="sourceLine" id="cb8-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span>() {</a>
@@ -992,7 +992,7 @@ doIt(l)</code></pre>
 <p><span class="sentence">If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations. </span><span class="sentence">However, local property declarations cannot have custom getters or setters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Local property declarations also support <em>destructuring</em> declaration in the form of</span></p>
+<p><span class="sentence">Local property declarations also support <a href="operator-overloading.html#destructuring-declarations"><em>destructuring</em> declaration</a> in the form of</span></p>
 </div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
 <div class="paragraph">
@@ -1006,7 +1006,7 @@ doIt(l)</code></pre>
 <p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Some of the entries in the destructuring declaration may be replaced with an <em>ignore marker</em> <code>_</code>, which signifies that no variable is declared and no <code>componentN()</code> function is called.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding <code>componentN()</code> function.</span></p>
+<p><span class="sentence">As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding <code>componentN()</code> function. </span><span class="sentence">Destructuring declarations cannot use getters, setters or delegates and must be initialized in-place.</span></p>
 </div>
 <h4 id="getters-and-setters">Getters and setters</h4>
 <div class="paragraph">
@@ -1225,7 +1225,7 @@ doIt(l)</code></pre>
 <li><span class="sentence"><code>kotlin.String</code>;</span></li>
 </ul></li>
 <li><span class="sentence">It is declared in the top-level scope or inside <a href="declarations.html#classifier-declaration">an object declaration</a>;</span></li>
-<li><span class="sentence">It has an initializer expression and this initializer expression can be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;</span></li>
+<li><span class="sentence">It has an initializer expression and this initializer expression can be evaluated at compile-time. </span><span class="sentence">Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, as well as other constant properties, but it is implementation-defined which other expressions qualify for this;</span></li>
 <li><span class="sentence">It does not have getters, setters or delegation specifiers.</span></li>
 </ul>
 <blockquote>
@@ -1235,9 +1235,10 @@ doIt(l)</code></pre>
 <div class="sourceCode" id="cb30"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb30-1" title="1"><span class="co">// Correct constant properties</span></a>
 <a class="sourceLine" id="cb30-2" title="2">const <span class="kw">val</span> <span class="va">answer</span> = <span class="dv">2</span> * <span class="dv">21</span></a>
 <a class="sourceLine" id="cb30-3" title="3">const <span class="kw">val</span> <span class="va">msg</span> = <span class="st">&quot;Hello World!&quot;</span></a>
-<a class="sourceLine" id="cb30-4" title="4"></a>
-<a class="sourceLine" id="cb30-5" title="5"><span class="co">// Incorrect constant properties</span></a>
-<a class="sourceLine" id="cb30-6" title="6">const <span class="kw">val</span> <span class="va">emptyStringHashCode</span> = <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
+<a class="sourceLine" id="cb30-4" title="4">const <span class="kw">val</span> <span class="va">calculated</span> = answer + <span class="dv">45</span></a>
+<a class="sourceLine" id="cb30-5" title="5"></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="co">// Incorrect constant property</span></a>
+<a class="sourceLine" id="cb30-7" title="7">const <span class="kw">val</span> <span class="va">emptyStringHashCode</span> = <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
 </blockquote>
 <h4 id="late-initialized-properties">Late-initialized properties</h4>
 <div class="paragraph">
