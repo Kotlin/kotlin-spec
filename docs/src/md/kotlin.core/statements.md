@@ -167,8 +167,8 @@ with the following expansion:
 `for(VarDecl in C) Body` is the same as
 
 ```kotlin
-when(val __iterator = C.iterator()) {
-    else -> while (__iterator.hasNext()) {
+when(val $iterator = C.iterator()) {
+    else -> while ($iterator.hasNext()) {
                 val VarDecl = __iterator.next()
                 <... all the statements from Body>
             }
@@ -176,7 +176,7 @@ when(val __iterator = C.iterator()) {
 ```
 
 where `iterator`, `hasNext`, `next` are all suitable operator functions available in the current scope.
-`VarDecl` here may be a variable name or a set of variable names as per [destructuring variable declarations][Local property declaration].
+`VarDecl` here may be a variable name or a set of variable names as per [destructuring variable declarations][Destructuring declarations].
 
 > Note: the expansion is hygienic, i.e., the generated iterator variable never clashes with any other variable in the program and cannot be accessed outside the expansion.
 

@@ -8,7 +8,8 @@ Particular cases of definition by convention include:
 - `invoke` convention;
 - Operator-form [assignments][Assignments];
 - [For-loop statements][For-loop statement];
-- [Delegated properties][Delegated property declaration].
+- [Delegated properties][Delegated property declaration];
+- [Destructuring declarations][Destructuring declarations].
 
 > Important: another case of definition by convention is [safe navigation][Navigation operators], which is covered in more detail in its respective section.
 
@@ -74,3 +75,67 @@ TODO(Specify when we run the overload resolution to know what we're expanding to
 > val $tmp = C.get(0)
 > $tmp.set($tmp.get(0).inc())
 > ```
+
+### Destructuring declarations
+
+A special case of definition by convention is the destructuring declaration of properties, which is available for [local properties][Local property declaration], parameters of [lambda literals][Lambda literals] and the iteration variable of [for-loops][For-loop statement].
+See the corresponding sections for particular syntax.
+
+This convention allows to introduce a number (one or more) of properties in the place of one by immediately *destructuring* the property during construction.
+The immediate value (that is, the initializing expression of the local property, the value acquired from the operator convention of a for-loop statement, or an argument passed into a lambda body) is assigned to a number of placeholders $p_0, \ldots, p_N$ where each placeholder is either an identifier or a special ignoring placeholder `_` (note that `_` is not a valid identifier in Kotlin).
+For each identifier the corresponding operator function `componentK` with $K$ being equal to the position of the placeholder in the declaration (**starting from 1**) is called withour arguments and the result is assigned to a fresh value referred to as the identifier used.
+For each ignoring placeholder, no calls are performed and nothing is assigned.
+Each placeholder may be provided with an optional type signature $T_M$ which is used in [type inference][Type inference] as any property type would.
+Note that an ignoring placeholder may also be provided with a type signature, in which case although the call to corresponding `componentM` function is not performed, it still must be checked for function applicability during type inference.
+
+> Examples:
+>
+> ```kotlin
+> val (x: A, _, z) = f()
+> ```
+>
+> is expanded to
+>
+> ```kotlin
+> val $tmp = f()
+> val x: A = $tmp.component1()
+> val z = $tmp.component3()
+> ```
+>
+> where `component1` and `component3` are suitable operator functions available on the value returned by `f()`
+>
+> ```kotlin
+> for((x: A, _, z) in f()) { ... }
+> ```
+>
+> is expanded to (as per for-loop expansion)
+>
+> ```kotlin
+> when(val $iterator = f().iterator()) {
+>  else -> while ($iterator.hasNext()) {
+>              val $tmp = $iterator.next()
+>      		 val x: A = $tmp.component1()
+>              val z = $tmp.component3()
+>              ...
+>          }
+> }
+> ```
+>
+> where `iterator()`, `next()`, `hasNext()`, `component1()` and `component3` are all suitable operator functions available on their respective receivers.
+>
+> ```kotlin
+> foo { (x: A, _, z) -> ... }
+> ```
+>
+> is expanded to
+>
+> ```kotlin
+> foo { $tmp ->
+>     val x: A = $tmp.component1()
+>     val z = $tmp.component3()
+>     ...
+> }
+> ```
+>
+> where `component1()` and `component3` are all suitable operator functions available on the value of lambda argument.
+
