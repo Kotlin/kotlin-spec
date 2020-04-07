@@ -428,6 +428,12 @@ If after these additional steps there are still several candidates which are equ
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
+If the callables in check are properties with available `invoke`, the same process is applied in two steps:
+
+- First, the properties are compared for applicability and the most applicable property is chosen as described above.
+  If several properties are equally applicable, this is an overload ambiguity as usual;
+- Second, for the property selected at first step, the most applicable operator `invoke` overload is chosen.
+
 ### Resolving callable references
 
 [Callable references] introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.
