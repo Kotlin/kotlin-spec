@@ -3772,11 +3772,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: additional details about built-in integer types are available <a href="#built-in-integer-types-1">here</a>.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
-</div>
-</div>
 <h5 id="array-types">Array types</h5>
 <div class="paragraph">
 <p><span class="sentence">Kotlin arrays are represented as a <a href="#parameterized-classifier-types">parameterized type</a> <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span>, where <span class="math inline">\(T\)</span> is the type of the stored elements, which supports <code>get</code>/<code>set</code> operations. </span><span class="sentence">The <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span> type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
@@ -9839,7 +9834,7 @@ doIt(l)</code></pre>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">There is a important special case here, however, as a callable may be a [property-like callable with an operator function <a href="#callables-and-invoke-convention"><code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
+<p><span class="sentence">There is a important special case here, however, as a callable may be a <a href="#callables-and-invoke-convention">property-like callable with an operator function <code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -10072,6 +10067,7 @@ doIt(l)</code></pre>
 </div>
 <ul>
 <li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">If <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. </span><span class="sentence">For non-extension callables, only declaration-site parameters are considered;</span></li>
 <li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
 </ul>
 <blockquote>
