@@ -393,8 +393,11 @@ A when expression is called **_exhaustive_** if at least one of the following is
 - It has an `else` entry;
 - It has a bound value and at least one of the following is true:
     - The bound expression is of type `kotlin.Boolean` and the conditions contain both:
-        - A [constant expression][Constant expressions] evaluating to `true`;
-        - A [constant expression][Constant expressions] evaluating to `false`;
+        - A constant expression evaluating to `true`;
+        
+        - A constant expression evaluating to `false`;
+        
+          > Important: here the term "constant expression" refers to any expression constructed of [constant literals][Constant literals], [string interpolation][String interpolation expressions] over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time
     - The bound expression is of a [`sealed class`][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression.
       This should include checks for all direct subtypes of this sealed class.
       If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
@@ -1093,8 +1096,8 @@ Lambda body introduces a new [statement scope][Scopes and identifiers].
 
 Lambda literals have the same restrictions as anonymous function declarations, but additionally cannot have `vararg` parameters.
 
-Lambda literals can introduce destructuring parameters similar to [destructuring property declarations][Local property declaration].
-Lambda parameter of the form `(a, b, ..., n)` (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its `componentN()` functions as follows.
+Lambda literals can introduce [destructuring parameters][Destructuring declarations].
+Lambda parameter of the form `(a, b, ..., n)` (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its `componentN()` functions as follows (see the [operator overloading section][Destructuring declarations] for details).
 
 ```kotlin
 val plus: (Pair<Int, Double>) -> String = { (i, d) ->

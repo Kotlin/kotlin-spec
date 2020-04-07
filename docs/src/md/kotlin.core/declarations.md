@@ -334,7 +334,7 @@ However, as functional interface essentially represents a single function, Kotli
 > 
 > ```kotlin
 > fun interface FI {
->     fun bar(s: Int): Int
+>      fun bar(s: Int): Int
 > }
 > 
 > fun foo() {
@@ -676,7 +676,7 @@ in which case `x` is used as a synonym to the getter invocation when read from a
 If a property declaration is local, it creates a local entity which follows most of the same rules as the ones for regular property declarations.
 However, local property declarations cannot have custom getters or setters.
 
-Local property declarations also support *destructuring* declaration in the form of
+Local property declarations also support [*destructuring* declaration][Destructuring declarations] in the form of
 
 ```kotlin
 val (a: T, b: U, c: V, ...) = e
@@ -695,6 +695,7 @@ where `componentN()` should be a valid operator function available on the result
 Some of the entries in the destructuring declaration may be replaced with an *ignore marker* `_`, which signifies that no variable is declared and no `componentN()` function is called.
 
 As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding `componentN()` function.
+Destructuring declarations cannot use getters, setters or delegates and must be initialized in-place.
 
 #### Getters and setters
 
@@ -921,7 +922,7 @@ In order to be declared `const`, a property must meet the following requirements
     - `kotlin.String`;
 - It is declared in the top-level scope or inside [an object declaration][Classifier declaration];
 - It has an initializer expression and this initializer expression can be evaluated at compile-time.
-  Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, but it is implementation-defined which other expressions qualify for this;
+  Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, as well as other constant properties, but it is implementation-defined which other expressions qualify for this;
 - It does not have getters, setters or delegation specifiers.
 
 > Example:
@@ -929,8 +930,9 @@ In order to be declared `const`, a property must meet the following requirements
 > // Correct constant properties
 > const val answer = 2 * 21
 > const val msg = "Hello World!"
+> const val calculated = answer + 45
 > 
-> // Incorrect constant properties
+> // Incorrect constant property
 > const val emptyStringHashCode = "".hashCode()
 > ```
 
