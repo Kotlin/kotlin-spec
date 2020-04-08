@@ -1,19 +1,17 @@
-package org.jetbrains.kotlin.spec.tests
+package org.jetbrains.kotlin.spec.loader
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
-import org.jetbrains.kotlin.spec.tests.loaders.*
-import org.jetbrains.kotlin.spec.utils.TestArea
+import org.jetbrains.kotlin.spec.entity.SpecSection
+import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
 import org.jetbrains.kotlin.spec.utils.format
-import org.jetbrains.kotlin.spec.utils.setValueByObjectPath
+import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
+import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
 import kotlin.browser.window
 
-class SpecTestsLoader(loadType: GithubTestsLoaderType) {
-    private val loader = when (loadType) {
-        GithubTestsLoaderType.DIRECTLY -> DirectLoader()
-        GithubTestsLoaderType.USING_API -> LoaderByGithubApi()
-        GithubTestsLoaderType.USING_TESTS_MAP_FILE -> LoaderByTestsMapFile()
-    }
+class SpecTestsLoader {
+    private val loader = LoaderByTestsMapFile()
+
 
     companion object {
         private const val EXCEPTED_SELECTORS = ".grammar-rule"
@@ -27,14 +25,15 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
         private const val LOAD_TESTS_TEXT = "Load tests"
         private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
 
-        const val SECTION_PATH_SEPARATOR = ", "
+        private const val SECTION_PATH_SEPARATOR = ", "
 
         fun insertLoadIcon(headerElement: JQuery) {
             headerElement.append("""
-                <a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="${this.SET_BRANCH_ICON}" /></a></span>
+                <a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>
                 <a href="#" data-id="${headerElement.attr("id")}" data-type="${headerElement.prop("tagName").toString().toLowerCase()}" class="load-tests" title="Show tests coverage">Load tests</a>
             """)
         }
+
 
         fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
             var nextSibling = sectionElement.get().run {
@@ -74,7 +73,8 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             `$`("h2, h3, h4, h5").each { _, section ->
                 val sectionTagName = section.tagName.toLowerCase()
                 val sectionElement = `$`(section)
-                val paragraphsInfo = getParagraphsInfo(sectionElement) ?: return@each null
+                val paragraphsInfo = getParagraphsInfo(sectionElement)
+                        ?: return@each null
                 val sectionsPath = mutableSetOf<String>().apply {
                     if (sectionTagName == "h3" || sectionTagName == "h4" || sectionTagName == "h5") {
                         add(getParentSectionName(sectionElement, "h2"))
@@ -88,7 +88,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
                     add(sectionElement.attr("id"))
                 }
 
-                TestsCoverageColorsArranger.showCoverage(paragraphsInfo, mapOf(), sectionsPath.joinToString(", "))
+                MarkUpArranger.showMarkUpForParagraphs(paragraphsInfo, sectionsPath.joinToString(", "))
             }
         }
 
@@ -113,42 +113,15 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             return nestedSectionIds
         }
 
-        fun loadHelperFile(helperName: String) =
-                GithubTestsLoader.loadFileFromRawGithub(
-                        "$helperName.kt",
-                        testType = GithubTestsLoader.TestFileType.SPEC_TEST,
-                        customFolder = "helpers"
-                )
-
         fun parseTestFiles(
-                responses: Array<out Map<String, Any>>,
+                specSectionTestSet: SpecSection,
                 currentSection: String,
                 sectionsPath: List<String>,
                 paragraphsInfo: List<Map<String, Any>>
         ) {
             val pathPrefix = "${sectionsPath.joinToString(SECTION_PATH_SEPARATOR)}$SECTION_PATH_SEPARATOR$currentSection"
-            val testsScope = mutableMapOf(
-                    TestArea.DIAGNOSTICS to getTestsByTestTypeInfo(responses, TestArea.DIAGNOSTICS),
-                    TestArea.CODEGEN_BOX to getTestsByTestTypeInfo(responses, TestArea.CODEGEN_BOX))
-            TestsCoverageColorsArranger.showCoverage(paragraphsInfo, testsScope, pathPrefix)
-        }
 
-        /**
-         * @param responses
-         * @param testArea diagnostics or box type
-         *
-         * @return Map of tests depends on the testType
-         */
-        private fun getTestsByTestTypeInfo(responses: Array<out Map<String, Any>>, testArea: TestArea): MutableMap<String, Any> {
-            val tests = mutableMapOf<String, Any>()
-            responses.forEach { response ->
-                val objectPath = response[testArea.contentPath]?.toString() ?: return@forEach
-                val parsedTest = response[testArea.content]?.let {
-                    SpecTestsParser.parseSpecTest(response, testArea)
-                } ?: return@forEach
-                setValueByObjectPath(tests, parsedTest, objectPath)
-            }
-            return tests
+            SpecCoverageHighlighter.showCoverageOfParagraphs(paragraphsInfo, specSectionTestSet, pathPrefix)
         }
 
         fun getParentSectionName(element: JQuery, type: String) = element.prevAll(type).first().attr("id")
@@ -162,6 +135,7 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             }
         }
     }
+
 
     private lateinit var sectionPrevLoaded: String
     private var originalSectionName: String? = null
@@ -188,9 +162,12 @@ class SpecTestsLoader(loadType: GithubTestsLoaderType) {
             sectionsPath.add(getParentSectionName(section, "h4"))
         }
 
-        loader.loadTestFiles(sectionName, sectionsPath, paragraphsInfo!!)
-                .then { testFileContents ->
-                    parseTestFiles(testFileContents, sectionName, sectionsPath, paragraphsInfo)
+        loader.loadTestFiles(sectionName, sectionsPath, TestArea.values())
+                .then { sectionTestSet ->
+
+                    if (paragraphsInfo != null)
+                        parseTestFiles(sectionTestSet, sectionName, sectionsPath, paragraphsInfo)
+
                     link.html("Reload tests")
 
                     if (originalSectionName == sectionName) {
