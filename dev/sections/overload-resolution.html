@@ -597,7 +597,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
-<h4 id="description-1">Description</h4>
+<h4 id="algorithm-of-msc-selection">Algorithm of MSC selection</h4>
 <div class="paragraph">
 <p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, we need to choose the most specific candidate from these callables. </span><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> facilities of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>.</span></p>
 </div>
@@ -638,7 +638,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compiler error.</span></p>
+<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -730,5 +730,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.</span></p>
 </div>
 </blockquote>
+<h3 id="conflicting-overloads">Conflicting overloads</h3>
+<div class="paragraph">
+<p><span class="sentence">In cases when it is known two callables are definitely interlinked in overload resolution (e.g., two member function-like callables declared in the same classifier), meaning they will always be considered together for overload resolution, Kotlin compiler performs <em>conflicting overload</em> detection for such callables.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two callables <code>f</code> and <code>g</code> are <em>definitely interlinked</em> in overload resolution, if the following are true.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>f</code> is not <a href="inheritance.html#overriding">overriding</a> <code>g</code> (and vice versa);</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> belong to the same level of <a href="overload-resolution.html#c-level-partition">c-level partition</a>;</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> are declared either in the same <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a> or in <a href="inheritance.html#inheritance">inherited</a> scopes.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as definitely interlinked.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two definitely interlinked callables <code>f</code> and <code>g</code> may create a <em>overload conflict</em>, if they could result in an overload ambiguity on most regular call sites.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Add justification for what is “most” and what is “regular”)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To check whether such situaion is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="overload-resolution.html#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="overload-resolution.html#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as conflicting overloads.</span></p>
+</div>
 </body>
 </html>
