@@ -99,7 +99,8 @@ If the overriding declaration *does* have its visibility specified, it must not 
 
 > Important: platforms may introduce additional cases of both *overridability* and *subsumption* of declarations, as well as limit the overriding mechanism due to implementation limitations.
 
-> Note: Kotlin does not have a concept of full shadowing of declarations.
+> Note: Kotlin does not have a concept of full hiding (or shadowing) of declarations.
 
 > Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration.
-> In this case these two declarations follow the normal rules of [function overloading][Overload resolution].
+> In this case these two declarations follow the normal rules of [overloading][Overload resolution].
+> However, these declarations may still result in a compile-time error as a result of [conflicting overload][Conflicting overloads] detection.
