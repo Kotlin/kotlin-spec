@@ -388,7 +388,7 @@ fun f2(arg: Any?, arg2: CharSequence) {
 
 The rest of this section will describe how the Kotlin compiler checks for this property in more detail.
 
-#### Description
+#### Algorithm of MSC selection
 
 When an overload resolution set $S$ is selected and it contains more than one callable, we need to choose the most specific candidate from these callables.
 The selection process uses the [type constraint][Kotlin type constraints] facilities of Kotlin, in a way similar to the process of [determining function applicability][Determining function applicability for a specific call].
@@ -424,7 +424,7 @@ If there are several callables which are more applicable than all other candidat
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
 
-If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compiler error.
+If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
@@ -502,3 +502,24 @@ TODO(Examples)
 [Type inference][Type inference] in Kotlin is a very complicated process, and it is performed *after* overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.
 
 > Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.
+
+### Conflicting overloads
+
+In cases when it is known two callables are definitely interlinked in overload resolution (e.g., two member function-like callables declared in the same classifier), meaning they will always be considered together for overload resolution, Kotlin compiler performs *conflicting overload* detection for such callables.
+
+Two callables `f` and `g` are *definitely interlinked* in overload resolution, if the following are true.
+
+* `f` is not [overriding] `g` (and vice versa);
+* `f` and `g` belong to the same level of [c-level partition];
+* `f` and `g` are declared either in the same [scope][Scopes and identifiers] or in [inherited][Inheritance] scopes.
+
+Different platform implementations may extend which callables are considered as definitely interlinked.
+
+Two definitely interlinked callables `f` and `g` may create a *overload conflict*, if they could result in an overload ambiguity on most regular call sites.
+
+TODO(Add justification for what is "most" and what is "regular")
+
+To check whether such situaion is possible, we compare `f` and `g` w.r.t. their [applicability][Algorithm of MSC selection] for a phantom call site with a fully specified argument list (i.e., with no used default arguments).
+If both `f` and `g` are equally or more specific to each other and neither of them is selected by the [additional steps][Algorithm of MSC selection] of MSC selection, we have an overload conflict.
+
+Different platform implementations may extend which callables are considered as conflicting overloads.
