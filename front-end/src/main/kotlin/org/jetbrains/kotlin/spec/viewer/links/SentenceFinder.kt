@@ -1,9 +1,9 @@
-package org.jetbrains.kotlin.spec.links
+package org.jetbrains.kotlin.spec.viewer.links
 
 import js.externals.jquery.`$`
-import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter.getSentenceInfoFromSearchField
-import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter.highlightParagraph
-import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter.highlightSentence
+import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.getSentenceInfoFromSearchField
+import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.highlightParagraph
+import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.highlightSentence
 
 object SentenceFinder {
     const val FINDER_BAR_HTML = """<div class="sentence-finder-bar">

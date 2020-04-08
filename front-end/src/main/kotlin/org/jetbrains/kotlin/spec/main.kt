@@ -1,26 +1,24 @@
 package org.jetbrains.kotlin.spec
 
 import js.externals.jquery.`$`
-import org.jetbrains.kotlin.spec.links.SentenceFinder
-import org.jetbrains.kotlin.spec.links.SpecPlaceHighlighter
-import org.jetbrains.kotlin.spec.tests.NavigationType
-import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
-import org.jetbrains.kotlin.spec.tests.SpecTestsViewer
-import org.jetbrains.kotlin.spec.tests.loaders.GithubTestsLoaderType
+import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
+import org.jetbrains.kotlin.spec.viewer.NavigationType
+import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
+import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
+import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
 import kotlin.browser.document
 import kotlin.browser.localStorage
 import kotlin.browser.window
 
 fun runAfterDocumentReady() {
-    val specTestsLoader = SpecTestsLoader(GithubTestsLoaderType.USING_TESTS_MAP_FILE)
+    val specTestsLoader = SpecTestsLoader()
     val specTestsViewer = SpecTestsViewer()
     val shouldBeShowedMarkup = localStorage.getItem("showMarkup") != null
     val sentenceToBeHighlighted = window.location.searchMap["sentence"]
     val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
     val sectionToBeHighlighted = window.location.hash
-
     `$`("h3, h4, h5").each { _, el ->
         SpecTestsLoader.insertLoadIcon(`$`(el))
     }
@@ -50,6 +48,9 @@ fun runAfterDocumentReady() {
         }
         on("change", ".test-coverage-view select[name='test-type']") { _, _ ->
             specTestsViewer.onTestTypeChange()
+        }
+        on("change", ".test-coverage-view select[name='test-link-type']") { _, _ ->
+            specTestsViewer.onTestPriorityChange()
         }
         on("change", ".test-coverage-view select[name='test-number']") { _, _ ->
             specTestsViewer.onTestNumberChange()
