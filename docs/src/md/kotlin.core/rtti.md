@@ -4,7 +4,7 @@ The _runtime type information_ (RTTI) is the information about Kotlin types of v
 RTTI affects the semantics of certain expressions, changing their evaluation depending on the amount of RTTI available for particular values, implementation, and platform:
 
 - [The type checking operator][Type-checking expression]
-- [The cast expression][Cast expression], expecially the `as?` operator
+- [The cast expression][Cast expression], especially the `as?` operator
 - [Class literals][Class literals] and the values they evaluate to
 
 _Runtime types_ are particular instances of RTTI for a particular value at runtime. 
@@ -26,7 +26,7 @@ The types actual values may have are limited to [class and object types][Classif
 
 _Runtime-available types_ are the types that can be guaranteed (during compilation) to have a concrete _runtime_ counterpart. 
 These include all the runtime types, their nullable variants as well as [`reified` type parameters][Reified type parameters], that are guaranteed to inline to a runtime type during type parameter substitution. 
-Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. 
+Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type parameters, used for type checks and safe casts. 
 During these operations, the nullability of the type is checked using reference-equality to `null`, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.
 
 For all generic types that are not expected to have RTTI for their generic arguments, only "raw" variants of generic types (denoted in code using the 

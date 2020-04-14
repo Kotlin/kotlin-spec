@@ -47,7 +47,7 @@ There are some packages which have all their entities *implicitly imported* into
 
 > Note: one may, however, import these entities explicitly if they choose to do so.
 
-The following packages of the standard library are implicitely imported:
+The following packages of the standard library are implicitly imported:
 
 - `kotlin`
 - `kotlin.annotation`

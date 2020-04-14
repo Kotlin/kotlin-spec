@@ -95,7 +95,7 @@ A *real literal* consists of the following parts: the whole-number part, the dec
 Unlike other languages, Kotlin real literals may only be expressed in decimal numbers.
 A real literal may also be followed by a type suffix (`f` or `F`).
 
-The exponent is an exponent mark (`e` or `E`) followed by an optionaly signed decimal integer (a sequence of decimal digits).
+The exponent is an exponent mark (`e` or `E`) followed by an optionally signed decimal integer (a sequence of decimal digits).
 
 The whole-number part and the exponent part may be omitted.
 The fraction part may be omitted only together with the decimal point, if the whole-number part and either the exponent part or the type suffix are present.
@@ -120,29 +120,29 @@ with the type suffix has type `kotlin.Float`.
 :::{.paste target=grammar-rule-EscapedIdentifier}
 :::
 
-A *character literal* defines a constant holding a unicode character value.
+A *character literal* defines a constant holding a Unicode character value.
 A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character `'`), excluding newline symbols (*CR* and *LF*), the single quotation mark itself and the escaping mark (ASCII backslash character `\`).
 
 All character literals have type `kotlin.Char`.
 
 ##### Escaped characters
 
-A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint.
+A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a Unicode codepoint.
 Simple escaped symbols include:
 
-- `\t` --- the unicode TAB symbol (U+0009);
-- `\b` --- the unicode BACKSPACE symbol (U+0008);
+- `\t` --- the Unicode TAB symbol (U+0009);
+- `\b` --- the Unicode BACKSPACE symbol (U+0008);
 - `\r` --- *CR*;
 - `\n` --- *LF*;
-- `\'` --- the unicode apostrophe symbol (U+0027);
-- `\"` --- the unicode double quotation symbol (U+0028);
-- `\\` --- the unicode backslash symbol (U+005C);
-- `\$` --- the unicode DOLLAR sign (U+0024).
+- `\'` --- the Unicode apostrophe symbol (U+0027);
+- `\"` --- the Unicode double quotation symbol (U+0028);
+- `\\` --- the Unicode backslash symbol (U+005C);
+- `\$` --- the Unicode DOLLAR sign (U+0024).
 
-A unicode codepoint escaped symbol is the symbol `\u` followed by exactly four hexadecimal digits.
-It represents the unicode symbol with the codepoint equal to the number represented by these four digits.
+A Unicode codepoint escaped symbol is the symbol `\u` followed by exactly four hexadecimal digits.
+It represents the Unicode symbol with the codepoint equal to the number represented by these four digits.
 
-> Note: this means unicode codepoint escaped symbols support only unicode symbols in range from U+0000 to U+FFFF.
+> Note: this means Unicode codepoint escaped symbols support only Unicode symbols in range from U+0000 to U+FFFF.
 
 #### String literals
 
@@ -1251,7 +1251,7 @@ TODO(Explain how escaping actually works for locals and stuff...)
 
 #### Functional interface lambda literals
 
-If a [lambda literal][Lambda literals] is preceeded with a [functional interface][Functional interface declaration] name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).
+If a [lambda literal][Lambda literals] is preceded with a [functional interface][Functional interface declaration] name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).
 
 To be a well-formed functional interface lambda literal, the type of lambda literal must be a subtype of the associated function type of the specified functional interface.
 

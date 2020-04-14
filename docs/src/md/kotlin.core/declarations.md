@@ -143,7 +143,7 @@ In a classifier (an object or a class) declaration $C$, any supertype $I$ inheri
 - $v$ has type $T$ such that $T <: I$.
 
 The inheritance delegation uses a syntax similar to [property delegation][Delegated property declaration] using the `by` keyword, but is specified in the classifier declaration header and is a very different concept.
-If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overriden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the [method overriding][Overriding] section).
+If inherited using delegation, each method $M$ of $I$ (whether they have a default implementation or not) is delegated to the corresponding method of $v$ as if it was overridden in $C$ with all the parameter values directly passed to the corresponding method in $v$, unless the body of $C$ itself has a suitable override of $M$ (see the [method overriding][Overriding] section).
 
 The particular means on how $v$ is stored inside the classifier object is platform-defined.
 
@@ -242,13 +242,13 @@ Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` i
   public override final fun compareTo(other: E): Int
   ```
 
-  (a member of `kotlin.Comparable<E>`) defined by default to compare entries by their ordinals, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations;
+  (a member of `kotlin.Comparable<E>`) defined by default to compare entries by their ordinals, but may be overridden to have different behaviour both in the enum class declaration and in entry declarations;
 
 - ```kotlin
   public override fun toString(): String
   ```
 
-  (a member of `kotlin.Any`) defined by default to return the entry name, but may be overriden  to have different behaviour both in the enum class declaration and in entry declarations.
+  (a member of `kotlin.Any`) defined by default to return the entry name, but may be overridden  to have different behaviour both in the enum class declaration and in entry declarations.
 
 In addition to these, every enum class type `E` has the following **static** member functions declared implicitly:
 
@@ -328,7 +328,7 @@ A functional interface has an associated [function type][Function types], which 
 If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete [class][Classifier declaration].
 However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).
 
-* If a lambda literal `L` is preceeded with a functional interface name `T`, and the type of `L` is a subtype of the associated function type of `T`, this expression creates an instance of `T` with lambda literal `L` used as its abstract member function implementation.
+* If a lambda literal `L` is preceded with a functional interface name `T`, and the type of `L` is a subtype of the associated function type of `T`, this expression creates an instance of `T` with lambda literal `L` used as its abstract member function implementation.
 
 > Example:
 > 
@@ -484,12 +484,10 @@ To do that, we compare *function signatures*, which consist of the following.
 Two function signatures $A$ and $B$ are considered *matching*, if the following is true.
 
 * Name of $A$ is the same as the name of $B$;
-* Type parameters of $A$ are pairwise [equivalent][Subtyping] to the type parameters of $B$;
-* Formal parameter types of $A$ are pairwise equal to the formal parameter types of $B$ w.r.t. possible type parameter substitutions.
+* Formal parameter types of $A$ are pairwise equal to the formal parameter types of $B$ w.r.t. possible type parameter substitutions;
+* If the number of type parameters is the same, type parameters of $A$ must be pairwise [equivalent][Subtyping] to the type parameters of $B$.
 
 > Important: a platform implementation may change which function signatures are considered matching, depending on the platform's specifics.
-
-TODO(Investigate how this actually works)
 
 #### Named, positional and default parameters
 
@@ -649,7 +647,7 @@ Both the right-hand value `e`, the type `T` and the getter are optional, however
 More so, if both the type of `e` and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitly), the type `T` must be specified explicitly. 
 In case both `e` and `T` are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
 
-TODO: we never actually say how getters are similar/different to normal functions and, henceworth, how the inference works
+TODO: we never actually say how getters are similar/different to normal functions and, henceforth, how the inference works
 
 The initializer expression `e`, if given, serves as the starting value for the property backing field (see [getters and setters section][Getters and setters] for details) and is evaluated when the property is created.
 Properties that are not allowed to have backing fields (see [getters and setters section][Getters and setters] for details) are also not allowed to have initializer expressions.
@@ -721,7 +719,7 @@ These functions have the following requirements
 
 > Note: Regular coding convention recommends `value` as the name for the setter argument
 
-One can also ommit the accessor body, in which case a *default* implementation is used (also known as default accessor).
+One can also omit the accessor body, in which case a *default* implementation is used (also known as default accessor).
 
 ```kotlin
 var x: T = e
@@ -1030,7 +1028,7 @@ TODO: account for more complex cases
 
 Type parameters of inline function declarations (and only those) can be declared `reified` using the corresponding keyword.
 A reified type parameter is a [runtime-available][Runtime-available types] type inside the function scope, see the corresponding section for details.
-Reified type parameters can only be substitued by other [runtime-available types][Runtime-available types] when using such functions.
+Reified type parameters can only be substituted by other [runtime-available types][Runtime-available types] when using such functions.
 
 ### Declaration visibility
 

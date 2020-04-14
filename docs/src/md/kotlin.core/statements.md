@@ -36,7 +36,7 @@ TODO(switch to navigation paths when we have them?)
 
 #### Simple assignments
 
-A *simple assigment* is an assignment which uses the assign operator `=`.
+A *simple assignment* is an assignment which uses the assign operator `=`.
 If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).
 
 - If a property has a [setter][Getters and setters] (including [delegated properties][Delegated property declaration]), it is called using the right-hand side expression as its argument;
@@ -104,7 +104,7 @@ Safe assignments are expanded similar to [safe navigation operator expressions][
 > }
 > ```
 > 
-> which, according to expansion rules for indexing assigments is, in turn, expanded to
+> which, according to expansion rules for indexing assignments is, in turn, expanded to
 > 
 > ```kotlin
 > when(val $tmp = x) {
