@@ -4,9 +4,7 @@ Kotlin has a concept of *type inference* for compile-time type information, mean
 There are two kinds of type inference supported by Kotlin.
 
 - [Local type inference], for inferring types of expressions locally, in statement/expression scope;
-- Function signature type inference, for inferring types of function return values and/or parameters.
-
-TODO(Where do we talk about the function signature type inference?)
+- [Function signature type inference], for inferring types of function return values and/or parameters.
 
 Type inference is a [type constraint][Kotlin type constraints] problem, and is usually solved by a type constraint solver.
 For this reason, type inference is applicable in situations when the type context contains enough information for the type constraint solver to create an [optimal constraint system solution][Finding optimal constraint system solution] w.r.t. type inference problem.
@@ -77,8 +75,6 @@ $$
 ##### Smart cast transfer functions
 
 The data-flow information uses the following transfer functions.
-
-TODO(Add compile-time types of expressions to the transfer functions)
 
 $$
 \begin{alignedat}{3}
@@ -456,7 +452,11 @@ In these cases an [optimal constraint system solution][Finding optimal constrain
 
 TODO(Is this true?)
 
-### TODO
+### Function signature type inference
 
-- Type approximation for public API
-- Lambda analysis order (and the order of overloading vs type inference in general)
+TODO(This is a stub)
+
+Function signature type inference is a variant of [local type inference], which is performed for [lambda literals] and [anonymous function declarations].
+
+TODO(Type approximation for public API)
+TODO(Lambda analysis order (and the order of overloading vs type inference in general))
