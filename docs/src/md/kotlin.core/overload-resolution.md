@@ -511,7 +511,7 @@ Two callables `f` and `g` are *definitely interlinked* in overload resolution, i
 
 * `f` is not [overriding] `g` (and vice versa);
 * `f` and `g` belong to the same level of [c-level partition];
-* `f` and `g` are declared either in the same [scope][Scopes and identifiers] or in [inherited][Inheritance] scopes.
+* `f` and `g` are declared in the same [scope][Scopes and identifiers].
 
 Different platform implementations may extend which callables are considered as definitely interlinked.
 
@@ -519,7 +519,7 @@ Two definitely interlinked callables `f` and `g` may create a *overload conflict
 
 TODO(Add justification for what is "most" and what is "regular")
 
-To check whether such situaion is possible, we compare `f` and `g` w.r.t. their [applicability][Algorithm of MSC selection] for a phantom call site with a fully specified argument list (i.e., with no used default arguments).
+To check whether such situation is possible, we compare `f` and `g` w.r.t. their [applicability][Algorithm of MSC selection] for a phantom call site with a fully specified argument list (i.e., with no used default arguments).
 If both `f` and `g` are equally or more specific to each other and neither of them is selected by the [additional steps][Algorithm of MSC selection] of MSC selection, we have an overload conflict.
 
 Different platform implementations may extend which callables are considered as conflicting overloads.

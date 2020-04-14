@@ -56,13 +56,18 @@ A callable declaration (that is, a [property][Property declaration] or [member f
 
 It is illegal for a declaration to be both `private` and either `open`, `abstract` or `override`, such declarations should result in a compile-time error.
 
-A callable declaration $D$ inside a classifier declaration *subsumes* a corresponding declaration $B$ of the base classifier type if:
-
-- Return type of $D$ is a subtype of return type of $B$;
-- [Function signature][Function signature] of $D$ (if any) matches the function signature of $B$ (if any).
+A callable declaration $D$ inside a classifier declaration *subsumes* a corresponding declaration $B$ of the base classifier type if the [function signature][Function signature] of $D$ (if any) matches the function signature of $B$ (if any).
 
 If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes it, and $D$ has an `override` modifier, $D$ is *overriding* the base declaration $B$.
-If the base declaration is not overridable and/or the deriving declaration does not have an `override` modifier, it is not permitted and should result in a compile-time error.
+
+A declaration $D$ which overrides declaration $B$ should satisfy the following conditions.
+
+- Return type of $D$ is a subtype of return type of $B$;
+- [Suspendability][Coroutines] of $D$ and $B$ must be the same.
+
+Otherwise, it is a compile-time error.
+
+If the base declaration is not overridable and/or the overriding declaration does not have an `override` modifier, it is not permitted and should result in a compile-time error.
 
 If the overriding declaration *does not* have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.
 

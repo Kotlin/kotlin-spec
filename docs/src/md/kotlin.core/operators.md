@@ -83,7 +83,7 @@ See the corresponding sections for particular syntax.
 
 This convention allows to introduce a number (one or more) of properties in the place of one by immediately *destructuring* the property during construction.
 The immediate value (that is, the initializing expression of the local property, the value acquired from the operator convention of a for-loop statement, or an argument passed into a lambda body) is assigned to a number of placeholders $p_0, \ldots, p_N$ where each placeholder is either an identifier or a special ignoring placeholder `_` (note that `_` is not a valid identifier in Kotlin).
-For each identifier the corresponding operator function `componentK` with $K$ being equal to the position of the placeholder in the declaration (**starting from 1**) is called withour arguments and the result is assigned to a fresh value referred to as the identifier used.
+For each identifier the corresponding operator function `componentK` with $K$ being equal to the position of the placeholder in the declaration (**starting from 1**) is called without arguments and the result is assigned to a fresh value referred to as the identifier used.
 For each ignoring placeholder, no calls are performed and nothing is assigned.
 Each placeholder may be provided with an optional type signature $T_M$ which is used in [type inference][Type inference] as any property type would.
 Note that an ignoring placeholder may also be provided with a type signature, in which case although the call to corresponding `componentM` function is not performed, it still must be checked for function applicability during type inference.
