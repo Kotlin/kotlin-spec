@@ -183,14 +183,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and either <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if:</span></p>
+<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if the <a href="declarations.html#function-signature">function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A declaration <span class="math inline">\(D\)</span> which overrides declaration <span class="math inline">\(B\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of return type of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence"><a href="declarations.html#function-signature">Function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></li>
+<li><span class="sentence"><a href="coroutines.html#coroutines-1">Suspendability</a> of <span class="math inline">\(D\)</span> and <span class="math inline">\(B\)</span> must be the same.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
+<p><span class="sentence">Otherwise, it is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the base declaration is not overridable and/or the overriding declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the overriding declaration <em>does not</em> have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.</span></p>

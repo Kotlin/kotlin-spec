@@ -324,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><span class="math inline">\(v\)</span> has type <span class="math inline">\(T\)</span> such that <span class="math inline">\(T &lt;: I\)</span>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The inheritance delegation uses a syntax similar to <a href="declarations.html#delegated-property-declaration">property delegation</a> using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overriden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the <a href="inheritance.html#overriding">method overriding</a> section).</span></p>
+<p><span class="sentence">The inheritance delegation uses a syntax similar to <a href="declarations.html#delegated-property-declaration">property delegation</a> using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overridden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the <a href="inheritance.html#overriding">method overriding</a> section).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The particular means on how <span class="math inline">\(v\)</span> is stored inside the classifier object is platform-defined.</span></p>
@@ -439,11 +439,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div></li>
 <li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span>(<span class="va">other</span>: <span class="dt">E</span>): <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">(a member of <code>kotlin.Comparable&lt;E&gt;</code>) defined by default to compare entries by their ordinals, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations;</span></p>
+<p><span class="sentence">(a member of <code>kotlin.Comparable&lt;E&gt;</code>) defined by default to compare entries by their ordinals, but may be overridden to have different behaviour both in the enum class declaration and in entry declarations;</span></p>
 </div></li>
 <li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span>(): <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">(a member of <code>kotlin.Any</code>) defined by default to return the entry name, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations.</span></p>
+<p><span class="sentence">(a member of <code>kotlin.Any</code>) defined by default to return the entry name, but may be overridden to have different behaviour both in the enum class declaration and in entry declarations.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
@@ -544,7 +544,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete <a href="declarations.html#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
 </div>
 <ul>
-<li><span class="sentence">If a lambda literal <code>L</code> is preceeded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
+<li><span class="sentence">If a lambda literal <code>L</code> is preceded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -764,19 +764,14 @@ doIt(l)</code></pre>
 </div>
 <ul>
 <li><span class="sentence">Name of <span class="math inline">\(A\)</span> is the same as the name of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Type parameters of <span class="math inline">\(A\)</span> are pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions.</span></li>
+<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions;</span></li>
+<li><span class="sentence">If the number of type parameters is the same, type parameters of <span class="math inline">\(A\)</span> must be pairwise <a href="type-system.html#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: a platform implementation may change which function signatures are considered matching, depending on the platform’s specifics.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Investigate how this actually works)</span></p>
-</div>
-</div>
 <h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports <em>named</em> parameters out-of-the-box, meaning one can bind an argument to a parameter in function invocation not by its position, but by its name, which is equal to the argument name.</span></p>
@@ -963,7 +958,7 @@ doIt(l)</code></pre>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: we never actually say how getters are similar/different to normal functions and, henceworth, how the inference works</span></p>
+<p><span class="sentence">TODO: we never actually say how getters are similar/different to normal functions and, henceforth, how the inference works</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -1039,7 +1034,7 @@ doIt(l)</code></pre>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">One can also ommit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
+<p><span class="sentence">One can also omit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
 <div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
 <a class="sourceLine" id="cb18-2" title="2">    <span class="kw">get</span></a>
@@ -1359,7 +1354,7 @@ doIt(l)</code></pre>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
-<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
+<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substituted by other <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
 </div>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">

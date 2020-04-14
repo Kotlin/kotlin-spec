@@ -5534,7 +5534,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><span class="math inline">\(v\)</span> has type <span class="math inline">\(T\)</span> such that <span class="math inline">\(T &lt;: I\)</span>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The inheritance delegation uses a syntax similar to <a href="#delegated-property-declaration">property delegation</a> using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overriden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the <a href="#overriding">method overriding</a> section).</span></p>
+<p><span class="sentence">The inheritance delegation uses a syntax similar to <a href="#delegated-property-declaration">property delegation</a> using the <code>by</code> keyword, but is specified in the classifier declaration header and is a very different concept. </span><span class="sentence">If inherited using delegation, each method <span class="math inline">\(M\)</span> of <span class="math inline">\(I\)</span> (whether they have a default implementation or not) is delegated to the corresponding method of <span class="math inline">\(v\)</span> as if it was overridden in <span class="math inline">\(C\)</span> with all the parameter values directly passed to the corresponding method in <span class="math inline">\(v\)</span>, unless the body of <span class="math inline">\(C\)</span> itself has a suitable override of <span class="math inline">\(M\)</span> (see the <a href="#overriding">method overriding</a> section).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The particular means on how <span class="math inline">\(v\)</span> is stored inside the classifier object is platform-defined.</span></p>
@@ -5649,11 +5649,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div></li>
 <li><div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">E</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">(a member of <code>kotlin.Comparable&lt;E&gt;</code>) defined by default to compare entries by their ordinals, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations;</span></p>
+<p><span class="sentence">(a member of <code>kotlin.Comparable&lt;E&gt;</code>) defined by default to compare entries by their ordinals, but may be overridden to have different behaviour both in the enum class declaration and in entry declarations;</span></p>
 </div></li>
 <li><div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">(a member of <code>kotlin.Any</code>) defined by default to return the entry name, but may be overriden to have different behaviour both in the enum class declaration and in entry declarations.</span></p>
+<p><span class="sentence">(a member of <code>kotlin.Any</code>) defined by default to return the entry name, but may be overridden to have different behaviour both in the enum class declaration and in entry declarations.</span></p>
 </div></li>
 </ul>
 <div class="paragraph">
@@ -5754,7 +5754,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete <a href="#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
 </div>
 <ul>
-<li><span class="sentence">If a lambda literal <code>L</code> is preceeded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
+<li><span class="sentence">If a lambda literal <code>L</code> is preceded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -5974,19 +5974,14 @@ doIt(l)</code></pre>
 </div>
 <ul>
 <li><span class="sentence">Name of <span class="math inline">\(A\)</span> is the same as the name of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Type parameters of <span class="math inline">\(A\)</span> are pairwise <a href="#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions.</span></li>
+<li><span class="sentence">Formal parameter types of <span class="math inline">\(A\)</span> are pairwise equal to the formal parameter types of <span class="math inline">\(B\)</span> w.r.t. possible type parameter substitutions;</span></li>
+<li><span class="sentence">If the number of type parameters is the same, type parameters of <span class="math inline">\(A\)</span> must be pairwise <a href="#subtyping">equivalent</a> to the type parameters of <span class="math inline">\(B\)</span>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: a platform implementation may change which function signatures are considered matching, depending on the platform’s specifics.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Investigate how this actually works)</span></p>
-</div>
-</div>
 <h4 id="named-positional-and-default-parameters">Named, positional and default parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports <em>named</em> parameters out-of-the-box, meaning one can bind an argument to a parameter in function invocation not by its position, but by its name, which is equal to the argument name.</span></p>
@@ -6173,7 +6168,7 @@ doIt(l)</code></pre>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: we never actually say how getters are similar/different to normal functions and, henceworth, how the inference works</span></p>
+<p><span class="sentence">TODO: we never actually say how getters are similar/different to normal functions and, henceforth, how the inference works</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -6249,7 +6244,7 @@ doIt(l)</code></pre>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">One can also ommit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
+<p><span class="sentence">One can also omit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
 <div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> = e</a>
 <a class="sourceLine" id="cb50-2" title="2">    <span class="kw">get</span></a>
@@ -6569,7 +6564,7 @@ doIt(l)</code></pre>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
-<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substitued by other <a href="#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
+<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substituted by other <a href="#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
 </div>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">
@@ -6684,14 +6679,23 @@ doIt(l)</code></pre>
 <p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and either <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if:</span></p>
+<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if the <a href="#function-signature">function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A declaration <span class="math inline">\(D\)</span> which overrides declaration <span class="math inline">\(B\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of return type of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence"><a href="#function-signature">Function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></li>
+<li><span class="sentence"><a href="#coroutines-1">Suspendability</a> of <span class="math inline">\(D\)</span> and <span class="math inline">\(B\)</span> must be the same.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
+<p><span class="sentence">Otherwise, it is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the base declaration is not overridable and/or the overriding declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the overriding declaration <em>does not</em> have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.</span></p>
@@ -6987,7 +6991,7 @@ doIt(l)</code></pre>
 </blockquote>
 <h4 id="simple-assignments">Simple assignments</h4>
 <div class="paragraph">
-<p><span class="sentence">A <em>simple assigment</em> is an assignment which uses the assign operator <code>=</code>. </span><span class="sentence">If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).</span></p>
+<p><span class="sentence">A <em>simple assignment</em> is an assignment which uses the assign operator <code>=</code>. </span><span class="sentence">If the left-hand side of an assignment refers to a mutable property, a value of that property is changed when an assignment is evaluated, using the following rules (applied in order).</span></p>
 </div>
 <ul>
 <li><span class="sentence">If a property has a <a href="#getters-and-setters">setter</a> (including <a href="#delegated-property-declaration">delegated properties</a>), it is called using the right-hand side expression as its argument;</span></li>
@@ -7077,7 +7081,7 @@ doIt(l)</code></pre>
 <a class="sourceLine" id="cb68-3" title="3">    <span class="cf">else</span> -&gt; <span class="op">{</span> $tmp.y[<span class="dv">0</span>] = z <span class="op">}</span></a>
 <a class="sourceLine" id="cb68-4" title="4"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">which, according to expansion rules for indexing assigments is, in turn, expanded to</span></p>
+<p><span class="sentence">which, according to expansion rules for indexing assignments is, in turn, expanded to</span></p>
 </div>
 <div class="sourceCode" id="cb69"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb69-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) <span class="op">{</span></a>
 <a class="sourceLine" id="cb69-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
@@ -7408,7 +7412,7 @@ doIt(l)</code></pre>
 <p><span class="sentence">A <em>real literal</em> consists of the following parts: the whole-number part, the decimal point (ASCII period character <code>.</code>), the fraction part and the exponent. </span><span class="sentence">Unlike other languages, Kotlin real literals may only be expressed in decimal numbers. </span><span class="sentence">A real literal may also be followed by a type suffix (<code>f</code> or <code>F</code>).</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The exponent is an exponent mark (<code>e</code> or <code>E</code>) followed by an optionaly signed decimal integer (a sequence of decimal digits).</span></p>
+<p><span class="sentence">The exponent is an exponent mark (<code>e</code> or <code>E</code>) followed by an optionally signed decimal integer (a sequence of decimal digits).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The whole-number part and the exponent part may be omitted. </span><span class="sentence">The fraction part may be omitted only together with the decimal point, if the whole-number part and either the exponent part or the type suffix are present. </span><span class="sentence">Unlike other languages, Kotlin does not support omitting the fraction part, but leaving the decimal point in.</span></p>
@@ -7454,31 +7458,31 @@ doIt(l)</code></pre>
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>character literal</em> defines a constant holding a unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
+<p><span class="sentence">A <em>character literal</em> defines a constant holding a Unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">All character literals have type <code>kotlin.Char</code>.</span></p>
 </div>
 <h5 id="escaped-characters">Escaped characters</h5>
 <div class="paragraph">
-<p><span class="sentence">A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint. </span><span class="sentence">Simple escaped symbols include:</span></p>
+<p><span class="sentence">A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a Unicode codepoint. </span><span class="sentence">Simple escaped symbols include:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>\t</code> — the unicode TAB symbol (U+0009);</span></li>
-<li><span class="sentence"><code>\b</code> — the unicode BACKSPACE symbol (U+0008);</span></li>
+<li><span class="sentence"><code>\t</code> — the Unicode TAB symbol (U+0009);</span></li>
+<li><span class="sentence"><code>\b</code> — the Unicode BACKSPACE symbol (U+0008);</span></li>
 <li><span class="sentence"><code>\r</code> — <em>CR</em>;</span></li>
 <li><span class="sentence"><code>\n</code> — <em>LF</em>;</span></li>
-<li><span class="sentence"><code>\'</code> — the unicode apostrophe symbol (U+0027);</span></li>
-<li><span class="sentence"><code>\&quot;</code> — the unicode double quotation symbol (U+0028);</span></li>
-<li><span class="sentence"><code>\\</code> — the unicode backslash symbol (U+005C);</span></li>
-<li><span class="sentence"><code>\$</code> — the unicode DOLLAR sign (U+0024).</span></li>
+<li><span class="sentence"><code>\'</code> — the Unicode apostrophe symbol (U+0027);</span></li>
+<li><span class="sentence"><code>\&quot;</code> — the Unicode double quotation symbol (U+0028);</span></li>
+<li><span class="sentence"><code>\\</code> — the Unicode backslash symbol (U+005C);</span></li>
+<li><span class="sentence"><code>\$</code> — the Unicode DOLLAR sign (U+0024).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">A unicode codepoint escaped symbol is the symbol <code>\u</code> followed by exactly four hexadecimal digits. </span><span class="sentence">It represents the unicode symbol with the codepoint equal to the number represented by these four digits.</span></p>
+<p><span class="sentence">A Unicode codepoint escaped symbol is the symbol <code>\u</code> followed by exactly four hexadecimal digits. </span><span class="sentence">It represents the Unicode symbol with the codepoint equal to the number represented by these four digits.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this means unicode codepoint escaped symbols support only unicode symbols in range from U+0000 to U+FFFF.</span></p>
+<p><span class="sentence">Note: this means Unicode codepoint escaped symbols support only Unicode symbols in range from U+0000 to U+FFFF.</span></p>
 </div>
 </blockquote>
 <h4 id="string-literals">String literals</h4>
@@ -9078,7 +9082,7 @@ doIt(l)</code></pre>
 </blockquote>
 <h4 id="functional-interface-lambda-literals">Functional interface lambda literals</h4>
 <div class="paragraph">
-<p><span class="sentence">If a <a href="#lambda-literals">lambda literal</a> is preceeded with a <a href="#functional-interface-declaration">functional interface</a> name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).</span></p>
+<p><span class="sentence">If a <a href="#lambda-literals">lambda literal</a> is preceded with a <a href="#functional-interface-declaration">functional interface</a> name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">To be a well-formed functional interface lambda literal, the type of lambda literal must be a subtype of the associated function type of the specified functional interface.</span></p>
@@ -9400,7 +9404,7 @@ doIt(l)</code></pre>
 <p><span class="sentence">A special case of definition by convention is the destructuring declaration of properties, which is available for <a href="#local-property-declaration">local properties</a>, parameters of <a href="#lambda-literals">lambda literals</a> and the iteration variable of <a href="#for-loop-statement">for-loops</a>. </span><span class="sentence">See the corresponding sections for particular syntax.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This convention allows to introduce a number (one or more) of properties in the place of one by immediately <em>destructuring</em> the property during construction. </span><span class="sentence">The immediate value (that is, the initializing expression of the local property, the value acquired from the operator convention of a for-loop statement, or an argument passed into a lambda body) is assigned to a number of placeholders <span class="math inline">\(p_0, \ldots, p_N\)</span> where each placeholder is either an identifier or a special ignoring placeholder <code>_</code> (note that <code>_</code> is not a valid identifier in Kotlin). </span><span class="sentence">For each identifier the corresponding operator function <code>componentK</code> with <span class="math inline">\(K\)</span> being equal to the position of the placeholder in the declaration (<strong>starting from 1</strong>) is called withour arguments and the result is assigned to a fresh value referred to as the identifier used. </span><span class="sentence">For each ignoring placeholder, no calls are performed and nothing is assigned. </span><span class="sentence">Each placeholder may be provided with an optional type signature <span class="math inline">\(T_M\)</span> which is used in <a href="#type-inference">type inference</a> as any property type would. </span><span class="sentence">Note that an ignoring placeholder may also be provided with a type signature, in which case although the call to corresponding <code>componentM</code> function is not performed, it still must be checked for function applicability during type inference.</span></p>
+<p><span class="sentence">This convention allows to introduce a number (one or more) of properties in the place of one by immediately <em>destructuring</em> the property during construction. </span><span class="sentence">The immediate value (that is, the initializing expression of the local property, the value acquired from the operator convention of a for-loop statement, or an argument passed into a lambda body) is assigned to a number of placeholders <span class="math inline">\(p_0, \ldots, p_N\)</span> where each placeholder is either an identifier or a special ignoring placeholder <code>_</code> (note that <code>_</code> is not a valid identifier in Kotlin). </span><span class="sentence">For each identifier the corresponding operator function <code>componentK</code> with <span class="math inline">\(K\)</span> being equal to the position of the placeholder in the declaration (<strong>starting from 1</strong>) is called without arguments and the result is assigned to a fresh value referred to as the identifier used. </span><span class="sentence">For each ignoring placeholder, no calls are performed and nothing is assigned. </span><span class="sentence">Each placeholder may be provided with an optional type signature <span class="math inline">\(T_M\)</span> which is used in <a href="#type-inference">type inference</a> as any property type would. </span><span class="sentence">Note that an ignoring placeholder may also be provided with a type signature, in which case although the call to corresponding <code>componentM</code> function is not performed, it still must be checked for function applicability during type inference.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -9524,7 +9528,7 @@ doIt(l)</code></pre>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">The following packages of the standard library are implicitely imported:</span></p>
+<p><span class="sentence">The following packages of the standard library are implicitly imported:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>kotlin</code></span></li>
@@ -10202,7 +10206,7 @@ doIt(l)</code></pre>
 <ul>
 <li><span class="sentence"><code>f</code> is not <a href="#overriding">overriding</a> <code>g</code> (and vice versa);</span></li>
 <li><span class="sentence"><code>f</code> and <code>g</code> belong to the same level of <a href="#c-level-partition">c-level partition</a>;</span></li>
-<li><span class="sentence"><code>f</code> and <code>g</code> are declared either in the same <a href="#scopes-and-identifiers">scope</a> or in <a href="#inheritance">inherited</a> scopes.</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> are declared in the same <a href="#scopes-and-identifiers">scope</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Different platform implementations may extend which callables are considered as definitely interlinked.</span></p>
@@ -10216,7 +10220,7 @@ doIt(l)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="sentence">To check whether such situaion is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
+<p><span class="sentence">To check whether such situation is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Different platform implementations may extend which callables are considered as conflicting overloads.</span></p>
@@ -11386,7 +11390,7 @@ P_2 \times N_2
 </div>
 <ul>
 <li><span class="sentence"><a href="#type-checking-expression">The type checking operator</a></span></li>
-<li><span class="sentence"><a href="#cast-expression">The cast expression</a>, expecially the <code>as?</code> operator</span></li>
+<li><span class="sentence"><a href="#cast-expression">The cast expression</a>, especially the <code>as?</code> operator</span></li>
 <li><span class="sentence"><a href="#class-literals">Class literals</a> and the values they evaluate to</span></li>
 </ul>
 <div class="paragraph">
@@ -11404,7 +11408,7 @@ P_2 \times N_2
 </div>
 <h3 id="runtime-available-types">Runtime-available types</h3>
 <div class="paragraph">
-<p><span class="sentence"><em>Runtime-available types</em> are the types that can be guaranteed (during compilation) to have a concrete <em>runtime</em> counterpart. </span><span class="sentence">These include all the runtime types, their nullable variants as well as <a href="#reified-type-parameters"><code>reified</code> type parameters</a>, that are guaranteed to inline to a runtime type during type parameter substitution. </span><span class="sentence">Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type paramters, used for type checks and safe casts. </span><span class="sentence">During these operations, the nullability of the type is checked using reference-equality to <code>null</code>, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.</span></p>
+<p><span class="sentence"><em>Runtime-available types</em> are the types that can be guaranteed (during compilation) to have a concrete <em>runtime</em> counterpart. </span><span class="sentence">These include all the runtime types, their nullable variants as well as <a href="#reified-type-parameters"><code>reified</code> type parameters</a>, that are guaranteed to inline to a runtime type during type parameter substitution. </span><span class="sentence">Only runtime-available types may be passed (implicitly or explicitly) as substitutions to reified type parameters, used for type checks and safe casts. </span><span class="sentence">During these operations, the nullability of the type is checked using reference-equality to <code>null</code>, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For all generic types that are not expected to have RTTI for their generic arguments, only “raw” variants of generic types (denoted in code using the star-projected type notation or a special parameter-less notation <span><span class="TODO">(TODO: link?)</span><span class="TODO-marker">*</span></span>) are runtime-available.</span></p>
