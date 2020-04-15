@@ -454,45 +454,61 @@ TODO(Is this true?)
 
 ### Function signature type inference
 
-Function signature type inference is a variant of [local type inference], which is performed for function declarations, [lambda literals] and [anonymous function declarations].
+Function signature type inference is a variant of [local type inference], which is performed for [function declarations], [lambda literals] and [anonymous function declarations].
 
 #### Named and anonymous function declarations
 
-As described in the respective [section][Function declaration], a named function declaration body may come in two forms: an expression-body (a single expression) or a control structure body.
-For the latter case, an expected return type must be provided or assumed to be `kotlin.Unit` and no special kind of type inference is needed.
-For the former case, an expected return type may be provided or can be inferred using local type inference from the expression body.
-If the expected return type is provided, it is used as an expected constraint on the result type of the expression constituting the body.
+As described [here][Function declaration], a named function declaration body may come in two forms: an expression body (a single expression) or a [control structure body][Code blocks].
+For the latter case, an expected return type must be provided or is assumed to be `kotlin.Unit` and no special kind of type inference is needed.
+For the former case, an expected return type may be provided or can be inferred using [local type inference] from the expression body.
+If the expected return type is provided, it is used as an expected constraint on the result type of the expression body.
 
 > Example:
 > ```kotlin
 > fun <T> foo(): T { ... }
-> fun bar(): Int = foo() // an external constraint T' <: Int allows the result of `foo` to be inferred automatically. 
+> fun bar(): Int = foo() // an expected constraint T' <: Int allows the result of `foo` to be inferred automatically.
 > ```
 
-#### Statements involving lambda literals
+#### Statements with lambda literals
 
-Complex statements involving one or many lambda literals introduce an additional level of complexity to type inference and overload resolution mechanisms.
-As mentioned in the [overload resolution section][Overload resolution], the overloading of callables involved in such statements is performed regardless of the contents of lambda expressions and before any processing of their bodies is performed.
-For a complex statement $S$ involving (potentially overloaded) callables $C_1, \ldots, \C_N$ and lambda literals $L_1, \ldots, \L_M$, excluding the bodies of these literals, the processing takes the following steps:
+Complex statements involving one or more lambda literals introduce an additional level of complexity to type inference and overload resolution mechanisms.
+As mentioned in the [overload resolution section][Overload resolution], the overload resolution of callables involved in such statements is performed regardless of the contents of the lambda expressions and before any processing of their bodies is performed (including local type inference).
 
-- First, the overload resolution picks candidates for $C_1, \ldots, C_N$ according to [overload resolution section][Overload resolution];
-- Second, for each lambda expression with unspecified number of parameters, it is decided based on the form of callables involved and/or the expected type of this lambda literal whether it must have zero or one parameter. If there is no way to determine the number of parameters, it is assumed to be zero. If it is assumed to be one, the phantom parameter `it` is proceeded in further steps as if it was a named lambda parameter;
-- Next, for each lambda body of $L_1, \ldots, \L_N$, the expected constraints resulting from the overload candidates picked (if any) on the lambda arguments and/or lambda result type are added and the overload resolution for all the statements in these bodies is performed w.r.t. these constraints. This may result in descending into more and more lambda expressions as any statement in a lambda body may also involve lambda literals;
-- When all the overload candidates are picked, local type inference process of each lambda body and each statement is performed bottom-up, starting with the most inner lambda literals to the outermost ones, processing one lambda literal at a time:
-    - When inferring last expression of each lambda body and every subject for every [return expression][Jump expressions] referring to this lambda literal, the additional constraints introduced on the result type of this lambda literal is imposed on the type of this expression;
-    - If inference with this constraint fails, but the constraints on the result type involve that it is a subtype of `kotlin.Unit`, the inference of this expression is performed again without the constraints on the result type;
-- The type of each lambda literal is the functional type $\FT(P_1, \ldots, P_S) \arrowleft R$ where $P_1, \ldots, P_S$ are the type of its parameters inferred using external constraints or specified in the lambda literal itself and $R$ is the inferred type of its last value in the presence of external constraints.
+For a complex statement $S$ involving (potentially overloaded) callables $C_1, \ldots, \C_N$ and lambda literals $L_1, \ldots, \L_M$, excluding the bodies of these literals, they are processed as follows.
+
+1. An empty [type constraint system][Kotlin type constraints] $Q$ is created;
+1. The overload resolution, if possible, picks candidates for $C_1, \ldots, C_N$ according to the [overload resolution][Overload resolution] rules;
+2. For each lambda literal with unspecified number of parameters, we decide whether it has zero or one parameter based on the form of the callables and/or the expected type of the lambda literal.
+   If there is no way to determine the number of parameters, it is assumed to be zero.
+   If the number of parameters is determined to be one, the phantom parameter `it` is proceeded in further steps as if it was a named lambda parameter;
+
+   > Important: the presence or absence of the phantom parameter `it` in the lambda body does not influence this process in any way.
+
+3. For each lambda body $L_1, \ldots, \L_N$, the expected constraints on the lambda arguments and/or lambda result type from the selected overload candidates (if any) are added to $Q$, and the overload resolution for all statements in these bodies is performed w.r.t. updated type constraint system $Q$.
+   This may result in performing steps 1-3 in a recursive *top-down* fashion for nested lambda literals;
+
+   > Important: in some cases overload resolution may fail to pick a candidate, e.g., because the expected contraints are incomplete, causing the constraint system to be unsound.
+   > If this happens, it is implementation-defined whether the compiler continues the top-down analysis or stops abruptly.
+
+4. When the top-down analysis is done and the overload candidates are fixed, local type inference is performed on each lambda body and each statement *bottom-up*, from the most inner lambda literals to the outermost ones, processing one lambda literal at a time, with the following additions.
+    - When inferring type of the return value (the last expression of a lambda body and/or the subjects for [return expressions][Jump expressions] referring to this lambda literal), the additional constraints introduced on the result type of this lambda literal are added to $Q$;
+    - If inference with these constraints fails, but the result type is a subtype of `kotlin.Unit`, the inference is repeated without the additional constraints on the return value;
+    - The type of each lambda literal is considered to be the functional type $\FT(P_1, \ldots, P_S) \arrowleft R$, where $P_1, \ldots, P_S$ are the types of its parameters inferred from external constraints or specified in the lambda literal itself and $R$ is the inferred type of its return value in the presence of external constraints.
     
-The external constraints on lambda parameters and body may come from the following sources:
+The external constraints on lambda parameters, return value and body may come from the following sources:
 
-- The (possibly overloaded) callable the lambda literal is passed to as an argument.
-  As overload resolution is performed before any lambda literal inference takes place, this candidate is always known before such constraints are needed;
-- An expected type of a declaration that uses this lambda parameter as body or initializer.
+- The (possibly overloaded) callable which uses the lambda literal as an argument;
+
+  > Note: as overload resolution is performed before any lambda literal inference takes place, this candidate is always known before external constraints are needed;
+
+- The expected type of the declaration which uses the lambda literal as its body or initializer.
     
 > Examples:
+> 
 > ```kotlin
 > fun <T> foo(): T { ... }
 > fun <R> run(body: () -> R): R { ... }
+> 
 > fun bar() {
 >     val x = run { 
 >         run {
@@ -501,17 +517,16 @@ The external constraints on lambda parameters and body may come from the followi
 >             } // this lambda is inferred to be of type () -> Int
 >         } // this lambda is inferred to be of type () -> Int
 >     } // this lambda is inferred to be of type () -> Int
->    // x is inferred to be of type Int
+>     // x is inferred to be of type Int
 > 
->     val x: Double = run { // this lambda has an external constraint R' <: Double
+>     val y: Double = run { // this lambda has an external constraint R' <: Double
 >         run { // this lambda has an external constraint R'' <: Double
 >             foo() // this call has an external constraint T' <: Double
->             // allowing to infer T to be Double in foo
+>                   // allowing to infer T to be Double in foo
 >         }
 >     }
 > }
 > ```
->
 
 TODO(Type approximation for public API)
 TODO(Lambda analysis order (and the order of overloading vs type inference in general))
