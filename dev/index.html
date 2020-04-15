@@ -421,7 +421,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#bound-smart-casts">Bound smart casts</a></li>
 </ul></li>
 <li><a href="#local-type-inference">Local type inference</a></li>
-<li><a href="#function-signature-type-inference">Function signature type inference</a></li>
+<li><a href="#function-signature-type-inference">Function signature type inference</a><ul>
+<li><a href="#named-and-anonymous-function-declarations">Named and anonymous function declarations</a></li>
+<li><a href="#statements-involving-lambda-literals">Statements involving lambda literals</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#runtime-type-information">Runtime type information</a><ul>
 <li><a href="#runtime-available-types">Runtime-available types</a></li>
@@ -11370,14 +11373,66 @@ P_2 \times N_2
 </div>
 </div>
 <h3 id="function-signature-type-inference">Function signature type inference</h3>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
+<p><span class="sentence">Function signature type inference is a variant of <a href="#local-type-inference">local type inference</a>, which is performed for function declarations, <a href="#lambda-literals">lambda literals</a> and <a href="#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
 </div>
-</div>
+<h4 id="named-and-anonymous-function-declarations">Named and anonymous function declarations</h4>
 <div class="paragraph">
-<p><span class="sentence">Function signature type inference is a variant of <a href="#local-type-inference">local type inference</a>, which is performed for <a href="#lambda-literals">lambda literals</a> and <a href="#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
+<p><span class="sentence">As described in the respective <a href="#function-declaration">section</a>, a named function declaration body may come in two forms: an expression-body (a single expression) or a control structure body. </span><span class="sentence">For the latter case, an expected return type must be provided or assumed to be <code>kotlin.Unit</code> and no special kind of type inference is needed. </span><span class="sentence">For the former case, an expected return type may be provided or can be inferred using local type inference from the expression body. </span><span class="sentence">If the expected return type is provided, it is used as an expected constraint on the result type of the expression constituting the body.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb144-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb144-2" title="2"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">():</span> <span class="dt">Int</span> = foo() <span class="co">// an external constraint T&#39; &lt;: Int allows the result of `foo` to be inferred automatically. </span></a></code></pre></div>
+</blockquote>
+<h4 id="statements-involving-lambda-literals">Statements involving lambda literals</h4>
+<div class="paragraph">
+<p><span class="sentence">Complex statements involving one or many lambda literals introduce an additional level of complexity to type inference and overload resolution mechanisms. </span><span class="sentence">As mentioned in the <a href="#overload-resolution">overload resolution section</a>, the overloading of callables involved in such statements is performed regardless of the contents of lambda expressions and before any processing of their bodies is performed. </span><span class="sentence">For a complex statement <span class="math inline">\(S\)</span> involving (potentially overloaded) callables <span class="math inline">\(C_1, \ldots, \C_N\)</span> and lambda literals <span class="math inline">\(L_1, \ldots, \L_M\)</span>, excluding the bodies of these literals, the processing takes the following steps:</span></p>
+</div>
+<ul>
+<li><span class="sentence">First, the overload resolution picks candidates for <span class="math inline">\(C_1, \ldots, C_N\)</span> according to <a href="#overload-resolution">overload resolution section</a>;</span></li>
+<li><span class="sentence">Second, for each lambda expression with unspecified number of parameters, it is decided based on the form of callables involved and/or the expected type of this lambda literal whether it must have zero or one parameter. </span><span class="sentence">If there is no way to determine the number of parameters, it is assumed to be zero. </span><span class="sentence">If it is assumed to be one, the phantom parameter <code>it</code> is proceeded in further steps as if it was a named lambda parameter;</span></li>
+<li><span class="sentence">Next, for each lambda body of <span class="math inline">\(L_1, \ldots, \L_N\)</span>, the expected constraints resulting from the overload candidates picked (if any) on the lambda arguments and/or lambda result type are added and the overload resolution for all the statements in these bodies is performed w.r.t. these constraints. </span><span class="sentence">This may result in descending into more and more lambda expressions as any statement in a lambda body may also involve lambda literals;</span></li>
+<li><span class="sentence">When all the overload candidates are picked, local type inference process of each lambda body and each statement is performed bottom-up, starting with the most inner lambda literals to the outermost ones, processing one lambda literal at a time:</span>
+<ul>
+<li><span class="sentence">When inferring last expression of each lambda body and every subject for every <a href="#jump-expressions">return expression</a> referring to this lambda literal, the additional constraints introduced on the result type of this lambda literal is imposed on the type of this expression;</span></li>
+<li><span class="sentence">If inference with this constraint fails, but the constraints on the result type involve that it is a subtype of <code>kotlin.Unit</code>, the inference of this expression is performed again without the constraints on the result type;</span></li>
+</ul></li>
+<li><span class="sentence">The type of each lambda literal is the functional type <span class="math inline">\(\operatorname{\text{FT}}(P_1, \ldots, P_S) \arrowleft R\)</span> where <span class="math inline">\(P_1, \ldots, P_S\)</span> are the type of its parameters inferred using external constraints or specified in the lambda literal itself and <span class="math inline">\(R\)</span> is the inferred type of its last value in the presence of external constraints.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The external constraints on lambda parameters and body may come from the following sources:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The (possibly overloaded) callable the lambda literal is passed to as an argument. </span><span class="sentence">As overload resolution is performed before any lambda literal inference takes place, this candidate is always known before such constraints are needed;</span></li>
+<li><span class="sentence">An expected type of a declaration that uses this lambda parameter as body or initializer.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb145-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb145-2" title="2"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">R</span><span class="op">&gt;</span> <span class="fu">run</span><span class="op">(</span><span class="va">body</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">R</span><span class="op">):</span> <span class="dt">R</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb145-3" title="3"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb145-4" title="4">    <span class="kw">val</span> <span class="va">x</span> = run <span class="op">{</span> </a>
+<a class="sourceLine" id="cb145-5" title="5">        run <span class="op">{</span></a>
+<a class="sourceLine" id="cb145-6" title="6">            run <span class="op">{</span></a>
+<a class="sourceLine" id="cb145-7" title="7">                foo&lt;<span class="kw">Int</span>&gt;() <span class="co">// last expression inferred to be of type Int</span></a>
+<a class="sourceLine" id="cb145-8" title="8">            <span class="op">}</span> <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb145-9" title="9">        <span class="op">}</span> <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb145-10" title="10">    <span class="op">}</span> <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb145-11" title="11">   <span class="co">// x is inferred to be of type Int</span></a>
+<a class="sourceLine" id="cb145-12" title="12"></a>
+<a class="sourceLine" id="cb145-13" title="13">    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Double</span> = run <span class="op">{</span> <span class="co">// this lambda has an external constraint R&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb145-14" title="14">        run <span class="op">{</span> <span class="co">// this lambda has an external constraint R&#39;&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb145-15" title="15">            foo() <span class="co">// this call has an external constraint T&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb145-16" title="16">            <span class="co">// allowing to infer T to be Double in foo</span></a>
+<a class="sourceLine" id="cb145-17" title="17">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb145-18" title="18">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb145-19" title="19"><span class="op">}</span></a></code></pre></div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Type approximation for public API) TODO(Lambda analysis order (and the order of overloading vs type inference in general))</span></p>
@@ -11560,7 +11615,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.annotation.Retention</code> is an annotation which is only used on annotation classes to specify their annotation retention level. </span><span class="sentence">It has the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb144"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb144-1" title="1"><span class="kw">val</span> <span class="va">value</span><span class="op">:</span> <span class="dt">AnnotationRetention</span> = AnnotationRetention.RUNTIME</a></code></pre></div>
+<li><div class="sourceCode" id="cb146"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb146-1" title="1"><span class="kw">val</span> <span class="va">value</span><span class="op">:</span> <span class="dt">AnnotationRetention</span> = AnnotationRetention.RUNTIME</a></code></pre></div>
 <span class="sentence">The retention level of the annotated annotation.</span></li>
 </ul>
 <div class="paragraph">
@@ -11578,7 +11633,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.annotation.Target</code> is an annotation which is only used on annotation classes to specify targets those annotations are valid for. </span><span class="sentence">It has the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb145"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb145-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span><span class="op">:</span> <span class="dt">AnnotationTarget</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb147"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb147-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span><span class="op">:</span> <span class="dt">AnnotationTarget</span></a></code></pre></div>
 <span class="sentence">The allowed annotation targets of the annotated annotation.</span></li>
 </ul>
 <div class="paragraph">
@@ -11614,7 +11669,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Experimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb146"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb146-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> = Level.ERROR</a></code></pre></div>
+<li><div class="sourceCode" id="cb148"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb148-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> = Level.ERROR</a></code></pre></div>
 <span class="sentence">The severity level of the experimental status with two possible values: <code>Level.WARNING</code> and <code>Level.ERROR</code>.</span></li>
 </ul>
 <div class="paragraph">
@@ -11624,7 +11679,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb147"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb147-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb149"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb149-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></a></code></pre></div>
 <span class="sentence">The classes which this annotation allows to use.</span></li>
 </ul>
 <div class="paragraph">
@@ -11645,15 +11700,15 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb148"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb148-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb150"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb150-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">A message supporting the deprecation.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb149"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb149-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<li><div class="sourceCode" id="cb151"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb151-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> = ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional replacement for the deprecated code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb150"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb150-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> = DeprecationLevel.WARNING</a></code></pre></div>
+<li><div class="sourceCode" id="cb152"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb152-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> = DeprecationLevel.WARNING</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The deprecation level with three possible values: <code>DeprecationLevel.WARNING</code>, <code>DeprecationLevel.ERROR</code> and <code>DeprecationLevel.HIDDEN</code>.</span></p>
 </div></li>
@@ -11662,11 +11717,11 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb151"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb151-1" title="1"><span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb153"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb153-1" title="1"><span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The replacement code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb152"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb152-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb154"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb154-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An array of imports needed for the replacement code to work correctly.</span></p>
 </div></li>
@@ -11685,7 +11740,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb153"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb153-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb155"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb155-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <span class="sentence">The names of features this annotation is suppressing.</span></li>
 </ul>
 <div class="paragraph">
@@ -11698,7 +11753,7 @@ P_2 \times N_2
 <p><span class="sentence"><code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb154"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb154-1" title="1"><span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb156"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb156-1" title="1"><span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <span class="sentence">The version of Kotlin language.</span></li>
 </ul>
 <div class="paragraph">

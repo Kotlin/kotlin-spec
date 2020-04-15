@@ -644,14 +644,66 @@ P_2 \times N_2
 </div>
 </div>
 <h3 id="function-signature-type-inference">Function signature type inference</h3>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
+<p><span class="sentence">Function signature type inference is a variant of <a href="type-inference.html#local-type-inference">local type inference</a>, which is performed for function declarations, <a href="expressions.html#lambda-literals">lambda literals</a> and <a href="expressions.html#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
 </div>
-</div>
+<h4 id="named-and-anonymous-function-declarations">Named and anonymous function declarations</h4>
 <div class="paragraph">
-<p><span class="sentence">Function signature type inference is a variant of <a href="type-inference.html#local-type-inference">local type inference</a>, which is performed for <a href="expressions.html#lambda-literals">lambda literals</a> and <a href="expressions.html#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
+<p><span class="sentence">As described in the respective <a href="declarations.html#function-declaration">section</a>, a named function declaration body may come in two forms: an expression-body (a single expression) or a control structure body. </span><span class="sentence">For the latter case, an expected return type must be provided or assumed to be <code>kotlin.Unit</code> and no special kind of type inference is needed. </span><span class="sentence">For the former case, an expected return type may be provided or can be inferred using local type inference from the expression body. </span><span class="sentence">If the expected return type is provided, it is used as an expected constraint on the result type of the expression constituting the body.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">foo</span>(): <span class="dt">T</span> { ... }</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">bar</span>(): <span class="dt">Int</span> = foo() <span class="co">// an external constraint T&#39; &lt;: Int allows the result of `foo` to be inferred automatically. </span></a></code></pre></div>
+</blockquote>
+<h4 id="statements-involving-lambda-literals">Statements involving lambda literals</h4>
+<div class="paragraph">
+<p><span class="sentence">Complex statements involving one or many lambda literals introduce an additional level of complexity to type inference and overload resolution mechanisms. </span><span class="sentence">As mentioned in the <a href="overload-resolution.html#overload-resolution">overload resolution section</a>, the overloading of callables involved in such statements is performed regardless of the contents of lambda expressions and before any processing of their bodies is performed. </span><span class="sentence">For a complex statement <span class="math inline">\(S\)</span> involving (potentially overloaded) callables <span class="math inline">\(C_1, \ldots, \C_N\)</span> and lambda literals <span class="math inline">\(L_1, \ldots, \L_M\)</span>, excluding the bodies of these literals, the processing takes the following steps:</span></p>
+</div>
+<ul>
+<li><span class="sentence">First, the overload resolution picks candidates for <span class="math inline">\(C_1, \ldots, C_N\)</span> according to <a href="overload-resolution.html#overload-resolution">overload resolution section</a>;</span></li>
+<li><span class="sentence">Second, for each lambda expression with unspecified number of parameters, it is decided based on the form of callables involved and/or the expected type of this lambda literal whether it must have zero or one parameter. </span><span class="sentence">If there is no way to determine the number of parameters, it is assumed to be zero. </span><span class="sentence">If it is assumed to be one, the phantom parameter <code>it</code> is proceeded in further steps as if it was a named lambda parameter;</span></li>
+<li><span class="sentence">Next, for each lambda body of <span class="math inline">\(L_1, \ldots, \L_N\)</span>, the expected constraints resulting from the overload candidates picked (if any) on the lambda arguments and/or lambda result type are added and the overload resolution for all the statements in these bodies is performed w.r.t. these constraints. </span><span class="sentence">This may result in descending into more and more lambda expressions as any statement in a lambda body may also involve lambda literals;</span></li>
+<li><span class="sentence">When all the overload candidates are picked, local type inference process of each lambda body and each statement is performed bottom-up, starting with the most inner lambda literals to the outermost ones, processing one lambda literal at a time:</span>
+<ul>
+<li><span class="sentence">When inferring last expression of each lambda body and every subject for every <a href="expressions.html#jump-expressions">return expression</a> referring to this lambda literal, the additional constraints introduced on the result type of this lambda literal is imposed on the type of this expression;</span></li>
+<li><span class="sentence">If inference with this constraint fails, but the constraints on the result type involve that it is a subtype of <code>kotlin.Unit</code>, the inference of this expression is performed again without the constraints on the result type;</span></li>
+</ul></li>
+<li><span class="sentence">The type of each lambda literal is the functional type <span class="math inline">\(\operatorname{\text{FT}}(P_1, \ldots, P_S) \arrowleft R\)</span> where <span class="math inline">\(P_1, \ldots, P_S\)</span> are the type of its parameters inferred using external constraints or specified in the lambda literal itself and <span class="math inline">\(R\)</span> is the inferred type of its last value in the presence of external constraints.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The external constraints on lambda parameters and body may come from the following sources:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The (possibly overloaded) callable the lambda literal is passed to as an argument. </span><span class="sentence">As overload resolution is performed before any lambda literal inference takes place, this candidate is always known before such constraints are needed;</span></li>
+<li><span class="sentence">An expected type of a declaration that uses this lambda parameter as body or initializer.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">foo</span>(): <span class="dt">T</span> { ... }</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> &lt;<span class="dt">R</span>&gt; <span class="fu">run</span>(<span class="va">body</span>: () -&gt; <span class="dt">R</span>): <span class="dt">R</span> { ... }</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">fun</span> <span class="fu">bar</span>() {</a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="kw">val</span> <span class="va">x</span> = run { </a>
+<a class="sourceLine" id="cb7-5" title="5">        run {</a>
+<a class="sourceLine" id="cb7-6" title="6">            run {</a>
+<a class="sourceLine" id="cb7-7" title="7">                foo&lt;<span class="kw">Int</span>&gt;() <span class="co">// last expression inferred to be of type Int</span></a>
+<a class="sourceLine" id="cb7-8" title="8">            } <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb7-9" title="9">        } <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb7-10" title="10">    } <span class="co">// this lambda is inferred to be of type () -&gt; Int</span></a>
+<a class="sourceLine" id="cb7-11" title="11">   <span class="co">// x is inferred to be of type Int</span></a>
+<a class="sourceLine" id="cb7-12" title="12"></a>
+<a class="sourceLine" id="cb7-13" title="13">    <span class="kw">val</span> <span class="va">x</span>: <span class="kw">Double</span> = run { <span class="co">// this lambda has an external constraint R&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb7-14" title="14">        run { <span class="co">// this lambda has an external constraint R&#39;&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb7-15" title="15">            foo() <span class="co">// this call has an external constraint T&#39; &lt;: Double</span></a>
+<a class="sourceLine" id="cb7-16" title="16">            <span class="co">// allowing to infer T to be Double in foo</span></a>
+<a class="sourceLine" id="cb7-17" title="17">        }</a>
+<a class="sourceLine" id="cb7-18" title="18">    }</a>
+<a class="sourceLine" id="cb7-19" title="19">}</a></code></pre></div>
+</blockquote>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(Type approximation for public API) TODO(Lambda analysis order (and the order of overloading vs type inference in general))</span></p>
