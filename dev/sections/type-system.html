@@ -968,6 +968,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-15" title="15"><span class="co">// Function1&lt;in Int, out Any&gt; :&gt; Function1&lt;in Number, out Number&gt;</span></a>
 <a class="sourceLine" id="cb6-16" title="16"><span class="kw">val</span> <span class="va">barRef</span>: (<span class="kw">Int</span>) -&gt; Any = Number::bar</a></code></pre></div>
 </blockquote>
+<h5 id="suspend-function-types">Suspend function types</h5>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports structured concurrency in the form of <a href="coroutines.html#coroutines-1">coroutines</a> via <a href="coroutines.html#suspending-functions">suspending functions</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For the purposes of type system, a suspending function has a <em>suspend</em> function type <span class="math inline">\(\operatorname{\texttt{suspend}}\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R\)</span>, which is <strong>unrelated by subtyping</strong> to any non-suspend function type. </span><span class="sentence">This is important for <a href="overload-resolution.html#overload-resolution">overload resolution</a> and <a href="type-inference.html#type-inference">type inference</a>, as it directly influences the types of function values and the applicability of different functions w.r.t. overloading.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Most function values have either non-suspend or suspend function type based on their declarations. </span><span class="sentence">However, as <a href="expressions.html#lambda-literals">lambda literals</a> do not have any explicitely declared function type, they are considered as possibly being both non-suspend and suspend function type, with the final selection done during <a href="type-inference.html#type-inference">type inference</a>.</span></p>
+</div>
 <h4 id="flexible-types">Flexible types</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. </span><span class="sentence">However, this presents a problem in that some platforms may not support null safety the way Kotlin does. </span><span class="sentence">To deal with this, Kotlin supports <em>gradual typing</em> in the form of flexible types.</span></p>
