@@ -696,6 +696,16 @@ Furthermore, all function types $\FunctionN$ are subtypes of a general argument-
 > val barRef: (Int) -> Any = Number::bar
 > ```
 
+##### Suspend function types
+
+Kotlin supports structured concurrency in the form of [coroutines] via [suspending functions].
+
+For the purposes of type system, a suspending function has a *suspend* function type $\suspend \FT(A_1, \ldots, A_n) \rightarrow R$, which is **unrelated by subtyping** to any non-suspend function type.
+This is important for [overload resolution] and [type inference], as it directly influences the types of function values and the applicability of different functions w.r.t. overloading.
+
+Most function values have either non-suspend or suspend function type based on their declarations.
+However, as [lambda literals] do not have any explicitely declared function type, they are considered as possibly being both non-suspend and suspend function type, with the final selection done during [type inference].
+
 #### Flexible types
 
 Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code.

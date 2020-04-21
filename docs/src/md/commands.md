@@ -41,6 +41,7 @@
 \opMathTT{\Unit}{kotlin.Unit}
 
 \opMathTT{\Function}{kotlin.Function}
+\opMathTT{\suspend}{suspend}
 \opMathTEXT{\FunctionN}{FunctionN}
 \opMathTEXT{\FT}{FT}
 \opMathTEXT{\FTR}{FTR}
