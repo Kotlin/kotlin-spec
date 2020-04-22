@@ -424,6 +424,9 @@ If there are several callables which are more applicable than all other candidat
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
 
+> Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so.
+> For example, one may select additional specificity rules between different built-in integer types for integer literal types, e.g., prefer `kotlin.Short` to `kotlin.Byte`.
+
 If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
