@@ -47,6 +47,8 @@
 \opMathTEXT{\FTR}{FTR}
 \opMathTEXT{\RT}{RT}
 
+\opMathTEXT{\CSB}{CSB}
+
 \opMathTT{\Array}{kotlin.Array}
 
 \opMathTT{\Double}{kotlin.Double}
