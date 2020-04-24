@@ -99,23 +99,8 @@ File: kt8879.kt - 6b2b6426b2eab57e34e15f8b619edcb9
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          literalConstant
-                                            NullLiteral("null")
+            literalConstant
+              NullLiteral("null")
     semis
       NL("\n")
       NL("\n")
@@ -154,28 +139,14 @@ File: kt8879.kt - 6b2b6426b2eab57e34e15f8b619edcb9
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          literalConstant
-                                            NullLiteral("null")
-                                        postfixUnarySuffix
-                                          postfixUnaryOperator
-                                            EXCL_NO_WS("!")
-                                            excl
-                                              EXCL_NO_WS("!")
+            expression
+              literalConstant
+                NullLiteral("null")
+            unarySuffix
+              postfixUnaryOperator
+                EXCL_NO_WS("!")
+                excl
+                  EXCL_NO_WS("!")
     semis
       NL("\n")
       NL("\n")
@@ -195,52 +166,24 @@ File: kt8879.kt - 6b2b6426b2eab57e34e15f8b619edcb9
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("foo")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    valueArgument
-                                                      expression
-                                                        disjunction
-                                                          conjunction
-                                                            equality
-                                                              comparison
-                                                                infixOperation
-                                                                  elvisExpression
-                                                                    infixFunctionCall
-                                                                      rangeExpression
-                                                                        additiveExpression
-                                                                          multiplicativeExpression
-                                                                            asExpression
-                                                                              comparisonWithLiteralRightSide
-                                                                                prefixUnaryExpression
-                                                                                  postfixUnaryExpression
-                                                                                    primaryExpression
-                                                                                      simpleIdentifier
-                                                                                        Identifier("bar")
-                                                                                    postfixUnarySuffix
-                                                                                      callSuffix
-                                                                                        valueArguments
-                                                                                          LPAREN("(")
-                                                                                          RPAREN(")")
-                                                    RPAREN(")")
+                  expression
+                    simpleIdentifier
+                      Identifier("foo")
+                  unarySuffix
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        valueArgument
+                          expression
+                            expression
+                              simpleIdentifier
+                                Identifier("bar")
+                            unarySuffix
+                              callSuffix
+                                valueArguments
+                                  LPAREN("(")
+                                  RPAREN(")")
+                        RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")

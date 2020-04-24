@@ -100,23 +100,8 @@ File: incompatibleVarianceModifiers.kt - 1265939de67e4adeb46213ee23afab32
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("foo")
+            simpleIdentifier
+              Identifier("foo")
     semis
       NL("\n")
   topLevelObject
@@ -155,46 +140,17 @@ File: incompatibleVarianceModifiers.kt - 1265939de67e4adeb46213ee23afab32
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          jumpExpression
-                                            THROW("throw")
-                                            expression
-                                              disjunction
-                                                conjunction
-                                                  equality
-                                                    comparison
-                                                      infixOperation
-                                                        elvisExpression
-                                                          infixFunctionCall
-                                                            rangeExpression
-                                                              additiveExpression
-                                                                multiplicativeExpression
-                                                                  asExpression
-                                                                    comparisonWithLiteralRightSide
-                                                                      prefixUnaryExpression
-                                                                        postfixUnaryExpression
-                                                                          primaryExpression
-                                                                            simpleIdentifier
-                                                                              Identifier("Exception")
-                                                                          postfixUnarySuffix
-                                                                            callSuffix
-                                                                              valueArguments
-                                                                                LPAREN("(")
-                                                                                RPAREN(")")
+            jumpExpression
+              THROW("throw")
+              expression
+                expression
+                  simpleIdentifier
+                    Identifier("Exception")
+                unarySuffix
+                  callSuffix
+                    valueArguments
+                      LPAREN("(")
+                      RPAREN(")")
     semis
       NL("\n")
       NL("\n")
@@ -348,52 +304,38 @@ File: incompatibleVarianceModifiers.kt - 1265939de67e4adeb46213ee23afab32
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("a")
-                                              postfixUnarySuffix
-                                                navigationSuffix
-                                                  memberAccessOperator
-                                                    DOT(".")
-                                                  simpleIdentifier
-                                                    Identifier("bar")
-                                              postfixUnarySuffix
-                                                typeArguments
-                                                  LANGLE("<")
-                                                  typeProjection
-                                                    typeProjectionModifiers
-                                                      typeProjectionModifier
-                                                        varianceModifier
-                                                          OUT("out")
-                                                      typeProjectionModifier
-                                                        varianceModifier
-                                                          OUT("out")
-                                                    type
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Int")
-                                                  RANGLE(">")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    RPAREN(")")
+                  expression
+                    simpleIdentifier
+                      Identifier("a")
+                  unarySuffix
+                    navigationSuffix
+                      memberAccessOperator
+                        DOT(".")
+                      simpleIdentifier
+                        Identifier("bar")
+                  unarySuffix
+                    typeArguments
+                      LANGLE("<")
+                      typeProjection
+                        typeProjectionModifiers
+                          typeProjectionModifier
+                            varianceModifier
+                              OUT("out")
+                          typeProjectionModifier
+                            varianceModifier
+                              OUT("out")
+                        type
+                          typeReference
+                            userType
+                              simpleUserType
+                                simpleIdentifier
+                                  Identifier("Int")
+                      RANGLE(">")
+                  unarySuffix
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")

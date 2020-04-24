@@ -274,36 +274,24 @@ File: Functions_ERR.kt - 7c2c64e0a69676d46a6d1418cb47727a
           NL("\n")
           NL("\n")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-  topLevelObject
-    declaration
-      functionDeclaration
-        FUN("fun")
-        typeParameters
-          LANGLE("<")
-          typeParameter
-            simpleIdentifier
-              Identifier("T")
-          RANGLE(">")
-        receiverType
-          typeReference
-            userType
-              simpleUserType
+            expression
+              functionLiteral
+                anonymousFunction
+                  FUN("fun")
+                  LANGLE("<")
+                  type
+                    typeReference
+                      userType
+                        simpleUserType
+                          simpleIdentifier
+                            Identifier("T")
+            comparisonOperator
+              RANGLE(">")
+            expression
+              expression
                 simpleIdentifier
                   Identifier("foo")
+              unarySuffix
                 typeArguments
                   LANGLE("<")
                   typeProjection
@@ -314,8 +302,11 @@ File: Functions_ERR.kt - 7c2c64e0a69676d46a6d1418cb47727a
                             simpleIdentifier
                               Identifier("D")
                   RANGLE(">")
-        LPAREN("(")
-        RPAREN(")")
+              unarySuffix
+                callSuffix
+                  valueArguments
+                    LPAREN("(")
+                    RPAREN(")")
     semis
       NL("\n")
   topLevelObject

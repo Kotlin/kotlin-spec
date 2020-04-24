@@ -27,7 +27,7 @@ class TestRunner {
         private const val MUTE_PSI_ERRORS_MARKER = "MUTE_PSI_ERRORS"
 
         private const val FORCE_APPLY_CHANGES = false
-        private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = false
+        private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = true
 
         private val antlrTreeFileHeaderPattern =
                 Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
@@ -39,7 +39,7 @@ class TestRunner {
         @com.intellij.testFramework.Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getTestFiles(klass: Class<*>) = File("./testData").let { testsDir ->
-            testsDir.walkTopDown().filter { it.extension == "kt" }.map {
+            testsDir.walkTopDown().filter { it.extension == "kt" && it.name.endsWith("simple.kt") }.map {
                 arrayOf(it.relativeTo(testsDir).path.replace("/", "$"))
             }.toList()
         }

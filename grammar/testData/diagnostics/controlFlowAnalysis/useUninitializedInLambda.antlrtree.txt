@@ -30,28 +30,14 @@ File: useUninitializedInLambda.kt - ba069b65f6fa090a8b2151cdd101e282
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("f")
-                                        postfixUnarySuffix
-                                          callSuffix
-                                            valueArguments
-                                              LPAREN("(")
-                                              RPAREN(")")
+            expression
+              simpleIdentifier
+                Identifier("f")
+            unarySuffix
+              callSuffix
+                valueArguments
+                  LPAREN("(")
+                  RPAREN(")")
     semis
       NL("\n")
       NL("\n")
@@ -87,60 +73,32 @@ File: useUninitializedInLambda.kt - ba069b65f6fa090a8b2151cdd101e282
                 NL("\n")
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("bar")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  annotatedLambda
-                                                    lambdaLiteral
-                                                      LCURL("{")
-                                                      statements
-                                                        statement
-                                                          expression
-                                                            disjunction
-                                                              conjunction
-                                                                equality
-                                                                  comparison
-                                                                    infixOperation
-                                                                      elvisExpression
-                                                                        infixFunctionCall
-                                                                          rangeExpression
-                                                                            additiveExpression
-                                                                              multiplicativeExpression
-                                                                                asExpression
-                                                                                  comparisonWithLiteralRightSide
-                                                                                    prefixUnaryExpression
-                                                                                      postfixUnaryExpression
-                                                                                        primaryExpression
-                                                                                          simpleIdentifier
-                                                                                            Identifier("v")
-                                                                                        postfixUnarySuffix
-                                                                                          navigationSuffix
-                                                                                            memberAccessOperator
-                                                                                              DOT(".")
-                                                                                            simpleIdentifier
-                                                                                              Identifier("hashCode")
-                                                                                        postfixUnarySuffix
-                                                                                          callSuffix
-                                                                                            valueArguments
-                                                                                              LPAREN("(")
-                                                                                              RPAREN(")")
-                                                      RCURL("}")
+                  expression
+                    simpleIdentifier
+                      Identifier("bar")
+                  unarySuffix
+                    callSuffix
+                      annotatedLambda
+                        lambdaLiteral
+                          LCURL("{")
+                          statements
+                            statement
+                              expression
+                                expression
+                                  simpleIdentifier
+                                    Identifier("v")
+                                unarySuffix
+                                  navigationSuffix
+                                    memberAccessOperator
+                                      DOT(".")
+                                    simpleIdentifier
+                                      Identifier("hashCode")
+                                unarySuffix
+                                  callSuffix
+                                    valueArguments
+                                      LPAREN("(")
+                                      RPAREN(")")
+                          RCURL("}")
               semis
                 NL("\n")
             RCURL("}")

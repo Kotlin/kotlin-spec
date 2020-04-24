@@ -131,28 +131,14 @@ File: rewriteAtSliceOnGetOperator.kt - c6158d076387085f49005c2bf14d07c5
                   functionBody
                     ASSIGNMENT("=")
                     expression
-                      disjunction
-                        conjunction
-                          equality
-                            comparison
-                              infixOperation
-                                elvisExpression
-                                  infixFunctionCall
-                                    rangeExpression
-                                      additiveExpression
-                                        multiplicativeExpression
-                                          asExpression
-                                            comparisonWithLiteralRightSide
-                                              prefixUnaryExpression
-                                                postfixUnaryExpression
-                                                  primaryExpression
-                                                    simpleIdentifier
-                                                      Identifier("TODO")
-                                                  postfixUnarySuffix
-                                                    callSuffix
-                                                      valueArguments
-                                                        LPAREN("(")
-                                                        RPAREN(")")
+                      expression
+                        simpleIdentifier
+                          Identifier("TODO")
+                      unarySuffix
+                        callSuffix
+                          valueArguments
+                            LPAREN("(")
+                            RPAREN(")")
             semis
               NL("\n")
           RCURL("}")
@@ -230,77 +216,34 @@ File: rewriteAtSliceOnGetOperator.kt - c6158d076387085f49005c2bf14d07c5
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("foo")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    valueArgument
-                                                      expression
-                                                        disjunction
-                                                          conjunction
-                                                            equality
-                                                              comparison
-                                                                infixOperation
-                                                                  elvisExpression
-                                                                    infixFunctionCall
-                                                                      rangeExpression
-                                                                        additiveExpression
-                                                                          multiplicativeExpression
-                                                                            asExpression
-                                                                              comparisonWithLiteralRightSide
-                                                                                prefixUnaryExpression
-                                                                                  postfixUnaryExpression
-                                                                                    primaryExpression
-                                                                                      simpleIdentifier
-                                                                                        Identifier("f")
-                                                                                    postfixUnarySuffix
-                                                                                      indexingSuffix
-                                                                                        LSQUARE("[")
-                                                                                        expression
-                                                                                          disjunction
-                                                                                            conjunction
-                                                                                              equality
-                                                                                                comparison
-                                                                                                  infixOperation
-                                                                                                    elvisExpression
-                                                                                                      infixFunctionCall
-                                                                                                        rangeExpression
-                                                                                                          additiveExpression
-                                                                                                            multiplicativeExpression
-                                                                                                              asExpression
-                                                                                                                comparisonWithLiteralRightSide
-                                                                                                                  prefixUnaryExpression
-                                                                                                                    postfixUnaryExpression
-                                                                                                                      primaryExpression
-                                                                                                                        callableReference
-                                                                                                                          receiverType
-                                                                                                                            typeReference
-                                                                                                                              userType
-                                                                                                                                simpleUserType
-                                                                                                                                  simpleIdentifier
-                                                                                                                                    Identifier("Sample")
-                                                                                                                          COLONCOLON("::")
-                                                                                                                          simpleIdentifier
-                                                                                                                            Identifier("str")
-                                                                                        RSQUARE("]")
-                                                    RPAREN(")")
+                  expression
+                    simpleIdentifier
+                      Identifier("foo")
+                  unarySuffix
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        valueArgument
+                          expression
+                            expression
+                              simpleIdentifier
+                                Identifier("f")
+                            unarySuffix
+                              indexingSuffix
+                                LSQUARE("[")
+                                expression
+                                  callableReference
+                                    receiverType
+                                      typeReference
+                                        userType
+                                          simpleUserType
+                                            simpleIdentifier
+                                              Identifier("Sample")
+                                    COLONCOLON("::")
+                                    simpleIdentifier
+                                      Identifier("str")
+                                RSQUARE("]")
+                        RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")

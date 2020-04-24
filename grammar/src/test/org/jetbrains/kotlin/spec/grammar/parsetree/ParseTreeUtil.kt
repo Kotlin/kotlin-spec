@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl
 import org.jetbrains.kotlin.spec.grammar.KotlinLexer
 import org.jetbrains.kotlin.spec.grammar.KotlinParser
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil
+import java.io.File
 import java.util.HashMap
 
 

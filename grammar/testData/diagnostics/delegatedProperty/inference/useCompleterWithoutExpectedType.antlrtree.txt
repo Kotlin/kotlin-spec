@@ -38,28 +38,14 @@ File: useCompleterWithoutExpectedType.kt - 3cf4e307b2c62da3f4b85f659670905c
                   propertyDelegate
                     BY("by")
                     expression
-                      disjunction
-                        conjunction
-                          equality
-                            comparison
-                              infixOperation
-                                elvisExpression
-                                  infixFunctionCall
-                                    rangeExpression
-                                      additiveExpression
-                                        multiplicativeExpression
-                                          asExpression
-                                            comparisonWithLiteralRightSide
-                                              prefixUnaryExpression
-                                                postfixUnaryExpression
-                                                  primaryExpression
-                                                    simpleIdentifier
-                                                      Identifier("MyProperty")
-                                                  postfixUnarySuffix
-                                                    callSuffix
-                                                      valueArguments
-                                                        LPAREN("(")
-                                                        RPAREN(")")
+                      expression
+                        simpleIdentifier
+                          Identifier("MyProperty")
+                      unarySuffix
+                        callSuffix
+                          valueArguments
+                            LPAREN("(")
+                            RPAREN(")")
                   NL("\n")
                   NL("\n")
             classMemberDeclaration
@@ -78,58 +64,24 @@ File: useCompleterWithoutExpectedType.kt - 3cf4e307b2c62da3f4b85f659670905c
                       statements
                         statement
                           expression
-                            disjunction
-                              conjunction
-                                equality
-                                  comparison
-                                    infixOperation
-                                      elvisExpression
-                                        infixFunctionCall
-                                          rangeExpression
-                                            additiveExpression
-                                              multiplicativeExpression
-                                                asExpression
-                                                  comparisonWithLiteralRightSide
-                                                    prefixUnaryExpression
-                                                      postfixUnaryExpression
-                                                        primaryExpression
-                                                          simpleIdentifier
-                                                            Identifier("checkSubtype")
-                                                        postfixUnarySuffix
-                                                          typeArguments
-                                                            LANGLE("<")
-                                                            typeProjection
-                                                              type
-                                                                typeReference
-                                                                  userType
-                                                                    simpleUserType
-                                                                      simpleIdentifier
-                                                                        Identifier("Int")
-                                                            RANGLE(">")
-                                                        postfixUnarySuffix
-                                                          callSuffix
-                                                            valueArguments
-                                                              LPAREN("(")
-                                                              valueArgument
-                                                                expression
-                                                                  disjunction
-                                                                    conjunction
-                                                                      equality
-                                                                        comparison
-                                                                          infixOperation
-                                                                            elvisExpression
-                                                                              infixFunctionCall
-                                                                                rangeExpression
-                                                                                  additiveExpression
-                                                                                    multiplicativeExpression
-                                                                                      asExpression
-                                                                                        comparisonWithLiteralRightSide
-                                                                                          prefixUnaryExpression
-                                                                                            postfixUnaryExpression
-                                                                                              primaryExpression
-                                                                                                simpleIdentifier
-                                                                                                  Identifier("a")
-                                                              RPAREN(")")
+                            expression
+                              expression
+                                simpleIdentifier
+                                  Identifier("checkSubtype")
+                              comparisonOperator
+                                LANGLE("<")
+                              expression
+                                simpleIdentifier
+                                  Identifier("Int")
+                            comparisonOperator
+                              RANGLE(">")
+                            expression
+                              parenthesizedExpression
+                                LPAREN("(")
+                                expression
+                                  simpleIdentifier
+                                    Identifier("a")
+                                RPAREN(")")
                         semis
                           NL("\n")
                       RCURL("}")
@@ -206,73 +158,29 @@ File: useCompleterWithoutExpectedType.kt - 3cf4e307b2c62da3f4b85f659670905c
                   functionBody
                     ASSIGNMENT("=")
                     expression
-                      disjunction
-                        conjunction
-                          equality
-                            comparison
-                              infixOperation
-                                elvisExpression
-                                  infixFunctionCall
-                                    rangeExpression
-                                      additiveExpression
-                                        multiplicativeExpression
-                                          asExpression
-                                            comparisonWithLiteralRightSide
-                                              prefixUnaryExpression
-                                                postfixUnaryExpression
-                                                  primaryExpression
-                                                    jumpExpression
-                                                      THROW("throw")
-                                                      expression
-                                                        disjunction
-                                                          conjunction
-                                                            equality
-                                                              comparison
-                                                                infixOperation
-                                                                  elvisExpression
-                                                                    infixFunctionCall
-                                                                      rangeExpression
-                                                                        additiveExpression
-                                                                          multiplicativeExpression
-                                                                            asExpression
-                                                                              comparisonWithLiteralRightSide
-                                                                                prefixUnaryExpression
-                                                                                  postfixUnaryExpression
-                                                                                    primaryExpression
-                                                                                      simpleIdentifier
-                                                                                        Identifier("Exception")
-                                                                                    postfixUnarySuffix
-                                                                                      callSuffix
-                                                                                        valueArguments
-                                                                                          LPAREN("(")
-                                                                                          valueArgument
-                                                                                            expression
-                                                                                              disjunction
-                                                                                                conjunction
-                                                                                                  equality
-                                                                                                    comparison
-                                                                                                      infixOperation
-                                                                                                        elvisExpression
-                                                                                                          infixFunctionCall
-                                                                                                            rangeExpression
-                                                                                                              additiveExpression
-                                                                                                                multiplicativeExpression
-                                                                                                                  asExpression
-                                                                                                                    comparisonWithLiteralRightSide
-                                                                                                                      prefixUnaryExpression
-                                                                                                                        postfixUnaryExpression
-                                                                                                                          primaryExpression
-                                                                                                                            stringLiteral
-                                                                                                                              lineStringLiteral
-                                                                                                                                QUOTE_OPEN(""")
-                                                                                                                                lineStringContent
-                                                                                                                                  LineStrRef("$thisRef")
-                                                                                                                                lineStringContent
-                                                                                                                                  LineStrText(" ")
-                                                                                                                                lineStringContent
-                                                                                                                                  LineStrRef("$desc")
-                                                                                                                                QUOTE_CLOSE(""")
-                                                                                          RPAREN(")")
+                      jumpExpression
+                        THROW("throw")
+                        expression
+                          expression
+                            simpleIdentifier
+                              Identifier("Exception")
+                          unarySuffix
+                            callSuffix
+                              valueArguments
+                                LPAREN("(")
+                                valueArgument
+                                  expression
+                                    stringLiteral
+                                      lineStringLiteral
+                                        QUOTE_OPEN(""")
+                                        lineStringContent
+                                          LineStrRef("$thisRef")
+                                        lineStringContent
+                                          LineStrText(" ")
+                                        lineStringContent
+                                          LineStrRef("$desc")
+                                        QUOTE_CLOSE(""")
+                                RPAREN(")")
             semis
               NL("\n")
           RCURL("}")

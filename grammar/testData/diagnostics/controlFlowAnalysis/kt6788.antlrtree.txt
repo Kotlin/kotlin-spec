@@ -26,23 +26,8 @@ File: kt6788.kt - ff43952395ff04521680ea05155b9be0
                     QUEST_WS("? ")
               ASSIGNMENT("=")
               expression
-                disjunction
-                  conjunction
-                    equality
-                      comparison
-                        infixOperation
-                          elvisExpression
-                            infixFunctionCall
-                              rangeExpression
-                                additiveExpression
-                                  multiplicativeExpression
-                                    asExpression
-                                      comparisonWithLiteralRightSide
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              literalConstant
-                                                NullLiteral("null")
+                literalConstant
+                  NullLiteral("null")
             RPAREN(")")
         classBody
           LCURL("{")
@@ -73,10 +58,9 @@ File: kt6788.kt - ff43952395ff04521680ea05155b9be0
                     statement
                       assignment
                         directlyAssignableExpression
-                          postfixUnaryExpression
-                            primaryExpression
-                              simpleIdentifier
-                                Identifier("next")
+                          assignableExpression
+                            simpleIdentifier
+                              Identifier("next")
                           assignableSuffix
                             navigationSuffix
                               memberAccessOperator
@@ -87,27 +71,12 @@ File: kt6788.kt - ff43952395ff04521680ea05155b9be0
                                 Identifier("x")
                         ASSIGNMENT("=")
                         expression
-                          disjunction
-                            conjunction
-                              equality
-                                comparison
-                                  infixOperation
-                                    elvisExpression
-                                      infixFunctionCall
-                                        rangeExpression
-                                          additiveExpression
-                                            multiplicativeExpression
-                                              asExpression
-                                                comparisonWithLiteralRightSide
-                                                  prefixUnaryExpression
-                                                    postfixUnaryExpression
-                                                      primaryExpression
-                                                        stringLiteral
-                                                          lineStringLiteral
-                                                            QUOTE_OPEN(""")
-                                                            lineStringContent
-                                                              LineStrText("a")
-                                                            QUOTE_CLOSE(""")
+                          stringLiteral
+                            lineStringLiteral
+                              QUOTE_OPEN(""")
+                              lineStringContent
+                                LineStrText("a")
+                              QUOTE_CLOSE(""")
                     semis
                       NL("\n")
                   RCURL("}")
@@ -142,23 +111,8 @@ File: kt6788.kt - ff43952395ff04521680ea05155b9be0
                     QUEST_WS("? ")
               ASSIGNMENT("=")
               expression
-                disjunction
-                  conjunction
-                    equality
-                      comparison
-                        infixOperation
-                          elvisExpression
-                            infixFunctionCall
-                              rangeExpression
-                                additiveExpression
-                                  multiplicativeExpression
-                                    asExpression
-                                      comparisonWithLiteralRightSide
-                                        prefixUnaryExpression
-                                          postfixUnaryExpression
-                                            primaryExpression
-                                              literalConstant
-                                                NullLiteral("null")
+                literalConstant
+                  NullLiteral("null")
             RPAREN(")")
         classBody
           LCURL("{")
@@ -180,49 +134,28 @@ File: kt6788.kt - ff43952395ff04521680ea05155b9be0
                               Identifier("String")
                   ASSIGNMENT("=")
                   expression
-                    disjunction
-                      conjunction
-                        equality
-                          comparison
-                            infixOperation
-                              elvisExpression
-                                infixFunctionCall
-                                  rangeExpression
-                                    additiveExpression
-                                      multiplicativeExpression
-                                        asExpression
-                                          comparisonWithLiteralRightSide
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  simpleIdentifier
-                                                    Identifier("next")
-                                                postfixUnarySuffix
-                                                  navigationSuffix
-                                                    memberAccessOperator
-                                                      safeNav
-                                                        QUEST_NO_WS("?")
-                                                        DOT(".")
-                                                    simpleIdentifier
-                                                      Identifier("x")
-                                elvis
-                                  QUEST_NO_WS("?")
-                                  COLON(":")
-                                infixFunctionCall
-                                  rangeExpression
-                                    additiveExpression
-                                      multiplicativeExpression
-                                        asExpression
-                                          comparisonWithLiteralRightSide
-                                            prefixUnaryExpression
-                                              postfixUnaryExpression
-                                                primaryExpression
-                                                  stringLiteral
-                                                    lineStringLiteral
-                                                      QUOTE_OPEN(""")
-                                                      lineStringContent
-                                                        LineStrText("default")
-                                                      QUOTE_CLOSE(""")
+                    expression
+                      expression
+                        simpleIdentifier
+                          Identifier("next")
+                      unarySuffix
+                        navigationSuffix
+                          memberAccessOperator
+                            safeNav
+                              QUEST_NO_WS("?")
+                              DOT(".")
+                          simpleIdentifier
+                            Identifier("x")
+                    elvis
+                      QUEST_NO_WS("?")
+                      COLON(":")
+                    expression
+                      stringLiteral
+                        lineStringLiteral
+                          QUOTE_OPEN(""")
+                          lineStringContent
+                            LineStrText("default")
+                          QUOTE_CLOSE(""")
                   NL("\n")
           RCURL("}")
     semis

@@ -245,10 +245,7 @@ enumEntry
 
 type
     : typeModifiers?
-    ( parenthesizedType
-    | nullableType
-    | typeReference
-    | functionType)
+    (parenthesizedType | nullableType | typeReference | functionType)
     ;
 
 typeReference
@@ -358,7 +355,7 @@ doWhileStatement
 
 assignment
     : directlyAssignableExpression ASSIGNMENT NL* expression
-    | assignableExpression assignmentAndOperator NL* expression
+    | unaryPrefix* assignableExpression assignmentAndOperator NL* expression
     ;
 
 semi
@@ -372,64 +369,8 @@ semis
 
 // SECTION: expressions
 
-expression
-    : disjunction
-    ;
-
-disjunction
-    : conjunction (NL* DISJ NL* conjunction)*
-    ;
-
-conjunction
-    : equality (NL* CONJ NL* equality)*
-    ;
-
-equality
-    : comparison (equalityOperator NL* comparison)*
-    ;
-
-comparison
-    : infixOperation (comparisonOperator NL* infixOperation)?
-    ;
-
-infixOperation
-    : elvisExpression (inOperator NL* elvisExpression | isOperator NL* type)*
-    ;
-
-elvisExpression
-    : infixFunctionCall (NL* elvis NL* infixFunctionCall)*
-    ;
-
 elvis
     : QUEST_NO_WS COLON
-    ;
-
-infixFunctionCall
-    : rangeExpression (simpleIdentifier NL* rangeExpression)*
-    ;
-
-rangeExpression
-    : additiveExpression (RANGE NL* additiveExpression)*
-    ;
-
-additiveExpression
-    : multiplicativeExpression (additiveOperator NL* multiplicativeExpression)*
-    ;
-
-multiplicativeExpression
-    : asExpression (multiplicativeOperator NL* asExpression)*
-    ;
-
-asExpression
-    : comparisonWithLiteralRightSide (NL* asOperator NL* type)?
-    ;
-
-comparisonWithLiteralRightSide
-    : prefixUnaryExpression (NL* LANGLE NL* literalConstant NL* RANGLE NL* (expression | parenthesizedExpression))*
-    ;
-
-prefixUnaryExpression
-    : unaryPrefix* postfixUnaryExpression
     ;
 
 unaryPrefix
@@ -438,12 +379,7 @@ unaryPrefix
     | prefixUnaryOperator NL*
     ;
 
-postfixUnaryExpression
-    : primaryExpression
-    | primaryExpression postfixUnarySuffix+
-    ;
-
-postfixUnarySuffix
+unarySuffix
     : postfixUnaryOperator
     | typeArguments
     | callSuffix
@@ -451,22 +387,59 @@ postfixUnarySuffix
     | navigationSuffix
     ;
 
-directlyAssignableExpression
-    : postfixUnaryExpression assignableSuffix
+expression
+    : expression unarySuffix+
+    | unaryPrefix+ expression
+    | expression NL* LANGLE NL* literalConstant NL* RANGLE NL* expression
+    | expression NL* asOperator NL* type
+    | expression multiplicativeOperator NL* expression
+    | expression additiveOperator NL* expression
+    | expression RANGE NL* expression
+    | expression simpleIdentifier NL* expression
+    | expression NL* elvis NL* expression
+    | expression (isOperator NL* type | inOperator NL* expression)
+    | expression comparisonOperator NL* expression
+    | expression equalityOperator NL* expression
+    | expression NL* CONJ NL* expression
+    | expression NL* DISJ NL* expression
+    | jumpExpression
+    | tryExpression
+    | whenExpression
+    | ifExpression
+    | superExpression
+    | thisExpression
+    | collectionLiteral
+    | objectLiteral
+    | functionLiteral
+    | callableReference
+    | stringLiteral
+    | literalConstant
     | simpleIdentifier
-    | parenthesizedDirectlyAssignableExpression
+    | parenthesizedExpression
     ;
 
-parenthesizedDirectlyAssignableExpression
-    : LPAREN NL* directlyAssignableExpression NL* RPAREN
+directlyAssignableExpression
+    : assignableExpression assignableSuffix
+    | simpleIdentifier
+    | LPAREN NL* directlyAssignableExpression NL* RPAREN
     ;
 
 assignableExpression
-    : prefixUnaryExpression | parenthesizedAssignableExpression
-    ;
-
-parenthesizedAssignableExpression
-    : LPAREN NL* assignableExpression NL* RPAREN
+    : expression unarySuffix+
+    | parenthesizedExpression
+    | simpleIdentifier
+    | literalConstant
+    | stringLiteral
+    | callableReference
+    | functionLiteral
+    | objectLiteral
+    | collectionLiteral
+    | thisExpression
+    | superExpression
+    | ifExpression
+    | whenExpression
+    | tryExpression
+    | jumpExpression
     ;
 
 assignableSuffix
@@ -503,23 +476,6 @@ valueArguments
 
 valueArgument
     : annotation? NL* (simpleIdentifier NL* ASSIGNMENT NL*)? MULT? NL* expression
-    ;
-
-primaryExpression
-    : parenthesizedExpression
-    | simpleIdentifier
-    | literalConstant
-    | stringLiteral
-    | callableReference
-    | functionLiteral
-    | objectLiteral
-    | collectionLiteral
-    | thisExpression
-    | superExpression
-    | ifExpression
-    | whenExpression
-    | tryExpression
-    | jumpExpression
     ;
 
 parenthesizedExpression
@@ -697,15 +653,18 @@ comparisonOperator
     ;
 
 inOperator
-    : IN | NOT_IN
+    : IN
+    | NOT_IN
     ;
 
 isOperator
-    : IS | NOT_IS
+    : IS
+    | NOT_IS
     ;
 
 additiveOperator
-    : ADD | SUB
+    : ADD
+    | SUB
     ;
 
 multiplicativeOperator

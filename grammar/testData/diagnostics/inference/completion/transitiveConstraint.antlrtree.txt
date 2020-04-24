@@ -125,28 +125,14 @@ File: transitiveConstraint.kt - 50cb1455b48ea92817548f81ab36e102
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("TODO")
-                                        postfixUnarySuffix
-                                          callSuffix
-                                            valueArguments
-                                              LPAREN("(")
-                                              RPAREN(")")
+            expression
+              simpleIdentifier
+                Identifier("TODO")
+            unarySuffix
+              callSuffix
+                valueArguments
+                  LPAREN("(")
+                  RPAREN(")")
     semis
       NL("\n")
   topLevelObject
@@ -185,23 +171,8 @@ File: transitiveConstraint.kt - 50cb1455b48ea92817548f81ab36e102
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("arg")
+            simpleIdentifier
+              Identifier("arg")
     semis
       NL("\n")
       NL("\n")
@@ -232,92 +203,46 @@ File: transitiveConstraint.kt - 50cb1455b48ea92817548f81ab36e102
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("id")
-                                              postfixUnarySuffix
-                                                typeArguments
-                                                  LANGLE("<")
-                                                  typeProjection
-                                                    type
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Inv")
-                                                            typeArguments
-                                                              LANGLE("<")
-                                                              typeProjection
-                                                                type
-                                                                  typeReference
-                                                                    userType
-                                                                      simpleUserType
-                                                                        simpleIdentifier
-                                                                          Identifier("Upper")
-                                                              RANGLE(">")
-                                                  RANGLE(">")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    valueArgument
-                                                      expression
-                                                        disjunction
-                                                          conjunction
-                                                            equality
-                                                              comparison
-                                                                infixOperation
-                                                                  elvisExpression
-                                                                    infixFunctionCall
-                                                                      rangeExpression
-                                                                        additiveExpression
-                                                                          multiplicativeExpression
-                                                                            asExpression
-                                                                              comparisonWithLiteralRightSide
-                                                                                prefixUnaryExpression
-                                                                                  postfixUnaryExpression
-                                                                                    primaryExpression
-                                                                                      simpleIdentifier
-                                                                                        Identifier("makeInv")
-                                                                                    postfixUnarySuffix
-                                                                                      callSuffix
-                                                                                        valueArguments
-                                                                                          LPAREN("(")
-                                                                                          valueArgument
-                                                                                            expression
-                                                                                              disjunction
-                                                                                                conjunction
-                                                                                                  equality
-                                                                                                    comparison
-                                                                                                      infixOperation
-                                                                                                        elvisExpression
-                                                                                                          infixFunctionCall
-                                                                                                            rangeExpression
-                                                                                                              additiveExpression
-                                                                                                                multiplicativeExpression
-                                                                                                                  asExpression
-                                                                                                                    comparisonWithLiteralRightSide
-                                                                                                                      prefixUnaryExpression
-                                                                                                                        postfixUnaryExpression
-                                                                                                                          primaryExpression
-                                                                                                                            simpleIdentifier
-                                                                                                                              Identifier("lower")
-                                                                                          RPAREN(")")
-                                                    RPAREN(")")
+                  expression
+                    expression
+                      simpleIdentifier
+                        Identifier("id")
+                    comparisonOperator
+                      LANGLE("<")
+                    expression
+                      expression
+                        simpleIdentifier
+                          Identifier("Inv")
+                      unarySuffix
+                        typeArguments
+                          LANGLE("<")
+                          typeProjection
+                            type
+                              typeReference
+                                userType
+                                  simpleUserType
+                                    simpleIdentifier
+                                      Identifier("Upper")
+                          RANGLE(">")
+                  comparisonOperator
+                    RANGLE(">")
+                  expression
+                    parenthesizedExpression
+                      LPAREN("(")
+                      expression
+                        expression
+                          simpleIdentifier
+                            Identifier("makeInv")
+                        unarySuffix
+                          callSuffix
+                            valueArguments
+                              LPAREN("(")
+                              valueArgument
+                                expression
+                                  simpleIdentifier
+                                    Identifier("lower")
+                              RPAREN(")")
+                      RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")

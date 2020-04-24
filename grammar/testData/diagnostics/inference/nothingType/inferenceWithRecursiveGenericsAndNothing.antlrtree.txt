@@ -192,23 +192,8 @@ File: inferenceWithRecursiveGenericsAndNothing.kt - 3e19fd36611a9be3bcd965f5a38b
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          literalConstant
-                                            NullLiteral("null")
+            literalConstant
+              NullLiteral("null")
     semis
       NL("\n")
       NL("\n")
@@ -249,61 +234,25 @@ File: inferenceWithRecursiveGenericsAndNothing.kt - 3e19fd36611a9be3bcd965f5a38b
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                simpleIdentifier
-                                                  Identifier("foo")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    valueArgument
-                                                      expression
-                                                        disjunction
-                                                          conjunction
-                                                            equality
-                                                              comparison
-                                                                infixOperation
-                                                                  elvisExpression
-                                                                    infixFunctionCall
-                                                                      rangeExpression
-                                                                        additiveExpression
-                                                                          multiplicativeExpression
-                                                                            asExpression
-                                                                              comparisonWithLiteralRightSide
-                                                                                prefixUnaryExpression
-                                                                                  postfixUnaryExpression
-                                                                                    primaryExpression
-                                                                                      simpleIdentifier
-                                                                                        Identifier("o")
-                                                    RPAREN(")")
-                              elvis
-                                QUEST_NO_WS("?")
-                                COLON(":")
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
-                                                jumpExpression
-                                                  RETURN("return")
+                  expression
+                    expression
+                      simpleIdentifier
+                        Identifier("foo")
+                    unarySuffix
+                      callSuffix
+                        valueArguments
+                          LPAREN("(")
+                          valueArgument
+                            expression
+                              simpleIdentifier
+                                Identifier("o")
+                          RPAREN(")")
+                  elvis
+                    QUEST_NO_WS("?")
+                    COLON(":")
+                  expression
+                    jumpExpression
+                      RETURN("return")
               semis
                 NL("\n")
             RCURL("}")

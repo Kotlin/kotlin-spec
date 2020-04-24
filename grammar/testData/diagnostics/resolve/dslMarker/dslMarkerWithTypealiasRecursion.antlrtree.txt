@@ -27,55 +27,27 @@ File: dslMarkerWithTypealiasRecursion.kt - 84f6febee972fc2863ce35a837f9b991
                     LPAREN("(")
                     valueArgument
                       expression
-                        disjunction
-                          conjunction
-                            equality
-                              comparison
-                                infixOperation
-                                  elvisExpression
-                                    infixFunctionCall
-                                      rangeExpression
-                                        additiveExpression
-                                          multiplicativeExpression
-                                            asExpression
-                                              comparisonWithLiteralRightSide
-                                                prefixUnaryExpression
-                                                  postfixUnaryExpression
-                                                    primaryExpression
-                                                      simpleIdentifier
-                                                        Identifier("AnnotationTarget")
-                                                    postfixUnarySuffix
-                                                      navigationSuffix
-                                                        memberAccessOperator
-                                                          DOT(".")
-                                                        simpleIdentifier
-                                                          Identifier("CLASS")
+                        expression
+                          simpleIdentifier
+                            Identifier("AnnotationTarget")
+                        unarySuffix
+                          navigationSuffix
+                            memberAccessOperator
+                              DOT(".")
+                            simpleIdentifier
+                              Identifier("CLASS")
                     COMMA(",")
                     valueArgument
                       expression
-                        disjunction
-                          conjunction
-                            equality
-                              comparison
-                                infixOperation
-                                  elvisExpression
-                                    infixFunctionCall
-                                      rangeExpression
-                                        additiveExpression
-                                          multiplicativeExpression
-                                            asExpression
-                                              comparisonWithLiteralRightSide
-                                                prefixUnaryExpression
-                                                  postfixUnaryExpression
-                                                    primaryExpression
-                                                      simpleIdentifier
-                                                        Identifier("AnnotationTarget")
-                                                    postfixUnarySuffix
-                                                      navigationSuffix
-                                                        memberAccessOperator
-                                                          DOT(".")
-                                                        simpleIdentifier
-                                                          Identifier("TYPEALIAS")
+                        expression
+                          simpleIdentifier
+                            Identifier("AnnotationTarget")
+                        unarySuffix
+                          navigationSuffix
+                            memberAccessOperator
+                              DOT(".")
+                            simpleIdentifier
+                              Identifier("TYPEALIAS")
                     RPAREN(")")
             NL("\n")
           modifier
@@ -188,28 +160,14 @@ File: dslMarkerWithTypealiasRecursion.kt - 84f6febee972fc2863ce35a837f9b991
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("body")
-                                        postfixUnarySuffix
-                                          callSuffix
-                                            valueArguments
-                                              LPAREN("(")
-                                              RPAREN(")")
+            expression
+              simpleIdentifier
+                Identifier("body")
+            unarySuffix
+              callSuffix
+                valueArguments
+                  LPAREN("(")
+                  RPAREN(")")
     semis
       NL("\n")
   topLevelObject
@@ -255,39 +213,25 @@ File: dslMarkerWithTypealiasRecursion.kt - 84f6febee972fc2863ce35a837f9b991
         functionBody
           ASSIGNMENT("=")
           expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          simpleIdentifier
-                                            Identifier("Bar")
-                                        postfixUnarySuffix
-                                          callSuffix
-                                            valueArguments
-                                              LPAREN("(")
-                                              RPAREN(")")
-                                        postfixUnarySuffix
-                                          navigationSuffix
-                                            memberAccessOperator
-                                              DOT(".")
-                                            simpleIdentifier
-                                              Identifier("body")
-                                        postfixUnarySuffix
-                                          callSuffix
-                                            valueArguments
-                                              LPAREN("(")
-                                              RPAREN(")")
+            expression
+              simpleIdentifier
+                Identifier("Bar")
+            unarySuffix
+              callSuffix
+                valueArguments
+                  LPAREN("(")
+                  RPAREN(")")
+            unarySuffix
+              navigationSuffix
+                memberAccessOperator
+                  DOT(".")
+                simpleIdentifier
+                  Identifier("body")
+            unarySuffix
+              callSuffix
+                valueArguments
+                  LPAREN("(")
+                  RPAREN(")")
     semis
       NL("\n")
       NL("\n")
@@ -307,99 +251,57 @@ File: dslMarkerWithTypealiasRecursion.kt - 84f6febee972fc2863ce35a837f9b991
             statements
               statement
                 expression
-                  disjunction
-                    conjunction
-                      equality
-                        comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
-                                          prefixUnaryExpression
-                                            postfixUnaryExpression
-                                              primaryExpression
+                  expression
+                    simpleIdentifier
+                      Identifier("Foo")
+                  unarySuffix
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        RPAREN(")")
+                  unarySuffix
+                    navigationSuffix
+                      memberAccessOperator
+                        DOT(".")
+                      simpleIdentifier
+                        Identifier("foo")
+                  unarySuffix
+                    callSuffix
+                      annotatedLambda
+                        lambdaLiteral
+                          LCURL("{")
+                          NL("\n")
+                          statements
+                            statement
+                              expression
+                                expression
+                                  simpleIdentifier
+                                    Identifier("zbar")
+                                unarySuffix
+                                  callSuffix
+                                    annotatedLambda
+                                      lambdaLiteral
+                                        LCURL("{")
+                                        NL("\n")
+                                        statements
+                                          statement
+                                            expression
+                                              expression
                                                 simpleIdentifier
-                                                  Identifier("Foo")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  valueArguments
-                                                    LPAREN("(")
-                                                    RPAREN(")")
-                                              postfixUnarySuffix
-                                                navigationSuffix
-                                                  memberAccessOperator
-                                                    DOT(".")
-                                                  simpleIdentifier
-                                                    Identifier("foo")
-                                              postfixUnarySuffix
+                                                  Identifier("foo")
+                                              unarySuffix
                                                 callSuffix
                                                   annotatedLambda
                                                     lambdaLiteral
                                                       LCURL("{")
-                                                      NL("\n")
                                                       statements
-                                                        statement
-                                                          expression
-                                                            disjunction
-                                                              conjunction
-                                                                equality
-                                                                  comparison
-                                                                    infixOperation
-                                                                      elvisExpression
-                                                                        infixFunctionCall
-                                                                          rangeExpression
-                                                                            additiveExpression
-                                                                              multiplicativeExpression
-                                                                                asExpression
-                                                                                  comparisonWithLiteralRightSide
-                                                                                    prefixUnaryExpression
-                                                                                      postfixUnaryExpression
-                                                                                        primaryExpression
-                                                                                          simpleIdentifier
-                                                                                            Identifier("zbar")
-                                                                                        postfixUnarySuffix
-                                                                                          callSuffix
-                                                                                            annotatedLambda
-                                                                                              lambdaLiteral
-                                                                                                LCURL("{")
-                                                                                                NL("\n")
-                                                                                                statements
-                                                                                                  statement
-                                                                                                    expression
-                                                                                                      disjunction
-                                                                                                        conjunction
-                                                                                                          equality
-                                                                                                            comparison
-                                                                                                              infixOperation
-                                                                                                                elvisExpression
-                                                                                                                  infixFunctionCall
-                                                                                                                    rangeExpression
-                                                                                                                      additiveExpression
-                                                                                                                        multiplicativeExpression
-                                                                                                                          asExpression
-                                                                                                                            comparisonWithLiteralRightSide
-                                                                                                                              prefixUnaryExpression
-                                                                                                                                postfixUnaryExpression
-                                                                                                                                  primaryExpression
-                                                                                                                                    simpleIdentifier
-                                                                                                                                      Identifier("foo")
-                                                                                                                                  postfixUnarySuffix
-                                                                                                                                    callSuffix
-                                                                                                                                      annotatedLambda
-                                                                                                                                        lambdaLiteral
-                                                                                                                                          LCURL("{")
-                                                                                                                                          statements
-                                                                                                                                          RCURL("}")
-                                                                                                  semis
-                                                                                                    NL("\n")
-                                                                                                RCURL("}")
-                                                        semis
-                                                          NL("\n")
                                                       RCURL("}")
+                                          semis
+                                            NL("\n")
+                                        RCURL("}")
+                            semis
+                              NL("\n")
+                          RCURL("}")
               semis
                 NL("\n")
             RCURL("}")
