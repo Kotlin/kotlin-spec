@@ -118,6 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="type-system">Type system</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -311,11 +312,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: additional details about built-in integer types are available <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">here</a>.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO([Kotlin 1.3] Add unsigned types)</span></p>
-</div>
-</div>
 <h5 id="array-types">Array types</h5>
 <div class="paragraph">
 <p><span class="sentence">Kotlin arrays are represented as a <a href="type-system.html#parameterized-classifier-types">parameterized type</a> <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span>, where <span class="math inline">\(T\)</span> is the type of the stored elements, which supports <code>get</code>/<code>set</code> operations. </span><span class="sentence">The <span class="math inline">\(\operatorname{\texttt{kotlin.Array}}(T)\)</span> type follows the rules of regular type constructors and parameterized types w.r.t. subtyping.</span></p>
@@ -973,6 +969,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-15" title="15"><span class="co">// Function1&lt;in Int, out Any&gt; :&gt; Function1&lt;in Number, out Number&gt;</span></a>
 <a class="sourceLine" id="cb6-16" title="16"><span class="kw">val</span> <span class="va">barRef</span>: (<span class="kw">Int</span>) -&gt; Any = Number::bar</a></code></pre></div>
 </blockquote>
+<h5 id="suspending-function-types">Suspending function types</h5>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports structured concurrency in the form of <a href="coroutines.html#coroutines-1">coroutines</a> via <a href="coroutines.html#suspending-functions">suspending functions</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For the purposes of type system, a suspending function has a <em>suspending</em> function type <span class="math inline">\(\operatorname{\texttt{suspend}}\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R\)</span>, which is <strong>unrelated by subtyping</strong> to any non-suspending function type. </span><span class="sentence">This is important for <a href="overload-resolution.html#overload-resolution">overload resolution</a> and <a href="type-inference.html#type-inference">type inference</a>, as it directly influences the types of function values and the applicability of different functions w.r.t. overloading.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Most function values have either non-suspending or suspending function type based on their declarations. </span><span class="sentence">However, as <a href="expressions.html#lambda-literals">lambda literals</a> do not have any explicitely declared function type, they are considered as possibly being both non-suspending and suspending function type, with the final selection done during <a href="type-inference.html#type-inference">type inference</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">String</span> = <span class="al">TODO()</span></a>
+<a class="sourceLine" id="cb7-2" title="2"></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">fun</span> <span class="fu">bar</span>() {</a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="kw">val</span> <span class="va">fooRef</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">String</span> = ::foo</a>
+<a class="sourceLine" id="cb7-5" title="5">    <span class="kw">val</span> <span class="va">fooLambda</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">String</span> = { it.toString() }</a>
+<a class="sourceLine" id="cb7-6" title="6">    <span class="kw">val</span> <span class="va">suspendFooLambda</span>: suspend (<span class="kw">Int</span>) -&gt; <span class="kw">String</span> = { it.toString() }</a>
+<a class="sourceLine" id="cb7-7" title="7"></a>
+<a class="sourceLine" id="cb7-8" title="8">    <span class="co">// Error: as suspending and non-suspending</span></a>
+<a class="sourceLine" id="cb7-9" title="9">    <span class="co">//   function types are unrelated</span></a>
+<a class="sourceLine" id="cb7-10" title="10">    <span class="co">// val error: suspend (Int) -&gt; String = ::foo</span></a>
+<a class="sourceLine" id="cb7-11" title="11">    <span class="co">// val error: suspend (Int) -&gt; String = fooLambda</span></a>
+<a class="sourceLine" id="cb7-12" title="12">    <span class="co">// val error: (Int) -&gt; String = suspendFooLambda</span></a>
+<a class="sourceLine" id="cb7-13" title="13">}</a></code></pre></div>
+</blockquote>
 <h4 id="flexible-types">Flexible types</h4>
 <div class="paragraph">
 <p><span class="sentence">Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code. </span><span class="sentence">However, this presents a problem in that some platforms may not support null safety the way Kotlin does. </span><span class="sentence">To deal with this, Kotlin supports <em>gradual typing</em> in the form of flexible types.</span></p>
@@ -1120,23 +1144,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">class</span> Parent&lt;<span class="dt">T</span>&gt; {</a>
-<a class="sourceLine" id="cb7-2" title="2">    <span class="kw">class</span> Nested(<span class="kw">val</span> <span class="va">i</span>: <span class="dt">Int</span>)</a>
-<a class="sourceLine" id="cb7-3" title="3"></a>
-<a class="sourceLine" id="cb7-4" title="4">    // Can use type parameter T <span class="kw">as</span> a type</a>
-<a class="sourceLine" id="cb7-5" title="5">    // <span class="kw">in</span> an inner <span class="kw">class</span></a>
-<a class="sourceLine" id="cb7-6" title="6">    inner <span class="kw">class</span> Inner(<span class="kw">val</span> <span class="va">t</span>: <span class="dt">T</span>)</a>
-<a class="sourceLine" id="cb7-7" title="7"></a>
-<a class="sourceLine" id="cb7-8" title="8">    // Cannot use type parameter T <span class="kw">as</span> a type</a>
-<a class="sourceLine" id="cb7-9" title="9">    // <span class="kw">in</span> a nested <span class="kw">class</span></a>
-<a class="sourceLine" id="cb7-10" title="10">    <span class="kw">class</span> Error(<span class="kw">val</span> <span class="va">t</span>: <span class="dt">T</span>)</a>
-<a class="sourceLine" id="cb7-11" title="11">}</a>
-<a class="sourceLine" id="cb7-12" title="12"></a>
-<a class="sourceLine" id="cb7-13" title="13"><span class="kw">fun</span> main() {</a>
-<a class="sourceLine" id="cb7-14" title="14">    <span class="kw">val</span> <span class="va">nested</span> = Parent.Nested(<span class="dv">42</span>)</a>
-<a class="sourceLine" id="cb7-15" title="15"></a>
-<a class="sourceLine" id="cb7-16" title="16">    <span class="kw">val</span> <span class="va">inner</span> = Parent&lt;<span class="kw">String</span>&gt;().Inner(<span class="st">&quot;42&quot;</span>)</a>
-<a class="sourceLine" id="cb7-17" title="17">}</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">class</span> Parent&lt;<span class="dt">T</span>&gt; {</a>
+<a class="sourceLine" id="cb8-2" title="2">    <span class="kw">class</span> Nested(<span class="kw">val</span> <span class="va">i</span>: <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4">    // Can use type parameter T <span class="kw">as</span> a type</a>
+<a class="sourceLine" id="cb8-5" title="5">    // <span class="kw">in</span> an inner <span class="kw">class</span></a>
+<a class="sourceLine" id="cb8-6" title="6">    inner <span class="kw">class</span> Inner(<span class="kw">val</span> <span class="va">t</span>: <span class="dt">T</span>)</a>
+<a class="sourceLine" id="cb8-7" title="7"></a>
+<a class="sourceLine" id="cb8-8" title="8">    // Cannot use type parameter T <span class="kw">as</span> a type</a>
+<a class="sourceLine" id="cb8-9" title="9">    // <span class="kw">in</span> a nested <span class="kw">class</span></a>
+<a class="sourceLine" id="cb8-10" title="10">    <span class="kw">class</span> Error(<span class="kw">val</span> <span class="va">t</span>: <span class="dt">T</span>)</a>
+<a class="sourceLine" id="cb8-11" title="11">}</a>
+<a class="sourceLine" id="cb8-12" title="12"></a>
+<a class="sourceLine" id="cb8-13" title="13"><span class="kw">fun</span> main() {</a>
+<a class="sourceLine" id="cb8-14" title="14">    <span class="kw">val</span> <span class="va">nested</span> = Parent.Nested(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb8-15" title="15"></a>
+<a class="sourceLine" id="cb8-16" title="16">    <span class="kw">val</span> <span class="va">inner</span> = Parent&lt;<span class="kw">String</span>&gt;().Inner(<span class="st">&quot;42&quot;</span>)</a>
+<a class="sourceLine" id="cb8-17" title="17">}</a></code></pre></div>
 </blockquote>
 <h3 id="subtyping">Subtyping</h3>
 <div class="paragraph">
@@ -1224,31 +1248,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">interface</span> In&lt;<span class="kw">in</span> <span class="dt">T</span>&gt;</a>
-<a class="sourceLine" id="cb8-2" title="2"></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; T.asIn(): <span class="dt">In</span>&lt;<span class="dt">T</span>&gt; = ...</a>
-<a class="sourceLine" id="cb8-4" title="4"></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="kw">fun</span> &lt;<span class="dt">S</span>&gt; <span class="fu">select</span>(<span class="va">a</span>: <span class="dt">S</span>, <span class="va">b</span>: <span class="dt">In</span>&lt;<span class="va">S</span>&gt;): <span class="dt">S</span> = ...</a>
-<a class="sourceLine" id="cb8-6" title="6"></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="kw">fun</span> <span class="fu">ltsAsIntersection</span>() {</a>
-<a class="sourceLine" id="cb8-8" title="8">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Int</span> = <span class="dv">42</span> <span class="co">// LTS(Byte, Short, Int, Long) &lt;: Int</span></a>
-<a class="sourceLine" id="cb8-9" title="9">    </a>
-<a class="sourceLine" id="cb8-10" title="10">    <span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Short</span>) {}</a>
-<a class="sourceLine" id="cb8-11" title="11">    </a>
-<a class="sourceLine" id="cb8-12" title="12">    foo(<span class="dv">1377</span>) <span class="co">// LTS(Short, Int, Long) &lt;: Short</span></a>
-<a class="sourceLine" id="cb8-13" title="13">}</a>
-<a class="sourceLine" id="cb8-14" title="14"></a>
-<a class="sourceLine" id="cb8-15" title="15"><span class="kw">fun</span> <span class="fu">ltsAsUnion</span>() {</a>
-<a class="sourceLine" id="cb8-16" title="16">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Short</span> = <span class="dv">42</span></a>
-<a class="sourceLine" id="cb8-17" title="17">    </a>
-<a class="sourceLine" id="cb8-18" title="18">    select(a, <span class="fl">1337.</span>asIn())</a>
-<a class="sourceLine" id="cb8-19" title="19">        <span class="co">// For argument a:</span></a>
-<a class="sourceLine" id="cb8-20" title="20">        <span class="co">//   Short &lt;: S</span></a>
-<a class="sourceLine" id="cb8-21" title="21">        <span class="co">// For argument b:</span></a>
-<a class="sourceLine" id="cb8-22" title="22">        <span class="co">//   In&lt;LTS(Short, Int, Long)&gt; &lt;: In&lt;S&gt; =&gt;</span></a>
-<a class="sourceLine" id="cb8-23" title="23">        <span class="co">//     S &lt;: LTS(Short, Int, Long)</span></a>
-<a class="sourceLine" id="cb8-24" title="24">        <span class="co">// Solution: S =:= Short</span></a>
-<a class="sourceLine" id="cb8-25" title="25">}</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">interface</span> In&lt;<span class="kw">in</span> <span class="dt">T</span>&gt;</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; T.asIn(): <span class="dt">In</span>&lt;<span class="dt">T</span>&gt; = ...</a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="kw">fun</span> &lt;<span class="dt">S</span>&gt; <span class="fu">select</span>(<span class="va">a</span>: <span class="dt">S</span>, <span class="va">b</span>: <span class="dt">In</span>&lt;<span class="va">S</span>&gt;): <span class="dt">S</span> = ...</a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="kw">fun</span> <span class="fu">ltsAsIntersection</span>() {</a>
+<a class="sourceLine" id="cb9-8" title="8">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Int</span> = <span class="dv">42</span> <span class="co">// LTS(Byte, Short, Int, Long) &lt;: Int</span></a>
+<a class="sourceLine" id="cb9-9" title="9">    </a>
+<a class="sourceLine" id="cb9-10" title="10">    <span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Short</span>) {}</a>
+<a class="sourceLine" id="cb9-11" title="11">    </a>
+<a class="sourceLine" id="cb9-12" title="12">    foo(<span class="dv">1377</span>) <span class="co">// LTS(Short, Int, Long) &lt;: Short</span></a>
+<a class="sourceLine" id="cb9-13" title="13">}</a>
+<a class="sourceLine" id="cb9-14" title="14"></a>
+<a class="sourceLine" id="cb9-15" title="15"><span class="kw">fun</span> <span class="fu">ltsAsUnion</span>() {</a>
+<a class="sourceLine" id="cb9-16" title="16">    <span class="kw">val</span> <span class="va">a</span>: <span class="kw">Short</span> = <span class="dv">42</span></a>
+<a class="sourceLine" id="cb9-17" title="17">    </a>
+<a class="sourceLine" id="cb9-18" title="18">    select(a, <span class="fl">1337.</span>asIn())</a>
+<a class="sourceLine" id="cb9-19" title="19">        <span class="co">// For argument a:</span></a>
+<a class="sourceLine" id="cb9-20" title="20">        <span class="co">//   Short &lt;: S</span></a>
+<a class="sourceLine" id="cb9-21" title="21">        <span class="co">// For argument b:</span></a>
+<a class="sourceLine" id="cb9-22" title="22">        <span class="co">//   In&lt;LTS(Short, Int, Long)&gt; &lt;: In&lt;S&gt; =&gt;</span></a>
+<a class="sourceLine" id="cb9-23" title="23">        <span class="co">//     S &lt;: LTS(Short, Int, Long)</span></a>
+<a class="sourceLine" id="cb9-24" title="24">        <span class="co">// Solution: S =:= Short</span></a>
+<a class="sourceLine" id="cb9-25" title="25">}</a></code></pre></div>
 </blockquote>
 <h4 id="subtyping-for-nullable-types">Subtyping for nullable types</h4>
 <div class="paragraph">
@@ -1274,9 +1298,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div>
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="299" height="79" text-rendering="auto" shape-rendering="auto">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="150" height="40" text-rendering="auto" shape-rendering="auto">
 <defs></defs>
-<line x1="142.5" y1="52.5" x2="232.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="307.5" y1="52.5" x2="330" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 337.5 52.5 L 322.5 57.5 L 322.5 47.5 Z "/></g><line x1="67.5" y1="37.5" x2="67.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 67.5 82.5 L 62.5 67.5 L 72.5 67.5 Z "/></g><line x1="142.5" y1="37.5" x2="142.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="232.5" y1="37.5" x2="232.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><line x1="412.5" y1="37.5" x2="412.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 412.5 82.5 L 407.5 67.5 L 417.5 67.5 Z "/></g><line x1="187.5" y1="52.5" x2="187.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.7,0,0,0.7,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.7,0,0,0.7,0,0)" ><path d="M 187.5 82.5 L 182.5 67.5 L 192.5 67.5 Z "/></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="60.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="129.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B?</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="212.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >C!!</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="405.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="60.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="180.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g><g transform="matrix(0.7,0,0,0.7,0,0)"><text x="405.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g></svg>
+<line x1="142.5" y1="52.5" x2="232.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><line x1="307.5" y1="52.5" x2="330" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.35,0,0,0.35,0,0)" ><path d="M 337.5 52.5 L 322.5 57.5 L 322.5 47.5 Z "/></g><line x1="67.5" y1="37.5" x2="67.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.35,0,0,0.35,0,0)" ><path d="M 67.5 82.5 L 62.5 67.5 L 72.5 67.5 Z "/></g><line x1="142.5" y1="37.5" x2="142.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><line x1="232.5" y1="37.5" x2="232.5" y2="52.5" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><line x1="412.5" y1="37.5" x2="412.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.35,0,0,0.35,0,0)" ><path d="M 412.5 82.5 L 407.5 67.5 L 417.5 67.5 Z "/></g><line x1="187.5" y1="52.5" x2="187.5" y2="75" style="stroke-width: 1.5;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(0.35,0,0,0.35,0,0)" /><g style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: none" transform="matrix(0.35,0,0,0.35,0,0)" ><path d="M 187.5 82.5 L 182.5 67.5 L 192.5 67.5 Z "/></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="60.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="129.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B?</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="212.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >C!!</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="405.5" y="30.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >A</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="60.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >B</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="180.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g><g transform="matrix(0.35,0,0,0.35,0,0)"><text x="405.5" y="105.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: monospace; font-size: 23px;" >T</text></g></svg>
 ' />
 </div>
 <div class="paragraph">

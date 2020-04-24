@@ -118,6 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="expressions">Expressions</h2>
 <h3 id="glossary-3">Glossary</h3>
 <dl>
@@ -273,7 +274,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>real literal</em> consists of the following parts: the whole-number part, the decimal point (ASCII period character <code>.</code>), the fraction part and the exponent. </span><span class="sentence">Unlike other languages, Kotlin real literals may only be expressed in decimal numbers. </span><span class="sentence">A real literal may also be followed by a type suffix (<code>f</code> or <code>F</code>).</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The exponent is an exponent mark (<code>e</code> or <code>E</code>) followed by an optionaly signed decimal integer (a sequence of decimal digits).</span></p>
+<p><span class="sentence">The exponent is an exponent mark (<code>e</code> or <code>E</code>) followed by an optionally signed decimal integer (a sequence of decimal digits).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The whole-number part and the exponent part may be omitted. </span><span class="sentence">The fraction part may be omitted only together with the decimal point, if the whole-number part and either the exponent part or the type suffix are present. </span><span class="sentence">Unlike other languages, Kotlin does not support omitting the fraction part, but leaving the decimal point in.</span></p>
@@ -319,31 +320,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>character literal</em> defines a constant holding a unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
+<p><span class="sentence">A <em>character literal</em> defines a constant holding a Unicode character value. </span><span class="sentence">A simply-formed character literal is any symbol between two single quotation marks (ASCII single quotation character <code>'</code>), excluding newline symbols (<em>CR</em> and <em>LF</em>), the single quotation mark itself and the escaping mark (ASCII backslash character <code>\</code>).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">All character literals have type <code>kotlin.Char</code>.</span></p>
 </div>
 <h5 id="escaped-characters">Escaped characters</h5>
 <div class="paragraph">
-<p><span class="sentence">A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a unicode codepoint. </span><span class="sentence">Simple escaped symbols include:</span></p>
+<p><span class="sentence">A character literal may also contain an escaped symbol of two kinds: a simple escaped symbol or a Unicode codepoint. </span><span class="sentence">Simple escaped symbols include:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>\t</code> — the unicode TAB symbol (U+0009);</span></li>
-<li><span class="sentence"><code>\b</code> — the unicode BACKSPACE symbol (U+0008);</span></li>
+<li><span class="sentence"><code>\t</code> — the Unicode TAB symbol (U+0009);</span></li>
+<li><span class="sentence"><code>\b</code> — the Unicode BACKSPACE symbol (U+0008);</span></li>
 <li><span class="sentence"><code>\r</code> — <em>CR</em>;</span></li>
 <li><span class="sentence"><code>\n</code> — <em>LF</em>;</span></li>
-<li><span class="sentence"><code>\'</code> — the unicode apostrophe symbol (U+0027);</span></li>
-<li><span class="sentence"><code>\&quot;</code> — the unicode double quotation symbol (U+0028);</span></li>
-<li><span class="sentence"><code>\\</code> — the unicode backslash symbol (U+005C);</span></li>
-<li><span class="sentence"><code>\$</code> — the unicode DOLLAR sign (U+0024).</span></li>
+<li><span class="sentence"><code>\'</code> — the Unicode apostrophe symbol (U+0027);</span></li>
+<li><span class="sentence"><code>\&quot;</code> — the Unicode double quotation symbol (U+0028);</span></li>
+<li><span class="sentence"><code>\\</code> — the Unicode backslash symbol (U+005C);</span></li>
+<li><span class="sentence"><code>\$</code> — the Unicode DOLLAR sign (U+0024).</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">A unicode codepoint escaped symbol is the symbol <code>\u</code> followed by exactly four hexadecimal digits. </span><span class="sentence">It represents the unicode symbol with the codepoint equal to the number represented by these four digits.</span></p>
+<p><span class="sentence">A Unicode codepoint escaped symbol is the symbol <code>\u</code> followed by exactly four hexadecimal digits. </span><span class="sentence">It represents the Unicode symbol with the codepoint equal to the number represented by these four digits.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this means unicode codepoint escaped symbols support only unicode symbols in range from U+0000 to U+FFFF.</span></p>
+<p><span class="sentence">Note: this means Unicode codepoint escaped symbols support only Unicode symbols in range from U+0000 to U+FFFF.</span></p>
 </div>
 </blockquote>
 <h4 id="string-literals">String literals</h4>
@@ -714,8 +715,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">The bound expression is of type <code>kotlin.Boolean</code> and the conditions contain both:</span>
 <ul>
-<li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>true</code>;</span></li>
-<li><span class="sentence">A [constant expression][Constant expressions] evaluating to <code>false</code>;</span></li>
+<li><div class="paragraph">
+<p><span class="sentence">A constant expression evaluating to <code>true</code>;</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence">A constant expression evaluating to <code>false</code>;</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: here the term “constant expression” refers to any expression constructed of <a href="expressions.html#constant-literals">constant literals</a>, <a href="expressions.html#string-interpolation-expressions">string interpolation</a> over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time</span></p>
+</div>
+</blockquote></li>
 </ul></li>
 <li><span class="sentence">The bound expression is of a <a href="inheritance.html#sealed-classes"><code>sealed class</code></a> type and all of its subtypes are covered using type test conditions in this expression. </span><span class="sentence">This should include checks for all direct subtypes of this sealed class. </span><span class="sentence">If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;</span></li>
 <li><span class="sentence">The bound expression is of an <a href="declarations.html#enum-class-declaration"><code>enum class</code></a> type and all its enumerated values are checked for equality using constant expression;</span></li>
@@ -1765,7 +1775,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Lambda literals have the same restrictions as anonymous function declarations, but additionally cannot have <code>vararg</code> parameters.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Lambda literals can introduce destructuring parameters similar to <a href="declarations.html#local-property-declaration">destructuring property declarations</a>. </span><span class="sentence">Lambda parameter of the form <code>(a, b, ..., n)</code> (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its <code>componentN()</code> functions as follows.</span></p>
+<p><span class="sentence">Lambda literals can introduce <a href="operator-overloading.html#destructuring-declarations">destructuring parameters</a>. </span><span class="sentence">Lambda parameter of the form <code>(a, b, ..., n)</code> (note the parenthesis) declares a destructuring formal parameter, which references the actual argument and its <code>componentN()</code> functions as follows (see the <a href="operator-overloading.html#destructuring-declarations">operator overloading section</a> for details).</span></p>
 </div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">val</span> <span class="va">plus</span>: (Pair&lt;<span class="kw">Int</span>, <span class="kw">Double</span>&gt;) -&gt; <span class="kw">String</span> = { (i, d) -&gt;</a>
 <a class="sourceLine" id="cb15-2" title="2">    <span class="st">&quot;$i + $d = ${i + d}&quot;</span></a>
@@ -1932,6 +1942,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb18-30" title="30">    M().test2().bar() <span class="co">// Error: Unresolved reference: bar</span></a>
 <a class="sourceLine" id="cb18-31" title="31">}</a></code></pre></div>
 </blockquote>
+<h4 id="functional-interface-lambda-literals">Functional interface lambda literals</h4>
+<div class="paragraph">
+<p><span class="sentence">If a <a href="expressions.html#lambda-literals">lambda literal</a> is preceded with a <a href="declarations.html#functional-interface-declaration">functional interface</a> name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To be a well-formed functional interface lambda literal, the type of lambda literal must be a subtype of the associated function type of the specified functional interface.</span></p>
+</div>
 <h3 id="this-expressions">This-expressions</h3>
 <div id="grammar-rule-thisExpression-pasted-90" class="grammar-rule">
 <dl>

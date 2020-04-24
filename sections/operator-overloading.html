@@ -75,6 +75,9 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../resources/css/main.css">
+  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body);
+  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -115,6 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="operator-overloading">Operator overloading</h2>
 <div class="paragraph">
 <p><span class="sentence">Some syntax forms in Kotlin are <em>defined by convention</em>, meaning that their semantics are defined through syntactic expansion of one syntax form into another syntax form.</span></p>
@@ -127,7 +131,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>invoke</code> convention;</span></li>
 <li><span class="sentence">Operator-form <a href="statements.html#assignments">assignments</a>;</span></li>
 <li><span class="sentence"><a href="statements.html#for-loop-statement">For-loop statements</a>;</span></li>
-<li><span class="sentence"><a href="declarations.html#delegated-property-declaration">Delegated properties</a>.</span></li>
+<li><span class="sentence"><a href="declarations.html#delegated-property-declaration">Delegated properties</a>;</span></li>
+<li><span class="sentence"><a href="operator-overloading.html#destructuring-declarations">Destructuring declarations</a>.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -203,6 +208,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = C.<span class="kw">get</span>(<span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb5-2" title="2">$tmp.<span class="kw">set</span>($tmp.<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div>
+</blockquote>
+<h3 id="destructuring-declarations">Destructuring declarations</h3>
+<div class="paragraph">
+<p><span class="sentence">A special case of definition by convention is the destructuring declaration of properties, which is available for <a href="declarations.html#local-property-declaration">local properties</a>, parameters of <a href="expressions.html#lambda-literals">lambda literals</a> and the iteration variable of <a href="statements.html#for-loop-statement">for-loops</a>. </span><span class="sentence">See the corresponding sections for particular syntax.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This convention allows to introduce a number (one or more) of properties in the place of one by immediately <em>destructuring</em> the property during construction. </span><span class="sentence">The immediate value (that is, the initializing expression of the local property, the value acquired from the operator convention of a for-loop statement, or an argument passed into a lambda body) is assigned to a number of placeholders <span class="math inline">\(p_0, \ldots, p_N\)</span> where each placeholder is either an identifier or a special ignoring placeholder <code>_</code> (note that <code>_</code> is not a valid identifier in Kotlin). </span><span class="sentence">For each identifier the corresponding operator function <code>componentK</code> with <span class="math inline">\(K\)</span> being equal to the position of the placeholder in the declaration (<strong>starting from 1</strong>) is called without arguments and the result is assigned to a fresh value referred to as the identifier used. </span><span class="sentence">For each ignoring placeholder, no calls are performed and nothing is assigned. </span><span class="sentence">Each placeholder may be provided with an optional type signature <span class="math inline">\(T_M\)</span> which is used in <a href="type-inference.html#type-inference">type inference</a> as any property type would. </span><span class="sentence">Note that an ignoring placeholder may also be provided with a type signature, in which case although the call to corresponding <code>componentM</code> function is not performed, it still must be checked for function applicability during type inference.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> (<span class="va">x</span>: A, _, z) = f()</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = f()</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>component1</code> and <code>component3</code> are suitable operator functions available on the value returned by <code>f()</code></span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="cf">for</span>((x: A, _, z) <span class="kw">in</span> f()) { ... }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is expanded to (as per for-loop expansion)</span></p>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> = f().iterator()) {</a>
+<a class="sourceLine" id="cb9-2" title="2"> <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) {</a>
+<a class="sourceLine" id="cb9-3" title="3">             <span class="kw">val</span> $<span class="va">tmp</span> = $iterator.next()</a>
+<a class="sourceLine" id="cb9-4" title="4">           <span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
+<a class="sourceLine" id="cb9-5" title="5">             <span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a>
+<a class="sourceLine" id="cb9-6" title="6">             ...</a>
+<a class="sourceLine" id="cb9-7" title="7">         }</a>
+<a class="sourceLine" id="cb9-8" title="8">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>iterator()</code>, <code>next()</code>, <code>hasNext()</code>, <code>component1()</code> and <code>component3</code> are all suitable operator functions available on their respective receivers.</span></p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1">foo { (x: A, _, z) -&gt; ... }</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is expanded to</span></p>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1">foo { $tmp -&gt;</a>
+<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
+<a class="sourceLine" id="cb11-3" title="3">    <span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a>
+<a class="sourceLine" id="cb11-4" title="4">    ...</a>
+<a class="sourceLine" id="cb11-5" title="5">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">where <code>component1()</code> and <code>component3</code> are all suitable operator functions available on the value of lambda argument.</span></p>
+</div>
 </blockquote>
 </body>
 </html>

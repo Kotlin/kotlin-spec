@@ -118,6 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="inheritance">Inheritance</h2>
 <div class="TODO">
 <div class="paragraph">
@@ -183,14 +184,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and either <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if:</span></p>
+<p><span class="sentence">A callable declaration <span class="math inline">\(D\)</span> inside a classifier declaration <em>subsumes</em> a corresponding declaration <span class="math inline">\(B\)</span> of the base classifier type if the <a href="declarations.html#function-signature">function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A declaration <span class="math inline">\(D\)</span> which overrides declaration <span class="math inline">\(B\)</span> should satisfy the following conditions.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Return type of <span class="math inline">\(D\)</span> is a subtype of return type of <span class="math inline">\(B\)</span>;</span></li>
-<li><span class="sentence"><a href="declarations.html#function-signature">Function signature</a> of <span class="math inline">\(D\)</span> (if any) matches the function signature of <span class="math inline">\(B\)</span> (if any).</span></li>
+<li><span class="sentence"><a href="coroutines.html#coroutines-1">Suspendability</a> of <span class="math inline">\(D\)</span> and <span class="math inline">\(B\)</span> must be the same.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">If the declaration <span class="math inline">\(B\)</span> of the base classifier type is overridable, the declaration <span class="math inline">\(D\)</span> of the derived classifier type subsumes it, and <span class="math inline">\(D\)</span> has an <code>override</code> modifier, <span class="math inline">\(D\)</span> is <em>overriding</em> the base declaration <span class="math inline">\(B\)</span>. </span><span class="sentence">If the base declaration is not overridable and/or the deriving declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
+<p><span class="sentence">Otherwise, it is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If the base declaration is not overridable and/or the overriding declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">If the overriding declaration <em>does not</em> have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.</span></p>
@@ -235,12 +245,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: Kotlin does not have a concept of full shadowing of declarations.</span></p>
+<p><span class="sentence">Note: Kotlin does not have a concept of full hiding (or shadowing) of declarations.</span></p>
 </div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of <a href="overload-resolution.html#overload-resolution">function overloading</a>.</span></p>
+<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of <a href="overload-resolution.html#overload-resolution">overloading</a>. </span><span class="sentence">However, these declarations may still result in a compile-time error as a result of <a href="overload-resolution.html#conflicting-overloads">conflicting overload</a> detection.</span></p>
 </div>
 </blockquote>
 </body>

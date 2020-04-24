@@ -118,6 +118,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <h2 id="overload-resolution">Overload resolution</h2>
 <h3 id="glossary-4">Glossary</h3>
 <dl>
@@ -373,7 +374,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">There is a important special case here, however, as a callable may be a [property-like callable with an operator function <a href="overload-resolution.html#callables-and-invoke-convention"><code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
+<p><span class="sentence">There is a important special case here, however, as a callable may be a <a href="overload-resolution.html#callables-and-invoke-convention">property-like callable with an operator function <code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -546,9 +547,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">For every non-lambda argument inferred to have type <span class="math inline">\(T_i\)</span>, corresponding to the function parameter of type <span class="math inline">\(U_j\)</span>, a constraint <span class="math inline">\(T_i &lt;: U_j\)</span> is constructed;</span></li>
 <li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
-<li><span class="sentence">For every lambda argument with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function parameter of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <a href="type-system.html#function-types"><span class="math inline">\(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R &lt;: U_m\)</span></a> is added to the constraint system, where <span class="math inline">\(R, L_1, \ldots, L_K\)</span> are fresh type variables;</span></li>
-<li><span class="sentence">For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type <span class="math inline">\(U_n\)</span>, a special constraint of the form <span class="math inline">\(U_n &lt;: \operatorname{\texttt{kotlin.Function}}(R)\)</span> is added to the constraint system, where <a href="built-in-types-and-their-semantics.html#kotlin.function-1"><span class="math inline">\(\operatorname{\texttt{kotlin.Function}}(R)\)</span></a> is the common supertype of all <a href="type-system.html#function-types">function types</a> and <span class="math inline">\(R\)</span> is a fresh type variable.</span></li>
+<li><span class="sentence">For every lambda argument with the number of lambda arguments known to be <span class="math inline">\(K\)</span>, corresponding to the function parameter of type <span class="math inline">\(U_m\)</span>, a special constraint of the form <a href="type-system.html#function-types"><span class="math inline">\(\left(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}, L_1, \ldots, L_n) \rightarrow R\right) &lt;: U_m\)</span></a> is added to the constraint system, where <span class="math inline">\(R, \operatorname{\text{RT}}, L_1, \ldots, L_K\)</span> are fresh type variables;</span></li>
+<li><span class="sentence">For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type <span class="math inline">\(U_n\)</span>, a special constraint of the form <a href="type-system.html#function-types"><span class="math inline">\(\left(\operatorname{\text{FT}}() \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FT}}(L) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}, L) \rightarrow R\right) &lt;: U_m\)</span></a> is added to the constraint system, where <span class="math inline">\(R, \operatorname{\text{RT}}, L\)</span> are fresh type variables;</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: taking into account the fact that <span class="math inline">\(\operatorname{\text{FT}}(L) -&gt; R &lt;: \operatorname{\text{FTR}}(L) -&gt; R &lt;: \operatorname{\text{FT}}(L) -&gt; R\)</span>, this is not entirely correct. </span><span class="sentence">It’s not that important for applicability though.</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
@@ -592,7 +598,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
-<h4 id="description-1">Description</h4>
+<h4 id="algorithm-of-msc-selection">Algorithm of MSC selection</h4>
 <div class="paragraph">
 <p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, we need to choose the most specific candidate from these callables. </span><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> facilities of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>.</span></p>
 </div>
@@ -601,6 +607,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">If <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. </span><span class="sentence">For non-extension callables, only declaration-site parameters are considered;</span></li>
 <li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
 </ul>
 <blockquote>
@@ -631,14 +638,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an <a href="type-system.html#integer-literal-types">integer literal type</a>. </span><span class="sentence">In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the <code>kotlin.Int</code> overload is selected to be the most specific.</span></p>
 </div>
 </blockquote>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compiler error.</span></p>
+<p><span class="sentence">Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so. </span><span class="sentence">For example, one may select additional specificity rules between different built-in integer types for integer literal types, e.g., prefer <code>kotlin.Short</code> to <code>kotlin.Byte</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: unlike the applicability test, the candidate comparison constraint system is <strong>not</strong> based on the actual call, meaning that, when comparing two candidates, only constraints visible at <em>declaration site</em> apply.</span></p>
 </div>
 </blockquote>
+<div class="paragraph">
+<p><span class="sentence">If the callables in check are properties with available <code>invoke</code>, the same process is applied in two steps:</span></p>
+</div>
+<ul>
+<li><span class="sentence">First, the properties are compared for applicability and the most applicable property is chosen as described above. </span><span class="sentence">If several properties are equally applicable, this is an overload ambiguity as usual;</span></li>
+<li><span class="sentence">Second, for the property selected at first step, the most applicable operator <code>invoke</code> overload is chosen.</span></li>
+</ul>
 <h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
@@ -717,5 +736,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.</span></p>
 </div>
 </blockquote>
+<h3 id="conflicting-overloads">Conflicting overloads</h3>
+<div class="paragraph">
+<p><span class="sentence">In cases when it is known two callables are definitely interlinked in overload resolution (e.g., two member function-like callables declared in the same classifier), meaning they will always be considered together for overload resolution, Kotlin compiler performs <em>conflicting overload</em> detection for such callables.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two callables <code>f</code> and <code>g</code> are <em>definitely interlinked</em> in overload resolution, if the following are true.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>f</code> is not <a href="inheritance.html#overriding">overriding</a> <code>g</code> (and vice versa);</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> belong to the same level of <a href="overload-resolution.html#c-level-partition">c-level partition</a>;</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> are declared in the same <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as definitely interlinked.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two definitely interlinked callables <code>f</code> and <code>g</code> may create a <em>overload conflict</em>, if they could result in an overload ambiguity on most regular call sites.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Add justification for what is “most” and what is “regular”)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To check whether such situation is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="overload-resolution.html#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="overload-resolution.html#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as conflicting overloads.</span></p>
+</div>
 </body>
 </html>
