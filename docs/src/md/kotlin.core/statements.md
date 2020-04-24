@@ -193,19 +193,15 @@ Evaluating a code block means evaluating all its statements in the order they ap
 > Note: Kotlin does **not** support code blocks as statements; a curly-braces code block in a statement position is a [lambda literal][Lambda literals].
 
 A *last expression* of a code block is the last statement in it (if any) if and only if this statement is also an expression.
-The last expressions are important when defining functions and control structure expressions.
-
 A code block is said to contain no last expression if it does not contain any statements or its last statement is not an expression (e.g., it is an assignment, a loop or a declaration).
 
-> Note: you may consider the case of a missing last expression as if a synthetic last expression with no runtime semantics and type `kotlin.Unit` is introduced in its place.
-
-TODO(COERSION_TO_UNIT?)
+> Informally: you may consider the case of a missing last expression as if a synthetic last expression with no runtime semantics and type `kotlin.Unit` is introduced in its place.
 
 A *control structure body* is either a single statement or a code block.
-A *last expression* of a control structure body $\operatorname{CSB}$ is either the last expression of a code block (if  $\operatorname{CSB}$ is a code block) or the single statement itself (if $\operatorname{CSB}$ is an expression).
+A *last expression* of a control structure body $\CSB$ is either the last expression of a code block (if  $\CSB$ is a code block) or the single expression itself (if $\CSB$ is an expression).
 If a control structure body is not a code block or an expression, it has no last expression.
 
-> Note: this is equivalent to wrapping the single statement in a new synthetic code block.
+> Note: this is equivalent to wrapping the single expression in a new synthetic code block.
 
 In some contexts, a control structure body is expected to have a value and/or a type.
 The value of a control structure body is:
@@ -215,3 +211,26 @@ The value of a control structure body is:
 
 The type of a control structure body is the type of its value.
 
+#### Coercion to `kotlin.Unit`
+
+When we expect the type of a control structure body to be `kotlin.Unit`, we relax the type checking requirements for its type by *coercing* it to `kotlin.Unit`.
+Specifically, we *ignore* the type mismatch between `kotlin.Unit` and the control structure body type.
+
+> Examples:
+> 
+> ```kotlin
+> fun foo() {
+>     val a /* : () -> Unit */ = {
+>         if (true) 42
+>         // CSB with no last expression
+>         // Type is defined to be `kotlin.Unit`
+>     }
+> 
+>     val b: () -> Unit = {
+>         if (true) 42 else -42
+>         // CSB with last expression of type `kotlin.Int`
+>         // Type is expected to be `kotlin.Unit`
+>         // Coercion to kotlin.Unit applied
+>     }
+> }
+> ```
