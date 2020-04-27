@@ -430,7 +430,6 @@ In case 1 several additional steps are performed in order.
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so.
-> For example, one may select additional specificity rules between different built-in integer types for integer literal types, e.g., prefer `kotlin.Short` to `kotlin.Byte`.
 
 If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
 
