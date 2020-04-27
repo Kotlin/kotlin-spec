@@ -170,7 +170,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#kotlin.nothing-1"><code>kotlin.Nothing</code></a></li>
 <li><a href="#kotlin.unit"><code>kotlin.Unit</code></a></li>
 <li><a href="#kotlin.boolean"><code>kotlin.Boolean</code></a></li>
-<li><a href="#built-in-integer-types-1">Built-in integer types</a></li>
+<li><a href="#built-in-integer-types-1">Built-in integer types</a><ul>
+<li><a href="#integer-type-widening">Integer type widening</a></li>
+</ul></li>
 <li><a href="#built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</a></li>
 <li><a href="#kotlin.char"><code>kotlin.Char</code></a></li>
 <li><a href="#kotlin.string"><code>kotlin.String</code></a></li>
@@ -5123,6 +5125,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
+</div>
+</blockquote>
+<h4 id="integer-type-widening">Integer type widening</h4>
+<div class="paragraph">
+<p><span class="sentence">In some contexts (namely, in the <a href="#overload-resolution">overload resolution</a> context), there is a priority between built-in integer types which is very much alike, but different from, subtyping. </span><span class="sentence">In order to introduce this priority we describe the type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="math inline">\(Widen(T)\)</span> for a built-in type <span class="math inline">\(T\)</span> is defined as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(Widen(T) = T\)</span> for any other <span class="math inline">\(T\)</span></span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: use better notation</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: putting it simple, in some situations <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using the transformation above, we can express such situations as subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(Widen(T) &lt;: Widen(U)\)</span>.</span></p>
 </div>
 </blockquote>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
@@ -10122,7 +10143,7 @@ doIt(l)</code></pre>
 <p><span class="sentence">For every two distinct members of the candidate set <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>, the following constraint system is constructed and solved:</span></p>
 </div>
 <ul>
-<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="#built-in-integer-types-1">built-in integer types</a>.</strong> If both <span class="math inline">\(X_K\)</span> are built-in integer types, a type constraint <span class="math inline">\(Widen(X_K) &lt;: Widen(Y_K)\)</span> is built instead, where <span class="math inline">\(Widen\)</span> is the widening transformation <a href="#integer-type-widening">decribed here</a>. </span><span class="sentence">During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
 <li><span class="sentence">If <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. </span><span class="sentence">For non-extension callables, only declaration-site parameters are considered;</span></li>
 <li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
 </ul>
@@ -10132,20 +10153,27 @@ doIt(l)</code></pre>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria).</span></p>
+<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria). </span><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped.</span></p>
+<p><span class="sentence">This check may result in one of the following outcomes:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Both <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are more applicable than their respective opponent;</span></li>
+<li><span class="sentence">Only one of the two candidates is more applicable than the other;</span></li>
+<li><span class="sentence">Neither of the two candidates is more applicable than the other.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">In case 2 the more applicable candidate of the two is found and no additional steps are needed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> and <span class="math inline">\(F_2\)</span> is equally or more applicable than <span class="math inline">\(F_1\)</span>, this means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed to choose the most specific overload candidate. </span><span class="sentence">If neither <span class="math inline">\(F_1\)</span> nor <span class="math inline">\(F_2\)</span> is equally or more applicable than its counterpart, this also means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed.</span></p>
+<p><span class="sentence">In case 3 an additional step is taken: a non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable. </span><span class="sentence">If this step does not allow for deciding the more specific candidate of any pair in the set, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">All members of the overload candidate set are pairwise-ranked according to the applicability criteria. </span><span class="sentence">If there are several callables which are more applicable than all other candidates and equally applicable to each other, the following additional steps are performed in order.</span></p>
+<p><span class="sentence">In case 1 several additional steps are performed in order.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Any non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
-<li><span class="sentence">For every non-default argument of the call, consider the corresponding parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>. </span><span class="sentence">If, for any <span class="math inline">\(K\)</span>, both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are different <a href="#built-in-integer-types-1">built-in integer types</a> and one of them is <code>kotlin.Int</code>, this parameter is preferred over the other parameter of the call. </span><span class="sentence">If all such parameters of <span class="math inline">\(F_1\)</span> are preferred based on this criteria over the parameters of <span class="math inline">\(F_2\)</span>, <span class="math inline">\(F_1\)</span> is a more specific candidate than <span class="math inline">\(F_2\)</span>, and vice versa;</span></li>
+<li><span class="sentence">Any non-parameterized callable (same as with the case 3) is a more specific candidate than any parameterized callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
 <li><span class="sentence">For each candidate we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value). </span><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
 <li><span class="sentence">For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
 </ul>

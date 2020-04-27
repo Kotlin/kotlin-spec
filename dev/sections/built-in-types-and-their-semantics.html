@@ -227,6 +227,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
 </div>
 </blockquote>
+<h4 id="integer-type-widening">Integer type widening</h4>
+<div class="paragraph">
+<p><span class="sentence">In some contexts (namely, in the <a href="overload-resolution.html#overload-resolution">overload resolution</a> context), there is a priority between built-in integer types which is very much alike, but different from, subtyping. </span><span class="sentence">In order to introduce this priority we describe the type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="math inline">\(Widen(T)\)</span> for a built-in type <span class="math inline">\(T\)</span> is defined as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(Widen(T) = T\)</span> for any other <span class="math inline">\(T\)</span></span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: use better notation</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: putting it simple, in some situations <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using the transformation above, we can express such situations as subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(Widen(T) &lt;: Widen(U)\)</span>.</span></p>
+</div>
+</blockquote>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
 <div class="paragraph">
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
