@@ -396,27 +396,32 @@ The selection process uses the [type constraint][Kotlin type constraints] facili
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
+  If both $X_K$ are built-in integer types, a type constraint $Widen(X_K) <: Widen(Y_K)$ is built instead, where $Widen$ is the widening transformation [decribed here][Integer type widening].
   During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
-- If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. For non-extension callables, only declaration-site parameters are considered;
+- If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. 
+  For non-extension callables, only declaration-site parameters are considered;
 - All declaration-site type constraints of $X_1, \ldots, X_N$ and $Y_1, \ldots, Y_N$ are also added to the constraint system.
 
 > Note: this constraint system checks whether $F_1$ can forward itself to $F_2$.
 
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
-
 The check is then repeated with $F_1$ and $F_2$ swapped.
 
-If $F_1$ is equally or more applicable than $F_2$ and $F_2$ is equally or more applicable than $F_1$, this means $F_1$ and $F_2$ are equally applicable, and additional decision steps are needed to choose the most specific overload candidate.
-If neither $F_1$ nor $F_2$ is equally or more applicable than its counterpart, this also means $F_1$ and $F_2$ are equally applicable, and additional decision steps are needed.
+This check may result in one of the following outcomes:
 
-All members of the overload candidate set are pairwise-ranked according to the applicability criteria.
-If there are several callables which are more applicable than all other candidates and equally applicable to each other, the following additional steps are performed in order.
+1. Both $F_1$ and $F_2$ are more applicable than their respective opponent;
+2. Only one of the two candidates is more applicable than the other;
+3. Neither of the two candidates is more applicable than the other.
 
-- Any non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable.
+In case 2 the more applicable candidate of the two is found and no additional steps are needed.
+
+In case 3 an additional step is taken: a non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable.
+If this step does not allow for deciding the more specific candidate of any pair in the set, this is an **overload ambiguity** which must be reported as a compile-time error.
+
+In case 1 several additional steps are performed in order.
+
+- Any non-parameterized callable (same as with the case 3) is a more specific candidate than any parameterized callable.
   If there are several non-generic candidates, further steps are limited to those candidates;
-- For every non-default argument of the call, consider the corresponding parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$.
-  If, for any $K$, both $X_K$ and $Y_K$ are different [built-in integer types][Built-in integer types] and one of them is `kotlin.Int`, this parameter is preferred over the other parameter of the call.
-  If all such parameters of $F_1$ are preferred based on this criteria over the parameters of $F_2$, $F_1$ is a more specific candidate than $F_2$, and vice versa;
 - For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
   The candidate with the least number of non-specified default parameters is a more specific candidate;
 - For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.

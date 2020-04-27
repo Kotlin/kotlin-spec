@@ -99,6 +99,21 @@ If an arithmetic operation on `kotlin.Long` results in arithmetic overflow, the 
 
 [Built-in integer types-ts]: #built-in-integer-types
 
+#### Integer type widening
+
+In some contexts (namely, in the [overload resolution][Overload resolution] context), there is a priority between built-in integer types which is very much alike, but different from, subtyping.
+In order to introduce this priority we describe the type transformation called *widening* of integer types.
+$Widen(T)$ for a built-in type $T$ is defined as follows:
+
+- $Widen(\Int) = \Int \amp \Short \amp \Byte \amp \Long$
+- $Widen(\Short) = \Short \amp \Byte$
+- $Widen(T) = T$ for any other $T$
+
+TODO: use better notation
+
+> Note: putting it simple, in some situations $\Int$ is preferred over any other built-in integer type and $\Short$ is preferred to $\Byte$.
+> Using the transformation above, we can express such situations as subtyping: $T$ is more preferred than $U$ if $Widen(T) <: Widen(U)$.
+
 ### Built-in floating point arithmetic types
 
 There are two built-in classifier types which represent floating-point numbers: `kotlin.Float` and `kotlin.Double`.
