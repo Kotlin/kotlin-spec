@@ -101,18 +101,17 @@ If an arithmetic operation on `kotlin.Long` results in arithmetic overflow, the 
 
 #### Integer type widening
 
-In some contexts (namely, in the [overload resolution][Overload resolution] context), there is a priority between built-in integer types which is very much alike, but different from, subtyping.
-In order to introduce this priority we describe the type transformation called *widening* of integer types.
-$Widen(T)$ for a built-in type $T$ is defined as follows:
+In [overload resolution][Overload resolution], we actually have a priority between built-in integer types which is very similar to a [subtyping] relation between these types; however, this priority is important only w.r.t. overload resolution and does not entail any actual subtyping between built-in integer types.
 
-- $Widen(\Int) = \Int \amp \Short \amp \Byte \amp \Long$
-- $Widen(\Short) = \Short \amp \Byte$
-- $Widen(T) = T$ for any other $T$
+In order to introduce this priority we describe a type transformation called *widening* of integer types.
+$\Widen(T)$ for a built-in integer type $T$ is defined as follows:
 
-TODO: use better notation
+- $\Widen(\Int) = \Int \amp \Short \amp \Byte \amp \Long$
+- $\Widen(\Short) = \Short \amp \Byte$
+- $\Widen(T) = T$ for any other $T$
 
-> Note: putting it simple, in some situations $\Int$ is preferred over any other built-in integer type and $\Short$ is preferred to $\Byte$.
-> Using the transformation above, we can express such situations as subtyping: $T$ is more preferred than $U$ if $Widen(T) <: Widen(U)$.
+> Informally: $\Widen$ means, for the purposes of overload resolution, $\Int$ is preferred over any other built-in integer type and $\Short$ is preferred to $\Byte$.
+> Using $\Widen$, we can reduce this priority to subtyping: $T$ is more preferred than $U$ if $\Widen(T) <: \Widen(U)$; this scheme allows to handle built-in integer types transparently when selecting the [most specific overload candidate][Algorithm of MSC selection].
 
 ### Built-in floating point arithmetic types
 

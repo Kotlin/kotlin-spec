@@ -64,6 +64,7 @@
 
 \opMathTEXT{\ATS}{ATS}
 \opMathTEXT{\LTS}{LTS}
+\opMathTEXT{\Widen}{Widen}
 
 \opMathTEXT{\PD}{PD}
 \opMathTEXT{\ND}{ND}
