@@ -229,21 +229,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="integer-type-widening">Integer type widening</h4>
 <div class="paragraph">
-<p><span class="sentence">In some contexts (namely, in the <a href="overload-resolution.html#overload-resolution">overload resolution</a> context), there is a priority between built-in integer types which is very much alike, but different from, subtyping. </span><span class="sentence">In order to introduce this priority we describe the type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="math inline">\(Widen(T)\)</span> for a built-in type <span class="math inline">\(T\)</span> is defined as follows:</span></p>
+<p><span class="sentence">In <a href="overload-resolution.html#overload-resolution">overload resolution</a>, we actually have a priority between built-in integer types which is very similar to a <a href="type-system.html#subtyping">subtyping</a> relation between these types; however, this priority is important only w.r.t. overload resolution and does not entail any actual subtyping between built-in integer types.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In order to introduce this priority we describe a type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(T)\)</span> for a built-in integer type <span class="math inline">\(T\)</span> is defined as follows:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(Widen(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\)</span></span></li>
-<li><span class="sentence"><span class="math inline">\(Widen(T) = T\)</span> for any other <span class="math inline">\(T\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(T) = T\)</span> for any other <span class="math inline">\(T\)</span></span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: use better notation</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: putting it simple, in some situations <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using the transformation above, we can express such situations as subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(Widen(T) &lt;: Widen(U)\)</span>.</span></p>
+<p><span class="sentence">Informally: <span class="math inline">\(\operatorname{\text{Widen}}\)</span> means, for the purposes of overload resolution, <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using <span class="math inline">\(\operatorname{\text{Widen}}\)</span>, we can reduce this priority to subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(\operatorname{\text{Widen}}(T) &lt;: \operatorname{\text{Widen}}(U)\)</span>; this scheme allows to handle built-in integer types transparently when selecting the <a href="overload-resolution.html#algorithm-of-msc-selection">most specific overload candidate</a>.</span></p>
 </div>
 </blockquote>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
