@@ -396,7 +396,7 @@ The selection process uses the [type constraint][Kotlin type constraints] facili
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
-  If both $X_K$ are built-in integer types, a type constraint $Widen(X_K) <: Widen(Y_K)$ is built instead, where $Widen$ is the widening transformation [decribed here][Integer type widening].
+  If both $X_K$ and $Y_K$ are built-in integer types, a type constraint $\Widen(X_K) <: \Widen(Y_K)$ is built instead, where $\Widen$ is the [integer type widening] operator.
   During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
 - If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. 
   For non-extension callables, only declaration-site parameters are considered;
@@ -409,19 +409,19 @@ The check is then repeated with $F_1$ and $F_2$ swapped.
 
 This check may result in one of the following outcomes:
 
-1. Both $F_1$ and $F_2$ are more applicable than their respective opponent;
-2. Only one of the two candidates is more applicable than the other;
-3. Neither of the two candidates is more applicable than the other.
+1. Only one of the two candidates is more applicable than the other;
+2. Neither of the two candidates is more applicable than the other;
+3. Both $F_1$ and $F_2$ are more applicable than the other.
 
-In case 2 the more applicable candidate of the two is found and no additional steps are needed.
+In case 1, the more applicable candidate of the two is found and no additional steps are needed.
 
-In case 3 an additional step is taken: a non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable.
-If this step does not allow for deciding the more specific candidate of any pair in the set, this is an **overload ambiguity** which must be reported as a compile-time error.
+In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable.
+If this step does not allow for deciding the more specific candidate, this is an **overload ambiguity** which must be reported as a compile-time error.
 
-In case 1 several additional steps are performed in order.
+In case 3, several additional steps are performed in order.
 
-- Any non-parameterized callable (same as with the case 3) is a more specific candidate than any parameterized callable.
-  If there are several non-generic candidates, further steps are limited to those candidates;
+- Any non-parameterized callable is a more specific candidate than any parameterized callable (same as case 2).
+  If there are several non-parameterized candidates, further steps are limited to those candidates;
 - For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
   The candidate with the least number of non-specified default parameters is a more specific candidate;
 - For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
