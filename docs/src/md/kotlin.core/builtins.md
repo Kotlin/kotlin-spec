@@ -7,7 +7,7 @@ Some information about these types is given in the [type system section][Built-i
 
 In this section we describe these types and their semantics.
 
-> Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation (TODO: link).
+> Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation.
 
 ### `kotlin.Any`
 
