@@ -990,7 +990,5 @@ The grammar below replaces some lexical grammar rules with explicit literals (wh
 #### Documentation comments
 
 Kotlin supports special comment syntax for code documentation purposes, called KDoc.
-The syntax is based on [Markdown](TODO: link) and [Javadoc](TODO: link).
+The syntax is based on [Markdown](https://tools.ietf.org/html/rfc7763) and [Javadoc](https://www.oracle.com/java/technologies/javase/javadoc-tool.html).
 Documentation comments start with `/**` and end with `*/` and allows external tools to generate documentation based on the comment contents.
-
-TODO: do we want to put anything more here?
