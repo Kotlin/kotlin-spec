@@ -1317,6 +1317,7 @@ Any use of super-form expression in any other context is a compile-time error.
 
 Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.
 If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
+If there are several candidates available for the immediate supertype and [overload resolution] is performed, abstract declarations are not considered valid candidates for this process.
 
 The basic form of this expression, denoted by `super` keyword, is used to access the **single** immediate supertype of the currently declared classifier.
 In order to access other supertype implementations, extended `super` expressions are used.
