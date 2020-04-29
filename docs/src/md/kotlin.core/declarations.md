@@ -38,10 +38,10 @@ There are three kinds of classifier declarations:
 A simple class declaration consists of the following parts.
 
 * Name $c$;
-* Optional primary constructor declaration $\ptor$;
+* Optional primary [constructor declaration] $\ptor$;
 * Optional supertype specifiers $S_1, \ldots, S_s$;
 * Optional body $b$, which may include the following:
-  - secondary constructor declarations $\stor_1, \ldots, \stor_c$;
+  - secondary [constructor declarations][Constructor declaration] $\stor_1, \ldots, \stor_c$;
   - instance initialization blocks $\init_1, \ldots, \init_i$;
   - property declarations $\prop_1, \ldots, \prop_p$;
   - function declarations $\md_1, \ldots, \md_m$;
@@ -70,7 +70,73 @@ Further details are available [here][Nested and inner classifiers].
 A parameterized class declaration, in addition to what constitutes a simple class declaration, also has a type parameter list $T_1, \ldots, T_m$ and extends the rules for a simple class declaration w.r.t. this type parameter list. 
 Further details are described [here][Declarations with type parameters].
 
-TODO(Examples)
+> Examples:
+> 
+> ```kotlin
+> // An open class with no supertypes
+> //
+> open class Base
+> 
+> // A class inherited from `Base`
+> //
+> // Has a single read-only property `i`
+> //   declared in its primary constructor
+> //
+> class B(val i: Int) : Base()
+> 
+> // An open class with no superclasses
+> //
+> // Has a single read-only property `i`
+> //   declared in its body
+> //
+> // Initial value for the property is calculated
+> //   in the init block
+> //
+> open class C(arg: Int) {
+>     val i: Int
+>     
+>     init {
+>         i = arg * arg
+>     }
+> }
+> 
+> // A class inherited from `C`
+> //   Does not have a primary constructor,
+> //   thus does not need to invoke the supertype constructor
+> //
+> // The secondary constructor delegates to the supertype constructor
+> class D : C {
+>     constructor(s: String) : super(s.toInt())
+> }
+> 
+> // An open class inherited from `Base`
+> //
+> // Has a companion object with a mutable property `name`
+> class E : Base() {
+>     companion object /* Companion */ {
+>         var name = "I am a companion object of E!"
+>     }
+> }
+> ```
+
+> Example:
+> 
+> ```kotlin
+> class Pair(val a: Int, val b: Int) : Comparable<Pair> {
+> 
+>     fun swap(): Pair = Pair(b, a)
+> 
+>     override fun compareTo(other: Pair): Int {
+>         val f = a.compareTo(other.a)
+>         if (f != 0) return f
+>         return b.compareTo(other.b)
+>     }
+> 
+>     companion object {
+>         fun duplet(a: Int) = Pair(a, a)
+>     }
+> }
+> ```
 
 ##### Constructor declaration
 
@@ -118,6 +184,9 @@ TODO(elaborate this `this(...)` and `super(...)` business)
 
 Class constructors (both primary and secondary) may have variable-argument parameters and default parameter values, just as regular functions.
 Please refer to the [function declaration reference][Function declaration] for details.
+
+If a class does not have neither primary, nor secondary constructors, it is assumed to implicitly have a default parameterless primary constructor.
+This also means that, if a class declaration includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
 
 ##### Nested and inner classifiers
 
