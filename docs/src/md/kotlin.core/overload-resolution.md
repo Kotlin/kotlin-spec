@@ -344,6 +344,8 @@ Second, the following constraint system is built:
 - For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter of type $U_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_n) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
 - For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type $U_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
 
+TODO: in fact, it is an intersection of both non-suspend and suspend variants
+
 TODO: taking into account the fact that $\FT(L) -> R <: \FTR(L) -> R <: \FT(L) -> R$, this is not entirely correct. It's not that important for applicability though.
 
 If this constraint system is sound, the function is applicable for the call.
