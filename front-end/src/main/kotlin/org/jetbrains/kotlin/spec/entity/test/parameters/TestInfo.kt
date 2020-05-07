@@ -9,7 +9,8 @@ private enum class TestElementKey(val value: String) {
     DESCRIPTION("description"),
     PATH("path"),
     UNEXPECTED_BEHAVIOUR("unexpectedBehaviour"),
-    LINK_TYPE("linkType");
+    LINK_TYPE("linkType"),
+    HELPERS("helpers");
 
 }
 
@@ -21,17 +22,17 @@ class TestInfo(jsonSpecTestInfo: JsonObject, val testNumber: Int) {
     var path: String
     val unexpectedBehaviour: Boolean
     val linkType: LinkType
+    val helpers: Set<String>
 
 
     init {
         fun parse(testElementKey: TestElementKey) = jsonSpecTestInfo[testElementKey.value]?.primitive?.content
-                ?: throw IllegalArgumentException("test element key ${testElementKey.value} is not found")
-        specVersion = parse(TestElementKey.SPEC_VERSION)
-        casesNumber = parse(TestElementKey.CASES_NUMBER).toInt()
-        description = parse(TestElementKey.DESCRIPTION)
-        path = parse(TestElementKey.PATH)
-        unexpectedBehaviour = parse(TestElementKey.UNEXPECTED_BEHAVIOUR).toBoolean()
-        linkType = LinkType.valueOf(parse(TestElementKey.LINK_TYPE))
+        specVersion = parse(TestElementKey.SPEC_VERSION) ?: ""
+        casesNumber = parse(TestElementKey.CASES_NUMBER)?.toInt() ?: 1
+        description = parse(TestElementKey.DESCRIPTION) ?: ""
+        path = parse(TestElementKey.PATH) ?: ""
+        unexpectedBehaviour = parse(TestElementKey.UNEXPECTED_BEHAVIOUR)?.toBoolean() ?: false
+        linkType = parse(TestElementKey.LINK_TYPE)?.let { LinkType.valueOf(it) } ?: LinkType.main
+        helpers = parse(TestElementKey.HELPERS)?.split(",")?.map { it -> it.trim() }?.toSet() ?: emptySet()
     }
-
 }
