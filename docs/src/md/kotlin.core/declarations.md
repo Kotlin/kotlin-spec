@@ -417,6 +417,7 @@ However, as functional interface essentially represents a single function, Kotli
 
 > Example:
 > 
+> ```kotlin
 > fun interface FI {
 >     fun bar(s: Int): Int
 > }
@@ -434,6 +435,7 @@ However, as functional interface essentially represents a single function, Kotli
 > 
 >     doIt(l)
 > }
+> ```
 
 > Informally: this feature is known as "Single Abstract Method" (SAM) conversion.
 
