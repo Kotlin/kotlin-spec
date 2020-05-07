@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.spec.entity.test.TestCase
 import org.jetbrains.kotlin.spec.entity.test.parameters.LinkType
 import org.jetbrains.kotlin.spec.entity.test.parameters.TestType
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
+import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.escapeHtml
@@ -65,11 +66,11 @@ class SpecTestsViewer {
     private lateinit var currentSpecSentenceTests: SpecSentence
     private lateinit var testPopup: Popup
 
-    private fun insertCode(testCaseCode: TestCase, helperFilesContent: List<Map<String, Any>>? = null) {
+    private fun insertCode(testCaseCode: TestCase, helperFilesContent: Set<String>? = null) {
         val code = StringBuilder()
 
         helperFilesContent?.forEach { helperFile ->
-            //todo fix code.append("${helperFile[TestAreaEnum.DIAGNOSTICS.content]}\n\n")
+            code.append("${helperFile}\n\n")
         }
 
         code.append(SAMPLE_WRAP_CODE.format(testCaseCode.code))
@@ -83,7 +84,7 @@ class SpecTestsViewer {
         ))
     }
 
-    private fun showTestCaseCode(specTest: SpecTest, helperFilesContent: List<Map<String, Any>>? = null) {
+    private fun showTestCaseCode(specTest: SpecTest, helperFilesContent: Set<String>? = null) {
         `$`(TEST_CASE_INFO_SELECTOR).remove()
         `$`(TESTS_VIEWER_SELECTOR).append(TEST_VIEWER_BODY_TEMPLATE.format(specTest.testInfo.description))
 
@@ -96,11 +97,11 @@ class SpecTestsViewer {
         }
     }
 
-    private fun getHelpers(helperNames: List<String>): Promise<Array<out Map<String, Any>>> {
-        val helperFilesPromises = mutableListOf<Promise<Map<String, Any>>>()
+    private fun getHelpers(helperNames: Set<String>, testArea: TestArea): Promise<Array<out String>> {
+        val helperFilesPromises = mutableListOf<Promise<String>>()
 
         helperNames.forEach { helperName ->
-            //todo fix  helperFilesPromises.add(SpecTestsLoader.loadHelperFile(helperName))
+            helperFilesPromises.add(SpecTestsLoader.loadHelperFile(helperName, testArea))
         }
 
         return Promise.all(helperFilesPromises.toTypedArray())
@@ -197,10 +198,15 @@ class SpecTestsViewer {
         val testArea = TestArea.getByShortName(`$`(TEST_AREA_SELECTOR).`val`().toString())
         val testType = TestType.getByShortName(`$`(TEST_TYPE_SELECTOR).`val`().toString())
 
-        val test = currentSpecSentenceTests.getTest(testArea, testType, testPriority, testNumber) ?: return
-        //todo add helpers
+        val specTest = currentSpecSentenceTests.getTest(testArea, testType, testPriority, testNumber) ?: return
 
-        showTestCaseCode(test)
+        if (specTest.testInfo.helpers.isNotEmpty()) {
+            getHelpers(specTest.testInfo.helpers, testArea).then {
+                showTestCaseCode(specTest, it.toSet())
+            }
+        } else {
+            showTestCaseCode(specTest)
+        }
     }
 
     fun navigateTestCase(navigationLink: JQuery, navigationType: NavigationType) {
@@ -211,27 +217,31 @@ class SpecTestsViewer {
         val testNumber = `$`(TEST_NUMBER_SELECTOR).`val`().toString().toInt()
         val testPriority = LinkType.valueOf(`$`(TEST_PRIORITY_SELECTOR).`val`().toString())
 
-        val tests = currentSpecSentenceTests.getTest(testArea, testType, testPriority, testNumber) ?: return
+        val specTest = currentSpecSentenceTests.getTest(testArea, testType, testPriority, testNumber) ?: return
 
         val currentNumber = `$`(TESTCASE_NUMBER_SELECTOR).text().toInt()
 
-        val targetTestCase = if (navigationType == NavigationType.PREV) currentNumber - 2 else currentNumber
-        val testCases = tests.testCases
+        val caseNumber = if (navigationType == NavigationType.PREV) currentNumber - 2 else currentNumber
+        val testCases = specTest.testCases
 
-        `$`(TESTCASE_NUMBER_SELECTOR).html((targetTestCase + 1).toString())
+        `$`(TESTCASE_NUMBER_SELECTOR).html((caseNumber + 1).toString())
 
-        //todo add helpers
 
-        insertCode(testCases[targetTestCase])
-
-        if (targetTestCase + 1 >= testCases.size) {
+        if (specTest.testInfo.helpers.isNotEmpty()) {
+            getHelpers(specTest.testInfo.helpers, testArea).then {
+                insertCode(testCases[caseNumber], it.toSet())
+            }
+        } else {
+            insertCode(testCases[caseNumber])
+        }
+        if (caseNumber + 1 >= testCases.size) {
             `$`(NEXT_TESTCASE_SELECTOR).addClass("disabled")
         } else if (navigationType == NavigationType.PREV && `$`(NEXT_TESTCASE_SELECTOR).hasClass("disabled")) {
             `$`(NEXT_TESTCASE_SELECTOR).removeClass("disabled")
         }
         if (navigationType == NavigationType.NEXT && `$`(PREV_TESTCASE_SELECTOR).hasClass("disabled")) {
             `$`(PREV_TESTCASE_SELECTOR).removeClass("disabled")
-        } else if (targetTestCase + 1 == 1) {
+        } else if (caseNumber + 1 == 1) {
             `$`(PREV_TESTCASE_SELECTOR).addClass("disabled")
         }
     }

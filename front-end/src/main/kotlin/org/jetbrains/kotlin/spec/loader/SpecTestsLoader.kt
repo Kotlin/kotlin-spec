@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
 import kotlin.browser.window
+import kotlin.js.Promise
 
 class SpecTestsLoader {
     private val loader = LoaderByTestsMapFile()
@@ -133,6 +134,13 @@ class SpecTestsLoader {
             if (newBranch != null && newBranch != currentBranch) {
                 window.localStorage.setItem("spec-tests-branch", newBranch)
             }
+        }
+
+        fun loadHelperFile(helperName: String, testArea: TestArea): Promise<String> {
+            return GithubTestsLoader.loadHelperFromRawGithub(
+                    "$helperName.kt",
+                    testArea = testArea
+            )
         }
     }
 

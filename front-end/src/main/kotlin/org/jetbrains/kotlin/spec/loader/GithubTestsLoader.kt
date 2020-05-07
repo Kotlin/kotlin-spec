@@ -23,10 +23,21 @@ interface GithubTestsLoader {
 
         private const val SPEC_TEST_DATA_PATH = "compiler/tests-spec/testData"
         private const val LINKED_SPEC_TESTS_FOLDER = "linked"
+        private const val HELPERS_FOLDER = "helpers"
 
         const val DEFAULT_BRANCH = "spec-tests"
 
         fun getBranch() = window.localStorage.getItem("spec-tests-branch") ?: DEFAULT_BRANCH
+
+        fun loadHelperFromRawGithub(fileName: String, testArea: TestArea): Promise<String> {
+            return Promise { requestResolve, requestReject ->
+                `$`.ajax(getFullHelperPath(testArea, fileName),
+                        jQueryAjaxSettings { requestReject(Exception()) }
+                ).then({ response: Any?, _: Any ->
+                    requestResolve(response.toString())
+                })
+            }
+        }
 
         fun loadTestFileFromRawGithub(
                 path: String,
@@ -34,13 +45,11 @@ interface GithubTestsLoader {
                 testPlace: TestPlace,
                 testArea: TestArea
         ): Promise<SpecTest> = Promise { requestResolve, requestReject ->
-            var test = ""
-            `$`.`when`(
-                    `$`.ajax(
-                            getFullPathForTest(path),
-                            jQueryAjaxSettings { requestReject(Exception()) })
-                            .then({ response: Any?, _: Any -> test = response.toString() }, { }))
-                    .then({ _: Any?, _: Any -> requestResolve(SpecTest(testInfo, testPlace, test, testArea)) })
+            `$`.ajax(getFullTestPath(path),
+                    jQueryAjaxSettings { requestReject(Exception()) }
+            ).then({ response: Any?, _: Any ->
+                requestResolve(SpecTest(testInfo, testPlace, response.toString(), testArea))
+            })
         }
 
 
@@ -52,22 +61,26 @@ interface GithubTestsLoader {
             val resultMap = mutableMapOf<TestArea, SectionTestMap>()
             `$`.`when`(
                     *(testAreasToLoad.associateWith {
-                        `$`.ajax(getFullPathForTestMap(testType, it, path), jQueryAjaxSettings { })
+                        `$`.ajax(getFullTestMapPath(testType, it, path), jQueryAjaxSettings { })
                                 .then({ response: Any?, _: Any ->
                                     resultMap[it] = SectionTestMap(parseJsonText(response.toString()))
                                 })
-                    }.values.toTypedArray()))
-                    .then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
+                    }.values.toTypedArray())
+            ).then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
         }
 
-        private fun getFullPathForTestMap(testOrigin: TestOrigin, testArea: TestArea, path: String) =
+        private fun getFullTestMapPath(testOrigin: TestOrigin, testArea: TestArea, path: String) =
                 when (testOrigin) {
                     TestOrigin.SPEC_TEST -> "{1}/{2}/{3}/{4}/{5}/{6}"
                             .format(RAW_GITHUB_URL, getBranch(), SPEC_TEST_DATA_PATH, testArea.path, LINKED_SPEC_TESTS_FOLDER, path)
                     TestOrigin.IMPLEMENTATION_TEST -> "{1}/{2}/{3}".format(RAW_GITHUB_URL, getBranch(), path)
                 }
 
-        private fun getFullPathForTest(path: String) = "{1}/{2}/{3}".format(RAW_GITHUB_URL, getBranch(), path)
+        private fun getFullHelperPath(testArea: TestArea, helperFile: String) =
+                "{1}/{2}/{3}/{4}/{5}/{6}"
+                        .format(RAW_GITHUB_URL, getBranch(), SPEC_TEST_DATA_PATH, testArea.path, HELPERS_FOLDER, helperFile)
+
+        private fun getFullTestPath(path: String) = "{1}/{2}/{3}".format(RAW_GITHUB_URL, getBranch(), path)
 
         private fun parseJsonText(text: String) = Json(JsonConfiguration.Stable).parseJson(text)
 
