@@ -234,7 +234,7 @@ To represent a well-formed simple classifier type, $T : S_1, \ldots, S_m$ should
 
 * $T$ is a valid type name
 * $\forall i \in [1,m]: S_i$ must be concrete, [non-nullable][Nullable types], well-formed type
-* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T : S_1, \ldots, S_m) = \{S_1, \ldots, S_m\} \cup \Ss(S_1) \cup \ldots \cup \Ss(S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized claSsifier types] with different type arguments.
+* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T : S_1, \ldots, S_m) = \{S_1, \ldots, S_m\} \cup \Ss(S_1) \cup \ldots \cup \Ss(S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized classifier types] with different type arguments.
 
 > Example:
 > 
