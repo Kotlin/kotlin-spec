@@ -23,6 +23,7 @@
             <item>final</item>
             <item>abstract</item>
             <item>sealed</item>
+            <item>const</item>
 
             <item>get</item>
             <item>set</item>
@@ -99,6 +100,7 @@
         </list>
 
         <contexts>
+
             <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
                 <RegExpr attribute="Keyword" context="Imports" String="\b(package|import)\b"/>
                 <RegExpr attribute="Keyword" context="FunctionDeclaration" String="\b(fun|get|set)\b"/>
@@ -114,13 +116,12 @@
                 <DetectChar attribute="String" context="String" char="&quot;"/>
                 <DetectChar attribute="Char" context="Char" char="'"/>
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
 
                 <Float attribute="Float" context="Float Suffixes"/>
                 <Int attribute="Decimal" context="Int Suffixes"/>
 
-		  <RegExpr attribute="Keyword" context="#stay" String="\b(this@[_\w][_\w\d]*)\b"/>
+                <RegExpr attribute="Keyword" context="#stay" String="\b(this@[_\w][_\w\d]*)\b"/>
                 <RegExpr attribute="Keyword" context="#stay" String="\b(return@[_\w][_\w\d]*)\b"/>
 
                 <RegExpr attribute="Annotation" context="#stay" String="@[_\w][_\w\d]*"/>
@@ -132,50 +133,71 @@
                 <Detect2Chars attribute="Comment" context="CommentSingleLine" char="#" char1="!" />
             </context>
 
-            <context name="Float Suffixes" attribute="Float" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
+            <context name="Float Suffixes" attribute="Float" lineEndContext="#pop" fallthrough="1" fallthroughContext="#pop">
                 <AnyChar String="fF" attribute="Float" context="#pop"/>
             </context>
 
-            <context name="Int Suffixes" attribute="Decimal" lineEndContext="#pop" fallthrough="true" fallthroughContext="#pop">
-                <StringDetect attribute="Decimal" context="#pop" String="L" insensitive="true"/>
+            <context name="Int Suffixes" attribute="Decimal" lineEndContext="#pop" fallthrough="1" fallthroughContext="#pop">
+                <DetectChar attribute="Decimal" context="#pop" char="L" />
             </context>
 
-            <context attribute="Normal Text" lineEndContext="#pop" name="Imports">
+            <context name="Imports" attribute="Normal Text" lineEndContext="#pop" >
                 <DetectChar attribute="Symbol" context="#pop" char=";" />
-                <StringDetect attribute="Keyword" context="TypeName" String="as" />
+                <StringDetect attribute="Keyword" context="#stay" String="as" />
 
                 <RegExpr attribute="Imports" context="#stay" String="\b[_\w][_\w\d]*(\.[_\w][_\w\d]*)*(\.\*)?"/>
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
-            <context name="VariableDeclaration" lineEndContext="#stay" attribute="Normal Text">
-                <RegExpr attribute="Variable" context="#stay" String="[_\w][_\w\d]*" />
-                <DetectChar attribute="Symbol" context="TypeName" char=":" />
+            <context name="VariableDeclaration" attribute="Normal Text" lineEndContext="#stay" >
+                <DetectChar attribute="Symbol" context="VariableDeclaration" char="(" />
+
+                <RegExpr attribute="Variable" context="#pop!ExpectType" String="[_\w][_\w\d\.]*" />
+
+                <IncludeRules context="FindComments" />
+            </context>
+
+            <context name="ExpectType" attribute="NormalText" lineEndContext="#stay" fallthrough="1" fallthroughContext="#pop!VariableDeclarationPart2">
+                <DetectSpaces />
+                <DetectChar attribute="Symbol" context="TypeName" char=":"  />
                 <DetectChar attribute="Symbol" context="TypeParameters" char="&lt;" />
 
-		  <DetectChar attribute="Symbol" context="#pop" char="=" lookAhead="true" />
-		  <keyword attribute="Keyword" context="#pop" String="keywords" lookAhead="true" />
-
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
-            <context name="TypeDeclaration" lineEndContext="#stay" attribute="Normal Text">
-                <RegExpr attribute="Keyword" context="#pop" String="\b(fun|get|set|var|val|class|object|interface)\b" lookahead="true" />
-                <keyword attribute="Keyword" context="#stay" String="keywords"/>
+            <context name="VariableDeclarationPart2" attribute="TODO" lineEndContext="#stay" fallthrough="1" fallthroughContext="#pop">
+                <DetectSpaces />
 
+                <DetectChar attribute="Symbol" context="#pop" char=";" />
+                <DetectChar attribute="Symbol" context="#pop" char="=" />
+                <DetectChar attribute="Symbol" context="#pop!VariableDeclaration" char="," />
+                <DetectChar attribute="Symbol" context="#pop#pop!ExpectType" char=")" />
+                <StringDetect attribute="Keyword" context="#pop" String="by" />
+
+                <IncludeRules context="FindComments" />
+            </context>
+
+            <context name="TypeDeclaration" lineEndContext="#stay" attribute="Normal Text" fallthrough="true" fallthroughContext="#pop" >
+                <DetectSpaces />
+<!--                <RegExpr attribute="Keyword" context="#pop" String="\b(fun|get|set|var|val|class|object|interface)\b" lookahead="true" />-->
+                <RegExpr attribute="Data Type" context="#pop!TypeDeclarationAfterName" String="[_\w][_\w\d]*" />
+                <IncludeRules context="TypeDeclarationAfterName" />
+            </context>
+
+            <context name="TypeDeclarationAfterName" lineEndContext="#stay" attribute="Normal Text" fallthrough="true" fallthroughContext="#pop" >
+                <DetectSpaces />
                 <DetectChar attribute="Symbol" context="TypeParameters" char="&lt;" />
                 <DetectChar attribute="Symbol" context="Parameters" char="(" />
                 <DetectChar attribute="Symbol" context="SuperTypes" char=":" />
                 <DetectChar attribute="Symbol" context="#pop" char="{" lookAhead="true" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
-            <context name="SuperTypes" lineEndContext="#stay" attribute="Normal Text" fallthrough="true" fallthroughContext="#pop#pop">
+            <context name="SuperTypes" lineEndContext="#stay" attribute="Normal Text" fallthrough="true" fallthroughContext="#pop">
+                <DetectSpaces />
+
                 <keyword attribute="Keyword" context="#pop" String="keywords" lookAhead="true" />
 
                 <DetectChar attribute="Symbol" context="#stay" char="," />
@@ -185,8 +207,7 @@
 
                 <RegExpr attribute="Data Type" context="#stay" String="[_\w][_\w\d]*" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="FunctionDeclaration" lineEndContext="#stay" attribute="Normal Text">
@@ -201,8 +222,7 @@
 
                 <RegExpr attribute="Function" context="#stay" String="[_\w][_\w\d]*" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="TypeParameters" lineEndContext="#stay" attribute="Normal Text">
@@ -216,8 +236,7 @@
 
                 <RegExpr attribute="Data Type" context="#stay" String="[_\w][_\w\d]*[?]*" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="Parameters" lineEndContext="#stay" attribute="Normal Text">
@@ -228,18 +247,17 @@
                 <DetectChar attribute="Symbol" context="Expression" char="=" />
                 <RegExpr attribute="Variable" context="#stay" String="[_\w][_\w\d]*" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="TypeName" lineEndContext="#stay" attribute="Normal Text">
                 <DetectChar attribute="Symbol" context="#pop" char="*" />
                 <DetectChar attribute="Symbol" context="FunctionType" char="(" />
+                <RegExpr attribute="Keyword" context="#stay" String="\b(suspend)\b" />
                 <StringDetect attribute="Symbol" context="#stay" String="-&gt;" />
                 <RegExpr attribute="Data Type" context="#pop" String="[_\w][_\w\d]*[?]?" />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="FunctionType" lineEndContext="#stay" attribute="Normal Text">
@@ -248,8 +266,7 @@
                 <StringDetect attribute="Symbol" context="#stay" String="-&gt;" />
                 <StringDetect attribute="Symbol" context="#stay" String="," />
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context name="Expression" lineEndContext="#stay" attribute="Normal Text">
@@ -265,8 +282,7 @@
                 <StringDetect attribute="String" String="&quot;&quot;&quot;" context="MultiLineDoubleString" beginRegion="MultiLineString"/>
                 <DetectChar attribute="String" context="String" char="&quot;"/>
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
 
                 <DetectChar attribute="Symbol" context="#pop" char=","/>
             </context>
@@ -284,8 +300,7 @@
                 <StringDetect attribute="String" String="&quot;&quot;&quot;" context="MultiLineDoubleString" beginRegion="MultiLineString"/>
                 <DetectChar attribute="String" context="String" char="&quot;"/>
 
-                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
-                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+                <IncludeRules context="FindComments" />
             </context>
 
             <context attribute="Char" lineEndContext="#pop" name="Char">
@@ -310,7 +325,10 @@
                 <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
                 <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment"/>
             </context>
-
+            <context attribute="Normal Text" name="FindComments">
+                <Detect2Chars attribute="Comment" context="CommentSingleLine" char="/" char1="/"/>
+                <Detect2Chars attribute="Comment" context="CommentMultiline" char="/" char1="*" beginRegion="Comment"/>
+            </context>
         </contexts>
 
         <itemDatas>
@@ -321,7 +339,7 @@
             <itemData name="Variable"     defStyleNum="dsVariable"/>
             <itemData name="Imports"      defStyleNum="dsImport"/>
             <itemData name="Annotation"   defStyleNum="dsAttribute"/>
-            <itemData name="Label"   defStyleNum="dsAttribute"/>
+            <itemData name="Label"        defStyleNum="dsAttribute"/>
             <itemData name="Data Type"    defStyleNum="dsDataType" bold="true" />
             <itemData name="Decimal"      defStyleNum="dsDecVal"/>
             <itemData name="Float"        defStyleNum="dsFloat"/>
