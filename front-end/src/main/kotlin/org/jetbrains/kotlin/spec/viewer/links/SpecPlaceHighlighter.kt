@@ -1,8 +1,8 @@
-package org.jetbrains.kotlin.spec.links
+package org.jetbrains.kotlin.spec.viewer.links
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
-import org.jetbrains.kotlin.spec.tests.SpecTestsLoader
+import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.format
