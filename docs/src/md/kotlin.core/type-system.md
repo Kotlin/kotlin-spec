@@ -1,7 +1,5 @@
 ## Type system
 
-TODO(Add grammar snippets?)
-
 ### Glossary
 
 $T$
@@ -414,6 +412,11 @@ Mixed-site variance means you can specify, whether you want your parameterized t
 > * `T<in A>` $:>$ `T<in B>`
 > * `T<A>` $<:$ `T<out A>`
 > * `T<A>` $<:$ `T<in A>`
+>
+> Important: by the transitivity of the subtyping operator these rules imply that the following also holds:
+>
+> * `T<A>` $<:$ `T<out B>`
+> * `T<in A>` $:>$ `T<B>`
 
 > Note: Kotlin does not support specifying both co- and contravariance at the same time, i.e., it is impossible to have `T<out A in B>` neither on declaration- nor on use-site.
 
@@ -641,7 +644,7 @@ consists of
 * argument types $A_i$
 * return type $R$
 
-and may be considered the following instantiation of a special type constructor $\FunctionN(\inV P_1, \ldots, \inV P_n, \outV R)$
+and may be considered the following instantiation of a special type constructor $\FunctionN(\inV P_1, \ldots, \inV P_n, \outV R)$ (please note the variance of type parameters)
 
 $$\FT(A_1, \ldots, A_n) \rightarrow R \equiv \FunctionN[A_1, \ldots, A_n, R]$$
 
@@ -1042,11 +1045,12 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Important: in some cases, the least upper bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
-TODO(actual algorithm for computing LUB)
+In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of $\LUB$ for particular two types.
+The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.
 
-TODO(LUB for 3+ types)
+In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator $\LUB(T_1, T_2, \ldots, T_N)$ is defined as $\LUB(T_1, \LUB(T_2, \ldots, T_N))$.
 
-TODO(what do we do if this procedure loops?)
+TODO(It is probably order-dependent or needs to be proven otherwise)
 
 #### Greatest lower bound
 
@@ -1105,11 +1109,12 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Important: in some cases, the greatest lower bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
-TODO(actual algorithm for computing GLB)
+In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of $\GLB$ for particular two types.
+The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.
 
-TODO(GLB for 3+ types)
+In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator $\GLB(T_1, T_2, \ldots, T_N)$ is defined as $\GLB(T_1, \GLB(T_2, \ldots, T_N))$.
 
-TODO(what do we do if this procedure loops?)
+TODO(It is probably order-dependent or needs to be proven otherwise)
 
 ### Type approximation
 
@@ -1145,7 +1150,3 @@ TODO(Specify when we drop type arguments when doing type approximation / decayin
 
 1. Ross Tate. "Mixed-site variance." FOOL, 2013.
 2. Ross Tate, Alan Leung, and Sorin Lerner. "Taming wildcards in Java's type system." PLDI, 2011.
-
-TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. An example of the second distinction would be difference between $(A?)!!$ and $((A!!)?)!!$. Are they the same type? Are they different, but equivalent? Same goes for $(A..B)?$ vs $(A?..B?)$ and such.)
-
-TODO(another big question is: do we want to formally prove all the different thing here?)

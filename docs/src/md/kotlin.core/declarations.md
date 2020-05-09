@@ -202,8 +202,6 @@ For information on how type parameters of parent and nested / inner classifiers 
 
 > Note: inner classes cannot be declared in [objects][Classifier declaration].
 
-TODO(...)
-
 ##### Inheritance delegation
 
 In a classifier (an object or a class) declaration $C$, any supertype $I$ inheritance may be *delegated to* an arbitrary value $v$ if:
@@ -217,8 +215,6 @@ If inherited using delegation, each method $M$ of $I$ (whether they have a defau
 The particular means on how $v$ is stored inside the classifier object is platform-defined.
 
 Due to the [initialization order of a classifier object][Classifier initialization], the expression used to construct $v$ can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.
-
-TODO(...)
 
 ##### Abstract classes
 
@@ -376,9 +372,7 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * An interface cannot have inner classes (but can have nested classes and companion objects);
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
-    * Trying to declare a non-public member property or function in an interface is an error.
-
-TODO(Something else?)
+    * Trying to declare a non-public member property or function in an interface is an compile-time error.
 
 ##### Functional interface declaration
 
@@ -444,21 +438,19 @@ However, as functional interface essentially represents a single function, Kotli
 
 #### Object declaration
 
-Object declarations are used to support a singleton pattern and, thus, do two things at the same time. 
-One, they (just like class declarations) introduce a new type to the program. 
-Two, they create a singleton-like object of that type.
+Object declarations are similar to class declaration in that they introduce a new classifier type, but, unlike class or interface declarations, they also introduce a value of this type in the same declaration.
+No other values of this type may be declared, making object a single existing value of its type.
 
-TODO(do we really need this ironic-ish statement about doing two things at the same time?)
+> Note:This is similar to *singleton pattern* common to object-oriented programming in introducing a type which includes a single global value.
 
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
+* An object can only be declared in a declaration scope;
 * An object type cannot be used as a supertype for other types;
 * An object cannot have a constructor;
 * An object cannot have a companion object;
 * An object may not have inner classes;
 * An object cannot be parameterized, i.e., cannot have type parameters.
-
-TODO(Something else?)
 
 > Note: this section is about declaration of _named_ objects. 
 > Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
@@ -531,7 +523,7 @@ Function body $b$ is optional; if it is omitted, a function declaration creates 
 This is allowed only inside an [abstract class][Abstract classes].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
-TODO([Kotlin 1.3] `expect` and `external` functions also do not have implementations)
+TODO([Kotlin 1.3+] `expect` and `external` functions also do not have implementations)
 
 A parameterized function declaration consists of five main parts.
 
@@ -976,8 +968,6 @@ TODO(More examples (delegation, at least))
 All non-abstract properties must be definitely initialized before their first use. 
 To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail [here][Control- and data-flow analysis].
 
-TODO(maybe it makes more sense to write all the initialization business right here)
-
 #### Constant properties
 
 A property may be declared **constant**, meaning that its value is known during compilation, by using the special `const` modifier. 
@@ -1036,8 +1026,6 @@ The scope where it is accessible is defined by its [*visibility modifiers*][Decl
 
 ### Declarations with type parameters
 
-TODO(this is a stub)
-
 Most declarations may be introduced as *generic*, introducing type parameters that must be explicitly specified or [inferred][Type inference] when the corresponding declaration is used.
 For declarations that introduce new types this mechanism provides the means of introducing a [parameterized type][Parameterized classifier types].
 Please refer to the corresponding section for details.
@@ -1053,8 +1041,7 @@ The following declarations are not allowed to have type parameters:
 - Getters and setters of property declarations;
 - Enum class declarations;
 - Annotation class declarations;
-- Classifier declarations inheriting from `kotlin.Throwable`;
-- TODO: anything else?
+- Classifier declarations inheriting from `kotlin.Throwable`.
 
 Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
 These either are written directly at the parameter placement syntax or using a special `where` syntax.
@@ -1111,8 +1098,6 @@ Declarations may be also marked `public` explicitly.
 Declarations marked as `private` can only be accessed from the same scope they are declared in.
 For example, all `private` top-level declarations in a file may only be accessed by code from the same file.
 
-TODO: clarify all this
-
 Some `private` declarations are special in that they have an even more restricted visibility, called "`private` to `this`".
 These include declarations that are allowed to lift certain [variance][Mixed-site variance] rules in their types as long as they are never accessed outside `this` object, meaning that they can be accessed using `this` as the receiver, but are not visible on other instances of the same class even in the methods of this class.
 For example, for a class declaration $C$ with type parameter $T$ it is not allowed to introduce declarations involving $T$ with conflicting variance, unless they are declared `private`.
@@ -1125,8 +1110,6 @@ TODO: examples
 Declarations marked as `internal` may only be accessed from the same [module][Modules], treated as `public` from inside the module and as `private` from outside the module.
 
 Declarations in classifier declaration scope can also be declared `protected`, meaning that they can only be accessed from the same classifier type as well as any types [inheriting][Inheritance] from this type regardless of the scope they are declared in.
-
-TODO(Double check rules for `protected`)
 
 There is a partial order of *weakness* between different visibility modifiers:
 
