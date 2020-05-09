@@ -120,11 +120,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <h2 id="type-system">Type system</h2>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Add grammar snippets?)</span></p>
-</div>
-</div>
 <h3 id="glossary-1">Glossary</h3>
 <dl>
 <dt><span class="math inline">\(T\)</span></dt>
@@ -602,6 +597,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out A&gt;</code></span></li>
 <li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;in A&gt;</code></span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">Important: by the transitivity of the subtyping operator these rules imply that the following also holds:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out B&gt;</code></span></li>
+<li><span class="sentence"><code>T&lt;in A&gt;</code> <span class="math inline">\(:&gt;\)</span> <code>T&lt;B&gt;</code></span></li>
+</ul>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -892,7 +894,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">and may be considered the following instantiation of a special type constructor <span class="math inline">\(\operatorname{\text{FunctionN}}(\operatorname{\texttt{in\,}}P_1, \ldots, \operatorname{\texttt{in\,}}P_n, \operatorname{\texttt{out\,}}R)\)</span></span></p>
+<p><span class="sentence">and may be considered the following instantiation of a special type constructor <span class="math inline">\(\operatorname{\text{FunctionN}}(\operatorname{\texttt{in\,}}P_1, \ldots, \operatorname{\texttt{in\,}}P_n, \operatorname{\texttt{out\,}}R)\)</span> (please note the variance of type parameters)</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math display">\[\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R \equiv \operatorname{\text{FunctionN}}[A_1, \ldots, A_n, R]\]</span></span></p>
@@ -1381,19 +1383,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: in some cases, the least upper bound is handled as described <a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing LUB)</span></p>
+<p><span class="sentence">In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of <span class="math inline">\(\operatorname{\text{LUB}}\)</span> for particular two types. </span><span class="sentence">The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.</span></p>
 </div>
-</div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(LUB for 3+ types)</span></p>
-</div>
+<p><span class="sentence">In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator <span class="math inline">\(\operatorname{\text{LUB}}(T_1, T_2, \ldots, T_N)\)</span> is defined as <span class="math inline">\(\operatorname{\text{LUB}}(T_1, \operatorname{\text{LUB}}(T_2, \ldots, T_N))\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
+<p><span class="sentence">TODO(It is probably order-dependent or needs to be proven otherwise)</span></p>
 </div>
 </div>
 <h4 id="greatest-lower-bound">Greatest lower bound</h4>
@@ -1472,19 +1470,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: in some cases, the greatest lower bound is handled as described <a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing GLB)</span></p>
+<p><span class="sentence">In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of <span class="math inline">\(\operatorname{\text{GLB}}\)</span> for particular two types. </span><span class="sentence">The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.</span></p>
 </div>
-</div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(GLB for 3+ types)</span></p>
-</div>
+<p><span class="sentence">In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator <span class="math inline">\(\operatorname{\text{GLB}}(T_1, T_2, \ldots, T_N)\)</span> is defined as <span class="math inline">\(\operatorname{\text{GLB}}(T_1, \operatorname{\text{GLB}}(T_2, \ldots, T_N))\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
+<p><span class="sentence">TODO(It is probably order-dependent or needs to be proven otherwise)</span></p>
 </div>
 </div>
 <h3 id="type-approximation">Type approximation</h3>
@@ -1538,15 +1532,5 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Ross Tate. </span><span class="sentence">“Mixed-site variance.” FOOL, 2013.</span></li>
 <li><span class="sentence">Ross Tate, Alan Leung, and Sorin Lerner. </span><span class="sentence">“Taming wildcards in Java’s type system.” PLDI, 2011.</span></li>
 </ol>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. </span><span class="sentence">An example of the second distinction would be difference between <span class="math inline">\((A?)!!\)</span> and <span class="math inline">\(((A!!)?)!!\)</span>. </span><span class="sentence">Are they the same type? </span><span class="sentence">Are they different, but equivalent? </span><span class="sentence">Same goes for <span class="math inline">\((A..B)?\)</span> vs <span class="math inline">\((A?..B?)\)</span> and such.)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(another big question is: do we want to formally prove all the different thing here?)</span></p>
-</div>
-</div>
 </body>
 </html>

@@ -96,7 +96,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="#glossary">Glossary</a></li>
 <li><a href="#kotlincore">Kotlin/Core</a><ul>
-<li><a href="#overall-todos">Overall TODOs</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#syntax">Syntax</a><ul>
 <li><a href="#grammar">Grammar</a><ul>
@@ -487,12 +486,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">w.r.t.:: with respect to</span></p>
 </div>
 <h1 id="kotlincore">Kotlin/Core</h1>
-<h2 id="overall-todos">Overall TODOs</h2>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(We need to sort out undefined/implementation-defined/platform-defined) TODO(We need to define what “evaluation” is. </span><span class="sentence">Or not.)</span></p>
-</div>
-</div>
 <h2 id="introduction">Introduction</h2>
 <div class="paragraph">
 <p><span class="sentence">Here be dragons…</span></p>
@@ -3585,11 +3578,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin supports special comment syntax for code documentation purposes, called KDoc. </span><span class="sentence">The syntax is based on <a href="https://tools.ietf.org/html/rfc7763">Markdown</a> and <a href="https://www.oracle.com/java/technologies/javase/javadoc-tool.html">Javadoc</a>. </span><span class="sentence">Documentation comments start with <code>/**</code> and end with <code>*/</code> and allows external tools to generate documentation based on the comment contents.</span></p>
 </div>
 <h2 id="type-system">Type system</h2>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Add grammar snippets?)</span></p>
-</div>
-</div>
 <h3 id="glossary-1">Glossary</h3>
 <dl>
 <dt><span class="math inline">\(T\)</span></dt>
@@ -4067,6 +4055,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out A&gt;</code></span></li>
 <li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;in A&gt;</code></span></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">Important: by the transitivity of the subtyping operator these rules imply that the following also holds:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>T&lt;A&gt;</code> <span class="math inline">\(&lt;:\)</span> <code>T&lt;out B&gt;</code></span></li>
+<li><span class="sentence"><code>T&lt;in A&gt;</code> <span class="math inline">\(:&gt;\)</span> <code>T&lt;B&gt;</code></span></li>
+</ul>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -4357,7 +4352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">return type <span class="math inline">\(R\)</span></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">and may be considered the following instantiation of a special type constructor <span class="math inline">\(\operatorname{\text{FunctionN}}(\operatorname{\texttt{in\,}}P_1, \ldots, \operatorname{\texttt{in\,}}P_n, \operatorname{\texttt{out\,}}R)\)</span></span></p>
+<p><span class="sentence">and may be considered the following instantiation of a special type constructor <span class="math inline">\(\operatorname{\text{FunctionN}}(\operatorname{\texttt{in\,}}P_1, \ldots, \operatorname{\texttt{in\,}}P_n, \operatorname{\texttt{out\,}}R)\)</span> (please note the variance of type parameters)</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><span class="math display">\[\operatorname{\text{FT}}(A_1, \ldots, A_n) \rightarrow R \equiv \operatorname{\text{FunctionN}}[A_1, \ldots, A_n, R]\]</span></span></p>
@@ -4846,19 +4841,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: in some cases, the least upper bound is handled as described <a href="#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing LUB)</span></p>
+<p><span class="sentence">In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of <span class="math inline">\(\operatorname{\text{LUB}}\)</span> for particular two types. </span><span class="sentence">The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.</span></p>
 </div>
-</div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(LUB for 3+ types)</span></p>
-</div>
+<p><span class="sentence">In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator <span class="math inline">\(\operatorname{\text{LUB}}(T_1, T_2, \ldots, T_N)\)</span> is defined as <span class="math inline">\(\operatorname{\text{LUB}}(T_1, \operatorname{\text{LUB}}(T_2, \ldots, T_N))\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
+<p><span class="sentence">TODO(It is probably order-dependent or needs to be proven otherwise)</span></p>
 </div>
 </div>
 <h4 id="greatest-lower-bound">Greatest lower bound</h4>
@@ -4937,19 +4928,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: in some cases, the greatest lower bound is handled as described <a href="#the-relations-on-types-as-constraints">here</a>, from the point of view of type constraint system.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(actual algorithm for computing GLB)</span></p>
+<p><span class="sentence">In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of <span class="math inline">\(\operatorname{\text{GLB}}\)</span> for particular two types. </span><span class="sentence">The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.</span></p>
 </div>
-</div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(GLB for 3+ types)</span></p>
-</div>
+<p><span class="sentence">In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator <span class="math inline">\(\operatorname{\text{GLB}}(T_1, T_2, \ldots, T_N)\)</span> is defined as <span class="math inline">\(\operatorname{\text{GLB}}(T_1, \operatorname{\text{GLB}}(T_2, \ldots, T_N))\)</span>.</span></p>
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(what do we do if this procedure loops?)</span></p>
+<p><span class="sentence">TODO(It is probably order-dependent or needs to be proven otherwise)</span></p>
 </div>
 </div>
 <h3 id="type-approximation">Type approximation</h3>
@@ -5003,16 +4990,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Ross Tate. </span><span class="sentence">“Mixed-site variance.” FOOL, 2013.</span></li>
 <li><span class="sentence">Ross Tate, Alan Leung, and Sorin Lerner. </span><span class="sentence">“Taming wildcards in Java’s type system.” PLDI, 2011.</span></li>
 </ol>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(the big TODO for the whole chapter: we need to clearly decide what kind of type system we want to specify: an algo-driven ts vs a full declarational ts, operation-based or relation-based. </span><span class="sentence">An example of the second distinction would be difference between <span class="math inline">\((A?)!!\)</span> and <span class="math inline">\(((A!!)?)!!\)</span>. </span><span class="sentence">Are they the same type? </span><span class="sentence">Are they different, but equivalent? </span><span class="sentence">Same goes for <span class="math inline">\((A..B)?\)</span> vs <span class="math inline">\((A?..B?)\)</span> and such.)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(another big question is: do we want to formally prove all the different thing here?)</span></p>
-</div>
-</div>
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
@@ -5635,11 +5612,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: inner classes cannot be declared in <a href="#classifier-declaration">objects</a>.</span></p>
 </div>
 </blockquote>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
-</div>
-</div>
 <h5 id="inheritance-delegation">Inheritance delegation</h5>
 <div class="paragraph">
 <p><span class="sentence">In a classifier (an object or a class) declaration <span class="math inline">\(C\)</span>, any supertype <span class="math inline">\(I\)</span> inheritance may be <em>delegated to</em> an arbitrary value <span class="math inline">\(v\)</span> if:</span></p>
@@ -5656,11 +5628,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="paragraph">
 <p><span class="sentence">Due to the <a href="#classifier-initialization">initialization order of a classifier object</a>, the expression used to construct <span class="math inline">\(v\)</span> can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(…)</span></p>
-</div>
 </div>
 <h5 id="abstract-classes">Abstract classes</h5>
 <div class="paragraph">
@@ -5838,14 +5805,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">An interface and all its members are implicitly open;</span></li>
 <li><span class="sentence">All interface member properties and functions are implicitly public;</span>
 <ul>
-<li><span class="sentence">Trying to declare a non-public member property or function in an interface is an error.</span></li>
+<li><span class="sentence">Trying to declare a non-public member property or function in an interface is an compile-time error.</span></li>
 </ul></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Something else?)</span></p>
-</div>
-</div>
 <h5 id="functional-interface-declaration">Functional interface declaration</h5>
 <div class="paragraph">
 <p><span class="sentence">A <em>functional interface</em> is an interface with a <strong>single</strong> abstract function and no other abstract properties or functions.</span></p>
@@ -5922,28 +5884,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="object-declaration">Object declaration</h4>
 <div class="paragraph">
-<p><span class="sentence">Object declarations are used to support a singleton pattern and, thus, do two things at the same time. </span><span class="sentence">One, they (just like class declarations) introduce a new type to the program. </span><span class="sentence">Two, they create a singleton-like object of that type.</span></p>
+<p><span class="sentence">Object declarations are similar to class declaration in that they introduce a new classifier type, but, unlike class or interface declarations, they also introduce a value of this type in the same declaration. </span><span class="sentence">No other values of this type may be declared, making object a single existing value of its type.</span></p>
 </div>
-<div class="TODO">
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">TODO(do we really need this ironic-ish statement about doing two things at the same time?)</span></p>
+<p><span class="sentence">Note:This is similar to <em>singleton pattern</em> common to object-oriented programming in introducing a type which includes a single global value.</span></p>
 </div>
-</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.</span></p>
 </div>
 <ul>
+<li><span class="sentence">An object can only be declared in a declaration scope;</span></li>
 <li><span class="sentence">An object type cannot be used as a supertype for other types;</span></li>
 <li><span class="sentence">An object cannot have a constructor;</span></li>
 <li><span class="sentence">An object cannot have a companion object;</span></li>
 <li><span class="sentence">An object may not have inner classes;</span></li>
 <li><span class="sentence">An object cannot be parameterized, i.e., cannot have type parameters.</span></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Something else?)</span></p>
-</div>
-</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: this section is about declaration of <em>named</em> objects. </span><span class="sentence">Kotlin also has a concept of <em>anonymous</em> objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the <a href="#object-literals">corresponding section</a>.</span></p>
@@ -6059,7 +6017,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO([Kotlin 1.3] <code>expect</code> and <code>external</code> functions also do not have implementations)</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3+] <code>expect</code> and <code>external</code> functions also do not have implementations)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -6526,11 +6484,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="#control--and-data-flow-analysis">here</a>.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(maybe it makes more sense to write all the initialization business right here)</span></p>
-</div>
-</div>
 <h4 id="constant-properties">Constant properties</h4>
 <div class="paragraph">
 <p><span class="sentence">A property may be declared <strong>constant</strong>, meaning that its value is known during compilation, by using the special <code>const</code> modifier. </span><span class="sentence">In order to be declared <code>const</code>, a property must meet the following requirements:</span></p>
@@ -6602,11 +6555,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="#declaration-visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(this is a stub)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Most declarations may be introduced as <em>generic</em>, introducing type parameters that must be explicitly specified or <a href="#type-inference">inferred</a> when the corresponding declaration is used. </span><span class="sentence">For declarations that introduce new types this mechanism provides the means of introducing a <a href="#parameterized-classifier-types">parameterized type</a>. </span><span class="sentence">Please refer to the corresponding section for details.</span></p>
 </div>
@@ -6623,10 +6571,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Getters and setters of property declarations;</span></li>
 <li><span class="sentence">Enum class declarations;</span></li>
 <li><span class="sentence">Annotation class declarations;</span></li>
-<li><span class="sentence">Classifier declarations inheriting from <code>kotlin.Throwable</code>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO: anything else?</span>
-</div></li>
+<li><span class="sentence">Classifier declarations inheriting from <code>kotlin.Throwable</code>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.</span></p>
@@ -6688,11 +6633,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Declarations marked as <code>private</code> can only be accessed from the same scope they are declared in. </span><span class="sentence">For example, all <code>private</code> top-level declarations in a file may only be accessed by code from the same file.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: clarify all this</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Some <code>private</code> declarations are special in that they have an even more restricted visibility, called “<code>private</code> to <code>this</code>”. </span><span class="sentence">These include declarations that are allowed to lift certain <a href="#mixed-site-variance">variance</a> rules in their types as long as they are never accessed outside <code>this</code> object, meaning that they can be accessed using <code>this</code> as the receiver, but are not visible on other instances of the same class even in the methods of this class. </span><span class="sentence">For example, for a class declaration <span class="math inline">\(C\)</span> with type parameter <span class="math inline">\(T\)</span> it is not allowed to introduce declarations involving <span class="math inline">\(T\)</span> with conflicting variance, unless they are declared <code>private</code>. </span><span class="sentence">That is, if <span class="math inline">\(T\)</span> is declared as covariant, any declarations with a type using <span class="math inline">\(T\)</span> in a contravariant position (including properties with type <span class="math inline">\(T\)</span> itself if they are mutable) and if <span class="math inline">\(T\)</span> is declared as contravariant, any declarations with a type using <span class="math inline">\(T\)</span> in a covariant position (including properties with type <span class="math inline">\(T\)</span> itself) are forbidden, unless they are declared using <code>private</code> visibility, in which case they are instead treated as “<code>private</code> to <code>this</code>”.</span></p>
 </div>
@@ -6711,11 +6651,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="paragraph">
 <p><span class="sentence">Declarations in classifier declaration scope can also be declared <code>protected</code>, meaning that they can only be accessed from the same classifier type as well as any types <a href="#inheritance">inheriting</a> from this type regardless of the scope they are declared in.</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(Double check rules for <code>protected</code>)</span></p>
-</div>
 </div>
 <div class="paragraph">
 <p><span class="sentence">There is a partial order of <em>weakness</em> between different visibility modifiers:</span></p>
