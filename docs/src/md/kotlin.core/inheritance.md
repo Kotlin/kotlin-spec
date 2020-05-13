@@ -1,12 +1,10 @@
 ## Inheritance
 
-TODO(This is a stub)
+Kotlin is an object-oriented language with its object model based on **inheritance**.
 
 ### Classifier type inheritance
 
-Kotlin is an object-oriented language with its object model based on **inheritance**.
 Classifier types may be inherited from each other: the type inherited *from* is called the *base type*, while the type which inherits the base type is called the *derived type*.
-
 The following limitations are imposed on the possible inheritance structure.
 
 A class or object type is allowed to inherit from only one class type (called its **direct superclass**) and multiple interface types.
