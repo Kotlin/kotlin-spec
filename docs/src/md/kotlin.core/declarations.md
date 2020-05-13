@@ -609,7 +609,7 @@ Function body $b$ is optional; if it is omitted, a function declaration creates 
 This is allowed only inside an [abstract class][Abstract classes].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
-TODO([Kotlin 1.3+] `expect` and `external` functions also do not have implementations)
+TODO([Kotlin 1.3+, Experimental] `expect` and `external` functions also do not have implementations)
 
 A parameterized function declaration consists of five main parts.
 
@@ -695,8 +695,7 @@ One of the parameters may be designated as being variable length (aka *vararg*).
 A parameter list $(p_1, \ldots, \text{vararg }p_i: P_i = v_i, \ldots, p_n)$ means a function may be called with any number of arguments in the i-th position.
 These arguments are represented inside function body $b$ as a value $p_i$ of type, which is the result of [*array type specialization*][Array types] of type $\Array(\outV P_i)$.
 
-> Important: we also consider variable length parameters to have such types for the purposes of type inference and named parameters.
-> TODO(Something else?)
+> Important: we also consider variable length parameters to have such types for the purposes of type inference and calls with named parameters.
 
 If a variable length parameter is not last in the parameter list, all subsequent arguments in the function invocation should be specified as named arguments.
 
