@@ -180,13 +180,43 @@ If the only superclass is `kotlin.Any`, delegation is optional.
 
 In all cases, it is forbidden if two or more secondary constructors form a delegation loop.
 
-TODO(elaborate this `this(...)` and `super(...)` business)
-
 Class constructors (both primary and secondary) may have variable-argument parameters and default parameter values, just as regular functions.
 Please refer to the [function declaration reference][Function declaration] for details.
 
 If a class does not have neither primary, nor secondary constructors, it is assumed to implicitly have a default parameterless primary constructor.
 This also means that, if a class declaration includes a class supertype specifier, that specifier must represent a valid invocation of the supertype constructor.
+
+> Examples:
+> 
+> ```kotlin
+> open class Base
+> 
+> class POKO : Base() {}
+> 
+> class NotQuitePOKO : Base {
+>     constructor() : super() {}
+> }
+> 
+> class Primary(val s: String) : Base() {
+>     constructor(i: Int) : this(i.toString()) {}
+> 
+>     constructor(d: Double) : this(d.toInt()) {}
+> 
+>     // Error, has primary ctor,
+>     //   needs to delegate to primary or secondary ctor
+>     // constructor() : super() {}
+> }
+> 
+> class Secondary : Base {
+>     constructor(i: Int) : super() {}
+> 
+>     constructor(s: String) : this(s.toInt()) {}
+> 
+>     // Ok, no primary ctor,
+>     //   can delegate to `super(...)`
+>     constructor() : super() {}
+> }
+> ```
 
 ##### Nested and inner classifiers
 
@@ -447,10 +477,12 @@ Similarly to interfaces, we shall specify object declarations by highlighting th
 
 * An object can only be declared in a declaration scope;
 * An object type cannot be used as a supertype for other types;
-* An object cannot have a constructor;
+* An object cannot have an explicit primary or secondary constructor;
 * An object cannot have a companion object;
 * An object may not have inner classes;
 * An object cannot be parameterized, i.e., cannot have type parameters.
+
+> Note: an object is assumed to implicitly have a default parameterless primary constructor.
 
 > Note: this section is about declaration of _named_ objects. 
 > Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
@@ -459,31 +491,85 @@ Similarly to interfaces, we shall specify object declarations by highlighting th
 
 When creating a class or object instance via one of its constructors $ctor$, it is initialized in a particular order, which we describe here.
 
-First, a supertype constructor corresponding to $ctor$ is called with its respective parameters.
+A primary $pctor$ or secondary constructor $ctor$ has a corresponding superclass constructor $sctor$ defined as follows.
 
-* If $ctor$ is a primary constructor, a corresponding supertype constructor is the one from the supertype specifier list;
-* If $ctor$ is a secondary constructor, a corresponding supertype constructor is the one ending the constructor delegation chain of $ctor$;
-* If an explicit supertype constructor is not available, `Any()` is implicitly used.
+* For primary constructor $pctor$, a corresponding superclass constructor $sctor$ is the one from the supertype specifier list;
+* For secondary constructor $ctor$, a corresponding supertype constructor $sctor$ is the one ending the constructor delegation chain of $ctor$;
+* If an explicit superclass constructor is not available, `Any()` is implicitly used.
 
-After the supertype initialization is done, we continue the initialization by processing each inner declaration in its body, *in the order of their inclusion in the body*. 
-If any initialization step creates a loop, it is considered an undefined behavior.
+When a classifier type is initialized using a particular secondary constructor $ctor$ delegated to primary constructor $pctor$ which, in turn, is delegated to the corresponding superclass constructor $sctor$, the following happens, in this *initialization order*:
 
-When a classifier type is initialized using a particular secondary constructor $ctor$ delegated to primary constructor $pctor$ which, in turn, is delegated to the superclass constructor $sctor$, the following happens, in this order:
-
-- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters in the order they appear in the constructor declaration;
-- The superclass object (if any) is initialized as if created by invoking $sctor$ with the specified parameters;
-- Interface delegation expressions (if any) are invoked and the result of each is stored in the object to allow for interface delegation, in the order of appearance of delegation declarations in the classifier header;
-- All the properties' initialization code as well as all the initialization blocks in the class body get initialized in the order of appearance in the class body;
+- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters *in the order of appearance in the constructor declaration*;
+- The superclass object is initialized as if created by invoking $sctor$ with the specified parameters;
+- Interface delegation expressions are invoked and the result of each is stored in the object to allow for interface delegation, *in the order of appearance of delegation declarations in the supertype specifier list*;
+- Each property initialization code as well as the initialization blocks in the class body are invoked *in the order of appearance in the class body*;
 - $ctor$ body is invoked using the specified parameters.
 
 > Note: this means that if an `init`-block appears between two property declarations in the class body, its body is invoked between the initialization code of these two properties.
 
-This order stays the same if any of the entities involved are omitted, omitting the corresponding step (e.g. if there is no primary constructor, it is not invoked, and if the object is created using primary constructor, the body of the secondary one is not invoked, etc.), but performing all others.
-If any of the properties of the object are accessed before they are initialized in this order (for example, if a method called in an initialization block accesses a property that is mention after the block), the value of the property is undefined.
+The initialization order stays the same if any of the entities involved are omitted, in which case the corresponding step is also omitted (e.g., if the object is created using the primary constructor, the body of the secondary one is not invoked).
 
-> Note: this can happen if a property is captured in a lambda expression that is used in some way during other initialization phases
+If any step in the initialization order creates a loop, it is considered to be undefined behavior.
 
-TODO(This needs thorough testing)
+If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is undefined.
+
+> Note: this can also happen if a property is captured in a lambda expression used in some way during subsequent initialization steps.
+
+> Examples:
+> 
+> ```kotlin
+> open class Base(val v: Any?) {
+>     init {
+>         println("2: $this")
+>     }
+> }
+> 
+> class Init(val a: Number /* (1) */) : Base(0xC0FFEE) /* (2) */ {
+> 
+>     init {
+>         println("3: $this") /* (3) */
+>     }
+> 
+>     constructor(v: Int) : this(v as Number) {
+>         println("10: $this") /* (10) */
+>     }
+> 
+>     val b: String = a.toString() /* (4) */
+> 
+>     init {
+>         println("5: $this") /* (5) */
+>     }
+> 
+>     var c: Any? = "b is $b" /* (6) */
+> 
+>     init {
+>         println("7: $this") /* (7) */
+>     }
+> 
+>     val d: Double = 42.0 /* (8) */
+> 
+>     init {
+>         println("9: $this") /* (9) */
+>     }
+> 
+>     override fun toString(): String {
+>         return "Init(a=$a, b='$b', c=$c, d=$d)"
+>     }
+> }
+> 
+> fun main() {
+>     Init(5)
+>     // 2: Init(a=null, b='null', c=null, d=0.0)
+>     // 3: Init(a=5, b='null', c=null, d=0.0)
+>     // 5: Init(a=5, b='5', c=null, d=0.0)
+>     // 7: Init(a=5, b='5', c=b is 5, d=0.0)
+>     // 9: Init(a=5, b='5', c=b is 5, d=42.0)
+>     // 10: Init(a=5, b='5', c=b is 5, d=42.0)
+>     
+>     // Here we can see how the undefined values for
+>     //   uninitialized properties may leak outside
+> }
+> ```
 
 ### Function declaration
 
