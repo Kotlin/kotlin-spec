@@ -112,12 +112,12 @@ Note that an ignoring placeholder may also be provided with a type signature, in
 >
 > ```kotlin
 > when(val $iterator = f().iterator()) {
->  else -> while ($iterator.hasNext()) {
->              val $tmp = $iterator.next()
->      		 val x: A = $tmp.component1()
->              val z = $tmp.component3()
->              ...
->          }
+>     else -> while ($iterator.hasNext()) {
+>                 val $tmp = $iterator.next()
+>      		      val x: A = $tmp.component1()
+>                 val z = $tmp.component3()
+>                 ...
+>             }
 > }
 > ```
 >

@@ -5,7 +5,7 @@
 :::{.paste target=grammar-rule-statement}
 :::
 
-Unlike some other languages, Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions.
+Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions.
 This section focuses only on those statements that are *not* expressions or declarations.
 For information on those parts of Kotlin, please refer to the [Expressions][Expressions] and [Declarations][Declarations] sections of the specification.
 
