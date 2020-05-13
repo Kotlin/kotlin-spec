@@ -5855,7 +5855,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete <a href="#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
+<p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an <a href="#object-literals">anonymous object declaration</a> or as a complete <a href="#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
 </div>
 <ul>
 <li><span class="sentence">If a lambda literal <code>L</code> is preceded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
@@ -5915,7 +5915,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note:This is similar to <em>singleton pattern</em> common to object-oriented programming in introducing a type which includes a single global value.</span></p>
+<p><span class="sentence">Note: This is similar to <em>singleton pattern</em> common to object-oriented programming in introducing a type which includes a single global value.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -6305,13 +6305,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(brief property intro and classification)</span></p>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — functions which are used to read or write the property value.</span></p>
+<p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — special functions which are used to read or write the property value. </span><span class="sentence">Getters and setters cannot be called directly, but rather define how the corresponding properties behave when accessed.</span></p>
 </div>
 <h4 id="read-only-property-declaration">Read-only property declaration</h4>
 <div class="paragraph">
@@ -6324,11 +6319,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb50-2" title="2">    <span class="kw">get</span><span class="op">()</span> <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be <a href="#type-inference">inferred</a> (or, in case of the getter, specified explicitly), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="#subtyping">subtyping</a> for more details).</span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: we never actually say how getters are similar/different to normal functions and, henceforth, how the inference works</span></p>
-</div>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The initializer expression <code>e</code>, if given, serves as the starting value for the property backing field (see <a href="#getters-and-setters">getters and setters section</a> for details) and is evaluated when the property is created. </span><span class="sentence">Properties that are not allowed to have backing fields (see <a href="#getters-and-setters">getters and setters section</a> for details) are also not allowed to have initializer expressions.</span></p>
@@ -6434,10 +6424,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In all other cases a property has no backing field. </span><span class="sentence">Properties without backing fields are not allowed to have initializer expressions.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details).</span></p>
+<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively. </span><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details). </span><span class="sentence">Properties themselves may also be declared <code>inline</code>, meaning that both getter and setter of said property are <code>inline</code>.</span></p>
 </div>
 <h4 id="delegated-property-declaration">Delegated property declaration</h4>
 <div class="paragraph">
@@ -6660,19 +6647,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Classifier declarations inheriting from <code>kotlin.Throwable</code>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.</span></p>
+<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, for a given type parameter <code>T</code>, only one restriction <code>T : U</code> can have <code>U</code> to be another type parameter.</span></p>
 </div>
-<ul>
-<li><span class="sentence">For a given type parameter <code>T</code>, only one restriction <code>T : U</code> can have <code>U</code> to be another type parameter;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(anything else?)</span>
-</div></li>
-</ul>
 <div class="paragraph">
 <p><span class="sentence">These restrictions are turned into corresponding <a href="#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="#type-inference">type inference</a> and <a href="#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Type parameters do not introduce <a href="#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>.</span></p>
+<p><span class="sentence">Type parameters do not introduce <a href="#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>. </span><span class="sentence">Only type parameters of <a href="#inlining">inline functions</a> can be declared <code>reified</code>.</span></p>
 </div>
 <h4 id="type-parameter-variance">Type parameter variance</h4>
 <div class="paragraph">
@@ -6705,7 +6686,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: account for more complex cases</span></p>
+<p><span class="sentence">TODO: examples</span></p>
 </div>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
@@ -6751,17 +6732,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h2 id="inheritance">Inheritance</h2>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
-</div>
+<p><span class="sentence">Kotlin is an object-oriented language with its object model based on <strong>inheritance</strong>.</span></p>
 </div>
 <h3 id="classifier-type-inheritance">Classifier type inheritance</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin is an object-oriented language with its object model based on <strong>inheritance</strong>. </span><span class="sentence">Classifier types may be inherited from each other: the type inherited <em>from</em> is called the <em>base type</em>, while the type which inherits the base type is called the <em>derived type</em>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">The following limitations are imposed on the possible inheritance structure.</span></p>
+<p><span class="sentence">Classifier types may be inherited from each other: the type inherited <em>from</em> is called the <em>base type</em>, while the type which inherits the base type is called the <em>derived type</em>. </span><span class="sentence">The following limitations are imposed on the possible inheritance structure.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">A class or object type is allowed to inherit from only one class type (called its <strong>direct superclass</strong>) and multiple interface types. </span><span class="sentence">As specified in the <a href="#class-declaration">declaration section</a>, if the superclass of a class or object type is not specified, it is assumed to be <a href="#kotlin.any-1"><code>kotlin.Any</code></a>. </span><span class="sentence">This means, among other things, that every class or object type always has a direct superclass.</span></p>
@@ -6905,10 +6881,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The project <a href="#packages-and-imports">packages</a>;</span></li>
 <li><span class="sentence">The top level scopes of non-script Kotlin files;</span></li>
 <li><span class="sentence">The bodies of <a href="#classifier-declaration">classifier declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="#object-literals">object literals</a>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Anything else?)</span>
-</div></li>
+<li><span class="sentence">The bodies of <a href="#object-literals">object literals</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Statement scopes include:</span></p>
@@ -6920,10 +6893,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The bodies of <a href="#function-literals">function literals</a>;</span></li>
 <li><span class="sentence">The bodies of getters and setters of <a href="#property-declaration">properties</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="#constructor-declaration">constructors</a>;</span></li>
-<li><span class="sentence">The bodies of instance initialization blocks in <a href="#classifier-declaration">classifier declarations</a>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Anything else?)</span>
-</div></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="#classifier-declaration">classifier declarations</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">All declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce new bindings using <a href="#packages-and-imports"><code>import</code> directives</a> from other top-level scopes.</span></p>
@@ -6971,11 +6941,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb70-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = x + <span class="dv">2</span></a>
 <a class="sourceLine" id="cb70-5" title="5"><span class="kw">val</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">3</span></a></code></pre></div></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(rewrite expressions and statements as references to this part)</span></p>
-</div>
-</div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(identifier lifetime &amp; such)</span></p>
@@ -7034,11 +6999,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>super&lt;Klazz&gt;@label</code> – an identifier which references the supertype <code>Klazz</code> available in the selected scope, further details are available <a href="#super-forms">here</a></span></li>
 </ul>
 <h3 id="labels">Labels</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence"><a href="#lambda-literals">Lambda expressions</a>) and <a href="#loop-statements">loop statements</a> are allowed to be labeled, with label identifier associated with the corresponding entity.</span></p>
 </div>
@@ -7057,11 +7017,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">When resolving labels (determining which label an expression refers to), the <em>closest</em> label with the matching identifier is chosen, i.e., a label in an innermost scope syntactically closest to the point of its use.</span></p>
 </div>
 <h2 id="statements">Statements</h2>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO()</span></p>
-</div>
-</div>
 <div id="grammar-rule-statements-pasted-6" class="grammar-rule">
 <dl>
 <dt><strong><em>statements</em>:</strong></dt>
@@ -7077,7 +7032,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Unlike some other languages, Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions. </span><span class="sentence">This section focuses only on those statements that are <em>not</em> expressions or declarations. </span><span class="sentence">For information on those parts of Kotlin, please refer to the <a href="#expressions-1">Expressions</a> and <a href="#declarations-1">Declarations</a> sections of the specification.</span></p>
+<p><span class="sentence">Kotlin does not explicitly distinguish between statements, expressions and declarations, i.e., expressions and declarations can be used in statement positions. </span><span class="sentence">This section focuses only on those statements that are <em>not</em> expressions or declarations. </span><span class="sentence">For information on those parts of Kotlin, please refer to the <a href="#expressions-1">Expressions</a> and <a href="#declarations-1">Declarations</a> sections of the specification.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -8170,8 +8125,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
 <li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>integerLess(0, A.compareTo(B))</code></span></li>
-<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B), 0)</code></span></li>
-<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
+<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B), 0)</code></span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
@@ -8374,11 +8329,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">An <strong><code>as</code> cast expression</strong> <code>E as T</code> is called <em>an unchecked cast</em> expression. </span><span class="sentence">This expression perform a runtime check whether the runtime type of <span class="math inline">\(E\)</span> is a <a href="#subtyping">subtype</a> of <span class="math inline">\(T\)</span> and throws an exception otherwise. </span><span class="sentence">If type <span class="math inline">\(T\)</span> is a <a href="#runtime-available-types">runtime-available</a> type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.</span></p>
 </div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.</span></p>
-</div>
-</blockquote>
 <div class="paragraph">
 <p><span class="sentence">An unchecked cast expression result always has the same type as the type <span class="math inline">\(T\)</span> specified in the expression.</span></p>
 </div>
@@ -9576,12 +9526,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">is expanded to (as per for-loop expansion)</span></p>
 </div>
 <div class="sourceCode" id="cb105"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb105-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> <span class="op">=</span> f().iterator()) <span class="op">{</span></a>
-<a class="sourceLine" id="cb105-2" title="2"> <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) <span class="op">{</span></a>
-<a class="sourceLine" id="cb105-3" title="3">             <span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> $iterator.next()</a>
-<a class="sourceLine" id="cb105-4" title="4">           <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">A</span> <span class="op">=</span> $tmp.component1()</a>
-<a class="sourceLine" id="cb105-5" title="5">             <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> $tmp.component3()</a>
-<a class="sourceLine" id="cb105-6" title="6">             ...</a>
-<a class="sourceLine" id="cb105-7" title="7">         <span class="op">}</span></a>
+<a class="sourceLine" id="cb105-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) <span class="op">{</span></a>
+<a class="sourceLine" id="cb105-3" title="3">                <span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> $iterator.next()</a>
+<a class="sourceLine" id="cb105-4" title="4">                <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">A</span> <span class="op">=</span> $tmp.component1()</a>
+<a class="sourceLine" id="cb105-5" title="5">                <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> $tmp.component3()</a>
+<a class="sourceLine" id="cb105-6" title="6">                ...</a>
+<a class="sourceLine" id="cb105-7" title="7">            <span class="op">}</span></a>
 <a class="sourceLine" id="cb105-8" title="8"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>iterator()</code>, <code>next()</code>, <code>hasNext()</code>, <code>component1()</code> and <code>component3</code> are all suitable operator functions available on their respective receivers.</span></p>
