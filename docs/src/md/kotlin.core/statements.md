@@ -1,7 +1,5 @@
 ## Statements
 
-TODO()
-
 :::{.paste target=grammar-rule-statements}
 :::
 :::{.paste target=grammar-rule-statement}

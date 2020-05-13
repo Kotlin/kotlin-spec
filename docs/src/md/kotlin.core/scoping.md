@@ -16,8 +16,7 @@ Declaration scopes include:
 - The project [packages][Packages and imports];
 - The top level scopes of non-script Kotlin files;
 - The bodies of [classifier declarations][Classifier declaration];
-- The bodies of [object literals][Object literals];
-- TODO(Anything else?)
+- The bodies of [object literals][Object literals].
 
 Statement scopes include:
 
@@ -27,8 +26,7 @@ Statement scopes include:
 - The bodies of [function literals][Function literals];
 - The bodies of getters and setters of [properties][Property declaration];
 - The bodies of [constructors][Constructor declaration];
-- The bodies of instance initialization blocks in [classifier declarations][Classifier declaration];
-- TODO(Anything else?)
+- The bodies of instance initialization blocks in [classifier declarations][Classifier declaration].
 
 All declarations in a particular scope introduce new _bindings_ of identifiers in this scope to their respective entities in the program.
 These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated).
@@ -68,8 +66,6 @@ Examples:
   fun foo() = x + 2
   val x = 3
   ```
-
-TODO(rewrite expressions and statements as references to this part)
 
 TODO(identifier lifetime & such)
 
@@ -116,8 +112,6 @@ Besides identifiers which are introduced by the developer (e.g., via declaring c
 * `super<Klazz>@label` -- an identifier which references the supertype `Klazz` available in the selected scope, further details are available [here][Super-forms]
 
 ### Labels
-
-TODO(This is a stub)
 
 Labels are special syntactic marks which allow one to reference certain code fragments or elements.
 [Lambda expressions][Lambda literals]) and [loop statements][Loop statements] are allowed to be labeled, with label identifier associated with the corresponding entity.
