@@ -868,7 +868,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO([Kotlin 1.3+] <code>expect</code> and <code>external</code> functions also do not have implementations)</span></p>
+<p><span class="sentence">TODO([Kotlin 1.3+, Experimental] <code>expect</code> and <code>external</code> functions also do not have implementations)</span></p>
 </div>
 </div>
 <div class="paragraph">
@@ -972,7 +972,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: we also consider variable length parameters to have such types for the purposes of type inference and named parameters. </span><span class="sentence">TODO(Something else?)</span></p>
+<p><span class="sentence">Important: we also consider variable length parameters to have such types for the purposes of type inference and calls with named parameters.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1071,7 +1071,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Property declarations are used to create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — special functions which are used to read or write the property value. </span><span class="sentence">Getters and setters cannot be called directly, but rather define how the corresponding properties behave when accessed.</span></p>
+<p><span class="sentence">Kotlin uses <em>properties</em> to represent object-like entities, such as local variables, class fields or top-level values.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Property declarations may create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Properties may also have custom getter or setter — special functions which are used to read or write the property value. </span><span class="sentence">Getters and setters cannot be called directly, but rather define how the corresponding properties are evaluated when accessed.</span></p>
 </div>
 <h4 id="read-only-property-declaration">Read-only property declaration</h4>
 <div class="paragraph">
@@ -1081,9 +1087,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A read-only property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> in the form of</span></p>
 </div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb17-2" title="2">    <span class="kw">get</span>() { ... }</a></code></pre></div>
+<a class="sourceLine" id="cb17-2" title="2">    <span class="kw">get</span>(): T { ... } <span class="co">// (1)</span></a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">Both the right-hand value <code>e</code>, the type <code>T</code> and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if both the type of <code>e</code> and the return type of the getter cannot be <a href="type-inference.html#type-inference">inferred</a> (or, in case of the getter, specified explicitly), the type <code>T</code> must be specified explicitly. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
+<p><span class="sentence">or</span></p>
+</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb18-2" title="2">    <span class="kw">get</span>(): T = ... <span class="co">// (2)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">All of the right-hand value <code>e</code>, the type <code>T</code> in both positions, and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if we cannot infer the resulting property type from the type of <code>e</code> or from the type of getter in expression form (2), the type <code>T</code> must be specified explicitly either as the property type, or as the getter return type. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The initializer expression <code>e</code>, if given, serves as the starting value for the property backing field (see <a href="declarations.html#getters-and-setters">getters and setters section</a> for details) and is evaluated when the property is created. </span><span class="sentence">Properties that are not allowed to have backing fields (see <a href="declarations.html#getters-and-setters">getters and setters section</a> for details) are also not allowed to have initializer expressions.</span></p>
@@ -1100,9 +1111,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A mutable property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> and/or custom <a href="declarations.html#getters-and-setters">setter</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb18-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
-<a class="sourceLine" id="cb18-3" title="3">    <span class="kw">set</span>(value: TS) { ... }</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb19-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
+<a class="sourceLine" id="cb19-3" title="3">    <span class="kw">set</span>(value: TS) { ... }</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation when read from and to the setter invocation when written to.</span></p>
 </div>
@@ -1113,14 +1124,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Local property declarations also support <a href="operator-overloading.html#destructuring-declarations"><em>destructuring</em> declaration</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">val</span> (<span class="va">a</span>: T, b: U, c: V, ...) = e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">which is a syntactic sugar for the following expansion</span></p>
 </div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">val</span> <span class="va">a</span>: T = e.component1()</a>
-<a class="sourceLine" id="cb20-2" title="2"><span class="kw">val</span> <span class="va">b</span>: U = e.component2()</a>
-<a class="sourceLine" id="cb20-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
-<a class="sourceLine" id="cb20-4" title="4">...</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">val</span> <span class="va">a</span>: T = e.component1()</a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="kw">val</span> <span class="va">b</span>: U = e.component2()</a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="kw">val</span> <span class="va">c</span>: V = e.component3()</a>
+<a class="sourceLine" id="cb21-4" title="4">...</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Some of the entries in the destructuring declaration may be replaced with an <em>ignore marker</em> <code>_</code>, which signifies that no variable is declared and no <code>componentN()</code> function is called.</span></p>
 </div>
@@ -1131,9 +1142,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">As mentioned before, a property declaration may include a custom getter and/or custom setter (together called <em>accessors</em>) in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb21-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
-<a class="sourceLine" id="cb21-3" title="3">    <span class="kw">set</span>(anyValidArgumentName: TS): RT { ... }</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb22-2" title="2">    <span class="kw">get</span>(): TG { ... }</a>
+<a class="sourceLine" id="cb22-3" title="3">    <span class="kw">set</span>(anyValidArgumentName: TS): RT { ... }</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">These functions have the following requirements</span></p>
 </div>
@@ -1160,9 +1171,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">One can also omit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
-<a class="sourceLine" id="cb22-2" title="2">    <span class="kw">get</span></a>
-<a class="sourceLine" id="cb22-3" title="3">    <span class="kw">set</span></a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T = e</a>
+<a class="sourceLine" id="cb23-2" title="2">    <span class="kw">get</span></a>
+<a class="sourceLine" id="cb23-3" title="3">    <span class="kw">set</span></a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.</span></p>
@@ -1195,17 +1206,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">For the former, one may consider these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
-<a class="sourceLine" id="cb24-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb25-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="operator-overloading.html#operator-overloading">overloadable</a> form which is expanded into the following:</span></p>
 </div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb25-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb26-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -1218,18 +1229,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb26"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb26-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb27"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
-<a class="sourceLine" id="cb27-2" title="2"><span class="kw">var</span> <span class="va">x</span>: T</a>
-<a class="sourceLine" id="cb27-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
-<a class="sourceLine" id="cb27-4" title="4">    <span class="kw">set</span>(value: T) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="kw">var</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb28-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb28-4" title="4">    <span class="kw">set</span>(value: T) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb28-1" title="1">e.setValue(thisRef, property, y)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb29-1" title="1">e.setValue(thisRef, property, y)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -1247,24 +1258,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">val</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
-<a class="sourceLine" id="cb30-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
-<a class="sourceLine" id="cb30-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
+<a class="sourceLine" id="cb31-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb31-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">and</span></p>
 </div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">var</span> <span class="va">x</span>: T <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
-<a class="sourceLine" id="cb32-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
-<a class="sourceLine" id="cb32-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
-<a class="sourceLine" id="cb32-4" title="4">    <span class="kw">set</span>(value) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="kw">val</span> <span class="va">x</span>: T</a>
+<a class="sourceLine" id="cb33-3" title="3">    <span class="kw">get</span>(): T = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb33-4" title="4">    <span class="kw">set</span>(value) { x$delegate.setValue(thisRef, ::x, value) }</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
 </div>
@@ -1272,6 +1283,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property. </span><span class="sentence">This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value. </span><span class="sentence">This affects this value’s lifetime in the same way normal value lifetime works.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> &lt;<span class="dt">V</span>, <span class="dt">R</span> : <span class="dt">V</span>&gt; <span class="fu">Map</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt;.<span class="fu">getValue</span>(</a>
+<a class="sourceLine" id="cb34-2" title="2">        <span class="va">thisRef</span>: <span class="dt">Any?</span>, <span class="va">property</span>: <span class="dt">KProperty</span>&lt;*&gt;): <span class="dt">R</span> =</a>
+<a class="sourceLine" id="cb34-3" title="3">    getOrElse(property.name) {</a>
+<a class="sourceLine" id="cb34-4" title="4">        <span class="kw">throw</span> NoSuchElementException()</a>
+<a class="sourceLine" id="cb34-5" title="5">    } <span class="kw">as</span> R</a>
+<a class="sourceLine" id="cb34-6" title="6"></a>
+<a class="sourceLine" id="cb34-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> &lt;<span class="dt">V</span>&gt; <span class="fu">MutableMap</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt;.<span class="fu">setValue</span>(</a>
+<a class="sourceLine" id="cb34-8" title="8">        <span class="va">thisRef</span>: <span class="dt">Any?</span>, <span class="va">property</span>: <span class="dt">KProperty</span>&lt;*&gt;, <span class="va">newValue</span>: <span class="dt">V</span>) =</a>
+<a class="sourceLine" id="cb34-9" title="9">    <span class="kw">set</span>(property.name, newValue)</a>
+<a class="sourceLine" id="cb34-10" title="10"></a>
+<a class="sourceLine" id="cb34-11" title="11"><span class="kw">fun</span> <span class="fu">handleConfig</span>(<span class="va">config</span>: <span class="dt">MutableMap</span>&lt;<span class="va">String</span>, <span class="va">Any</span>?&gt;) {</a>
+<a class="sourceLine" id="cb34-12" title="12">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
+<a class="sourceLine" id="cb34-13" title="13">    <span class="kw">val</span> <span class="va">host</span>: <span class="kw">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
+<a class="sourceLine" id="cb34-14" title="14">    <span class="kw">var</span> <span class="va">port</span>: <span class="kw">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
+<a class="sourceLine" id="cb34-15" title="15"></a>
+<a class="sourceLine" id="cb34-16" title="16">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
+<a class="sourceLine" id="cb34-17" title="17">    <span class="co">// Throwing NSEE as there is no &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb34-18" title="18">    <span class="co">// println(&quot;$parent: going to $host:$port&quot;)</span></a>
+<a class="sourceLine" id="cb34-19" title="19"></a>
+<a class="sourceLine" id="cb34-20" title="20">    <span class="co">// Delegating property access to Map.setValue</span></a>
+<a class="sourceLine" id="cb34-21" title="21">    port = <span class="dv">443</span></a>
+<a class="sourceLine" id="cb34-22" title="22">    <span class="co">// Map now contains &quot;port&quot; key</span></a>
+<a class="sourceLine" id="cb34-23" title="23"></a>
+<a class="sourceLine" id="cb34-24" title="24">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
+<a class="sourceLine" id="cb34-25" title="25">    <span class="co">// Not throwing NSEE as there is &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb34-26" title="26">    println(<span class="st">&quot;$parent: going to $host:$port&quot;</span>)</a>
+<a class="sourceLine" id="cb34-27" title="27">}</a>
+<a class="sourceLine" id="cb34-28" title="28"></a>
+<a class="sourceLine" id="cb34-29" title="29"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
+<a class="sourceLine" id="cb34-30" title="30">    handleConfig(mutableMapOf(</a>
+<a class="sourceLine" id="cb34-31" title="31">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb34-32" title="32">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
+<a class="sourceLine" id="cb34-33" title="33">    ))</a>
+<a class="sourceLine" id="cb34-34" title="34">}</a></code></pre></div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example with <code>provideDelegate</code>:</span></p>
+</div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> &lt;<span class="dt">V</span>&gt; <span class="fu">MutableMap</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt;.<span class="fu">provideDelegate</span>(</a>
+<a class="sourceLine" id="cb35-2" title="2">        <span class="va">thisRef</span>: <span class="dt">Any?</span>,</a>
+<a class="sourceLine" id="cb35-3" title="3">        <span class="va">property</span>: <span class="dt">KProperty</span>&lt;*&gt;): <span class="dt">MutableMap</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt; =</a>
+<a class="sourceLine" id="cb35-4" title="4">    <span class="cf">if</span> (containsKey(property.name)) <span class="kw">this</span></a>
+<a class="sourceLine" id="cb35-5" title="5">    <span class="cf">else</span> <span class="kw">throw</span> NoSuchElementException()</a>
+<a class="sourceLine" id="cb35-6" title="6"></a>
+<a class="sourceLine" id="cb35-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> &lt;<span class="dt">V</span>, <span class="dt">R</span> : <span class="dt">V</span>&gt; <span class="fu">Map</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt;.<span class="fu">getValue</span>(</a>
+<a class="sourceLine" id="cb35-8" title="8">        <span class="va">thisRef</span>: <span class="dt">Any?</span>, <span class="va">property</span>: <span class="dt">KProperty</span>&lt;*&gt;): <span class="dt">R</span> = ...</a>
+<a class="sourceLine" id="cb35-9" title="9"></a>
+<a class="sourceLine" id="cb35-10" title="10"><span class="kw">operator</span> <span class="kw">fun</span> &lt;<span class="dt">V</span>&gt; <span class="fu">MutableMap</span>&lt;<span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span>&gt;.<span class="fu">setValue</span>(</a>
+<a class="sourceLine" id="cb35-11" title="11">        <span class="va">thisRef</span>: <span class="dt">Any?</span>, <span class="va">property</span>: <span class="dt">KProperty</span>&lt;*&gt;, <span class="va">newValue</span>: <span class="dt">V</span>) = ...</a>
+<a class="sourceLine" id="cb35-12" title="12"></a>
+<a class="sourceLine" id="cb35-13" title="13"><span class="kw">fun</span> <span class="fu">handleConfig</span>(<span class="va">config</span>: <span class="dt">MutableMap</span>&lt;<span class="va">String</span>, <span class="va">Any</span>?&gt;) {</a>
+<a class="sourceLine" id="cb35-14" title="14">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
+<a class="sourceLine" id="cb35-15" title="15">    <span class="kw">val</span> <span class="va">host</span>: <span class="kw">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
+<a class="sourceLine" id="cb35-16" title="16">    <span class="kw">var</span> <span class="va">port</span>: <span class="kw">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
+<a class="sourceLine" id="cb35-17" title="17">    <span class="co">// Throwing NSEE here as `provideDelegate`</span></a>
+<a class="sourceLine" id="cb35-18" title="18">    <span class="co">//   checks for &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb35-19" title="19"></a>
+<a class="sourceLine" id="cb35-20" title="20">    ...</a>
+<a class="sourceLine" id="cb35-21" title="21">}</a>
+<a class="sourceLine" id="cb35-22" title="22"></a>
+<a class="sourceLine" id="cb35-23" title="23"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
+<a class="sourceLine" id="cb35-24" title="24">    handleConfig(mutableMapOf(</a>
+<a class="sourceLine" id="cb35-25" title="25">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb35-26" title="26">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
+<a class="sourceLine" id="cb35-27" title="27">    ))</a>
+<a class="sourceLine" id="cb35-28" title="28">}</a></code></pre></div>
+</blockquote>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
 <p><span class="sentence">An <em>extension property declaration</em> is similar to a standard property declaration, but, very much alike an <a href="declarations.html#extension-function-declaration">extension function</a>, introduces an additional parameter to the property called <em>the receiver parameter</em>. </span><span class="sentence">This is different from usual property declarations, that do not have any parameters. </span><span class="sentence">There are other differences from standard property declarations:</span></p>
@@ -1300,24 +1383,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For all other purposes, extension properties are not different from non-extension properties.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">val</span> <span class="va">Int</span>.foo: <span class="kw">Int</span> <span class="kw">get</span>() = <span class="kw">this</span> + <span class="dv">1</span></a>
-<a class="sourceLine" id="cb33-2" title="2"></a>
-<a class="sourceLine" id="cb33-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
-<a class="sourceLine" id="cb33-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
-<a class="sourceLine" id="cb33-5" title="5">}</a>
-<a class="sourceLine" id="cb33-6" title="6"></a>
-<a class="sourceLine" id="cb33-7" title="7"><span class="kw">class</span> Bar {</a>
-<a class="sourceLine" id="cb33-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
-<a class="sourceLine" id="cb33-9" title="9">    <span class="kw">val</span> <span class="va">Int</span>.foo <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
-<a class="sourceLine" id="cb33-10" title="10">}</a></code></pre></div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(More examples (delegation, at least))</span></p>
-</div>
-</div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">val</span> <span class="va">Int</span>.foo: <span class="kw">Int</span> <span class="kw">get</span>() = <span class="kw">this</span> + <span class="dv">1</span></a>
+<a class="sourceLine" id="cb36-2" title="2"></a>
+<a class="sourceLine" id="cb36-3" title="3"><span class="kw">fun</span> <span class="fu">main</span>(<span class="va">args</span>: <span class="dt">Array</span>&lt;<span class="va">String</span>&gt;) {</a>
+<a class="sourceLine" id="cb36-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
+<a class="sourceLine" id="cb36-5" title="5">}</a>
+<a class="sourceLine" id="cb36-6" title="6"></a>
+<a class="sourceLine" id="cb36-7" title="7"><span class="kw">class</span> Bar {</a>
+<a class="sourceLine" id="cb36-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
+<a class="sourceLine" id="cb36-9" title="9">    <span class="kw">val</span> <span class="va">Int</span>.foo <span class="kw">get</span>() = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
+<a class="sourceLine" id="cb36-10" title="10">}</a></code></pre></div>
+</blockquote>
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
 <p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a>.</span></p>
@@ -1343,13 +1423,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb34-1" title="1"><span class="co">// Correct constant properties</span></a>
-<a class="sourceLine" id="cb34-2" title="2">const <span class="kw">val</span> <span class="va">answer</span> = <span class="dv">2</span> * <span class="dv">21</span></a>
-<a class="sourceLine" id="cb34-3" title="3">const <span class="kw">val</span> <span class="va">msg</span> = <span class="st">&quot;Hello World!&quot;</span></a>
-<a class="sourceLine" id="cb34-4" title="4">const <span class="kw">val</span> <span class="va">calculated</span> = answer + <span class="dv">45</span></a>
-<a class="sourceLine" id="cb34-5" title="5"></a>
-<a class="sourceLine" id="cb34-6" title="6"><span class="co">// Incorrect constant property</span></a>
-<a class="sourceLine" id="cb34-7" title="7">const <span class="kw">val</span> <span class="va">emptyStringHashCode</span> = <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb37-1" title="1"><span class="co">// Correct constant properties</span></a>
+<a class="sourceLine" id="cb37-2" title="2">const <span class="kw">val</span> <span class="va">answer</span> = <span class="dv">2</span> * <span class="dv">21</span></a>
+<a class="sourceLine" id="cb37-3" title="3">const <span class="kw">val</span> <span class="va">msg</span> = <span class="st">&quot;Hello World!&quot;</span></a>
+<a class="sourceLine" id="cb37-4" title="4">const <span class="kw">val</span> <span class="va">calculated</span> = answer + <span class="dv">45</span></a>
+<a class="sourceLine" id="cb37-5" title="5"></a>
+<a class="sourceLine" id="cb37-6" title="6"><span class="co">// Incorrect constant property</span></a>
+<a class="sourceLine" id="cb37-7" title="7">const <span class="kw">val</span> <span class="va">emptyStringHashCode</span> = <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
 </blockquote>
 <h4 id="late-initialized-properties">Late-initialized properties</h4>
 <div class="paragraph">
