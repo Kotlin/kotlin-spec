@@ -509,8 +509,8 @@ These operators are [overloadable][Operator overloading] with the following expa
 
 - `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
 - `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
-- `A <= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
-- `A >= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
+- `A <= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
+- `A >= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
 
 where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
 
@@ -635,8 +635,6 @@ A *cast expression* is a binary expression which uses cast operators `as` or `as
 An **`as` cast expression** `E as T` is called *an unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
 If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
-
-> Note: even if the exception is not thrown when evaluating the cast expression, it is guaranteed to be thrown later when its result is used with any runtime-available type.
 
 An unchecked cast expression result always has the same type as the type $T$ specified in the expression.
 
