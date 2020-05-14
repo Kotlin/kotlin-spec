@@ -774,9 +774,9 @@ If a function declaration is marked with the `tailrec` modifier, but is not actu
 :::{.paste target=grammar-rule-propertyDeclaration}
 :::
 
-TODO(brief property intro and classification)
+Kotlin uses *properties* to represent object-like entities, such as local variables, class fields or top-level values.
 
-Property declarations are used to create read-only (`val`) or mutable (`var`) entities in their respective scope. 
+Property declarations may create read-only (`val`) or mutable (`var`) entities in their respective scope.
 Properties may also have custom getter or setter --- functions which are used to read or write the property value.
 
 #### Read-only property declaration
@@ -787,15 +787,20 @@ A read-only property declaration may include a custom [getter][Getters and sette
 
 ```kotlin
 val x: T = e
-    get() { ... }
+    get(): T { ... } // (1)
+```
+
+or
+
+```kotlin
+val x: T = e
+    get(): T = ... // (2)
 ```
 
 in which case `x` is used as a synonym to the getter invocation. 
-Both the right-hand value `e`, the type `T` and the getter are optional, however, at least one of them must be specified. 
-More so, if both the type of `e` and the return type of the getter cannot be [inferred][Type inference] (or, in case of the getter, specified explicitly), the type `T` must be specified explicitly. 
+All of the right-hand value `e`, the type `T` in both positions, and the getter are optional, however, at least one of them must be specified. 
+More so, if we cannot infer the resulting property type from the type of `e` or from the type of getter in expression form (2), the type `T` must be specified explicitly either as the property type, or as the getter return type.
 In case both `e` and `T` are specified, the type of `e` must be a subtype of `T` (see [subtyping][Subtyping] for more details).
-
-TODO: we never actually say how getters are similar/different to normal functions and, henceforth, how the inference works
 
 The initializer expression `e`, if given, serves as the starting value for the property backing field (see [getters and setters section][Getters and setters] for details) and is evaluated when the property is created.
 Properties that are not allowed to have backing fields (see [getters and setters section][Getters and setters] for details) are also not allowed to have initializer expressions.
@@ -1006,6 +1011,78 @@ For both provided and standard delegates, the generated delegate value is placed
 This means that for a class member property it will be a synthetic member, for a local property it is a local value in the same scope as the property and for top-level (both extension and non-extension) properties it will be a top-level value.
 This affects this value's lifetime in the same way normal value lifetime works.
 
+> Example:
+> 
+> ```kotlin
+> operator fun <V, R : V> Map<in String, V>.getValue(
+>         thisRef: Any?, property: KProperty<*>): R =
+>     getOrElse(property.name) {
+>         throw NoSuchElementException()
+>     } as R
+> 
+> operator fun <V> MutableMap<in String, V>.setValue(
+>         thisRef: Any?, property: KProperty<*>, newValue: V) =
+>     set(property.name, newValue)
+> 
+> fun handleConfig(config: MutableMap<String, Any?>) {
+>     val parent by config       // Any?
+>     val host: String by config // String
+>     var port: Int by config    // Int
+> 
+>     // Delegating property accesses to Map.getValue
+>     // Throwing NSEE as there is no "port" key in the map
+>     // println("$parent: going to $host:$port")
+> 
+>     // Delegating property access to Map.setValue
+>     port = 443
+>     // Map now contains "port" key
+> 
+>     // Delegating property accesses to Map.getValue
+>     // Not throwing NSEE as there is "port" key in the map
+>     println("$parent: going to $host:$port")
+> }
+> 
+> fun main() {
+>     handleConfig(mutableMapOf(
+>         "parent" to "",
+>         "host" to "https://kotlinlang.org/"
+>     ))
+> }
+> ```
+
+> Example with `provideDelegate`:
+> 
+> ```kotlin
+> operator fun <V> MutableMap<in String, V>.provideDelegate(
+>         thisRef: Any?,
+>         property: KProperty<*>): MutableMap<in String, V> =
+>     if (containsKey(property.name)) this
+>     else throw NoSuchElementException()
+> 
+> operator fun <V, R : V> Map<in String, V>.getValue(
+>         thisRef: Any?, property: KProperty<*>): R = ...
+> 
+> operator fun <V> MutableMap<in String, V>.setValue(
+>         thisRef: Any?, property: KProperty<*>, newValue: V) = ...
+> 
+> fun handleConfig(config: MutableMap<String, Any?>) {
+>     val parent by config       // Any?
+>     val host: String by config // String
+>     var port: Int by config    // Int
+>     // Throwing NSEE here as `provideDelegate`
+>     //   checks for "port" key in the map
+> 
+>     ...
+> }
+> 
+> fun main() {
+>     handleConfig(mutableMapOf(
+>         "parent" to "",
+>         "host" to "https://kotlinlang.org/"
+>     ))
+> }
+> ```
+
 #### Extension property declaration
 
 An _extension property declaration_ is similar to a standard property declaration, but, very much alike an [extension function][Extension function declaration], introduces an additional parameter to the property called _the receiver parameter_. 
@@ -1031,22 +1108,20 @@ This is also true for local extension properties: while regular local properties
 
 For all other purposes, extension properties are not different from non-extension properties.
 
-Examples:
-
-```kotlin
-val Int.foo: Int get() = this + 1
-
-fun main(args: Array<String>) {
-    println(2.foo.foo) // prints "4"
-}
-
-class Bar {
-    val foo get() = this // returns type Bar
-    val Int.foo get() = this // returns type Int
-}
-```
-
-TODO(More examples (delegation, at least))
+> Examples:
+> 
+> ```kotlin
+> val Int.foo: Int get() = this + 1
+> 
+> fun main(args: Array<String>) {
+>     println(2.foo.foo) // prints "4"
+> }
+> 
+> class Bar {
+>     val foo get() = this // returns type Bar
+>     val Int.foo get() = this // returns type Int
+> }
+> ```
 
 #### Property initialization
 
