@@ -5855,7 +5855,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an <a href="#object-literals">anonymous object declaration</a> or as a complete <a href="#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
+<p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete <a href="#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
 </div>
 <ul>
 <li><span class="sentence">If a lambda literal <code>L</code> is preceded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
@@ -5915,7 +5915,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: This is similar to <em>singleton pattern</em> common to object-oriented programming in introducing a type which includes a single global value.</span></p>
+<p><span class="sentence">Note:This is similar to <em>singleton pattern</em> common to object-oriented programming in introducing a type which includes a single global value.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -6309,10 +6309,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Kotlin uses <em>properties</em> to represent object-like entities, such as local variables, class fields or top-level values.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Property declarations may create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Properties may also have custom getter or setter — special functions which are used to read or write the property value. </span><span class="sentence">Getters and setters cannot be called directly, but rather define how the corresponding properties are evaluated when accessed.</span></p>
+<p><span class="sentence">Property declarations may create read-only (<code>val</code>) or mutable (<code>var</code>) entities in their respective scope. </span><span class="sentence">Properties may also have custom getter or setter — functions which are used to read or write the property value.</span></p>
 </div>
 <h4 id="read-only-property-declaration">Read-only property declaration</h4>
 <div class="paragraph">
@@ -6435,7 +6432,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In all other cases a property has no backing field. </span><span class="sentence">Properties without backing fields are not allowed to have initializer expressions.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively. </span><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details). </span><span class="sentence">Properties themselves may also be declared <code>inline</code>, meaning that both getter and setter of said property are <code>inline</code>.</span></p>
+<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details).</span></p>
 </div>
 <h4 id="delegated-property-declaration">Delegated property declaration</h4>
 <div class="paragraph">
@@ -6727,13 +6727,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Classifier declarations inheriting from <code>kotlin.Throwable</code>.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, for a given type parameter <code>T</code>, only one restriction <code>T : U</code> can have <code>U</code> to be another type parameter.</span></p>
+<p><span class="sentence">Type parameters are allowed to specify <em>subtyping restrictions</em> on them in the form <code>T : U</code>, meaning <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> is a type parameter and <span class="math inline">\(U\)</span> is some other type available in the scope the declaration is declared in. </span><span class="sentence">These either are written directly at the parameter placement syntax or using a special <code>where</code> syntax. </span><span class="sentence">Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.</span></p>
 </div>
+<ul>
+<li><span class="sentence">For a given type parameter <code>T</code>, only one restriction <code>T : U</code> can have <code>U</code> to be another type parameter;</span></li>
+<li><div class="TODO">
+<span class="sentence">TODO(anything else?)</span>
+</div></li>
+</ul>
 <div class="paragraph">
 <p><span class="sentence">These restrictions are turned into corresponding <a href="#kotlin-type-constraints">type constraints</a> when the type parameters are substituted with types and are employed during <a href="#type-inference">type inference</a> and <a href="#overload-resolution">overload resolution</a> of any usage of the corresponding declaration. </span><span class="sentence">See the corresponding sections for details.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Type parameters do not introduce <a href="#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>. </span><span class="sentence">Only type parameters of <a href="#inlining">inline functions</a> can be declared <code>reified</code>.</span></p>
+<p><span class="sentence">Type parameters do not introduce <a href="#runtime-available-types">runtime-available types</a> unless declared <code>reified</code>.</span></p>
 </div>
 <h4 id="type-parameter-variance">Type parameter variance</h4>
 <div class="paragraph">
@@ -6766,7 +6772,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: examples</span></p>
+<p><span class="sentence">TODO: account for more complex cases</span></p>
 </div>
 </div>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
