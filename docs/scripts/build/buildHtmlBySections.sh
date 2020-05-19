@@ -17,7 +17,7 @@ gpp -H ./index.md \
 | bash ${FILTERS_DIR}/markSentencesFilter.sh html \
 | bash ${FILTERS_DIR}/copyPasteFilter.sh html \
 | bash ${FILTERS_DIR}/inlineDiagramFilter.sh html \
-| bash ${FILTERS_DIR}/inlineCodeIndenterFilter.sh html \
+| bash ${FILTERS_DIR}/mathInCodeFilter.sh html \
 | bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh html \
 | bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR
 
