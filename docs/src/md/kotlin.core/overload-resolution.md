@@ -449,17 +449,36 @@ If the callables in check are properties with available `invoke`, the same proce
 
 First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a [function type][Function types].
 Second, the type information needed to perform the resolution steps is acquired from _expected type_ of the reference itself, rather than the types of arguments and/or result.
+The `invoke` operator convention **does not** apply to callable reference candidates.
 Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable being called and the callable being referenced are to be resolved _simultaneously_.
 
-#### Resolving callable references in the presence of an expected type
+#### Resolving callable references not used as arguments to a call
 
 In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:
 
 - For each callable reference candidate, we perform the following steps:
   - We build its type constraints and add them to the constraint system of the expression the callable reference is used in;
   - A callable reference is deemed applicable if the constraint system is sound;
-- For all applicable candidates, the resolution sets are built and the most specific candidate is chosen.
-  This process is performed the same way as for [choosing candidates][Choosing the most specific candidate from the overload candidate set] for regular calls.
+- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set (OCS)];
+- If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.
+- Otherwise, the single callable in the set is chosen as the result of the resolution process.
+
+TODO: more examples
+
+> Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets
+
+> Important: when building the OCS for a callable reference, `invoke` operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets.
+> For example, consider the following code:
+> 
+> ```kotlin
+> fun foo() = 1
+> val foo = 2
+> ...
+> val y = ::foo
+> ```
+> 
+> Here both function `foo` and property `foo` are valid candidates for the callable reference and are placed *in the same candidate set*, thus producing an overload ambiguity.
+> It is not important whether there is a suitable `invoke` operator available for the type of property `foo`.
 
 > Example: consider the following two functions:
 > 
@@ -497,7 +516,7 @@ Assume we have a call `f(::g, b, c)`.
 
 1. For each overload candidate `f`, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate.
     During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
-2. For the most specific candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described [here][Resolving callable references in the presence of an expected type] and the most specific candidate for `::g` is selected.
+2. For the most specific candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described [here][Resolving callable references not used as arguments to a call] and the most specific candidate for `::g` is selected.
 
 > Note: this may result in selecting the most specific candidate for `f` which has no available candidates for `::g`, meaning the bidirectional resolution process fails when resolving `::g`.
 
