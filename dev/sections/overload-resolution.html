@@ -675,9 +675,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
+<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">The <code>invoke</code> operator convention <strong>does not</strong> apply to callable reference candidates. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
 </div>
-<h4 id="resolving-callable-references-in-the-presence-of-an-expected-type">Resolving callable references in the presence of an expected type</h4>
+<h4 id="resolving-callable-references-not-used-as-arguments-to-a-call">Resolving callable references not used as arguments to a call</h4>
 <div class="paragraph">
 <p><span class="sentence">In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:</span></p>
 </div>
@@ -687,27 +687,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
 </ul></li>
-<li><span class="sentence">For all applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing candidates</a> for regular calls.</span></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.html#building-the-overload-candidate-set-ocs">as building OCS for regular calls</a>;</span></li>
+<li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
+<li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: more examples</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>() = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">val</span> <span class="va">foo</span> = <span class="dv">2</span></a>
+<a class="sourceLine" id="cb6-3" title="3">...</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="kw">val</span> <span class="va">y</span> = ::foo</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case:</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> is built and only candidate (1) is applicable w.r.t. this constraint.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">In another case:</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
-<a class="sourceLine" id="cb8-2" title="2"></a>
-<a class="sourceLine" id="cb8-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> is built and only candidate (2) is applicable w.r.t. this constraint.</span></p>
 </div>
@@ -724,7 +748,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ol type="1">
 <li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
-<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
+<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
 </ol>
 <blockquote>
 <div class="paragraph">

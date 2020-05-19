@@ -127,11 +127,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The following sections describe CFG <em>fragments</em> associated with a particular Kotlin code construct. </span><span class="sentence">These fragments are introduced using visual notation rather than relational notation to simplify the understanding of the graph structure. </span><span class="sentence">To represent intermediate values created during computation, we use <em>implicit registers</em>, denoted <code>$1</code>, <code>$2</code>, <code>$3</code>, etc. These are considered to be unique in each CFG fragment (assigning the same register twice in the same CFG may only occur in unrelated program paths) and in the complete CFG, too. </span><span class="sentence">The numbers given are only notational.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(maybe we do need phi-nodes in the end?)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">We introduce a special kind of <code>eval</code> nodes, represented in dashed lines, to connect CFG fragments into bigger fragments. </span><span class="sentence"><code>eval x</code> here means that this node must be replaced with a whole fragment associated with <code>x</code>. </span><span class="sentence">When this replacement is performed, the value produced by <code>eval</code> is the same value that the meta-register <code>$result</code> holds in the corresponding fragment. </span><span class="sentence">All incoming edges of a fragment are connected to the incoming edges of the <code>eval</code> node, while all the outgoing edges of a fragment are connected to the outgoing edges of the <code>eval</code> node. </span><span class="sentence">It is important, however, that, if such edges are absent either in the fragment or in the <code>eval</code> node, they (edges) are removed from the CFG.</span></p>
 </div>
@@ -560,16 +555,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let’s consider the following example:</span></p>
 </div>
-<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="cf">if</span>(c) {       <span class="co">//</span></code><br />
-<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin">} <span class="cf">else</span> {      <span class="co">//</span></code><br />
-<code class="sourceCode kotlin">    x = <span class="dv">20</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin">}             <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin">y = <span class="dv">5</span>         <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> = x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">    x = <span class="dv">20</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">}             <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">y = <span class="dv">5</span>         <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> = x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \mathtt{z} \rightarrow Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 
 <div class="paragraph">
 <p><span class="sentence">There are no incorrect states in this example, so the code is correct.</span></p>
@@ -577,8 +572,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let’s consider another example:</span></p>
 </div>
-<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span>: <span class="kw">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="cf">while</span>(c) {    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"> Error!</code><br />
 <code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
