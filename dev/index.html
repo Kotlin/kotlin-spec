@@ -10864,38 +10864,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let’s consider the following example:</span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence"><code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Unassigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="cf">if</span>(c) <span class="op">{</span>       <span class="co">//</span></code><br />
-<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Assigned}}, \star \rightarrow \bot \}\)</span><br />
+<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>      <span class="co">//</span></code><br />
-<code class="sourceCode kotlin">    x = <span class="dv">20</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin"><span class="op">}</span>             <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin">y = <span class="dv">5</span>         <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Assigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Assigned}}, \mathtt{z} \rightarrow \operatorname{\mathit{Assigned}}, \star \rightarrow \bot \}\)</span></span></p>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(somehow fix these atrocities for indentation in inline code)</span></p>
-</div>
-</div>
+<code class="sourceCode kotlin">    x = <span class="dv">20</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="op">}</span>             <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">y = <span class="dv">5</span>         <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+
 <div class="paragraph">
 <p><span class="sentence">There are no incorrect states in this example, so the code is correct.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Let’s consider another example:</span></p>
 </div>
-<div class="paragraph">
-<p><span class="sentence"><code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \operatorname{\mathit{Unassigned}}, \mathtt{y} \rightarrow \operatorname{\mathit{Unassigned}}, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin"><span class="cf">while</span>(c) <span class="op">{</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span> Error!<br />
-<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><br />
-<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><br />
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="cf">while</span>(c) <span class="op">{</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"> Error!</code><br />
+<code class="sourceCode kotlin">    x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin">    y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="op">}</span>             <span class="co">//</span></code><br />
-<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code> <span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span> More errors!</span></p>
-</div>
+<code class="sourceCode kotlin"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"> More errors!  </code><br />
+
 <div class="paragraph">
 <p><span class="sentence">In this example, the state of both properties at line 3 is <span class="math inline">\(\top\)</span>, as it is the least upper bound of the states from lines 5 and 2 (from the <code>while</code> loop), which, after a rather trivial fixed point calculation, is derived to be <span class="math inline">\(\top\)</span>. </span><span class="sentence">This is a compile-time error in the case of <code>x</code>, because one cannot reassign an immutable property.</span></p>
 </div>
