@@ -13,8 +13,6 @@ To represent intermediate values created during computation, we use *implicit re
 These are considered to be unique in each CFG fragment (assigning the same register twice in the same CFG may only occur in unrelated program paths) and in the complete CFG, too.
 The numbers given are only notational.
 
-TODO(maybe we do need phi-nodes in the end?)
-
 We introduce a special kind of `eval` nodes, represented in dashed lines, to connect CFG fragments into bigger fragments.
 `eval x` here means that this node must be replaced with a whole fragment associated with `x`.
 When this replacement is performed, the value produced by `eval` is the same value that the meta-register `$result` holds in the corresponding fragment.
@@ -1297,16 +1295,16 @@ For every immutable property (declared using `val` keyword), any assignment to t
 Let's consider the following example:
 
 ```kotlin+math
-val x: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
-var y: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+val x: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
+var y: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
 if(c) {       //
-    x = 40    //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
-    y = 4     //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
+    x = 40    //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
+    y = 4     //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$$$
 } else {      //
-    x = 20    //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
-}             //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
-y = 5         //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
-val z = x + y //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
+    x = 20    //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
+}             //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+y = 5         //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$$$
+val z = x + y //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \mathtt{z} \rightarrow Assigned, \star \rightarrow \bot \}$$$
 ```
 
 There are no incorrect states in this example, so the code is correct.
@@ -1314,8 +1312,8 @@ There are no incorrect states in this example, so the code is correct.
 Let's consider another example:
 
 ```kotlin+math
-val x: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
-var y: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+val x: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
+var y: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
 while(c) {    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ Error!
     x = 40    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
     y = 4     //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
