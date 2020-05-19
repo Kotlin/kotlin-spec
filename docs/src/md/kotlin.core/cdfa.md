@@ -1296,30 +1296,32 @@ For every immutable property (declared using `val` keyword), any assignment to t
 
 Let's consider the following example:
 
-`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`if(c) {       //`{.kotlin}    
-`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$    
-`} else {      //`{.kotlin}    
-`    x = 20    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`}             //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
-`y = 5         //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$    
-`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}$    
-
-TODO(somehow fix these atrocities for indentation in inline code)
+```kotlin+math
+val x: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+var y: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+if(c) {       //
+    x = 40    //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+    y = 4     //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
+} else {      //
+    x = 20    //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+}             //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+y = 5         //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
+val z = x + y //$$$\{ \mathtt{x} \rightarrow \Assigned, \mathtt{y} \rightarrow \Assigned, \mathtt{z} \rightarrow \Assigned, \star \rightarrow \bot \}$$$
+```
 
 There are no incorrect states in this example, so the code is correct.
 
 Let's consider another example:
 
-`val x: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`var y: Int    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$    
-`while(c) {    //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ Error!    
-`    x = 40    //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
-`    y = 4     //`{.kotlin .indent} $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$    
-`}             //`{.kotlin}    
-`val z = x + y //`{.kotlin}         $\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$ More errors!    
+```kotlin+math
+val x: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+var y: Int    //$$$\{ \mathtt{x} \rightarrow \Unassigned, \mathtt{y} \rightarrow \Unassigned, \star \rightarrow \bot \}$$$
+while(c) {    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ Error!
+    x = 40    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+    y = 4     //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+}             //
+val z = x + y //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ More errors!  
+```
 
 In this example, the state of both properties at line 3 is $\top$, as it is the least upper bound of the states from lines 5 and 2 (from the `while` loop), which, after a rather trivial fixed point calculation, is derived to be $\top$.
 This is a compile-time error in the case of `x`, because one cannot reassign an immutable property.
