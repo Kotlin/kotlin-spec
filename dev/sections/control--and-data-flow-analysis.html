@@ -468,7 +468,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h3 id="performing-analyses-on-the-control-flow-graph">Performing analyses on the control-flow graph</h3>
 <div class="paragraph">
-<p><span class="sentence">The analyses defined in this document follow the pattern of analyses based on monotone frameworks, which work by modeling abstract program states as elements of lattices and joining these states using standard lattice operations. </span><span class="sentence">Such analysis may achieve limited path sensitivity via the analysis of conditions used in the <code>assume</code> nodes. </span><span class="sentence">Further description of monotone frameworks and corresponding analyses goes outside the scope of this document.</span></p>
+<p><span class="sentence">The analyses defined in this document follow the pattern of analyses based on monotone frameworks, which work by modeling abstract program states as elements of lattices and joining these states using standard lattice operations. </span><span class="sentence">Such analysis may achieve limited path sensitivity via the analysis of conditions used in the <code>assume</code> nodes.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In short, an analysis is defined on the CFG by introducing:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A lattice (a partially ordered set that has both a greatest lower bound and the least upper bound) <span class="math inline">\(\mathbf{S}\)</span> of values, called <em>abstract states</em>;</span></li>
+<li><span class="sentence">A set of rules for mapping CFG nodes to the elements of <span class="math inline">\(\mathbf{S}\)</span> called <em>the transfer function</em>, essentially a set of rules of how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The result of the analysis is a <em>fixed point</em> of the transfer function for each node of the given CFG, i.e. the set of states for each the transfer function is obeyed for every node. </span><span class="sentence">For a particular shape of transfer function, given a finite <span class="math inline">\(\mathbf{S}\)</span>, this fixed point always exists, although the details of how this works go out of scope of this document.</span></p>
 </div>
 <h4 id="preliminary-analysis-and-operatornamemathitkilldataflow-instruction">Preliminary analysis and <span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> instruction</h4>
 <div class="paragraph">
@@ -599,6 +609,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol type="1">
 <li><span class="sentence">Frances E. </span><span class="sentence">Allen. </span><span class="sentence">“Control flow analysis.” ACM SIGPLAN Notices, 1970.</span></li>
 <li><span class="sentence">Flemming Nielson, Hanne R. </span><span class="sentence">Nielson, and Chris Hankin. </span><span class="sentence">“Principles of program analysis.” Springer, 2015.</span></li>
+<li><span class="sentence">Kam, John B., and Jeffrey D. </span><span class="sentence">Ullman. </span><span class="sentence">“Monotone data flow analysis frameworks.” Acta informatica 7.3 (1977): 305-317.</span></li>
 </ol>
 </body>
 </html>
