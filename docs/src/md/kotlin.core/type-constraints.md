@@ -37,7 +37,13 @@ Solving a constraint system, on the other hand, may have multiple possible outco
 
 #### Checking constraint system soundness
 
-TODO()
+Checking constraint system soundness is a satisfiability problem.
+That is, given a number of constraints in the form $S <: T$ containing zero or more *free type variables* (also called inference type variables), it needs to determine if these constraints are non-contradictory, i.e. there exists a possible instantiation of these free variables that makes all given constraints valid.
+
+This boils down to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory.
+The algorithm of finding this bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.
+
+TODO: sample algorithm
 
 #### Finding optimal constraint system solution
 
@@ -48,8 +54,14 @@ To deal with this, a constraint system allows two additional types of constraint
 - A *push-down* constraint for type variable $T$, denoted $\downarrow T$, signifying that when finding a substitution for this variable, the optimal solution is the smallest one according to [subtyping relation][Subtyping].
 
 If a variable has no constraints of these kinds associated with it, it is assumed to have a pull-up implicit constraint.
+The process of instantiating the free variables of a constraint system starts by finding the bounds for each free variable (as mentioned in the previous section) and then, given these bounds, continues to pick the right type from them.
+Excluding other free variables, this boils down to:
 
-TODO()
+- For a variable with a push-down constraint, the solution is the [greatest lower bound] of all upper bounds for this variable, excluding other free variables;
+- For a variable with a pull-up constraint, the solution is the [least upper bound] of all lower bounds for this variable, excluding other free variables;
+- For a variable with both or none, the solution is also the [least upper bound] of all lower bounds for this variable, excluding other free variables.
+
+TODO: approximation?
 
 #### The relations on types as constraints
 
