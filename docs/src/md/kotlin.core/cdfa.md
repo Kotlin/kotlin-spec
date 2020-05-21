@@ -1106,7 +1106,14 @@ For the purposes of control-flow graph (and related analyses) this means as soon
 
 The analyses defined in this document follow the pattern of analyses based on monotone frameworks, which work by modeling abstract program states as elements of lattices and joining these states using standard lattice operations.
 Such analysis may achieve limited path sensitivity via the analysis of conditions used in the `assume` nodes.
-Further description of monotone frameworks and corresponding analyses goes outside the scope of this document.
+
+In short, an analysis is defined on the CFG by introducing:
+
+- A lattice (a partially ordered set that has both a greatest lower bound and the least upper bound) $\mathbf{S}$ of values, called *abstract states*;
+- A set of rules for mapping CFG nodes to the elements of $\mathbf{S}$ called *the transfer function*, essentially a set of rules of how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.
+
+The result of the analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e. the set of states for each the transfer function is obeyed for every node.
+For a particular shape of transfer function, given a finite $\mathbf{S}$, this fixed point always exists, although the details of how this works go out of scope of this document.
 
 #### Preliminary analysis and $\killDataFlow$ instruction
 
@@ -1336,3 +1343,4 @@ See the [corresponding section][Smart casts] for details.
 
 1. Frances E. Allen. "Control flow analysis." ACM SIGPLAN Notices, 1970.
 2. Flemming Nielson, Hanne R. Nielson, and Chris Hankin. "Principles of program analysis." Springer, 2015.
+3. Kam, John B., and Jeffrey D. Ullman. "Monotone data flow analysis frameworks." Acta informatica 7.3 (1977): 305-317.
