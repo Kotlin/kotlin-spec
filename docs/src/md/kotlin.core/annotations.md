@@ -59,8 +59,6 @@ See the corresponding section for details.
 
 Annotations may be declared *repeatable* (meaning that the same annotation may be applied to the same entity more than once) or *non-repeatable* (meaning that only one annotation of a particular type may be applied to the same entity).
 
-TODO(Anything else?)
-
 ### Built-in annotations
 
 * `kotlin.annotation.Retention`
