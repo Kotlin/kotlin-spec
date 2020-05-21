@@ -793,6 +793,31 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 > 3. Supply a default value to use if `null` is present
 >     * [elvis operator][Elvis operator expression]
 
+##### Nullability lozenge
+
+```diagram
++-------+         +-------+
+|       |         |       |
+|       |         |       |
+|   A?  <---------+   B?  |
+|       |         |       |
+|       |         |       |
++---+---+         ++--+---+
+    |              |  |
+    |        +-----+  |
+    |  +-----+        |
+    |  |              |
++---v--v+         +---v---+
+|       |         |       |
+|       |         |       |
+|  A!!  <---------+  B!!  |
+|       |         |       |
+|       |         |       |
++-------+         +-------+
+```
+
+TODO(Explain this thing...)
+
 #### Intersection types
 
 Intersection types are special *non-denotable* types used to express the fact that a value belongs to *all* of *several* types at the same time.
@@ -968,17 +993,95 @@ All integer literal type are equivalent w.r.t. subtyping, meaning that for any s
 
 Subtyping for two possibly nullable types $A$ and $B$ is defined via *two* relations, both of which must hold.
 
-* Regular subtyping $<:$ for non-nullable types $A!!$ and $B!!$
-* Subtyping by nullability $\sbn$
+1. Regular subtyping $<:$ for types $A$ and $B$ using the [nullability lozenge][Nullability lozenge]
+1. Subtyping by nullability $\sbn$
 
 Subtyping by nullability $\sbn$ for two possibly nullable types $A$ and $B$ uses the following rules.
 
-* $A!! \sbn B$
-* $A \sbn B$ if $\exists T!! : A <: T!!$
-* $A \sbn B?$
-* $A \sbn B$ if $\nexists T!! : B <: T!!$
+1. $A!! \sbn B$
+1. $A \sbn B$ if $\exists T!! : A <: T!!$
+1. $A \sbn B?$
+1. $A \sbn B$ if $\nexists T!! : B <: T!!$
+1. $A? \not \sbn B$
+
+> Informally: these rules represent the following idea derived from the nullability lozenge.
+>
+>> $A \not \sbn B$ if $B$ is definitely non-nullable and $A$ may be nullable or $B$ may be non-nullable and $A$ is definitely nullable.
+
+> Note: these rules follow the structure of the nullability lozenge and check the absence of nullability violation $A? \sbn B!!$ via underapproximating it using the *supertype* relation (as we cannot enumerate the *subtype* relation for $B$).
 
 > Example:
+> 
+> ```kotlin
+> class Foo<A, B : A?> {
+>     val b: B = mk()
+>     val bQ: B? = mk()
+>     
+>     // For this assignment to be well-formed,
+>     //   B must be a subtype of A
+>     // Subtyping by nullability holds per rule 4
+>     // Regular subtyping does not hold,
+>     //   as B <: A? is not enough to show B <: A
+>     //   (we are missing B!! <: A!!)
+>     val ab: A = b // ERROR
+>
+>     // For this assignment to be well-formed,
+>     //   B? must be a subtype of A
+>     // Subtyping by nullability does not hold per rule 5
+>     val abQ: A = bQ // ERROR
+>     
+>     // For this assignment to be well-formed,
+>     //   B must be a subtype of A?
+>     // Subtyping by nullability holds per rule 3
+>     // Regular subtyping does hold,
+>     //   as B <: A? is enough to show B <: A?
+>     val aQb: A? = b // OK
+>     
+>     // For this assignment to be well-formed,
+>     //   B? must be a subtype of A?
+>     // Subtyping by nullability holds per rule 3
+>     // Regular subtyping does hold,
+>     //   as B <: A? is enough to show B? <: A?
+>     //   (taking the upper edge of the nullability lozenge)
+>     val aQbQ: A? = bQ // OK
+> }
+> 
+> class Bar<A, B : A> {
+>     val b: B = mk()
+>     val bQ: B? = mk()
+>     
+>     // For this assignment to be well-formed,
+>     //   B must be a subtype of A
+>     // Subtyping by nullability holds per rule 4
+>     // Regular subtyping does hold,
+>     //   as B <: A is enough to show B <: A
+>     val ab: A = b // OK
+>
+>     // For this assignment to be well-formed,
+>     //   B? must be a subtype of A
+>     // Subtyping by nullability does not hold per rule 5
+>     val abQ: A = bQ // ERROR
+>     
+>     // For this assignment to be well-formed,
+>     //   B must be a subtype of A?
+>     // Subtyping by nullability holds per rule 3
+>     // Regular subtyping does hold,
+>     //   as B <: A is enough to show B <: A?
+>     //   (taking the upper triangle of the nullability lozenge)
+>     val aQb: A? = b // OK
+>     
+>     // For this assignment to be well-formed,
+>     //   B? must be a subtype of A?
+>     // Subtyping by nullability holds per rule 3
+>     // Regular subtyping does hold,
+>     //   as B <: A is enough to show B? <: A?
+>     //   (taking the upper edge of the nullability lozenge)
+>     val aQbQ: A? = bQ // OK
+> }
+> ```
+
+> Example:
+> 
 > ```diagram
 >
 >     A    B?   C!!          A
