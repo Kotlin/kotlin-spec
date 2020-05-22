@@ -1,11 +1,14 @@
 ## Control- and data-flow analysis
 
+Several Kotlin features such as [variable initialization analysis] and [smart casting analysis] require performing control- and data-flow analyses.
+This section describes them and their applications.
+
 ### Control flow graph
 
-We define all kinds of control-flow analysis for Kotlin on a classic model called a control-flow graph (CFG).
-A CFG of a program is a graph that loosely defines all feasible paths the flow of a particular program can take during execution.
-All CFGs given in this section are *intraprocedural*, meaning that they describe the flow inside a single function, not taking function calls into account.
-It may, however, include multiple function bodies if said functions are *declared* inside each other (as is the case for [lambdas][Lambda literals]).
+We define all control-flow analyses for Kotlin on a classic model called a control-flow graph (CFG).
+A CFG of a program is a graph which loosely defines all feasible paths the flow of a particular program can take during execution.
+All CFGs given in this section are *intraprocedural*, meaning that they describe the flow inside a *single* function, not taking function calls into account.
+CFG may, however, include multiple function bodies if said functions are *declared* inside each other (as is the case for [lambdas][Lambda literals]).
 
 The following sections describe CFG *fragments* associated with a particular Kotlin code construct.
 These fragments are introduced using visual notation rather than relational notation to simplify the understanding of the graph structure.
@@ -13,26 +16,26 @@ To represent intermediate values created during computation, we use *implicit re
 These are considered to be unique in each CFG fragment (assigning the same register twice in the same CFG may only occur in unrelated program paths) and in the complete CFG, too.
 The numbers given are only notational.
 
-We introduce a special kind of `eval` nodes, represented in dashed lines, to connect CFG fragments into bigger fragments.
-`eval x` here means that this node must be replaced with a whole fragment associated with `x`.
+We introduce special `eval` nodes, represented in *dashed lines*, to connect CFG fragments into bigger fragments.
+`eval x` here means that this node must be replaced with the whole CFG fragment associated with `x`.
 When this replacement is performed, the value produced by `eval` is the same value that the meta-register `$result` holds in the corresponding fragment.
-All incoming edges of a fragment are connected to the incoming edges of the `eval` node, while all the outgoing edges of a fragment are connected to the outgoing edges of the `eval` node.
+All incoming edges of a fragment are connected to the incoming edges of the `eval` node, while all outgoing edges of a fragment are connected to the outgoing edges of the `eval` node.
 It is important, however, that, if such edges are absent either in the fragment or in the `eval` node, they (edges) are removed from the CFG.
 
-We also use the `eval b` notation where `b` is not a single statement, but rather a control-flow structure body.
-The fragment for a control-flow structure body is the sequence of fragments for its statements, connected in the program order.
+We also use the `eval b` notation where `b` is not a single statement, but rather a [control structure body][Code blocks].
+The fragment for a control structure body is the sequence of fragments for its statements, connected in the program order.
 
 Some of the fragments have two kinds of outgoing edges, labeled `t` and `f` on the pictures.
 In a similar fashion, some `eval` nodes have two outgoing edges with the same labels.
 If such a fragment is inserted into such a node, only edges with matching labels are merged into each other.
 If either the fragment or the node have only unlabeled outgoing edges, the process is performed same as above.
 
-For some types of analyses, it is important which boolean conditions hold on each path.
+For some types of analyses, it is important which boolean conditions hold on a control flow path.
 We use special `assume` nodes to introduce these conditions.
 `assume x` means that boolean condition `x` is always `true` when program flow passes through this particular node.
 
 Some nodes are *labeled*, similarly to how statements may be labeled in Kotlin.
-These are special in the sense that if a fragment mentions a particular labeled node, this node is the same as any other node with this label in the complete CFG.
+Labeled nodes are considered CFG-unique and are handled as follows: if a fragment mentions a particular labeled node, this node is the same as any other node with this label in the complete CFG (i.e., a singular actual node is shared between all its labeled references).
 This is important when building graphs representing loops.
 
 There are two other special kinds of nodes: `unreachable` nodes, signifying unreachable code, and `backedge` nodes, important for some kinds of analyses.
@@ -311,7 +314,6 @@ x || y
 +---------+----------+             +----------+----------+
        t  |                                   |  f
           v                                   v
-
 ```
 
 ```kotlin
@@ -681,6 +683,8 @@ continue@loop
 
 #### Statements
 
+> Note: to simplify the notation, we consider only labeled loops, as unlabeled loops may be trivially turned into labeled ones by assigning them a unique label.
+
 ```kotlin
 loop@ while(c) { b... }
 ```
@@ -720,7 +724,6 @@ loop@ while(c) { b... }
         |           |                     |
         +-----------+                     |
                                           v
-
 ```
 
 ```kotlin
@@ -769,7 +772,6 @@ loop@ do { b... } while(c)
                                           |
                                           |
                                           v
-
 ```
 
 #### Declarations
@@ -818,11 +820,11 @@ fun f() { body... }
 
 ```kotlin
 class A (...) { 
-    <declaration 1>
-    <declaration 2>
-    <init-block 1>
-    <declaration 3>
-    <init-block 2>
+    'declaration 1'
+    'declaration 2'
+    'init-block 1'
+    'declaration 3'
+    'init-block 2'
     ...
 }
 ```
@@ -836,53 +838,55 @@ TODO: function decls are order-agnostic???
 
 ```diagram
              +
-             v
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
-:                          :
-:   eval <declaration 1>   :
-:                          :
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
              |
              v
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
 :                          :
-:   eval <declaration 2>   :
+:   eval 'declaration 1'   :
 :                          :
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
              |
              v
-+~~~~~~~~~~~~+~~~~~~~~~~~~+
-:                         :
-:   eval <init-block 1>   :
-:                         :
-+~~~~~~~~~~~~+~~~~~~~~~~~~+
-             |
-             v
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
 :                          :
-:   eval <declaration 3>   :
+:   eval 'declaration 2'   :
 :                          :
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
              |
              v
-+~~~~~~~~~~~~+~~~~~~~~~~~~+
-:                         :
-:   eval <init-block 2>   :
-:                         :
-+~~~~~~~~~~~~+~~~~~~~~~~~~+
-             |
-             v
-
-            ...
-
-             |
-             v
-+~~~~~~~~~~~~+~~~~~~~~~~~~-+
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
 :                          :
-:   eval <declaration n>   :
+:   eval 'init-block 1'    :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+:                          :
+:   eval 'declaration 3'   :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+:                          :
+:   eval 'init-block 2'    :
+:                          :
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+:                          :
+:           ...            :
+:                          :
++~~~~~~~~~~~~~~~~~~~~~~~~~~+            
+             |
+             v
++~~~~~~~~~~~~+~~~~~~~~~~~~~+
+:                          :
+:   eval 'declaration n'   :
 :                          :
 +~~~~~~~~~~~~~~~~~~~~~~~~~~+
-
 ```
 
 #### Examples
@@ -1091,33 +1095,32 @@ fun f(x: Int) {
 |             +-------+--------+      +--------+--------+     |
 |                     |                        |              |
 +---------------------+                        +--------------+
-
 ```
 
 #### `kotlin.Nothing` and its influence on the CFG
 
 As discussed in the [type system][`kotlin.Nothing`] section of this specification, `kotlin.Nothing` is an uninhabited type, meaning an instance of this type can never exist at runtime.
-For the purposes of control-flow graph (and related analyses) this means as soon as an expression is known statically to have `kotlin.Nothing` type it makes all subsequent code **unreachable**.
+For the purposes of control-flow graph (and related analyses) this means, as soon as an expression is known statically to have `kotlin.Nothing` type, all subsequent code is **unreachable**.
 
 > Important: each specific analysis may decide to either use this information or ignore it for a given program.
-> If unreachability from `kotlin.Nothing` is used, it can be represented in different ways, e.g., by changing the CFG structure or via [$\killDataFlow$][Preliminary analysis and $\killDataFlow$ instruction] instruction.
+> If unreachability from `kotlin.Nothing` is used, it can be represented in different ways, e.g., by changing the CFG structure or via [$\killDataFlow$][Preliminary analysis and $\killDataFlow$ instruction] instructions.
 
 ### Performing analyses on the control-flow graph
 
 The analyses defined in this document follow the pattern of analyses based on monotone frameworks, which work by modeling abstract program states as elements of lattices and joining these states using standard lattice operations.
-Such analysis may achieve limited path sensitivity via the analysis of conditions used in the `assume` nodes.
+Such analyses may achieve limited path sensitivity via the analysis of conditions used in the `assume` nodes.
 
 In short, an analysis is defined on the CFG by introducing:
 
-- A lattice (a partially ordered set that has both a greatest lower bound and the least upper bound) $\mathbf{S}$ of values, called *abstract states*;
-- A set of rules for mapping CFG nodes to the elements of $\mathbf{S}$ called *the transfer function*, essentially a set of rules of how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.
+- A lattice $\mathbf{S}$ (a partially ordered set that has both a greatest lower bound and a least upper bound defined for every pair of its elements) of values, called *abstract states*;
+- A *transfer function* for mapping CFG nodes to the elements of $\mathbf{S}$, essentially a set of rules on how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.
 
-The result of the analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e. the set of states for each the transfer function is obeyed for every node.
-For a particular shape of transfer function, given a finite $\mathbf{S}$, this fixed point always exists, although the details of how this works go out of scope of this document.
+The result of an analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e., an abstract state for each node such that the transfer function maps the state to itself.
+For the particular shapes of the transfer function used in program analyses, given a finite $\mathbf{S}$, the fixed point always exists, although the details of how this works go out of scope of this document.
 
 #### Preliminary analysis and $\killDataFlow$ instruction
 
-Some analyses described further in this document are based on special instructions called $\killDataFlow(\upsilon)$ where $\upsilon$ is a program variable.
+Some analyses described further in this document are based on special instruction called $\killDataFlow(\upsilon)$ where $\upsilon$ is a program variable.
 These are not present in the graph representation described above and need to be inferred before such analyses may actually take place.
 
 $\killDataFlow$ inference is based on a standard control-flow analysis with the lattice of natural numbers over "min" and "max" operations.
@@ -1149,22 +1152,20 @@ After running this analysis, for every backedge $b$ and every variable $x$ prese
 > Note: this analysis does involve a possibly **infinite** lattice (a lattice of natural numbers) and may seem to diverge on some graphs.
 > However, if we assume that every backedge in an arbitrary CFG is marked with a `backedge` instruction, it is trivial to prove that no number in the lattice will ever exceed the number of assignments (which is **finite**) in the analyzed program as any loop in the graph will contain at least one backedge.
 
-Example: 
-
-Consider the following Kotlin code:
+As an example, consider the following Kotlin code:
 
 ```kotlin
 var x: Int = 0
 var y: Int = 0
-while(b1) {
+while (b1) {
     y = f()
     do {
         x = g()
-    } while(b2)
+    } while (b2)
 }
 ```
 
-Which results in the following diagram (annotated with the analysis results where it is important):
+which results in the following CFG diagram (annotated with the analysis results where it is important):
 
 ```diagram
                                               +------------+
@@ -1287,53 +1288,51 @@ The outer backedge has one predecessor with state $\{ \texttt{x} \rightarrow 2, 
 
 Kotlin allows [non-delegated properties][Property declaration] to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
 This property is checked by the variable initialization analysis (VIA).
-VIA operates on abstract values from a flat lattice of two values $\{\Assigned, \Unassigned\}$.
-The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the lattice given above.
+VIA operates on abstract values from a flat *assignedness* lattice of two values $\{\Assigned, \Unassigned\}$.
+The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the assignedness lattice.
 The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.
 
-The CFG nodes relevant to VIA include only property declarations and direct assignments.
+The CFG nodes relevant to VIA include only property declarations and direct property assignments.
 Every property declaration adds itself to the domain by setting the $\Unassigned$ value to itself.
-Every direct assignment of a property changes the value for this property to $\Assigned$.
+Every direct property assignment changes the value for this property to $\Assigned$.
 
 The results of the analysis are interpreted as follows. 
 For every property, any usage of the said property in any statement is a compile-time error unless the abstract state of this property at this statement is $\Assigned$.
-For every immutable property (declared using `val` keyword), any assignment to this property is a compile-time error unless the abstract state of this property is $\Unassigned$.
+For every read-only property (declared using `val` keyword), any assignment to this property is a compile-time error unless the abstract state of this property is $\Unassigned$.
 
-Let's consider the following example:
-
-```kotlin+math
-val x: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-var y: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-if(c) {       //
-    x = 40    //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-    y = 4     //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$$$
-} else {      //
-    x = 20    //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-}             //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
-y = 5         //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \star \rightarrow \bot \}$$$
-val z = x + y //$$$\{ \mathtt{x} \rightarrow Assigned, \mathtt{y} \rightarrow Assigned, \mathtt{z} \rightarrow Assigned, \star \rightarrow \bot \}$$$
-```
-
-There are no incorrect states in this example, so the code is correct.
-
-Let's consider another example:
+As an example, consider the following Kotlin code:
 
 ```kotlin+math
-val x: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-var y: Int    //$$$\{ \mathtt{x} \rightarrow Unassigned, \mathtt{y} \rightarrow Unassigned, \star \rightarrow \bot \}$$$
-while(c) {    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ Error!
-    x = 40    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
-    y = 4     //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
-}             //
-val z = x + y //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ More errors!  
+/*  1 */ val x: Int    //$$$\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/*  2 */ var y: Int    //$$$\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/*  3 */ if (c) {       //
+/*  4 */     x = 40    //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/*  5 */     y = 4     //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}$$$
+/*  6 */ } else {      //
+/*  7 */     x = 20    //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/*  8 */ }             //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+/*  9 */ y = 5         //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}$$$
+/* 10 */ val z = x + y //$$$\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \mathtt{z} \rightarrow \mathit{Assigned}\}$$$
 ```
 
-In this example, the state of both properties at line 3 is $\top$, as it is the least upper bound of the states from lines 5 and 2 (from the `while` loop), which, after a rather trivial fixed point calculation, is derived to be $\top$.
-This is a compile-time error in the case of `x`, because one cannot reassign an immutable property.
+There are no incorrect operations in this example, so the code does not produce any compile-time errors.
 
-At line 7 there is another compile-time error when both properties are used, because there are paths in the CFG which reach line 7 when the properties have not been assigned (the case when the `while` loop was skipped).
+Let us consider another example:
 
-TODO(draw graphs for all these?)
+```kotlin+math
+/* 1 */ val x: Int    //$$$\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/* 2 */ var y: Int    //$$$\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}$$$
+/* 3 */ while (c) {    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ Error!
+/* 4 */     x = 40    //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+/* 5 */     y = 4     //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$
+/* 6 */ }             //
+/* 7 */ val z = x + y //$$$\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}$$$ More errors!  
+```
+
+In this example, the state of both properties at line 3 is $\top$, as it is the least upper bound of the states from lines 5 and 2 (from the `while` loop), which is derived to be $\top$.
+This leads to a compile-time error at line 4 for `x`, because one cannot reassign a read-only property.
+
+At line 7 there is another compile-time error when both properties are used, as there are paths in the CFG which reach line 7 when the properties have not been assigned (i.e., the case when the `while` loop body was skipped).
 
 #### Smart casting analysis
 
