@@ -169,9 +169,60 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">This boils down to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory. </span><span class="sentence">The algorithm of finding this bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.</span></p>
 </div>
+<h5 id="a-sample-bound-inference-algorithm">A sample bound inference algorithm</h5>
+<div class="paragraph">
+<p><span class="sentence">The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above. </span><span class="sentence">A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The algorithm works in two phases: <em>reduction</em> and <em>incorporation</em> that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached. </span><span class="sentence">The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed. </span><span class="sentence">The incorporation phase is used to introduce new bounds and constraints from existing bounds. </span><span class="sentence">A bound is similar to constraint in that it has the form <span class="math inline">\(S &lt;: T\)</span>, but either <span class="math inline">\(S\)</span> or <span class="math inline">\(T\)</span> (or both) is an inference variable. </span><span class="sentence">Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><strong>Reduction phase</strong>: for each constraint <span class="math inline">\(S &lt;: T\)</span> in the constraint system the following rules are applied:</span></p>
+</div>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> are proper types <span><span class="TODO">(TODO: do we have such a term?)</span><span class="TODO-marker">*</span></span> and:</span>
+<ul>
+<li><span class="sentence">if <span class="math inline">\(S &lt;: T\)</span>, this constraint is eliminated;</span></li>
+<li><span class="sentence">otherwise, if <span class="math inline">\(T &lt;: S\)</span>, this is an inference error;</span></li>
+</ul></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is an inference variable <span class="math inline">\(\alpha\)</span>, a new bound <span class="math inline">\(\alpha &lt;: T\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is an inference variable <span class="math inline">\(\beta\)</span>, a new bound <span class="math inline">\(S &lt;: \beta\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a nullable type of form <span class="math inline">\(A?\)</span> and:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(B!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;</span></li>
+<li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\(A &lt;: T\)</span>;</span></li>
+</ul></li>
+<li><span class="sentence">Otherwise, based on the form of <span class="math inline">\(T\)</span>:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a parameterized type <span class="math inline">\(G[A_1, \ldots, A_N]\)</span>, all the supertypes of <span class="math inline">\(S\)</span> the one of the form <span class="math inline">\(G[B_1, \ldots, B_N]\)</span> is chosen. </span><span class="sentence">If no such supertype exists, this is an inference error. </span><span class="sentence">Otherwise, for each <span class="math inline">\(M \in [1,N]\)</span>, a type argument constraint for <span class="math inline">\(A_M\)</span> and <span class="math inline">\(B_M\)</span> is introduced (see below);</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is any other classifier type, then if <span class="math inline">\(T\)</span> is among supertypes for <span class="math inline">\(S\)</span>, the constraint is eliminated, and if it is not, this is an inference error;</span></li>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a type variable:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(S\)</span> is an intersection type containing <span class="math inline">\(T\)</span>, this constraint is eliminated;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> has a lower bound <span class="math inline">\(B\)</span>, the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span>;</span></li>
+<li><span class="sentence">Otherwise, this is an inference error;</span></li>
+</ul></li>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is an intersection type <span class="math inline">\(A_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}A_N\)</span>, the constraint is reduced to <span class="math inline">\(N\)</span> constraints <span class="math inline">\(S &lt;: A_M\)</span> for each <span class="math inline">\(M \in [1, N]\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span></span></li>
+<li><span class="sentence">Otherwise, this is an inference error <span><span class="TODO">(TODO: seems like animal poo)</span><span class="TODO-marker">*</span></span>.</span></li>
+</ul></li>
+</ul></li>
+</ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: sample algorithm</span></p>
+<p><span class="sentence">TODO(type parameter constraints)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(incorporation phase)</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(captured types everywhere)</span></p>
 </div>
 </div>
 <h4 id="finding-optimal-constraint-system-solution">Finding optimal constraint system solution</h4>
