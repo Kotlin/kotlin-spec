@@ -43,7 +43,46 @@ That is, given a number of constraints in the form $S <: T$ containing zero or m
 This boils down to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory.
 The algorithm of finding this bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.
 
-TODO: sample algorithm
+##### A sample bound inference algorithm
+
+The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above.
+A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.
+
+The algorithm works in two phases: *reduction* and *incorporation* that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached.
+The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed.
+The incorporation phase is used to introduce new bounds and constraints from existing bounds.
+A bound is similar to constraint in that it has the form $S <: T$, but either $S$ or $T$ (or both) is an inference variable.
+Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable.
+
+**Reduction phase**: for each constraint $S <: T$ in the constraint system the following rules are applied:
+
+- If $S$ and $T$ are proper types (TODO: do we have such a term?) and:
+    - if $S <: T$, this constraint is eliminated;
+    - otherwise, if $T <: S$, this is an inference error;
+- Otherwise, if $S$ is an inference variable $\alpha$, a new bound $\alpha <: T$ is added to current solution;
+- Otherwise, if $T$ is an inference variable $\beta$, a new bound $S <: \beta$ is added to current solution;
+- Otherwise, if $S$ is a nullable type of form $A?$ and:
+    - If $T$ is a known non-nullable type (a classifier type, a nullability-asserted type $B!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;
+    - Otherwise, the constraint is reduced to $A <: T$;
+- Otherwise, based on the form of $T$:
+    - If $T$ is a parameterized type $G[A_1, \ldots, A_N]$, all the supertypes of $S$ the one of the form $G[B_1, \ldots, B_N]$ is chosen. 
+      If no such supertype exists, this is an inference error. 
+      Otherwise, for each $M \in [1,N]$, a type argument constraint for $A_M$ and $B_M$ is introduced (see below);
+    - Otherwise, if $T$ is any other classifier type, then if $T$ is among supertypes for $S$, the constraint is eliminated, and if it is not, this is an inference error;
+    - If $T$ is a type variable:
+        - If $S$ is an intersection type containing $T$, this constraint is eliminated;
+        - Otherwise, if $T$ has a lower bound $B$, the constraint is reduced to $S <: B$;
+        - Otherwise, this is an inference error;
+    - If $T$ is an intersection type $A_1 \amp \ldots \amp A_N$, the constraint is reduced to $N$ constraints $S <: A_M$ for each $M \in [1, N]$;
+    - If $T$ is a nullable type of the form $B?$ and:
+        - If $S$ is a known non-nullable type (a classifier type, a nullability-asserted type $A!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to $S <: B$
+        - Otherwise, this is an inference error (TODO: seems like animal poo).
+
+TODO(type parameter constraints)
+
+TODO(incorporation phase)
+
+TODO(captured types everywhere)
 
 #### Finding optimal constraint system solution
 
