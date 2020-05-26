@@ -11107,18 +11107,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> are proper types <span><span class="TODO">(TODO: do we have such a term?)</span><span class="TODO-marker">*</span></span> and:</span>
 <ul>
 <li><span class="sentence">if <span class="math inline">\(S &lt;: T\)</span>, this constraint is eliminated;</span></li>
-<li><span class="sentence">otherwise, if <span class="math inline">\(T &lt;: S\)</span>, this is an inference error;</span></li>
+<li><span class="sentence">otherwise this is an inference error;</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is an inference variable <span class="math inline">\(\alpha\)</span>, a new bound <span class="math inline">\(\alpha &lt;: T\)</span> is added to current solution;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is an inference variable <span class="math inline">\(\beta\)</span>, a new bound <span class="math inline">\(S &lt;: \beta\)</span> is added to current solution;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a nullable type of form <span class="math inline">\(A?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(B!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is also a nullable type of form <span class="math inline">\(B?\)</span>, the constraint is reduced to <span class="math inline">\(A &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\(A &lt;: T\)</span>;</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, based on the form of <span class="math inline">\(T\)</span>:</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(T\)</span> is a parameterized type <span class="math inline">\(G[A_1, \ldots, A_N]\)</span>, all the supertypes of <span class="math inline">\(S\)</span> the one of the form <span class="math inline">\(G[B_1, \ldots, B_N]\)</span> is chosen. </span><span class="sentence">If no such supertype exists, this is an inference error. </span><span class="sentence">Otherwise, for each <span class="math inline">\(M \in [1,N]\)</span>, a type argument constraint for <span class="math inline">\(A_M\)</span> and <span class="math inline">\(B_M\)</span> is introduced (see below);</span></li>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a parameterized type <span class="math inline">\(G[A_1, \ldots, A_N]\)</span>, all the supertypes of <span class="math inline">\(S\)</span> the one of the form <span class="math inline">\(G[B_1, \ldots, B_N]\)</span> is chosen. </span><span class="sentence">If no such supertype exists, this is an inference error. </span><span class="sentence">Otherwise, for each <span class="math inline">\(M \in [1,N]\)</span>, a type argument constraint for containment <span class="math inline">\(A_M \preceq B_M\)</span> is introduced (see below);</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is any other classifier type, then if <span class="math inline">\(T\)</span> is among supertypes for <span class="math inline">\(S\)</span>, the constraint is eliminated, and if it is not, this is an inference error;</span></li>
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a type variable:</span>
 <ul>
@@ -11130,23 +11131,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span></span></li>
-<li><span class="sentence">Otherwise, this is an inference error <span><span class="TODO">(TODO: seems like animal poo)</span><span class="TODO-marker">*</span></span>.</span></li>
+<li><span class="sentence">Otherwise, this is an inference error <span><span class="TODO">(TODO: should never happen)</span><span class="TODO-marker">*</span></span>.</span></li>
 </ul></li>
 </ul></li>
 </ul>
+<div class="paragraph">
+<p><span class="sentence">Type argument constraints for a containment relation <span class="math inline">\(Q \preceq F\)</span> are constructed as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence">If either <span class="math inline">\(S\)</span> or <span class="math inline">\(F\)</span> is the special argument <span class="math inline">\(\star\)</span>, no constraints are produced;</span></li>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> is invariant with type <span class="math inline">\(F&#39;\)</span>:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> is also invariant with type <span class="math inline">\(Q&#39;\)</span>, two constraints are produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span> and <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has any other variance, this is an inference error;</span></li>
+</ul></li>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}F&#39;\)</span>:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(\operatorname{\texttt{kotlin.Any?}}&lt;: F&#39;\)</span>;</span></li>
+</ul></li>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> has form <span class="math inline">\(\operatorname{\texttt{inv\,}}F&#39;\)</span>:</span>
+<ul>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span>, this is an inference error.</span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><strong>Incorporation phase</strong>: for each bound (and some bound combination) in the current solution, new constraints are produced as follows (it is safe to assume that each constraint is introduced into the system only once, so if this step produces constraints that have already been reduced, they are not introduced into the system):</span></p>
+</div>
+<ul>
+<li><span class="sentence">For each inference variable <span class="math inline">\(\alpha\)</span>, for each pair of bounds <span class="math inline">\(S &lt;: \alpha\)</span> and <span class="math inline">\(\alpha &lt;: T\)</span>, a new constraint is produced: <span class="math inline">\(S &lt;: T\)</span>;</span></li>
+<li><span class="sentence">For each inference variable <span class="math inline">\(\alpha\)</span> if there is a pair of bounds <span class="math inline">\(S &lt;: \alpha\)</span> and <span class="math inline">\(\alpha &lt;: S\)</span> (that is, <span class="math inline">\(\alpha\)</span> is equivalent to <span class="math inline">\(S\)</span>), and for each bound <span class="math inline">\(Q &lt;: P\)</span> where <span class="math inline">\(Q\)</span> or <span class="math inline">\(P\)</span> contains <span class="math inline">\(\alpha\)</span>, a new constraint is produced: <span class="math inline">\(Q[\alpha := S] &lt;: P[\alpha := S]\)</span>;</span></li>
+<li><span class="sentence">For each inference variable <span class="math inline">\(\alpha\)</span>, for each pair of bounds <span class="math inline">\(\alpha &lt;: S\)</span> and <span class="math inline">\(\alpha &lt;: T\)</span> where both <span class="math inline">\(S\)</span> has a supertype of the form <span class="math inline">\(G[A_1,\ldots,A_N]\)</span> and <span class="math inline">\(T\)</span> has a supertype of the form <span class="math inline">\(G[B_1,\ldots,B_N]\)</span>, then for each <span class="math inline">\(M \in [1,N]\)</span> if both <span class="math inline">\(A_M\)</span> and <span class="math inline">\(B_M\)</span> are invariant with types <span class="math inline">\(A&#39;_M\)</span> and <span class="math inline">\(B&#39;_M\)</span> respectively, the following new constraints are produced: <span class="math inline">\(A&#39;_M &lt;: B&#39;_M\)</span> and <span class="math inline">\(B&#39;_M &lt;: A&#39;_M\)</span>.</span></li>
+</ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO(type parameter constraints)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(incorporation phase)</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(captured types everywhere)</span></p>
+<p><span class="sentence">TODO(captured types)</span></p>
 </div>
 </div>
 <h4 id="finding-optimal-constraint-system-solution">Finding optimal constraint system solution</h4>
@@ -11167,7 +11187,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: approximation?</span></p>
+<p><span class="sentence">TODO: variable dependence and order of solving</span></p>
 </div>
 </div>
 <h4 id="the-relations-on-types-as-constraints">The relations on types as constraints</h4>
