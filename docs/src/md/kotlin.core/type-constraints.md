@@ -58,16 +58,17 @@ Thus, the current (and final) solution is a set of upper and lower bounds for ea
 
 - If $S$ and $T$ are proper types (TODO: do we have such a term?) and:
     - if $S <: T$, this constraint is eliminated;
-    - otherwise, if $T <: S$, this is an inference error;
+    - otherwise this is an inference error;
 - Otherwise, if $S$ is an inference variable $\alpha$, a new bound $\alpha <: T$ is added to current solution;
 - Otherwise, if $T$ is an inference variable $\beta$, a new bound $S <: \beta$ is added to current solution;
 - Otherwise, if $S$ is a nullable type of form $A?$ and:
     - If $T$ is a known non-nullable type (a classifier type, a nullability-asserted type $B!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;
+    - Otherwise, if $T$ is also a nullable type of form $B?$, the constraint is reduced to $A <: B$;
     - Otherwise, the constraint is reduced to $A <: T$;
 - Otherwise, based on the form of $T$:
     - If $T$ is a parameterized type $G[A_1, \ldots, A_N]$, all the supertypes of $S$ the one of the form $G[B_1, \ldots, B_N]$ is chosen. 
       If no such supertype exists, this is an inference error. 
-      Otherwise, for each $M \in [1,N]$, a type argument constraint for $A_M$ and $B_M$ is introduced (see below);
+      Otherwise, for each $M \in [1,N]$, a type argument constraint for containment $A_M \preceq B_M$ is introduced (see below);
     - Otherwise, if $T$ is any other classifier type, then if $T$ is among supertypes for $S$, the constraint is eliminated, and if it is not, this is an inference error;
     - If $T$ is a type variable:
         - If $S$ is an intersection type containing $T$, this constraint is eliminated;
@@ -76,13 +77,28 @@ Thus, the current (and final) solution is a set of upper and lower bounds for ea
     - If $T$ is an intersection type $A_1 \amp \ldots \amp A_N$, the constraint is reduced to $N$ constraints $S <: A_M$ for each $M \in [1, N]$;
     - If $T$ is a nullable type of the form $B?$ and:
         - If $S$ is a known non-nullable type (a classifier type, a nullability-asserted type $A!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to $S <: B$
-        - Otherwise, this is an inference error (TODO: seems like animal poo).
+        - Otherwise, this is an inference error (TODO: should never happen).
 
-TODO(type parameter constraints)
+Type argument constraints for a containment relation $Q \preceq F$ are constructed as follows:
 
-TODO(incorporation phase)
+- If either $S$ or $F$ is the special argument $\star$, no constraints are produced;
+- If $F$ is invariant with type $F'$:
+    - If $Q$ is also invariant with type $Q'$, two constraints are produced: $F' <: Q'$ and $Q' <: F'$;
+    - If $Q$ has any other variance, this is an inference error;
+- If $F$ has form $\outV F'$:
+    - If $Q$ has form $\outV Q'$ or $Q'$, the following constraint is produced: $Q' <: F'$;
+    - If $Q$ has form $\inV Q'$, the following constraint is produced: $\AnyQ <: F'$;
+- If $F$ has form $\invV F'$:
+    - If $Q$ has form $\inV Q'$ or $Q'$, the following constraint is produced: $F' <: Q'$;
+    - If $Q$ has form $\outV Q'$, this is an inference error.
 
-TODO(captured types everywhere)
+**Incorporation phase**: for each bound (and some bound combination) in the current solution, new constraints are produced as follows (it is safe to assume that each constraint is introduced into the system only once, so if this step produces constraints that have already been reduced, they are not introduced into the system):
+
+- For each inference variable $\alpha$, for each pair of bounds $S <: \alpha$ and $\alpha <: T$, a new constraint is produced: $S <: T$;
+- For each inference variable $\alpha$ if there is a pair of bounds $S <: \alpha$ and $\alpha <: S$ (that is, $\alpha$ is equivalent to $S$), and for each bound $Q <: P$ where $Q$ or $P$ contains $\alpha$, a new constraint is produced: $Q[\alpha := S] <: P[\alpha := S]$;
+- For each inference variable $\alpha$, for each pair of bounds $\alpha <: S$ and $\alpha <: T$ where both $S$ has a supertype of the form $G[A_1,\ldots,A_N]$ and $T$ has a supertype of the form $G[B_1,\ldots,B_N]$, then for each $M \in [1,N]$ if both $A_M$ and $B_M$ are invariant with types $A'_M$ and $B'_M$ respectively, the following new constraints are produced: $A'_M <: B'_M$ and $B'_M <: A'_M$.
+
+TODO(captured types)
 
 #### Finding optimal constraint system solution
 
@@ -100,7 +116,7 @@ Excluding other free variables, this boils down to:
 - For a variable with a pull-up constraint, the solution is the [least upper bound] of all lower bounds for this variable, excluding other free variables;
 - For a variable with both or none, the solution is also the [least upper bound] of all lower bounds for this variable, excluding other free variables.
 
-TODO: approximation?
+TODO: variable dependence and order of solving
 
 #### The relations on types as constraints
 
