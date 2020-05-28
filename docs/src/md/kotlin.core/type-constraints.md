@@ -54,6 +54,8 @@ The incorporation phase is used to introduce new bounds and constraints from exi
 A bound is similar to constraint in that it has the form $S <: T$, but either $S$ or $T$ (or both) is an inference variable.
 Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable.
 
+*A resolved type* in this context is any type that does not contain type variables
+
 **Reduction phase**: for each constraint $S <: T$ in the constraint system the following rules are applied:
 
 - If $S$ and $T$ are proper types (TODO: do we have such a term?) and:
@@ -88,7 +90,7 @@ Type argument constraints for a containment relation $Q \preceq F$ are construct
 - If $F$ has form $\outV F'$:
     - If $Q$ has form $\outV Q'$ or $Q'$, the following constraint is produced: $Q' <: F'$;
     - If $Q$ has form $\inV Q'$, the following constraint is produced: $\AnyQ <: F'$;
-- If $F$ has form $\invV F'$:
+- If $F$ has form $\inV F'$:
     - If $Q$ has form $\inV Q'$ or $Q'$, the following constraint is produced: $F' <: Q'$;
     - If $Q$ has form $\outV Q'$, this is an inference error.
 
@@ -97,8 +99,6 @@ Type argument constraints for a containment relation $Q \preceq F$ are construct
 - For each inference variable $\alpha$, for each pair of bounds $S <: \alpha$ and $\alpha <: T$, a new constraint is produced: $S <: T$;
 - For each inference variable $\alpha$ if there is a pair of bounds $S <: \alpha$ and $\alpha <: S$ (that is, $\alpha$ is equivalent to $S$), and for each bound $Q <: P$ where $Q$ or $P$ contains $\alpha$, a new constraint is produced: $Q[\alpha := S] <: P[\alpha := S]$;
 - For each inference variable $\alpha$, for each pair of bounds $\alpha <: S$ and $\alpha <: T$ where both $S$ has a supertype of the form $G[A_1,\ldots,A_N]$ and $T$ has a supertype of the form $G[B_1,\ldots,B_N]$, then for each $M \in [1,N]$ if both $A_M$ and $B_M$ are invariant with types $A'_M$ and $B'_M$ respectively, the following new constraints are produced: $A'_M <: B'_M$ and $B'_M <: A'_M$.
-
-TODO(captured types)
 
 #### Finding optimal constraint system solution
 

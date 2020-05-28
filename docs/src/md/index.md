@@ -1,12 +1,11 @@
 <#mode quote>
 ---
 title: Kotlin language specification
+author:
+- Marat Akhin
+- Mikhail Belyaev
 ---
 
 <#include "commands.md">
-
-# Glossary
-
-w.r.t.:: with respect to
 
 <#include "kotlin.core/index.md">
