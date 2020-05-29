@@ -2,6 +2,7 @@ COMMON_PANDOC_OPTIONS="\
   -s \
   --variable linkcolor=blue \
   --variable filecolor=cyan \
+  --number-sections \
   -f markdown-raw_html+smart+tex_math_double_backslash"
 
 TOC_PANDOC_OPTIONS="\
