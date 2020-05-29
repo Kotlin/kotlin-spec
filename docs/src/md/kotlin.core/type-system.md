@@ -802,12 +802,12 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 |   A?  <---------+   B?  |
 |       |         |       |
 |       |         |       |
-+---+---+         ++--+---+
-    |              |  |
-    |        +-----+  |
-    |  +-----+        |
-    |  |              |
-+---v--v+         +---v---+
++-------+         ++------+
+                   |  
+             +-----+  
+       +-----+        
+       |              
++------v+         +-------+
 |       |         |       |
 |       |         |       |
 |  A!!  <---------+  B!!  |
@@ -816,7 +816,22 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 +-------+         +-------+
 ```
 
-TODO(Explain this thing...)
+Nullability lozenge represents valid possible [subtyping] relations between two nullable or non-nullable types in different combinations of their *versions*.
+For type $T$, we call $T!!$ its non-nullable version, $T?$ its nullable version.
+
+> Note: trivial subtyping relation $A!! <: A?$ is not represented in the nullability lozenge.
+
+Nullability lozenge may also help in establishing subtyping between two types by following its structure.
+
+Regular (non-type-variable) types are mapped to nullability lozenge *vertices*, as for them $A$ corresponds to $A!!$, and $A?$ corresponds to $A?$.
+Following the lozenge structure, for regular types $A$ and $B$, as soon as we have established any valid subtyping between two versions of $A$ and $B$, it implies subtyping between all other valid w.r.t. nullability lozenge combinations of versions of types $A$ and $B$.
+
+Type variable types (e.g., captured types or type parameters) are maped to either nullability lozenge *edges* or *vertices*, as for them $T$ corresponds to either $T!!$ or $T?$, and $T?$ corresponds to $T?$.
+Following the lozenge structure, for type variable type $T$ (i.e., either non-nullable or nullable version) we need to consider valid subtyping for both versions $T!!$ and $T?$ w.r.t. nullability lozenge.
+
+> Example: if we have $\Int? <: T?$, we also have $\Int!! <: T?$ and $\Int!! <: T!!$, meaning we can establish $\Int!! <: T \equiv \Int <: T$.
+
+> Example: if we have $T? <: \Int?$, we also have $T!! <: \Int?$ and $T!! <: \Int!!$, however, we can establish only $T <: \Int?$, as $T <: \Int$ would need $T? <: \Int!!$ which is forbidden by the nullability lozenge.
 
 #### Intersection types
 
