@@ -11174,10 +11174,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span></span></li>
-<li><span class="sentence">Otherwise, this is an inference error <span><span class="TODO">(TODO: should never happen)</span><span class="TODO-marker">*</span></span>.</span></li>
+<li><span class="sentence">Otherwise, this is an inference error.</span></li>
 </ul></li>
 </ul></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: flexible types (including <span class="math inline">\({\alpha}!\)</span>)</span></p>
+</div>
+</div>
 <div class="paragraph">
 <p><span class="sentence">Type argument constraints for a containment relation <span class="math inline">\(Q \preceq F\)</span> are constructed as follows:</span></p>
 </div>
@@ -11223,10 +11228,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For a variable with a pull-up constraint, the solution is the <a href="#least-upper-bound">least upper bound</a> of all lower bounds for this variable, excluding other free variables;</span></li>
 <li><span class="sentence">For a variable with both or none, the solution is also the <a href="#least-upper-bound">least upper bound</a> of all lower bounds for this variable, excluding other free variables.</span></li>
 </ul>
-<div class="TODO">
 <div class="paragraph">
-<p><span class="sentence">TODO: variable dependence and order of solving</span></p>
-</div>
+<p><span class="sentence">If there are inference variables dependent on other inference variables (<span class="math inline">\(\alpha\)</span> is dependent on <span class="math inline">\(\beta\)</span> iff there is a bound <span class="math inline">\(\alpha &lt;: T\)</span> or <span class="math inline">\(T &lt;: \alpha\)</span> where <span class="math inline">\(T\)</span> contains <span class="math inline">\(\beta\)</span>), this process is performed in stages. </span><span class="sentence">During each stage a set of inference variables not dependent on other inference variables (but possibly dependent on each other) is selected, the solutions for these variables are found using existing bounds, and after that these variables are <strong>resolved</strong> in the current bound set by replacing all of their instances in other bounds by the solution. </span><span class="sentence">This may trigger and additional incorporation step, that, in turn, may lead to additional reduction steps performed. </span><span class="sentence">After that, a new independent set of inference variables is picked and this process is repeated until an inference error occurs or a solution for each inference variable is found.</span></p>
 </div>
 <h4 id="the-relations-on-types-as-constraints"><span class="header-section-number">1.14.2.3</span> The relations on types as constraints</h4>
 <div class="paragraph">
