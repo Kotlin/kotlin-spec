@@ -79,7 +79,9 @@ Thus, the current (and final) solution is a set of upper and lower bounds for ea
     - If $T$ is an intersection type $A_1 \amp \ldots \amp A_N$, the constraint is reduced to $N$ constraints $S <: A_M$ for each $M \in [1, N]$;
     - If $T$ is a nullable type of the form $B?$ and:
         - If $S$ is a known non-nullable type (a classifier type, a nullability-asserted type $A!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to $S <: B$
-        - Otherwise, this is an inference error (TODO: should never happen).
+        - Otherwise, this is an inference error.
+
+TODO: flexible types (including ${\alpha}!$)
 
 Type argument constraints for a containment relation $Q \preceq F$ are constructed as follows:
 
@@ -116,7 +118,10 @@ Excluding other free variables, this boils down to:
 - For a variable with a pull-up constraint, the solution is the [least upper bound] of all lower bounds for this variable, excluding other free variables;
 - For a variable with both or none, the solution is also the [least upper bound] of all lower bounds for this variable, excluding other free variables.
 
-TODO: variable dependence and order of solving
+If there are inference variables dependent on other inference variables ($\alpha$ is dependent on $\beta$ iff there is a bound $\alpha <: T$ or $T <: \alpha$ where $T$ contains $\beta$), this process is performed in stages.
+During each stage a set of inference variables not dependent on other inference variables (but possibly dependent on each other) is selected, the solutions for these variables are found using existing bounds, and after that these variables are **resolved** in the current bound set by replacing all of their instances in other bounds by the solution.
+This may trigger and additional incorporation step, that, in turn, may lead to additional reduction steps performed.
+After that, a new independent set of inference variables is picked and this process is repeated until an inference error occurs or a solution for each inference variable is found.
 
 #### The relations on types as constraints
 
