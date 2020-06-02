@@ -8984,6 +8984,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
+<p><span class="sentence">Important: callable references to callables which are a member and an extension (that is, an extension to one type declared as a member of a classifier) are forbidden</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
 <div class="sourceCode" id="cb91"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb91-1" title="1"><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></a>
@@ -11138,27 +11143,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above. </span><span class="sentence">A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The algorithm works in two phases: <em>reduction</em> and <em>incorporation</em> that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached. </span><span class="sentence">The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed. </span><span class="sentence">The incorporation phase is used to introduce new bounds and constraints from existing bounds. </span><span class="sentence">A bound is similar to constraint in that it has the form <span class="math inline">\(S &lt;: T\)</span>, but either <span class="math inline">\(S\)</span> or <span class="math inline">\(T\)</span> (or both) is an inference variable. </span><span class="sentence">Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence"><em>A resolved type</em> in this context is any type that does not contain type variables</span></p>
+<p><span class="sentence">The algorithm works in two phases: <em>reduction</em> and <em>incorporation</em> that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached. </span><span class="sentence">The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed. </span><span class="sentence">The incorporation phase is used to introduce new bounds and constraints from existing bounds. </span><span class="sentence">A bound is similar to constraint in that it has the form <span class="math inline">\(S &lt;: T\)</span>, but either <span class="math inline">\(S\)</span> or <span class="math inline">\(T\)</span> (or both) is an inference variable. </span><span class="sentence">Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable. </span><span class="sentence"><em>A resolved type</em> in this context is any type that does not contain inference variables.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><strong>Reduction phase</strong>: for each constraint <span class="math inline">\(S &lt;: T\)</span> in the constraint system the following rules are applied:</span></p>
 </div>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> are proper types <span><span class="TODO">(TODO: do we have such a term?)</span><span class="TODO-marker">*</span></span> and:</span>
+<li><span class="sentence">If <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> are resolved types and:</span>
 <ul>
 <li><span class="sentence">if <span class="math inline">\(S &lt;: T\)</span>, this constraint is eliminated;</span></li>
 <li><span class="sentence">otherwise this is an inference error;</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is an inference variable <span class="math inline">\(\alpha\)</span>, a new bound <span class="math inline">\(\alpha &lt;: T\)</span> is added to current solution;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is an inference variable <span class="math inline">\(\beta\)</span>, a new bound <span class="math inline">\(S &lt;: \beta\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a flexible type of specific form <span class="math inline">\((\alpha?..\alpha)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\(\alpha &lt;: (T..T?)\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a flexible type of specific form <span class="math inline">\((\alpha?..\alpha)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\((S..S?) &lt;: \alpha\)</span> is added to current solution;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a nullable type of form <span class="math inline">\(A?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(B!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is also a nullable type of form <span class="math inline">\(B?\)</span>, the constraint is reduced to <span class="math inline">\(A &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\(A &lt;: T\)</span>;</span></li>
+</ul></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a flexible type of the form <span class="math inline">\((B..A?)\)</span> and:</span>
+<ul>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a nullable type of form <span class="math inline">\(C?\)</span>, the constraint is reduced to <span class="math inline">\((B..A) &lt;: C\)</span> (or <span class="math inline">\(A &lt;: C\)</span> if <span class="math inline">\(A \equiv B\)</span>);</span></li>
+<li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\((B..A) &lt;: T\)</span> (or <span class="math inline">\(A &lt;: T\)</span> if <span class="math inline">\(A \equiv B\)</span>);</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, based on the form of <span class="math inline">\(T\)</span>:</span>
 <ul>
@@ -11173,16 +11182,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is an intersection type <span class="math inline">\(A_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}A_N\)</span>, the constraint is reduced to <span class="math inline">\(N\)</span> constraints <span class="math inline">\(S &lt;: A_M\)</span> for each <span class="math inline">\(M \in [1, N]\)</span>;</span></li>
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span></span></li>
+<li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, this is an inference error.</span></li>
 </ul></li>
 </ul></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: flexible types (including <span class="math inline">\({\alpha}!\)</span>)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Type argument constraints for a containment relation <span class="math inline">\(Q \preceq F\)</span> are constructed as follows:</span></p>
 </div>
