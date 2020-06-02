@@ -886,6 +886,8 @@ Depending on the meaning of the left-hand and right-hand sides of a callable ref
 - If `lhs` is a value, while `rhs` is resolved to refer to a property of `lhs`, `lhs::rhs` is a *value-property* reference;
 - If `lhs` is a value, while `rhs` is resolved to refer to a function available on `rhs`, `lhs::rhs` is a *value-function* reference.
 
+> Important: callable references to callables which are a member and an extension (that is, an extension to one type declared as a member of a classifier) are forbidden
+
 > Examples:
 > ```kotlin
 > class A {
