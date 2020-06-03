@@ -2,6 +2,7 @@ package org.jetbrains.kotlin.spec
 
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
+import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
 import org.jetbrains.kotlin.spec.viewer.NavigationType
@@ -19,8 +20,10 @@ fun runAfterDocumentReady() {
     val sentenceToBeHighlighted = window.location.searchMap["sentence"]
     val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
     val sectionToBeHighlighted = window.location.hash
+    val mode = Mode.Dev
+
     `$`("h3, h4, h5").each { _, el ->
-        SpecTestsLoader.insertLoadIcon(`$`(el))
+        SpecTestsLoader.insertLoadIcon(`$`(el), mode)
     }
 
     if (shouldBeShowedMarkup) {
@@ -72,7 +75,7 @@ fun runAfterDocumentReady() {
             false
         }
         on("click", ".number-info[data-path]") { e, _ ->
-            SpecPlaceHighlighter.onSentenceGetLinkClick(`$`(e.currentTarget))
+            SpecPlaceHighlighter.onSentenceGetLinkClick(`$`(e.currentTarget), mode)
             e.stopPropagation()
             false
         }
@@ -82,9 +85,11 @@ fun runAfterDocumentReady() {
         }
         on("click", ".loaded-tests") { _, _ -> false }
 
-        prepend(SentenceFinder.FINDER_BAR_HTML.format(
-                *(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show"))
-        ))
+        if (mode == Mode.Dev) {
+            prepend(SentenceFinder.FINDER_BAR_HTML.format(
+                    *(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show"))
+            ))
+        }
 
         on("click", ".spec-sentence-find") { _, _ -> SentenceFinder.findSentence() }
         on("keyup", ".spec-location-search input[name=\"spec-sentence-location\"]") { e, _ ->

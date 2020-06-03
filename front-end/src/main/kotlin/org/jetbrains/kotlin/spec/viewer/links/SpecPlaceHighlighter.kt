@@ -3,6 +3,7 @@ package org.jetbrains.kotlin.spec.viewer.links
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
+import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.Popup
 import org.jetbrains.kotlin.spec.utils.PopupConfig
 import org.jetbrains.kotlin.spec.utils.format
@@ -123,18 +124,30 @@ object SpecPlaceHighlighter {
         "$protocol//$hostname$pathname${if (search.isNotEmpty()) "?$search" else ""}#$sectionId"
     }
 
-    fun onSentenceGetLinkClick(element: JQuery) {
+    fun onSentenceGetLinkClick(element: JQuery, mode: Mode) {
         Popup(
                 PopupConfig(
-                        title = "Link to this sentence",
-                        content = """
-                            <div class="sentence-links-popup">
-                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Path for compiler test:</span><input type="text" class="sentence-path-for-compiler-test" value="${element.data("path")}"></div>
-                                <div class="sentence-links-row"><span class="link-sentence-description-link-type">Link:</span><input type="text" class="sentence-link-field" value="${getLink(element.data("link").toString())}"></div>
-                            </div>
-                        """.trimIndent(),
+                        title = "Sentence info",
+                        content = """<div class="sentence-links-popup">{1}</div>""".format(
+                                buildString {
+                                    if (mode == Mode.Dev) {
+                                        append("""<div class="sentence-links-row">
+                                                    <span class="link-sentence-description-link-type">Link for compiler test:</span>
+                                                    <input type="text" class="sentence-path-for-compiler-test" value="${element.data("path")}">
+                                                  </div>
+                                                  """
+                                        )
+                                    }
+                                    append("""<div class="sentence-links-row">
+                                                <span class="link-sentence-description-link-type">Sentence path:</span>
+                                                <input type="text" class="sentence-link-field" value="${getLink(element.data("link").toString())}">
+                                              </div>
+                                              """
+                                    )
+                                }
+                        ).trimIndent(),
                         width = 800,
-                        height = 150
+                        height = if (mode == Mode.Dev) 150 else 100
                 )
         ).apply { open() }
         `$`(".sentence-path-for-compiler-test").select().focus()
