@@ -4,6 +4,7 @@ import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
+import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
@@ -28,11 +29,14 @@ class SpecTestsLoader {
 
         private const val SECTION_PATH_SEPARATOR = ", "
 
-        fun insertLoadIcon(headerElement: JQuery) {
-            headerElement.append("""
-                <a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>
-                <a href="#" data-id="${headerElement.attr("id")}" data-type="${headerElement.prop("tagName").toString().toLowerCase()}" class="load-tests" title="Show tests coverage">Load tests</a>
-            """)
+        fun insertLoadIcon(headerElement: JQuery, mode: Mode) {
+            headerElement.append(
+                    buildString {
+                        if (mode == Mode.Dev)
+                            append("""<a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>""")
+                        append("""<a href="#" data-id="${headerElement.attr("id")}" data-type="${headerElement.prop("tagName").toString().toLowerCase()}" class="load-tests" title="Show tests coverage">Load tests</a>""")
+                    }
+            )
         }
 
 
