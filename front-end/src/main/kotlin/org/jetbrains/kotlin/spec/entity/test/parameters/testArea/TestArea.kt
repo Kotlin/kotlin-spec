@@ -20,6 +20,8 @@ enum class TestArea(
     }
 
     companion object {
+        val SPEC_MODULE_DIR = """// MODULE:"""
+        val SPEC_FILE_DIR = """// FILE:"""
 
         private fun parseCodegenBoxSpecTest(testFileCode: String): List<TestCase> {
             val data = getTestCasesCode(testFileCode)
@@ -43,7 +45,9 @@ enum class TestArea(
 
                 startPosition += testCaseMatches.range.last - (testCaseMatchesGroup).value.length
 
-                list.add(TestCase(code = code, infoElements = SpecTestsParser.parseTestInfoElements(infoElements)))
+                //todo this is a temp filtering of tests until kotlin playground functionality is enhanced
+                if (!code.contains(SPEC_FILE_DIR) && !code.contains(SPEC_MODULE_DIR))
+                    list.add(TestCase(code = code, infoElements = SpecTestsParser.parseTestInfoElements(infoElements)))
 
                 testCaseMatches = SpecTestsParser.testCaseInfoPattern.find(data.substring(startPosition))
             }
@@ -65,3 +69,39 @@ enum class TestArea(
     }
 }
 
+fun main() {
+    val tc = "package testsCase1\n" +
+            "import libPackageCase1.*\n" +
+            "import libPackageCase1Explicit.listOf\n" +
+            "\n" +
+            "class Case1(){\n" +
+            "\n" +
+            "    fun case() {\n" +
+            "        listOf(elements1= arrayOf(1))\n" +
+            "    }\n" +
+            "}\n" +
+            "\n" +
+            "// FILE: Lib.kt\n" +
+            "package libPackageCase1\n" +
+            "import testsCase1.*\n" +
+            "\n" +
+            "public fun <T> listOf(vararg elements1: T): List<T> = TODO()\n" +
+            "fun <T> Case1.listOf(vararg elements1: T): List<T> = TODO()\n" +
+            "\n" +
+            "// FILE: Lib.kt\n" +
+            "package libPackageCase1Explicit\n" +
+            "\n" +
+            "public fun <T> listOf(vararg elements1: T): List<T> = TODO()\n" +
+            "\n" +
+            "// FILE: LibtestsPack.kt\n" +
+            "package testsCase1\n" +
+            "\n" +
+            "public fun <T> listOf(vararg elements1: T): List<T> = TODO()\n" +
+            "\n" +
+            "\n" +
+            "// FILE: TestCase.kt\n"
+
+    if (!tc.contains(TestArea.SPEC_FILE_DIR) || !tc.contains(TestArea.SPEC_MODULE_DIR))
+        print("boo")
+
+}
