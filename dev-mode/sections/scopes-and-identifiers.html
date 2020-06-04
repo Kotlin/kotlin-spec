@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../resources/css/main.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="scopes-and-identifiers">Scopes and identifiers</h2>
+<div class="paragraph">
+<p><span class="sentence">Kotlin program is logically divided into <em>scopes</em>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A scope is a syntactically-delimited region of code which constitutes a context in which entities and their names can be introduced. </span><span class="sentence">Scopes can be nested, with entities introduced in outer scopes possibly available in the inner scopes if <a href="scopes-and-identifiers.html#linked-scopes">linked</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The top level of a Kotlin file is also a scope, containing all the scopes within a file.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All the scopes are divided into two kinds: declaration scopes and statement scopes. </span><span class="sentence">These two kinds of scopes differ in how the identifiers may refer to the entities defined in the scopes.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Declaration scopes include:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The project <a href="packages-and-imports.html#modules">modules</a>;</span></li>
+<li><span class="sentence">The project <a href="packages-and-imports.html#packages-and-imports">packages</a>;</span></li>
+<li><span class="sentence">The top level scopes of non-script Kotlin files;</span></li>
+<li><span class="sentence">The bodies of <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Statement scopes include:</span></p>
+</div>
+<ul>
+<li><span class="sentence">The top level scopes of script Kotlin files;</span></li>
+<li><span class="sentence">Scopes produced by control structure bodies of different <a href="control--and-data-flow-analysis.html#expressions-1">expressions</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="declarations.html#function-declaration">function declarations</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#function-literals">function literals</a>;</span></li>
+<li><span class="sentence">The bodies of getters and setters of <a href="declarations.html#property-declaration">properties</a>;</span></li>
+<li><span class="sentence">The bodies of <a href="declarations.html#constructor-declaration">constructors</a>;</span></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">All declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce new bindings using <a href="packages-and-imports.html#packages-and-imports"><code>import</code> directives</a> from other top-level scopes.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through linked scopes or imports.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">An exception to this rule are <a href="declarations.html#function-declaration">function declarations</a>, which are matched by <a href="declarations.html#function-signature">signatures</a> and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions">calling functions</a>, a process called <a href="overload-resolution.html#overload-resolution">overload resolution</a> allows for differentiating between such functions. </span><span class="sentence">Overload resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not allow defining several properties with the same name in the same scope.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: platforms may introduce additional restrictions on which identifiers may be declared together in the same or linked scopes.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order of appearance. </span><span class="sentence">It is not allowed to access a value through an identifier in code which (syntactically) precedes the binding itself. </span><span class="sentence">On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur leading to possibly undefined behaviour.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin compiler may attempt to detect and report such initialization cycles as compile-time warnings or errors.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">It also means that statement scopes nested inside declaration scopes may access values declared afterwards in parent declaration scopes, but any values declared inside a statement scope can be accessed only after their declaration point.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<ul>
+<li><div class="paragraph">
+<p><span class="sentence">In declaration scope:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="co">// x refers to the property defined below </span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">//   even if there is another property</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">//   called x in outer scope or imported</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>() = x + <span class="dv">2</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span></a></code></pre></div></li>
+<li><div class="paragraph">
+<p><span class="sentence">In statement scope:</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="co">// x refers to another property </span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">//   defined in outer scope or imported</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="co">//   or is a compile-time error</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>() = x + <span class="dv">2</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span></a></code></pre></div></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(identifier lifetime &amp; such)</span></p>
+</div>
+</div>
+<h3 id="linked-scopes">Linked scopes</h3>
+<div class="paragraph">
+<p><span class="sentence">Scopes <code>A</code> and <code>B</code> in a Kotlin program may be <em>downwards-linked</em> (<code>A ~&gt; B</code>), meaning identifiers from <code>A</code> can be used in <code>B</code> without the need for additional qualification. </span><span class="sentence">If scopes <code>A</code> and <code>B</code> are downwards-linked, scopes <code>B</code> and <code>A</code> are considered <em>upwards-linked</em> (<code>B &lt;~ A</code>).</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: link relation is transitive, unless specified otherwise.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Scopes are downwards-linked (DLD) or upwards-linked (ULD) as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A statement scope is DLD to any directly nested scope;</span></li>
+<li><span class="sentence">An <a href="declarations.html#classifier-declaration">object declaration</a> scope is DLD to any nested scopes;</span></li>
+<li><span class="sentence">An <a href="declarations.html#classifier-declaration">object declaration</a> scope is non-transitively ULD to the companion object scopes of its superclasses;</span></li>
+<li><span class="sentence">An <a href="declarations.html#classifier-declaration">object declaration</a> scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;</span></li>
+<li><span class="sentence">An <a href="declarations.html#classifier-declaration">object declaration</a> scope is ULD to the companion object declaration scope of its parent classifier;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">companion object declaration</a> scope is DLD to any nested scopes;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">companion object declaration</a> scope is non-transitively ULD to the companion object scopes of its superclasses;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">companion object declaration</a> scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">companion object declaration</a> scope is ULD to the companion object declaration scope of the <em>parent</em> of its parent classifier;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is DLD to any nested statement scopes;</span></li>
+<li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is ULD to its companion object declaration scope;</span></li>
+<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is DLD to any nested statement scopes;</span></li>
+<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is ULD to the classifier declaration scope of its parent classifier.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: linked scopes <strong>do not</strong> cover cases when identifiers from supertypes are used in subtypes, as this is covered by the <a href="inheritance.html#inheritance">inheritance</a> rules.</span></p>
+</div>
+</blockquote>
+<h3 id="identifiers-and-paths">Identifiers and paths</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin program operates with different <em>entities</em>, such as classes, interfaces, values, etc. An entity can be referenced using its <em>path</em>: a sequence of identifiers which references this entity in a given <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports two kinds of paths.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Simple paths <code>P</code>, which consist of a single identifier</span></li>
+<li><span class="sentence">Qualified paths <code>P.m</code>, which consist of a path <code>P</code> and a member identifier <code>m</code></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Besides identifiers which are introduced by the developer (e.g., via declaring classes or introducing variables), there are several predefined identifiers with special semantics.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>this</code> – an identifier which references the default receiver available in the current scope, further details are available <a href="expressions.html#this-expressions">here</a></span></li>
+<li><span class="sentence"><code>this@label</code> – an identifier which references the default receiver available in the selected scope, further details are available <a href="expressions.html#this-expressions">here</a></span></li>
+<li><span class="sentence"><code>super&lt;Klazz&gt;</code> – an identifier which references the supertype <code>Klazz</code> available in the current scope, further details are available <a href="expressions.html#super-forms">here</a></span></li>
+<li><span class="sentence"><code>super&lt;Klazz&gt;@label</code> – an identifier which references the supertype <code>Klazz</code> available in the selected scope, further details are available <a href="expressions.html#super-forms">here</a></span></li>
+</ul>
+<h3 id="labels">Labels</h3>
+<div class="paragraph">
+<p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence"><a href="expressions.html#lambda-literals">Lambda expressions</a>) and <a href="statements.html#loop-statements">loop statements</a> are allowed to be labeled, with label identifier associated with the corresponding entity.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, labels were allowed to be placed on any expression or statement.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Labels can be <em>redeclared</em>, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times. </span><span class="sentence">Labels are *scoped, meaning that they are only available in the scope they were declared in.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Labels are used by certain expressions, such as <a href="expressions.html#break-expression"><code>break</code></a>, <a href="expressions.html#continue-expression"><code>continue</code></a> and <a href="expressions.html#return-expressions"><code>return</code></a>, to specify exactly what entity the expression corresponds to. </span><span class="sentence">Please refer to the corresponding sections for details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When resolving labels (determining which label an expression refers to), the <em>closest</em> label with the matching identifier is chosen, i.e., a label in an innermost scope syntactically closest to the point of its use.</span></p>
+</div>
+</body>
+</html>
