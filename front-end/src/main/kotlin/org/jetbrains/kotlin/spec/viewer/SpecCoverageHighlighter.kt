@@ -38,11 +38,11 @@ object SpecCoverageHighlighter {
 
             val testNumberByTypeInfo = mutableListOf<String>()
             for ((testType, typedTests) in listOfTests.groupBy { it.testPlace.testType }) {
+                val filteredTests: List<SpecTest> = typedTests.filter { it.testCases.isNotEmpty() }
                 unexpectedBehaviour = unexpectedBehaviour || typedTests.hasUnexpectedBehaviour()
 
-                testNumberByTypeInfo.add(typedTests.size.toString() + " " + testType.toString())
-
-                if (testNumberByTypeInfo.size > 0) {
+                if (filteredTests.isNotEmpty()) {
+                    testNumberByTypeInfo.add(filteredTests.size.toString() + " " + testType.toString())
                     testsByArea.add("<b>" + testArea.description + "</b>: " + testNumberByTypeInfo.joinToString(", "))
                 }
             }
