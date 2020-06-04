@@ -20,6 +20,8 @@ enum class TestArea(
     }
 
     companion object {
+        val SPEC_MODULE_DIR = """// MODULE:"""
+        val SPEC_FILE_DIR = """// FILE:"""
 
         private fun parseCodegenBoxSpecTest(testFileCode: String): List<TestCase> {
             val data = getTestCasesCode(testFileCode)
@@ -43,7 +45,9 @@ enum class TestArea(
 
                 startPosition += testCaseMatches.range.last - (testCaseMatchesGroup).value.length
 
-                list.add(TestCase(code = code, infoElements = SpecTestsParser.parseTestInfoElements(infoElements)))
+                //todo this is a temp filtering of tests until kotlin playground functionality is enhanced
+                if (!code.contains(SPEC_FILE_DIR) && !code.contains(SPEC_MODULE_DIR))
+                    list.add(TestCase(code = code, infoElements = SpecTestsParser.parseTestInfoElements(infoElements)))
 
                 testCaseMatches = SpecTestsParser.testCaseInfoPattern.find(data.substring(startPosition))
             }
