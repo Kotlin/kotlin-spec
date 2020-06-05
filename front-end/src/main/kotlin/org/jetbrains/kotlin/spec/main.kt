@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
 import org.jetbrains.kotlin.spec.viewer.NavigationType
+import org.jetbrains.kotlin.spec.viewer.SidebarViewer
 import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
 import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
@@ -26,6 +27,11 @@ fun runAfterDocumentReady() {
         SpecTestsLoader.insertLoadIcon(`$`(el), mode)
     }
 
+
+    /* overview navigation related stuff */
+    SidebarViewer.prepare()
+
+
     if (shouldBeShowedMarkup) {
         SpecTestsLoader.showMarkup()
     }
@@ -41,6 +47,7 @@ fun runAfterDocumentReady() {
     if (sectionToBeHighlighted.isNotEmpty()) {
         SpecPlaceHighlighter.highlightSection(sectionToBeHighlighted.substring(1))
     }
+
 
     document.body?.let { `$`(it) }?.run {
         on("click", ".sentence.covered") { e, _ ->
@@ -91,7 +98,8 @@ fun runAfterDocumentReady() {
             ))
         }
 
-        on("click", ".spec-sentence-find") { _, _ -> SentenceFinder.findSentence() }
+
+        on("click", ".content-navigation") { _, _ -> SentenceFinder.findSentence() }
         on("keyup", ".spec-location-search input[name=\"spec-sentence-location\"]") { e, _ ->
             if (e.keyCode == 13) {
                 SentenceFinder.findSentence()
@@ -122,6 +130,15 @@ fun runAfterDocumentReady() {
             window.location.reload()
             false
         }
+        on("click", ".icon-menu") { _, _ ->
+            SidebarViewer.turnOnBar()
+            false
+        }
+
+        on("click", ".toc-section-number") { e, b ->
+            SidebarViewer.slideParagraphs(`$`(e.currentTarget), e)
+        }
+
 
         on("click", "h2, h3, h4, h5") { e, _ ->
             SpecPlaceHighlighter.onHeaderGetLinkClick(`$`(e.currentTarget))
