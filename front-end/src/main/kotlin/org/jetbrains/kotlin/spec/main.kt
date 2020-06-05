@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
 import org.jetbrains.kotlin.spec.viewer.NavigationType
+import org.jetbrains.kotlin.spec.viewer.SidebarViewer
 import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
 import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
@@ -25,6 +26,8 @@ fun runAfterDocumentReady() {
     `$`("h3, h4, h5").each { _, el ->
         SpecTestsLoader.insertLoadIcon(`$`(el), mode)
     }
+
+    SidebarViewer.prepare()
 
     if (shouldBeShowedMarkup) {
         SpecTestsLoader.showMarkup()
@@ -122,6 +125,15 @@ fun runAfterDocumentReady() {
             window.location.reload()
             false
         }
+        on("click", ".icon-menu") { _, _ ->
+            SidebarViewer.turnOnBar()
+            false
+        }
+
+        on("click", ".toc-section") { e, b ->
+            SidebarViewer.slideParagraphs(`$`(e.currentTarget), e)
+        }
+
 
         on("click", "h2, h3, h4, h5") { e, _ ->
             SpecPlaceHighlighter.onHeaderGetLinkClick(`$`(e.currentTarget))
