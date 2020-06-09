@@ -132,7 +132,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A <em>type constraint</em> in general is an inequation of the following form: <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> are <a href="type-system.html#type-system">concrete Kotlin types</a>. </span><span class="sentence">As Kotlin has <a href="type-system.html#parameterized-classifier-types">parameterized types</a>, <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> may be <em>free type variables</em>: unknown types which may be substituted by any other type in Kotlin.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Please note that, in general, not all type parameters are considered as free type variables in a constraint system. </span><span class="sentence">Some type variables may be <em>fixed</em> in a constraint system; for example, type parameters of a parameterized class <em>inside</em> its body are not concrete types, but are not free type variables either. </span><span class="sentence">A fixed type variable describes an unknown, but fixed type which is not to be substituted.</span></p>
+<p><span class="sentence">Please note that, in general, not all type parameters are considered as free type variables in a constraint system. </span><span class="sentence">Some type variables may be <em>fixed</em> in a constraint system; for example, type parameters of a parameterized class <em>inside</em> its body are unknown types, but are not free type variables either. </span><span class="sentence">A fixed type variable describes an unknown, but fixed type which is <em>not</em> to be substituted.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">We will use the notation <span class="math inline">\(T_i\)</span> for a type variable and <span class="math inline">\(\tilde{T_i}\)</span> for a fixed type variable. </span><span class="sentence">The main difference between fixed type variables and concrete types is that different concrete types may not be equal, but a fixed type variable may be equal to another fixed type variable or a concrete type.</span></p>
@@ -168,17 +168,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="checking-constraint-system-soundness">Checking constraint system soundness</h4>
 <div class="paragraph">
-<p><span class="sentence">Checking constraint system soundness is a satisfiability problem. </span><span class="sentence">That is, given a number of constraints in the form <span class="math inline">\(S &lt;: T\)</span> containing zero or more <em>free type variables</em> (also called inference type variables), it needs to determine if these constraints are non-contradictory, i.e. there exists a possible instantiation of these free variables that makes all given constraints valid.</span></p>
+<p><span class="sentence">Checking constraint system soundness is a satisfiability problem. </span><span class="sentence">That is, given a number of constraints in the form <span class="math inline">\(S &lt;: T\)</span> containing zero or more free type variables (also called <em>inference type variables</em>), it needs to determine if these constraints are non-contradictory, i.e., if there exists a possible instantiation of these free variables to concrete types which makes all given constraints valid.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">This boils down to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory. </span><span class="sentence">The algorithm of finding this bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.</span></p>
+<p><span class="sentence">This problem can be reduced to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory. </span><span class="sentence">The algorithm of finding these bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.</span></p>
 </div>
 <h5 id="a-sample-bound-inference-algorithm">A sample bound inference algorithm</h5>
 <div class="paragraph">
 <p><span class="sentence">The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above. </span><span class="sentence">A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">The algorithm works in two phases: <em>reduction</em> and <em>incorporation</em> that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached. </span><span class="sentence">The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed. </span><span class="sentence">The incorporation phase is used to introduce new bounds and constraints from existing bounds. </span><span class="sentence">A bound is similar to constraint in that it has the form <span class="math inline">\(S &lt;: T\)</span>, but either <span class="math inline">\(S\)</span> or <span class="math inline">\(T\)</span> (or both) is an inference variable. </span><span class="sentence">Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable. </span><span class="sentence"><em>A resolved type</em> in this context is any type that does not contain inference variables.</span></p>
+<p><span class="sentence">Note: a well-informed reader may notice this algorithm to be similar to the one used by Java. </span><span class="sentence">This is not a coincidence: our sample inference algorithm has indeed been inspired by Java’s.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The algorithm works in two phases: <em>reduction</em> and <em>incorporation</em> which are applied to the constraint system and its current solution in turns until a fixpoint or an error is reached. </span><span class="sentence">The reduction phase is used to produce bounds for inference variables based on constraints; this phase is also responsible for eliminating the constraints which are no longer needed. </span><span class="sentence">The incorporation phase is used to introduce new bounds and constraints from existing bounds.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A bound is similar to a constraint in that it has the form <span class="math inline">\(S &lt;: T\)</span>, at least one of <span class="math inline">\(S\)</span> or <span class="math inline">\(T\)</span> is an inference variable. </span><span class="sentence">Thus, the current (and also the final) solution is a set of upper and lower bounds for each inference variable. </span><span class="sentence">A <em>resolved type</em> in this context is any type which does not contain inference variables.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><strong>Reduction phase</strong>: for each constraint <span class="math inline">\(S &lt;: T\)</span> in the constraint system the following rules are applied:</span></p>
@@ -186,61 +194,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><span class="sentence">If <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> are resolved types and:</span>
 <ul>
-<li><span class="sentence">if <span class="math inline">\(S &lt;: T\)</span>, this constraint is eliminated;</span></li>
-<li><span class="sentence">otherwise this is an inference error;</span></li>
+<li><span class="sentence">If <span class="math inline">\(S &lt;: T\)</span>, this constraint is eliminated;</span></li>
+<li><span class="sentence">Otherwise, this is an inference error;</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is an inference variable <span class="math inline">\(\alpha\)</span>, a new bound <span class="math inline">\(\alpha &lt;: T\)</span> is added to current solution;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is an inference variable <span class="math inline">\(\beta\)</span>, a new bound <span class="math inline">\(S &lt;: \beta\)</span> is added to current solution;</span></li>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a flexible type of specific form <span class="math inline">\((\alpha?..\alpha)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\(\alpha &lt;: (T..T?)\)</span> is added to current solution;</span></li>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a flexible type of specific form <span class="math inline">\((\alpha?..\alpha)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\((S..S?) &lt;: \alpha\)</span> is added to current solution;</span></li>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a nullable type of form <span class="math inline">\(A?\)</span> and:</span>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a flexible type of the form <span class="math inline">\((\alpha..\alpha?)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\(\alpha &lt;: (T..T?)\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a flexible type of the form <span class="math inline">\((\alpha..\alpha?)\)</span> where <span class="math inline">\(\alpha\)</span> is an inference variable, a new bound <span class="math inline">\((S..S?) &lt;: \alpha\)</span> is added to current solution;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a nullable type of the form <span class="math inline">\(A?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(T\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(B!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;</span></li>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is also a nullable type of form <span class="math inline">\(B?\)</span>, the constraint is reduced to <span class="math inline">\(A &lt;: B\)</span>;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is also a nullable type of the form <span class="math inline">\(B?\)</span>, the constraint is reduced to <span class="math inline">\(A &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\(A &lt;: T\)</span>;</span></li>
 </ul></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(S\)</span> is a flexible type of the form <span class="math inline">\((B..A?)\)</span> and:</span>
 <ul>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a nullable type of form <span class="math inline">\(C?\)</span>, the constraint is reduced to <span class="math inline">\((B..A) &lt;: C\)</span> (or <span class="math inline">\(A &lt;: C\)</span> if <span class="math inline">\(A \equiv B\)</span>);</span></li>
-<li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\((B..A) &lt;: T\)</span> (or <span class="math inline">\(A &lt;: T\)</span> if <span class="math inline">\(A \equiv B\)</span>);</span></li>
+<li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of form <span class="math inline">\(C?\)</span>, the constraint is reduced to <span class="math inline">\((B..A) &lt;: C\)</span>, or to <span class="math inline">\(A &lt;: C\)</span> if <span class="math inline">\(A \equiv B\)</span>;</span></li>
+<li><span class="sentence">Otherwise, the constraint is reduced to <span class="math inline">\((B..A) &lt;: T\)</span>, or to <span class="math inline">\(A &lt;: T\)</span> if <span class="math inline">\(A \equiv B\)</span>;</span></li>
 </ul></li>
-<li><span class="sentence">Otherwise, based on the form of <span class="math inline">\(T\)</span>:</span>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a parameterized type <span class="math inline">\(G[A_1, \ldots, A_N]\)</span>, among all supertypes of <span class="math inline">\(S\)</span> the one of the form <span class="math inline">\(G[B_1, \ldots, B_N]\)</span> is chosen.</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(T\)</span> is a parameterized type <span class="math inline">\(G[A_1, \ldots, A_N]\)</span>, all the supertypes of <span class="math inline">\(S\)</span> the one of the form <span class="math inline">\(G[B_1, \ldots, B_N]\)</span> is chosen. </span><span class="sentence">If no such supertype exists, this is an inference error. </span><span class="sentence">Otherwise, for each <span class="math inline">\(M \in [1,N]\)</span>, a type argument constraint for containment <span class="math inline">\(A_M \preceq B_M\)</span> is introduced (see below);</span></li>
-<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is any other classifier type, then if <span class="math inline">\(T\)</span> is among supertypes for <span class="math inline">\(S\)</span>, the constraint is eliminated, and if it is not, this is an inference error;</span></li>
-<li><span class="sentence">If <span class="math inline">\(T\)</span> is a type variable:</span>
+<li><span class="sentence">If no such supertype exists, this is an inference error;</span></li>
+<li><span class="sentence">Otherwise, for each <span class="math inline">\(M \in [1,N]\)</span>, a type argument constraint for containment <span class="math inline">\(A_M \preceq B_M\)</span> is introduced (see below);</span></li>
+</ul></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is any other classifier type and <span class="math inline">\(T\)</span> is among supertypes for <span class="math inline">\(S\)</span>, the constraint is eliminated; otherwise, this is an inference error;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a type variable and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(S\)</span> is an intersection type containing <span class="math inline">\(T\)</span>, this constraint is eliminated;</span></li>
 <li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> has a lower bound <span class="math inline">\(B\)</span>, the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, this is an inference error;</span></li>
 </ul></li>
-<li><span class="sentence">If <span class="math inline">\(T\)</span> is an intersection type <span class="math inline">\(A_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}A_N\)</span>, the constraint is reduced to <span class="math inline">\(N\)</span> constraints <span class="math inline">\(S &lt;: A_M\)</span> for each <span class="math inline">\(M \in [1, N]\)</span>;</span></li>
-<li><span class="sentence">If <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is an intersection type <span class="math inline">\(A_1 \mathbin{\operatorname{\&amp;}}\ldots \mathbin{\operatorname{\&amp;}}A_N\)</span>, the constraint is reduced to <span class="math inline">\(N\)</span> constraints <span class="math inline">\(S &lt;: A_M\)</span> for each <span class="math inline">\(M \in [1, N]\)</span>;</span></li>
+<li><span class="sentence">Otherwise, if <span class="math inline">\(T\)</span> is a nullable type of the form <span class="math inline">\(B?\)</span> and:</span>
 <ul>
 <li><span class="sentence">If <span class="math inline">\(S\)</span> is a known non-nullable type (a classifier type, a nullability-asserted type <span class="math inline">\(A!!\)</span>, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to <span class="math inline">\(S &lt;: B\)</span>;</span></li>
 <li><span class="sentence">Otherwise, this is an inference error.</span></li>
 </ul></li>
-</ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">Type argument constraints for a containment relation <span class="math inline">\(Q \preceq F\)</span> are constructed as follows:</span></p>
+<p><span class="sentence">Type argument constraints for a <a href="type-system.html#type-containment">containment relation</a> <span class="math inline">\(Q \preceq F\)</span> are constructed as follows:</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: for the purposes of this algorithm, <a href="type-system.html#declaration-site-variance">declaration-site variance</a> type arguments are considered to be their equivalent <a href="type-system.html#use-site-variance">use-site variance</a> versions.</span></p>
+</div>
+</blockquote>
 <ul>
-<li><span class="sentence">If either <span class="math inline">\(S\)</span> or <span class="math inline">\(F\)</span> is the special argument <span class="math inline">\(\star\)</span>, no constraints are produced;</span></li>
-<li><span class="sentence">If <span class="math inline">\(F\)</span> is invariant with type <span class="math inline">\(F&#39;\)</span>:</span>
+<li><span class="sentence">If either <span class="math inline">\(Q\)</span> or <span class="math inline">\(F\)</span> is a special bivariant type argument <span class="math inline">\(\star\)</span>, no constraints are produced;</span></li>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> has the form <span class="math inline">\(F&#39;\)</span> (is invariant):</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(Q\)</span> is also invariant with type <span class="math inline">\(Q&#39;\)</span>, two constraints are produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span> and <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> is also invariant and of the form <span class="math inline">\(Q&#39;\)</span>, two constraints are produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span> and <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
 <li><span class="sentence">If <span class="math inline">\(Q\)</span> has any other variance, this is an inference error;</span></li>
 </ul></li>
-<li><span class="sentence">If <span class="math inline">\(F\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}F&#39;\)</span>:</span>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> has the form <span class="math inline">\(\operatorname{\texttt{out\,}}F&#39;\)</span> (is covariant):</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
-<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(\operatorname{\texttt{kotlin.Any?}}&lt;: F&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has the form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(Q&#39; &lt;: F&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has the form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(\operatorname{\texttt{kotlin.Any?}}&lt;: F&#39;\)</span>;</span></li>
 </ul></li>
-<li><span class="sentence">If <span class="math inline">\(F\)</span> has form <span class="math inline">\(\operatorname{\texttt{in\,}}F&#39;\)</span>:</span>
+<li><span class="sentence">If <span class="math inline">\(F\)</span> has the form <span class="math inline">\(\operatorname{\texttt{in\,}}F&#39;\)</span> (is contravariant):</span>
 <ul>
-<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span>;</span></li>
-<li><span class="sentence">If <span class="math inline">\(Q\)</span> has form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span>, this is an inference error.</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has the form <span class="math inline">\(\operatorname{\texttt{in\,}}Q&#39;\)</span> or <span class="math inline">\(Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(F&#39; &lt;: Q&#39;\)</span>;</span></li>
+<li><span class="sentence">If <span class="math inline">\(Q\)</span> has the form <span class="math inline">\(\operatorname{\texttt{out\,}}Q&#39;\)</span>, the following constraint is produced: <span class="math inline">\(F&#39; &lt;: \operatorname{\texttt{kotlin.Nothing}}\)</span>.</span></li>
 </ul></li>
 </ul>
 <div class="paragraph">
