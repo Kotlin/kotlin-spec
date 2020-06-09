@@ -16,8 +16,107 @@ body {
     line-height: 1.7;
     padding: 1em;
     margin: auto;
-    max-width: 42em;
+    max-width: 700px;
     background: #fefefe;
+}
+
+#TOC {
+    position: fixed;
+    left: 0;
+    top: 50px;
+    width: 250px;
+    height: 100%;
+    overflow: auto;
+
+    -webkit-transition: left 0.5s ease-out 0.25s;
+    -moz-transition: left 0.5s ease-out 0.25s;
+    -o-transition: left 0.5s ease-out 0.25s;
+    transition: left 0.5s ease-out 0.25s;
+
+    font-size: 12px;
+    font-family: Arial;
+
+    background: #fefefe;
+    z-index: 2;
+    border-right: 1px solid #a0a0a0;
+}
+
+#TOC li {
+    list-style: none;
+    margin-left: -10px;
+}
+
+#TOC span {
+    visibility: hidden;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    font-size: 0;
+    padding: 5px 5px 0px 5px;
+    bottom: 4px;
+}
+
+#TOC li a:hover {
+    color: gray;
+    font-size: 13px;
+}
+
+
+#TOC li a {
+    display: inline-block;
+    width: 95%;
+    color: gray;
+}
+
+.toc-section-number {
+    display: none;
+}
+
+
+.icon-menu {
+    display: none;
+    height: 30px;
+    width: 17px;
+    float: left;
+    padding: 20px 0 0 20px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+
+.divide {
+    display: block;
+    height: 2px;
+    margin: 3px 0;
+    background: #0b0080;
+}
+
+
+@media (max-width: 1250px) {
+    body {
+        padding-top: 50px
+    }
+
+
+    .icon-menu {
+        display: block
+    }
+
+    #TOC {
+        position: fixed;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+    }
+
+    #TOC span .rolled {
+        background-color: #ff9686;
+    }
+
+    #TOC.active {
+        left: 0;
+    }
+
 }
 
 nav {
@@ -355,6 +454,7 @@ div.TODO {
     border-radius: 7px;
     padding: 1px 10px;
     margin-bottom: 5px;
+    align-items: flex-end;
 }
 
 span.TODO {
@@ -481,6 +581,12 @@ span.TODO-marker {
     outline: none;
     width: 16px;
     height: 16px;
+}
+
+.toc-section-number img {
+    outline: none;
+    width: 6px;
+    height: 6px;
 }
 
 .load-tests, .loaded-tests {
