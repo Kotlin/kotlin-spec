@@ -123,7 +123,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<h2 id="operator-overloading">Operator overloading</h2>
+
+<h2 id="operator-overloading"><span class="header-section-number">0.1</span> Operator overloading</h2>
 <div class="paragraph">
 <p><span class="sentence">Some syntax forms in Kotlin are <em>defined by convention</em>, meaning that their semantics are defined through syntactic expansion of one syntax form into another syntax form.</span></p>
 </div>
@@ -169,18 +170,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For example, take the following declarations:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">class</span> A {</a>
-<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">inc</span>(): <span class="dt">A</span> { ... }</a>
-<a class="sourceLine" id="cb1-3" title="3">}</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">inc</span><span class="op">():</span> <span class="dt">A</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="op">}</span></a>
 <a class="sourceLine" id="cb1-4" title="4"></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">object</span> B {</a>
-<a class="sourceLine" id="cb1-6" title="6">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">A</span> { ... }</a>
-<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">set</span>(<span class="va">i</span>: <span class="dt">Int</span>, <span class="va">value</span>: <span class="dt">A</span>) { ... }</a>
-<a class="sourceLine" id="cb1-8" title="8">}</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">object</span> <span class="dt">B</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-6" title="6">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(i: <span class="kw">Int</span>): A <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">set</span>(i: <span class="kw">Int</span>, value: A) <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="op">}</span></a>
 <a class="sourceLine" id="cb1-9" title="9"></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="kw">object</span> C {</a>
-<a class="sourceLine" id="cb1-11" title="11">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">B</span> { ... }</a>
-<a class="sourceLine" id="cb1-12" title="12">}</a></code></pre></div>
+<a class="sourceLine" id="cb1-10" title="10"><span class="kw">object</span> <span class="dt">C</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-11" title="11">    <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(i: <span class="kw">Int</span>): B <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The expression <code>C[0][0]++</code> is expanded (see the <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> section for details) using the following rules:</span></p>
 </div>
@@ -195,11 +196,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence">Second, the <a href="statements.html#assignments">assignment</a> to an indexing expression (produced by the previous expansion) is expanded, resulting in:</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span>(C[<span class="dv">0</span>][<span class="dv">0</span>].inc())</a></code></pre></div></li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1">C[<span class="dv">0</span>].<span class="kw">set</span><span class="op">(</span><span class="va">C</span>[<span class="va">0</span>][<span class="va">0</span>].<span class="va">inc</span>(<span class="op">)</span>)</a></code></pre></div></li>
 <li><div class="paragraph">
 <p><span class="sentence">Third, the <a href="expressions.html#indexing-expressions">indexing expressions</a> are expanded, resulting in:</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1">C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">set</span>(C.<span class="kw">get</span>(<span class="dv">0</span>).<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1">C.<span class="kw">get</span><span class="op">(</span><span class="va">0</span><span class="op">).</span><span class="kw">set</span>(C.<span class="kw">get</span><span class="op">(</span><span class="va">0</span><span class="op">).</span><span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div></li>
 </ul>
 <div class="TODO">
 <div class="paragraph">
@@ -210,10 +211,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Important: although the resulting expression contains several instances of the subexpression <code>C.get(0)</code>, as all these instances were created from the same original syntax form, the subexpression is evaluated only once, making this code roughly equivalent to:</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = C.<span class="kw">get</span>(<span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb5-2" title="2">$tmp.<span class="kw">set</span>($tmp.<span class="kw">get</span>(<span class="dv">0</span>).inc())</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> C.<span class="kw">get</span><span class="op">(</span><span class="va">0</span><span class="op">)</span></a>
+<a class="sourceLine" id="cb5-2" title="2">$<span class="fu">tmp</span><span class="op">.</span><span class="kw">set</span>($tmp.<span class="kw">get</span><span class="op">(</span><span class="va">0</span><span class="op">).</span><span class="fu">inc</span><span class="op">()</span>)</a></code></pre></div>
 </blockquote>
-<h3 id="destructuring-declarations">Destructuring declarations</h3>
+<h3 id="destructuring-declarations"><span class="header-section-number">0.1.1</span> Destructuring declarations</h3>
 <div class="paragraph">
 <p><span class="sentence">A special case of definition by convention is the destructuring declaration of properties, which is available for <a href="declarations.html#local-property-declaration">local properties</a>, parameters of <a href="expressions.html#lambda-literals">lambda literals</a> and the iteration variable of <a href="statements.html#for-loop-statement">for-loops</a>. </span><span class="sentence">See the corresponding sections for particular syntax.</span></p>
 </div>
@@ -224,40 +225,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> (<span class="va">x</span>: A, _, z) = f()</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="op">(</span><span class="va">x</span><span class="op">:</span> <span class="dt">A</span><span class="op">,</span> <span class="va">_</span><span class="op">,</span> <span class="va">z</span><span class="op">)</span> <span class="op">=</span> f()</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is expanded to</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> = f()</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> f()</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">A</span> <span class="op">=</span> $tmp.component1()</a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> $tmp.component3()</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>component1</code> and <code>component3</code> are suitable operator functions available on the value returned by <code>f()</code></span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="cf">for</span>((x: A, _, z) <span class="kw">in</span> f()) { ... }</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="cf">for</span>((x: A, _, z) <span class="kw">in</span> f()) <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is expanded to (as per for-loop expansion)</span></p>
 </div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> = f().iterator()) {</a>
-<a class="sourceLine" id="cb9-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) {</a>
-<a class="sourceLine" id="cb9-3" title="3">                <span class="kw">val</span> $<span class="va">tmp</span> = $iterator.next()</a>
-<a class="sourceLine" id="cb9-4" title="4">                <span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
-<a class="sourceLine" id="cb9-5" title="5">                <span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> <span class="op">=</span> f().iterator()) <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-3" title="3">                <span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> $iterator.next()</a>
+<a class="sourceLine" id="cb9-4" title="4">                <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">A</span> <span class="op">=</span> $tmp.component1()</a>
+<a class="sourceLine" id="cb9-5" title="5">                <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> $tmp.component3()</a>
 <a class="sourceLine" id="cb9-6" title="6">                ...</a>
-<a class="sourceLine" id="cb9-7" title="7">            }</a>
-<a class="sourceLine" id="cb9-8" title="8">}</a></code></pre></div>
+<a class="sourceLine" id="cb9-7" title="7">            <span class="op">}</span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>iterator()</code>, <code>next()</code>, <code>hasNext()</code>, <code>component1()</code> and <code>component3</code> are all suitable operator functions available on their respective receivers.</span></p>
 </div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1">foo { (x: A, _, z) -&gt; ... }</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1">foo <span class="op">{</span> (x: A, _, z) -&gt; ... <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is expanded to</span></p>
 </div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1">foo { $tmp -&gt;</a>
-<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">val</span> <span class="va">x</span>: A = $tmp.component1()</a>
-<a class="sourceLine" id="cb11-3" title="3">    <span class="kw">val</span> <span class="va">z</span> = $tmp.component3()</a>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1">foo <span class="op">{</span> $tmp -&gt;</a>
+<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">A</span> <span class="op">=</span> $tmp.component1()</a>
+<a class="sourceLine" id="cb11-3" title="3">    <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> $tmp.component3()</a>
 <a class="sourceLine" id="cb11-4" title="4">    ...</a>
-<a class="sourceLine" id="cb11-5" title="5">}</a></code></pre></div>
+<a class="sourceLine" id="cb11-5" title="5"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>component1()</code> and <code>component3</code> are all suitable operator functions available on the value of lambda argument.</span></p>
 </div>
