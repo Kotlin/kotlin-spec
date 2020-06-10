@@ -51,7 +51,7 @@ A particular implementation is not guaranteed to follow this algorithm, but one 
 > Note: a well-informed reader may notice this algorithm to be similar to the one used by Java.
 This is not a coincidence: our sample inference algorithm has indeed been inspired by Java's.
 
-The algorithm works in two phases: *reduction* and *incorporation* which are applied to the constraint system and its current solution in turns until a fixpoint or an error is reached.
+The algorithm works in two phases: *reduction* and *incorporation* which are applied to the constraint system and its current solution in turns until a fixpoint or an error is reached (aka reduction-incorporation procedure or RIP).
 The reduction phase is used to produce bounds for inference variables based on constraints; this phase is also responsible for eliminating the constraints which are no longer needed.
 The incorporation phase is used to introduce new bounds and constraints from existing bounds.
 
@@ -103,11 +103,11 @@ Type argument constraints for a [containment relation][Type containment] $Q \pre
     - If $Q$ has the form $\inV Q'$ or $Q'$, the following constraint is produced: $F' <: Q'$;
     - If $Q$ has the form $\outV Q'$, the following constraint is produced: $F' <: \Nothing$.
 
-**Incorporation phase**: for each bound (and some bound combination) in the current solution, new constraints are produced as follows (it is safe to assume that each constraint is introduced into the system only once, so if this step produces constraints that have already been reduced, they are not introduced into the system):
+**Incorporation phase**: for each bound and particular bound combinations in the current solution, new constraints are produced as follows (it is safe to assume that each constraint is introduced into the system only once, so if this step produces constraints that have already been reduced, they are not added into the system):
 
 - For each inference variable $\alpha$, for each pair of bounds $S <: \alpha$ and $\alpha <: T$, a new constraint is produced: $S <: T$;
-- For each inference variable $\alpha$ if there is a pair of bounds $S <: \alpha$ and $\alpha <: S$ (that is, $\alpha$ is equivalent to $S$), and for each bound $Q <: P$ where $Q$ or $P$ contains $\alpha$, a new constraint is produced: $Q[\alpha := S] <: P[\alpha := S]$;
-- For each inference variable $\alpha$, for each pair of bounds $\alpha <: S$ and $\alpha <: T$ where both $S$ has a supertype of the form $G[A_1,\ldots,A_N]$ and $T$ has a supertype of the form $G[B_1,\ldots,B_N]$, then for each $M \in [1,N]$ if both $A_M$ and $B_M$ are invariant with types $A'_M$ and $B'_M$ respectively, the following new constraints are produced: $A'_M <: B'_M$ and $B'_M <: A'_M$.
+- For each inference variable $\alpha$, if there is a pair of bounds $S <: \alpha$ and $\alpha <: S$ (i.e., $\alpha$ is equivalent to $S$), for each bound $Q <: P$ where $Q$ or $P$ contains $\alpha$, a new constraint is produced: $Q[\alpha := S] <: P[\alpha := S]$;
+- For each inference variable $\alpha$, for each pair of bounds $\alpha <: S$ and $\alpha <: T$ where $S$ has a supertype of the form $G[A_1,\ldots,A_N]$ and $T$ has a matching supertype of the form $G[B_1,\ldots,B_N]$, for each matching supertype $G$ and each $M \in [1,N]$, if both $A_M$ and $B_M$ are invariant and have forms $A'_M$ and $B'_M$ respectively, the following new constraints are produced: $A'_M <: B'_M$ and $B'_M <: A'_M$.
 
 #### Finding optimal constraint system solution
 
@@ -126,8 +126,10 @@ Excluding other free variables, this boils down to:
 - For a variable with both or none, the solution is also the [least upper bound] of all lower bounds for this variable, excluding other free variables.
 
 If there are inference variables dependent on other inference variables ($\alpha$ is dependent on $\beta$ iff there is a bound $\alpha <: T$ or $T <: \alpha$ where $T$ contains $\beta$), this process is performed in stages.
+
 During each stage a set of inference variables not dependent on other inference variables (but possibly dependent on each other) is selected, the solutions for these variables are found using existing bounds, and after that these variables are **resolved** in the current bound set by replacing all of their instances in other bounds by the solution.
-This may trigger and additional incorporation step, that, in turn, may lead to additional reduction steps performed.
+This may trigger a new RIP.
+
 After that, a new independent set of inference variables is picked and this process is repeated until an inference error occurs or a solution for each inference variable is found.
 
 #### The relations on types as constraints
