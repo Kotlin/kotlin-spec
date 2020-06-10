@@ -1,11 +1,11 @@
 ## Expressions
 
-### Glossary
+### Glossary {-}
 
 CSB
 ~ [Control structure body][Code blocks]
 
-### Introduction
+### Introduction {-}
 
 Expressions (together with [statements][Statements]) are one of the main building blocks of any program, as they represent ways to *compute* program values or *control* the program execution flow.
 

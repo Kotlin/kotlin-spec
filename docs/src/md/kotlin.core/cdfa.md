@@ -1338,7 +1338,7 @@ At line 7 there is another compile-time error when both properties are used, as 
 
 See the [corresponding section][Smart casts] for details.
 
-### References
+### References {-}
 
 1. Frances E. Allen. "Control flow analysis." ACM SIGPLAN Notices, 1970.
 2. Flemming Nielson, Hanne R. Nielson, and Chris Hankin. "Principles of program analysis." Springer, 2015.

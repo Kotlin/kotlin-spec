@@ -1,11 +1,11 @@
 ## Overload resolution
 
-### Glossary
+### Glossary {-}
 
 `type(e)`
 ~ [Type][Type system] of expression `e`
 
-### Intro
+### Introduction {-}
 
 Kotlin supports _callable overloading_, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called.
 This section describes *overload resolution process* in detail.

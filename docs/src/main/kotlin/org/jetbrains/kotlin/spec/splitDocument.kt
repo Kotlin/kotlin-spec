@@ -50,7 +50,20 @@ private class LinkFixer(splitLevel: Int, format: String) : PandocVisitor() {
 
 val mapper = constructObjectMapper()
 
-data class Section(val title: String, val blocks: MutableList<Block> = mutableListOf())
+data class Section(val title: String, val number: Int?, val blocks: MutableList<Block> = mutableListOf())
+
+fun setSectionCounterLatex(secNumber: Int, splitLevel: Int): Block {
+    val counterName = when(splitLevel) {
+        1 -> "part"
+        2 -> "chapter"
+        3 -> "section"
+        4 -> "subsection"
+        5 -> "subsubsection"
+        6 -> "paragraph"
+        else -> return Block.Null
+    }
+    return Block.RawBlock(Format.TeX, """\setcounter{$counterName}{${secNumber - 1}}""".trimMargin())
+}
 
 private class Splitter(val outputDirectory: File, val format: String, val splitLevel: Int = 2) : PandocVisitor() {
     override fun visit(doc: Pandoc): Pandoc {
@@ -61,9 +74,16 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
         val preamble = mutableListOf<Block>()
         val sections = mutableListOf<Section>()
 
+        var secNumber = 0
+
         for (block in blockIt) {
             if (block is Block.Header && block.level <= splitLevel) {
-                sections.add(Section(block.attr.id))
+                if("unnumbered" !in block.attr.classes && block.level == splitLevel) {
+                    sections.add(Section(block.attr.id, ++secNumber))
+                } else {
+                    sections.add(Section(block.attr.id, null))
+                }
+
                 sections.last().blocks.add(block)
                 break
             }
@@ -72,13 +92,22 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
 
         for (block in blockIt) {
             if (block is Block.Header && block.level <= splitLevel) {
-                sections.add(Section(block.attr.id))
+                if("unnumbered" !in block.attr.classes && block.level == splitLevel) {
+                    sections.add(Section(block.attr.id, ++secNumber))
+                } else {
+                    sections.add(Section(block.attr.id, null))
+                }
             }
             sections.last().blocks.add(block)
         }
 
-        for ((sectionTitle, sectionBlocks) in sections) {
-            val secDoc = newDoc.copy(blocks = preamble + sectionBlocks)
+        for ((sectionTitle, sectionNumber, sectionBlocks) in sections) {
+            val secOffsetBlock = when {
+                format != "html" && sectionNumber != null -> setSectionCounterLatex(sectionNumber, splitLevel)
+                else -> Block.Null
+            }
+            System.err.println("$sectionTitle: $secOffsetBlock")
+            val secDoc = newDoc.copy(blocks = preamble + listOf(secOffsetBlock) + sectionBlocks)
             File(outputDirectory, "$sectionTitle.json").bufferedWriter().use {
                 mapper.writeValue(it, secDoc)
             }
