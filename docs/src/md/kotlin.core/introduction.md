@@ -11,9 +11,9 @@ Currently, as of version 1.4, it supports compilation to the following platforms
 * JS (JavaScript)
 * Native (native binaries)
 
-Furthermore, it supports transparent interoperability between different platforms via its Kotlin Multiplatform Project (Kotlin MPP)feature.
+Furthermore, it supports transparent interoperability between different platforms via its Kotlin Multiplatform Project (Kotlin MPP) feature.
 
-The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null type safety, i.e., guaranteeing the absent of runtime errors caused by the absence of value (i.e., `null` value).
+The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null type safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., `null` value).
 Kotlin also extends its static type system with elements of gradual and flow typing, for better interoperability with other languages and ease of development.
 
 Kotlin is an object-oriented language which also has a lot of functional programming elements.
