@@ -795,26 +795,26 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 
 ##### Nullability lozenge
 
-```diagram
-+-------+         +-------+
-|       |         |       |
-|       |         |       |
-|   A?  +<--------+   B?  |
-|       |         |       |
-|       |         |       |
-+-------+         ++------+
-                   |  
-             +-----+  
-       +-----+        
-       V              
-+------++         +-------+
-|       |         |       |
-|       |         |       |
-|  A!!  +<--------+  B!!  |
-|       |         |       |
-|       |         |       |
-+-------+         +-------+
-```
+> ```diagram
+> +-------+         +-------+
+> |       |         |       |
+> |       |         |       |
+> |   A?  +<--------+   B?  |
+> |       |         |       |
+> |       |         |       |
+> +-------+         ++------+
+>                    |  
+>              +-----+  
+>        +-----+        
+>        V              
+> +------++         +-------+
+> |       |         |       |
+> |       |         |       |
+> |  A!!  +<--------+  B!!  |
+> |       |         |       |
+> |       |         |       |
+> +-------+         +-------+
+> ```
 
 Nullability lozenge represents valid possible [subtyping] relations between two nullable or non-nullable types in different combinations of their *versions*.
 For type $T$, we call $T!!$ its non-nullable version, $T?$ its nullable version.
