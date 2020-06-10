@@ -1,6 +1,6 @@
 ## Type system
 
-### Glossary
+### Glossary {-}
 
 $T$
 ~ Type (with unknown nullability)
@@ -78,7 +78,7 @@ TODO(Not everything is in the glossary, make some criteria of what goes where)
 
 TODO(Cleanup glossary)
 
-### Introduction
+### Introduction {-}
 
 Similarly to most other programming languages, Kotlin operates on data in the form of *values* or *objects*, which have *types* --- descriptions of what is the expected behaviour and possible values for their datum.
 An empty value is represented by a special `null` object; most operations with it result in runtime [errors or exceptions][Exceptions].
@@ -1264,7 +1264,7 @@ Type decaying function $\delta$ is defined as follows.
 
 TODO(Specify when we drop type arguments when doing type approximation / decaying business)
 
-### References
+### References {-}
 
 1. Ross Tate. "Mixed-site variance." FOOL, 2013.
 2. Ross Tate, Alan Leung, and Sorin Lerner. "Taming wildcards in Java's type system." PLDI, 2011.

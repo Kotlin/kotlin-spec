@@ -1,6 +1,6 @@
 ## Declarations
 
-### Glossary
+### Glossary {-}
 
 Entity
 ~ Distinguishable part of a program
@@ -11,7 +11,7 @@ Identifier
 Path
 ~ Sequence of identifiers which references a program entity in a given [scope][Scopes and identifiers]
 
-### Introduction
+### Introduction {-}
 
 TODO(Examples)
 

@@ -12,7 +12,7 @@ TMP_DIR=${BUILD_DIR}/~tmp
 mkdir -p $TMP_DIR
 
 gpp -H ./index.md \
-| pandoc ${PREAMBLE_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json --syntax-definition=./kotlin.xml \
+| pandoc ${PREAMBLE_OPTIONS} ${FORMAT_PANDOC_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json \
 | bash ${FILTERS_DIR}/processTodoFilter.sh html \
 | bash ${FILTERS_DIR}/markSentencesFilter.sh html \
 | bash ${FILTERS_DIR}/copyPasteFilter.sh html \
@@ -25,7 +25,12 @@ mkdir -p ${BUILD_DIR}/html/sections
 
 for f in $TMP_DIR/*.json;
 do \
-  pandoc ${PREAMBLE_OPTIONS} $f ${HTML_ASSETS_OPTIONS} -s -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
+  pandoc \
+    ${PREAMBLE_OPTIONS} \
+    ${COMMON_PANDOC_OPTIONS} \
+    $f \
+    ${HTML_ASSETS_OPTIONS} \
+    -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
 done
 
 rm -rf $TMP_DIR

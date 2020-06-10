@@ -1,10 +1,8 @@
-## Syntax
+## Syntax and grammar
 
-### Grammar
+### Lexical grammar
 
-#### Lexical grammar
-
-##### Whitespace and comments
+#### Whitespace and comments
 
 :::{ .grammar-rule #grammar-rule-LF }
 **_LF_:**  
@@ -39,7 +37,7 @@
   ~ _[DelimitedComment](#grammar-rule-DelimitedComment)_ | _[LineComment](#grammar-rule-LineComment)_ | _[WS](#grammar-rule-WS)_
 :::
 
-##### Keywords and operators
+#### Keywords and operators
 
 ::: { .grammar-rule #grammar-rule-RESERVED }
 **_RESERVED_:**  
@@ -554,7 +552,7 @@
   ~ `'actual'`
 :::
 
-##### Literals
+#### Literals
 
 ::: { .grammar-rule #grammar-rule-DecDigitNoZero }
 **_DecDigitNoZero_:**  
@@ -653,7 +651,7 @@
   ~ [_UniCharacterLiteral_](#grammar-rule-UniCharacterLiteral) | [_EscapedIdentifier_](#grammar-rule-EscapedIdentifier)
 :::
 
-##### Identifiers
+#### Identifiers
 
 :::{ .grammar-rule #grammar-rule-Letter }
 **_Letter_**  
@@ -751,7 +749,7 @@ All other keywords are considered *hard keywords* and may only be used as identi
 >
 > even though `field` is a keyword
 
-##### String mode grammar
+#### String mode grammar
 
 :::{ .grammar-rule #grammar-rule-QUOTE_OPEN }
 **_QUOTE_OPEN_**  
@@ -814,7 +812,7 @@ Closing triple double quote (TRIPLE_QUOTE_CLOSE) rule exits this mode.
   ~ `'${'`
 :::
 
-##### Tokens
+#### Tokens
 
 These are all the valid tokens in one rule.
 Note that syntax grammar ignores tokens [_DelimitedComment_](#grammar-rule-DelimitedComment), [_LineComment_](#grammar-rule-LineComment) and [_WS_](#grammar-rule-WS).
@@ -981,13 +979,13 @@ Note that syntax grammar ignores tokens [_DelimitedComment_](#grammar-rule-Delim
   ~ <end of input>
 :::
 
-#### Syntax grammar
+### Syntax grammar
 
 The grammar below replaces some lexical grammar rules with explicit literals (where such replacement in trivial and always correct, for example, for keywords) for better readability.
 
 <#include "kotlin.core/grammar.generated.md">
 
-#### Documentation comments
+### Documentation comments
 
 Kotlin supports special comment syntax for code documentation purposes, called KDoc.
 The syntax is based on [Markdown](https://tools.ietf.org/html/rfc7763) and [Javadoc](https://www.oracle.com/java/technologies/javase/javadoc-tool.html).

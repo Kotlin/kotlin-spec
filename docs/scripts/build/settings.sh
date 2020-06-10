@@ -1,9 +1,12 @@
+FORMAT_PANDOC_OPTIONS="-f markdown-raw_html+smart+tex_math_double_backslash"
+
 COMMON_PANDOC_OPTIONS="\
   -s \
   --variable linkcolor=blue \
   --variable filecolor=cyan \
+  --syntax-definition=kotlin.xml \
   --number-sections \
-  -f markdown-raw_html+smart+tex_math_double_backslash"
+  --top-level-division=part"
 
 TOC_PANDOC_OPTIONS="\
   --toc \
