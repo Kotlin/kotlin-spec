@@ -9,8 +9,8 @@ A *type constraint* in general is an inequation of the following form: $T <: U$ 
 As Kotlin has [parameterized types][Parameterized classifier types], $T$ and $U$ may be *free type variables*: unknown types which may be substituted by any other type in Kotlin.
 
 Please note that, in general, not all type parameters are considered as free type variables in a constraint system.
-Some type variables may be *fixed* in a constraint system; for example, type parameters of a parameterized class *inside* its body are not concrete types, but are not free type variables either.
-A fixed type variable describes an unknown, but fixed type which is not to be substituted.
+Some type variables may be *fixed* in a constraint system; for example, type parameters of a parameterized class *inside* its body are unknown types, but are not free type variables either.
+A fixed type variable describes an unknown, but fixed type which is *not* to be substituted.
 
 We will use the notation $T_i$ for a type variable and $\tilde{T_i}$ for a fixed type variable.
 The main difference between fixed type variables and concrete types is that different concrete types may not be equal, but a fixed type variable may be equal to another fixed type variable or a concrete type.
@@ -38,65 +38,70 @@ Solving a constraint system, on the other hand, may have multiple possible outco
 #### Checking constraint system soundness
 
 Checking constraint system soundness is a satisfiability problem.
-That is, given a number of constraints in the form $S <: T$ containing zero or more *free type variables* (also called inference type variables), it needs to determine if these constraints are non-contradictory, i.e. there exists a possible instantiation of these free variables that makes all given constraints valid.
+That is, given a number of constraints in the form $S <: T$ containing zero or more free type variables (also called *inference type variables*), it needs to determine if these constraints are non-contradictory, i.e., if there exists a possible instantiation of these free variables to concrete types which makes all given constraints valid.
 
-This boils down to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory.
-The algorithm of finding this bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.
+This problem can be reduced to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory.
+The algorithm of finding these bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.
 
 ##### A sample bound inference algorithm
 
 The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above.
 A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.
 
-The algorithm works in two phases: *reduction* and *incorporation* that are applied to the constraint system and current solution in turns until a fixpoint or an error is reached.
-The reduction phase is used to produce bounds for inference variables based on constraints and eliminating the constraints no longer needed.
+> Note: a well-informed reader may notice this algorithm to be similar to the one used by Java.
+This is not a coincidence: our sample inference algorithm has indeed been inspired by Java's.
+
+The algorithm works in two phases: *reduction* and *incorporation* which are applied to the constraint system and its current solution in turns until a fixpoint or an error is reached.
+The reduction phase is used to produce bounds for inference variables based on constraints; this phase is also responsible for eliminating the constraints which are no longer needed.
 The incorporation phase is used to introduce new bounds and constraints from existing bounds.
-A bound is similar to constraint in that it has the form $S <: T$, but either $S$ or $T$ (or both) is an inference variable.
-Thus, the current (and final) solution is a set of upper and lower bounds for each inference variable.
-*A resolved type* in this context is any type that does not contain inference variables.
+
+A bound is similar to a constraint in that it has the form $S <: T$, at least one of $S$ or $T$ is an inference variable.
+Thus, the current (and also the final) solution is a set of upper and lower bounds for each inference variable.
+A *resolved type* in this context is any type which does not contain inference variables.
 
 **Reduction phase**: for each constraint $S <: T$ in the constraint system the following rules are applied:
 
 - If $S$ and $T$ are resolved types and:
-    - if $S <: T$, this constraint is eliminated;
-    - otherwise this is an inference error;
+    - If $S <: T$, this constraint is eliminated;
+    - Otherwise, this is an inference error;
 - Otherwise, if $S$ is an inference variable $\alpha$, a new bound $\alpha <: T$ is added to current solution;
 - Otherwise, if $T$ is an inference variable $\beta$, a new bound $S <: \beta$ is added to current solution;
-- Otherwise, if $S$ is a flexible type of specific form $(\alpha?..\alpha)$ where $\alpha$ is an inference variable, a new bound $\alpha <: (T..T?)$ is added to current solution;
-- Otherwise, if $T$ is a flexible type of specific form $(\alpha?..\alpha)$ where $\alpha$ is an inference variable, a new bound $(S..S?) <: \alpha$ is added to current solution;
-- Otherwise, if $S$ is a nullable type of form $A?$ and:
+- Otherwise, if $S$ is a flexible type of the form $(\alpha..\alpha?)$ where $\alpha$ is an inference variable, a new bound $\alpha <: (T..T?)$ is added to current solution;
+- Otherwise, if $T$ is a flexible type of the form $(\alpha..\alpha?)$ where $\alpha$ is an inference variable, a new bound $(S..S?) <: \alpha$ is added to current solution;
+- Otherwise, if $S$ is a nullable type of the form $A?$ and:
     - If $T$ is a known non-nullable type (a classifier type, a nullability-asserted type $B!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;
-    - Otherwise, if $T$ is also a nullable type of form $B?$, the constraint is reduced to $A <: B$;
+    - Otherwise, if $T$ is also a nullable type of the form $B?$, the constraint is reduced to $A <: B$;
     - Otherwise, the constraint is reduced to $A <: T$;
 - Otherwise, if $S$ is a flexible type of the form $(B..A?)$ and:
-    - Otherwise, if $T$ is a nullable type of form $C?$, the constraint is reduced to $(B..A) <: C$ (or $A <: C$ if $A \equiv B$);
-    - Otherwise, the constraint is reduced to $(B..A) <: T$ (or $A <: T$ if $A \equiv B$);
-- Otherwise, based on the form of $T$:
-    - If $T$ is a parameterized type $G[A_1, \ldots, A_N]$, all the supertypes of $S$ the one of the form $G[B_1, \ldots, B_N]$ is chosen. 
-      If no such supertype exists, this is an inference error. 
-      Otherwise, for each $M \in [1,N]$, a type argument constraint for containment $A_M \preceq B_M$ is introduced (see below);
-    - Otherwise, if $T$ is any other classifier type, then if $T$ is among supertypes for $S$, the constraint is eliminated, and if it is not, this is an inference error;
-    - If $T$ is a type variable:
-        - If $S$ is an intersection type containing $T$, this constraint is eliminated;
-        - Otherwise, if $T$ has a lower bound $B$, the constraint is reduced to $S <: B$;
-        - Otherwise, this is an inference error;
-    - If $T$ is an intersection type $A_1 \amp \ldots \amp A_N$, the constraint is reduced to $N$ constraints $S <: A_M$ for each $M \in [1, N]$;
-    - If $T$ is a nullable type of the form $B?$ and:
-        - If $S$ is a known non-nullable type (a classifier type, a nullability-asserted type $A!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to $S <: B$;
-        - Otherwise, this is an inference error.
+    - If $T$ is a nullable type of form $C?$, the constraint is reduced to $(B..A) <: C$, or to $A <: C$ if $A \equiv B$;
+    - Otherwise, the constraint is reduced to $(B..A) <: T$, or to $A <: T$ if $A \equiv B$;
+- Otherwise, if $T$ is a parameterized type $G[A_1, \ldots, A_N]$, among all supertypes of $S$ the one of the form $G[B_1, \ldots, B_N]$ is chosen. 
+    - If no such supertype exists, this is an inference error;
+    - Otherwise, for each $M \in [1,N]$, a type argument constraint for containment $A_M \preceq B_M$ is introduced (see below);
+- Otherwise, if $T$ is any other classifier type and $T$ is among supertypes for $S$, the constraint is eliminated; otherwise, this is an inference error;
+- Otherwise, if $T$ is a type variable and:
+    - If $S$ is an intersection type containing $T$, this constraint is eliminated;
+    - Otherwise, if $T$ has a lower bound $B$, the constraint is reduced to $S <: B$;
+    - Otherwise, this is an inference error;
+- Otherwise, if $T$ is an intersection type $A_1 \amp \ldots \amp A_N$, the constraint is reduced to $N$ constraints $S <: A_M$ for each $M \in [1, N]$;
+- Otherwise, if $T$ is a nullable type of the form $B?$ and:
+    - If $S$ is a known non-nullable type (a classifier type, a nullability-asserted type $A!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), the constraint is reduced to $S <: B$;
+    - Otherwise, this is an inference error.
 
-Type argument constraints for a containment relation $Q \preceq F$ are constructed as follows:
+Type argument constraints for a [containment relation][Type containment] $Q \preceq F$ are constructed as follows:
 
-- If either $S$ or $F$ is the special argument $\star$, no constraints are produced;
-- If $F$ is invariant with type $F'$:
-    - If $Q$ is also invariant with type $Q'$, two constraints are produced: $F' <: Q'$ and $Q' <: F'$;
+> Important: for the purposes of this algorithm, [declaration-site variance] type arguments are considered to be their equivalent [use-site variance] versions.
+
+- If either $Q$ or $F$ is a special bivariant type argument $\star$, no constraints are produced;
+- If $F$ has the form $F'$ (is invariant):
+    - If $Q$ is also invariant and of the form $Q'$, two constraints are produced: $F' <: Q'$ and $Q' <: F'$;
     - If $Q$ has any other variance, this is an inference error;
-- If $F$ has form $\outV F'$:
-    - If $Q$ has form $\outV Q'$ or $Q'$, the following constraint is produced: $Q' <: F'$;
-    - If $Q$ has form $\inV Q'$, the following constraint is produced: $\AnyQ <: F'$;
-- If $F$ has form $\inV F'$:
-    - If $Q$ has form $\inV Q'$ or $Q'$, the following constraint is produced: $F' <: Q'$;
-    - If $Q$ has form $\outV Q'$, this is an inference error.
+- If $F$ has the form $\outV F'$ (is covariant):
+    - If $Q$ has the form $\outV Q'$ or $Q'$, the following constraint is produced: $Q' <: F'$;
+    - If $Q$ has the form $\inV Q'$, the following constraint is produced: $\AnyQ <: F'$;
+- If $F$ has the form $\inV F'$ (is contravariant):
+    - If $Q$ has the form $\inV Q'$ or $Q'$, the following constraint is produced: $F' <: Q'$;
+    - If $Q$ has the form $\outV Q'$, the following constraint is produced: $F' <: \Nothing$.
 
 **Incorporation phase**: for each bound (and some bound combination) in the current solution, new constraints are produced as follows (it is safe to assume that each constraint is introduced into the system only once, so if this step produces constraints that have already been reduced, they are not introduced into the system):
 
