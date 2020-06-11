@@ -6,6 +6,7 @@
 * Synchronize specification of complex features with their up-to-latest-date implementation
 	* Bound smart casts
 	* Operator expansions for non-trivial cases (aka operator desugaring)
+	* Fallthrough-like overload resolution (`provideDelegate` + `getValue`, `plusAssign` + `plus` with assignment, etc.)
 
 ## Long-term plans
 
