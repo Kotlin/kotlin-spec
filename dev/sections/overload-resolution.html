@@ -123,8 +123,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-
-<h2 id="overload-resolution"><span class="header-section-number">0.1</span> Overload resolution</h2>
+<span style="visibility: hidden; counter-reset: chapter 10;"></span>
+<h2 id="overload-resolution">Overload resolution</h2>
 <h3 id="glossary-3" class="unnumbered">Glossary</h3>
 <dl>
 <dt><code>type(e)</code></dt>
@@ -138,7 +138,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
 </div>
-<h3 id="receivers"><span class="header-section-number">0.1.1</span> Receivers</h3>
+<h3 id="receivers">Receivers</h3>
 <div class="paragraph">
 <p><span class="sentence">Every function or property that is defined as a method or an extension has one or more special parameters called <em>receiver</em> parameters. </span><span class="sentence">When calling such a callable using <a href="expressions.html#navigation-operators">navigation operators</a> (<code>.</code> or <code>?.</code>) the left hand side value is called an <em>explicit receiver</em> of this particular call. </span><span class="sentence">In addition to the explicit receiver, each call may indirectly access zero or more <em>implicit receivers</em>.</span></p>
 </div>
@@ -222,7 +222,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-25" title="25">    <span class="op">}</span></a>
 <a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
 </blockquote>
-<h3 id="the-forms-of-call-expression"><span class="header-section-number">0.1.2</span> The forms of call-expression</h3>
+<h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
 <div class="paragraph">
 <p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
 </div>
@@ -244,7 +244,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: the overload candidates are picked <strong>before</strong> the most specific function is chosen.</span></p>
 </div>
 </blockquote>
-<h3 id="callables-and-invoke-convention"><span class="header-section-number">0.1.3</span> Callables and <code>invoke</code> convention</h3>
+<h3 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h3>
 <div class="paragraph">
 <p><span class="sentence">A <em>callable</em> <span class="math inline">\(X\)</span> for the purpose of this section is one of the following:</span></p>
 </div>
@@ -294,7 +294,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A <em>local callable</em> is any callable which is declared in a <a href="scopes-and-identifiers.html#scopes-and-identifiers">statement scope</a>.</span></p>
 </div>
-<h3 id="c-level-partition"><span class="header-section-number">0.1.4</span> c-level partition</h3>
+<h3 id="c-level-partition">c-level partition</h3>
 <div class="paragraph">
 <p><span class="sentence">When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
 </div>
@@ -314,8 +314,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let us define this partition of callables to overload candidate sets as <em>c-level partition</em> (callable-level partition). </span><span class="sentence">As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed <strong>last</strong>, after all other applicable steps.</span></p>
 </div>
-<h3 id="building-the-overload-candidate-set-ocs"><span class="header-section-number">0.1.5</span> Building the overload candidate set (OCS)</h3>
-<h4 id="fully-qualified-call"><span class="header-section-number">0.1.5.1</span> Fully-qualified call</h4>
+<h3 id="building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</h3>
+<h4 id="fully-qualified-call">Fully-qualified call</h4>
 <div class="paragraph">
 <p><span class="sentence">If a call is fully-qualified (that is, it contains a complete <a href="scopes-and-identifiers.html#identifiers-and-paths">package path</a>), then the overload candidate set <span class="math inline">\(S\)</span> simply contains all the top-level callables with the specified name in the specified package. </span><span class="sentence">As a package name can never clash with any other declared entity, after performing <a href="overload-resolution.html#c-level-partition">c-level partition</a> on <span class="math inline">\(S\)</span>, the resulting sets are the only ones available for further processing.</span></p>
 </div>
@@ -340,7 +340,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a fully-qualified callable name has the form <code>P.n()</code>, where <code>n</code> is a simple callable name and <code>P</code> is a complete <a href="scopes-and-identifiers.html#identifiers-and-paths">package path</a> referencing an existing <a href="packages-and-imports.html#packages-and-imports">package</a>.</span></p>
 </div>
 </blockquote>
-<h4 id="call-with-an-explicit-receiver"><span class="header-section-number">0.1.5.2</span> Call with an explicit receiver</h4>
+<h4 id="call-with-an-explicit-receiver">Call with an explicit receiver</h4>
 <div class="paragraph">
 <p><span class="sentence">If a call is done via a <a href="expressions.html#navigation-operators">navigation operator</a> (<code>.</code> or <code>?.</code>), but is not a <a href="overload-resolution.html#fully-qualified-call">fully-qualified call</a>, then the left hand side value of the call is the explicit receiver of this call.</span></p>
 </div>
@@ -397,7 +397,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
 </div>
-<h5 id="call-with-an-explicit-type-receiver"><span class="header-section-number">0.1.5.2.1</span> Call with an explicit type receiver</h5>
+<h5 id="call-with-an-explicit-type-receiver">Call with an explicit type receiver</h5>
 <div class="paragraph">
 <p><span class="sentence">A call with an explicit receiver may be performed not only on a value receiver, but also on a <em>type</em> receiver.</span></p>
 </div>
@@ -413,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
 <li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
 </ol>
-<h4 id="infix-function-call"><span class="header-section-number">0.1.5.3</span> Infix function call</h4>
+<h4 id="infix-function-call">Infix function call</h4>
 <div class="paragraph">
 <p><span class="sentence">Infix function calls are a special case of function <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a> in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>
 </div>
@@ -428,7 +428,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Different platform implementations may extend the set of functions considered as infix functions for the overload candidate set.</span></p>
 </div>
-<h4 id="operator-call"><span class="header-section-number">0.1.5.4</span> Operator call</h4>
+<h4 id="operator-call">Operator call</h4>
 <div class="paragraph">
 <p><span class="sentence">According to <a href="operator-overloading.html#operator-overloading">the operator overloading section</a>, some operator expressions in Kotlin can be overloaded using definition-by-convention via specifically-named functions. </span><span class="sentence">This makes operator expressions semantically equivalent to function <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, where the receiver expression is selected based on the operator used.</span></p>
 </div>
@@ -453,7 +453,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: these rules are valid not only for dedicated operator expressions, but also for other operator-based defined-by-convention calls, e.g., <a href="statements.html#for-loop-statement"><code>for</code>-loop</a> iteration conventions, operator-form <a href="statements.html#assignments">assignments</a> or <a href="declarations.html#delegated-property-declaration">property delegation</a>.</span></p>
 </div>
 </blockquote>
-<h4 id="call-without-an-explicit-receiver"><span class="header-section-number">0.1.5.5</span> Call without an explicit receiver</h4>
+<h4 id="call-without-an-explicit-receiver">Call without an explicit receiver</h4>
 <div class="paragraph">
 <p><span class="sentence">A call which is performed with a <a href="scopes-and-identifiers.html#identifiers-and-paths">simple path</a> is a call <strong>without</strong> an explicit receiver. </span><span class="sentence">As such, it may either have one or more implicit receivers or reference a top-level function.</span></p>
 </div>
@@ -496,7 +496,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
 </div>
-<h4 id="call-with-named-parameters"><span class="header-section-number">0.1.5.6</span> Call with named parameters</h4>
+<h4 id="call-with-named-parameters">Call with named parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Calls in Kotlin may use named parameters in call expressions, e.g., <code>f(a = 2)</code>, where <code>a</code> is a parameter specified in the declaration of <code>f</code>. </span><span class="sentence">Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameter names for all named parameters from the call.</span></p>
 </div>
@@ -516,7 +516,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">While the <em>number of defaults</em> does affect <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">resolution process</a>, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.</span></p>
 </div>
-<h4 id="call-with-trailing-lambda-expressions"><span class="header-section-number">0.1.5.7</span> Call with trailing lambda expressions</h4>
+<h4 id="call-with-trailing-lambda-expressions">Call with trailing lambda expressions</h4>
 <div class="paragraph">
 <p><span class="sentence">A call expression may have a single lambda expression placed outside of the argument list or even completely replacing it (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable length parameters or parameters with defaults.</span></p>
 </div>
@@ -525,7 +525,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Example: this means that calls <code>f(1, 2) { g() }</code> and <code>f(1, 2, body = { g() })</code> are completely equivalent w.r.t. the overload resolution, assuming <code>body</code> is the name of the last formal parameter of <code>f</code>.</span></p>
 </div>
 </blockquote>
-<h4 id="call-with-specified-type-parameters"><span class="header-section-number">0.1.5.8</span> Call with specified type parameters</h4>
+<h4 id="call-with-specified-type-parameters">Call with specified type parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">A call expression may have a type argument list explicitly specified before the argument list (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which contain exactly the same number of formal type parameters at declaration site. </span><span class="sentence">In case of a property-like callable with <code>invoke</code>, type parameters must be present at the <code>invoke</code> operator function declaration instead.</span></p>
 </div>
@@ -534,12 +534,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for the respective type of call.</span></p>
 </div>
 </blockquote>
-<h3 id="determining-function-applicability-for-a-specific-call"><span class="header-section-number">0.1.6</span> Determining function applicability for a specific call</h3>
-<h4 id="rationale"><span class="header-section-number">0.1.6.1</span> Rationale</h4>
+<h3 id="determining-function-applicability-for-a-specific-call">Determining function applicability for a specific call</h3>
+<h4 id="rationale">Rationale</h4>
 <div class="paragraph">
 <p><span class="sentence">A function is <em>applicable</em> for a specific call if and only if the function parameters may be assigned the arguments values specified at the call site and all type constraints of the function type parameters hold w.r.t. supplied or <a href="type-inference.html#type-inference">inferred</a> type arguments.</span></p>
 </div>
-<h4 id="description"><span class="header-section-number">0.1.6.2</span> Description</h4>
+<h4 id="description">Description</h4>
 <div class="paragraph">
 <p><span class="sentence">Determining function applicability for a specific call is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem.</span></p>
 </div>
@@ -576,8 +576,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: although it is impossible to create a value of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing?}}\)</span>.</span></p>
 </div>
 </blockquote>
-<h3 id="choosing-the-most-specific-candidate-from-the-overload-candidate-set"><span class="header-section-number">0.1.7</span> Choosing the most specific candidate from the overload candidate set</h3>
-<h4 id="rationale-1"><span class="header-section-number">0.1.7.1</span> Rationale</h4>
+<h3 id="choosing-the-most-specific-candidate-from-the-overload-candidate-set">Choosing the most specific candidate from the overload candidate set</h3>
+<h4 id="rationale-1">Rationale</h4>
 <div class="paragraph">
 <p><span class="sentence">The main rationale for choosing the most specific candidate from the overload candidate set is the following:</span></p>
 </div>
@@ -608,7 +608,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
-<h4 id="algorithm-of-msc-selection"><span class="header-section-number">0.1.7.2</span> Algorithm of MSC selection</h4>
+<h4 id="algorithm-of-msc-selection">Algorithm of MSC selection</h4>
 <div class="paragraph">
 <p><span class="sentence">When an overload resolution set <span class="math inline">\(S\)</span> is selected and it contains more than one callable, we need to choose the most specific candidate from these callables. </span><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> facilities of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>.</span></p>
 </div>
@@ -675,14 +675,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">First, the properties are compared for applicability and the most applicable property is chosen as described above. </span><span class="sentence">If several properties are equally applicable, this is an overload ambiguity as usual;</span></li>
 <li><span class="sentence">Second, for the property selected at first step, the most applicable operator <code>invoke</code> overload is chosen.</span></li>
 </ul>
-<h3 id="resolving-callable-references"><span class="header-section-number">0.1.8</span> Resolving callable references</h3>
+<h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">The <code>invoke</code> operator convention <strong>does not</strong> apply to callable reference candidates. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
 </div>
-<h4 id="resolving-callable-references-not-used-as-arguments-to-a-call"><span class="header-section-number">0.1.8.1</span> Resolving callable references not used as arguments to a call</h4>
+<h4 id="resolving-callable-references-not-used-as-arguments-to-a-call">Resolving callable references not used as arguments to a call</h4>
 <div class="paragraph">
 <p><span class="sentence">In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:</span></p>
 </div>
@@ -744,7 +744,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the <a href="overload-resolution.html#bidirectional-resolution-for-callable-calls">bidirectional resolution process</a> would apply, possibly resulting in an overload resolution failure.</span></p>
 </div>
 </blockquote>
-<h4 id="bidirectional-resolution-for-callable-calls"><span class="header-section-number">0.1.8.2</span> Bidirectional resolution for callable calls</h4>
+<h4 id="bidirectional-resolution-for-callable-calls">Bidirectional resolution for callable calls</h4>
 <div class="paragraph">
 <p><span class="sentence">If a callable reference (or several callable references) is itself an argument to an overloaded function call, the resolution process is performed for both callables <em>simultaneously</em>.</span></p>
 </div>
@@ -768,7 +768,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">TODO(Examples)</span></p>
 </div>
 </div>
-<h3 id="type-inference-and-overload-resolution"><span class="header-section-number">0.1.9</span> Type inference and overload resolution</h3>
+<h3 id="type-inference-and-overload-resolution">Type inference and overload resolution</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a very complicated process, and it is performed <em>after</em> overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.</span></p>
 </div>
@@ -777,7 +777,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.</span></p>
 </div>
 </blockquote>
-<h3 id="conflicting-overloads"><span class="header-section-number">0.1.10</span> Conflicting overloads</h3>
+<h3 id="conflicting-overloads">Conflicting overloads</h3>
 <div class="paragraph">
 <p><span class="sentence">In cases when it is known two callables are definitely interlinked in overload resolution (e.g., two member function-like callables declared in the same classifier), meaning they will always be considered together for overload resolution, Kotlin compiler performs <em>conflicting overload</em> detection for such callables.</span></p>
 </div>

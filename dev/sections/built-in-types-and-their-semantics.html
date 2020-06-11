@@ -123,8 +123,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-
-<h2 id="built-in-types-and-their-semantics"><span class="header-section-number">0.1</span> Built-in types and their semantics</h2>
+<span style="visibility: hidden; counter-reset: chapter 2;"></span>
+<h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="type-system.html#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
 </div>
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation.</span></p>
 </div>
 </blockquote>
-<h3 id="kotlin.any-1"><span class="header-section-number">0.1.1</span> <code>kotlin.Any</code></h3>
+<h3 id="kotlin.any-1"><code>kotlin.Any</code></h3>
 <div class="paragraph">
 <p><span class="sentence">Besides being the <a href="type-system.html#kotlin.any">unified supertype</a> of all non-nullable types, <span class="math inline">\(\operatorname{\texttt{kotlin.Any}}\)</span> must also provide the following methods.</span></p>
 </div>
@@ -159,7 +159,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Returns a string representation of a value.</span></p>
 </div></li>
 </ul>
-<h3 id="kotlin.nothing-1"><span class="header-section-number">0.1.2</span> <code>kotlin.Nothing</code></h3>
+<h3 id="kotlin.nothing-1"><code>kotlin.Nothing</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> is an <a href="type-system.html#kotlin.nothing">uninhabited type</a>, which means the evaluation of an expression with <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> type can never complete normally. </span><span class="sentence">Therefore, it is used to mark special situations, such as</span></p>
 </div>
@@ -171,15 +171,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Further details about how <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}\)</span> should be handled are available <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a> and <a href="type-inference.html#type-inference">here</a>.</span></p>
 </div>
-<h3 id="kotlin.unit"><span class="header-section-number">0.1.3</span> <code>kotlin.Unit</code></h3>
+<h3 id="kotlin.unit"><code>kotlin.Unit</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> is a unit type, i.e., a type with only one value <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span>; all values of type <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> should reference the same underlying <span class="math inline">\(\operatorname{\texttt{kotlin.Unit}}\)</span> object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in other programming languages, but has several minor differences, which fall outside the scope of this specification.</span></p>
 </div>
-<h3 id="kotlin.boolean"><span class="header-section-number">0.1.4</span> <code>kotlin.Boolean</code></h3>
+<h3 id="kotlin.boolean"><code>kotlin.Boolean</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing a value which may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="expressions.html#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
 </div>
-<h3 id="built-in-integer-types-1"><span class="header-section-number">0.1.5</span> Built-in integer types</h3>
+<h3 id="built-in-integer-types-1">Built-in integer types</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="type-system.html#built-in-integer-types">type system</a> and <a href="expressions.html#integer-literals">integer literals</a>. </span><span class="sentence">Every built-in integer type <code>I</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;I&gt;</code></a>.</span></p>
 </div>
@@ -232,7 +232,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
 </div>
 </blockquote>
-<h4 id="integer-type-widening"><span class="header-section-number">0.1.5.1</span> Integer type widening</h4>
+<h4 id="integer-type-widening">Integer type widening</h4>
 <div class="paragraph">
 <p><span class="sentence">In <a href="overload-resolution.html#overload-resolution">overload resolution</a>, we actually have a priority between built-in integer types which is very similar to a <a href="type-system.html#subtyping">subtyping</a> relation between these types; however, this priority is important only w.r.t. overload resolution and does not entail any actual subtyping between built-in integer types.</span></p>
 </div>
@@ -249,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Informally: <span class="math inline">\(\operatorname{\text{Widen}}\)</span> means, for the purposes of overload resolution, <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using <span class="math inline">\(\operatorname{\text{Widen}}\)</span>, we can reduce this priority to subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(\operatorname{\text{Widen}}(T) &lt;: \operatorname{\text{Widen}}(U)\)</span>; this scheme allows to handle built-in integer types transparently when selecting the <a href="overload-resolution.html#algorithm-of-msc-selection">most specific overload candidate</a>.</span></p>
 </div>
 </blockquote>
-<h3 id="built-in-floating-point-arithmetic-types"><span class="header-section-number">0.1.6</span> Built-in floating point arithmetic types</h3>
+<h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
 <div class="paragraph">
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
 </div>
@@ -267,7 +267,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Platform implementations may give additional information on how these types are represented on a particular platform.</span></p>
 </div>
-<h3 id="kotlin.char"><span class="header-section-number">0.1.7</span> <code>kotlin.Char</code></h3>
+<h3 id="kotlin.char"><code>kotlin.Char</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Char</code> is the built-in classifier type which represents a single Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of <a href="expressions.html#character-literals">character literals</a>.</span></p>
 </div>
@@ -276,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
 </div>
 </blockquote>
-<h3 id="kotlin.string"><span class="header-section-number">0.1.8</span> <code>kotlin.String</code></h3>
+<h3 id="kotlin.string"><code>kotlin.String</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.String</code> is the built-in classifier type which represents a sequence of Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of the result of <a href="expressions.html#string-interpolation-expressions">string interpolation</a>.</span></p>
 </div>
@@ -285,7 +285,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
 </div>
 </blockquote>
-<h3 id="kotlin.enum"><span class="header-section-number">0.1.9</span> <code>kotlin.Enum</code></h3>
+<h3 id="kotlin.enum"><code>kotlin.Enum</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is the built-in parameterized classifier type which is used as a superclass for all <a href="declarations.html#enum-class-declaration">enum classes</a>: every enum class <code>E</code> is implicitly a subtype of <code>kotlin.Enum&lt;E&gt;</code>.</span></p>
 </div>
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote></li>
 </ul>
-<h3 id="built-in-array-types"><span class="header-section-number">0.1.10</span> Built-in array types</h3>
+<h3 id="built-in-array-types">Built-in array types</h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> is the built-in parameterized classifier type which is used to represent an indexed fixed-size collection of elements of type <code>T</code>.</span></p>
 </div>
@@ -359,7 +359,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Creates an <a href="built-in-types-and-their-semantics.html#iterator-types">iterator</a> for iterating over the elements of the array.</span></p>
 </div></li>
 </ul>
-<h4 id="specialized-array-types"><span class="header-section-number">0.1.10.1</span> Specialized array types</h4>
+<h4 id="specialized-array-types">Specialized array types</h4>
 <div class="paragraph">
 <p><span class="sentence">In addition to the general <code>kotlin.Array&lt;T&gt;</code> type, Kotlin also has the following specialized array types:</span></p>
 </div>
@@ -391,7 +391,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Creates a <a href="built-in-types-and-their-semantics.html#specialized-iterator-types">specialized iterator</a> for iterating over the elements of the array.</span></p>
 </div></li>
 </ul>
-<h3 id="iterator-types"><span class="header-section-number">0.1.11</span> Iterator types</h3>
+<h3 id="iterator-types">Iterator types</h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Iterator&lt;out T&gt;</code> is the built-in parameterized classifier type which is used to represent a sequence of elements of type <code>T</code>, allowing for sequential access to these elements.</span></p>
 </div>
@@ -408,7 +408,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Returns <code>true</code> if the sequence has more elements.</span></p>
 </div></li>
 </ul>
-<h4 id="specialized-iterator-types"><span class="header-section-number">0.1.11.1</span> Specialized iterator types</h4>
+<h4 id="specialized-iterator-types">Specialized iterator types</h4>
 <div class="paragraph">
 <p><span class="sentence">Specialized iterator types are iterator types used for <a href="built-in-types-and-their-semantics.html#specialized-array-types">specialized array types</a>. </span><span class="sentence">They inherit <code>kotlin.Iterator&lt;out T&gt;</code> for their type (i.e., <code>kotlin.CharIterator</code> inherits <code>kotlin.Iterator&lt;Char&gt;</code>) and provide the following methods.</span></p>
 </div>
@@ -423,7 +423,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote></li>
 </ul>
-<h3 id="kotlin.throwable"><span class="header-section-number">0.1.12</span> <code>kotlin.Throwable</code></h3>
+<h3 id="kotlin.throwable"><code>kotlin.Throwable</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Throwable</code> is the built-in classifier type that is the base type of all <a href="exceptions.html#exceptions">exception types</a>. </span><span class="sentence">Any value that is used in a <a href="expressions.html#throw-expressions"><code>throw</code> expression</a> must have a static type that is a subtype of <code>kotlin.Throwable</code>. </span><span class="sentence">Any type that is used in a <code>catch</code> part of the <a href="expressions.html#try-expression"><code>try</code> expression</a> must be a subtype of (or equal to) <code>kotlin.Throwable</code>.</span></p>
 </div>
@@ -443,7 +443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Other members may exist, please refer to the standard library documentation for details. </span><span class="sentence">No subtype of <code>kotlin.Throwable</code> is allowed to have type parameters. </span><span class="sentence">Declaring such a type is a compile-time error.</span></p>
 </div>
-<h3 id="kotlin.comparable"><span class="header-section-number">0.1.13</span> <code>kotlin.Comparable</code></h3>
+<h3 id="kotlin.comparable"><code>kotlin.Comparable</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Comparable&lt;in T&gt;</code> is a built-in parameterized type which represents values that may be compared for total ordering. </span><span class="sentence">It provides the following member function:</span></p>
 </div>
@@ -456,23 +456,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: a type is not required to be a subtype of <code>kotlin.Comparable</code> in order to implement total ordering operations</span></p>
 </div>
 </blockquote>
-<h3 id="kotlin.function-1"><span class="header-section-number">0.1.14</span> <code>kotlin.Function</code></h3>
+<h3 id="kotlin.function-1"><code>kotlin.Function</code></h3>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Function&lt;out R&gt;</code> is the base classifier type of all <a href="type-system.html#function-types">function types</a>. </span><span class="sentence">See the relevant section for details.</span></p>
 </div>
-<h3 id="built-in-annotation-types"><span class="header-section-number">0.1.15</span> Built-in annotation types</h3>
+<h3 id="built-in-annotation-types">Built-in annotation types</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has a number of built-in <a href="annotations.html#annotations">annotation types</a>, which are covered in more detail <a href="annotations.html#built-in-annotations">here</a>.</span></p>
 </div>
-<h3 id="reflection-support-builtin-types"><span class="header-section-number">0.1.16</span> Reflection support builtin types</h3>
-<h4 id="kotlin.reflect.kclass"><span class="header-section-number">0.1.16.1</span> <code>kotlin.reflect.KClass</code></h4>
+<h3 id="reflection-support-builtin-types">Reflection support builtin types</h3>
+<h4 id="kotlin.reflect.kclass"><code>kotlin.reflect.KClass</code></h4>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.reflect.KClass&lt;T: Any&gt;</code> is the class used to represent runtime type information for <a href="runtime-type-information.html#runtime-available-types">runtime-available classifier types</a>. </span><span class="sentence">It is also used in platform-specific reflection facilities.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This is the type of <a href="expressions.html#class-literals">class literals</a>. </span><span class="sentence">This type is required to introduce <code>equals</code> and <code>hashCode</code> member function implementations (see <a href="built-in-types-and-their-semantics.html#kotlin.any-1"><code>kotlin.Any</code></a>) that allow for comparison and hashing of runtime type information, e.g., that class literals are equal if they represent the same runtime type and not equal otherwise. </span><span class="sentence">Platform definitions, as well as particular implementations, may introduce additional members for this type.</span></p>
 </div>
-<h4 id="kotlin.reflect.kcallable"><span class="header-section-number">0.1.16.2</span> <code>kotlin.reflect.KCallable</code></h4>
+<h4 id="kotlin.reflect.kcallable"><code>kotlin.reflect.KCallable</code></h4>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.reflect.KCallable&lt;out R&gt;</code> is the class used to represent runtime information for callables (i.e. properties and functions). </span><span class="sentence">It is mainly used as base type for other types described in this section. </span><span class="sentence">It provides at least the following property:</span></p>
 </div>
@@ -480,11 +480,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">This property contains the name of the callable. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>
-<h4 id="kotlin.reflect.kproperty"><span class="header-section-number">0.1.16.3</span> <code>kotlin.reflect.KProperty</code></h4>
+<h4 id="kotlin.reflect.kproperty"><code>kotlin.reflect.KProperty</code></h4>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.reflect.KProperty&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#property-declaration">properties</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">property references</a>. </span><span class="sentence">This type is used in <a href="declarations.html#delegated-property-declaration">property delegation</a>. </span><span class="sentence"><code>kotlin.reflect.KProperty&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>
-<h4 id="kotlin.reflect.kfunction"><span class="header-section-number">0.1.16.4</span> <code>kotlin.reflect.KFunction</code></h4>
+<h4 id="kotlin.reflect.kfunction"><code>kotlin.reflect.KFunction</code></h4>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.reflect.KFunction&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#function-declaration">functions</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">function references</a>. </span><span class="sentence"><code>kotlin.reflect.KFunction&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code> and <code>kotlin.Function&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>

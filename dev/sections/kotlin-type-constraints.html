@@ -123,12 +123,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-
-<h2 id="kotlin-type-constraints"><span class="header-section-number">0.1</span> Kotlin type constraints</h2>
+<span style="visibility: hidden; counter-reset: chapter 12;"></span>
+<h2 id="kotlin-type-constraints">Kotlin type constraints</h2>
 <div class="paragraph">
 <p><span class="sentence">Some complex tasks that need to be solved when compiling Kotlin code are formulated best using <em>constraint systems</em> over Kotlin types. </span><span class="sentence">These are solved using constraint solvers.</span></p>
 </div>
-<h3 id="type-constraint-definition"><span class="header-section-number">0.1.1</span> Type constraint definition</h3>
+<h3 id="type-constraint-definition">Type constraint definition</h3>
 <div class="paragraph">
 <p><span class="sentence">A <em>type constraint</em> in general is an inequation of the following form: <span class="math inline">\(T &lt;: U\)</span> where <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> are <a href="type-system.html#type-system">concrete Kotlin types</a>. </span><span class="sentence">As Kotlin has <a href="type-system.html#parameterized-classifier-types">parameterized types</a>, <span class="math inline">\(T\)</span> and <span class="math inline">\(U\)</span> may be <em>free type variables</em>: unknown types which may be substituted by any other type in Kotlin.</span></p>
 </div>
@@ -151,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Every constraint system has general implicit constraints <span class="math inline">\(T_j &lt;: \operatorname{\texttt{kotlin.Any?}}\)</span> and <span class="math inline">\(\operatorname{\texttt{kotlin.Nothing}}&lt;: T_j\)</span> for every type <span class="math inline">\(T_j\)</span> mentioned in the system, including type variables.</span></p>
 </div>
-<h3 id="type-constraint-solving"><span class="header-section-number">0.1.2</span> Type constraint solving</h3>
+<h3 id="type-constraint-solving">Type constraint solving</h3>
 <div class="paragraph">
 <p><span class="sentence">There are two tasks which a type constraint solver may perform: <a href="kotlin-type-constraints.html#checking-constraint-system-soundness">checking constraint system for soundness</a>, i.e., if a solution exists, and <a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution">solving constraint system</a>, i.e., inferring a satisfying substitution of concrete types for all free type variables.</span></p>
 </div>
@@ -167,14 +167,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><span class="math inline">\(\texttt{List&lt;}X\texttt&gt; &lt;: \texttt{Collection}\texttt&lt;X\texttt&gt;\)</span></span></li>
 </ul>
 </blockquote>
-<h4 id="checking-constraint-system-soundness"><span class="header-section-number">0.1.2.1</span> Checking constraint system soundness</h4>
+<h4 id="checking-constraint-system-soundness">Checking constraint system soundness</h4>
 <div class="paragraph">
 <p><span class="sentence">Checking constraint system soundness is a satisfiability problem. </span><span class="sentence">That is, given a number of constraints in the form <span class="math inline">\(S &lt;: T\)</span> containing zero or more free type variables (also called <em>inference type variables</em>), it needs to determine if these constraints are non-contradictory, i.e., if there exists a possible instantiation of these free variables to concrete types which makes all given constraints valid.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This problem can be reduced to finding a set of lower and upper bounds for each of these variables and determining if these bounds are non-contradictory. </span><span class="sentence">The algorithm of finding these bounds is implementation-defined and is not guaranteed to prove the satisfiability of given constraints in all possible cases.</span></p>
 </div>
-<h5 id="a-sample-bound-inference-algorithm"><span class="header-section-number">0.1.2.1.1</span> A sample bound inference algorithm</h5>
+<h5 id="a-sample-bound-inference-algorithm">A sample bound inference algorithm</h5>
 <div class="paragraph">
 <p><span class="sentence">The algorithm given in this section is just an example of a family of algorithms that may be applied to the problem given above. </span><span class="sentence">A particular implementation is not guaranteed to follow this algorithm, but one may use it as a reference on how this problem may be approached.</span></p>
 </div>
@@ -266,7 +266,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For each inference variable <span class="math inline">\(\alpha\)</span>, if there is a pair of bounds <span class="math inline">\(S &lt;: \alpha\)</span> and <span class="math inline">\(\alpha &lt;: S\)</span> (i.e., <span class="math inline">\(\alpha\)</span> is equivalent to <span class="math inline">\(S\)</span>), for each bound <span class="math inline">\(Q &lt;: P\)</span> where <span class="math inline">\(Q\)</span> or <span class="math inline">\(P\)</span> contains <span class="math inline">\(\alpha\)</span>, a new constraint is produced: <span class="math inline">\(Q[\alpha := S] &lt;: P[\alpha := S]\)</span>;</span></li>
 <li><span class="sentence">For each inference variable <span class="math inline">\(\alpha\)</span>, for each pair of bounds <span class="math inline">\(\alpha &lt;: S\)</span> and <span class="math inline">\(\alpha &lt;: T\)</span> where <span class="math inline">\(S\)</span> has a supertype of the form <span class="math inline">\(G[A_1,\ldots,A_N]\)</span> and <span class="math inline">\(T\)</span> has a matching supertype of the form <span class="math inline">\(G[B_1,\ldots,B_N]\)</span>, for each matching supertype <span class="math inline">\(G\)</span> and each <span class="math inline">\(M \in [1,N]\)</span>, if both <span class="math inline">\(A_M\)</span> and <span class="math inline">\(B_M\)</span> are invariant and have forms <span class="math inline">\(A&#39;_M\)</span> and <span class="math inline">\(B&#39;_M\)</span> respectively, the following new constraints are produced: <span class="math inline">\(A&#39;_M &lt;: B&#39;_M\)</span> and <span class="math inline">\(B&#39;_M &lt;: A&#39;_M\)</span>.</span></li>
 </ul>
-<h4 id="finding-optimal-constraint-system-solution"><span class="header-section-number">0.1.2.2</span> Finding optimal constraint system solution</h4>
+<h4 id="finding-optimal-constraint-system-solution">Finding optimal constraint system solution</h4>
 <div class="paragraph">
 <p><span class="sentence">As any constraint system may have multiple valid solutions, finding one which is “optimal” in some sense is not possible in general, because the notion of the best solution for a task depends on the said task. </span><span class="sentence">To deal with this, a constraint system allows two additional types of constraints:</span></p>
 </div>
@@ -291,7 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">After that, a new independent set of inference variables is picked and this process is repeated until an inference error occurs or a solution for each inference variable is found.</span></p>
 </div>
-<h4 id="the-relations-on-types-as-constraints"><span class="header-section-number">0.1.2.3</span> The relations on types as constraints</h4>
+<h4 id="the-relations-on-types-as-constraints">The relations on types as constraints</h4>
 <div class="paragraph">
 <p><span class="sentence">In other sections (for example, <a href="control--and-data-flow-analysis.html#expressions-1">Expressions</a> and <a href="control--and-data-flow-analysis.html#statements-1">Statements</a>) the relations between types may be expressed using the type operations found in the <a href="type-system.html#type-system">type system section</a> of this document.</span></p>
 </div>
