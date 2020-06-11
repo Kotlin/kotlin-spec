@@ -52,17 +52,24 @@ val mapper = constructObjectMapper()
 
 data class Section(val title: String, val number: Int?, val blocks: MutableList<Block> = mutableListOf())
 
+fun counterName(splitLevel: Int): String? = when(splitLevel) {
+    1 -> "part"
+    2 -> "chapter"
+    3 -> "section"
+    4 -> "subsection"
+    5 -> "subsubsection"
+    6 -> "paragraph"
+    else -> null
+}
+
 fun setSectionCounterLatex(secNumber: Int, splitLevel: Int): Block {
-    val counterName = when(splitLevel) {
-        1 -> "part"
-        2 -> "chapter"
-        3 -> "section"
-        4 -> "subsection"
-        5 -> "subsubsection"
-        6 -> "paragraph"
-        else -> return Block.Null
-    }
-    return Block.RawBlock(Format.TeX, """\setcounter{$counterName}{${secNumber - 1}}""".trimMargin())
+    val counterName = counterName(splitLevel) ?: return Block.Null
+    return Block.RawBlock(Format.TeX, """\setcounter{$counterName}{${secNumber - 1}}""")
+}
+
+fun setSectionCounterHtml(secNumber: Int, splitLevel: Int): Block {
+    val counterName = counterName(splitLevel) ?: return Block.Null
+    return Block.RawBlock(Format.HTML, """<span style="visibility: hidden; counter-reset: $counterName ${secNumber - 1};"></span>""")
 }
 
 private class Splitter(val outputDirectory: File, val format: String, val splitLevel: Int = 2) : PandocVisitor() {
@@ -103,10 +110,10 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
 
         for ((sectionTitle, sectionNumber, sectionBlocks) in sections) {
             val secOffsetBlock = when {
-                format != "html" && sectionNumber != null -> setSectionCounterLatex(sectionNumber, splitLevel)
-                else -> Block.Null
+                sectionNumber == null -> Block.Null
+                format == "html" -> setSectionCounterHtml(sectionNumber, splitLevel)
+                else -> setSectionCounterLatex(sectionNumber, splitLevel)
             }
-            System.err.println("$sectionTitle: $secOffsetBlock")
             val secDoc = newDoc.copy(blocks = preamble + listOf(secOffsetBlock) + sectionBlocks)
             File(outputDirectory, "$sectionTitle.json").bufferedWriter().use {
                 mapper.writeValue(it, secDoc)

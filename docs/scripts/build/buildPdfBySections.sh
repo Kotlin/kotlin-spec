@@ -33,6 +33,7 @@ do \
     ${COMMON_PANDOC_OPTIONS} \
     $f \
     --variable documentclass=book \
+    --number-sections \
     -o ${BUILD_DIR}/pdf/sections/"$(basename "$f" .json).pdf";
 done
 

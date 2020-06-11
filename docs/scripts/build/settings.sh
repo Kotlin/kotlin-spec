@@ -5,7 +5,6 @@ COMMON_PANDOC_OPTIONS="\
   --variable linkcolor=blue \
   --variable filecolor=cyan \
   --syntax-definition=kotlin.xml \
-  --number-sections \
   --top-level-division=part"
 
 TOC_PANDOC_OPTIONS="\
