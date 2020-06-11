@@ -19,4 +19,5 @@ gpp -H ./index.md | pandoc \
   ${FORMAT_PANDOC_OPTIONS} \
   ${TOC_PANDOC_OPTIONS} \
 --variable documentclass=book \
+--number-sections \
 -o ${BUILD_DIR}/pdf/kotlin-spec.pdf
