@@ -19,5 +19,4 @@ gpp -H ./index.md | pandoc \
   ${FORMAT_PANDOC_OPTIONS} \
   ${TOC_PANDOC_OPTIONS} \
   ${HTML_ASSETS_OPTIONS} \
---shift-heading-level-by=-1 \
 -o ${BUILD_DIR}/html/kotlin-spec.html

@@ -30,7 +30,6 @@ do \
     ${COMMON_PANDOC_OPTIONS} \
     $f \
     ${HTML_ASSETS_OPTIONS} \
-    --shift-heading-level-by=-1 \
     -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
 done
 
