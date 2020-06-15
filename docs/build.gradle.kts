@@ -40,6 +40,7 @@ dependencies {
     compile("ru.spbstu:kotlin-pandoc:0.0.9")
     compile("ru.spbstu:simple-diagrammer:0.0.0.6")
     compile("com.github.ajalt:clikt:1.7.0")
+    compile("com.zaxxer:nuprocess:1.2.3")
 }
 
 tasks.withType<KotlinCompile> {

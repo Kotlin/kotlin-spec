@@ -16,6 +16,7 @@ TOC_PANDOC_OPTIONS="\
 
 HTML_ASSETS_OPTIONS="\
   -c ./resources/css/main.css \
+  -c ./resources/js/katex/katex.min.css \
   --katex=./resources/js/katex/"
 
 PREAMBLE_OPTIONS=""
@@ -32,6 +33,7 @@ init_settings() {
     if [ "${mode}" == "section" ]; then
         HTML_ASSETS_OPTIONS="\
             -c ../resources/css/main.css \
+            -c ../resources/js/katex/katex.min.css \
             --katex=../resources/js/katex/"
     fi
 }
