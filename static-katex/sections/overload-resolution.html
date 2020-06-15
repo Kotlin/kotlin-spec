@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../resources/css/main.css">
+  <link rel="stylesheet" href="../resources/js/katex/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script>
+      requirejs.config({
+          waitSeconds: 10000
+      });
+  </script>
+</head>
+<body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span style="visibility: hidden; counter-reset: chapter 10;"></span>
+<h2 id="overload-resolution">Overload resolution</h2>
+<h3 id="glossary-3" class="unnumbered">Glossary</h3>
+<dl>
+<dt><code>type(e)</code></dt>
+<dd><span class="sentence"><a href="type-system.html#type-system">Type</a> of expression <code>e</code></span>
+</dd>
+</dl>
+<h3 id="introduction-4" class="unnumbered">Introduction</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin supports <em>callable overloading</em>, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
+</div>
+<h3 id="receivers">Receivers</h3>
+<div class="paragraph">
+<p><span class="sentence">Every function or property that is defined as a method or an extension has one or more special parameters called <em>receiver</em> parameters. </span><span class="sentence">When calling such a callable using <a href="expressions.html#navigation-operators">navigation operators</a> (<code>.</code> or <code>?.</code>) the left hand side value is called an <em>explicit receiver</em> of this particular call. </span><span class="sentence">In addition to the explicit receiver, each call may indirectly access zero or more <em>implicit receivers</em>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Implicit receivers are available in a syntactic scope according to the following rules:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Any receiver available in a scope is available in its <a href="scopes-and-identifiers.html#linked-scopes">downwards-linked scopes</a>;</span></li>
+<li><span class="sentence">In a <a href="declarations.html#classifier-declaration">classifier declaration</a> scope (including object and companion object declarations), the declared object is available as implicit <code>this</code>;</span></li>
+<li><span class="sentence">In a <a href="declarations.html#classifier-declaration">classifier declaration</a> scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit <code>this</code>;</span></li>
+<li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
+<li><span class="sentence">If a lambda expression has an extension function type, <code>this</code> argument of the lambda expression is also available inside the lambda expression declaration.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a phantom static implicit <code>this</code> is a special receiver, which is included in the receiver chain for the purposes of handling static functions from <a href="declarations.html#enum-class-declaration">enum classes</a>. </span><span class="sentence">It may also be used on platforms to handle their static-like entities, e.g., static methods on JVM platform.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The available receivers are prioritized in the following way:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Receivers provided in the most inner scope have higher priority as ordered w.r.t. <a href="scopes-and-identifiers.html#linked-scopes">link relation</a>;</span></li>
+<li><span class="sentence">The implicit <code>this</code> receiver has higher priority than phantom static implicit <code>this</code>;</span></li>
+<li><span class="sentence">The phantom static implicit <code>this</code> receiver has higher priority than the current class companion object receiver;</span></li>
+<li><span class="sentence">Current class companion object receiver has higher priority than any of the superclass companion objects;</span></li>
+<li><span class="sentence">Superclass companion object receivers are prioritized according to the inheritance order.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: DSL-specific annotations (marked with <a href="annotations.html#built-in-annotations"><code>kotlin.DslMarker</code></a> annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The implicit receiver having the highest priority is also called the <em>default implicit receiver</em>. </span><span class="sentence">The default implicit receiver is available in a scope as <code>this</code>. </span><span class="sentence">Other available receivers may be accessed using <a href="expressions.html#this-expressions">labeled this-expressions</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For <a href="overload-resolution.html#callables-and-invoke-convention">extension callables</a>, the receiver used as the extension receiver parameter is called <em>extension receiver</em>, while the implicit receiver associated with the declaration scope the extension is declared in is called <em>dispatch receiver</em>. </span><span class="sentence">For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: by definition, local extension callables do not have a dispatch receiver, as they are declared in a statement scope.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: there may be situations in which <em>the same implicit receiver</em> is used as both the dispatch receiver and the extension receiver for a particular callable invocation, for example:</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">interface</span> <span class="dt">Y</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">class</span> <span class="dt">X</span> <span class="op">:</span> <span class="dt">Y</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-4" title="4">    <span class="kw">fun</span> <span class="fu">Y</span><span class="op">.</span><span class="fu">foo</span><span class="op">()</span> <span class="op">{}</span> <span class="co">// `foo` is an extension for Y,</span></a>
+<a class="sourceLine" id="cb1-5" title="5">                   <span class="co">//   needs extension receiver to be called</span></a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-8" title="8">        foo() <span class="co">// `this` reference is both</span></a>
+<a class="sourceLine" id="cb1-9" title="9">              <span class="co">//   the extension and the dispatch receiver</span></a>
+<a class="sourceLine" id="cb1-10" title="10">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="op">}</span></a>
+<a class="sourceLine" id="cb1-12" title="12"></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></a>
+<a class="sourceLine" id="cb1-14" title="14"></a>
+<a class="sourceLine" id="cb1-15" title="15"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-16" title="16">    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">X</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Y</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb1-18" title="18"></a>
+<a class="sourceLine" id="cb1-19" title="19">    <span class="co">// y.foo()</span></a>
+<a class="sourceLine" id="cb1-20" title="20">    <span class="co">// Error, as there is no implicit receiver</span></a>
+<a class="sourceLine" id="cb1-21" title="21">    <span class="co">//   of type X available</span></a>
+<a class="sourceLine" id="cb1-22" title="22"></a>
+<a class="sourceLine" id="cb1-23" title="23">    with (x) <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-24" title="24">        y.foo() <span class="co">// OK!</span></a>
+<a class="sourceLine" id="cb1-25" title="25">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
+<div class="paragraph">
+<p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
+</div>
+<ul>
+<li><span class="sentence">A fully-qualified call without receiver: <code>package.foo()</code>;</span></li>
+<li><span class="sentence">A call with an explicit receiver: <code>a.foo()</code>;</span></li>
+<li><span class="sentence">An infix function call: <code>a foo b</code>;</span></li>
+<li><span class="sentence">An overloaded operator call: <code>a + b</code>;</span></li>
+<li><span class="sentence">A call without an explicit receiver: <code>foo()</code>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Although syntactically similar, there is a difference between the first two kinds of calls: in the first case, <code>package</code> is a name of a <a href="packages-and-imports.html#packages-and-imports">Kotlin package</a>, while in the second case <code>a</code> is a value or a type.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For each of these cases, a compiler should first pick a number of <em>overload candidates</em>, which form a set of possibly intended callables (<em>overload candidate set</em>, OCS), and then <em>choose the most specific function</em> to call based on the types of the function and the call arguments.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: the overload candidates are picked <strong>before</strong> the most specific function is chosen.</span></p>
+</div>
+</blockquote>
+<h3 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h3>
+<div class="paragraph">
+<p><span class="sentence">A <em>callable</em> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ for the purpose of this section is one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Function-like callables:</span>
+<ul>
+<li><span class="sentence">A function named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">A constructor of a type named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">Any of the above named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span>
+
+ at its declaration site, but imported into the current scope using <a href="packages-and-imports.html#importing">a renaming import</a> as <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+.</span></li>
+</ul></li>
+<li><span class="sentence">Property-like callables with an operator function <code>invoke</code> available as a member or an extension in the current scope:</span>
+<ul>
+<li><span class="sentence">A property named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">An <a href="declarations.html#object-declaration">object</a> or a <a href="declarations.html#class-declaration">companion object</a> named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">A <a href="declarations.html#class-declaration">companion object</a> of a <a href="declarations.html#classifier-declaration">classifier type</a> named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">An <a href="declarations.html#enum-class-declaration">enum entry</a> named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ at its declaration site;</span></li>
+<li><span class="sentence">Any of the above named <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span>
+
+ at its declaration site, but imported into the current scope using <a href="packages-and-imports.html#importing">a renaming import</a> as <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+.</span></li>
+</ul></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">For property-like callables, a call <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo stretchy="false">(</mo><msub><mi>Y</mi><mn>0</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">X(Y_0, \ldots, Y_N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>
+
+ is an <a href="operator-overloading.html#operator-overloading">overloadable operator</a> which is expanded to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mtext>.invoke</mtext><mo stretchy="false">(</mo><msub><mi>Y</mi><mn>0</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">X\text{.invoke}(Y_0, \ldots, Y_N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mord text"><span class="mord">.invoke</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>
+
+. </span><span class="sentence">The call may contain type parameters, named parameters, <a href="expressions.html#spread-operator-expressions">variable argument parameter expansion</a> and trailing lambda parameters, all of which are forwarded as-is to the corresponding <code>invoke</code> function.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The set of implicit receivers itself (denoted by <a href="expressions.html#this-expressions"><code>this</code></a> expression) may also be used as a property-like callable using <code>this</code> as the left-hand side of the call expression. </span><span class="sentence">As with normal property-like callables, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">this@A</mtext><mo stretchy="false">(</mo><msub><mi>Y</mi><mn>0</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\texttt{this@A}(Y_0, \ldots, Y_N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord texttt">this@A</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>
+
+ is an overloadable operator which is expanded to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">this@A.invoke</mtext><mo stretchy="false">(</mo><msub><mi>Y</mi><mn>0</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\texttt{this@A.invoke}(Y_0, \ldots, Y_N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord texttt">this@A.invoke</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>
+
+.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A <em>member callable</em> is one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">a member function-like callable (including constructors);</span></li>
+<li><span class="sentence">a member property-like callable with a member operator <code>invoke</code>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">An <em>extension callable</em> is one of the following:</span></p>
+</div>
+<ul>
+<li><span class="sentence">an extension function-like callable;</span></li>
+<li><span class="sentence">a member property-like callable with an extension operator <code>invoke</code>;</span></li>
+<li><span class="sentence">an extension property-like callable with a member operator <code>invoke</code>;</span></li>
+<li><span class="sentence">an extension property-like callable with an extension operator <code>invoke</code>.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: the mnemonic rule to remember this order is “functions before properties, members before extensions”.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A <em>local callable</em> is any callable which is declared in a <a href="scopes-and-identifiers.html#scopes-and-identifiers">statement scope</a>.</span></p>
+</div>
+<h3 id="c-level-partition">c-level partition</h3>
+<div class="paragraph">
+<p><span class="sentence">When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Member function-like callables;</span></li>
+<li><span class="sentence">Member property-like callables.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Extension callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Extension function-like callables;</span></li>
+<li><span class="sentence">Member property-like callables with extension <code>invoke</code>;</span></li>
+<li><span class="sentence">Extension property-like callables with member <code>invoke</code>;</span></li>
+<li><span class="sentence">Extension property-like callables with extension <code>invoke</code>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Let us define this partition of callables to overload candidate sets as <em>c-level partition</em> (callable-level partition). </span><span class="sentence">As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed <strong>last</strong>, after all other applicable steps.</span></p>
+</div>
+<h3 id="building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</h3>
+<h4 id="fully-qualified-call">Fully-qualified call</h4>
+<div class="paragraph">
+<p><span class="sentence">If a call is fully-qualified (that is, it contains a complete <a href="scopes-and-identifiers.html#identifiers-and-paths">package path</a>), then the overload candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>
+
+ simply contains all the top-level callables with the specified name in the specified package. </span><span class="sentence">As a package name can never clash with any other declared entity, after performing <a href="overload-resolution.html#c-level-partition">c-level partition</a> on <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>
+
+, the resulting sets are the only ones available for further processing.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">Char</span><span class="op">&gt;)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-7" title="7">. . .</a>
+<a class="sourceLine" id="cb2-8" title="8">a.b.c.foo()</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here the resulting overload candidate set contains all the callables named <code>foo</code> from the package <code>a.b.c</code>.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a fully-qualified callable name has the form <code>P.n()</code>, where <code>n</code> is a simple callable name and <code>P</code> is a complete <a href="scopes-and-identifiers.html#identifiers-and-paths">package path</a> referencing an existing <a href="packages-and-imports.html#packages-and-imports">package</a>.</span></p>
+</div>
+</blockquote>
+<h4 id="call-with-an-explicit-receiver">Call with an explicit receiver</h4>
+<div class="paragraph">
+<p><span class="sentence">If a call is done via a <a href="expressions.html#navigation-operators">navigation operator</a> (<code>.</code> or <code>?.</code>), but is not a <a href="overload-resolution.html#fully-qualified-call">fully-qualified call</a>, then the left hand side value of the call is the explicit receiver of this call.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A call of callable <code>f</code> with an explicit receiver <code>e</code> is correct if at least one of the following holds:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence"><code>f</code> is an accessible member callable of the classifier type <code>type(e)</code> or any of its supertypes;</span></li>
+<li><span class="sentence"><code>f</code> is an accessible extension callable of the classifier type <code>type(e)</code> or any of its supertypes, including top-level, local and imported extensions.</span></li>
+<li><span class="sentence"><code>f</code> is an accessible static member callable of the classifier type <code>e</code>.</span></li>
+</ol>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: callables for case 2 include not only regular extension callables, but also extension callables from any of the available implicit receivers. </span><span class="sentence">For example, if class <code>P</code> contains a member extension function <code>f</code> for another class <code>T</code> and an object of class <code>P</code> is available as an implicit receiver, extension function <code>f</code> may be used for such call if <code>T</code> conforms to the type <code>type(e)</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If a call is correct, for a callable <code>f</code> with an explicit receiver <code>e</code> of type <code>T</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">Local extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, in the current scope and its <a href="scopes-and-identifiers.html#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
+<li><span class="sentence">Explicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">Extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, declared in the package scope;</span></li>
+<li><span class="sentence">Star-imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">Implicitly imported extension callables named <code>f</code> (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type <code>T</code>.</span></li>
+</ol>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>&lt;</mo><mo>:</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">T &lt;: U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver. </span><span class="sentence">In this case, the case with <strong>no implicit receiver</strong> is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to <a href="overload-resolution.html#call-without-an-explicit-receiver">the rules for implicit receivers</a>. </span><span class="sentence">These sets are considered in the order of the implicit <a href="overload-resolution.html#receivers">receiver priority</a>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">There is a important special case here, however, as a callable may be a <a href="overload-resolution.html#callables-and-invoke-convention">property-like callable with an operator function <code>invoke</code></a>, and these may belong to different sets (e.g., the property itself may be star-imported, while the <code>invoke</code> operator on it is a local extension). </span><span class="sentence">In this situation, such callable belongs to the <strong>lowest priority</strong> set of its parts (e.g., for the above case, priority 5 set).</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: when trying to resolve between an explicitly imported extension property (priority 3) with a member <code>invoke</code> (priority 1) and a local property (priority 2) with a star-imported extension <code>invoke</code> (priority 5), the first one wins (<code>max(3, 1) &lt; max(2, 5)</code>).</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">applicable callable</a> is picked for <a href="overload-resolution.html#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: this means, among other things, that if the set constructed on step <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span>
+
+ contains the overall most suitable candidate function, but the set constructed on step <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>&lt;</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X &lt; Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span>
+
+ is not empty, the callables from set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
+
+ will be picked despite them being less suitable overload candidates.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
+</div>
+<h5 id="call-with-an-explicit-type-receiver">Call with an explicit type receiver</h5>
+<div class="paragraph">
+<p><span class="sentence">A call with an explicit receiver may be performed not only on a value receiver, but also on a <em>type</em> receiver.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: type receivers can appear when working with <a href="declarations.html#enum-class-declaration">enum classes</a> or interoperating with platform-dependent code.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">They mostly follow the same rules as <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with an explicit value receiver</a>. </span><span class="sentence">However, for a callable <code>f</code> with an explicit type receiver <code>T</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
+</ol>
+<h4 id="infix-function-call">Infix function call</h4>
+<div class="paragraph">
+<p><span class="sentence">Infix function calls are a special case of function <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a> in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">However, there is an important difference: during the overload candidate set construction the only callables considered for inclusion are the ones with the <code>infix</code> modifier. </span><span class="sentence">This means we consider only function-like callables with <code>infix</code> modifier and property-like callables with an <code>infix</code> operator function <code>invoke</code>. </span><span class="sentence">All other callables are not considered for inclusion. </span><span class="sentence">Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for calls with explicit receiver.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend the set of functions considered as infix functions for the overload candidate set.</span></p>
+</div>
+<h4 id="operator-call">Operator call</h4>
+<div class="paragraph">
+<p><span class="sentence">According to <a href="operator-overloading.html#operator-overloading">the operator overloading section</a>, some operator expressions in Kotlin can be overloaded using definition-by-convention via specifically-named functions. </span><span class="sentence">This makes operator expressions semantically equivalent to function <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, where the receiver expression is selected based on the operator used.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">However, there is an important difference: during the overload candidate set construction the only functions considered for inclusion are the ones with the <code>operator</code> modifier. </span><span class="sentence">All other functions (and any properties) are not considered for inclusion. </span><span class="sentence">Aside from this difference, candidates are selected using the same rules as for normal calls with explicit receiver.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for calls with explicit receiver.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this also means that all the properties available through the <code>invoke</code> convention are non-eligible for operator calls, as there is no way of specifying the <code>operator</code> modifier for them; even though the <code>invoke</code> callable is required to always have such modifier. </span><span class="sentence">As <code>invoke</code> convention itself is an operator call, it is impossible to use more than one <code>invoke</code> convention in a single call.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: these rules are valid not only for dedicated operator expressions, but also for other operator-based defined-by-convention calls, e.g., <a href="statements.html#for-loop-statement"><code>for</code>-loop</a> iteration conventions, operator-form <a href="statements.html#assignments">assignments</a> or <a href="declarations.html#delegated-property-declaration">property delegation</a>.</span></p>
+</div>
+</blockquote>
+<h4 id="call-without-an-explicit-receiver">Call without an explicit receiver</h4>
+<div class="paragraph">
+<p><span class="sentence">A call which is performed with a <a href="scopes-and-identifiers.html#identifiers-and-paths">simple path</a> is a call <strong>without</strong> an explicit receiver. </span><span class="sentence">As such, it may either have one or more implicit receivers or reference a top-level function.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this case does not include calls using the <code>invoke</code> operator function where the left-land side of the call is not an identifier, but some other kind of expression (as this is not a simple path). </span><span class="sentence">These cases are handled the same way as <a href="overload-resolution.html#operator-call">operator calls</a> and need no further special treatment.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Foo</span>, <span class="va">b</span><span class="op">:</span> <span class="dt">Bar</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-2" title="2">    (a + b)(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="co">// Such a call is handled as if it is</span></a>
+<a class="sourceLine" id="cb3-4" title="4">    <span class="co">//   (a + b).invoke(42)</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">As with <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, we first pick an overload candidate set and then search this set for the most specific function to match the call.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For an identifier named <code>f</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Local non-extension callables named <code>f</code> in the current scope and its <a href="scopes-and-identifiers.html#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
+<li><span class="sentence">The overload candidate sets for each pair of implicit receivers <code>e</code> and <code>d</code> available in the current scope, calculated as if <code>e</code> is the <a href="overload-resolution.html#call-with-an-explicit-receiver">explicit receiver</a>, in order of the <a href="overload-resolution.html#receivers">receiver priority</a>;</span></li>
+<li><span class="sentence">Top-level non-extension functions named <code>f</code>, in the order of:</span>
+<ol type="a">
+<li><span class="sentence">Callables explicitly imported into the current file;</span></li>
+<li><span class="sentence">Callables declared in the same package;</span></li>
+<li><span class="sentence">Callables star-imported into the current file;</span></li>
+<li><span class="sentence">Implicitly imported callables (either from the Kotlin standard library or platform-specific ones).</span></li>
+</ol></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">Similarly to how it works for <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, a property-like callable with an <code>invoke function</code> belongs to the <strong>lowest priority</strong> set of its parts.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> callable with the corresponding name and conforming types is picked for <a href="overload-resolution.html#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">After we have fixed the overload candidate set, we search this set for the <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">most specific callable</a>.</span></p>
+</div>
+<h4 id="call-with-named-parameters">Call with named parameters</h4>
+<div class="paragraph">
+<p><span class="sentence">Calls in Kotlin may use named parameters in call expressions, e.g., <code>f(a = 2)</code>, where <code>a</code> is a parameter specified in the declaration of <code>f</code>. </span><span class="sentence">Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which have matching formal parameter names for all named parameters from the call.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for the respective type of call.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: for properties called via <code>invoke</code> convention, the named parameters must be present in the declaration of the <code>invoke</code> operator function.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Unlike positional arguments, named arguments are matched by name directly to their respective formal parameters; this matching is performed separately for each function candidate.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">While the <em>number of defaults</em> does affect <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">resolution process</a>, the fact that some argument was or was not mapped as a named argument does not affect this process in any way.</span></p>
+</div>
+<h4 id="call-with-trailing-lambda-expressions">Call with trailing lambda expressions</h4>
+<div class="paragraph">
+<p><span class="sentence">A call expression may have a single lambda expression placed outside of the argument list or even completely replacing it (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">This has no effect on the overload resolution process, aside from the argument reordering which may happen because of variable length parameters or parameters with defaults.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: this means that calls <code>f(1, 2) { g() }</code> and <code>f(1, 2, body = { g() })</code> are completely equivalent w.r.t. the overload resolution, assuming <code>body</code> is the name of the last formal parameter of <code>f</code>.</span></p>
+</div>
+</blockquote>
+<h4 id="call-with-specified-type-parameters">Call with specified type parameters</h4>
+<div class="paragraph">
+<p><span class="sentence">A call expression may have a type argument list explicitly specified before the argument list (see <a href="expressions.html#function-calls-and-property-access">this section</a> for further details). </span><span class="sentence">Such calls are treated the same way as normal calls, but the overload resolution sets are filtered to only contain callables which contain exactly the same number of formal type parameters at declaration site. </span><span class="sentence">In case of a property-like callable with <code>invoke</code>, type parameters must be present at the <code>invoke</code> operator function declaration instead.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: this filtering is done <strong>before</strong> we perform selection of the overload candidate set w.r.t. rules for the respective type of call.</span></p>
+</div>
+</blockquote>
+<h3 id="determining-function-applicability-for-a-specific-call">Determining function applicability for a specific call</h3>
+<h4 id="rationale">Rationale</h4>
+<div class="paragraph">
+<p><span class="sentence">A function is <em>applicable</em> for a specific call if and only if the function parameters may be assigned the arguments values specified at the call site and all type constraints of the function type parameters hold w.r.t. supplied or <a href="type-inference.html#type-inference">inferred</a> type arguments.</span></p>
+</div>
+<h4 id="description">Description</h4>
+<div class="paragraph">
+<p><span class="sentence">Determining function applicability for a specific call is a <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> problem.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, for every non-lambda argument of the function called, type inference is performed. </span><span class="sentence">Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Second, the following constraint system is built:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For every non-lambda argument inferred to have type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">T_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, corresponding to the function parameter of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">U_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>
+
+, a constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub><mo>&lt;</mo><mo>:</mo><msub><mi>U</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">T_i &lt;: U_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>
+
+ is constructed;</span></li>
+<li><span class="sentence">All declaration-site type constraints for the function are also added to the constraint system;</span></li>
+<li><span class="sentence">For every lambda argument with the number of lambda arguments known to be <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">K</span></span></span></span>
+
+, corresponding to the function parameter of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">U_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, a special constraint of the form <a href="type-system.html#function-types"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">(</mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>L</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>L</mi><mi>K</mi></msub><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">FTR</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">RT</mi><mo>⁡</mo><mo separator="true">,</mo><msub><mi>L</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>L</mi><mi>n</mi></msub><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo fence="true">)</mo></mrow><mo>&lt;</mo><mo>:</mo><msub><mi>U</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">\left(\operatorname{\text{FT}}(L_1, \ldots, L_K) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}, L_1, \ldots, L_n) \rightarrow R\right) &lt;: U_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mop"><span class="mord text"><span class="mord">FTR</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord">RT</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+</a> is added to the constraint system, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo separator="true">,</mo><mi mathvariant="normal">RT</mi><mo>⁡</mo><mo separator="true">,</mo><msub><mi>L</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>L</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">R, \operatorname{\text{RT}}, L_1, \ldots, L_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord">RT</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are fresh type variables;</span></li>
+<li><span class="sentence">For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">U_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, a special constraint of the form <a href="type-system.html#function-types"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">(</mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">FTR</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">RT</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">FTR</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">RT</mi><mo>⁡</mo><mo separator="true">,</mo><mi>L</mi><mo stretchy="false">)</mo><mo>→</mo><mi>R</mi><mo fence="true">)</mo></mrow><mo>&lt;</mo><mo>:</mo><msub><mi>U</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">\left(\operatorname{\text{FT}}() \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FT}}(L) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}) \rightarrow R \mathbin{\operatorname{\&amp;}}\operatorname{\text{FTR}}(\operatorname{\text{RT}}, L) \rightarrow R\right) &lt;: U_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mord mathdefault">L</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mop"><span class="mord text"><span class="mord">FTR</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord">RT</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mop"><span class="mord text"><span class="mord">FTR</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord">RT</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">L</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+</a> is added to the constraint system, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo separator="true">,</mo><mi mathvariant="normal">RT</mi><mo>⁡</mo><mo separator="true">,</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">R, \operatorname{\text{RT}}, L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord">RT</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">L</span></span></span></span>
+
+ are fresh type variables;</span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: in fact, it is an intersection of both non-suspend and suspend variants</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: taking into account the fact that <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mo stretchy="false">)</mo><mo>−</mo><mo>&gt;</mo><mi>R</mi><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">FTR</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mo stretchy="false">)</mo><mo>−</mo><mo>&gt;</mo><mi>R</mi><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>L</mi><mo stretchy="false">)</mo><mo>−</mo><mo>&gt;</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">\operatorname{\text{FT}}(L) -&gt; R &lt;: \operatorname{\text{FTR}}(L) -&gt; R &lt;: \operatorname{\text{FT}}(L) -&gt; R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mord mathdefault">L</span><span class="mclose">)</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">FTR</span></span></span><span class="mopen">(</span><span class="mord mathdefault">L</span><span class="mclose">)</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mord mathdefault">L</span><span class="mclose">)</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span></span>
+
+, this is not entirely correct. </span><span class="sentence">It’s not that important for applicability though.</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ is deemed not applicable for any member callables, regardless of other parameters. </span><span class="sentence">This is due to the fact that, as <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ is the subtype of any other type in Kotlin type system, it would have allowed <strong>all</strong> member callables of <strong>all</strong> available types to participate in the overload resolution, which is theoretically possible, but very resource-consuming and does not make much sense from the practical point of view. </span><span class="sentence">Extension callables are still available, because they are limited to the declarations available or imported in the current scope.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: although it is impossible to create a value of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing?</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing?}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing?</span></span></span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
+<h3 id="choosing-the-most-specific-candidate-from-the-overload-candidate-set">Choosing the most specific candidate from the overload candidate set</h3>
+<h4 id="rationale-1">Rationale</h4>
+<div class="paragraph">
+<p><span class="sentence">The main rationale for choosing the most specific candidate from the overload candidate set is the following:</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">The most specific callable can forward itself to any other callable from the overload candidate set, while the opposite is not true.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If there are several functions with this property, none of them are the most specific and an overload resolution ambiguity error should be reported by the compiler.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Consider the following example.</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{}</span>        <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{}</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb4-3" title="3">...</a>
+<a class="sourceLine" id="cb4-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-2" title="2">    f2(arg, arg2) <span class="co">// VALID: can forward both arguments</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-5" title="5">    f1(arg, arg2) <span class="co">// INVALID: function f1 is not applicable</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
+</div>
+<h4 id="algorithm-of-msc-selection">Algorithm of MSC selection</h4>
+<div class="paragraph">
+<p><span class="sentence">When an overload resolution set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>
+
+ is selected and it contains more than one callable, we need to choose the most specific candidate from these callables. </span><span class="sentence">The selection process uses the <a href="kotlin-type-constraints.html#kotlin-type-constraints">type constraint</a> facilities of Kotlin, in a way similar to the process of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">determining function applicability</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For every two distinct members of the candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, the following constraint system is constructed and solved:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>X</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">X_1, \ldots, X_N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">Y_1, \ldots, Y_N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, a type constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>K</mi></msub><mo>&lt;</mo><mo>:</mo><msub><mi>Y</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">X_K &lt;: Y_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ is built <strong>unless both <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">X_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">Y_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> If both <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">X_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">Y_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are built-in integer types, a type constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>X</mi><mi>K</mi></msub><mo stretchy="false">)</mo><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>Y</mi><mi>K</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(X_K) &lt;: \operatorname{\text{Widen}}(Y_K)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>
+
+ is built instead, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span></span></span></span>
+
+ is the <a href="built-in-types-and-their-semantics.html#integer-type-widening">integer type widening</a> operator. </span><span class="sentence">During construction of these constraints, all declaration-site type parameters <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>T</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">T_1, \ldots, T_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are considered bound to fresh type variables <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>T</mi><mn>1</mn><mo lspace="0em" rspace="0em">∼</mo></msubsup><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msubsup><mi>T</mi><mi>M</mi><mo lspace="0em" rspace="0em">∼</mo></msubsup></mrow><annotation encoding="application/x-tex">T^{\sim}_1, \ldots, T^{\sim}_M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.958661em;vertical-align:-0.275331em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6198089999999999em;"><span style="top:-2.4518920000000004em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mrel mtight">∼</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6198089999999999em;"><span style="top:-2.424669em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">M</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mrel mtight">∼</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.275331em;"><span></span></span></span></span></span></span></span></span></span>
+
+, and all type parameters of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are considered free;</span></li>
+<li><span class="sentence">If <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. </span><span class="sentence">For non-extension callables, only declaration-site parameters are considered;</span></li>
+<li><span class="sentence">All declaration-site type constraints of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>X</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">X_1, \ldots, X_N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>Y</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">Y_1, \ldots, Y_N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are also added to the constraint system.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this constraint system checks whether <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ can forward itself to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ is equally or more applicable than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ as an overload candidate (aka applicability criteria). </span><span class="sentence">The check is then repeated with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ swapped.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This check may result in one of the following outcomes:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Only one of the two candidates is more applicable than the other;</span></li>
+<li><span class="sentence">Neither of the two candidates is more applicable than the other;</span></li>
+<li><span class="sentence">Both <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ are more applicable than the other.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">In case 1, the more applicable candidate of the two is found and no additional steps are needed.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable. </span><span class="sentence">If this step does not allow for deciding the more specific candidate, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In case 3, several additional steps are performed in order.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Any non-parameterized callable is a more specific candidate than any parameterized callable (same as case 2). </span><span class="sentence">If there are several non-parameterized candidates, further steps are limited to those candidates;</span></li>
+<li><span class="sentence">For each candidate we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value). </span><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
+<li><span class="sentence">For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an <a href="type-system.html#integer-literal-types">integer literal type</a>. </span><span class="sentence">In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the <code>kotlin.Int</code> overload is selected to be the most specific.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: unlike the applicability test, the candidate comparison constraint system is <strong>not</strong> based on the actual call, meaning that, when comparing two candidates, only constraints visible at <em>declaration site</em> apply.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If the callables in check are properties with available <code>invoke</code>, the same process is applied in two steps:</span></p>
+</div>
+<ul>
+<li><span class="sentence">First, the properties are compared for applicability and the most applicable property is chosen as described above. </span><span class="sentence">If several properties are equally applicable, this is an overload ambiguity as usual;</span></li>
+<li><span class="sentence">Second, for the property selected at first step, the most applicable operator <code>invoke</code> overload is chosen.</span></li>
+</ul>
+<h3 id="resolving-callable-references">Resolving callable references</h3>
+<div class="paragraph">
+<p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">The <code>invoke</code> operator convention <strong>does not</strong> apply to callable reference candidates. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
+</div>
+<h4 id="resolving-callable-references-not-used-as-arguments-to-a-call">Resolving callable references not used as arguments to a call</h4>
+<div class="paragraph">
+<p><span class="sentence">In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For each callable reference candidate, we perform the following steps:</span>
+<ul>
+<li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
+<li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
+</ul></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.html#building-the-overload-candidate-set-ocs">as building OCS for regular calls</a>;</span></li>
+<li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
+<li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
+</ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: more examples</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb6-3" title="3">...</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: consider the following two functions:</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">In the following case:</span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">candidate (1) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
+
+ is the type of the callable reference) the constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>→</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span></span></span></span>
+
+ is built and only candidate (1) is applicable w.r.t. this constraint.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In another case:</span></p>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">candidate (2) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
+
+ is the type of the callable reference) the constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">FT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Double</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>→</mo><mi mathvariant="normal">kotlin.Double</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">FT</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Double</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Double</span></span></span></span></span></span>
+
+ is built and only candidate (2) is applicable w.r.t. this constraint.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Please note that no bidirectional resolution is performed here as there is only one candidate for <code>bar</code>. </span><span class="sentence">If there were more than one candidate, the <a href="overload-resolution.html#bidirectional-resolution-for-callable-calls">bidirectional resolution process</a> would apply, possibly resulting in an overload resolution failure.</span></p>
+</div>
+</blockquote>
+<h4 id="bidirectional-resolution-for-callable-calls">Bidirectional resolution for callable calls</h4>
+<div class="paragraph">
+<p><span class="sentence">If a callable reference (or several callable references) is itself an argument to an overloaded function call, the resolution process is performed for both callables <em>simultaneously</em>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Assume we have a call <code>f(::g, b, c)</code>.</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
+<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
+</ol>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this may result in selecting the most specific candidate for <code>f</code> which has no available candidates for <code>::g</code>, meaning the bidirectional resolution process fails when resolving <code>::g</code>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This ensures the overload resolution process for every callable being called is performed only once.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Examples)</span></p>
+</div>
+</div>
+<h3 id="type-inference-and-overload-resolution">Type inference and overload resolution</h3>
+<div class="paragraph">
+<p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a very complicated process, and it is performed <em>after</em> overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.</span></p>
+</div>
+</blockquote>
+<h3 id="conflicting-overloads">Conflicting overloads</h3>
+<div class="paragraph">
+<p><span class="sentence">In cases when it is known two callables are definitely interlinked in overload resolution (e.g., two member function-like callables declared in the same classifier), meaning they will always be considered together for overload resolution, Kotlin compiler performs <em>conflicting overload</em> detection for such callables.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two callables <code>f</code> and <code>g</code> are <em>definitely interlinked</em> in overload resolution, if the following are true.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>f</code> is not <a href="inheritance.html#overriding">overriding</a> <code>g</code> (and vice versa);</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> belong to the same level of <a href="overload-resolution.html#c-level-partition">c-level partition</a>;</span></li>
+<li><span class="sentence"><code>f</code> and <code>g</code> are declared in the same <a href="scopes-and-identifiers.html#scopes-and-identifiers">scope</a>.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as definitely interlinked.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Two definitely interlinked callables <code>f</code> and <code>g</code> may create a <em>overload conflict</em>, if they could result in an overload ambiguity on most regular call sites.</span></p>
+</div>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO(Add justification for what is “most” and what is “regular”)</span></p>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To check whether such situation is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="overload-resolution.html#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="overload-resolution.html#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Different platform implementations may extend which callables are considered as conflicting overloads.</span></p>
+</div>
+</body>
+</html>
