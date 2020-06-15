@@ -11,15 +11,19 @@ TMP_DIR=${BUILD_DIR}/~tmp
 
 mkdir -p $TMP_DIR
 
+touch $TMP_DIR/p0
+touch $TMP_DIR/p1
+
 gpp -H ./index.md \
-| pandoc ${PREAMBLE_OPTIONS} ${FORMAT_PANDOC_OPTIONS} ${COMMON_PANDOC_OPTIONS} -t json \
-| bash ${FILTERS_DIR}/processTodoFilter.sh html \
-| bash ${FILTERS_DIR}/markSentencesFilter.sh html \
-| bash ${FILTERS_DIR}/copyPasteFilter.sh html \
-| bash ${FILTERS_DIR}/inlineDiagramFilter.sh html \
-| bash ${FILTERS_DIR}/mathInCodeFilter.sh html \
-| bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh html \
-| bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR
+| pandoc ${PREAMBLE_OPTIONS} ${COMMON_PANDOC_OPTIONS} ${FORMAT_PANDOC_OPTIONS} -t json >$TMP_DIR/p1 \
+&& bash ${FILTERS_DIR}/processTodoFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
+&& bash ${FILTERS_DIR}/markSentencesFilter.sh html <$TMP_DIR/p0 >$TMP_DIR/p1 \
+&& bash ${FILTERS_DIR}/copyPasteFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
+&& bash ${FILTERS_DIR}/inlineDiagramFilter.sh html <$TMP_DIR/p0 >$TMP_DIR/p1 \
+&& bash ${FILTERS_DIR}/mathInCodeFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
+&& bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh html <$TMP_DIR/p0 >$TMP_DIR/p1 \
+&& bash ${FILTERS_DIR}/inlineKatexFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
+&& bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR <$TMP_DIR/p0
 
 mkdir -p ${BUILD_DIR}/html/sections
 
