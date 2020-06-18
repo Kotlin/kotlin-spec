@@ -418,7 +418,7 @@ A functional interface has an associated [function type][Function types], which 
 
 > Important: the associated function type of a functional interface is different from the type of said functional interface.
 
-If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration] or as a complete [class][Classifier declaration].
+If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration][Object literals] or as a complete [class][Classifier declaration].
 However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).
 
 * If a lambda literal `L` is preceded with a functional interface name `T`, and the type of `L` is a subtype of the associated function type of `T`, this expression creates an instance of `T` with lambda literal `L` used as its abstract member function implementation.
@@ -471,7 +471,7 @@ However, as functional interface essentially represents a single function, Kotli
 Object declarations are similar to class declaration in that they introduce a new classifier type, but, unlike class or interface declarations, they also introduce a value of this type in the same declaration.
 No other values of this type may be declared, making object a single existing value of its type.
 
-> Note:This is similar to *singleton pattern* common to object-oriented programming in introducing a type which includes a single global value.
+> Note: This is similar to *singleton pattern* common to object-oriented programming in introducing a type which includes a single global value.
 
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
@@ -777,7 +777,9 @@ If a function declaration is marked with the `tailrec` modifier, but is not actu
 Kotlin uses *properties* to represent object-like entities, such as local variables, class fields or top-level values.
 
 Property declarations may create read-only (`val`) or mutable (`var`) entities in their respective scope.
-Properties may also have custom getter or setter --- functions which are used to read or write the property value.
+
+Properties may also have custom getter or setter --- special functions which are used to read or write the property value.
+Getters and setters cannot be called directly, but rather define how the corresponding properties are evaluated when accessed.
 
 #### Read-only property declaration
 
@@ -899,9 +901,9 @@ However, the backing field is created for a property only in the following cases
 In all other cases a property has no backing field.
 Properties without backing fields are not allowed to have initializer expressions.
 
-Read/write access to the property is replaced with getter/setter invocation respectively.
-
+Read/write access to the property is replaced with getter/setter invocation respectively. 
 Getters and setters allow for some modifiers available for function declarations (for example, they may be declared `inline`, see grammar for details).
+Properties themselves may also be declared `inline`, meaning that both getter and setter of said property are `inline`.
 
 #### Delegated property declaration
 
@@ -1205,15 +1207,13 @@ The following declarations are not allowed to have type parameters:
 
 Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
 These either are written directly at the parameter placement syntax or using a special `where` syntax.
-Any number of restrictions is allowed on a single type, however, there are some limitations on the allowed subtyping restriction shape.
-
-- For a given type parameter `T`, only one restriction `T : U` can have `U` to be another type parameter;
-- TODO(anything else?)
+Any number of restrictions is allowed on a single type, however, for a given type parameter `T`, only one restriction `T : U` can have `U` to be another type parameter.
 
 These restrictions are turned into corresponding [type constraints][Kotlin type constraints] when the type parameters are substituted with types and are employed during [type inference][Type inference] and [overload resolution][Overload resolution] of any usage of the corresponding declaration.
 See the corresponding sections for details.
 
 Type parameters do not introduce [runtime-available types][Runtime-available types] unless declared `reified`.
+Only type parameters of [inline functions][Inlining] can be declared `reified`.
 
 #### Type parameter variance
 
@@ -1240,7 +1240,7 @@ A usage of a contravariant type parameter in a covariant or invariant position, 
 This restrictions may be lifted in particular cases by [annotating][Annotations] the corresponding type parameter usage with a special built-in annotation `kotlin.UnsafeVariance`.
 By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.
 
-TODO: account for more complex cases
+TODO: examples
 
 #### Reified type parameters
 
