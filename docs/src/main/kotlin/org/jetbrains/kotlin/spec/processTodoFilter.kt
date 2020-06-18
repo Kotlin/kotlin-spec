@@ -1,11 +1,20 @@
 package org.jetbrains.kotlin.spec
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
+import com.github.ajalt.clikt.parameters.options.convert
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
+import org.jetbrains.kotlin.spec.SpecTodoFilter.disableTODOS
 import ru.spbstu.pandoc.*
+import java.io.File
 
 private fun String.splitAt(index: Int) = substring(0, minOf(index, length)) to substring(minOf(index, length))
 
 private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
-    fun makeInlineTODO(contents: List<Inline>): Inline = when {
+    fun makeInlineTODO(contents: List<Inline>): Inline? = when {
+        disableTODOS -> null
         format.isLaTeX() -> {
             Inline.Span(
                     Attr(classes = listOf("TODO")),
@@ -21,6 +30,7 @@ private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
     }
 
     fun makeBlockTODO(contents: Block): Block = when {
+        disableTODOS -> Block.Null
         format.isHTML() -> Block.Div(Attr(classes = listOf("TODO")), listOf(contents))
         format.isLaTeX() ->
             Block.Div(Attr(classes = listOf("TODO")),
@@ -63,7 +73,7 @@ private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
                         }
                         interm.add(e3)
                     }
-                    res.add(makeInlineTODO(interm))
+                    makeInlineTODO(interm)?.let { res.add(it) }
                     if(tail != null) res.add(tail)
                 }
                 else -> res.add(e)
@@ -76,6 +86,7 @@ private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
         val sup = super.visit(b)
         val first = b.inlines.firstOrNull()
         if(first is Inline.Str && first.text.startsWith("TODO")) {
+            if(disableTODOS) return Block.Null
             return makeBlockTODO(sup)
         }
         return sup
@@ -91,4 +102,13 @@ private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
     }
 }
 
-fun main(args: Array<String>) = makeFilter(SpecTodoFilterVisitor(Format(args[0])))
+private object SpecTodoFilter : CliktCommand() {
+    val format: Format by argument("Pandoc output format").convert { Format(it) }
+    val disableTODOS: Boolean by option().flag("--enable-todos", default = false)
+
+    override fun run() {
+        makeFilter(SpecTodoFilterVisitor(format))
+    }
+}
+
+fun main(args: Array<String>) = SpecTodoFilter.main(args)

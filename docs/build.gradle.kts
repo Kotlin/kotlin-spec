@@ -19,9 +19,18 @@ val scriptsDir = "$projectDir/scripts/build"
 val ls: String = System.lineSeparator()
 
 fun getScriptText(scriptName: String): String {
+    val disableTODOS = project.findProperty("disableTODOS") != null
+
     val buildTemplate = File("$scriptsDir/$scriptName.sh").readText()
 
-    return "PROJECT_DIR=$projectDir$ls$buildTemplate"
+    val res = with(StringBuilder()) {
+        append("PROJECT_DIR=$projectDir$ls")
+        if(disableTODOS) append("DISABLE_TODOS=--disable-todos$ls")
+        else append("DISABLE_TODOS=--enable-todos$ls")
+        append(buildTemplate)
+    }
+
+    return "$res"
 }
 
 repositories {
