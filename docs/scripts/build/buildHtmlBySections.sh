@@ -4,7 +4,8 @@ source settings.sh
 init_settings "html" "section"
 
 export PROJECT_DIR
-export DISABLE_TODOS
+export TODO_OPTION
+export STATIC_MATH_OPTION
 
 cd ${PROJECT_DIR}/src/md
 

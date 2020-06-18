@@ -20,13 +20,18 @@ val ls: String = System.lineSeparator()
 
 fun getScriptText(scriptName: String): String {
     val disableTODOS = project.findProperty("disableTODOS") != null
+    val enableStaticMath = project.findProperty("enableStaticMath") != null
 
     val buildTemplate = File("$scriptsDir/$scriptName.sh").readText()
 
     val res = with(StringBuilder()) {
         append("PROJECT_DIR=$projectDir$ls")
-        if(disableTODOS) append("DISABLE_TODOS=--disable-todos$ls")
-        else append("DISABLE_TODOS=--enable-todos$ls")
+        if(disableTODOS) append("TODO_OPTION=--disable-todos$ls")
+        else append("TODO_OPTION=--enable-todos$ls")
+
+        if(enableStaticMath) append("STATIC_MATH_OPTION=--enable-static-math$ls")
+        else append("STATIC_MATH_OPTION=--disable-static-math$ls")
+
         append(buildTemplate)
     }
 
