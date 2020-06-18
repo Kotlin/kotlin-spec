@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
@@ -91,6 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <header>
 <h1 class="title">Kotlin language specification</h1>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
 </header>
 
 
@@ -119,14 +123,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<span style="visibility: hidden; counter-reset: chapter 10;"></span>
 <h2 id="overload-resolution">Overload resolution</h2>
-<h3 id="glossary-4">Glossary</h3>
+<h3 id="glossary-3" class="unnumbered">Glossary</h3>
 <dl>
 <dt><code>type(e)</code></dt>
 <dd><span class="sentence"><a href="type-system.html#type-system">Type</a> of expression <code>e</code></span>
 </dd>
 </dl>
-<h3 id="intro">Intro</h3>
+<h3 id="introduction-4" class="unnumbered">Introduction</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports <em>callable overloading</em>, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
 </div>
@@ -190,32 +195,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Note: there may be situations in which <em>the same implicit receiver</em> is used as both the dispatch receiver and the extension receiver for a particular callable invocation, for example:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">interface</span> Y</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">interface</span> <span class="dt">Y</span></a>
 <a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">class</span> X : <span class="dt">Y</span> {</a>
-<a class="sourceLine" id="cb1-4" title="4">    <span class="kw">fun</span> <span class="fu">Y</span>.<span class="fu">foo</span>() {} <span class="co">// `foo` is an extension for Y,</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">class</span> <span class="dt">X</span> <span class="op">:</span> <span class="dt">Y</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-4" title="4">    <span class="kw">fun</span> <span class="fu">Y</span><span class="op">.</span><span class="fu">foo</span><span class="op">()</span> <span class="op">{}</span> <span class="co">// `foo` is an extension for Y,</span></a>
 <a class="sourceLine" id="cb1-5" title="5">                   <span class="co">//   needs extension receiver to be called</span></a>
 <a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">fun</span> <span class="fu">bar</span>() {</a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb1-8" title="8">        foo() <span class="co">// `this` reference is both</span></a>
 <a class="sourceLine" id="cb1-9" title="9">              <span class="co">//   the extension and the dispatch receiver</span></a>
-<a class="sourceLine" id="cb1-10" title="10">    }</a>
-<a class="sourceLine" id="cb1-11" title="11">}</a>
+<a class="sourceLine" id="cb1-10" title="10">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="op">}</span></a>
 <a class="sourceLine" id="cb1-12" title="12"></a>
-<a class="sourceLine" id="cb1-13" title="13"><span class="kw">fun</span> &lt;<span class="dt">T</span>&gt; <span class="fu">mk</span>(): <span class="dt">T</span> = <span class="al">TODO()</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></a>
 <a class="sourceLine" id="cb1-14" title="14"></a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="kw">fun</span> <span class="fu">main</span>() {</a>
-<a class="sourceLine" id="cb1-16" title="16">    <span class="kw">val</span> <span class="va">x</span>: X = mk()</a>
-<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">val</span> <span class="va">y</span>: Y = mk()</a>
+<a class="sourceLine" id="cb1-15" title="15"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-16" title="16">    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">X</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Y</span> <span class="op">=</span> mk()</a>
 <a class="sourceLine" id="cb1-18" title="18"></a>
 <a class="sourceLine" id="cb1-19" title="19">    <span class="co">// y.foo()</span></a>
 <a class="sourceLine" id="cb1-20" title="20">    <span class="co">// Error, as there is no implicit receiver</span></a>
 <a class="sourceLine" id="cb1-21" title="21">    <span class="co">//   of type X available</span></a>
 <a class="sourceLine" id="cb1-22" title="22"></a>
-<a class="sourceLine" id="cb1-23" title="23">    with (x) {</a>
+<a class="sourceLine" id="cb1-23" title="23">    with (x) <span class="op">{</span></a>
 <a class="sourceLine" id="cb1-24" title="24">        y.foo() <span class="co">// OK!</span></a>
-<a class="sourceLine" id="cb1-25" title="25">    }</a>
-<a class="sourceLine" id="cb1-26" title="26">}</a></code></pre></div>
+<a class="sourceLine" id="cb1-25" title="25">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
 <div class="paragraph">
@@ -320,10 +325,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
 <a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Int</span>) {}</a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Double</span>) {}</a>
-<a class="sourceLine" id="cb2-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">List</span>&lt;<span class="va">Char</span>&gt;) {}</a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">foo</span> = {}</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">Char</span><span class="op">&gt;)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="op">{}</span></a>
 <a class="sourceLine" id="cb2-7" title="7">. . .</a>
 <a class="sourceLine" id="cb2-8" title="8">a.b.c.foo()</a></code></pre></div>
 <div class="paragraph">
@@ -459,11 +464,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">a</span>: <span class="dt">Foo</span>, <span class="va">b</span>: <span class="dt">Bar</span>) {</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Foo</span>, <span class="va">b</span><span class="op">:</span> <span class="dt">Bar</span><span class="op">)</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb3-2" title="2">    (a + b)(<span class="dv">42</span>)</a>
 <a class="sourceLine" id="cb3-3" title="3">    <span class="co">// Such a call is handled as if it is</span></a>
 <a class="sourceLine" id="cb3-4" title="4">    <span class="co">//   (a + b).invoke(42)</span></a>
-<a class="sourceLine" id="cb3-5" title="5">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-5" title="5"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">As with <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, we first pick an overload candidate set and then search this set for the most specific function to match the call.</span></p>
@@ -552,6 +557,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="TODO">
 <div class="paragraph">
+<p><span class="sentence">TODO: in fact, it is an intersection of both non-suspend and suspend variants</span></p>
+</div>
+</div>
+<div class="TODO">
+<div class="paragraph">
 <p><span class="sentence">TODO: taking into account the fact that <span class="math inline">\(\operatorname{\text{FT}}(L) -&gt; R &lt;: \operatorname{\text{FTR}}(L) -&gt; R &lt;: \operatorname{\text{FT}}(L) -&gt; R\)</span>, this is not entirely correct. </span><span class="sentence">It’s not that important for applicability though.</span></p>
 </div>
 </div>
@@ -582,19 +592,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Consider the following example.</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {}        <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">f</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {} <span class="co">// (2)</span></a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{}</span>        <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{}</span> <span class="co">// (2)</span></a>
 <a class="sourceLine" id="cb4-3" title="3">...</a>
 <a class="sourceLine" id="cb4-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span>(<span class="va">arg</span>: <span class="dt">Int</span>, <span class="va">arg2</span>: <span class="dt">String</span>) {</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb5-2" title="2">    f2(arg, arg2) <span class="co">// VALID: can forward both arguments</span></a>
-<a class="sourceLine" id="cb5-3" title="3">}</a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span>(<span class="va">arg</span>: <span class="dt">Any?</span>, <span class="va">arg2</span>: <span class="dt">CharSequence</span>) {</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb5-5" title="5">    f1(arg, arg2) <span class="co">// INVALID: function f1 is not applicable</span></a>
-<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
+<a class="sourceLine" id="cb5-6" title="6"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
@@ -606,7 +616,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">For every two distinct members of the candidate set <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>, the following constraint system is constructed and solved:</span></p>
 </div>
 <ul>
-<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
+<li><span class="sentence">For every non-default argument of the call and their corresponding declaration-site parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>, a type constraint <span class="math inline">\(X_K &lt;: Y_K\)</span> is built <strong>unless both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a>.</strong> If both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are built-in integer types, a type constraint <span class="math inline">\(\operatorname{\text{Widen}}(X_K) &lt;: \operatorname{\text{Widen}}(Y_K)\)</span> is built instead, where <span class="math inline">\(\operatorname{\text{Widen}}\)</span> is the <a href="built-in-types-and-their-semantics.html#integer-type-widening">integer type widening</a> operator. </span><span class="sentence">During construction of these constraints, all declaration-site type parameters <span class="math inline">\(T_1, \ldots, T_M\)</span> of <span class="math inline">\(F_1\)</span> are considered bound to fresh type variables <span class="math inline">\(T^{\sim}_1, \ldots, T^{\sim}_M\)</span>, and all type parameters of <span class="math inline">\(F_2\)</span> are considered free;</span></li>
 <li><span class="sentence">If <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. </span><span class="sentence">For non-extension callables, only declaration-site parameters are considered;</span></li>
 <li><span class="sentence">All declaration-site type constraints of <span class="math inline">\(X_1, \ldots, X_N\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> are also added to the constraint system.</span></li>
 </ul>
@@ -616,20 +626,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria).</span></p>
+<p><span class="sentence">If the resulting constraint system is sound, it means that <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> as an overload candidate (aka applicability criteria). </span><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The check is then repeated with <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> swapped.</span></p>
+<p><span class="sentence">This check may result in one of the following outcomes:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Only one of the two candidates is more applicable than the other;</span></li>
+<li><span class="sentence">Neither of the two candidates is more applicable than the other;</span></li>
+<li><span class="sentence">Both <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are more applicable than the other.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">In case 1, the more applicable candidate of the two is found and no additional steps are needed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If <span class="math inline">\(F_1\)</span> is equally or more applicable than <span class="math inline">\(F_2\)</span> and <span class="math inline">\(F_2\)</span> is equally or more applicable than <span class="math inline">\(F_1\)</span>, this means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed to choose the most specific overload candidate. </span><span class="sentence">If neither <span class="math inline">\(F_1\)</span> nor <span class="math inline">\(F_2\)</span> is equally or more applicable than its counterpart, this also means <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span> are equally applicable, and additional decision steps are needed.</span></p>
+<p><span class="sentence">In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable. </span><span class="sentence">If this step does not allow for deciding the more specific candidate, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">All members of the overload candidate set are pairwise-ranked according to the applicability criteria. </span><span class="sentence">If there are several callables which are more applicable than all other candidates and equally applicable to each other, the following additional steps are performed in order.</span></p>
+<p><span class="sentence">In case 3, several additional steps are performed in order.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Any non-parameterized callable (which does not have type parameters in its declaration) is a more specific candidate than any parameterized callable. </span><span class="sentence">If there are several non-generic candidates, further steps are limited to those candidates;</span></li>
-<li><span class="sentence">For every non-default argument of the call, consider the corresponding parameter types <span class="math inline">\(X_1, \ldots, X_N\)</span> of <span class="math inline">\(F_1\)</span> and <span class="math inline">\(Y_1, \ldots, Y_N\)</span> of <span class="math inline">\(F_2\)</span>. </span><span class="sentence">If, for any <span class="math inline">\(K\)</span>, both <span class="math inline">\(X_K\)</span> and <span class="math inline">\(Y_K\)</span> are different <a href="built-in-types-and-their-semantics.html#built-in-integer-types-1">built-in integer types</a> and one of them is <code>kotlin.Int</code>, this parameter is preferred over the other parameter of the call. </span><span class="sentence">If all such parameters of <span class="math inline">\(F_1\)</span> are preferred based on this criteria over the parameters of <span class="math inline">\(F_2\)</span>, <span class="math inline">\(F_1\)</span> is a more specific candidate than <span class="math inline">\(F_2\)</span>, and vice versa;</span></li>
+<li><span class="sentence">Any non-parameterized callable is a more specific candidate than any parameterized callable (same as case 2). </span><span class="sentence">If there are several non-parameterized candidates, further steps are limited to those candidates;</span></li>
 <li><span class="sentence">For each candidate we count the number of default parameters <em>not</em> specified in the call (i.e., the number of parameters for which we use the default value). </span><span class="sentence">The candidate with the least number of non-specified default parameters is a more specific candidate;</span></li>
 <li><span class="sentence">For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.</span></li>
 </ul>
@@ -640,7 +657,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so. </span><span class="sentence">For example, one may select additional specificity rules between different built-in integer types for integer literal types, e.g., prefer <code>kotlin.Short</code> to <code>kotlin.Byte</code>.</span></p>
+<p><span class="sentence">Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -663,9 +680,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
+<p><span class="sentence">First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a <a href="type-system.html#function-types">function type</a>. </span><span class="sentence">Second, the type information needed to perform the resolution steps is acquired from <em>expected type</em> of the reference itself, rather than the types of arguments and/or result. </span><span class="sentence">The <code>invoke</code> operator convention <strong>does not</strong> apply to callable reference candidates. </span><span class="sentence">Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is <strong>bidirectional</strong>, meaning that both the callable being called and the callable being referenced are to be resolved <em>simultaneously</em>.</span></p>
 </div>
-<h4 id="resolving-callable-references-in-the-presence-of-an-expected-type">Resolving callable references in the presence of an expected type</h4>
+<h4 id="resolving-callable-references-not-used-as-arguments-to-a-call">Resolving callable references not used as arguments to a call</h4>
 <div class="paragraph">
 <p><span class="sentence">In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:</span></p>
 </div>
@@ -675,27 +692,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
 </ul></li>
-<li><span class="sentence">For all applicable candidates, the resolution sets are built and the most specific candidate is chosen. </span><span class="sentence">This process is performed the same way as for <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing candidates</a> for regular calls.</span></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.html#building-the-overload-candidate-set-ocs">as building OCS for regular calls</a>;</span></li>
+<li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
+<li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
 </ul>
+<div class="TODO">
+<div class="paragraph">
+<p><span class="sentence">TODO: more examples</span></p>
+</div>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb6-3" title="3">...</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">i</span>: <span class="dt">Int</span>): <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span>(<span class="va">d</span>: <span class="dt">Double</span>): <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case:</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">x</span>: (<span class="kw">Int</span>) -&gt; <span class="kw">Int</span> = ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Int}}) \rightarrow \operatorname{\texttt{kotlin.Int}}\)</span> is built and only candidate (1) is applicable w.r.t. this constraint.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">In another case:</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span>(<span class="va">f</span>: (<span class="dt">Double</span>) -&gt; <span class="dt">Double</span>) {}</a>
-<a class="sourceLine" id="cb8-2" title="2"></a>
-<a class="sourceLine" id="cb8-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked, because (assuming <span class="math inline">\(\operatorname{CRT}\)</span> is the type of the callable reference) the constraint <span class="math inline">\(\operatorname{CRT} &lt;: \operatorname{\text{FT}}(\operatorname{\texttt{kotlin.Double}}) \rightarrow \operatorname{\texttt{kotlin.Double}}\)</span> is built and only candidate (2) is applicable w.r.t. this constraint.</span></p>
 </div>
@@ -712,7 +753,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ol type="1">
 <li><span class="sentence">For each overload candidate <code>f</code>, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate. </span><span class="sentence">During this process, the only constraint for the callable reference <code>::g</code> is that it is an argument of a <a href="type-system.html#function-types">function type</a>;</span></li>
-<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-in-the-presence-of-an-expected-type">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
+<li><span class="sentence">For the most specific candidate <code>f</code> found during the previous step, the overload resolution process for <code>::g</code> is performed as described <a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call">here</a> and the most specific candidate for <code>::g</code> is selected.</span></li>
 </ol>
 <blockquote>
 <div class="paragraph">

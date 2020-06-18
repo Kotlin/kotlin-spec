@@ -86,23 +86,105 @@ h4, h5, h6 {
 
 h1 {
     font-size: 2.5em;
+    counter-increment: part;
+    counter-reset: chapter section subsection subsubsection paragraph;
+}
+
+h1.unnumbered {
+    font-size: 2.5em;
+    counter-increment: none;
+    counter-reset: none;
+}
+
+h1:before {
+    content: counter(part)"\0000a0\0000a0";
+}
+
+h1.unnumbered:before {
+    content: none;
 }
 
 h2 {
     font-size: 2em;
+    counter-increment: chapter;
+    counter-reset: section subsection subsubsection paragraph;
+}
+
+h2.unnumbered {
+    font-size: 2em;
+    counter-increment: none;
+    counter-reset: none;
+}
+
+h2:before {
+    content: "Chapter\00a0"counter(chapter);
+    display: block;
+    margin-bottom: 2ex;
+}
+
+h2.unnumbered:before {
+    content: none;
 }
 
 h3 {
     font-size: 1.5em;
+    counter-increment: section;
+    counter-reset: subsection subsubsection paragraph;
+}
+
+h3.unnumbered {
+    font-size: 1.5em;
+    counter-increment: none;
+    counter-reset: none;
+}
+
+h3:before {
+    content: counter(chapter)"."counter(section)"\0000a0\0000a0";
+}
+
+h3.unnumbered:before {
+    content: none;
 }
 
 h4 {
     font-size: 1.2em;
+    counter-increment: subsection;
+    counter-reset: subsubsection paragraph;
+}
+
+h4.unnumbered {
+    font-size: 1.2em;
+    counter-increment: none;
+    counter-reset: none;
+}
+
+h4:before {
+    content: counter(chapter)"."counter(section)"."counter(subsection)"\0000a0\0000a0";
+}
+
+h4.unnumbered:before {
+    content: none;
 }
 
 h5 {
     font-size: 1em;
+    counter-increment: subsubsection;
 }
+
+h5.unnumbered {
+    font-size: 1em;
+    counter-increment: none;
+    counter-reset: none;
+}
+
+/* uncomment if we want level 5 headers to be numbered, too */
+/*h5:before {*/
+/*    content: counter(chapter)"."counter(section)"."counter(subsection)"."counter(subsubsection)"\0000a0\0000a0";*/
+/*}*/
+
+/*h5.unnumbered:before {*/
+/*    content: none;*/
+/*}*/
 
 h6 {
     font-size: 0.9em;

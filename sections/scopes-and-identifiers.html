@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
@@ -88,6 +90,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <header>
 <h1 class="title">Kotlin language specification</h1>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
 </header>
 
 
@@ -116,6 +120,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<span style="visibility: hidden; counter-reset: chapter 5;"></span>
 <h2 id="scopes-and-identifiers">Scopes and identifiers</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin program is logically divided into <em>scopes</em>.</span></p>
@@ -137,10 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The project <a href="packages-and-imports.html#packages-and-imports">packages</a>;</span></li>
 <li><span class="sentence">The top level scopes of non-script Kotlin files;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Anything else?)</span>
-</div></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Statement scopes include:</span></p>
@@ -152,10 +154,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The bodies of <a href="expressions.html#function-literals">function literals</a>;</span></li>
 <li><span class="sentence">The bodies of getters and setters of <a href="declarations.html#property-declaration">properties</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#constructor-declaration">constructors</a>;</span></li>
-<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
-<li><div class="TODO">
-<span class="sentence">TODO(Anything else?)</span>
-</div></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">All declarations in a particular scope introduce new <em>bindings</em> of identifiers in this scope to their respective entities in the program. </span><span class="sentence">These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated). </span><span class="sentence">Top-level scopes additionally allow to introduce new bindings using <a href="packages-and-imports.html#packages-and-imports"><code>import</code> directives</a> from other top-level scopes.</span></p>
@@ -192,22 +191,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="co">// x refers to the property defined below </span></a>
 <a class="sourceLine" id="cb1-2" title="2"><span class="co">//   even if there is another property</span></a>
 <a class="sourceLine" id="cb1-3" title="3"><span class="co">//   called x in outer scope or imported</span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>() = x + <span class="dv">2</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = x + <span class="dv">2</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">val</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">3</span></a></code></pre></div></li>
 <li><div class="paragraph">
 <p><span class="sentence">In statement scope:</span></p>
 </div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="co">// x refers to another property </span></a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="co">//   defined in outer scope or imported</span></a>
 <a class="sourceLine" id="cb2-3" title="3"><span class="co">//   or is a compile-time error</span></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span>() = x + <span class="dv">2</span></a>
-<a class="sourceLine" id="cb2-5" title="5"><span class="kw">val</span> <span class="va">x</span> = <span class="dv">3</span></a></code></pre></div></li>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = x + <span class="dv">2</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">val</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">3</span></a></code></pre></div></li>
 </ul>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(rewrite expressions and statements as references to this part)</span></p>
-</div>
-</div>
 <div class="TODO">
 <div class="paragraph">
 <p><span class="sentence">TODO(identifier lifetime &amp; such)</span></p>
@@ -266,11 +260,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><code>super&lt;Klazz&gt;@label</code> – an identifier which references the supertype <code>Klazz</code> available in the selected scope, further details are available <a href="expressions.html#super-forms">here</a></span></li>
 </ul>
 <h3 id="labels">Labels</h3>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO(This is a stub)</span></p>
-</div>
-</div>
 <div class="paragraph">
 <p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence"><a href="expressions.html#lambda-literals">Lambda expressions</a>) and <a href="statements.html#loop-statements">loop statements</a> are allowed to be labeled, with label identifier associated with the corresponding entity.</span></p>
 </div>

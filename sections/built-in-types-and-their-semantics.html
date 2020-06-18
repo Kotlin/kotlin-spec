@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
@@ -91,6 +93,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <header>
 <h1 class="title">Kotlin language specification</h1>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
 </header>
 
 
@@ -119,6 +123,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<span style="visibility: hidden; counter-reset: chapter 2;"></span>
 <h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="type-system.html#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
@@ -133,7 +138,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation <span><span class="TODO">(TODO: link)</span><span class="TODO-marker">*</span></span>.</span></p>
+<p><span class="sentence">Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation.</span></p>
 </div>
 </blockquote>
 <h3 id="kotlin.any-1"><code>kotlin.Any</code></h3>
@@ -141,15 +146,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Besides being the <a href="type-system.html#kotlin.any">unified supertype</a> of all non-nullable types, <span class="math inline">\(\operatorname{\texttt{kotlin.Any}}\)</span> must also provide the following methods.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">equals</span>(<span class="va">other</span>: <span class="dt">Any?</span>): <span class="dt">Boolean</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Boolean</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> is true and <code>y.equals(z)</code> is true, <code>x.equals(z)</code> is also true) and consistency (<code>x.equals(y)</code> should not change its result between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e., <code>x.equals(null)</code> must be <code>false</code>.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">hashCode</span>(): <span class="dt">Int</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">hashCode</span><span class="op">():</span> <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns the hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must consistently produce the same result.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">toString</span>(): <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns a string representation of a value.</span></p>
 </div></li>
@@ -227,6 +232,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
 </div>
 </blockquote>
+<h4 id="integer-type-widening">Integer type widening</h4>
+<div class="paragraph">
+<p><span class="sentence">In <a href="overload-resolution.html#overload-resolution">overload resolution</a>, we actually have a priority between built-in integer types which is very similar to a <a href="type-system.html#subtyping">subtyping</a> relation between these types; however, this priority is important only w.r.t. overload resolution and does not entail any actual subtyping between built-in integer types.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In order to introduce this priority we describe a type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(T)\)</span> for a built-in integer type <span class="math inline">\(T\)</span> is defined as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\)</span></span></li>
+<li><span class="sentence"><span class="math inline">\(\operatorname{\text{Widen}}(T) = T\)</span> for any other <span class="math inline">\(T\)</span></span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: <span class="math inline">\(\operatorname{\text{Widen}}\)</span> means, for the purposes of overload resolution, <span class="math inline">\(\operatorname{\texttt{kotlin.Int}}\)</span> is preferred over any other built-in integer type and <span class="math inline">\(\operatorname{\texttt{kotlin.Short}}\)</span> is preferred to <span class="math inline">\(\operatorname{\texttt{kotlin.Byte}}\)</span>. </span><span class="sentence">Using <span class="math inline">\(\operatorname{\text{Widen}}\)</span>, we can reduce this priority to subtyping: <span class="math inline">\(T\)</span> is more preferred than <span class="math inline">\(U\)</span> if <span class="math inline">\(\operatorname{\text{Widen}}(T) &lt;: \operatorname{\text{Widen}}(U)\)</span>; this scheme allows to handle built-in integer types transparently when selecting the <a href="overload-resolution.html#algorithm-of-msc-selection">most specific overload candidate</a>.</span></p>
+</div>
+</blockquote>
 <h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
 <div class="paragraph">
 <p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
@@ -277,11 +299,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following properties.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">name</span>: <span class="kw">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Contains the name of this enumeration constant, exactly as declared in its declaration.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">ordinal</span>: <span class="kw">Int</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">ordinal</span><span class="op">:</span> <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Contains the ordinal of this enumeration constant, i.e., its position in the declaration, starting from zero.</span></p>
 </div></li>
@@ -290,15 +312,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following methods.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span>(<span class="va">other</span>: <span class="dt">T</span>): <span class="dt">Int</span></a></code></pre></div></li>
-<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">equals</span>(<span class="va">other</span>: <span class="dt">Any?</span>): <span class="dt">Boolean</span></a></code></pre></div></li>
-<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">hashCode</span>(): <span class="dt">Int</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div></li>
+<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Boolean</span></a></code></pre></div></li>
+<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">hashCode</span><span class="op">():</span> <span class="dt">Int</span></a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.</span></p>
 </div>
 </blockquote></li>
-<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">protected</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">clone</span>(): <span class="dt">Any</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">protected</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">clone</span><span class="op">():</span> <span class="dt">Any</span></a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: the <code>clone()</code> implementation throws an exception, as enumeration objects cannot be copied.</span></p>
@@ -320,19 +342,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> provides the following methods and properties.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(<span class="va">index</span>: <span class="dt">Int</span>): <span class="dt">T</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(index: <span class="kw">Int</span>): T</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns the array element at the specified index. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">set</span>(<span class="va">index</span>: <span class="dt">Int</span>, <span class="va">value</span>: <span class="dt">T</span>): <span class="dt">Unit</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">set</span>(index: <span class="kw">Int</span>, value: T): <span class="kw">Unit</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Sets the array element at the specified index to the specified value. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">size</span>: <span class="kw">Int</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">size</span><span class="op">:</span> <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns the array size.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span>(): <span class="dt">Iterator</span>&lt;<span class="dt">T</span>&gt;</a></code></pre></div>
+<li><div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span><span class="op">():</span> <span class="dt">Iterator</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Creates an <a href="built-in-types-and-their-semantics.html#iterator-types">iterator</a> for iterating over the elements of the array.</span></p>
 </div></li>
@@ -364,7 +386,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: default values are platform-specific.</span></p>
 </div>
 </blockquote></li>
-<li><div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span>(): {<span class="dt">TYPE</span>}<span class="fu">Iterator</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span><span class="op">():</span> {<span class="dt">TYPE</span>}<span class="fu">Iterator</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Creates a <a href="built-in-types-and-their-semantics.html#specialized-iterator-types">specialized iterator</a> for iterating over the elements of the array.</span></p>
 </div></li>
@@ -377,11 +399,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">It provides the following methods.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span>(): <span class="dt">T</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span><span class="op">():</span> <span class="dt">T</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns the next element in the sequence.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">hasNext</span>(): <span class="dt">Boolean</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">hasNext</span><span class="op">():</span> <span class="dt">Boolean</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns <code>true</code> if the sequence has more elements.</span></p>
 </div></li>
@@ -391,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Specialized iterator types are iterator types used for <a href="built-in-types-and-their-semantics.html#specialized-array-types">specialized array types</a>. </span><span class="sentence">They inherit <code>kotlin.Iterator&lt;out T&gt;</code> for their type (i.e., <code>kotlin.CharIterator</code> inherits <code>kotlin.Iterator&lt;Char&gt;</code>) and provide the following methods.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span>{TYPE}(): {TYPE}</a></code></pre></div>
+<li><div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span><span class="op">{</span>TYPE<span class="op">}</span>(): <span class="op">{</span>TYPE<span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Returns the next element in the sequence as a specific type.</span></p>
 </div>
@@ -409,11 +431,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">It provides at least the following properties:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">message</span>: <span class="kw">String</span>?</a></code></pre></div>
+<li><div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String?</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional message depicting the cause of the throw.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">cause</span>: Throwable?</a></code></pre></div>
+<li><div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">cause</span><span class="op">:</span> <span class="dt">Throwable?</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional other value of type <code>kotlin.Throwable</code> allowing for nested throwables to be constructed.</span></p>
 </div></li>
@@ -425,7 +447,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Comparable&lt;in T&gt;</code> is a built-in parameterized type which represents values that may be compared for total ordering. </span><span class="sentence">It provides the following member function:</span></p>
 </div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">compareTo</span>(<span class="va">other</span>: <span class="dt">T</span>): <span class="dt">Int</span></a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">This function is used to implement <a href="expressions.html#comparison-expressions">comparison operators</a> through <a href="operator-overloading.html#operator-overloading">overloadable operator convention</a> for standard library classes.</span></p>
 </div>
@@ -454,7 +476,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.reflect.KCallable&lt;out R&gt;</code> is the class used to represent runtime information for callables (i.e. properties and functions). </span><span class="sentence">It is mainly used as base type for other types described in this section. </span><span class="sentence">It provides at least the following property:</span></p>
 </div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">name</span>: <span class="kw">String</span></a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">This property contains the name of the callable. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
 </div>
