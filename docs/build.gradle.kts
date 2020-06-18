@@ -37,7 +37,7 @@ java.sourceSets {
 
 dependencies {
     compile("ru.spbstu:g4toEBNF:0.0.0.3")
-    compile("ru.spbstu:kotlin-pandoc:0.0.9")
+    compile("ru.spbstu:kotlin-pandoc:0.0.10")
     compile("ru.spbstu:simple-diagrammer:0.0.0.6")
     compile("com.github.ajalt:clikt:1.7.0")
 }

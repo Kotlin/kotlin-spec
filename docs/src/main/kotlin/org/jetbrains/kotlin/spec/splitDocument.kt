@@ -3,11 +3,18 @@ package org.jetbrains.kotlin.spec
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.defaultLazy
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import kotlinx.warnings.Warnings
+import org.jetbrains.kotlin.spec.SplitDocument.generateTOC
 import ru.spbstu.pandoc.*
+import ru.spbstu.pandoc.builder.BlockBuilder
+import ru.spbstu.pandoc.builder.blocks
 import ru.spbstu.pandoc.jackson.constructObjectMapper
 import ru.spbstu.pandoc.jackson.readValue
 import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintStream
 
 private class IdMapper(val splitLevel: Int) : PandocVisitor() {
     var currentSection: String = ""
@@ -31,7 +38,7 @@ private class IdMapper(val splitLevel: Int) : PandocVisitor() {
 
 private class LinkFixer(splitLevel: Int, format: String) : PandocVisitor() {
     val ids: IdMapper = IdMapper(splitLevel)
-    val ext = if(format !== "html") "pdf" else "html"
+    val ext = if (format !== "html") "pdf" else "html"
 
     override fun visit(doc: Pandoc): Pandoc {
         doc.accept(ids)
@@ -51,8 +58,71 @@ private class LinkFixer(splitLevel: Int, format: String) : PandocVisitor() {
 val mapper = constructObjectMapper()
 
 data class Section(val title: String, val number: Int?, val blocks: MutableList<Block> = mutableListOf())
+data class TOCElement(val title: List<Inline>,
+                      val id: String,
+                      val numbered: Boolean = true,
+                      val subSections: MutableList<TOCElement> = mutableListOf()) {
+    fun add(level: Int, title: List<Inline>, id: String, numbered: Boolean = true): Unit = when (level) {
+        0 -> subSections += TOCElement(title, id, numbered = numbered)
+        else -> {
+            when {
+                subSections.isEmpty() -> subSections.add(TOCElement(listOf(), ""))
+            }
+            subSections.last().add(level - 1, title, id, numbered = numbered)
+        }
+    }
 
-fun counterName(splitLevel: Int): String? = when(splitLevel) {
+    fun toPandocList(): List<Block> = blocks { toPandocList(this@TOCElement) }
+}
+
+fun BlockBuilder.toPandocList(tocElement: TOCElement): Unit = with(tocElement) {
+    if (title.isNotEmpty()) {
+        plain {
+            link(Target("#${id}", "")) {
+                classes += "toc-element"
+                if (!numbered) classes += "unnumbered"
+                id = "toc-element-${this@with.id}"
+                +title
+            }
+        }
+    }
+
+    if (subSections.isNotEmpty()) {
+        bulletList {
+            for (subSec in subSections) {
+                item {
+                    toPandocList(subSec)
+                }
+            }
+        }
+    }
+}
+
+class TOCMaker : PandocVisitor() {
+    val fakeTop = TOCElement(listOf(), "top")
+
+    /* this is a shallow visitor, not going below level 1 */
+    override fun visit(b: Block): Block =
+            @Suppress(Warnings.USELESS_CAST)
+            if (b is Block.Header) visit(b as Block.Header)
+            else b
+
+    override fun visit(b: Block.Header): Block {
+        fakeTop.add(b.level, b.text, b.attr.id, numbered = "unnumbered" !in b.attr.classes)
+        return b
+    }
+
+    fun buildPandocList(): Block =
+            fakeTop
+                    .toPandocList()
+                    .filterIsInstance<Block.BulletList>()
+                    .first()
+                    .items
+                    .first()
+                    .let { Block.Div(Attr(id = "TOC"), it) }
+}
+
+fun counterName(splitLevel: Int): String? = when (splitLevel) {
     1 -> "part"
     2 -> "chapter"
     3 -> "section"
@@ -74,7 +144,15 @@ fun setSectionCounterHtml(secNumber: Int, splitLevel: Int): Block {
 
 private class Splitter(val outputDirectory: File, val format: String, val splitLevel: Int = 2) : PandocVisitor() {
     override fun visit(doc: Pandoc): Pandoc {
-        val newDoc = LinkFixer(splitLevel, format).visit(doc)
+        val linkFixer = LinkFixer(splitLevel, format)
+        val newDoc = linkFixer.visit(doc)
+        val generatedTOC = when {
+            generateTOC -> TOCMaker()
+                    .apply { visit(doc) }
+                    .buildPandocList()
+                    .let { linkFixer.visit(it) }
+            else -> null
+        }
 
         val blockIt = newDoc.blocks.iterator()
 
@@ -85,7 +163,7 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
 
         for (block in blockIt) {
             if (block is Block.Header && block.level <= splitLevel) {
-                if("unnumbered" !in block.attr.classes && block.level == splitLevel) {
+                if ("unnumbered" !in block.attr.classes && block.level == splitLevel) {
                     sections.add(Section(block.attr.id, ++secNumber))
                 } else {
                     sections.add(Section(block.attr.id, null))
@@ -99,7 +177,7 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
 
         for (block in blockIt) {
             if (block is Block.Header && block.level <= splitLevel) {
-                if("unnumbered" !in block.attr.classes && block.level == splitLevel) {
+                if ("unnumbered" !in block.attr.classes && block.level == splitLevel) {
                     sections.add(Section(block.attr.id, ++secNumber))
                 } else {
                     sections.add(Section(block.attr.id, null))
@@ -109,12 +187,22 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
         }
 
         for ((sectionTitle, sectionNumber, sectionBlocks) in sections) {
-            val secOffsetBlock = when {
-                sectionNumber == null -> Block.Null
-                format == "html" -> setSectionCounterHtml(sectionNumber, splitLevel)
-                else -> setSectionCounterLatex(sectionNumber, splitLevel)
-            }
-            val secDoc = newDoc.copy(blocks = preamble + listOf(secOffsetBlock) + sectionBlocks)
+            val secDoc = newDoc.copy(
+                    blocks = blocks {
+                        +preamble
+
+                        if (generatedTOC != null) +generatedTOC
+
+                        when {
+                            sectionNumber == null -> {
+                            }
+                            format == "html" -> +setSectionCounterHtml(sectionNumber, splitLevel)
+                            else -> +setSectionCounterLatex(sectionNumber, splitLevel)
+                        }
+
+                        +sectionBlocks
+                    }
+            )
             File(outputDirectory, "$sectionTitle.json").bufferedWriter().use {
                 mapper.writeValue(it, secDoc)
             }
@@ -126,6 +214,7 @@ private class Splitter(val outputDirectory: File, val format: String, val splitL
 private object SplitDocument : CliktCommand() {
     val format: String by option("-f", "--format", help = "Format to use").defaultLazy { "html" }
     val outputDirectory: File by option().convert { File(it) }.defaultLazy { File(".") }
+    val generateTOC: Boolean by option().flag("--toc")
 
     override fun run() {
         val doc: Pandoc = mapper.readValue(System.`in`)

@@ -22,7 +22,7 @@ gpp -H ./index.md \
 && bash ${FILTERS_DIR}/inlineDiagramFilter.sh latex <$TMP_DIR/p0 >$TMP_DIR/p1 \
 && bash ${FILTERS_DIR}/mathInCodeFilter.sh latex <$TMP_DIR/p1 >$TMP_DIR/p0 \
 && bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh latex <$TMP_DIR/p0 >$TMP_DIR/p1 \
-&& bash ${FILTERS_DIR}/splitSections.sh "--output-directory=$TMP_DIR --format=latex" <$TMP_DIR/p1
+&& bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR --format=latex <$TMP_DIR/p1
 
 mkdir -p ${BUILD_DIR}/pdf/sections
 
