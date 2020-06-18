@@ -1,5 +1,11 @@
 package org.jetbrains.kotlin.spec
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
+import com.github.ajalt.clikt.parameters.options.convert
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import com.zaxxer.nuprocess.NuAbstractProcessHandler
 import com.zaxxer.nuprocess.NuProcess
 import com.zaxxer.nuprocess.NuProcessBuilder
@@ -54,9 +60,20 @@ object InlineKatex : PandocVisitor() {
     }
 }
 
-object DoNothing : PandocVisitor() {
-    override fun visit(doc: Pandoc) = doc
+private object DoNothing: PandocVisitor() {
+    override fun visit(doc: Pandoc): Pandoc = doc
 }
 
-fun main(args: Array<String>) =
-        if(Format(args[0]).isHTML()) makeFilter(InlineKatex) else makeFilter(DoNothing)
+private object InlineKatexFilter : CliktCommand() {
+    val format: Format by argument("Pandoc output format").convert { Format(it) }
+    val disableStaticMath by option().flag("--enable-static-math")
+
+    val isHTML get() = format.isHTML()
+
+    override fun run() {
+        if(isHTML && !disableStaticMath) makeFilter(InlineKatex)
+        else makeFilter(DoNothing)
+    }
+}
+
+fun main(args: Array<String>) = InlineKatexFilter.main(args)
