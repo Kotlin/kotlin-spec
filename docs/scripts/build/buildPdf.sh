@@ -4,6 +4,7 @@ source settings.sh
 init_settings "pdf"
 
 export PROJECT_DIR
+export DISABLE_TODOS
 
 cd ${PROJECT_DIR}/src/md
 
