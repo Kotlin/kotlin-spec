@@ -123,18 +123,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<span style="visibility: hidden; counter-reset: chapter 6;"></span>
 <h2 id="statements">Statements</h2>
 <div id="grammar-rule-statements-pasted-6" class="grammar-rule">
 <dl>
 <dt><strong><em>statements</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax.html#grammar-rule-semis">semis</a></em> <em><a href="syntax.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax.html#grammar-rule-semis">semis</a></em>]]</span>
+<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em>]]</span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-statement-pasted-7" class="grammar-rule">
 <dl>
 <dt><strong><em>statement</em>:</strong></dt>
-<dd><span class="sentence">{<em><a href="syntax.html#grammar-rule-label">label</a></em> | <em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>} (<em><a href="syntax.html#grammar-rule-declaration">declaration</a></em> | <em><a href="syntax.html#grammar-rule-assignment">assignment</a></em> | <em><a href="syntax.html#grammar-rule-loopStatement">loopStatement</a></em> | <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)</span>
+<dd><span class="sentence">{<em><a href="syntax-and-grammar.html#grammar-rule-label">label</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em>} (<em><a href="syntax-and-grammar.html#grammar-rule-declaration">declaration</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-assignment">assignment</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-loopStatement">loopStatement</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>)</span>
 </dd>
 </dl>
 </div>
@@ -150,8 +151,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-assignment-pasted-8" class="grammar-rule">
 <dl>
 <dt><strong><em>assignment</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax.html#grammar-rule-directlyAssignableExpression">directlyAssignableExpression</a></em> <code>'='</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)<br />
-| (<em><a href="syntax.html#grammar-rule-assignableExpression">assignableExpression</a></em> <em><a href="syntax.html#grammar-rule-assignmentAndOperator">assignmentAndOperator</a></em> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-expression">expression</a></em>)</span>
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-directlyAssignableExpression">directlyAssignableExpression</a></em> <code>'='</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>)<br />
+| (<em><a href="syntax-and-grammar.html#grammar-rule-assignableExpression">assignableExpression</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-assignmentAndOperator">assignmentAndOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>)</span>
 </dd>
 </dl>
 </div>
@@ -258,10 +259,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><div class="paragraph">
 <p><span class="sentence"><code>a?.c</code> is exactly the same as</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = a) {</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> a) <span class="op">{</span></a>
 <a class="sourceLine" id="cb1-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
-<a class="sourceLine" id="cb1-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.c }</a>
-<a class="sourceLine" id="cb1-4" title="4">}</a></code></pre></div>
+<a class="sourceLine" id="cb1-3" title="3">    <span class="cf">else</span> -&gt; <span class="op">{</span> $tmp.c <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">For any right-hand combinations of operators present in <code>c</code>, which are expanded further, <a href="operator-overloading.html#operator-overloading">as usual</a>.</span></p>
 </div></li>
@@ -274,16 +275,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">is expanded to</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> x) <span class="op">{</span></a>
 <a class="sourceLine" id="cb3-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y[<span class="dv">0</span>] = z }</a>
-<a class="sourceLine" id="cb3-4" title="4">}</a></code></pre></div>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="cf">else</span> -&gt; <span class="op">{</span> $tmp.y[<span class="dv">0</span>] = z <span class="op">}</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">which, according to expansion rules for indexing assignments is, in turn, expanded to</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> = x) {</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">tmp</span> <span class="op">=</span> x) <span class="op">{</span></a>
 <a class="sourceLine" id="cb4-2" title="2">    <span class="kw">null</span> -&gt; <span class="kw">null</span></a>
-<a class="sourceLine" id="cb4-3" title="3">    <span class="cf">else</span> -&gt; { $tmp.y.<span class="kw">set</span>(<span class="dv">0</span>, z) }</a>
+<a class="sourceLine" id="cb4-3" title="3">    <span class="cf">else</span> -&gt; <span class="op">{</span> $tmp.y.<span class="kw">set</span><span class="op">(</span><span class="va">0</span>, <span class="va">z</span><span class="op">)</span> }</a>
 <a class="sourceLine" id="cb4-4" title="4">}</a></code></pre></div>
 </blockquote>
 <h3 id="loop-statements">Loop statements</h3>
@@ -293,9 +294,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-loopStatement-pasted-10" class="grammar-rule">
 <dl>
 <dt><strong><em>loopStatement</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax.html#grammar-rule-forStatement">forStatement</a></em><br />
-| <em><a href="syntax.html#grammar-rule-whileStatement">whileStatement</a></em><br />
-| <em><a href="syntax.html#grammar-rule-doWhileStatement">doWhileStatement</a></em></span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-forStatement">forStatement</a></em><br />
+| <em><a href="syntax-and-grammar.html#grammar-rule-whileStatement">whileStatement</a></em><br />
+| <em><a href="syntax-and-grammar.html#grammar-rule-doWhileStatement">doWhileStatement</a></em></span>
 </dd>
 </dl>
 </div>
@@ -306,8 +307,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-whileStatement-pasted-11" class="grammar-rule">
 <dl>
 <dt><strong><em>whileStatement</em>:</strong></dt>
-<dd><span class="sentence">(<code>'while'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>)<br />
-| (<code>'while'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax.html#grammar-rule-NL">NL</a></em>} <code>';'</code>)</span>
+<dd><span class="sentence">(<code>'while'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>)<br />
+| (<code>'while'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'('</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>')'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>';'</code>)</span>
 </dd>
 </dl>
 </div>
@@ -327,13 +328,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>doWhileStatement</em>:</strong></dt>
 <dd><span class="sentence"><code>'do'</code><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
-[<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]<br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'while'</code><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'('</code><br />
-<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+<em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 <code>')'</code></span>
 </dd>
 </dl>
@@ -354,15 +355,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>forStatement</em>:</strong></dt>
 <dd><span class="sentence"><code>'for'</code><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'('</code><br />
-{<em><a href="syntax.html#grammar-rule-annotation">annotation</a></em>}<br />
-(<em><a href="syntax.html#grammar-rule-variableDeclaration">variableDeclaration</a></em> | <em><a href="syntax.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em>)<br />
-<em><a href="syntax.html#grammar-rule-IN">IN</a></em><br />
-<em><a href="syntax.html#grammar-rule-expression">expression</a></em><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em>}<br />
+(<em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em>)<br />
+<em><a href="syntax-and-grammar.html#grammar-rule-IN">IN</a></em><br />
+<em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 <code>')'</code><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
-[<em><a href="syntax.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]</span>
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -380,12 +381,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence"><code>for(VarDecl in C) Body</code> is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> = C.iterator()) {</a>
-<a class="sourceLine" id="cb5-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) {</a>
-<a class="sourceLine" id="cb5-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> = __iterator.next()</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="cf">when</span>(<span class="kw">val</span> $<span class="va">iterator</span> <span class="op">=</span> C.iterator()) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="cf">else</span> -&gt; <span class="cf">while</span> ($iterator.hasNext()) <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-3" title="3">                <span class="kw">val</span> <span class="va">VarDecl</span> <span class="op">=</span> __iterator.next()</a>
 <a class="sourceLine" id="cb5-4" title="4">                &lt;... all the statements from Body&gt;</a>
-<a class="sourceLine" id="cb5-5" title="5">            }</a>
-<a class="sourceLine" id="cb5-6" title="6">}</a></code></pre></div>
+<a class="sourceLine" id="cb5-5" title="5">            <span class="op">}</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>iterator</code>, <code>hasNext</code>, <code>next</code> are all suitable operator functions available in the current scope. </span><span class="sentence"><code>VarDecl</code> here may be a variable name or a set of variable names as per <a href="operator-overloading.html#destructuring-declarations">destructuring variable declarations</a>.</span></p>
 </div>
@@ -399,9 +400,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>block</em>:</strong></dt>
 <dd><span class="sentence"><code>'{'</code><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
-<em><a href="syntax.html#grammar-rule-statements">statements</a></em><br />
-{<em><a href="syntax.html#grammar-rule-NL">NL</a></em>}<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax-and-grammar.html#grammar-rule-statements">statements</a></em><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'}'</code></span>
 </dd>
 </dl>
@@ -409,7 +410,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-statements-pasted-15" class="grammar-rule">
 <dl>
 <dt><strong><em>statements</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="syntax.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax.html#grammar-rule-semis">semis</a></em> <em><a href="syntax.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax.html#grammar-rule-semis">semis</a></em>]]</span>
+<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em>]]</span>
 </dd>
 </dl>
 </div>
@@ -455,20 +456,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span>() {</a>
-<a class="sourceLine" id="cb6-2" title="2">    <span class="kw">val</span> <span class="va">a</span> <span class="co">/* : () -&gt; Unit */</span> = {</a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-2" title="2">    <span class="kw">val</span> <span class="va">a</span> <span class="co">/* : () -&gt; Unit */</span> <span class="op">=</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb6-3" title="3">        <span class="cf">if</span> (<span class="kw">true</span>) <span class="dv">42</span></a>
 <a class="sourceLine" id="cb6-4" title="4">        <span class="co">// CSB with no last expression</span></a>
 <a class="sourceLine" id="cb6-5" title="5">        <span class="co">// Type is defined to be `kotlin.Unit`</span></a>
-<a class="sourceLine" id="cb6-6" title="6">    }</a>
+<a class="sourceLine" id="cb6-6" title="6">    <span class="op">}</span></a>
 <a class="sourceLine" id="cb6-7" title="7"></a>
-<a class="sourceLine" id="cb6-8" title="8">    <span class="kw">val</span> <span class="va">b</span>: () -&gt; <span class="kw">Unit</span> = {</a>
+<a class="sourceLine" id="cb6-8" title="8">    <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span> <span class="op">=</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb6-9" title="9">        <span class="cf">if</span> (<span class="kw">true</span>) <span class="dv">42</span> <span class="cf">else</span> <span class="dv">-42</span></a>
 <a class="sourceLine" id="cb6-10" title="10">        <span class="co">// CSB with last expression of type `kotlin.Int`</span></a>
 <a class="sourceLine" id="cb6-11" title="11">        <span class="co">// Type is expected to be `kotlin.Unit`</span></a>
 <a class="sourceLine" id="cb6-12" title="12">        <span class="co">// Coercion to kotlin.Unit applied</span></a>
-<a class="sourceLine" id="cb6-13" title="13">    }</a>
-<a class="sourceLine" id="cb6-14" title="14">}</a></code></pre></div>
+<a class="sourceLine" id="cb6-13" title="13">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb6-14" title="14"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 </body>
 </html>
