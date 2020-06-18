@@ -22,8 +22,7 @@ gpp -H ./index.md \
 && bash ${FILTERS_DIR}/inlineDiagramFilter.sh html <$TMP_DIR/p0 >$TMP_DIR/p1 \
 && bash ${FILTERS_DIR}/mathInCodeFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
 && bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh html <$TMP_DIR/p0 >$TMP_DIR/p1 \
-&& bash ${FILTERS_DIR}/inlineKatexFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
-&& bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR <$TMP_DIR/p0
+&& bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR --generate-toc <$TMP_DIR/p1
 
 mkdir -p ${BUILD_DIR}/html/sections
 
