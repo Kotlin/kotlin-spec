@@ -37,10 +37,13 @@ private val visitor = object : PandocVisitor() {
         val altText = props["alt-text"]
         val format = props["format"] ?: Main.defaultFormat ?: "svg"
 
+        // this is a hack, but for some reason the same svg is much smaller in HTML than in LaTeX
+        val scaling = if (Main.format.isHTML()) 0.7 else 0.35
+
         val dprops = DiagramProperties(
                 fontSpec = "Fira Mono;Consolas;Monospaced",
                 textScale = 1.5,
-                diagramScale = 0.35
+                diagramScale = scaling
         )
         val diag = Diagram.fromMatrix(
                 CharMatrix.read(b.text.reader().buffered()),
@@ -62,10 +65,10 @@ private val htmlFormats = setOf("html", "html4", "html5", "revealjs", "s5", "sli
 private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText: String?) {
     if (Main.format.isHTML() && Main.embed) {
         when(format) {
-            ImgFormat.SVG -> rawInline(format = Format("html")) {
+            ImgFormat.SVG -> rawInline(format = Format.HTML) {
                 "<img src='${ exportAsInlineSVG(diag) }' />"
             }
-            ImgFormat.PNG -> rawInline(format = Format("html")) {
+            ImgFormat.PNG -> rawInline(format = Format.HTML) {
                 "<img src='${ exportAsInlinePNG(diag) }' />"
             }
         }
