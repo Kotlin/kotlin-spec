@@ -52,6 +52,8 @@ private val visitor = object : PandocVisitor() {
 
         return blocks {
             div {
+                clazz = "diagram"
+                id = b.attr.id
                 plain {
                     renderToFile(ImgFormat.fromExtension(format), diag, altText)
                 }

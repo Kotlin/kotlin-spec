@@ -15,6 +15,7 @@ gpp -H ./index.md | pandoc \
 --filter ${FILTERS_DIR}/inlineDiagramFilter.sh \
 --filter ${FILTERS_DIR}/mathInCodeFilter.sh \
 --filter ${FILTERS_DIR}/brokenReferencesReportFilter.sh \
+--filter ${FILTERS_DIR}/inlineKatexFilter.sh \
   ${PREAMBLE_OPTIONS} \
   ${COMMON_PANDOC_OPTIONS} \
   ${FORMAT_PANDOC_OPTIONS} \
