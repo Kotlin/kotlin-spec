@@ -364,6 +364,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#fully-qualified-call">Fully-qualified call</a></li>
 <li><a href="#call-with-an-explicit-receiver">Call with an explicit receiver</a><ul>
 <li><a href="#call-with-an-explicit-type-receiver">Call with an explicit type receiver</a></li>
+<li><a href="#calls-with-an-explicit-super-form-receiver">Calls with an explicit super-form receiver</a></li>
 </ul></li>
 <li><a href="#infix-function-call">Infix function call</a></li>
 <li><a href="#operator-call">Operator call</a></li>
@@ -10997,10 +10998,13 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a <a href="#call-and-property-access-expressions">call or property access expression</a>. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour. </span><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error. </span><span class="sentence">If there are several candidates available for the immediate supertype and <a href="#overload-resolution">overload resolution</a> is performed, abstract declarations are not considered valid candidates for this process.</span></p>
+<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of <a href="#calls-with-an-explicit-super-form-receiver">overload resolution</a>. </span><span class="sentence">In order to access a specific supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;</span></li>
@@ -11038,7 +11042,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <a class="sourceLine" id="cb100-19" title="19"><span class="kw">class</span> <span class="dt">D</span> <span class="op">:</span> <span class="dt">C</span><span class="op">(),</span> <span class="dt">A</span><span class="op">,</span> <span class="dt">B</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb100-20" title="20">    init <span class="op">{</span></a>
 <a class="sourceLine" id="cb100-21" title="21">        <span class="co">// Error: ambiguity as several immediate supertypes</span></a>
-<a class="sourceLine" id="cb100-22" title="22">        <span class="co">//   are available here</span></a>
+<a class="sourceLine" id="cb100-22" title="22">        <span class="co">//   with callable `foo` are available here</span></a>
 <a class="sourceLine" id="cb100-23" title="23">        <span class="co">// super.foo()</span></a>
 <a class="sourceLine" id="cb100-24" title="24">        <span class="kw">super</span>&lt;C&gt;.foo() <span class="co">// &quot;C&quot;</span></a>
 <a class="sourceLine" id="cb100-25" title="25">        <span class="kw">super</span>&lt;B&gt;.foo() <span class="co">// &quot;B&quot;</span></a>
@@ -11735,6 +11739,36 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
 <li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
 </ol>
+<h5 id="calls-with-an-explicit-super-form-receiver">Calls with an explicit super-form receiver</h5>
+<div class="paragraph">
+<p><span class="sentence">A call with an explicit receiver may be performed not only on a value receiver, but also on a <a href="#super-forms">super-form</a> receiver.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">They mostly follow the same rules as <a href="#call-with-an-explicit-receiver">calls with an explicit value receiver</a>. </span><span class="sentence">However, there are some differences which we outline below.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For a callable <code>f</code> with an explicit basic super-form receiver <code>super</code> in a <a href="#classifier-declaration">classifier declaration</a> with supertypes <code>A1</code>, <code>A2</code>, … , <code>AN</code> the following sets are considered for <strong>non-emptiness</strong>:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A1</code>;</span></li>
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A2</code>;</span></li>
+<li><span class="sentence">…;</span></li>
+</ol>
+<ol start="14" type="a">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>AN</code>.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">If at least two of these sets are non-empty, this is a compile-time error. </span><span class="sentence">Otherwise, the non-empty set (if any) is analyzed as <a href="#call-with-an-explicit-receiver">usual</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For a callable <code>f</code> with an explicit extended super-form receiver <code>super&lt;A&gt;</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A</code>.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">Additionally, in either case, <a href="#abstract-classes-1">abstract</a> callables are not considered valid candidates for the overload resolution process.</span></p>
+</div>
 <h4 id="infix-function-call">Infix function call</h4>
 <div class="paragraph">
 <p><span class="sentence">Infix function calls are a special case of function <a href="#call-with-an-explicit-receiver">calls with explicit receiver</a> in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>

@@ -443,6 +443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
 <ul>
 <li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver" id="toc-element-calls-with-an-explicit-super-form-receiver" class="toc-element">Calls with an explicit super-form receiver</a></li>
 </ul></li>
 <li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
 <li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
@@ -2528,10 +2529,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a <a href="expressions.html#call-and-property-access-expressions">call or property access expression</a>. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour. </span><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error. </span><span class="sentence">If there are several candidates available for the immediate supertype and <a href="overload-resolution.html#overload-resolution">overload resolution</a> is performed, abstract declarations are not considered valid candidates for this process.</span></p>
+<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of <a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver">overload resolution</a>. </span><span class="sentence">In order to access a specific supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;</span></li>
@@ -2569,7 +2573,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb20-19" title="19"><span class="kw">class</span> <span class="dt">D</span> <span class="op">:</span> <span class="dt">C</span><span class="op">(),</span> <span class="dt">A</span><span class="op">,</span> <span class="dt">B</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb20-20" title="20">    init <span class="op">{</span></a>
 <a class="sourceLine" id="cb20-21" title="21">        <span class="co">// Error: ambiguity as several immediate supertypes</span></a>
-<a class="sourceLine" id="cb20-22" title="22">        <span class="co">//   are available here</span></a>
+<a class="sourceLine" id="cb20-22" title="22">        <span class="co">//   with callable `foo` are available here</span></a>
 <a class="sourceLine" id="cb20-23" title="23">        <span class="co">// super.foo()</span></a>
 <a class="sourceLine" id="cb20-24" title="24">        <span class="kw">super</span>&lt;C&gt;.foo() <span class="co">// &quot;C&quot;</span></a>
 <a class="sourceLine" id="cb20-25" title="25">        <span class="kw">super</span>&lt;B&gt;.foo() <span class="co">// &quot;B&quot;</span></a>

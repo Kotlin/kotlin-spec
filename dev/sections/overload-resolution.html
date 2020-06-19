@@ -443,6 +443,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
 <ul>
 <li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver" id="toc-element-calls-with-an-explicit-super-form-receiver" class="toc-element">Calls with an explicit super-form receiver</a></li>
 </ul></li>
 <li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
 <li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
@@ -891,6 +892,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
 <li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
 </ol>
+<h5 id="calls-with-an-explicit-super-form-receiver">Calls with an explicit super-form receiver</h5>
+<div class="paragraph">
+<p><span class="sentence">A call with an explicit receiver may be performed not only on a value receiver, but also on a <a href="expressions.html#super-forms">super-form</a> receiver.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">They mostly follow the same rules as <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with an explicit value receiver</a>. </span><span class="sentence">However, there are some differences which we outline below.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For a callable <code>f</code> with an explicit basic super-form receiver <code>super</code> in a <a href="declarations.html#classifier-declaration">classifier declaration</a> with supertypes <code>A1</code>, <code>A2</code>, … , <code>AN</code> the following sets are considered for <strong>non-emptiness</strong>:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A1</code>;</span></li>
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A2</code>;</span></li>
+<li><span class="sentence">…;</span></li>
+</ol>
+<ol start="14" type="a">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>AN</code>.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">If at least two of these sets are non-empty, this is a compile-time error. </span><span class="sentence">Otherwise, the non-empty set (if any) is analyzed as <a href="overload-resolution.html#call-with-an-explicit-receiver">usual</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For a callable <code>f</code> with an explicit extended super-form receiver <code>super&lt;A&gt;</code> the following sets are analyzed (<strong>in the given order</strong>):</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>A</code>.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">Additionally, in either case, <a href="inheritance.html#abstract-classes-1">abstract</a> callables are not considered valid candidates for the overload resolution process.</span></p>
+</div>
 <h4 id="infix-function-call">Infix function call</h4>
 <div class="paragraph">
 <p><span class="sentence">Infix function calls are a special case of function <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a> in the left hand side position, i.e., <code>a foo b</code> may be an infix form of <code>a.foo(b)</code>.</span></p>
