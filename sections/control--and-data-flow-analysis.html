@@ -77,9 +77,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../resources/css/main.css">
-  <script src="../resources/js/katex/katex.min.js"></script><script src="../resources/js/katex/contrib/auto-render.min.js"></script><script>document.addEventListener("DOMContentLoaded", function() {
-    renderMathInElement(document.body);
-  });</script><link rel="stylesheet" href="../resources/js/katex/katex.min.css" />
+  <link rel="stylesheet" href="../resources/js/katex/katex.min.css">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -123,6 +121,444 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+<div id="TOC">
+<ul>
+<li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
+<ul>
+<li><a href="introduction.html#introduction" id="toc-element-introduction" class="toc-element unnumbered">Introduction</a>
+<ul>
+<li><a href="introduction.html#feedback" id="toc-element-feedback" class="toc-element unnumbered">Feedback</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
+<li><a href="syntax-and-grammar.html#keywords-and-operators" id="toc-element-keywords-and-operators" class="toc-element">Keywords and operators</a></li>
+<li><a href="syntax-and-grammar.html#literals" id="toc-element-literals" class="toc-element">Literals</a></li>
+<li><a href="syntax-and-grammar.html#identifiers" id="toc-element-identifiers" class="toc-element">Identifiers</a></li>
+<li><a href="syntax-and-grammar.html#string-mode-grammar" id="toc-element-string-mode-grammar" class="toc-element">String mode grammar</a></li>
+<li><a href="syntax-and-grammar.html#tokens" id="toc-element-tokens" class="toc-element">Tokens</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-grammar" id="toc-element-syntax-grammar" class="toc-element">Syntax grammar</a></li>
+<li><a href="syntax-and-grammar.html#documentation-comments" id="toc-element-documentation-comments" class="toc-element">Documentation comments</a></li>
+</ul></li>
+<li><a href="type-system.html#type-system" id="toc-element-type-system" class="toc-element">Type system</a>
+<ul>
+<li><a href="type-system.html#glossary" id="toc-element-glossary" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="type-system.html#introduction-1" id="toc-element-introduction-1" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="type-system.html#type-kinds" id="toc-element-type-kinds" class="toc-element">Type kinds</a>
+<ul>
+<li><a href="type-system.html#built-in-types" id="toc-element-built-in-types" class="toc-element">Built-in types</a>
+<ul>
+<li><a href="type-system.html#kotlin.any" id="toc-element-kotlin.any" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="type-system.html#kotlin.nothing" id="toc-element-kotlin.nothing" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="type-system.html#kotlin.function" id="toc-element-kotlin.function" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="type-system.html#built-in-integer-types" id="toc-element-built-in-integer-types" class="toc-element">Built-in integer types</a></li>
+<li><a href="type-system.html#array-types" id="toc-element-array-types" class="toc-element">Array types</a></li>
+</ul></li>
+<li><a href="type-system.html#classifier-types" id="toc-element-classifier-types" class="toc-element">Classifier types</a>
+<ul>
+<li><a href="type-system.html#simple-classifier-types" id="toc-element-simple-classifier-types" class="toc-element">Simple classifier types</a></li>
+<li><a href="type-system.html#parameterized-classifier-types" id="toc-element-parameterized-classifier-types" class="toc-element">Parameterized classifier types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-parameters" id="toc-element-type-parameters" class="toc-element">Type parameters</a>
+<ul>
+<li><a href="type-system.html#function-type-parameters" id="toc-element-function-type-parameters" class="toc-element">Function type parameters</a></li>
+<li><a href="type-system.html#mixed-site-variance" id="toc-element-mixed-site-variance" class="toc-element">Mixed-site variance</a></li>
+<li><a href="type-system.html#declaration-site-variance" id="toc-element-declaration-site-variance" class="toc-element">Declaration-site variance</a></li>
+<li><a href="type-system.html#use-site-variance" id="toc-element-use-site-variance" class="toc-element">Use-site variance</a></li>
+</ul></li>
+<li><a href="type-system.html#type-capturing" id="toc-element-type-capturing" class="toc-element">Type capturing</a></li>
+<li><a href="type-system.html#type-containment" id="toc-element-type-containment" class="toc-element">Type containment</a></li>
+<li><a href="type-system.html#function-types" id="toc-element-function-types" class="toc-element">Function types</a>
+<ul>
+<li><a href="type-system.html#suspending-function-types" id="toc-element-suspending-function-types" class="toc-element">Suspending function types</a></li>
+</ul></li>
+<li><a href="type-system.html#flexible-types" id="toc-element-flexible-types" class="toc-element">Flexible types</a>
+<ul>
+<li><a href="type-system.html#dynamic-type" id="toc-element-dynamic-type" class="toc-element">Dynamic type</a></li>
+<li><a href="type-system.html#platform-types" id="toc-element-platform-types" class="toc-element">Platform types</a></li>
+</ul></li>
+<li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
+<ul>
+<li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+</ul></li>
+<li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
+<li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
+<li><a href="type-system.html#union-types" id="toc-element-union-types" class="toc-element">Union types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-contexts-and-scopes" id="toc-element-type-contexts-and-scopes" class="toc-element">Type contexts and scopes</a>
+<ul>
+<li><a href="type-system.html#inner-and-nested-type-contexts" id="toc-element-inner-and-nested-type-contexts" class="toc-element">Inner and nested type contexts</a></li>
+</ul></li>
+<li><a href="type-system.html#subtyping" id="toc-element-subtyping" class="toc-element">Subtyping</a>
+<ul>
+<li><a href="type-system.html#subtyping-rules" id="toc-element-subtyping-rules" class="toc-element">Subtyping rules</a></li>
+<li><a href="type-system.html#subtyping-for-flexible-types" id="toc-element-subtyping-for-flexible-types" class="toc-element">Subtyping for flexible types</a></li>
+<li><a href="type-system.html#subtyping-for-intersection-types" id="toc-element-subtyping-for-intersection-types" class="toc-element">Subtyping for intersection types</a></li>
+<li><a href="type-system.html#subtyping-for-integer-literal-types" id="toc-element-subtyping-for-integer-literal-types" class="toc-element">Subtyping for integer literal types</a></li>
+<li><a href="type-system.html#subtyping-for-nullable-types" id="toc-element-subtyping-for-nullable-types" class="toc-element">Subtyping for nullable types</a></li>
+</ul></li>
+<li><a href="type-system.html#upper-and-lower-bounds" id="toc-element-upper-and-lower-bounds" class="toc-element">Upper and lower bounds</a>
+<ul>
+<li><a href="type-system.html#least-upper-bound" id="toc-element-least-upper-bound" class="toc-element">Least upper bound</a></li>
+<li><a href="type-system.html#greatest-lower-bound" id="toc-element-greatest-lower-bound" class="toc-element">Greatest lower bound</a></li>
+</ul></li>
+<li><a href="type-system.html#type-approximation" id="toc-element-type-approximation" class="toc-element">Type approximation</a></li>
+<li><a href="type-system.html#type-decaying" id="toc-element-type-decaying" class="toc-element">Type decaying</a></li>
+<li><a href="type-system.html#references" id="toc-element-references" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-types-and-their-semantics" id="toc-element-built-in-types-and-their-semantics" class="toc-element">Built-in types and their semantics</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.any-1" id="toc-element-kotlin.any-1" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.nothing-1" id="toc-element-kotlin.nothing-1" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.unit" id="toc-element-kotlin.unit" class="toc-element"><code>kotlin.Unit</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.boolean" id="toc-element-kotlin.boolean" class="toc-element"><code>kotlin.Boolean</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-integer-types-1" id="toc-element-built-in-integer-types-1" class="toc-element">Built-in integer types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#integer-type-widening" id="toc-element-integer-type-widening" class="toc-element">Integer type widening</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types" id="toc-element-built-in-floating-point-arithmetic-types" class="toc-element">Built-in floating point arithmetic types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.char" id="toc-element-kotlin.char" class="toc-element"><code>kotlin.Char</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.string" id="toc-element-kotlin.string" class="toc-element"><code>kotlin.String</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.enum" id="toc-element-kotlin.enum" class="toc-element"><code>kotlin.Enum</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-array-types" id="toc-element-built-in-array-types" class="toc-element">Built-in array types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-array-types" id="toc-element-specialized-array-types" class="toc-element">Specialized array types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#iterator-types" id="toc-element-iterator-types" class="toc-element">Iterator types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-iterator-types" id="toc-element-specialized-iterator-types" class="toc-element">Specialized iterator types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.throwable" id="toc-element-kotlin.throwable" class="toc-element"><code>kotlin.Throwable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.comparable" id="toc-element-kotlin.comparable" class="toc-element"><code>kotlin.Comparable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.function-1" id="toc-element-kotlin.function-1" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-annotation-types" id="toc-element-built-in-annotation-types" class="toc-element">Built-in annotation types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#reflection-support-builtin-types" id="toc-element-reflection-support-builtin-types" class="toc-element">Reflection support builtin types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kclass" id="toc-element-kotlin.reflect.kclass" class="toc-element"><code>kotlin.reflect.KClass</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kcallable" id="toc-element-kotlin.reflect.kcallable" class="toc-element"><code>kotlin.reflect.KCallable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kproperty" id="toc-element-kotlin.reflect.kproperty" class="toc-element"><code>kotlin.reflect.KProperty</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kfunction" id="toc-element-kotlin.reflect.kfunction" class="toc-element"><code>kotlin.reflect.KFunction</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="declarations.html#declarations" id="toc-element-declarations" class="toc-element">Declarations</a>
+<ul>
+<li><a href="declarations.html#glossary-1" id="toc-element-glossary-1" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="declarations.html#introduction-2" id="toc-element-introduction-2" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="declarations.html#classifier-declaration" id="toc-element-classifier-declaration" class="toc-element">Classifier declaration</a>
+<ul>
+<li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
+<li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
+<li><a href="declarations.html#abstract-classes" id="toc-element-abstract-classes" class="toc-element">Abstract classes</a></li>
+</ul></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
+<li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
+<li><a href="declarations.html#interface-declaration" id="toc-element-interface-declaration" class="toc-element">Interface declaration</a>
+<ul>
+<li><a href="declarations.html#functional-interface-declaration" id="toc-element-functional-interface-declaration" class="toc-element">Functional interface declaration</a></li>
+</ul></li>
+<li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
+<li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+</ul></li>
+<li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
+<ul>
+<li><a href="declarations.html#function-signature" id="toc-element-function-signature" class="toc-element">Function signature</a></li>
+<li><a href="declarations.html#named-positional-and-default-parameters" id="toc-element-named-positional-and-default-parameters" class="toc-element">Named, positional and default parameters</a></li>
+<li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
+<li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
+<li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+</ul></li>
+<li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
+<ul>
+<li><a href="declarations.html#read-only-property-declaration" id="toc-element-read-only-property-declaration" class="toc-element">Read-only property declaration</a></li>
+<li><a href="declarations.html#mutable-property-declaration" id="toc-element-mutable-property-declaration" class="toc-element">Mutable property declaration</a></li>
+<li><a href="declarations.html#local-property-declaration" id="toc-element-local-property-declaration" class="toc-element">Local property declaration</a></li>
+<li><a href="declarations.html#getters-and-setters" id="toc-element-getters-and-setters" class="toc-element">Getters and setters</a></li>
+<li><a href="declarations.html#delegated-property-declaration" id="toc-element-delegated-property-declaration" class="toc-element">Delegated property declaration</a></li>
+<li><a href="declarations.html#extension-property-declaration" id="toc-element-extension-property-declaration" class="toc-element">Extension property declaration</a></li>
+<li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
+<li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
+<li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+</ul></li>
+<li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
+<li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
+<ul>
+<li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
+<li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+</ul></li>
+<li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
+</ul></li>
+<li><a href="inheritance.html#inheritance" id="toc-element-inheritance" class="toc-element">Inheritance</a>
+<ul>
+<li><a href="inheritance.html#classifier-type-inheritance" id="toc-element-classifier-type-inheritance" class="toc-element">Classifier type inheritance</a>
+<ul>
+<li><a href="inheritance.html#abstract-classes-1" id="toc-element-abstract-classes-1" class="toc-element">Abstract classes</a></li>
+<li><a href="inheritance.html#sealed-classes" id="toc-element-sealed-classes" class="toc-element">Sealed classes</a></li>
+<li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
+</ul></li>
+<li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
+</ul></li>
+<li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
+<ul>
+<li><a href="scopes-and-identifiers.html#linked-scopes" id="toc-element-linked-scopes" class="toc-element">Linked scopes</a></li>
+<li><a href="scopes-and-identifiers.html#identifiers-and-paths" id="toc-element-identifiers-and-paths" class="toc-element">Identifiers and paths</a></li>
+<li><a href="scopes-and-identifiers.html#labels" id="toc-element-labels" class="toc-element">Labels</a></li>
+</ul></li>
+<li><a href="statements.html#statements" id="toc-element-statements" class="toc-element">Statements</a>
+<ul>
+<li><a href="statements.html#assignments" id="toc-element-assignments" class="toc-element">Assignments</a>
+<ul>
+<li><a href="statements.html#simple-assignments" id="toc-element-simple-assignments" class="toc-element">Simple assignments</a></li>
+<li><a href="statements.html#operator-assignments" id="toc-element-operator-assignments" class="toc-element">Operator assignments</a></li>
+<li><a href="statements.html#safe-assignments" id="toc-element-safe-assignments" class="toc-element">Safe assignments</a></li>
+</ul></li>
+<li><a href="statements.html#loop-statements" id="toc-element-loop-statements" class="toc-element">Loop statements</a>
+<ul>
+<li><a href="statements.html#while-loop-statement" id="toc-element-while-loop-statement" class="toc-element">While-loop statement</a></li>
+<li><a href="statements.html#do-while-loop-statement" id="toc-element-do-while-loop-statement" class="toc-element">Do-while-loop statement</a></li>
+<li><a href="statements.html#for-loop-statement" id="toc-element-for-loop-statement" class="toc-element">For-loop statement</a></li>
+</ul></li>
+<li><a href="statements.html#code-blocks" id="toc-element-code-blocks" class="toc-element">Code blocks</a>
+<ul>
+<li><a href="statements.html#coercion-to-kotlin.unit" id="toc-element-coercion-to-kotlin.unit" class="toc-element">Coercion to <code>kotlin.Unit</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="expressions.html#expressions" id="toc-element-expressions" class="toc-element">Expressions</a>
+<ul>
+<li><a href="expressions.html#glossary-2" id="toc-element-glossary-2" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="expressions.html#introduction-3" id="toc-element-introduction-3" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="expressions.html#constant-literals" id="toc-element-constant-literals" class="toc-element">Constant literals</a>
+<ul>
+<li><a href="expressions.html#boolean-literals" id="toc-element-boolean-literals" class="toc-element">Boolean literals</a></li>
+<li><a href="expressions.html#integer-literals" id="toc-element-integer-literals" class="toc-element">Integer literals</a>
+<ul>
+<li><a href="expressions.html#decimal-integer-literals" id="toc-element-decimal-integer-literals" class="toc-element">Decimal integer literals</a></li>
+<li><a href="expressions.html#hexadecimal-integer-literals" id="toc-element-hexadecimal-integer-literals" class="toc-element">Hexadecimal integer literals</a></li>
+<li><a href="expressions.html#binary-integer-literals" id="toc-element-binary-integer-literals" class="toc-element">Binary integer literals</a></li>
+</ul></li>
+<li><a href="expressions.html#the-types-for-integer-literals" id="toc-element-the-types-for-integer-literals" class="toc-element">The types for integer literals</a></li>
+<li><a href="expressions.html#real-literals" id="toc-element-real-literals" class="toc-element">Real literals</a></li>
+<li><a href="expressions.html#character-literals" id="toc-element-character-literals" class="toc-element">Character literals</a>
+<ul>
+<li><a href="expressions.html#escaped-characters" id="toc-element-escaped-characters" class="toc-element">Escaped characters</a></li>
+</ul></li>
+<li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
+<li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
+</ul></li>
+<li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
+<li><a href="expressions.html#try-expression" id="toc-element-try-expression" class="toc-element">Try-expression</a></li>
+<li><a href="expressions.html#conditional-expression" id="toc-element-conditional-expression" class="toc-element">Conditional expression</a></li>
+<li><a href="expressions.html#when-expression" id="toc-element-when-expression" class="toc-element">When expression</a>
+<ul>
+<li><a href="expressions.html#exhaustive-when-expressions" id="toc-element-exhaustive-when-expressions" class="toc-element">Exhaustive when expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#logical-disjunction-expression" id="toc-element-logical-disjunction-expression" class="toc-element">Logical disjunction expression</a></li>
+<li><a href="expressions.html#logical-conjunction-expression" id="toc-element-logical-conjunction-expression" class="toc-element">Logical conjunction expression</a></li>
+<li><a href="expressions.html#equality-expressions" id="toc-element-equality-expressions" class="toc-element">Equality expressions</a>
+<ul>
+<li><a href="expressions.html#reference-equality-expressions" id="toc-element-reference-equality-expressions" class="toc-element">Reference equality expressions</a></li>
+<li><a href="expressions.html#value-equality-expressions" id="toc-element-value-equality-expressions" class="toc-element">Value equality expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#comparison-expressions" id="toc-element-comparison-expressions" class="toc-element">Comparison expressions</a></li>
+<li><a href="expressions.html#type-checking-and-containment-checking-expressions" id="toc-element-type-checking-and-containment-checking-expressions" class="toc-element">Type-checking and containment-checking expressions</a>
+<ul>
+<li><a href="expressions.html#type-checking-expression" id="toc-element-type-checking-expression" class="toc-element">Type-checking expression</a></li>
+<li><a href="expressions.html#containment-checking-expression" id="toc-element-containment-checking-expression" class="toc-element">Containment-checking expression</a></li>
+</ul></li>
+<li><a href="expressions.html#elvis-operator-expression" id="toc-element-elvis-operator-expression" class="toc-element">Elvis operator expression</a></li>
+<li><a href="expressions.html#range-expression" id="toc-element-range-expression" class="toc-element">Range expression</a></li>
+<li><a href="expressions.html#additive-expression" id="toc-element-additive-expression" class="toc-element">Additive expression</a></li>
+<li><a href="expressions.html#multiplicative-expression" id="toc-element-multiplicative-expression" class="toc-element">Multiplicative expression</a></li>
+<li><a href="expressions.html#cast-expression" id="toc-element-cast-expression" class="toc-element">Cast expression</a></li>
+<li><a href="expressions.html#prefix-expressions" id="toc-element-prefix-expressions" class="toc-element">Prefix expressions</a>
+<ul>
+<li><a href="expressions.html#annotated-expression" id="toc-element-annotated-expression" class="toc-element">Annotated expression</a></li>
+<li><a href="expressions.html#prefix-increment-expression" id="toc-element-prefix-increment-expression" class="toc-element">Prefix increment expression</a></li>
+<li><a href="expressions.html#prefix-decrement-expression" id="toc-element-prefix-decrement-expression" class="toc-element">Prefix decrement expression</a></li>
+<li><a href="expressions.html#unary-minus-expression" id="toc-element-unary-minus-expression" class="toc-element">Unary minus expression</a></li>
+<li><a href="expressions.html#unary-plus-expression" id="toc-element-unary-plus-expression" class="toc-element">Unary plus expression</a></li>
+<li><a href="expressions.html#logical-not-expression" id="toc-element-logical-not-expression" class="toc-element">Logical not expression</a></li>
+</ul></li>
+<li><a href="expressions.html#postfix-operator-expressions" id="toc-element-postfix-operator-expressions" class="toc-element">Postfix operator expressions</a>
+<ul>
+<li><a href="expressions.html#postfix-increment-expression" id="toc-element-postfix-increment-expression" class="toc-element">Postfix increment expression</a></li>
+<li><a href="expressions.html#postfix-decrement-expression" id="toc-element-postfix-decrement-expression" class="toc-element">Postfix decrement expression</a></li>
+</ul></li>
+<li><a href="expressions.html#not-null-assertion-expression" id="toc-element-not-null-assertion-expression" class="toc-element">Not-null assertion expression</a></li>
+<li><a href="expressions.html#indexing-expressions" id="toc-element-indexing-expressions" class="toc-element">Indexing expressions</a></li>
+<li><a href="expressions.html#call-and-property-access-expressions" id="toc-element-call-and-property-access-expressions" class="toc-element">Call and property access expressions</a>
+<ul>
+<li><a href="expressions.html#navigation-operators" id="toc-element-navigation-operators" class="toc-element">Navigation operators</a></li>
+<li><a href="expressions.html#callable-references" id="toc-element-callable-references" class="toc-element">Callable references</a></li>
+<li><a href="expressions.html#class-literals" id="toc-element-class-literals" class="toc-element">Class literals</a></li>
+<li><a href="expressions.html#function-calls-and-property-access" id="toc-element-function-calls-and-property-access" class="toc-element">Function calls and property access</a></li>
+<li><a href="expressions.html#spread-operator-expressions" id="toc-element-spread-operator-expressions" class="toc-element">Spread operator expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#function-literals" id="toc-element-function-literals" class="toc-element">Function literals</a>
+<ul>
+<li><a href="expressions.html#anonymous-function-declarations" id="toc-element-anonymous-function-declarations" class="toc-element">Anonymous function declarations</a></li>
+<li><a href="expressions.html#lambda-literals" id="toc-element-lambda-literals" class="toc-element">Lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#object-literals" id="toc-element-object-literals" class="toc-element">Object literals</a>
+<ul>
+<li><a href="expressions.html#functional-interface-lambda-literals" id="toc-element-functional-interface-lambda-literals" class="toc-element">Functional interface lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#this-expressions" id="toc-element-this-expressions" class="toc-element">This-expressions</a></li>
+<li><a href="expressions.html#super-forms" id="toc-element-super-forms" class="toc-element">Super-forms</a></li>
+<li><a href="expressions.html#jump-expressions" id="toc-element-jump-expressions" class="toc-element">Jump expressions</a>
+<ul>
+<li><a href="expressions.html#throw-expressions" id="toc-element-throw-expressions" class="toc-element">Throw expressions</a></li>
+<li><a href="expressions.html#return-expressions" id="toc-element-return-expressions" class="toc-element">Return expressions</a></li>
+<li><a href="expressions.html#continue-expression" id="toc-element-continue-expression" class="toc-element">Continue expression</a></li>
+<li><a href="expressions.html#break-expression" id="toc-element-break-expression" class="toc-element">Break expression</a></li>
+</ul></li>
+</ul></li>
+<li><a href="operator-overloading.html#operator-overloading" id="toc-element-operator-overloading" class="toc-element">Operator overloading</a>
+<ul>
+<li><a href="operator-overloading.html#destructuring-declarations" id="toc-element-destructuring-declarations" class="toc-element">Destructuring declarations</a></li>
+</ul></li>
+<li><a href="packages-and-imports.html#packages-and-imports" id="toc-element-packages-and-imports" class="toc-element">Packages and imports</a>
+<ul>
+<li><a href="packages-and-imports.html#importing" id="toc-element-importing" class="toc-element">Importing</a></li>
+<li><a href="packages-and-imports.html#modules" id="toc-element-modules" class="toc-element">Modules</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#overload-resolution" id="toc-element-overload-resolution" class="toc-element">Overload resolution</a>
+<ul>
+<li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
+<li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
+<li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
+<li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+<ul>
+<li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
+<li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
+<ul>
+<li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
+<li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
+<li><a href="overload-resolution.html#call-without-an-explicit-receiver" id="toc-element-call-without-an-explicit-receiver" class="toc-element">Call without an explicit receiver</a></li>
+<li><a href="overload-resolution.html#call-with-named-parameters" id="toc-element-call-with-named-parameters" class="toc-element">Call with named parameters</a></li>
+<li><a href="overload-resolution.html#call-with-trailing-lambda-expressions" id="toc-element-call-with-trailing-lambda-expressions" class="toc-element">Call with trailing lambda expressions</a></li>
+<li><a href="overload-resolution.html#call-with-specified-type-parameters" id="toc-element-call-with-specified-type-parameters" class="toc-element">Call with specified type parameters</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#determining-function-applicability-for-a-specific-call" id="toc-element-determining-function-applicability-for-a-specific-call" class="toc-element">Determining function applicability for a specific call</a>
+<ul>
+<li><a href="overload-resolution.html#rationale" id="toc-element-rationale" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#description" id="toc-element-description" class="toc-element">Description</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set" id="toc-element-choosing-the-most-specific-candidate-from-the-overload-candidate-set" class="toc-element">Choosing the most specific candidate from the overload candidate set</a>
+<ul>
+<li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
+<ul>
+<li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
+<li><a href="overload-resolution.html#bidirectional-resolution-for-callable-calls" id="toc-element-bidirectional-resolution-for-callable-calls" class="toc-element">Bidirectional resolution for callable calls</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#type-inference-and-overload-resolution" id="toc-element-type-inference-and-overload-resolution" class="toc-element">Type inference and overload resolution</a></li>
+<li><a href="overload-resolution.html#conflicting-overloads" id="toc-element-conflicting-overloads" class="toc-element">Conflicting overloads</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis" id="toc-element-control--and-data-flow-analysis" class="toc-element">Control- and data-flow analysis</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#control-flow-graph" id="toc-element-control-flow-graph" class="toc-element">Control flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#expressions-1" id="toc-element-expressions-1" class="toc-element">Expressions</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#function-calls-and-operators" id="toc-element-function-calls-and-operators" class="toc-element">Function calls and operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
+<li><a href="control--and-data-flow-analysis.html#boolean-operators" id="toc-element-boolean-operators" class="toc-element">Boolean operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#other-expressions" id="toc-element-other-expressions" class="toc-element">Other expressions</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#statements-1" id="toc-element-statements-1" class="toc-element">Statements</a></li>
+<li><a href="control--and-data-flow-analysis.html#declarations-1" id="toc-element-declarations-1" class="toc-element">Declarations</a></li>
+<li><a href="control--and-data-flow-analysis.html#examples" id="toc-element-examples" class="toc-element">Examples</a></li>
+<li><a href="control--and-data-flow-analysis.html#kotlin.nothing-and-its-influence-on-the-cfg" id="toc-element-kotlin.nothing-and-its-influence-on-the-cfg" class="toc-element"><code>kotlin.Nothing</code> and its influence on the CFG</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+ instruction</a></li>
+<li><a href="control--and-data-flow-analysis.html#variable-initialization-analysis" id="toc-element-variable-initialization-analysis" class="toc-element">Variable initialization analysis</a></li>
+<li><a href="control--and-data-flow-analysis.html#smart-casting-analysis" id="toc-element-smart-casting-analysis" class="toc-element">Smart casting analysis</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#references-1" id="toc-element-references-1" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#kotlin-type-constraints" id="toc-element-kotlin-type-constraints" class="toc-element">Kotlin type constraints</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#type-constraint-definition" id="toc-element-type-constraint-definition" class="toc-element">Type constraint definition</a></li>
+<li><a href="kotlin-type-constraints.html#type-constraint-solving" id="toc-element-type-constraint-solving" class="toc-element">Type constraint solving</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#checking-constraint-system-soundness" id="toc-element-checking-constraint-system-soundness" class="toc-element">Checking constraint system soundness</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#a-sample-bound-inference-algorithm" id="toc-element-a-sample-bound-inference-algorithm" class="toc-element">A sample bound inference algorithm</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution" id="toc-element-finding-optimal-constraint-system-solution" class="toc-element">Finding optimal constraint system solution</a></li>
+<li><a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints" id="toc-element-the-relations-on-types-as-constraints" class="toc-element">The relations on types as constraints</a></li>
+</ul></li>
+</ul></li>
+<li><a href="type-inference.html#type-inference" id="toc-element-type-inference" class="toc-element">Type inference</a>
+<ul>
+<li><a href="type-inference.html#smart-casts" id="toc-element-smart-casts" class="toc-element">Smart casts</a>
+<ul>
+<li><a href="type-inference.html#data-flow-framework" id="toc-element-data-flow-framework" class="toc-element">Data-flow framework</a>
+<ul>
+<li><a href="type-inference.html#smart-cast-lattices" id="toc-element-smart-cast-lattices" class="toc-element">Smart cast lattices</a></li>
+<li><a href="type-inference.html#smart-cast-transfer-functions" id="toc-element-smart-cast-transfer-functions" class="toc-element">Smart cast transfer functions</a></li>
+</ul></li>
+<li><a href="type-inference.html#smart-cast-types" id="toc-element-smart-cast-types" class="toc-element">Smart cast types</a></li>
+<li><a href="type-inference.html#smart-cast-sink-stability" id="toc-element-smart-cast-sink-stability" class="toc-element">Smart cast sink stability</a>
+<ul>
+<li><a href="type-inference.html#effectively-immutable-smart-cast-sinks" id="toc-element-effectively-immutable-smart-cast-sinks" class="toc-element">Effectively immutable smart cast sinks</a></li>
+</ul></li>
+<li><a href="type-inference.html#loop-handling" id="toc-element-loop-handling" class="toc-element">Loop handling</a></li>
+<li><a href="type-inference.html#bound-smart-casts" id="toc-element-bound-smart-casts" class="toc-element">Bound smart casts</a></li>
+</ul></li>
+<li><a href="type-inference.html#local-type-inference" id="toc-element-local-type-inference" class="toc-element">Local type inference</a></li>
+<li><a href="type-inference.html#function-signature-type-inference" id="toc-element-function-signature-type-inference" class="toc-element">Function signature type inference</a>
+<ul>
+<li><a href="type-inference.html#named-and-anonymous-function-declarations" id="toc-element-named-and-anonymous-function-declarations" class="toc-element">Named and anonymous function declarations</a></li>
+<li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
+</ul></li>
+</ul></li>
+<li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
+<ul>
+<li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
+<li><a href="runtime-type-information.html#reflection" id="toc-element-reflection" class="toc-element">Reflection</a></li>
+</ul></li>
+<li><a href="exceptions.html#exceptions" id="toc-element-exceptions" class="toc-element">Exceptions</a>
+<ul>
+<li><a href="exceptions.html#catching-exceptions" id="toc-element-catching-exceptions" class="toc-element">Catching exceptions</a></li>
+<li><a href="exceptions.html#throwing-exceptions" id="toc-element-throwing-exceptions" class="toc-element">Throwing exceptions</a></li>
+</ul></li>
+<li><a href="annotations.html#annotations" id="toc-element-annotations" class="toc-element">Annotations</a>
+<ul>
+<li><a href="annotations.html#annotation-values" id="toc-element-annotation-values" class="toc-element">Annotation values</a></li>
+<li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
+<li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
+<li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+</ul></li>
+<li><a href="coroutines.html#coroutines" id="toc-element-coroutines" class="toc-element">Coroutines</a>
+<ul>
+<li><a href="coroutines.html#suspending-functions" id="toc-element-suspending-functions" class="toc-element">Suspending functions</a></li>
+<li><a href="coroutines.html#coroutines-1" id="toc-element-coroutines-1" class="toc-element">Coroutines</a></li>
+</ul></li>
+<li><a href="concurrency.html#concurrency" id="toc-element-concurrency" class="toc-element">Concurrency</a></li>
+</ul></li>
+</ul>
+</div>
 <span style="visibility: hidden; counter-reset: chapter 11;"></span>
 <h2 id="control--and-data-flow-analysis">Control- and data-flow analysis</h2>
 <div class="paragraph">
@@ -164,7 +600,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1">x.f(arg1,..., argN)</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="352" height="352" text-rendering="auto" shape-rendering="auto">
@@ -173,7 +609,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1">f(arg1,..., argN)</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="320" height="278" text-rendering="auto" shape-rendering="auto">
@@ -188,7 +624,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="cf">if</span>(c) tt <span class="cf">else</span> ff</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="425" height="341" text-rendering="auto" shape-rendering="auto">
@@ -200,7 +636,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-2" title="2">    c1 -&gt; b1</a>
 <a class="sourceLine" id="cb4-3" title="3">    <span class="cf">else</span> -&gt; bE</a>
 <a class="sourceLine" id="cb4-4" title="4"><span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="446" height="341" text-rendering="auto" shape-rendering="auto">
@@ -232,7 +668,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h5 id="boolean-operators">Boolean operators</h5>
 <div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1">!x</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="530" height="268" text-rendering="auto" shape-rendering="auto">
@@ -241,7 +677,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1">x || y</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="614" height="446" text-rendering="auto" shape-rendering="auto">
@@ -250,7 +686,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1">x &amp;&amp; y</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="551" height="446" text-rendering="auto" shape-rendering="auto">
@@ -260,7 +696,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h5 id="other-expressions">Other expressions</h5>
 <div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1">x ?: y</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="625" height="415" text-rendering="auto" shape-rendering="auto">
@@ -269,7 +705,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1">x?.y</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="625" height="341" text-rendering="auto" shape-rendering="auto">
@@ -282,7 +718,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb12-3" title="3">...</a>
 <a class="sourceLine" id="cb12-4" title="4"><span class="cf">catch</span> (eN: TN) <span class="op">{</span> bN... <span class="op">}</span></a>
 <a class="sourceLine" id="cb12-5" title="5"><span class="cf">finally</span> <span class="op">{</span> c... <span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="887" height="257" text-rendering="auto" shape-rendering="auto">
@@ -296,7 +732,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1">a!!</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="530" height="257" text-rendering="auto" shape-rendering="auto">
@@ -305,7 +741,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1">a <span class="kw">as</span> T</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="530" height="257" text-rendering="auto" shape-rendering="auto">
@@ -314,7 +750,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1">a <span class="kw">as</span>? T</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="551" height="341" text-rendering="auto" shape-rendering="auto">
@@ -323,7 +759,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="op">{</span> a: T ... -&gt; body... <span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="488" height="100" text-rendering="auto" shape-rendering="auto">
@@ -333,7 +769,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">return</span></a>
 <a class="sourceLine" id="cb17-2" title="2"><span class="kw">return@label</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="205" height="79" text-rendering="auto" shape-rendering="auto">
@@ -344,7 +780,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">return</span> a</a>
 <a class="sourceLine" id="cb18-2" title="2"><span class="kw">return@label</span> a</a>
 <a class="sourceLine" id="cb18-3" title="3"><span class="kw">throw</span> a</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="236" height="152" text-rendering="auto" shape-rendering="auto">
@@ -353,7 +789,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="at">break@</span>loop</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="194" height="79" text-rendering="auto" shape-rendering="auto">
@@ -362,7 +798,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="at">continue@</span>loop</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="205" height="152" text-rendering="auto" shape-rendering="auto">
@@ -377,7 +813,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="at">loop@</span> <span class="cf">while</span>(c) <span class="op">{</span> b... <span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="551" height="362" text-rendering="auto" shape-rendering="auto">
@@ -386,7 +822,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="at">loop@</span> <span class="cf">do</span> <span class="op">{</span> b... <span class="op">}</span> <span class="cf">while</span>(c)</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="551" height="436" text-rendering="auto" shape-rendering="auto">
@@ -399,7 +835,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb23-2" title="2"><span class="kw">var</span> <span class="va">a</span> <span class="kw">by</span> b</a>
 <a class="sourceLine" id="cb23-3" title="3"><span class="kw">val</span> <span class="va">a</span> <span class="op">=</span> b</a>
 <a class="sourceLine" id="cb23-4" title="4"><span class="kw">val</span> <span class="va">a</span> <span class="kw">by</span> b</a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="205" height="184" text-rendering="auto" shape-rendering="auto">
@@ -408,7 +844,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="sourceCode" id="cb24"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">()</span> <span class="op">{</span> body... <span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="236" height="89" text-rendering="auto" shape-rendering="auto">
@@ -427,17 +863,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">For every declaration and init block in a class body, the control flow is propagated through every element in the order of their appearance. </span><span class="sentence">Here we give a simplified example.</span></p>
 </div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: in fact, init analysis does work like this, while smart casting does not</span></p>
-</div>
-</div>
-<div class="TODO">
-<div class="paragraph">
-<p><span class="sentence">TODO: function decls are order-agnostic???</span></p>
-</div>
-</div>
-<div>
+
+
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="425" height="530" text-rendering="auto" shape-rendering="auto">
@@ -447,7 +875,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="examples">Examples</h4>
 <div class="sourceCode" id="cb26"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb26-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">()</span> = listOf(<span class="dv">1</span>, <span class="dv">2</span>).map <span class="op">{</span> it + <span class="dv">2</span> <span class="op">}</span>.filter <span class="op">{</span> it &gt; <span class="dv">0</span> <span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="793" height="614" text-rendering="auto" shape-rendering="auto">
@@ -462,7 +890,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb27-5" title="5">        <span class="cf">if</span>(y % <span class="dv">20</span> == <span class="dv">3</span>) <span class="at">break@</span>loop</a>
 <a class="sourceLine" id="cb27-6" title="6">    <span class="op">}</span></a>
 <a class="sourceLine" id="cb27-7" title="7"><span class="op">}</span></a></code></pre></div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="740" height="1328" text-rendering="auto" shape-rendering="auto">
@@ -476,7 +904,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: each specific analysis may decide to either use this information or ignore it for a given program. </span><span class="sentence">If unreachability from <code>kotlin.Nothing</code> is used, it can be represented in different ways, e.g., by changing the CFG structure or via <a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction"><span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span></a> instructions.</span></p>
+<p><span class="sentence">Important: each specific analysis may decide to either use this information or ignore it for a given program. </span><span class="sentence">If unreachability from <code>kotlin.Nothing</code> is used, it can be represented in different ways, e.g., by changing the CFG structure or via <a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+</a> instructions.</span></p>
 </div>
 </blockquote>
 <h3 id="performing-analyses-on-the-control-flow-graph">Performing analyses on the control-flow graph</h3>
@@ -487,18 +917,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In short, an analysis is defined on the CFG by introducing:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A lattice <span class="math inline">\(\mathbf{S}\)</span> (a partially ordered set that has both a greatest lower bound and a least upper bound defined for every pair of its elements) of values, called <em>abstract states</em>;</span></li>
-<li><span class="sentence">A <em>transfer function</em> for mapping CFG nodes to the elements of <span class="math inline">\(\mathbf{S}\)</span>, essentially a set of rules on how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.</span></li>
+<li><span class="sentence">A lattice <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">S</mi></mrow><annotation encoding="application/x-tex">\mathbf{S}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68611em;vertical-align:0em;"></span><span class="mord"><span class="mord mathbf">S</span></span></span></span></span>
+
+ (a partially ordered set that has both a greatest lower bound and a least upper bound defined for every pair of its elements) of values, called <em>abstract states</em>;</span></li>
+<li><span class="sentence">A <em>transfer function</em> for mapping CFG nodes to the elements of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">S</mi></mrow><annotation encoding="application/x-tex">\mathbf{S}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68611em;vertical-align:0em;"></span><span class="mord"><span class="mord mathbf">S</span></span></span></span></span>
+
+, essentially a set of rules on how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The result of an analysis is a <em>fixed point</em> of the transfer function for each node of the given CFG, i.e., an abstract state for each node such that the transfer function maps the state to itself. </span><span class="sentence">For the particular shapes of the transfer function used in program analyses, given a finite <span class="math inline">\(\mathbf{S}\)</span>, the fixed point always exists, although the details of how this works go out of scope of this document.</span></p>
+<p><span class="sentence">The result of an analysis is a <em>fixed point</em> of the transfer function for each node of the given CFG, i.e., an abstract state for each node such that the transfer function maps the state to itself. </span><span class="sentence">For the particular shapes of the transfer function used in program analyses, given a finite <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">S</mi></mrow><annotation encoding="application/x-tex">\mathbf{S}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68611em;vertical-align:0em;"></span><span class="mord"><span class="mord mathbf">S</span></span></span></span></span>
+
+, the fixed point always exists, although the details of how this works go out of scope of this document.</span></p>
 </div>
-<h4 id="preliminary-analysis-and-operatornamemathitkilldataflow-instruction">Preliminary analysis and <span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> instruction</h4>
+<h4 id="preliminary-analysis-and-operatornamemathitkilldataflow-instruction">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+ instruction</h4>
 <div class="paragraph">
-<p><span class="sentence">Some analyses described further in this document are based on special instruction called <span class="math inline">\(\operatorname{\mathit{killDataFlow}}(\upsilon)\)</span> where <span class="math inline">\(\upsilon\)</span> is a program variable. </span><span class="sentence">These are not present in the graph representation described above and need to be inferred before such analyses may actually take place.</span></p>
+<p><span class="sentence">Some analyses described further in this document are based on special instruction called <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>υ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}(\upsilon)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.03588em;">υ</span><span class="mclose">)</span></span></span></span>
+
+ where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>υ</mi></mrow><annotation encoding="application/x-tex">\upsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">υ</span></span></span></span>
+
+ is a program variable. </span><span class="sentence">These are not present in the graph representation described above and need to be inferred before such analyses may actually take place.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math inline">\(\operatorname{\mathit{killDataFlow}}\)</span> inference is based on a standard control-flow analysis with the lattice of natural numbers over “min” and “max” operations. </span><span class="sentence">That is, for every assignable property <span class="math inline">\(x\)</span> an element of this lattice is a natural number <span class="math inline">\(N\)</span>, with the least upper bound of two numbers defined as maximum function and the greatest lower bound as minimum function.</span></p>
+<p><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+ inference is based on a standard control-flow analysis with the lattice of natural numbers over “min” and “max” operations. </span><span class="sentence">That is, for every assignable property <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>
+
+ an element of this lattice is a natural number <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span>
+
+, with the least upper bound of two numbers defined as maximum function and the greatest lower bound as minimum function.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -509,7 +957,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">We assume the following transfer functions for our analysis.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><span class="math display">\[
+<p><span class="sentence"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable rowspacing="0.24999999999999992em" columnalign="right left right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><mrow><mtext mathvariant="monospace">x</mtext><mtext> </mtext><mtext mathvariant="monospace">=</mtext><mtext> </mtext><mtext mathvariant="monospace">y</mtext></mrow><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>s</mi><mo stretchy="false">[</mo><mi>x</mi><mo>→</mo><mi>s</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>+</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><mi mathvariant="normal">backedge</mi><mo>⁡</mo><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mo stretchy="false">{</mo><mo>⋆</mo><mo>→</mo><mn>0</mn><mo stretchy="false">}</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><mi>l</mi><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><munder><mo>⨆</mo><mrow><mi>p</mi><mo>∈</mo><mi>p</mi><mi>r</mi><mi>e</mi><mi>d</mi><mi>e</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>o</mi><mi>r</mi><mo stretchy="false">(</mo><mi>l</mi><mo stretchy="false">)</mo></mrow></munder><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><mi>p</mi><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>s</mi><mo stretchy="false">)</mo></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{alignedat}{2}
 &amp;\left[\!\left[\texttt{x = y} \right]\!\right](s)
 &amp;&amp;= s[x \rightarrow s(x) + 1]
@@ -522,10 +970,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 &amp;\left[\!\left[l \right]\!\right](s)
 &amp;&amp;= \bigsqcup_{p \in predecessor(l)} \left[\!\left[p \right]\!\right](s)
 \end{alignedat}
-\]</span></span></p>
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:8.866010000000003em;vertical-align:-4.183005000000001em;"></span><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:4.6830050000000005em;"><span style="top:-6.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-5.39301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-3.893009999999999em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-2.3930099999999994em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-0.6830049999999988em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:4.183005000000001em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:4.6830050000000005em;"><span style="top:-6.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord text"><span class="mord texttt">x = y</span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mclose">)</span></span></span><span style="top:-3.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mop"><span class="mord text"><span class="mord texttt">backedge</span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mclose">)</span></span></span><span style="top:-0.6830050000000005em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:4.183005em;"><span></span></span></span></span></span><span class="col-align-r"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:4.6830050000000005em;"><span style="top:-6.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-3.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span><span style="top:-0.6830050000000005em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:4.183005em;"><span></span></span></span></span></span><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:4.6830050000000005em;"><span style="top:-6.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault">s</span><span class="mopen">[</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span><span style="top:-3.89301em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mopen">{</span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mclose">}</span></span></span><span style="top:-0.6830050000000005em;"><span class="pstrut" style="height:3.050005em;"></span><span class="mord"><span class="mord"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.050005em;"><span style="top:-1.808995em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mrel mtight">∈</span><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">c</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mopen mtight">(</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">⨆</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.516005em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord mathdefault">p</span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:4.183005em;"><span></span></span></span></span></span></span></span></span></span></span></span>
+
+</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">After running this analysis, for every backedge <span class="math inline">\(b\)</span> and every variable <span class="math inline">\(x\)</span> present in <span class="math inline">\(s\)</span>, if <span class="math inline">\(\exists b_p, b_s: b_p \in predecessors(b) \land b_s \in successors(b) \land \left[\!\left[b_p \right]\!\right](x) &gt; \left[\!\left[b_s \right]\!\right](x)\)</span>, a <span class="math inline">\(\operatorname{\mathit{killDataFlow}}(x)\)</span> instruction must be inserted after <span class="math inline">\(b\)</span>.</span></p>
+<p><span class="sentence">After running this analysis, for every backedge <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span>
+
+ and every variable <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span>
+
+ present in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span>
+
+, if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∃</mi><msub><mi>b</mi><mi>p</mi></msub><mo separator="true">,</mo><msub><mi>b</mi><mi>s</mi></msub><mo>:</mo><msub><mi>b</mi><mi>p</mi></msub><mo>∈</mo><mi>p</mi><mi>r</mi><mi>e</mi><mi>d</mi><mi>e</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>o</mi><mi>r</mi><mi>s</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo><mo>∧</mo><msub><mi>b</mi><mi>s</mi></msub><mo>∈</mo><mi>s</mi><mi>u</mi><mi>c</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>o</mi><mi>r</mi><mi>s</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo><mo>∧</mo><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><msub><mi>b</mi><mi>p</mi></msub><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>&gt;</mo><mrow><mo fence="true">[</mo><mtext> ⁣</mtext><mrow><mo fence="true">[</mo><msub><mi>b</mi><mi>s</mi></msub><mo fence="true">]</mo></mrow><mtext> ⁣</mtext><mo fence="true">]</mo></mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\exists b_p, b_s: b_p \in predecessors(b) \land b_s \in successors(b) \land \left[\!\left[b_p \right]\!\right](x) &gt; \left[\!\left[b_s \right]\!\right](x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord">∃</span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">c</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span><span class="mord mathdefault">s</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∧</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">u</span><span class="mord mathdefault">c</span><span class="mord mathdefault">c</span><span class="mord mathdefault">e</span><span class="mord mathdefault">s</span><span class="mord mathdefault">s</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">s</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∧</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord mathdefault">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:-0.16666666666666666em;"></span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>
+
+, a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span><span class="mopen">(</span><span class="mord mathdefault">x</span><span class="mclose">)</span></span></span></span>
+
+ instruction must be inserted after <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span>
+
+.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -551,7 +1013,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">which results in the following CFG diagram (annotated with the analysis results where it is important):</span></p>
 </div>
-<div>
+<div class="diagram">
 <img src='data:image/svg+xml;utf8,<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="908" height="1160" text-rendering="auto" shape-rendering="auto">
@@ -560,31 +1022,71 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ' />
 </div>
 <div class="paragraph">
-<p><span class="sentence">There are two backedges: one for the inner loop (the inner backedge) and one for the outer loop (the outer backedge). </span><span class="sentence">The inner backedge has one predecessor with state <span class="math inline">\(\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}\)</span> and one successor with state <span class="math inline">\(\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 2 \}\)</span> with the value for <code>x</code> being less in the successor, meaning that we need to insert <span class="math inline">\(\operatorname{\mathit{killDataFlow}}(\texttt{x})\)</span> after the backedge. </span><span class="sentence">The outer backedge has one predecessor with state <span class="math inline">\(\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}\)</span> and one successor with state <span class="math inline">\(\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 1 \}\)</span> with values for both variables being less in the successor, meaning we need to insert <span class="math inline">\(\operatorname{\mathit{killDataFlow}}(\texttt{x})\)</span> and <span class="math inline">\(\operatorname{\mathit{killDataFlow}}(\texttt{y})\)</span> after the backedge.</span></p>
+<p><span class="sentence">There are two backedges: one for the inner loop (the inner backedge) and one for the outer loop (the outer backedge). </span><span class="sentence">The inner backedge has one predecessor with state <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mtext mathvariant="monospace">x</mtext><mo>→</mo><mn>2</mn><mo separator="true">,</mo><mtext mathvariant="monospace">y</mtext><mo>→</mo><mn>2</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.86666em;vertical-align:-0.22222em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord text"><span class="mord texttt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">}</span></span></span></span>
+
+ and one successor with state <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mtext mathvariant="monospace">x</mtext><mo>→</mo><mn>1</mn><mo separator="true">,</mo><mtext mathvariant="monospace">y</mtext><mo>→</mo><mn>2</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 2 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.86666em;vertical-align:-0.22222em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord text"><span class="mord texttt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">}</span></span></span></span>
+
+ with the value for <code>x</code> being less in the successor, meaning that we need to insert <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">(</mo><mtext mathvariant="monospace">x</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}(\texttt{x})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span><span class="mopen">(</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mclose">)</span></span></span></span>
+
+ after the backedge. </span><span class="sentence">The outer backedge has one predecessor with state <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mtext mathvariant="monospace">x</mtext><mo>→</mo><mn>2</mn><mo separator="true">,</mo><mtext mathvariant="monospace">y</mtext><mo>→</mo><mn>2</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \texttt{x} \rightarrow 2, \texttt{y} \rightarrow 2 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.86666em;vertical-align:-0.22222em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord text"><span class="mord texttt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">}</span></span></span></span>
+
+ and one successor with state <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mtext mathvariant="monospace">x</mtext><mo>→</mo><mn>1</mn><mo separator="true">,</mo><mtext mathvariant="monospace">y</mtext><mo>→</mo><mn>1</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \texttt{x} \rightarrow 1, \texttt{y} \rightarrow 1 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.86666em;vertical-align:-0.22222em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord text"><span class="mord texttt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">}</span></span></span></span>
+
+ with values for both variables being less in the successor, meaning we need to insert <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">(</mo><mtext mathvariant="monospace">x</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}(\texttt{x})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span><span class="mopen">(</span><span class="mord text"><span class="mord texttt">x</span></span><span class="mclose">)</span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">(</mo><mtext mathvariant="monospace">y</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}(\texttt{y})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span><span class="mopen">(</span><span class="mord text"><span class="mord texttt">y</span></span><span class="mclose">)</span></span></span></span>
+
+ after the backedge.</span></p>
 </div>
 <h4 id="variable-initialization-analysis">Variable initialization analysis</h4>
 <div class="paragraph">
-<p><span class="sentence">Kotlin allows <a href="declarations.html#property-declaration">non-delegated properties</a> to not have initializers in their declaration as long as the property is <em>definitely assigned</em> before its first usage. </span><span class="sentence">This property is checked by the variable initialization analysis (VIA). </span><span class="sentence">VIA operates on abstract values from a flat <em>assignedness</em> lattice of two values <span class="math inline">\(\{\operatorname{\mathit{Assigned}}, \operatorname{\mathit{Unassigned}}\}\)</span>. </span><span class="sentence">The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the assignedness lattice. </span><span class="sentence">The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.</span></p>
+<p><span class="sentence">Kotlin allows <a href="declarations.html#property-declaration">non-delegated properties</a> to not have initializers in their declaration as long as the property is <em>definitely assigned</em> before its first usage. </span><span class="sentence">This property is checked by the variable initialization analysis (VIA). </span><span class="sentence">VIA operates on abstract values from a flat <em>assignedness</em> lattice of two values <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="normal"><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal"><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{\operatorname{\mathit{Assigned}}, \operatorname{\mathit{Unassigned}}\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mop"><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span><span class="mclose">}</span></span></span></span>
+
+. </span><span class="sentence">The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the assignedness lattice. </span><span class="sentence">The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The CFG nodes relevant to VIA include only property declarations and direct property assignments. </span><span class="sentence">Every property declaration adds itself to the domain by setting the <span class="math inline">\(\operatorname{\mathit{Unassigned}}\)</span> value to itself. </span><span class="sentence">Every direct property assignment changes the value for this property to <span class="math inline">\(\operatorname{\mathit{Assigned}}\)</span>.</span></p>
+<p><span class="sentence">The CFG nodes relevant to VIA include only property declarations and direct property assignments. </span><span class="sentence">Every property declaration adds itself to the domain by setting the <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{Unassigned}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop"><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span></span></span></span>
+
+ value to itself. </span><span class="sentence">Every direct property assignment changes the value for this property to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{Assigned}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop"><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span></span></span></span>
+
+.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The results of the analysis are interpreted as follows. </span><span class="sentence">For every property, any usage of the said property in any statement is a compile-time error unless the abstract state of this property at this statement is <span class="math inline">\(\operatorname{\mathit{Assigned}}\)</span>. </span><span class="sentence">For every read-only property (declared using <code>val</code> keyword), any assignment to this property is a compile-time error unless the abstract state of this property is <span class="math inline">\(\operatorname{\mathit{Unassigned}}\)</span>.</span></p>
+<p><span class="sentence">The results of the analysis are interpreted as follows. </span><span class="sentence">For every property, any usage of the said property in any statement is a compile-time error unless the abstract state of this property at this statement is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{Assigned}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop"><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span></span></span></span>
+
+. </span><span class="sentence">For every read-only property (declared using <code>val</code> keyword), any assignment to this property is a compile-time error unless the abstract state of this property is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{Unassigned}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop"><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span></span></span></span></span>
+
+.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">As an example, consider the following Kotlin code:</span></p>
 </div>
-<code class="sourceCode kotlin"><span class="co">/*  1 */</span> <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  2 */</span> <span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  1 */</span> <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  2 */</span> <span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="co">/*  3 */</span> <span class="cf">if</span> (c) <span class="op">{</span>       <span class="co">//</span></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  4 */</span>     x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  5 */</span>     y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  4 */</span>     x = <span class="dv">40</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  5 */</span>     y = <span class="dv">4</span>     <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="co">/*  6 */</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>      <span class="co">//</span></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  7 */</span>     x = <span class="dv">20</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  8 */</span> <span class="op">}</span>             <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/*  9 */</span> y = <span class="dv">5</span>         <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/* 10 */</span> <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \mathtt{z} \rightarrow \mathit{Assigned}\}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  7 */</span>     x = <span class="dv">20</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  8 */</span> <span class="op">}</span>             <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/*  9 */</span> y = <span class="dv">5</span>         <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/* 10 */</span> <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">z</mi><mo>→</mo><mrow><mi>A</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Assigned}, \mathtt{y} \rightarrow \mathit{Assigned}, \mathtt{z} \rightarrow \mathit{Assigned}\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">z</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
 
 <div class="paragraph">
 <p><span class="sentence">There are no incorrect operations in this example, so the code does not produce any compile-time errors.</span></p>
@@ -592,16 +1094,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let us consider another example:</span></p>
 </div>
-<code class="sourceCode kotlin"><span class="co">/* 1 */</span> <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/* 2 */</span> <span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/* 3 */</span> <span class="cf">while</span> (c) <span class="op">{</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"> Error!</code><br />
-<code class="sourceCode kotlin"><span class="co">/* 4 */</span>     x = <span class="dv">40</span>    <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
-<code class="sourceCode kotlin"><span class="co">/* 5 */</span>     y = <span class="dv">4</span>     <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/* 1 */</span> <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/* 2 */</span> <span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mrow><mi>U</mi><mi>n</mi><mi>a</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>g</mi><mi>n</mi><mi>e</mi><mi>d</mi></mrow><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \mathit{Unassigned}, \mathtt{y} \rightarrow \mathit{Unassigned}, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathit">U</span><span class="mord mathit">n</span><span class="mord mathit">a</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">g</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mord mathit">d</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/* 3 */</span> <span class="cf">while</span> (c) <span class="op">{</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"> Error!</code><br />
+<code class="sourceCode kotlin"><span class="co">/* 4 */</span>     x = <span class="dv">40</span>    <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
+<code class="sourceCode kotlin"><span class="co">/* 5 */</span>     y = <span class="dv">4</span>     <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"></code><br />
 <code class="sourceCode kotlin"><span class="co">/* 6 */</span> <span class="op">}</span>             <span class="co">//</span></code><br />
-<code class="sourceCode kotlin"><span class="co">/* 7 */</span> <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="math inline">\(\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}\)</span><code class="sourceCode kotlin"> More errors!  </code><br />
+<code class="sourceCode kotlin"><span class="co">/* 7 */</span> <span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> x + y <span class="co">//</span></code><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="monospace">x</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mi mathvariant="monospace">y</mi><mo>→</mo><mi mathvariant="normal">⊤</mi><mo separator="true">,</mo><mo>⋆</mo><mo>→</mo><mi mathvariant="normal">⊥</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ \mathtt{x} \rightarrow \top, \mathtt{y} \rightarrow \top, \star \rightarrow \bot \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord"><span class="mord mathtt">x</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">y</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">⊤</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">⋆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">⊥</span><span class="mclose">}</span></span></span></span>
+
+<code class="sourceCode kotlin"> More errors!  </code><br />
 
 <div class="paragraph">
-<p><span class="sentence">In this example, the state of both properties at line 3 is <span class="math inline">\(\top\)</span>, as it is the least upper bound of the states from lines 5 and 2 (from the <code>while</code> loop), which is derived to be <span class="math inline">\(\top\)</span>. </span><span class="sentence">This leads to a compile-time error at line 4 for <code>x</code>, because one cannot reassign a read-only property.</span></p>
+<p><span class="sentence">In this example, the state of both properties at line 3 is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">⊤</mi></mrow><annotation encoding="application/x-tex">\top</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">⊤</span></span></span></span>
+
+, as it is the least upper bound of the states from lines 5 and 2 (from the <code>while</code> loop), which is derived to be <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">⊤</mi></mrow><annotation encoding="application/x-tex">\top</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">⊤</span></span></span></span>
+
+. </span><span class="sentence">This leads to a compile-time error at line 4 for <code>x</code>, because one cannot reassign a read-only property.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">At line 7 there is another compile-time error when both properties are used, as there are paths in the CFG which reach line 7 when the properties have not been assigned (i.e., the case when the <code>while</code> loop body was skipped).</span></p>
