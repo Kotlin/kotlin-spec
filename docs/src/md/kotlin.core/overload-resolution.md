@@ -229,6 +229,29 @@ However, for a callable `f` with an explicit type receiver `T` the following set
 1. Static member callables named `f` of type `T`;
 2. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
 
+##### Calls with an explicit super-form receiver
+
+A call with an explicit receiver may be performed not only on a value receiver, but also on a [super-form][Super-forms] receiver.
+
+They mostly follow the same rules as [calls with an explicit value receiver][Call with an explicit receiver].
+However, there are some differences which we outline below.
+
+For a callable `f` with an explicit basic super-form receiver `super` in a [classifier declaration] with supertypes `A1`, `A2`, ... , `AN` the following sets are considered for **non-emptiness**:
+
+1. Non-extension member callables named `f` of type `A1`;
+2. Non-extension member callables named `f` of type `A2`;
+3. ...;
+n. Non-extension member callables named `f` of type `AN`.
+
+If at least two of these sets are non-empty, this is a compile-time error.
+Otherwise, the non-empty set (if any) is analyzed as [usual][Call with an explicit receiver].
+
+For a callable `f` with an explicit extended super-form receiver `super<A>` the following sets are analyzed (**in the given order**):
+
+1. Non-extension member callables named `f` of type `A`.
+
+Additionally, in either case, [abstract][Abstract classes] callables are not considered valid candidates for the overload resolution process.
+
 #### Infix function call
 
 Infix function calls are a special case of function [calls with explicit receiver][Call with an explicit receiver] in the left hand side position, i.e., `a foo b` may be an infix form of `a.foo(b)`.

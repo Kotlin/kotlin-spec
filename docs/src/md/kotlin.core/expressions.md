@@ -1316,11 +1316,11 @@ Super-forms are special kind of expression which can only be used as receivers i
 Any use of super-form expression in any other context is a compile-time error.
 
 Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.
-If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
-If there are several candidates available for the immediate supertype and [overload resolution] is performed, abstract declarations are not considered valid candidates for this process.
 
-The basic form of this expression, denoted by `super` keyword, is used to access the **single** immediate supertype of the currently declared classifier.
-In order to access other supertype implementations, extended `super` expressions are used.
+If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
+
+The basic form of this expression, denoted by `super` keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of [overload resolution][Calls with an explicit super-form receiver].
+In order to access a specific supertype implementations, extended `super` expressions are used.
 These may be any of the following:
 
 * `super<Klazz>`, where `Klazz` is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;
@@ -1351,7 +1351,7 @@ These may be any of the following:
 > class D : C(), A, B {
 >     init {
 >         // Error: ambiguity as several immediate supertypes
->         //   are available here
+>         //   with callable `foo` are available here
 >         // super.foo()
 >         super<C>.foo() // "C"
 >         super<B>.foo() // "B"
