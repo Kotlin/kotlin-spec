@@ -50,7 +50,7 @@ tasks.create<Copy>("copyStubIndexToRedirectToIntroduction") {
     into(htmlBuildDir)
 }
 
-tasks.create<Task>("buildJs") {
+tasks.create("buildJs") {
     group = "internal"
 
     dependsOn("copyStatic")
@@ -62,7 +62,7 @@ tasks.create<Task>("buildJs") {
     }
 }
 
-tasks.create<Copy>("buildWeb") {
+tasks.create("buildWeb") {
     group = "build"
 
     dependsOn("docs:buildHtml")
@@ -73,7 +73,7 @@ tasks.create<Copy>("buildWeb") {
     finalizedBy("front-end:clean", "docs:clean")
 }
 
-tasks.create<Copy>("buildWebFullOnly") {
+tasks.create("buildWebFullOnly") {
     group = "build"
 
     dependsOn("docs:buildHtml")
@@ -81,7 +81,7 @@ tasks.create<Copy>("buildWebFullOnly") {
     dependsOn("buildJs")
 }
 
-tasks.create<Copy>("buildWebBySectionsOnly") {
+tasks.create("buildWebBySectionsOnly") {
     group = "build"
 
     dependsOn("docs:buildHtmlBySections")
@@ -90,7 +90,7 @@ tasks.create<Copy>("buildWebBySectionsOnly") {
     dependsOn("copyStubIndexToRedirectToIntroduction")
 }
 
-tasks.create<Copy>("buildPdf") {
+tasks.create("buildPdf") {
     group = "build"
 
     dependsOn("docs:buildPdf")
