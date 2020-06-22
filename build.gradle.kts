@@ -41,6 +41,15 @@ tasks.create<Copy>("copyPdf") {
     into(pdfBuildDir)
 }
 
+tasks.create<Copy>("copyStubIndexToRedirectToIntroduction") {
+    group = "internal"
+
+    mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
+
+    from("$projectDir/front-end/resources/html")
+    into(htmlBuildDir)
+}
+
 tasks.create<Task>("buildJs") {
     group = "internal"
 
@@ -64,12 +73,21 @@ tasks.create<Copy>("buildWeb") {
     finalizedBy("front-end:clean", "docs:clean")
 }
 
-tasks.create<Copy>("buildWebFast") {
+tasks.create<Copy>("buildWebFullOnly") {
     group = "build"
 
     dependsOn("docs:buildHtml")
     dependsOn("copyHtml")
     dependsOn("buildJs")
+}
+
+tasks.create<Copy>("buildWebBySectionsOnly") {
+    group = "build"
+
+    dependsOn("docs:buildHtmlBySections")
+    dependsOn("copyHtml")
+    dependsOn("buildJs")
+    dependsOn("copyStubIndexToRedirectToIntroduction")
 }
 
 tasks.create<Copy>("buildPdf") {

@@ -27,7 +27,11 @@ init_settings() {
     if [ "${type}" == "pdf" ]; then
         PREAMBLE_OPTIONS="-H ./preamble.tex"
     elif [ "${type}" == "html" ]; then
+      if [ "${mode}" == "section" ]; then
+        PREAMBLE_OPTIONS="-H ./sectionPreamble.md"
+      else
         PREAMBLE_OPTIONS="-H ./preamble.md"
+      fi
     fi
 
     if [ "${mode}" == "section" ]; then
