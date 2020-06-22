@@ -14,7 +14,7 @@ body {
     font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
     font-size: 12px;
     line-height: 1.7;
-    padding: 1em;
+    padding: 1em 1em 1em 300px;
     margin: auto;
     max-width: 700px;
     background: #fefefe;
@@ -23,51 +23,120 @@ body {
 #TOC {
     position: fixed;
     left: 0;
-    top: 60px;
-    width: 250px;
+    top: 0;
+    width: 300px;
     height: 100%;
     overflow: auto;
 
-    -webkit-transition: left 0.5s ease-out 0.25s;
-    -moz-transition: left 0.5s ease-out 0.25s;
-    -o-transition: left 0.5s ease-out 0.25s;
-    transition: left 0.5s ease-out 0.25s;
-
     font-size: 12px;
-    font-family: Arial;
+    font-family: Arial, serif;
 
     background: #fefefe;
     z-index: 2;
-    border-right: 1px solid #a0a0a0;
-    border-top: 1px solid #a0a0a0;
+    border-right: 1px solid rgba(39, 40, 44, 0.20);
+    padding: 30px 0;
+    box-sizing: border-box;
+}
+
+#TOC::before {
+    content: "Loading…";
+    width: 100%;
+    text-align: center;
+    display: block;
+    font-size: 16px;
+}
+
+#TOC.loaded::before {
+    content: "Table of Contents";
+    width: 100%;
+    display: block;
+    margin-left: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+#TOC ul {
+    margin: 0;
+    padding: 0;
+}
+
+#TOC ul li {
+    display: none;
 }
 
 #TOC li {
     list-style: none;
-    margin-left: -10px;
-}
-
-.toc-section {
-    display: inline-block;
     position: relative;
-    z-index: 2;
-    font-size: 0;
-    padding: 5px 5px 0px 5px;
-    bottom: 4px;
 }
 
-#TOC li a:hover {
-    color: gray;
-    font-size: 13px;
+#TOC .toc-element.active, #TOC .toc-element.active:hover {
+    background-color: #c1c1c1;
+    color: #404040;
 }
 
+#TOC .toc-element:hover {
+    background-color: #F4F4F4;
+}
 
-#TOC li a {
+#TOC .toc-element {
     display: inline-block;
-    width: 95%;
+    width: 100%;
     color: gray;
+    line-height: 16px;
+    padding: 8px 30px;
+    box-sizing: border-box;
+    outline: none;
 }
 
+#TOC > ul > li > ul::before, #TOC .toc-element.toggled ~ ul::before {
+    border: 4px solid transparent;
+    border-top: 4px solid gray;
+}
+
+#TOC li ul::before {
+    content: '';
+    cursor: pointer;
+    border: 4px solid transparent;
+    border-left: 4px solid gray;
+    width: 0;
+    height: 0;
+    margin-right: 7px;
+    display: inline-block;
+    margin-left: 15px;
+    margin-top: 12px;
+    top: 0;
+    position: absolute;
+}
+
+#TOC > ul > li > ul > li > .toc-element {
+    padding-left: 45px;
+}
+
+#TOC > ul > li > ul > li > ul::before {
+    margin-left: 30px;
+}
+
+#TOC > ul > li > ul > li > ul > li > .toc-element {
+    padding-left: 60px;
+}
+
+#TOC > ul > li > ul > li > ul > li > ul::before {
+    margin-left: 45px;
+}
+
+#TOC > ul > li > ul > li > ul > li > ul > li > .toc-element {
+    padding-left: 75px;
+}
+
+#TOC > ul > li > ul > li > ul > li > ul > li > ul::before {
+    margin-left: 60px;
+}
+
+#TOC > ul > li > ul > li > ul > li > ul > li > ul > li > .toc-element {
+    padding-left: 90px;
+}
 
 .toc-section img {
     outline: none;
@@ -77,16 +146,17 @@ body {
 
 .icon-menu {
     display: none;
-    height: 30px;
+    height: 17px;
     width: 17px;
-    float: left;
-    padding: 20px 0 0 20px;
+    position: fixed;
     cursor: pointer;
-    margin-right: 10px;
+    background: #FFFFFF;
+    padding: 5px;
+    border-radius: 5px;
+    opacity: 0.5;
 }
 
-
-.divide {
+.icon-menu .divide {
     display: block;
     height: 2px;
     margin: 3px 0;
@@ -94,27 +164,26 @@ body {
 }
 
 
-@media (max-width: 1250px) {
+@media (max-width: 1050px) {
     body {
-        padding-top: 50px
+        padding-left: 1em;
     }
 
-
     .icon-menu {
-        display: block
+        display: block;
+    }
+
+    .icon-menu.active {
+        left: 320px;
     }
 
     #TOC {
-        position: fixed;
-        left: -250px;
-        width: 250px;
-        height: 100%;
+        left: -300px;
     }
 
     #TOC.active {
         left: 0;
     }
-
 }
 
 .header-section-number{
@@ -682,6 +751,7 @@ span.TODO-marker {
     left: 0;
     position: fixed;
     background: rgba(0, 0, 0, 0.15);
+    z-index: 2;
 }
 
 .box {
@@ -689,6 +759,7 @@ span.TODO-marker {
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
     border-radius: 3px;
     opacity: 0.0;
+    z-index: 2;
 }
 
 .box .title {
@@ -850,11 +921,6 @@ span.TODO-marker {
     height: 65px;
     font-size: 13px;
     line-height: 16px;
-}
-
-h2.highlighted, h3.highlighted, h4.highlighted, h5.highlighted {
-    background: yellow;
-    border-radius: 5px;
 }
 
 .sentence.highlighted {
