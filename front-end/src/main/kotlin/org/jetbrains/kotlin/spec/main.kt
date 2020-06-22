@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
 import org.jetbrains.kotlin.spec.viewer.NavigationType
-import org.jetbrains.kotlin.spec.viewer.SidebarViewer
+import org.jetbrains.kotlin.spec.viewer.Sidebar
 import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
 import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
@@ -14,20 +14,20 @@ import kotlin.browser.document
 import kotlin.browser.localStorage
 import kotlin.browser.window
 
-fun runAfterDocumentReady() {
+fun init() {
     val specTestsLoader = SpecTestsLoader()
     val specTestsViewer = SpecTestsViewer()
     val shouldBeShowedMarkup = localStorage.getItem("showMarkup") != null
     val sentenceToBeHighlighted = window.location.searchMap["sentence"]
     val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
     val sectionToBeHighlighted = window.location.hash
-    val mode = Mode.Dev
+    val mode = Mode.User
+
+    Sidebar.init()
 
     `$`("h3, h4, h5").each { _, el ->
         SpecTestsLoader.insertLoadIcon(`$`(el), mode)
     }
-
-    SidebarViewer.prepare()
 
     if (shouldBeShowedMarkup) {
         SpecTestsLoader.showMarkup()
@@ -125,15 +125,6 @@ fun runAfterDocumentReady() {
             window.location.reload()
             false
         }
-        on("click", ".icon-menu") { _, _ ->
-            SidebarViewer.turnOnBar()
-            false
-        }
-
-        on("click", ".toc-section") { e, b ->
-            SidebarViewer.slideParagraphs(`$`(e.currentTarget), e)
-        }
-
 
         on("click", "h2, h3, h4, h5") { e, _ ->
             SpecPlaceHighlighter.onHeaderGetLinkClick(`$`(e.currentTarget))
@@ -142,5 +133,5 @@ fun runAfterDocumentReady() {
 }
 
 fun main() {
-    `$`(document).ready { runAfterDocumentReady() }
+    `$`(document).ready { init() }
 }
