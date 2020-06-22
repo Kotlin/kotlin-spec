@@ -132,6 +132,4 @@ fun init() {
     }
 }
 
-fun main() {
-    `$`(document).ready { init() }
-}
+fun main() = init()
