@@ -13,6 +13,8 @@ object Sidebar {
         val escapedSectionId = sectionId.replace(".", "\\.")
         val sectionMenuItem = `$`("#toc-element-$escapedSectionId")
 
+        if (sectionMenuItem.length == 0) return
+
         // Clean previously set classes on another elements
         `$`(".toc-element").removeClass("active")
 
@@ -29,7 +31,7 @@ object Sidebar {
 
         expandItemsHierarchy(if (sectionIdFromHash.isNotBlank()) sectionIdFromHash else sectionIdFromPath)
 
-        if (shouldScrollToItem) {
+        if (shouldScrollToItem && `$`("$TOC .active").length != 0) {
             val tocSelector = `$`(TOC)
             tocSelector.scrollTop(
                     tocSelector.scrollTop().toInt() - tocSelector.offset().top.toInt() + `$`("$TOC .active").offset().top.toInt() - OFFSET_BEFORE_SCROLLED_ELEMENT
