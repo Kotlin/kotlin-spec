@@ -71,7 +71,9 @@ All of these operators are overloadable operator functions with the following ex
 
 After the expansion, the resulting [function call expression][Function calls and property access] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
 
-> Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions] of this specification.
+> Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions-section] of this specification.
+
+[Expressions-section]: #expressions
 
 #### Safe assignments
 
