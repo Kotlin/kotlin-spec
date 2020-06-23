@@ -2,6 +2,8 @@ package org.jetbrains.kotlin.spec.viewer
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -9,10 +11,7 @@ object Sidebar {
     private const val TOC = "#TOC"
     private const val OFFSET_BEFORE_SCROLLED_ELEMENT = 100
 
-    private fun expandItemsHierarchy(sectionId: String) {
-        val escapedSectionId = sectionId.replace(".", "\\.")
-        val sectionMenuItem = `$`("#toc-element-$escapedSectionId")
-
+    private fun expandItemsHierarchy(sectionMenuItem: JQuery) {
         if (sectionMenuItem.length == 0) return
 
         // Clean previously set classes on another elements
@@ -25,13 +24,26 @@ object Sidebar {
         sectionMenuItem.parents("li").find(" > a").addClass("toggled")
     }
 
+    private fun expandItemsHierarchy(sectionId: String) {
+        val escapedSectionId = sectionId.replace(".", "\\.")
+        val sectionMenuItem = `$`("#toc-element-$escapedSectionId")
+
+        expandItemsHierarchy(sectionMenuItem)
+    }
+
     private fun expandItemsHierarchyByUrl(shouldScrollToItem: Boolean = false) {
         val sectionIdFromHash = window.location.hash.removePrefix("#")
         val sectionIdFromPath = window.location.pathname.split("/").last().removeSuffix(".html")
 
         expandItemsHierarchy(if (sectionIdFromHash.isNotBlank()) sectionIdFromHash else sectionIdFromPath)
 
-        if (shouldScrollToItem && `$`("$TOC .active").length != 0) {
+        if (shouldScrollToItem) {
+            scrollToActiveItem()
+        }
+    }
+
+    private fun scrollToActiveItem() {
+        if (`$`("$TOC .active").length != 0) {
             val tocSelector = `$`(TOC)
             tocSelector.scrollTop(
                     tocSelector.scrollTop().toInt() - tocSelector.offset().top.toInt() + `$`("$TOC .active").offset().top.toInt() - OFFSET_BEFORE_SCROLLED_ELEMENT
@@ -72,5 +84,45 @@ object Sidebar {
         """.trimIndent())
 
         `$`(".icon-menu").on("click") { _, _ -> showSidebar() }
+
+        installSearchBar()
+    }
+
+    private var currSearchString = ""
+    private var currResultIdx = 0
+
+    private fun installSearchBar() {
+        val tocRoot = `$`(TOC)
+
+        val searchBar = document.createElement("input") as HTMLInputElement
+        searchBar.id = "toc-search-bar"
+        searchBar.placeholder = "Search..."
+
+        searchBar.addEventListener("keyup", callback = cb@{ e ->
+            if ((e as KeyboardEvent).which != 13) return@cb
+
+            val searchString = (e.target as HTMLInputElement).value;
+
+            if (searchString.isBlank()) return@cb
+
+            val found = `$`("""$TOC .toc-element:contains($searchString)""")
+
+            if (found.length == 0) return@cb
+
+            if (currSearchString != searchString) {
+                currSearchString = searchString
+                currResultIdx = -1
+            }
+
+            currResultIdx += 1
+            currResultIdx %= found.length.toInt()
+
+            val currItem = found.eq(currResultIdx)
+
+            expandItemsHierarchy(currItem)
+            scrollToActiveItem()
+        });
+
+        tocRoot.prepend(searchBar)
     }
 }
