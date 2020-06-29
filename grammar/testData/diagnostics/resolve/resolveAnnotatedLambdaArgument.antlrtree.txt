@@ -23,14 +23,14 @@ File: resolveAnnotatedLambdaArgument.kt - 17a10c3f9e1d353bdcce0315e55f6681
                           conjunction
                             equality
                               comparison
-                                infixOperation
-                                  elvisExpression
-                                    infixFunctionCall
-                                      rangeExpression
-                                        additiveExpression
-                                          multiplicativeExpression
-                                            asExpression
-                                              comparisonWithLiteralRightSide
+                                genericCallLikeComparison
+                                  infixOperation
+                                    elvisExpression
+                                      infixFunctionCall
+                                        rangeExpression
+                                          additiveExpression
+                                            multiplicativeExpression
+                                              asExpression
                                                 prefixUnaryExpression
                                                   postfixUnaryExpression
                                                     primaryExpression
@@ -60,14 +60,14 @@ File: resolveAnnotatedLambdaArgument.kt - 17a10c3f9e1d353bdcce0315e55f6681
                           conjunction
                             equality
                               comparison
-                                infixOperation
-                                  elvisExpression
-                                    infixFunctionCall
-                                      rangeExpression
-                                        additiveExpression
-                                          multiplicativeExpression
-                                            asExpression
-                                              comparisonWithLiteralRightSide
+                                genericCallLikeComparison
+                                  infixOperation
+                                    elvisExpression
+                                      infixFunctionCall
+                                        rangeExpression
+                                          additiveExpression
+                                            multiplicativeExpression
+                                              asExpression
                                                 prefixUnaryExpression
                                                   postfixUnaryExpression
                                                     primaryExpression
@@ -164,80 +164,78 @@ File: resolveAnnotatedLambdaArgument.kt - 17a10c3f9e1d353bdcce0315e55f6681
                     conjunction
                       equality
                         comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
+                          genericCallLikeComparison
+                            infixOperation
+                              elvisExpression
+                                infixFunctionCall
+                                  rangeExpression
+                                    additiveExpression
+                                      multiplicativeExpression
+                                        asExpression
                                           prefixUnaryExpression
                                             postfixUnaryExpression
                                               primaryExpression
                                                 simpleIdentifier
                                                   Identifier("bar")
-                                              postfixUnarySuffix
-                                                typeArguments
-                                                  LANGLE("<")
-                                                  typeProjection
-                                                    type
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Int")
-                                                  RANGLE(">")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  annotatedLambda
-                                                    annotation
-                                                      singleAnnotation
-                                                        AT_PRE_WS(" @")
-                                                        unescapedAnnotation
-                                                          userType
-                                                            simpleUserType
-                                                              simpleIdentifier
-                                                                Identifier("Ann")
-                                                    annotation
-                                                      multiAnnotation
-                                                        AT_PRE_WS(" @")
-                                                        LSQUARE("[")
-                                                        unescapedAnnotation
-                                                          userType
-                                                            simpleUserType
-                                                              simpleIdentifier
-                                                                Identifier("Ann")
-                                                        RSQUARE("]")
-                                                    lambdaLiteral
-                                                      LCURL("{")
-                                                      lambdaParameters
-                                                        lambdaParameter
-                                                          variableDeclaration
-                                                            simpleIdentifier
-                                                              Identifier("x")
-                                                      ARROW("->")
-                                                      statements
-                                                        statement
-                                                          expression
-                                                            disjunction
-                                                              conjunction
-                                                                equality
-                                                                  comparison
-                                                                    infixOperation
-                                                                      elvisExpression
-                                                                        infixFunctionCall
-                                                                          rangeExpression
-                                                                            additiveExpression
-                                                                              multiplicativeExpression
-                                                                                asExpression
-                                                                                  comparisonWithLiteralRightSide
-                                                                                    prefixUnaryExpression
-                                                                                      postfixUnaryExpression
-                                                                                        primaryExpression
-                                                                                          simpleIdentifier
-                                                                                            Identifier("x")
-                                                      RCURL("}")
+                            callSuffix
+                              typeArguments
+                                LANGLE("<")
+                                typeProjection
+                                  type
+                                    typeReference
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Int")
+                                RANGLE(">")
+                              annotatedLambda
+                                annotation
+                                  singleAnnotation
+                                    AT_PRE_WS(" @")
+                                    unescapedAnnotation
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Ann")
+                                annotation
+                                  multiAnnotation
+                                    AT_PRE_WS(" @")
+                                    LSQUARE("[")
+                                    unescapedAnnotation
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Ann")
+                                    RSQUARE("]")
+                                lambdaLiteral
+                                  LCURL("{")
+                                  lambdaParameters
+                                    lambdaParameter
+                                      variableDeclaration
+                                        simpleIdentifier
+                                          Identifier("x")
+                                  ARROW("->")
+                                  statements
+                                    statement
+                                      expression
+                                        disjunction
+                                          conjunction
+                                            equality
+                                              comparison
+                                                genericCallLikeComparison
+                                                  infixOperation
+                                                    elvisExpression
+                                                      infixFunctionCall
+                                                        rangeExpression
+                                                          additiveExpression
+                                                            multiplicativeExpression
+                                                              asExpression
+                                                                prefixUnaryExpression
+                                                                  postfixUnaryExpression
+                                                                    primaryExpression
+                                                                      simpleIdentifier
+                                                                        Identifier("x")
+                                  RCURL("}")
               semis
                 NL("\n")
               statement
@@ -246,84 +244,82 @@ File: resolveAnnotatedLambdaArgument.kt - 17a10c3f9e1d353bdcce0315e55f6681
                     conjunction
                       equality
                         comparison
-                          infixOperation
-                            elvisExpression
-                              infixFunctionCall
-                                rangeExpression
-                                  additiveExpression
-                                    multiplicativeExpression
-                                      asExpression
-                                        comparisonWithLiteralRightSide
+                          genericCallLikeComparison
+                            infixOperation
+                              elvisExpression
+                                infixFunctionCall
+                                  rangeExpression
+                                    additiveExpression
+                                      multiplicativeExpression
+                                        asExpression
                                           prefixUnaryExpression
                                             postfixUnaryExpression
                                               primaryExpression
                                                 simpleIdentifier
                                                   Identifier("bar")
-                                              postfixUnarySuffix
-                                                typeArguments
-                                                  LANGLE("<")
-                                                  typeProjection
-                                                    type
-                                                      typeReference
-                                                        userType
-                                                          simpleUserType
-                                                            simpleIdentifier
-                                                              Identifier("Int")
-                                                  RANGLE(">")
-                                              postfixUnarySuffix
-                                                callSuffix
-                                                  annotatedLambda
-                                                    annotation
-                                                      singleAnnotation
-                                                        AT_PRE_WS(" @")
-                                                        unescapedAnnotation
-                                                          userType
-                                                            simpleUserType
-                                                              simpleIdentifier
-                                                                Identifier("Ann")
-                                                    annotation
-                                                      multiAnnotation
-                                                        AT_PRE_WS(" @")
-                                                        LSQUARE("[")
-                                                        unescapedAnnotation
-                                                          userType
-                                                            simpleUserType
-                                                              simpleIdentifier
-                                                                Identifier("Ann")
-                                                        RSQUARE("]")
-                                                    label
-                                                      simpleIdentifier
-                                                        Identifier("label")
-                                                      AT_NO_WS("@")
-                                                    lambdaLiteral
-                                                      LCURL("{")
-                                                      lambdaParameters
-                                                        lambdaParameter
-                                                          variableDeclaration
-                                                            simpleIdentifier
-                                                              Identifier("x")
-                                                      ARROW("->")
-                                                      statements
-                                                        statement
-                                                          expression
-                                                            disjunction
-                                                              conjunction
-                                                                equality
-                                                                  comparison
-                                                                    infixOperation
-                                                                      elvisExpression
-                                                                        infixFunctionCall
-                                                                          rangeExpression
-                                                                            additiveExpression
-                                                                              multiplicativeExpression
-                                                                                asExpression
-                                                                                  comparisonWithLiteralRightSide
-                                                                                    prefixUnaryExpression
-                                                                                      postfixUnaryExpression
-                                                                                        primaryExpression
-                                                                                          simpleIdentifier
-                                                                                            Identifier("x")
-                                                      RCURL("}")
+                            callSuffix
+                              typeArguments
+                                LANGLE("<")
+                                typeProjection
+                                  type
+                                    typeReference
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Int")
+                                RANGLE(">")
+                              annotatedLambda
+                                annotation
+                                  singleAnnotation
+                                    AT_PRE_WS(" @")
+                                    unescapedAnnotation
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Ann")
+                                annotation
+                                  multiAnnotation
+                                    AT_PRE_WS(" @")
+                                    LSQUARE("[")
+                                    unescapedAnnotation
+                                      userType
+                                        simpleUserType
+                                          simpleIdentifier
+                                            Identifier("Ann")
+                                    RSQUARE("]")
+                                label
+                                  simpleIdentifier
+                                    Identifier("label")
+                                  AT_NO_WS("@")
+                                lambdaLiteral
+                                  LCURL("{")
+                                  lambdaParameters
+                                    lambdaParameter
+                                      variableDeclaration
+                                        simpleIdentifier
+                                          Identifier("x")
+                                  ARROW("->")
+                                  statements
+                                    statement
+                                      expression
+                                        disjunction
+                                          conjunction
+                                            equality
+                                              comparison
+                                                genericCallLikeComparison
+                                                  infixOperation
+                                                    elvisExpression
+                                                      infixFunctionCall
+                                                        rangeExpression
+                                                          additiveExpression
+                                                            multiplicativeExpression
+                                                              asExpression
+                                                                prefixUnaryExpression
+                                                                  postfixUnaryExpression
+                                                                    primaryExpression
+                                                                      simpleIdentifier
+                                                                        Identifier("x")
+                                  RCURL("}")
               semis
                 NL("\n")
             RCURL("}")

@@ -80,14 +80,14 @@ File: withAs.kt - 5731b021495582bcefc4c539a236fd55
               conjunction
                 equality
                   comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
+                    genericCallLikeComparison
+                      infixOperation
+                        elvisExpression
+                          infixFunctionCall
+                            rangeExpression
+                              additiveExpression
+                                multiplicativeExpression
+                                  asExpression
                                     prefixUnaryExpression
                                       postfixUnaryExpression
                                         primaryExpression
@@ -134,14 +134,14 @@ File: withAs.kt - 5731b021495582bcefc4c539a236fd55
               conjunction
                 equality
                   comparison
-                    infixOperation
-                      elvisExpression
-                        infixFunctionCall
-                          rangeExpression
-                            additiveExpression
-                              multiplicativeExpression
-                                asExpression
-                                  comparisonWithLiteralRightSide
+                    genericCallLikeComparison
+                      infixOperation
+                        elvisExpression
+                          infixFunctionCall
+                            rangeExpression
+                              additiveExpression
+                                multiplicativeExpression
+                                  asExpression
                                     prefixUnaryExpression
                                       postfixUnaryExpression
                                         primaryExpression
@@ -163,14 +163,14 @@ File: withAs.kt - 5731b021495582bcefc4c539a236fd55
             conjunction
               equality
                 comparison
-                  infixOperation
-                    elvisExpression
-                      infixFunctionCall
-                        rangeExpression
-                          additiveExpression
-                            multiplicativeExpression
-                              asExpression
-                                comparisonWithLiteralRightSide
+                  genericCallLikeComparison
+                    infixOperation
+                      elvisExpression
+                        infixFunctionCall
+                          rangeExpression
+                            additiveExpression
+                              multiplicativeExpression
+                                asExpression
                                   prefixUnaryExpression
                                     postfixUnaryExpression
                                       primaryExpression
@@ -178,20 +178,20 @@ File: withAs.kt - 5731b021495582bcefc4c539a236fd55
                                           COLONCOLON("::")
                                           simpleIdentifier
                                             Identifier("foo")
-                                asOperator
-                                  AS("as")
-                                type
-                                  functionType
-                                    functionTypeParameters
-                                      LPAREN("(")
-                                      RPAREN(")")
-                                    ARROW("->")
-                                    type
-                                      typeReference
-                                        userType
-                                          simpleUserType
-                                            simpleIdentifier
-                                              Identifier("Unit")
+                                  asOperator
+                                    AS("as")
+                                  type
+                                    functionType
+                                      functionTypeParameters
+                                        LPAREN("(")
+                                        RPAREN(")")
+                                      ARROW("->")
+                                      type
+                                        typeReference
+                                          userType
+                                            simpleUserType
+                                              simpleIdentifier
+                                                Identifier("Unit")
         NL("\n")
   topLevelObject
     declaration
@@ -206,65 +206,64 @@ File: withAs.kt - 5731b021495582bcefc4c539a236fd55
             conjunction
               equality
                 comparison
-                  infixOperation
-                    elvisExpression
-                      infixFunctionCall
-                        rangeExpression
-                          additiveExpression
-                            multiplicativeExpression
-                              asExpression
-                                comparisonWithLiteralRightSide
+                  genericCallLikeComparison
+                    infixOperation
+                      elvisExpression
+                        infixFunctionCall
+                          rangeExpression
+                            additiveExpression
+                              multiplicativeExpression
+                                asExpression
                                   prefixUnaryExpression
                                     postfixUnaryExpression
                                       primaryExpression
                                         simpleIdentifier
                                           Identifier("bar")
-                                      postfixUnarySuffix
-                                        callSuffix
-                                          valueArguments
-                                            LPAREN("(")
-                                            valueArgument
-                                              expression
-                                                disjunction
-                                                  conjunction
-                                                    equality
-                                                      comparison
-                                                        infixOperation
-                                                          elvisExpression
-                                                            infixFunctionCall
-                                                              rangeExpression
-                                                                additiveExpression
-                                                                  multiplicativeExpression
-                                                                    asExpression
-                                                                      comparisonWithLiteralRightSide
-                                                                        prefixUnaryExpression
-                                                                          postfixUnaryExpression
-                                                                            primaryExpression
-                                                                              callableReference
-                                                                                COLONCOLON("::")
-                                                                                simpleIdentifier
-                                                                                  Identifier("foo")
-                                                                      asOperator
-                                                                        AS("as")
-                                                                      type
-                                                                        functionType
-                                                                          functionTypeParameters
-                                                                            LPAREN("(")
-                                                                            type
-                                                                              typeReference
-                                                                                userType
-                                                                                  simpleUserType
-                                                                                    simpleIdentifier
-                                                                                      Identifier("String")
-                                                                            RPAREN(")")
-                                                                          ARROW("->")
-                                                                          type
-                                                                            typeReference
-                                                                              userType
-                                                                                simpleUserType
-                                                                                  simpleIdentifier
-                                                                                    Identifier("Unit")
-                                            RPAREN(")")
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        valueArgument
+                          expression
+                            disjunction
+                              conjunction
+                                equality
+                                  comparison
+                                    genericCallLikeComparison
+                                      infixOperation
+                                        elvisExpression
+                                          infixFunctionCall
+                                            rangeExpression
+                                              additiveExpression
+                                                multiplicativeExpression
+                                                  asExpression
+                                                    prefixUnaryExpression
+                                                      postfixUnaryExpression
+                                                        primaryExpression
+                                                          callableReference
+                                                            COLONCOLON("::")
+                                                            simpleIdentifier
+                                                              Identifier("foo")
+                                                    asOperator
+                                                      AS("as")
+                                                    type
+                                                      functionType
+                                                        functionTypeParameters
+                                                          LPAREN("(")
+                                                          type
+                                                            typeReference
+                                                              userType
+                                                                simpleUserType
+                                                                  simpleIdentifier
+                                                                    Identifier("String")
+                                                          RPAREN(")")
+                                                        ARROW("->")
+                                                        type
+                                                          typeReference
+                                                            userType
+                                                              simpleUserType
+                                                                simpleIdentifier
+                                                                  Identifier("Unit")
+                        RPAREN(")")
     semis
       EOF("<EOF>")
   EOF("<EOF>")
