@@ -26,8 +26,14 @@ class TestRunner {
         private const val MUTE_MARKER = "MUTE"
         private const val MUTE_PSI_ERRORS_MARKER = "MUTE_PSI_ERRORS"
 
-        private const val FORCE_APPLY_CHANGES = false
-        private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = false
+        private const val FORCE_APPLY_CHANGES = true
+        private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = true
+
+        /*
+         * It can be used to run specific tests instead of running all ones
+         * For instance, `Regex("""secondEmptyCatch\.kt$""")`
+         */
+        private val testPathFilter: Regex? = null
 
         private val antlrTreeFileHeaderPattern =
                 Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
@@ -39,7 +45,7 @@ class TestRunner {
         @com.intellij.testFramework.Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getTestFiles(klass: Class<*>) = File("./testData").let { testsDir ->
-            testsDir.walkTopDown().filter { it.extension == "kt" }.map {
+            testsDir.walkTopDown().filter { it.extension == "kt" && (testPathFilter == null || it.path.contains(testPathFilter)) }.map {
                 arrayOf(it.relativeTo(testsDir).path.replace("/", "$"))
             }.toList()
         }
