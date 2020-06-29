@@ -1,7 +1,5 @@
 /**
- * Kotlin syntax grammar in ANTLR4 notation
- *
- * The grammar corresponds to Kotlin version 1.2.41
+ * The Kotlin syntax grammar in ANTLR4 notation
  */
 
 parser grammar KotlinParser;
@@ -108,7 +106,7 @@ explicitDelegation
     ;
 
 typeParameters
-    : '<' NL* typeParameter (NL* ',' NL* typeParameter)* NL* '>'
+    : '<' NL* typeParameter (NL* ',' NL* typeParameter)* (NL* ',')? NL* '>'
     ;
 
 typeParameter
@@ -148,7 +146,7 @@ companionObject
     ;
 
 functionValueParameters
-    : '(' NL* (functionValueParameter (NL* ',' NL* functionValueParameter)*)? NL* ')'
+    : '(' NL* (functionValueParameter (NL* ',' NL* functionValueParameter)* (NL* ',')?)? NL* ')'
     ;
 
 functionValueParameter
@@ -174,7 +172,7 @@ variableDeclaration
     ;
 
 multiVariableDeclaration
-    : '(' NL* variableDeclaration (NL* ',' NL* variableDeclaration)* NL* ')'
+    : '(' NL* variableDeclaration (NL* ',' NL* variableDeclaration)* (NL* ',')? NL* ')'
     ;
 
 propertyDeclaration
@@ -198,11 +196,11 @@ getter
 
 setter
     : modifiers? 'set'
-    | modifiers? 'set' NL* '(' NL* parameterWithOptionalType NL* ')' (NL* ':' NL* type)? NL* functionBody
+    | modifiers? 'set' NL* '(' NL* parameterWithOptionalType (NL* ',')? NL* ')' (NL* ':' NL* type)? NL* functionBody
     ;
 
 parametersWithOptionalType
-    : '(' NL* (parameterWithOptionalType (NL* ',' NL* parameterWithOptionalType)*)? NL* ')'
+    : '(' NL* (parameterWithOptionalType (NL* ',' NL* parameterWithOptionalType)* (NL* ',')?)? NL* ')'
     ;
 
 parameterWithOptionalType
@@ -293,7 +291,7 @@ functionType
     ;
 
 functionTypeParameters
-    : '(' NL* (parameter | type)? (NL* ',' NL* (parameter | type))* NL* ')'
+    : '(' NL* (parameter | type)? (NL* ',' NL* (parameter | type))* (NL* ',')? NL* ')'
     ;
 
 parenthesizedType
@@ -315,7 +313,7 @@ parenthesizedUserType
 // SECTION: statements
 
 statements
-    : (statement (semis statement)* semis?)?
+    : (statement (semis statement)*)? semis?
     ;
 
 statement
@@ -391,7 +389,11 @@ equality
     ;
 
 comparison
-    : infixOperation (comparisonOperator NL* infixOperation)?
+    : genericCallLikeComparison (comparisonOperator NL* genericCallLikeComparison)*
+    ;
+
+genericCallLikeComparison
+    : infixOperation callSuffix*
     ;
 
 infixOperation
@@ -423,7 +425,7 @@ multiplicativeExpression
     ;
 
 asExpression
-    : prefixUnaryExpression (NL* asOperator NL* type)?
+    : prefixUnaryExpression (NL* asOperator NL* type)*
     ;
 
 prefixUnaryExpression
@@ -474,7 +476,7 @@ assignableSuffix
     ;
 
 indexingSuffix
-    : '[' NL* expression (NL* ',' NL* expression)* NL* ']'
+    : '[' NL* expression (NL* ',' NL* expression)* (NL* ',')? NL* ']'
     ;
 
 navigationSuffix
@@ -491,12 +493,12 @@ annotatedLambda
     ;
 
 typeArguments
-    : '<' NL* typeProjection (NL* ',' NL* typeProjection)* NL* '>'
+    : '<' NL* typeProjection (NL* ',' NL* typeProjection)* (NL* ',')? NL* '>'
     ;
 
 valueArguments
     : '(' NL* ')'
-    | '(' NL* valueArgument (NL* ',' NL* valueArgument)* NL* ')'
+    | '(' NL* valueArgument (NL* ',' NL* valueArgument)* (NL* ',')? NL* ')'
     ;
 
 valueArgument
@@ -525,7 +527,7 @@ parenthesizedExpression
     ;
 
 collectionLiteral
-    : '[' NL* expression (NL* ',' NL* expression)* NL* ']'
+    : '[' NL* expression (NL* ',' NL* expression)* (NL* ',')? NL* ']'
     | '[' NL* ']'
     ;
 
@@ -580,7 +582,7 @@ lambdaLiteral
     ;
 
 lambdaParameters
-    : lambdaParameter (NL* ',' NL* lambdaParameter)*
+    : lambdaParameter (NL* ',' NL* lambdaParameter)* (NL* ',')?
     ;
 
 lambdaParameter
@@ -622,12 +624,16 @@ ifExpression
     | 'if' NL* '(' NL* expression NL* ')' NL* controlStructureBody? NL* ';'? NL* 'else' NL* (controlStructureBody | ';')
     ;
 
+whenSubject
+    : '(' (annotation* NL* 'val' NL* variableDeclaration NL* '=' NL*)? expression ')'
+    ;
+
 whenExpression
-    : 'when' NL* ('(' expression ')')? NL* '{' NL* (whenEntry NL*)* NL* '}'
+    : 'when' NL* whenSubject? NL* '{' NL* (whenEntry NL*)* NL* '}'
     ;
 
 whenEntry
-    : whenCondition (NL* ',' NL* whenCondition)* NL* '->' NL* controlStructureBody semi?
+    : whenCondition (NL* ',' NL* whenCondition)* (NL* ',')? NL* '->' NL* controlStructureBody semi?
     | 'else' NL* '->' NL* controlStructureBody semi?
     ;
 
@@ -650,7 +656,7 @@ tryExpression
     ;
 
 catchBlock
-    : 'catch' NL* '(' annotation* simpleIdentifier ':' type ')' NL* block
+    : 'catch' NL* '(' annotation* simpleIdentifier ':' type (NL* ',')? ')' NL* block
     ;
 
 finallyBlock
