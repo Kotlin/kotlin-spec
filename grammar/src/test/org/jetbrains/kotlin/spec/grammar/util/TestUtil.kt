@@ -1,6 +1,5 @@
 package org.jetbrains.kotlin.spec.grammar.util
 
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.CharsetToolkit
@@ -35,13 +34,13 @@ class DiagnosticTestData(
 ) : TestData(sourceCode, sourceCodeHash, antlrParseTreeText)
 
 object TestUtil {
-    const val TESTS_DIR = "./testData"
+    private const val TESTS_DIR = "./testData"
 
     val ls: String = System.lineSeparator()
 
     private fun String.trimTrailingWhitespacesAndAddNewlineAtEOF() =
-            split(ls).map(String::trimEnd).joinToString(ls).let {
-                result -> if (result.endsWith(ls)) result else result + ls
+            split(ls).joinToString(ls, transform = String::trimEnd).let { result ->
+                if (result.endsWith(ls)) result else result + ls
             }
 
     fun assertEqualsToFile(message: String, expectedFile: File, actual: String, forceApplyChanges: Boolean) {
@@ -55,10 +54,10 @@ object TestUtil {
         val expected = FileUtil.loadFile(expectedFile, CharsetToolkit.UTF8, true)
         val expectedText = StringUtil.convertLineSeparators(expected.trim { it <= ' ' }).trimTrailingWhitespacesAndAddNewlineAtEOF()
 
-        if (!Comparing.equal(expectedText, actualText)) {
+        if (expectedText != actualText) {
             if (forceApplyChanges) {
                 FileUtil.writeToFile(expectedFile, actualText)
-                println("Changes are forced applied for $expectedFile")
+                println("Changes are applied forcibly for $expectedFile")
                 assumeTrue(false)
             } else {
                 throw FileComparisonFailure(message + ": " + expectedFile.name, expected, actual, expectedFile.absolutePath)
