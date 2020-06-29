@@ -15,10 +15,10 @@ fun main() {
     ""<"">("")
     ""<true>("")
     true<"">("")
-    true<''>('')
-    ''<''>('')
-    ''<"">('')
-    ''<null>('')
+    true<'a'>('b')
+    'a'<'b'>('c')
+    'a'<"">('b')
+    'a'<null>('b')
 
     1L<5f>(1L)
     0<0>(0)
@@ -43,12 +43,12 @@ fun main() {
     null<null>null
 
     ""<"">""
-    ""<true>''
+    ""<true>'a'
     true<"">false
-    true<''>''
-    ''<''>0
-    ''<"">false
-    ''<null>''
+    true<'a'>'b'
+    'a'<'b'>0
+    'a'<"">false
+    'a'<null>'b'
 
     1L<5f>null
     0<0>false

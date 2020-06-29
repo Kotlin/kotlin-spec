@@ -389,7 +389,11 @@ equality
     ;
 
 comparison
-    : infixOperation (comparisonOperator NL* infixOperation)?
+    : genericCallLikeComparison (comparisonOperator NL* genericCallLikeComparison)*
+    ;
+
+genericCallLikeComparison
+    : infixOperation callSuffix*
     ;
 
 infixOperation
@@ -421,11 +425,7 @@ multiplicativeExpression
     ;
 
 asExpression
-    : comparisonWithLiteralRightSide (NL* asOperator NL* type)?
-    ;
-
-comparisonWithLiteralRightSide
-    : prefixUnaryExpression (NL* LANGLE NL* literalConstant NL* RANGLE NL* (expression | parenthesizedExpression))*
+    : prefixUnaryExpression (NL* asOperator NL* type)?
     ;
 
 prefixUnaryExpression
