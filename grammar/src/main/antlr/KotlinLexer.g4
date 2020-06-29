@@ -225,11 +225,11 @@ BinLiteral
     ;
 
 UnsignedLiteral
-    : (IntegerLiteral | HexLiteral | BinLiteral) [uU] 'L'?
+    : (IntegerLiteral | HexLiteral | BinLiteral) [uU] [lL]?
     ;
 
 LongLiteral
-    : (IntegerLiteral | HexLiteral | BinLiteral) 'L'
+    : (IntegerLiteral | HexLiteral | BinLiteral) [lL]
     ;
 
 BooleanLiteral: 'true'| 'false';
