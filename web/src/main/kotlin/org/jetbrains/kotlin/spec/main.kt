@@ -26,7 +26,9 @@ fun init() {
     Sidebar.init()
 
     `$`("h3, h4, h5").each { _, el ->
-        SpecTestsLoader.insertLoadIcon(`$`(el), mode)
+        if (`$`(el).attr("id") != "feedback") {
+            SpecTestsLoader.insertLoadIcon(`$`(el), mode)
+        }
     }
 
     if (shouldBeShowedMarkup) {
