@@ -10,16 +10,16 @@ val jsBuildDir = "$resourcesBuildDir/js"
 tasks.create<Copy>("copyStatic") {
     group = "internal"
 
-    from("$projectDir/front-end/resources")
+    from("$projectDir/web/resources")
     into(resourcesBuildDir)
 }
 
 tasks.create<Copy>("copyBuiltJs") {
     group = "internal"
 
-    mustRunAfter("front-end:webpack-bundle")
+    mustRunAfter("web:webpack-bundle")
 
-    from("$projectDir/front-end/build/js")
+    from("$projectDir/web/build/js")
     into(jsBuildDir)
 }
 
@@ -46,7 +46,7 @@ tasks.create<Copy>("copyStubIndexToRedirectToIntroduction") {
 
     mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
 
-    from("$projectDir/front-end/resources/html")
+    from("$projectDir/web/resources/html")
     into(htmlBuildDir)
 }
 
@@ -54,7 +54,7 @@ tasks.create("buildJs") {
     group = "internal"
 
     dependsOn("copyStatic")
-    dependsOn("front-end:webpack-bundle")
+    dependsOn("web:webpack-bundle")
     dependsOn("copyBuiltJs")
 
     doFirst {
@@ -70,7 +70,7 @@ tasks.create("buildWeb") {
     dependsOn("copyHtml")
     dependsOn("buildJs")
 
-    finalizedBy("front-end:clean", "docs:clean")
+    finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create("buildWebFullOnly") {
@@ -97,13 +97,13 @@ tasks.create("buildPdf") {
     dependsOn("docs:buildPdfBySections")
     dependsOn("copyPdf")
 
-    finalizedBy("front-end:clean", "docs:clean")
+    finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create<Delete>("clean") {
     group = "build"
 
-    dependsOn("front-end:clean")
+    dependsOn("web:clean")
     dependsOn("docs:clean")
 
     delete("$projectDir/build")

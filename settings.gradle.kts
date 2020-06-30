@@ -21,7 +21,7 @@ pluginManagement {
 val withGrammarProject: String? by settings
 
 include("docs")
-include("front-end")
+include("web")
 
 if (withGrammarProject?.toBoolean() != false) {
     include("grammar")
