@@ -86,6 +86,8 @@ object Sidebar {
         `$`(".icon-menu").on("click") { _, _ -> showSidebar() }
 
         installSearchBar()
+
+        addLinkToMainWebsitePage()
     }
 
     private var currSearchString = ""
@@ -126,5 +128,9 @@ object Sidebar {
         })
 
         tocRoot.prepend(searchBar)
+    }
+
+    private fun addLinkToMainWebsitePage() {
+        `$`("$TOC ul:first").prepend("<a href=\"http://kotlinlang.org\" class=\"toc-element toggled\">Kotlin website's main page</a>")
     }
 }
