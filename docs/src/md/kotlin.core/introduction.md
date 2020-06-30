@@ -1,6 +1,6 @@
 ## Introduction {-}
 
-Kotlin took inspiration from many programming languages, including (but not limited to) Java, C#, Groovy and TypeScript.
+Kotlin took inspiration from many programming languages, including (but not limited to) Java, C# and Groovy.
 One of the main ideas behind Kotlin is being *pragmatic*, i.e., being a programming language useful for day-to-day development, which helps the users get the job done via its features and its tools.
 Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.
 
@@ -28,7 +28,28 @@ These parts include such important things as language [expressions], [declaratio
 
 Platform-specific parts of Kotlin and its multiplatform capabilities will be covered in their respective sub-specifications, i.e., Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
+### Acknowledgements {-}
+
+We would like to thank the following people for their invaluable help and feedback during the writing of this specification.
+
+> Note: the format is "First name Last name", ordered by last name
+
+* Andrey Breslav
+* Stanislav Erokhin
+* Dmitrii Petrov
+* Victor Petukhov
+* Dmitry Savvinov
+* Anastasia Spaseeva
+* Mikhail Zarechenskii
+* Denis Zharkov
+
 ### Feedback {-}
 
 If you have any feedback for this document, feel free to create an issue at our [GitHub](https://github.com/Kotlin/kotlin-spec/issues).
 In case you prefer to use email, you can use [marat.akhin@jetbrains.com](mailto:marat.akhin@jetbrains.com) and [mikhail.belyaev@jetbrains.com](mailto:mikhail.belyaev@jetbrains.com).
+
+### Reference {-}
+
+If one needs to reference this specification, they may use the following:
+
+> Marat Akhin, Mikhail Belyaev et al. "Kotlin language specification: Kotlin/Core", JetBrains / JetBrains Research, 2020
