@@ -438,6 +438,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
 <ul>
 <li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver" id="toc-element-calls-with-an-explicit-super-form-receiver" class="toc-element">Calls with an explicit super-form receiver</a></li>
 </ul></li>
 <li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
 <li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
@@ -811,14 +812,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lineStringLiteral-pasted-33" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
+<dd><span class="sentence"><code>'&quot;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <code>'&quot;'</code></span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-multiLineStringLiteral-pasted-34" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
+<dd><span class="sentence"><code>'&quot;&quot;&quot;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <code>'&quot;'</code>} <em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
@@ -834,7 +835,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lineStringExpression-pasted-36" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
+<dd><span class="sentence"><code>'${'</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
 </dd>
 </dl>
 </div>
@@ -842,7 +843,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>multiLineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
-| <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em><br />
+| <code>'&quot;'</code><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrRef">MultiLineStrRef</a></em></span>
 </dd>
 </dl>
@@ -850,7 +851,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-multiLineStringExpression-pasted-38" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />
+<dd><span class="sentence"><code>'${'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
@@ -916,6 +917,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <em><a href="syntax-and-grammar.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
 <code>':'</code><br />
 <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em><br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 <code>')'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-block">block</a></em></span>
@@ -1030,7 +1032,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>whenExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'when'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
-[<code>'('</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>')'</code>]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-whenSubject">whenSubject</a></em>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'{'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
@@ -1043,7 +1045,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-whenEntry-pasted-44" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
 | (<code>'else'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
 </dd>
 </dl>
@@ -1317,7 +1319,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-comparison-pasted-52" class="grammar-rule">
 <dl>
 <dt><strong><em>comparison</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-infixOperation">infixOperation</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-infixOperation">infixOperation</a></em>]</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-genericCallLikeComparison">genericCallLikeComparison</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-genericCallLikeComparison">genericCallLikeComparison</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -1545,7 +1547,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-asExpression-pasted-63" class="grammar-rule">
 <dl>
 <dt><strong><em>asExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-asOperator">asOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>]</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-asOperator">asOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -1727,7 +1729,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>postfixUnaryOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'++'</code><br />
 | <code>'--'</code><br />
-| (<em><a href="syntax-and-grammar.html#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-excl">excl</a></em>)</span>
+| (<code>'!'</code> <em><a href="syntax-and-grammar.html#grammar-rule-excl">excl</a></em>)</span>
 </dd>
 </dl>
 </div>
@@ -1816,6 +1818,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>']'</code></span>
 </dd>
@@ -1882,7 +1885,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>valueArguments</em>:</strong></dt>
 <dd><span class="sentence">(<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
-| (<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
+| (<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
 </dd>
 </dl>
 </div>
@@ -1893,6 +1896,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-typeProjection">typeProjection</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-typeProjection">typeProjection</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'&gt;'</code></span>
 </dd>
@@ -2248,7 +2252,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lambdaParameters-pasted-87" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameters</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]</span>
 </dd>
 </dl>
 </div>
@@ -2523,10 +2527,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Super-forms are special kind of expression which can only be used as receivers in a <a href="expressions.html#call-and-property-access-expressions">call or property access expression</a>. </span><span class="sentence">Any use of super-form expression in any other context is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour. </span><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error. </span><span class="sentence">If there are several candidates available for the immediate supertype and <a href="overload-resolution.html#overload-resolution">overload resolution</a> is performed, abstract declarations are not considered valid candidates for this process.</span></p>
+<p><span class="sentence">Super-forms are used in classifier declarations to access implementations from the immediate supertypes without invoking overriding behaviour.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the <strong>single</strong> immediate supertype of the currently declared classifier. </span><span class="sentence">In order to access other supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
+<p><span class="sentence">If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The basic form of this expression, denoted by <code>super</code> keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of <a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver">overload resolution</a>. </span><span class="sentence">In order to access a specific supertype implementations, extended <code>super</code> expressions are used. </span><span class="sentence">These may be any of the following:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>super&lt;Klazz&gt;</code>, where <code>Klazz</code> is a name of one of the immediate supertypes of the currently declared classifier, refers to that supertype and its implementations;</span></li>
@@ -2564,7 +2571,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb20-19" title="19"><span class="kw">class</span> <span class="dt">D</span> <span class="op">:</span> <span class="dt">C</span><span class="op">(),</span> <span class="dt">A</span><span class="op">,</span> <span class="dt">B</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb20-20" title="20">    init <span class="op">{</span></a>
 <a class="sourceLine" id="cb20-21" title="21">        <span class="co">// Error: ambiguity as several immediate supertypes</span></a>
-<a class="sourceLine" id="cb20-22" title="22">        <span class="co">//   are available here</span></a>
+<a class="sourceLine" id="cb20-22" title="22">        <span class="co">//   with callable `foo` are available here</span></a>
 <a class="sourceLine" id="cb20-23" title="23">        <span class="co">// super.foo()</span></a>
 <a class="sourceLine" id="cb20-24" title="24">        <span class="kw">super</span>&lt;C&gt;.foo() <span class="co">// &quot;C&quot;</span></a>
 <a class="sourceLine" id="cb20-25" title="25">        <span class="kw">super</span>&lt;B&gt;.foo() <span class="co">// &quot;B&quot;</span></a>

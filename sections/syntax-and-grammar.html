@@ -438,6 +438,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
 <ul>
 <li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#calls-with-an-explicit-super-form-receiver" id="toc-element-calls-with-an-explicit-super-form-receiver" class="toc-element">Calls with an explicit super-form receiver</a></li>
 </ul></li>
 <li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
 <li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
@@ -2166,7 +2167,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>classDeclaration</em>:</strong></dt>
 <dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-modifiers">modifiers</a></em>]<br />
-(<code>'class'</code> | <code>'interface'</code>)<br />
+(<code>'class'</code> | ([<code>'fun'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}] <code>'interface'</code>))<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-typeParameters">typeParameters</a></em>]<br />
@@ -2200,7 +2201,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>classParameters</em>:</strong></dt>
 <dd><span class="sentence"><code>'('</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
-[<em><a href="syntax-and-grammar.html#grammar-rule-classParameter">classParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classParameter">classParameter</a></em>}]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-classParameter">classParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classParameter">classParameter</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>')'</code></span>
 </dd>
@@ -2269,6 +2270,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-typeParameter">typeParameter</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-typeParameter">typeParameter</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'&gt;'</code></span>
 </dd>
@@ -2342,7 +2344,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>functionValueParameters</em>:</strong></dt>
 <dd><span class="sentence"><code>'('</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
-[<em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em>}]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>')'</code></span>
 </dd>
@@ -2394,6 +2396,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>')'</code></span>
 </dd>
@@ -2434,7 +2437,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>setter</em>:</strong></dt>
 <dd><span class="sentence">([<em><a href="syntax-and-grammar.html#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code>)<br />
-| ([<em><a href="syntax-and-grammar.html#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-functionBody">functionBody</a></em>)</span>
+| ([<em><a href="syntax-and-grammar.html#grammar-rule-modifiers">modifiers</a></em>] <code>'set'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-functionBody">functionBody</a></em>)</span>
 </dd>
 </dl>
 </div>
@@ -2443,7 +2446,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>parametersWithOptionalType</em>:</strong></dt>
 <dd><span class="sentence"><code>'('</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
-[<em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em>}]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-parameterWithOptionalType">parameterWithOptionalType</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>')'</code></span>
 </dd>
@@ -2612,6 +2615,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 [<em><a href="syntax-and-grammar.html#grammar-rule-parameter">parameter</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>]<br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax-and-grammar.html#grammar-rule-parameter">parameter</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>)}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>')'</code></span>
 </dd>
@@ -2646,7 +2650,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-statements" class="grammar-rule">
 <dl>
 <dt><strong><em>statements</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em>} [<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em>]]</span>
+<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-statement">statement</a></em>}] [<em><a href="syntax-and-grammar.html#grammar-rule-semis">semis</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -2700,7 +2704,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <code>'('</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em>}<br />
 (<em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em>)<br />
-<em><a href="syntax-and-grammar.html#grammar-rule-IN">IN</a></em><br />
+<code>'in'</code><br />
 <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 <code>')'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
@@ -2786,7 +2790,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-comparison" class="grammar-rule">
 <dl>
 <dt><strong><em>comparison</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-infixOperation">infixOperation</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-infixOperation">infixOperation</a></em>]</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-genericCallLikeComparison">genericCallLikeComparison</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-comparisonOperator">comparisonOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-genericCallLikeComparison">genericCallLikeComparison</a></em>}</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-genericCallLikeComparison" class="grammar-rule">
+<dl>
+<dt><strong><em>genericCallLikeComparison</em>:</strong></dt>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-infixOperation">infixOperation</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-callSuffix">callSuffix</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -2842,7 +2853,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-asExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>asExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-asOperator">asOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>]</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-prefixUnaryExpression">prefixUnaryExpression</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-asOperator">asOperator</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -2936,6 +2947,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>']'</code></span>
 </dd>
@@ -2970,6 +2982,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-typeProjection">typeProjection</a></em><br />
 {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-typeProjection">typeProjection</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'&gt;'</code></span>
 </dd>
@@ -2979,7 +2992,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>valueArguments</em>:</strong></dt>
 <dd><span class="sentence">(<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)<br />
-| (<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
+| (<code>'('</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArgument">valueArgument</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>')'</code>)</span>
 </dd>
 </dl>
 </div>
@@ -3029,7 +3042,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-collectionLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>collectionLiteral</em>:</strong></dt>
-<dd><span class="sentence">(<code>'['</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>']'</code>)<br />
+<dd><span class="sentence">(<code>'['</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>']'</code>)<br />
 | (<code>'['</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>']'</code>)</span>
 </dd>
 </dl>
@@ -3043,7 +3056,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 | <em><a href="syntax-and-grammar.html#grammar-rule-BinLiteral">BinLiteral</a></em><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-CharacterLiteral">CharacterLiteral</a></em><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-RealLiteral">RealLiteral</a></em><br />
-| <em><a href="syntax-and-grammar.html#grammar-rule-NullLiteral">NullLiteral</a></em><br />
+| <code>'null'</code><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-LongLiteral">LongLiteral</a></em><br />
 | <em><a href="#grammar-rule-UnsignedLiteral">UnsignedLiteral</a></em></span>
 </dd>
@@ -3060,14 +3073,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lineStringLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-QUOTE_OPEN">QUOTE_OPEN</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-QUOTE_CLOSE">QUOTE_CLOSE</a></em></span>
+<dd><span class="sentence"><code>'&quot;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-lineStringContent">lineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-lineStringExpression">lineStringExpression</a></em>} <code>'&quot;'</code></span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-multiLineStringLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringLiteral</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_OPEN">TRIPLE_QUOTE_OPEN</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
+<dd><span class="sentence"><code>'&quot;&quot;&quot;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringContent">multiLineStringContent</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-multiLineStringExpression">multiLineStringExpression</a></em> | <code>'&quot;'</code>} <em><a href="syntax-and-grammar.html#grammar-rule-TRIPLE_QUOTE_CLOSE">TRIPLE_QUOTE_CLOSE</a></em></span>
 </dd>
 </dl>
 </div>
@@ -3083,7 +3096,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lineStringExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>lineStringExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-LineStrExprStart">LineStrExprStart</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
+<dd><span class="sentence"><code>'${'</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>'}'</code></span>
 </dd>
 </dl>
 </div>
@@ -3091,7 +3104,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dl>
 <dt><strong><em>multiLineStringContent</em>:</strong></dt>
 <dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrText">MultiLineStrText</a></em><br />
-| <em><a href="#grammar-rule-MultiLineStringQuote">MultiLineStringQuote</a></em><br />
+| <code>'&quot;'</code><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrRef">MultiLineStrRef</a></em></span>
 </dd>
 </dl>
@@ -3099,7 +3112,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-multiLineStringExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>multiLineStringExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-MultiLineStrExprStart">MultiLineStrExprStart</a></em><br />
+<dd><span class="sentence"><code>'${'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
@@ -3118,7 +3131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-lambdaParameters" class="grammar-rule">
 <dl>
 <dt><strong><em>lambdaParameters</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em>}</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-lambdaParameter">lambdaParameter</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]</span>
 </dd>
 </dl>
 </div>
@@ -3183,12 +3196,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-whenSubject" class="grammar-rule">
+<dl>
+<dt><strong><em>whenSubject</em>:</strong></dt>
+<dd><span class="sentence"><code>'('</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'val'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'='</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}] <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>')'</code></span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-whenExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>whenExpression</em>:</strong></dt>
 <dd><span class="sentence"><code>'when'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
-[<code>'('</code> <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em> <code>')'</code>]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-whenSubject">whenSubject</a></em>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'{'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
@@ -3201,7 +3221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="grammar-rule-whenEntry" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
 | (<code>'else'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
 </dd>
 </dl>
@@ -3246,6 +3266,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <em><a href="syntax-and-grammar.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em><br />
 <code>':'</code><br />
 <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em><br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
 <code>')'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-block">block</a></em></span>
@@ -3370,14 +3391,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <dt><strong><em>postfixUnaryOperator</em>:</strong></dt>
 <dd><span class="sentence"><code>'++'</code><br />
 | <code>'--'</code><br />
-| (<em><a href="syntax-and-grammar.html#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-excl">excl</a></em>)</span>
+| (<code>'!'</code> <em><a href="syntax-and-grammar.html#grammar-rule-excl">excl</a></em>)</span>
 </dd>
 </dl>
 </div>
 <div id="grammar-rule-excl" class="grammar-rule">
 <dl>
 <dt><strong><em>excl</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-EXCL_NO_WS">EXCL_NO_WS</a></em><br />
+<dd><span class="sentence"><code>'!'</code><br />
 | <em><a href="syntax-and-grammar.html#grammar-rule-EXCL_WS">EXCL_WS</a></em></span>
 </dd>
 </dl>
