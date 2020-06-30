@@ -1,7 +1,7 @@
 source directories.sh
 source settings.sh
 
-init_settings "html" "section"
+init_settings "html"
 
 export PROJECT_DIR
 export TODO_OPTION
@@ -27,7 +27,7 @@ gpp -H ./index.md \
 && bash ${FILTERS_DIR}/inlineKatexFilter.sh html <$TMP_DIR/p1 >$TMP_DIR/p0 \
 && bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR --generate-toc <$TMP_DIR/p0
 
-mkdir -p ${BUILD_DIR}/html/sections
+mkdir -p ${BUILD_DIR}/html
 
 for f in $TMP_DIR/*.json;
 do \
@@ -36,7 +36,7 @@ do \
     ${COMMON_PANDOC_OPTIONS} \
     $f \
     ${HTML_ASSETS_OPTIONS} \
-    -o ${BUILD_DIR}/html/sections/"$(basename "$f" .json).html";
+    -o ${BUILD_DIR}/html/"$(basename "$f" .json).html";
 done
 
 rm -rf $TMP_DIR
