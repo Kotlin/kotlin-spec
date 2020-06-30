@@ -23,21 +23,9 @@ PREAMBLE_OPTIONS=""
 
 init_settings() {
     local type=$1
-    local mode=$2
     if [ "${type}" == "pdf" ]; then
         PREAMBLE_OPTIONS="-H ./preamble.tex"
     elif [ "${type}" == "html" ]; then
-      if [ "${mode}" == "section" ]; then
-        PREAMBLE_OPTIONS="-H ./sectionPreamble.md"
-      else
-        PREAMBLE_OPTIONS="-H ./preamble.md"
-      fi
-    fi
-
-    if [ "${mode}" == "section" ]; then
-        HTML_ASSETS_OPTIONS="\
-            -c ../resources/css/main.css \
-            -c ../resources/js/katex/katex.min.css \
-            --katex=../resources/js/katex/"
+      PREAMBLE_OPTIONS="-H ./preamble.md"
     fi
 }

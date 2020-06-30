@@ -14,15 +14,14 @@ import kotlin.js.Promise
 class SpecTestsLoader {
     private val loader = LoaderByTestsMapFile()
 
-
     companion object {
         private const val EXCEPTED_SELECTORS = ".grammar-rule"
         private val paragraphSelector = listOf(".paragraph", "DL", "UL", "OL").joinToString(",")
         private val sectionTagNames = listOf("H1", "H2", "H3", "H4", "H5")
 
-        private const val LOADING_ICON_PATH = "../resources/images/loading.gif"
+        private const val LOADING_ICON_PATH = "./resources/images/loading.gif"
         private const val LOADING_ICON_HTML = "<img src=\"$LOADING_ICON_PATH\" />"
-        private const val SET_BRANCH_ICON = "../resources/images/set-branch.png"
+        private const val SET_BRANCH_ICON = "./resources/images/set-branch.png"
 
         private const val LOAD_TESTS_TEXT = "Load tests"
         private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
