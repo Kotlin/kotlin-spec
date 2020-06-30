@@ -55,6 +55,7 @@ dependencies {
     compile("ru.spbstu:simple-diagrammer:0.0.0.6")
     compile("com.github.ajalt:clikt:1.7.0")
     compile("com.zaxxer:nuprocess:2.0.1")
+    compile("org.antlr:antlr4:4.+")
 }
 
 tasks.withType<KotlinCompile> {
@@ -88,15 +89,16 @@ tasks.create<ShellExec>("buildPdfBySections") {
 }
 
 tasks.create<JavaExec>("convertGrammar") {
-    val inputFile = "./src/md/kotlin.core/Grammar.g4"
+    val grammarsDir = "$rootDir/grammar/src/main/antlr"
+    val lexerGrammar = "KotlinLexer.g4"
+    val parserGrammar = "KotlinParser.g4"
     val outputFile = "./src/md/kotlin.core/grammar.generated.md"
 
-    inputs.file(inputFile)
     outputs.file(outputFile)
 
     classpath = java.sourceSets["main"].runtimeClasspath
     main = "org.jetbrains.kotlin.spec.ConvertGrammarKt"
-    args = listOf("-i", inputFile, "-o", outputFile)
+    args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
 
 tasks.create<ShellExec>("buildHtml") {
