@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        main: path.resolve(__dirname, "./build/kotlin-js-min/main/front-end")
+        main: path.resolve(__dirname, "./build/kotlin-js-min/main/web")
     },
     output: {
         path: path.resolve(__dirname, "./build/js"),
