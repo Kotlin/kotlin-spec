@@ -93,21 +93,23 @@ object Sidebar {
 
     private fun installSearchBar() {
         val tocRoot = `$`(TOC)
+        val searchBar = document.createElement("input") as? HTMLInputElement ?: return
 
-        val searchBar = document.createElement("input") as HTMLInputElement
         searchBar.id = "toc-search-bar"
         searchBar.placeholder = "Search..."
+        searchBar.title = "Currently, only exact matches is supported"
 
-        searchBar.addEventListener("keyup", callback = cb@{ e ->
-            if ((e as KeyboardEvent).which != 13) return@cb
+        searchBar.addEventListener("keyup", callback = cb@ { e ->
+            // If key isn't "Enter" then return
+            if ((e as? KeyboardEvent)?.which != 13) return@cb
 
-            val searchString = (e.target as HTMLInputElement).value;
+            val searchString = (e.target as? HTMLInputElement)?.value ?: return@cb
 
             if (searchString.isBlank()) return@cb
 
-            val found = `$`("""$TOC .toc-element:contains($searchString)""")
+            val foundItem = `$`("$TOC .toc-element:contains($searchString)")
 
-            if (found.length == 0) return@cb
+            if (foundItem.length == 0) return@cb
 
             if (currSearchString != searchString) {
                 currSearchString = searchString
@@ -115,13 +117,13 @@ object Sidebar {
             }
 
             currResultIdx += 1
-            currResultIdx %= found.length.toInt()
+            currResultIdx %= foundItem.length.toInt()
 
-            val currItem = found.eq(currResultIdx)
+            val currItem = foundItem.eq(currResultIdx)
 
             expandItemsHierarchy(currItem)
             scrollToActiveItem()
-        });
+        })
 
         tocRoot.prepend(searchBar)
     }
