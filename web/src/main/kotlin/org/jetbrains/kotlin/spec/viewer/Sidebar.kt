@@ -99,7 +99,7 @@ object Sidebar {
 
         searchBar.id = "toc-search-bar"
         searchBar.placeholder = "Search..."
-        searchBar.title = "Currently, only exact matches is supported"
+        searchBar.title = "Currently, only exact matches are supported"
 
         searchBar.addEventListener("keyup", callback = cb@ { e ->
             // If key isn't "Enter" then return
