@@ -210,7 +210,7 @@ $\ATS$ takes an important part in how [variable length parameters][Variable leng
 
 > Note: additional details about built-in array types are available [here][Built-in array types-bi].
 
-[Built-in array types-bi]: #built-in-array-types-1
+[Built-in array types-bi]: #built-in-array-types
 
 #### Classifier types
 
