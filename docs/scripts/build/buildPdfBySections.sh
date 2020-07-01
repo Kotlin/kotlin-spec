@@ -26,7 +26,7 @@ gpp -H ./index.md \
 && bash ${FILTERS_DIR}/brokenReferencesReportFilter.sh latex <$TMP_DIR/p0 >$TMP_DIR/p1 \
 && bash ${FILTERS_DIR}/splitSections.sh --output-directory=$TMP_DIR --format=latex <$TMP_DIR/p1
 
-mkdir -p ${BUILD_DIR}/pdf
+mkdir -p ${BUILD_DIR}/pdf/sections
 
 for f in $TMP_DIR/*.json;
 do \
@@ -36,7 +36,7 @@ do \
     $f \
     --variable documentclass=book \
     --number-sections \
-    -o ${BUILD_DIR}/pdf/"$(basename "$f" .json).pdf";
+    -o ${BUILD_DIR}/pdf/sections/"$(basename "$f" .json).pdf";
 done
 
 rm -rf $TMP_DIR
