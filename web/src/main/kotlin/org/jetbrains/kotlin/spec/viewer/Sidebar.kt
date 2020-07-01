@@ -87,6 +87,8 @@ object Sidebar {
 
         installSearchBar()
 
+        addPdfLinks()
+
         addLinkToMainWebsitePage()
     }
 
@@ -131,6 +133,19 @@ object Sidebar {
     }
 
     private fun addLinkToMainWebsitePage() {
-        `$`("$TOC ul:first").prepend("<a href=\"http://kotlinlang.org\" class=\"toc-element toggled\">Kotlin website's main page</a>")
+        `$`("$TOC ul:first").prepend("<a href=\"http://kotlinlang.org\" class=\"toc-element toggled underlined\">Main page</a>")
+    }
+
+    private fun addPdfLinks() {
+        `$`("$TOC ul:first").prepend("<a href=\"./pdf/kotlin-spec.pdf\" target=\"_blank\" class=\"toc-element toggled underlined\">Download full PDF</a>")
+        `$`("$TOC > ul > li > ul > li").each { _, el ->
+            val sectionName = `$`(el).find("> a").attr("href").substringBefore(".html")
+            `$`(el).prepend("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf\"></a>")
+        }
+
+        `$`("h2").each { _, el ->
+            val sectionName = `$`(el).attr("id")
+            `$`(el).after("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\">Download PDF</a>")
+        }
     }
 }
