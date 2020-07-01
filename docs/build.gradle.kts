@@ -84,7 +84,7 @@ tasks.create<ShellExec>("buildPdfBySections") {
         workingDir = File(scriptsDir)
         command = getScriptText("buildPdfBySections")
 
-        Paths.get(pdfBuildDir).toFile().apply { deleteRecursively(); mkdirs() }
+        Paths.get("$pdfBuildDir/sections").toFile().apply { deleteRecursively(); mkdirs() }
     }
 }
 
