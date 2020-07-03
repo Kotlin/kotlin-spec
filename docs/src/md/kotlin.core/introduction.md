@@ -1,6 +1,6 @@
 ## Introduction {-}
 
-Kotlin took inspiration from many programming languages, including (but not limited to) Java, C# and Groovy.
+Kotlin took inspiration from many programming languages, including (but not limited to) Java, Scala, C# and Groovy.
 One of the main ideas behind Kotlin is being *pragmatic*, i.e., being a programming language useful for day-to-day development, which helps the users get the job done via its features and its tools.
 Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.
 
@@ -9,11 +9,11 @@ Currently, as of version 1.4, it supports compilation to the following platforms
 
 * JVM (Java Virtual Machine)
 * JS (JavaScript)
-* Native (native binaries)
+* Native (native binaries for various architectures)
 
 Furthermore, it supports transparent interoperability between different platforms via its Kotlin Multiplatform Project (Kotlin MPP) feature.
 
-The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null type safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., `null` value).
+The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null-safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., `null` value).
 Kotlin also extends its static type system with elements of gradual and flow typing, for better interoperability with other languages and ease of development.
 
 Kotlin is an object-oriented language which also has a lot of functional programming elements.
