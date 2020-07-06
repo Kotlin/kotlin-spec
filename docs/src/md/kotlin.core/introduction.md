@@ -34,7 +34,9 @@ We would like to thank the following people for their invaluable help and feedba
 
 > Note: the format is "First name Last name", ordered by last name
 
+* Zalim Bashorov
 * Andrey Breslav
+* Roman Elizarov
 * Stanislav Erokhin
 * Dmitrii Petrov
 * Victor Petukhov
@@ -42,6 +44,8 @@ We would like to thank the following people for their invaluable help and feedba
 * Anastasia Spaseeva
 * Mikhail Zarechenskii
 * Denis Zharkov
+
+We would also like to thank [Pandoc](https://pandoc.org/), its authors and community, as this specification would be much harder to implement without Pandoc's versatility and support.
 
 ### Feedback {-}
 
