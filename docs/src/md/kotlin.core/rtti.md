@@ -30,7 +30,7 @@ Only runtime-available types may be passed (implicitly or explicitly) as substit
 During these operations, the nullability of the type is checked using reference-equality to `null`, while the rest is performed by accessing the runtime type of a value and comparing it to the supplied runtime-available type.
 
 For all generic types that are not expected to have RTTI for their generic arguments, only "raw" variants of generic types (denoted in code using the 
-star-projected type notation or a special parameter-less notation (TODO: link?)) are runtime-available.
+star-projected type notation or a special parameter-less notation(TODO: link?)) are runtime-available.
 
 > Note: one may say that classifier generics are _partially_ runtime available due to them having information about only the classifier part of the type
 

@@ -590,7 +590,7 @@ A simple function declaration consists of four main parts:
 
 and has a function type $f : (p_1: P_1, \ldots, p_n: P_n) \rightarrow R$.
 
-Parameter list $(p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])$ describes function parameters --- inputs needed to execute the declared function. 
+Parameter list $(p_1: P_1 [= v_1], \ldots, p_n: P_n [= v_n])$ describes function parameters, i.e. inputs needed to execute the declared function. 
 Each parameter $p_i: P_i = v_i$ introduces $p_i$ as a name of value with type $P_i$ available inside function body $b$; therefore, parameters are final and cannot be changed inside the function. 
 A function may have zero or more parameters.
 
