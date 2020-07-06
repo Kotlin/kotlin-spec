@@ -28,6 +28,13 @@ These parts include such important things as language [expressions], [declaratio
 
 Platform-specific parts of Kotlin and its multiplatform capabilities will be covered in their respective sub-specifications, i.e., Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
+### Experimental features {-}
+
+In several cases this specification discusses *experimental* Kotlin features, i.e., features which are still in active development and which may be changed in the future.
+When so, the specification talks about the *current* state of said features, with no guarantees of their future stability (or even existence in the language).
+
+The experimental features are marked as such in the specification to the best of our abilities.
+
 ### Acknowledgements {-}
 
 We would like to thank the following people for their invaluable help and feedback during the writing of this specification.
