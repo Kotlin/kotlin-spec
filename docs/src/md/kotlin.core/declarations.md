@@ -509,7 +509,7 @@ When a classifier type is initialized using a particular secondary constructor $
 
 The initialization order stays the same if any of the entities involved are omitted, in which case the corresponding step is also omitted (e.g., if the object is created using the primary constructor, the body of the secondary one is not invoked).
 
-If any step in the initialization order creates a loop, it is considered to be undefined behavior.
+If any step in the initialization order creates a loop, it is considered to be undefined behaviour.
 
 If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is undefined.
 

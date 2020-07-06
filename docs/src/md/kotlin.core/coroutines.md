@@ -17,7 +17,7 @@ There are almost no additional restrictions: regular functions, extension functi
 
 > Note: platform-specific implementations may extend the restrictions on which kinds of functions may be suspending.
 
-Suspeding functions have a [suspending function type][Suspending function types], also marked using the `suspend` modifier.
+Suspending functions have a [suspending function type][Suspending function types], also marked using the `suspend` modifier.
 
 TODO(`suspend val`?)
 

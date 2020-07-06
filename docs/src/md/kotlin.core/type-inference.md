@@ -487,7 +487,7 @@ For a complex statement $S$ involving (potentially overloaded) callables $C_1, \
 3. For each lambda body $L_1, \ldots, L_N$, the expected constraints on the lambda arguments and/or lambda result type from the selected overload candidates (if any) are added to $Q$, and the overload resolution for all statements in these bodies is performed w.r.t. updated type constraint system $Q$.
    This may result in performing steps 1-3 in a recursive *top-down* fashion for nested lambda literals;
 
-   > Important: in some cases overload resolution may fail to pick a candidate, e.g., because the expected contraints are incomplete, causing the constraint system to be unsound.
+   > Important: in some cases overload resolution may fail to pick a candidate, e.g., because the expected constraints are incomplete, causing the constraint system to be unsound.
    > If this happens, it is implementation-defined whether the compiler continues the top-down analysis or stops abruptly.
 
 4. When the top-down analysis is done and the overload candidates are fixed, local type inference is performed on each lambda body and each statement *bottom-up*, from the most inner lambda literals to the outermost ones, processing one lambda literal at a time, with the following additions.

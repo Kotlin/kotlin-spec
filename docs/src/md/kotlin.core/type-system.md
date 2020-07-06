@@ -290,7 +290,7 @@ To represent a well-formed parameterized type, $T[A_1, \ldots, A_n]$ should sati
 * $\forall i \in [1,n]: A_i$ must be well-formed concrete type
 * $\forall i \in [1,n]:$ variance of $A_i$ does not [contradict][Use-site variance] variance of $F_i$
 * $\forall i \in [1,n]: A_i <: \tau U_i$, where $U_i$ is the upper bound for $F_i$ and captured substitution $\tau : F_1 = K_1, \ldots, F_n = K_n$ manipulates [captured types][Type capturing].
-* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T\langle \tau \rangle : \tau S_1, \ldots, \tau S_m) = \{\tau S_1, \ldots, \tau S_m\} \cup \Ss(\tau S_1) \cup \ldots \cup \Ss(\tau S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized claSsifier types] with different type arguments.
+* the transitive closure $\Ss^*(T)$ of the set of type supertypes $\Ss(T\langle \tau \rangle : \tau S_1, \ldots, \tau S_m) = \{\tau S_1, \ldots, \tau S_m\} \cup \Ss(\tau S_1) \cup \ldots \cup \Ss(\tau S_m)$ is *consistent*, i.e., does not contain two [parameterized types][Parameterized classifier types] with different type arguments.
 
 > Example:
 > 
@@ -707,7 +707,7 @@ For the purposes of type system, a suspending function has a *suspending* functi
 This is important for [overload resolution] and [type inference], as it directly influences the types of function values and the applicability of different functions w.r.t. overloading.
 
 Most function values have either non-suspending or suspending function type based on their declarations.
-However, as [lambda literals] do not have any explicitely declared function type, they are considered as possibly being both non-suspending and suspending function type, with the final selection done during [type inference].
+However, as [lambda literals] do not have any explicitly declared function type, they are considered as possibly being both non-suspending and suspending function type, with the final selection done during [type inference].
 
 > Example:
 > 
@@ -826,7 +826,7 @@ Nullability lozenge may also help in establishing subtyping between two types by
 Regular (non-type-variable) types are mapped to nullability lozenge *vertices*, as for them $A$ corresponds to $A!!$, and $A?$ corresponds to $A?$.
 Following the lozenge structure, for regular types $A$ and $B$, as soon as we have established any valid subtyping between two versions of $A$ and $B$, it implies subtyping between all other valid w.r.t. nullability lozenge combinations of versions of types $A$ and $B$.
 
-Type variable types (e.g., captured types or type parameters) are maped to either nullability lozenge *edges* or *vertices*, as for them $T$ corresponds to either $T!!$ or $T?$, and $T?$ corresponds to $T?$.
+Type variable types (e.g., captured types or type parameters) are mapped to either nullability lozenge *edges* or *vertices*, as for them $T$ corresponds to either $T!!$ or $T?$, and $T?$ corresponds to $T?$.
 Following the lozenge structure, for type variable type $T$ (i.e., either non-nullable or nullable version) we need to consider valid subtyping for both versions $T!!$ and $T?$ w.r.t. nullability lozenge.
 
 > Example: if we have $\Int? <: T?$, we also have $\Int!! <: T?$ and $\Int!! <: T!!$, meaning we can establish $\Int!! <: T \equiv \Int <: T$.
