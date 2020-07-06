@@ -388,10 +388,9 @@ They are considered well-formed concrete types only in the type context of their
 
 > Note: one may view such parameterized functions as a kind of function type constructors.
 
-Function type parameters work similarly to regular type parameters, however, they have the following limitations.
+Function type parameters work similarly to regular type parameters, however, they do not support specifying [mixed-site variance][Mixed-site variance].
 
-* Function type parameters does not support specifying [mixed-site variance][Mixed-site variance].
-* TODO(Anything else?)
+TODO(Anything else worth mentioning?)
 
 ##### Mixed-site variance
 
@@ -760,9 +759,9 @@ These differences are to be explained in the corresponding platform-dependent se
 The main use cases for flexible types are *platform types* --- types which the Kotlin compiler uses, when interoperating with code written for another platform (e.g., Java).
 In this case all types on the interoperability boundary are subject to *flexibilization* --- the process of converting a platform-specific type to a Kotlin-compatible flexible type.
 
-For further details on how *flexibilization* is done, see:
+For further details on how *flexibilization* is done, see the corresponding JVM section.
 
-* [Platform types for Java][TODO(need a way to have same section names in different parts of the spec)]
+TODO(provide link when it's ready)
 
 > Important: platform types should not be confused with *multi-platform projects* --- another Kotlin feature targeted at supporting platform interop.
 

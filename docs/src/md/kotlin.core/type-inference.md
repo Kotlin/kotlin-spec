@@ -466,7 +466,8 @@ If the expected return type is provided, it is used as an expected constraint on
 > Example:
 > ```kotlin
 > fun <T> foo(): T { ... }
-> fun bar(): Int = foo() // an expected constraint T' <: Int allows the result of `foo` to be inferred automatically.
+> fun bar(): Int = foo() // an expected constraint T' <: Int 
+> // allows the result of `foo` to be inferred automatically.
 > ```
 
 #### Statements with lambda literals
