@@ -454,7 +454,7 @@ In case 3, several additional steps are performed in order.
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
 
-> Important: compiler implementations may extend these steps with additional checks, if they deem neccessary to do so.
+> Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
 If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
 
@@ -552,7 +552,7 @@ TODO(Examples)
 
 [Type inference][Type inference] in Kotlin is a very complicated process, and it is performed *after* overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.
 
-> Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behavior, leading to an infinite compilation.
+> Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behaviour, leading to an infinite compilation.
 
 ### Conflicting overloads
 

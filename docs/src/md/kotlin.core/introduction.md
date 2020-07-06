@@ -20,7 +20,7 @@ Kotlin is an object-oriented language which also has a lot of functional program
 From the object-oriented side, it supports nominal subtyping with bounded parametric polymorphism (akin to generics) and mixed-site variance.
 From the functional programming side, it has first-class support for higher-order functions and lambda literals. 
 
-This specification covers Kotlin/Core, i.e., fundamental parts of Kotlin which should function *mostly* the same way irregardless of the underlying plarform.
+This specification covers Kotlin/Core, i.e., fundamental parts of Kotlin which should function *mostly* the same way irregardless of the underlying platform.
 These parts include such important things as language [expressions], [declarations], [type system] and [overload resolution].
 
 > Important: due to the complexities of platform-specific implementations, platforms may extend, reduce or change the way some aspects of Kotlin/Core function.
@@ -35,7 +35,7 @@ When so, the specification talks about the *current* state of said features, wit
 
 The experimental features are marked as such in the specification to the best of our abilities.
 
-### Acknowledgements {-}
+### Acknowledgments {-}
 
 We would like to thank the following people for their invaluable help and feedback during the writing of this specification.
 
