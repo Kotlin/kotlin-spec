@@ -26,12 +26,18 @@ fun init() {
     Sidebar.init()
 
     `$`("h3, h4, h5").each { _, el ->
-        if (`$`(el).attr("id") != "feedback") {
+        val idValue = `$`(el).attr("id")
+        if (idValue != "introduction"
+                && idValue != "experimental-features"
+                && idValue != "acknowledgments"
+                && idValue != "reference"
+                && idValue != "feedback") {
             SpecTestsLoader.insertLoadIcon(`$`(el), mode)
         }
     }
 
-    if (shouldBeShowedMarkup) {
+
+    if (shouldBeShowedMarkup && mode != Mode.User) {
         SpecTestsLoader.showMarkup()
     }
 
