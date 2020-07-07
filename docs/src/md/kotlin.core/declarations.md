@@ -246,6 +246,72 @@ The particular means on how $v$ is stored inside the classifier object is platfo
 
 Due to the [initialization order of a classifier object][Classifier initialization], the expression used to construct $v$ can not access any of the classifier object properties or methods excluding the parameters of the primary constructor.
 
+> Example:
+>
+> ```kotlin
+> interface I {
+>     fun foo(value: Int): Double
+>     val bar: Long
+> }
+> interface J : I {
+>     fun fee(): Int
+> }
+> 
+> class C(delegatee: I): I by delegatee
+> ```
+> 
+> is expanded to
+>
+> ```kotlin
+> interface I {
+>     fun foo(value: Int): Double
+>     val bar: Long
+> }
+> interface J : I {
+>     fun fee(): Int
+> }
+> 
+> class C(delegatee: I): I {
+>     val I$delegate = delegate
+> 
+>     override fun foo(value: Int): Double = I$delegate.foo(value)
+>     override val bar: Long
+>         get() = I$delegate.bar
+> }
+> ```
+> 
+> Please note that the expression used as delegate is accessed exactly once when creating the object, e.g. if the delegate expression contains a mutable property access, this mutable property is accessed once during object construction and its subsequent changes do not affect the delegated interface functions.
+> See [classifier initialization section][Classifier initialization] for details on the evaluation order of classifier initialization entities.
+> 
+> For example (assuming interface `I` from the previous example is defined):
+>
+> ```kotlin
+> var mut = object: J {...}
+> 
+> class D: I by mut // D delegates I to mutable property
+> ```
+> 
+> is expanded to
+>
+> ```kotlin
+> var mut = object: J {...}
+> class D: I {
+>     val I$delegate = mut // mut is accessed only once
+> 
+>     override fun foo(value: Int): Double = I$delegate.foo(value)
+>     override val bar: Long
+>         get() = I$delegate.bar
+> }
+> ```
+> 
+> ```kotlin
+> mut = x1
+> val d1 = D() // d1 methods are delegated to x1
+> mut = x2
+> val d2 = D() // d2 methods are delegated to x2
+> // but d1 methods are still delegated to x1
+> ```
+
 ##### Abstract classes
 
 A [class declaration][Class declaration] can be marked `abstract`.
@@ -302,6 +368,35 @@ Data classes have the following restrictions:
 * Data properties cannot be specified as `vararg` constructor arguments.
 
 [`kotlin.Any`-bi]: #kotlin.any-1
+
+> For example, the following data class declaration
+> ```kotlin
+> data class DC(val x: Int, val y: Double)
+> ``` 
+> 
+> may be equivalent to
+>
+> ```kotlin
+> class DC(val x: Int, val y: Double) {
+>     override fun equals(other: Any?): Boolean {
+>          if(other !is DC) return false
+>          return x == other.x && y == other.y
+>     }
+> 
+>     override fun hashCode(): Int = x.hashCode() + 31 * y.hashCode()
+> 
+>     override fun toString(): String = "DC(x=$x,y=$y)"
+>     
+>     operator fun component1(): Int = x
+> 
+>     operator fun component2(): Double = y
+> 
+>     fun copy(x: Int = this.x, y: Double = this.y): DC = DC(x, y)
+> }
+> ```
+>
+
+TODO(more examples)
 
 #### Enum class declaration
 
