@@ -52,7 +52,7 @@ Further details about how $\Nothing$ should be handled are available [here][Cont
 ### `kotlin.Unit`
 
 $\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
-It is somewhat similar in purpose to `void` return type in other programming languages, but has several minor differences, which fall outside the scope of this specification.
+It is somewhat similar in purpose to `void` return type in other programming languages in that it signifies an *absense of a value* (i.e. the returned type for a function returning nothing), but is different in that there is, in fact, a single value of this type.
 
 ### `kotlin.Boolean`
 
@@ -112,6 +112,20 @@ $\Widen(T)$ for a built-in integer type $T$ is defined as follows:
 
 > Informally: $\Widen$ means, for the purposes of overload resolution, $\Int$ is preferred over any other built-in integer type and $\Short$ is preferred to $\Byte$.
 > Using $\Widen$, we can reduce this priority to subtyping: $T$ is more preferred than $U$ if $\Widen(T) <: \Widen(U)$; this scheme allows to handle built-in integer types transparently when selecting the [most specific overload candidate][Algorithm of MSC selection].
+>
+> For example, consider the following two functions:
+>
+> ```kotlin
+> fun foo(value: Int) = 1
+> fun foo(value: Short) = 2
+> 
+> ...
+> 
+> foo(2)
+> ```
+> 
+> As the integer literal 2 has a type that is applicable for both versions of `foo` (see [Overload resolution section][Overload resolution] for details) and the types `kotlin.Int` and `kotlin.Short` are not related w.r.t. subtyping, it would not be possible to select a more specific candidate out of the two.
+> However, if we consider $\Widen(\Int)$ and $\Widen(\Short)$ respectively as the types of `value`, first candidate becomes more specific than the second, because $\Widen(\Int) <: \Widen(\Short)$.
 
 ### Built-in floating point arithmetic types
 

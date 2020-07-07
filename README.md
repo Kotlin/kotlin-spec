@@ -18,3 +18,9 @@ Pdf version (full and by sections) can be downloaded from the [TeamCity builds p
 The grammar is a part of the specification, it's contained in the specification docs.
 
 The original grammar files in ANTLR4 format is contained in the [grammar folder](https://github.com/JetBrains/kotlin-spec/tree/master/grammar) (for Kotlin compiler latest, used on the [Kotlin website](http://kotlinlang.org/docs/reference/grammar.html)) and [docs folder](https://github.com/JetBrains/kotlin-spec/tree/master/docs) (for Kotlin compiler 1.2.41, used in the specification docs).
+
+## Reference {-}
+
+If one needs to reference this specification, they may use the following:
+
+> Marat Akhin, Mikhail Belyaev et al. "Kotlin language specification: Kotlin/Core", JetBrains / JetBrains Research, 2020
