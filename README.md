@@ -2,11 +2,15 @@
 
 [![TeamCity (simple build status)](https://img.shields.io/teamcity/https/teamcity.jetbrains.com/e/Kotlin_Spec_DocsMaster.svg?style=flat)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=Kotlin_Spec_DocsMaster&branch_Kotlin_dev=%3Cdefault%3E&tab=buildTypeStatusDiv)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Version](https://img.shields.io/github/v/release/Kotlin/kotlin-spec?style=flat)](https://github.com/Kotlin/kotlin-spec/releases)
+[![Latest release version](https://img.shields.io/github/v/release/Kotlin/kotlin-spec?style=flat)](https://github.com/Kotlin/kotlin-spec/releases)
 
-This repository contains the specification of the [Kotlin programming language](https://kotlinlang.org).
+This repository contains the specification of the [Kotlin programming language](https://kotlinlang.org), which describes how parts of the language should function *in more detail*, as compared to a more traditional user documentation on the [Kotlin Website](https://kotlinlang.org/docs/reference/).
 
-For user documentation please refer to the [Kotlin Website](https://kotlinlang.org/docs/reference/).
+It would be most useful to those who are interested in how Kotlin works on a finer lever and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
+However, if you are simply wondering, why some code you wrote works the way it does, this specification might help you get an answer to that.
+
+Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way irregardless of the underlying platform.
+In the future, we plan to extend it with additional platform-specific sections covering Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
 ## Artifacts
 
@@ -19,7 +23,7 @@ PDF version can be downloaded using the links in the HTML version.
 The grammar is a part of the specification and is also contained in this repository.
 
 The reference grammar files in ANTLR4 format are contained in the [grammar folder](https://github.com/Kotlin/kotlin-spec/tree/master/grammar/src/main/antlr/).
-The human-friendly version in .md format (generated from ANTLR4) is located in the [docs folder](https://github.com/Kotlin/kotlin-spec/tree/master/docs/src/md/kotlin.core/grammar.generated.md).
+The human-friendly version in Markdown format (generated from ANTLR4) will be located in the [docs folder](https://github.com/Kotlin/kotlin-spec/tree/master/docs/src/md/kotlin.core/grammar.generated.md) after you build the specification.
 
 ## Building the specification
 
