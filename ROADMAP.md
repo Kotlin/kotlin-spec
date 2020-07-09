@@ -7,6 +7,7 @@
 	* Bound smart casts
 	* Operator expansions for non-trivial cases (aka operator desugaring)
 	* Fallthrough-like overload resolution (`provideDelegate` + `getValue`, `plusAssign` + `plus` with assignment, etc.)
+* Describe type approximation and type decaying in more detail
 
 ## Long-term plans
 
