@@ -16,7 +16,7 @@ In the future, we plan to extend it with additional platform-specific sections c
 
 HTML version of the specification is available on the [Kotlin Website](https://kotlinlang.org/spec).
 
-PDF version can be downloaded using the links in the HTML version.
+PDF version can be downloaded using the links in the HTML version or using the [direct link](https://kotlinlang.org/spec/pdf/kotlin-spec.pdf).
 
 ## Kotlin grammar
 
@@ -33,8 +33,10 @@ Therefore, most dependencies are downloaded by the build system.
 However, there are several external depencencies which should be installed separately.
 For instructions on how to do this, please refer to your operating system documentation.
 
-* [Pandoc](https://pandoc.org/)
-* [npm](https://www.npmjs.com/)
+* [Pandoc](https://pandoc.org/) (tested with version 2.9.1)
+* [npm](https://www.npmjs.com/) (tested with version 6.14.6)
+* [gpp](https://logological.org/gpp) (tested with version 2.25)
+* [bash](https://www.gnu.org/software/bash/) (tested with version 5.0.17)
 
 After installing these dependencies, building the specification is as easy as running:
 
