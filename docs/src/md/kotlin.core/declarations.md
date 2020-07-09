@@ -325,7 +325,7 @@ A data class $\dataClass$ is a special kind of class, which represents a product
 Non-property constructor parameters are not allowed in the primary constructor of a data class.
 As such, data classes allow Kotlin to reduce the boilerplate and generate a number of additional data-relevant functions.
 
-* `equals() / hashCode() / toString()` functions compliant with [their contracts][`kotlin.Any`-bi]:
+* `equals() / hashCode() / toString()` functions compliant with [their contracts][`kotlin.Any`-builtins]:
     - `equals(that)` returns true iff:
         - `that` has the same runtime type as `this`;
         - `this.prop == that.prop` returns `true` for every data property `prop`;
@@ -367,7 +367,7 @@ Data classes have the following restrictions:
 * There must be at least one data property in the primary constructor;
 * Data properties cannot be specified as `vararg` constructor arguments.
 
-[`kotlin.Any`-bi]: #kotlin.any-1
+[`kotlin.Any`-builtins]: #kotlin.any-builtins
 
 > For example, the following data class declaration
 >

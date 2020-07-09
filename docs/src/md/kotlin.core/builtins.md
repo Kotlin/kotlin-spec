@@ -9,9 +9,9 @@ In this section we describe these types and their semantics.
 
 > Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation.
 
-### `kotlin.Any`
+### `kotlin.Any` {#kotlin.any-builtins}
 
-Besides being the [unified supertype][`kotlin.Any`-ts] of all non-nullable types, $\Any$ must also provide the following methods.
+Besides being the [unified supertype][`kotlin.Any`-typesystem] of all non-nullable types, $\Any$ must also provide the following methods.
 
 - ```kotlin
   public open operator fun equals(other: Any?): Boolean
@@ -34,11 +34,11 @@ Besides being the [unified supertype][`kotlin.Any`-ts] of all non-nullable types
     
     Returns a string representation of a value.
 
-[`kotlin.Any`-ts]: #kotlin.any
+[`kotlin.Any`-typesystem]: #kotlin.any-typesystem
 
-### `kotlin.Nothing`
+### `kotlin.Nothing` {#kotlin.nothing-builtins}
 
-$\Nothing$ is an [uninhabited type][`kotlin.Nothing`-ts], which means the evaluation of an expression with $\Nothing$ type can never complete normally.
+$\Nothing$ is an [uninhabited type][`kotlin.Nothing`-typesystem], which means the evaluation of an expression with $\Nothing$ type can never complete normally.
 Therefore, it is used to mark special situations, such as
 
 * non-terminating expressions
@@ -47,7 +47,7 @@ Therefore, it is used to mark special situations, such as
 
 Further details about how $\Nothing$ should be handled are available [here][Control- and data-flow analysis] and [here][Type inference].
 
-[`kotlin.Nothing`-ts]: #kotlin.nothing
+[`kotlin.Nothing`-typesystem]: #kotlin.nothing-typesystem
 
 ### `kotlin.Unit`
 
@@ -59,10 +59,10 @@ It is somewhat similar in purpose to `void` return type in other programming lan
 `kotlin.Boolean` is the boolean logic type of Kotlin, representing a value which may be either `true` or `false`.
 It is the type of [boolean literals][Boolean literals] as well as the type returned or expected by some built-in Kotlin operators.
 
-### Built-in integer types
+### Built-in integer types {#built-in-integer-types-builtins}
 
 Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size.
-These types are important w.r.t. [type system][Built-in integer types-ts] and [integer literals][Integer literals].
+These types are important w.r.t. [type system][Built-in integer types-typesystem] and [integer literals][Integer literals].
 Every built-in integer type `I` is a subtype of  [`kotlin.Comparable<I>`][`kotlin.Comparable`].
 
 The signed integer types are the following.
@@ -97,7 +97,7 @@ If an arithmetic operation on `kotlin.Long` results in arithmetic overflow, the 
 
 > Important: a platform implementation may specify behaviour for an arithmetic overflow.
 
-[Built-in integer types-ts]: #built-in-integer-types
+[Built-in integer types-typesystem]: #built-in-integer-types-typesystem
 
 #### Integer type widening
 

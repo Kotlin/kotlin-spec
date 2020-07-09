@@ -139,29 +139,29 @@ The latter are special types which are *not* expressible in Kotlin and are used 
 
 Kotlin type system uses the following built-in types, which have special semantics and representation (or lack thereof).
 
-##### `kotlin.Any`
+##### `kotlin.Any` {#kotlin.any-typesystem}
 
 $\Any$ is the unified [supertype][Subtyping] ($\top$) for $\{T!!\}$, i.e., all non-nullable types are subtypes of $\Any$, either explicitly, implicitly, or by [subtyping relation][Subtyping].
 
-> Note: additional details about $\Any$ are available [here][`kotlin.Any`-bi].
+> Note: additional details about $\Any$ are available [here][`kotlin.Any`-builtins].
 
-[`kotlin.Any`-bi]: #kotlin.any-1
+[`kotlin.Any`-builtins]: #kotlin.any-builtins
 
-##### `kotlin.Nothing`
+##### `kotlin.Nothing` {#kotlin.nothing-typesystem}
 
 $\Nothing$ is the unified [subtype][Subtyping] ($\bot$) for $\{T\}$, i.e., $\Nothing$ is a subtype of all well-formed Kotlin types, including user-defined ones.
 This makes it an uninhabited type (as it is impossible for anything to be, for example, a function and an integer at the same time), meaning instances of this type can never exist at runtime; subsequently, there is no way to create an instance of $\Nothing$ in Kotlin.
 
-> Note: additional details about $\Nothing$ are available [here][`kotlin.Nothing`-bi].
+> Note: additional details about $\Nothing$ are available [here][`kotlin.Nothing`-builtins].
 
-[`kotlin.Nothing`-bi]: #kotlin.nothing-1
+[`kotlin.Nothing`-builtins]: #kotlin.nothing-builtins
 
 ##### `kotlin.Function`
 
 $\Function(R)$ is the unified supertype of all [function types][Function types].
 It is parameterized over function return type `R`.
 
-##### Built-in integer types
+##### Built-in integer types {#built-in-integer-types-typesystem}
 
 Kotlin supports the following signed integer types.
 
@@ -172,9 +172,9 @@ Kotlin supports the following signed integer types.
 
 Besides their use as types, integer types are important w.r.t. [integer literal types][Integer literal types].
 
-> Note: additional details about built-in integer types are available [here][Built-in integer types-bi].
+> Note: additional details about built-in integer types are available [here][Built-in integer types-builtins].
 
-[Built-in integer types-bi]: #built-in-integer-types-1
+[Built-in integer types-builtins]: #built-in-integer-types-builtins
 
 ##### Array types
 
@@ -208,9 +208,7 @@ However, they are **not** related by subtyping; meaning one cannot pass a `Boole
 
 $\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
-> Note: additional details about built-in array types are available [here][Built-in array types-bi].
-
-[Built-in array types-bi]: #built-in-array-types
+> Note: additional details about built-in array types are available [here][Built-in array types].
 
 #### Classifier types
 
