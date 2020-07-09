@@ -40,7 +40,7 @@ This is important when building graphs representing loops.
 
 There are two other special kinds of nodes: `unreachable` nodes, signifying unreachable code, and `backedge` nodes, important for some kinds of analyses.
 
-#### Expressions
+#### Expressions {#expressions-cdfa}
 
 Simple expressions, like literals and references, do not affect the control-flow of the program in any way and are irrelevant w.r.t. CFG.
 
