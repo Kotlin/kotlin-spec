@@ -1,4 +1,4 @@
-## Coroutines
+## Asynchronous programming with coroutines
 
 TODO([Kotlin 1.3+, Experimental] Everything: state machine, context, etc.)
 TODO([Kotlin 1.3+, Experimental] Update w.r.t. structured concurrency)

@@ -229,7 +229,7 @@ However, for a callable `f` with an explicit type receiver `T` the following set
 1. Static member callables named `f` of type `T`;
 2. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
 
-##### Calls with an explicit super-form receiver
+##### Call with an explicit super-form receiver
 
 A call with an explicit receiver may be performed not only on a value receiver, but also on a [super-form][Super-forms] receiver.
 
@@ -250,7 +250,9 @@ For a callable `f` with an explicit extended super-form receiver `super<A>` the 
 
 1. Non-extension member callables named `f` of type `A`.
 
-Additionally, in either case, [abstract][Abstract classes] callables are not considered valid candidates for the overload resolution process.
+Additionally, in either case, [abstract][Abstract classes-declarations] callables are not considered valid candidates for the overload resolution process.
+
+[Abstract classes-declarations]: #abstract-classes-declarations
 
 #### Infix function call
 
@@ -281,7 +283,7 @@ Aside from this difference, candidates are selected using the same rules as for 
 
 Different platform implementations may extend the set of functions considered as operator functions for the overload candidate set.
 
-> Note: these rules are valid not only for dedicated operator expressions, but also for other operator-based defined-by-convention calls, e.g., [`for`-loop][For-loop statement] iteration conventions, operator-form [assignments][Assignments] or [property delegation][Delegated property declaration].
+> Note: these rules are valid not only for dedicated operator expressions, but also for other operator-based defined-by-convention calls, e.g., [`for`-loop][For-loop statements] iteration conventions, operator-form [assignments][Assignments] or [property delegation][Delegated property declaration].
 
 #### Call without an explicit receiver
 

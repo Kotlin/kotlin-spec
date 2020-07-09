@@ -7,7 +7,7 @@ Particular cases of definition by convention include:
 - Arithmetic and comparison operators;
 - `invoke` convention;
 - Operator-form [assignments][Assignments];
-- [For-loop statements][For-loop statement];
+- [For-loop statements][For-loop statements];
 - [Delegated properties][Delegated property declaration];
 - [Destructuring declarations][Destructuring declarations].
 
@@ -51,7 +51,7 @@ The expression `C[0][0]++` is expanded (see the [Expressions][expressions] secti
 
 - The operations are expanded in order of their priority(TODO(Where and how to specify this priority?)).
 
-- First, the [increment operator][Postfix increment expression] is expanded, resulting in:
+- First, the [increment operator][Postfix increment expressions] is expanded, resulting in:
   
     ```kotlin
     C[0][0] = C[0][0].inc()
@@ -78,7 +78,7 @@ TODO(Specify when we run the overload resolution to know what we're expanding to
 
 ### Destructuring declarations
 
-A special case of definition by convention is the destructuring declaration of properties, which is available for [local properties][Local property declaration], parameters of [lambda literals][Lambda literals] and the iteration variable of [for-loops][For-loop statement].
+A special case of definition by convention is the destructuring declaration of properties, which is available for [local properties][Local property declaration], parameters of [lambda literals][Lambda literals] and the iteration variable of [for-loops][For-loop statements].
 See the corresponding sections for particular syntax.
 
 This convention allows to introduce a number (one or more) of properties in the place of one by immediately *destructuring* the property during construction.

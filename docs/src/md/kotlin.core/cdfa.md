@@ -681,7 +681,7 @@ continue@loop
 +~~~~~~~~~~~~~~~~~+
 ```
 
-#### Statements
+#### Statements {#statements-cdfa}
 
 > Note: to simplify the notation, we consider only labeled loops, as unlabeled loops may be trivially turned into labeled ones by assigning them a unique label.
 

@@ -98,7 +98,7 @@ Even more so, in some cases the compile-time type of a value may *change* depend
 Null safety is enforced by having two type universes: _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
 A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by `null`.
 
-Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expression].
+Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expressions].
 However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
 
 The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][`kotlin.Any`].
@@ -156,7 +156,7 @@ This makes it an uninhabited type (as it is impossible for anything to be, for e
 
 [`kotlin.Nothing`-builtins]: #kotlin.nothing-builtins
 
-##### `kotlin.Function`
+##### `kotlin.Function` {#kotlin.function-typesystem}
 
 $\Function(R)$ is the unified supertype of all [function types][Function types].
 It is parameterized over function return type `R`.
@@ -672,7 +672,9 @@ i.e., receiver is considered as yet another argument of its function type.
 
 TODO(Specify other cases when these two types are **not** equivalent)
 
-Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
+Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`-typesystem] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
+
+[`kotlin.Function`-typesystem]: #kotlin.function-typesystem
 
 > Note: a compiler implementation may consider a function type $\FunctionN$ to have additional supertypes, if it is necessary.
 
@@ -783,12 +785,12 @@ To represent a well-formed nullable type, $T?$ should satisfy the following cond
 > 1. Use safe operations
 >     * [safe call][Navigation operators]
 > 2. Downcast from $T?$ to $T!!$
->     * [unsafe cast][Cast expression]
->     * [type check][Type-checking expression] combined with [smart casts][Smart casts]
+>     * [unsafe cast][Cast expressions]
+>     * [type check][Type-checking expressions] combined with [smart casts][Smart casts]
 >     * null check combined with [smart casts][Smart casts]
->     * [not-null assertion operator][Not-null assertion expression]
+>     * [not-null assertion operator][Not-null assertion expressions]
 > 3. Supply a default value to use if `null` is present
->     * [elvis operator][Elvis operator expression]
+>     * [elvis operator][Elvis operator expressions]
 
 ##### Nullability lozenge
 

@@ -224,15 +224,15 @@ As a result, $\smartCastTypeOf(e)$ is used as a compile-time type of $e$ for mos
 
 Smart casts are introduced by the following Kotlin constructions.
 
-- [Conditional expressions][Conditional expression] (`if`)
-- [When expressions][When expression] (`when`);
-- [Elvis operator][Elvis operator expression] (operator `?:`);
+- [Conditional expressions][Conditional expressions] (`if`)
+- [When expressions][When expressions] (`when`);
+- [Elvis operator][Elvis operator expressions] (operator `?:`);
 - [Safe navigation operator][Navigation operators] (operator `?.`);
-- [Logical conjunction expressions][Logical conjunction expression] (operator `&&`);
-- [Logical disjunction expressions][Logical disjunction expression] (operator `||`);
-- [Not-null assertion expressions][Not-null assertion expression] (operator `!!`);
-- [Cast expressions][Cast expression] (operator `as`);
-- [Type-checking expressions][Type-checking expression] (operator `is`);
+- [Logical conjunction expressions][Logical conjunction expressions] (operator `&&`);
+- [Logical disjunction expressions][Logical disjunction expressions] (operator `||`);
+- [Not-null assertion expressions][Not-null assertion expressions] (operator `!!`);
+- [Cast expressions][Cast expressions] (operator `as`);
+- [Type-checking expressions][Type-checking expressions] (operator `is`);
 - [Direct assignments][Assignments];
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
 
