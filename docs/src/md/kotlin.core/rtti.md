@@ -3,8 +3,8 @@
 The _runtime type information_ (RTTI) is the information about Kotlin types of values available from these values at runtime. 
 RTTI affects the semantics of certain expressions, changing their evaluation depending on the amount of RTTI available for particular values, implementation, and platform:
 
-- [The type checking operator][Type-checking expression]
-- [The cast expression][Cast expression], especially the `as?` operator
+- [The type checking operator][Type-checking expressions]
+- [The cast expression][Cast expressions], especially the `as?` operator
 - [Class literals][Class literals] and the values they evaluate to
 
 _Runtime types_ are particular instances of RTTI for a particular value at runtime. 
@@ -34,7 +34,7 @@ star-projected type notation or a special parameter-less notation(TODO: link?)) 
 
 > Note: one may say that classifier generics are _partially_ runtime available due to them having information about only the classifier part of the type
 
-[Exception types][Exceptions] must be runtime-available to enable type checks that the `catch` clause of [`try`-expression][Try-expression] performs.
+[Exception types][Exceptions] must be runtime-available to enable type checks that the `catch` clause of [`try`-expression][Try-expressions] performs.
 
 Only non-nullable runtime types may be used in `class` literal expressions. 
 These include reified type parameters with non-nullable upper bounds, as well as all classifier and function types.

@@ -7,15 +7,17 @@ CSB
 
 ### Introduction {-}
 
-Expressions (together with [statements][Statements]) are one of the main building blocks of any program, as they represent ways to *compute* program values or *control* the program execution flow.
+Expressions (together with [statements][Statements-statements]) are one of the main building blocks of any program, as they represent ways to *compute* program values or *control* the program execution flow.
 
 In Kotlin, an expression may be *used as a statement* or *used as an expression* depending on the context.
-As all expressions are valid [statements][Statements], standalone expressions may be used as single statements or inside code blocks.
+As all expressions are valid [statements][Statements-statements], standalone expressions may be used as single statements or inside code blocks.
 
 An expression is used as an expression, if it is encountered in any position where a statement is not allowed, for example, as an operand to an operator or as an immediate argument for a function call.
 An expression is used as a statement if it is encountered in any position where a statement is allowed.
 
 Some expressions are allowed to be used as statements, only if certain restrictions are met; this may affect the semantics, the compile-time type information or/and the safety of these expressions.
+
+[Statements-statements]: #statements-statements
 
 ### Constant literals
 
@@ -198,7 +200,7 @@ On the other hand, multiline interpolation expressions allow such symbols inside
 
 String interpolation expression always has type `kotlin.String`.
 
-### Try-expression
+### Try-expressions
 
 :::{.paste target=grammar-rule-tryExpression}
 :::
@@ -235,7 +237,7 @@ The type of the try-expression is the [least upper bound][Least upper bound] of 
 
 > Note: these rules mean the try-expression always may be used as an expression, as it always has a corresponding result value.
 
-### Conditional expression
+### Conditional expressions
 
 :::{.paste target=grammar-rule-ifExpression}
 :::
@@ -286,7 +288,7 @@ The type of the condition expression must be a subtype of `kotlin.Boolean`, othe
 > if (true) (x = 1) else (x = 2)
 > ```
 
-### When expression
+### When expressions
 
 :::{.paste target=grammar-rule-whenExpression}
 :::
@@ -299,7 +301,7 @@ The type of the condition expression must be a subtype of `kotlin.Boolean`, othe
 :::{.paste target=grammar-rule-typeTest}
 :::
 
-*When expression* is similar to a [conditional expression][Conditional expression] in that it allows one of several different [control structure bodies][Code blocks] (*cases*) to be evaluated, depending on some boolean conditions.
+*When expression* is similar to a [conditional expression][Conditional expressions] in that it allows one of several different [control structure bodies][Code blocks] (*cases*) to be evaluated, depending on some boolean conditions.
 The key difference is that a when expressions may include *several* different conditions with their corresponding control structure bodies.
 When expression has two different forms: with bound value and without it.
 
@@ -317,10 +319,10 @@ The `else` condition **must** also be in the last when entry of when expression,
 **When expression with bound value** (the form where the expression enclosed in parentheses after the `when` keyword is present) is similar to the form without bound value, but uses a different syntax and semantics for conditions.
 In fact, it supports four different condition forms:
 
-- *Type test condition*: [type checking operator][Type-checking expression] followed by a type (`is T` or `!is T`).
-  The resulting condition is a [type check expression][Type-checking expression] of the form `boundValue is T` or `boundValue !is T`.
-- *Contains test condition*: [containment operator][Containment-checking expression] followed by an expression (`in Expr` or `!in Expr`).
-  The resulting condition is a [containment check expression][Containment-checking expression] of the form `boundValue in Expr` or `boundValue !in Expr`.
+- *Type test condition*: [type checking operator][Type-checking expressions] followed by a type (`is T` or `!is T`).
+  The resulting condition is a [type check expression][Type-checking expressions] of the form `boundValue is T` or `boundValue !is T`.
+- *Contains test condition*: [containment operator][Containment-checking expressions] followed by an expression (`in Expr` or `!in Expr`).
+  The resulting condition is a [containment check expression][Containment-checking expressions] of the form `boundValue in Expr` or `boundValue !in Expr`.
 - *Any other applicable expression* (`Expr`)
   The resulting condition is an [equality check][Equality expressions] of the form `boundValue == Expr`.
 - The `else` condition, which is a special condition which evaluates to `true` if none of the branches above it evaluated to `true`.
@@ -425,7 +427,7 @@ val c = when(b) {
 
 > Informally: an exhaustive when expression is guaranteed to evaluate one of its CSBs regardless of the specific when conditions.
 
-### Logical disjunction expression
+### Logical disjunction expressions
 
 :::{.paste target=grammar-rule-disjunction}
 :::
@@ -436,7 +438,7 @@ This operator is **lazy**, meaning that it does not evaluate the right hand side
 Both operands of a logical disjunction expression must have a type which is a subtype of `kotlin.Boolean`, otherwise it is a compile-time error.
 The type of logical disjunction expression is `kotlin.Boolean`.
 
-### Logical conjunction expression
+### Logical conjunction expressions
 
 :::{.paste target=grammar-rule-conjunction}
 :::
@@ -527,7 +529,7 @@ All comparison expressions always have type `kotlin.Boolean`.
 :::{.paste target=grammar-rule-isOperator}
 :::
 
-#### Type-checking expression
+#### Type-checking expressions
 
 A type-checking expression uses a type-checking operator `is` or `!is` and has an expression $E$ as a left-hand side operand and a type name $T$ as a right-hand side operand.
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
@@ -542,7 +544,7 @@ Type-checking expression always has type `kotlin.Boolean`.
 
 > Note: type-checking expressions may create [smart casts][Smart casts], for further details, refer to the corresponding section.
 
-#### Containment-checking expression
+#### Containment-checking expressions
 
 A *containment-checking expression* is a binary expression which uses a containment operator `in` or `!in`.
 These operators are [overloadable][Operator overloading] with the following expansion:
@@ -557,7 +559,7 @@ where `contains` is a valid operator function available in the current scope.
 The `contains` function must have a return type `kotlin.Boolean`, otherwise it is a compile-time error.
 Containment-checking expressions always have type `kotlin.Boolean`.
 
-### Elvis operator expression
+### Elvis operator expressions
 
 :::{.paste target=grammar-rule-elvisExpression}
 :::
@@ -569,7 +571,7 @@ This operator is **lazy**, meaning that if the left-hand side expression is not 
 
 The type of elvis operator expression is the [least upper bound][Least upper bound] of the non-nullable variant of the type of the left-hand side expression and the type of the right-hand side expression.
 
-### Range expression
+### Range expressions
 
 :::{.paste target=grammar-rule-rangeExpression}
 :::
@@ -584,7 +586,7 @@ where `rangeTo` is a valid operator function available in the current scope.
 The return type of this function is not restricted.
 A range expression has the same type as the return type of the corresponding `rangeTo` overload variant.
 
-### Additive expression
+### Additive expressions
 
 :::{.paste target=grammar-rule-additiveExpression}
 :::
@@ -602,7 +604,7 @@ where `plus` or `minus` is a valid operator function available in the current sc
 The return type of these functions is not restricted.
 An additive expression has the same type as the return type of the corresponding operator function overload variant.
 
-### Multiplicative expression
+### Multiplicative expressions
 
 :::{.paste target=grammar-rule-multiplicativeExpression}
 :::
@@ -623,7 +625,7 @@ where `times`, `div`, `rem` is a valid operator function available in the curren
 The return type of these functions is not restricted.
 A multiplicative expression has the same type as the return type of the corresponding operator function overload variant.
 
-### Cast expression
+### Cast expressions
 
 :::{.paste target=grammar-rule-asExpression}
 :::
@@ -659,12 +661,12 @@ The checked cast expression result has the type which is the [nullable][Nullable
 :::{.paste target=grammar-rule-prefixUnaryOperator}
 :::
 
-#### Annotated expression
+#### Annotated expressions
 
 Any expression in Kotlin may be prefixed with any number of [annotations][Annotations].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
 
-#### Prefix increment expression
+#### Prefix increment expressions
 
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -681,7 +683,7 @@ Otherwise, such declaration is a compile-time error.
 
 A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
 
-#### Prefix decrement expression
+#### Prefix decrement expressions
 
 A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -698,7 +700,7 @@ Otherwise, such declaration is a compile-time error.
 
 A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
 
-#### Unary minus expression
+#### Unary minus expressions
 
 An *unary minus* expression is an expression which uses the prefix form of operator `-`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -707,7 +709,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 No additional restrictions apply.
 
-#### Unary plus expression
+#### Unary plus expressions
 
 An *unary plus* expression is an expression which uses the prefix form of operator `+`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -716,7 +718,7 @@ It is an [overloadable][Operator overloading] operator with the following expans
 
 No additional restrictions apply.
 
-#### Logical not expression
+#### Logical not expressions
 
 A *logical not* expression is an expression which uses the prefix operator `!`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -734,7 +736,7 @@ No additional restrictions apply.
 :::{.paste target=grammar-rule-postfixUnaryOperator}
 :::
 
-#### Postfix increment expression
+#### Postfix increment expressions
 
 A *postfix increment* expression is an expression which uses the postfix form of operator `++`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -751,7 +753,7 @@ Otherwise, such declaration is a compile-time error.
 
 A postfix increment expression has the same type as its operand expression (for our examples, the type of `A`).
 
-#### Postfix decrement expression
+#### Postfix decrement expressions
 
 A *postfix decrement* expression is an expression which uses the postfix form of operator `--`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
@@ -768,7 +770,7 @@ Otherwise, such declaration is a compile-time error.
 
 A postfix decrement expression has the same type as its operand expression (for our examples, the type of `A`).
 
-### Not-null assertion expression
+### Not-null assertion expressions
 
 A *not-null assertion expression* is a postfix expression which uses an operator `!!`.
 For an expression `e!!`, if the type of `e` is nullable, a not-null assertion expression checks whether the evaluation result of `e` is equal to `null` and, if it is, throws a runtime exception.
@@ -1013,7 +1015,7 @@ Afterwards, the function itself is invoked.
 
 [Operator calls][Operator overloading] work in a similar way: every operator evaluates in the same order as its expansion does, unless specified otherwise.
 
-> Note: this means that the [containment-checking operators][Containment-checking expression] are effectively evaluated right-to-left w.r.t. their expansion.
+> Note: this means that the [containment-checking operators][Containment-checking expressions] are effectively evaluated right-to-left w.r.t. their expansion.
 
 #### Spread operator expressions
 
@@ -1319,7 +1321,7 @@ Super-forms are used in classifier declarations to access implementations from t
 
 If an implementation is not available (e.g., one attempts to access an abstract method of a supertype in this fashion), this is a compile-time error.
 
-The basic form of this expression, denoted by `super` keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of [overload resolution][Calls with an explicit super-form receiver].
+The basic form of this expression, denoted by `super` keyword, is used to access the immediate supertype of the currently declared classifier selected as a part of [overload resolution][Call with an explicit super-form receiver].
 In order to access a specific supertype implementations, extended `super` expressions are used.
 These may be any of the following:
 
@@ -1413,7 +1415,7 @@ If a return expression is used in the context of a lambda literal which is *not*
 > Note: these rules mean a simple return expression inside a lambda expression returns **from the innermost function** in which this lambda expression is defined.
 > They also mean such return expression is allowed only inside **inlined** lambda expressions.
 
-#### Continue expression
+#### Continue expressions
 
 A *continue expression* is a jump expression allowed only within loop bodies.
 When evaluated, this expression passes the control to the start of the next loop iteration (aka "continue-jumps").
@@ -1425,7 +1427,7 @@ There are two forms of continue expressions:
 
 If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
 
-#### Break expression
+#### Break expressions
 
 A *break expression* is a jump expression allowed only within loop bodies.
 When evaluated, this expression passes the control to the next program point immediately after the loop (aka "break-jumps").

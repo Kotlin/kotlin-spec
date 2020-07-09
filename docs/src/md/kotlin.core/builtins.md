@@ -310,7 +310,7 @@ They inherit `kotlin.Iterator<out T>` for their type (i.e., `kotlin.CharIterator
 
 `kotlin.Throwable` is the built-in classifier type that is the base type of all [exception types][Exceptions].
 Any value that is used in a [`throw` expression][Throw expressions] must have a static type that is a subtype of `kotlin.Throwable`.
-Any type that is used in a `catch` part of the [`try` expression][Try-expression] must be a subtype of (or equal to) `kotlin.Throwable`.
+Any type that is used in a `catch` part of the [`try` expression][Try-expressions] must be a subtype of (or equal to) `kotlin.Throwable`.
 
 It provides at least the following properties:
 
@@ -343,7 +343,7 @@ This function is used to implement [comparison operators][Comparison expressions
 
 > Note: a type is not required to be a subtype of `kotlin.Comparable` in order to implement total ordering operations
 
-### `kotlin.Function`
+### `kotlin.Function` {#kotlin.function-builtins}
 
 `kotlin.Function<out R>` is the base classifier type of all [function types][Function types].
 See the relevant section for details.

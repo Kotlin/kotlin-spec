@@ -312,7 +312,7 @@ Due to the [initialization order of a classifier object][Classifier initializati
 > // but d1 methods are still delegated to x1
 > ```
 
-##### Abstract classes
+##### Abstract classes {#abstract-classes-declarations}
 
 A [class declaration][Class declaration] can be marked `abstract`.
 Such classes *cannot* be instantiated directly; they are used as superclasses for other classes or objects.
@@ -724,11 +724,14 @@ Return type $R$, if omitted, is calculated as follows.
 
 In other cases return type $R$ cannot be omitted and must be specified explicitly.
 
-> As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
+> As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`-typesystem] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
 Function body $b$ is optional; if it is omitted, a function declaration creates an *abstract* function, which does not have an implementation.
-This is allowed only inside an [abstract class][Abstract classes].
+This is allowed only inside an [abstract class][Abstract classes-declarations].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
+
+[`kotlin.Nothing`-typesystem]: #kotlin.nothing-typesystem
+[Abstract classes-declarations]: #abstract-classes-declarations
 
 TODO([Kotlin 1.3+, Experimental] `expect` and `external` functions also do not have implementations)
 
@@ -885,7 +888,7 @@ It is unspecified whether inlining will actually be performed, however.
 
 Declaring a function `inline` has two additional effects:
 
-- It allows type parameters of the function to be declared `reified`, making them [runtime-available][Runtime-available types] and allowing usage of specific expressions involving these parameters, such as [type checks][Type-checking expression] and [class literals][Class literals].
+- It allows type parameters of the function to be declared `reified`, making them [runtime-available][Runtime-available types] and allowing usage of specific expressions involving these parameters, such as [type checks][Type-checking expressions] and [class literals][Class literals].
   Calling such a function is only allowed in a context where a particular type argument provided for this type parameter is also a runtime-available type.
 - Any parameter of this function of a [function type][Function types] is treated as *inlined* parameter unless it has one of two special modifiers: `crossinline` or `noinline`.
   If a particular argument corresponding to inline parameter is a [lambda literal][Lambda literals], this lambda literal is considered *inlined* and, in particular, affects the way the [return expressions][Return expressions] are handled in its body. See the corresponding section for details.

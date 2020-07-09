@@ -25,7 +25,7 @@ Object types cannot be inherited from.
 Inheritance is the primary mechanism of introducing [subtyping relations][Subtyping] between user-defined types in Kotlin.
 When a classifier type $A$ is declared with base types $B_1, \dots, B_m$, it introduces subtyping relations $A <: B_1, \ldots, A <: B_m$, which are then used in [overload resolution][Overload resolution] and [type inference][Type inference] mechanisms.
 
-#### Abstract classes
+#### Abstract classes {#abstract-classes-inheritance}
 
 A class declared `abstract` cannot be instantiated, i.e., an object of this class cannot be created directly.
 Abstract classes are implicitly `open` and their primary purpose is to be inherited from.
@@ -37,7 +37,7 @@ A class may be declared `sealed`, making it special from the inheritance point-o
 
 - A `sealed` class is implicitly `abstract` (and these two modifiers are exclusive);
 - It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);
-- It allows for exhaustiveness checking of [when expressions][When expression] for values of this type.
+- It allows for exhaustiveness checking of [when expressions][When expressions] for values of this type.
 
 #### Inheritance from built-in types
 

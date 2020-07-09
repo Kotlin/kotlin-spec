@@ -121,7 +121,7 @@ Labels are special syntactic marks which allow one to reference certain code fra
 Labels can be *redeclared*, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
 Labels are *scoped, meaning that they are only available in the scope they were declared in.
 
-Labels are used by certain expressions, such as [`break`][Break expression], [`continue`][Continue expression] and [`return`][Return expressions], to specify exactly what entity the expression corresponds to.
+Labels are used by certain expressions, such as [`break`][Break expressions], [`continue`][Continue expressions] and [`return`][Return expressions], to specify exactly what entity the expression corresponds to.
 Please refer to the corresponding sections for details.
 
 When resolving labels (determining which label an expression refers to), the *closest* label with the matching identifier is chosen, i.e., a label in an innermost scope syntactically closest to the point of its use.

@@ -10,7 +10,7 @@ Any object of an exception type may be *thrown* or *caught*.
 
 ### Catching exceptions
 
-A [`try`-expression][Try-expression] becomes *active* once the execution of the program enters it and stops being active once the execution of the program leaves it.
+A [`try`-expression][Try-expressions] becomes *active* once the execution of the program enters it and stops being active once the execution of the program leaves it.
 If there are several active `try`-expressions, the one that became active last is *currently active*.
 
 If an exception is thrown while a try-expression is currently active and this try-expression has any `catch`-blocks, those `catch`-blocks are checked for applicability for this exception.

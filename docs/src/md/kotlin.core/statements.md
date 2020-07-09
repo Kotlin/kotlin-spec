@@ -1,4 +1,4 @@
-## Statements
+## Statements {#statements-statements}
 
 :::{.paste target=grammar-rule-statements}
 :::
@@ -9,7 +9,7 @@ Kotlin does not explicitly distinguish between statements, expressions and decla
 This section focuses only on those statements that are *not* expressions or declarations.
 For information on those parts of Kotlin, please refer to the [Expressions][Expressions] and [Declarations][Declarations] sections of the specification.
 
-> Example: Kotlin supports using [conditionals][Conditional expression] both as expressions and as statements.
+> Example: Kotlin supports using [conditionals][Conditional expressions] both as expressions and as statements.
 > As their use as expressions is more general, detailed information about conditionals is available in the [Expressions][Expressions] section of the specification.
 
 ### Assignments
@@ -121,22 +121,22 @@ Loop statements describe an evaluation of a certain number of statements repeate
 :::{.paste target=grammar-rule-loopStatement}
 :::
 
-Loops are closely related to the semantics of [jump expressions][Jump expressions], as these expressions, namely [`break`][Break expression] and [`continue`][Continue expression], are only allowed in a body of a loop.
+Loops are closely related to the semantics of [jump expressions][Jump expressions], as these expressions, namely [`break`][Break expressions] and [`continue`][Continue expressions], are only allowed in a body of a loop.
 Please refer to the corresponding sections for details.
 
-#### While-loop statement
+#### While-loop statements
 
 :::{.paste target=grammar-rule-whileStatement}
 :::
 
-A *while-loop statement* is similar to an [`if` expression][Conditional expression] in that it also has a condition expression and a body consisting of zero or more statements.
+A *while-loop statement* is similar to an [`if` expression][Conditional expressions] in that it also has a condition expression and a body consisting of zero or more statements.
 While-loop statement evaluating its body repeatedly for as long as its condition expression evaluates to true or a [jump expression][Jump expressions] is evaluated to finish the loop.
 
 > Note: this also means that the condition expression is evaluated before every evaluation of the body, including the first one.
 
 The while-loop condition expression **must be a subtype** of `kotlin.Boolean`.
 
-#### Do-while-loop statement
+#### Do-while-loop statements
 
 :::{.paste target=grammar-rule-doWhileStatement}
 :::
@@ -149,7 +149,7 @@ Second, it evaluates the loop condition expression **after** evaluating the loop
 
 The do-while-loop condition expression **must be a subtype** of `kotlin.Boolean`.
 
-#### For-loop statement
+#### For-loop statements
 
 :::{.paste target=grammar-rule-forStatement}
 :::

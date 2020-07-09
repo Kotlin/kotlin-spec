@@ -134,7 +134,10 @@ After that, a new independent set of inference variables is picked and this proc
 
 #### The relations on types as constraints
 
-In other sections (for example, [Expressions] and [Statements]) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.
+In other sections (for example, [Expressions][Expressions-expressions] and [Statements][Statements-statements]) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.
+
+[Expressions-expressions]: #expressions-expressions
+[Statements-statements]: #statements-statements
 
 The [greatest lower bound] of two types is converted directly as-is, as the greatest lower bound is always an intersection type.
 
@@ -160,7 +163,7 @@ If type $T$ is defined to be the least upper bound of $A$ and $B$, the following
 > where `a`, `b`, `c` are some expressions with unknown types (having no other type constraints besides the implicit ones).
 > 
 > Assume the type variables generated for them are $A$, $B$ and $C$ respectively, the type variable for `e` is $E$.
-> According to [the conditional expression rules][Conditional expression], this produces the following relations:
+> According to [the conditional expression rules][Conditional expressions], this produces the following relations:
 >
 > - $C <: \texttt{kotlin.Boolean}$
 > - $E = \LUB(A, B)$
