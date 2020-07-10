@@ -3,8 +3,8 @@ package org.jetbrains.kotlin.spec
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.Mode
-import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.searchMap
+import org.jetbrains.kotlin.spec.viewer.Header
 import org.jetbrains.kotlin.spec.viewer.NavigationType
 import org.jetbrains.kotlin.spec.viewer.Sidebar
 import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
@@ -24,6 +24,8 @@ fun init() {
     val mode = Mode.User
 
     Sidebar.init()
+
+    Header.init(mode, shouldBeShowedMarkup)
 
     `$`("h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
@@ -95,12 +97,6 @@ fun init() {
             false
         }
         on("click", ".loaded-tests") { _, _ -> false }
-
-        if (mode == Mode.Dev) {
-            prepend(SentenceFinder.FINDER_BAR_HTML.format(
-                    *(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show"))
-            ))
-        }
 
         on("click", ".spec-sentence-find") { _, _ -> SentenceFinder.findSentence() }
         on("keyup", ".spec-location-search input[name=\"spec-sentence-location\"]") { e, _ ->
