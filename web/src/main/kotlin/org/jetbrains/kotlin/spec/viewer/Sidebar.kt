@@ -11,6 +11,13 @@ object Sidebar {
     private const val TOC = "#TOC"
     private const val OFFSET_BEFORE_SCROLLED_ELEMENT = 100
 
+    internal const val ICON_BAR_HTML = """
+                <div class="icon-menu">
+                  <span class="divide"></span>
+                  <span class="divide"></span>
+                  <span class="divide"></span>
+        </div>"""
+
     private fun expandItemsHierarchy(sectionMenuItem: JQuery) {
         if (sectionMenuItem.length == 0) return
 
@@ -75,21 +82,12 @@ object Sidebar {
             }
         }
 
-        `$`(document.body ?: return).prepend("""
-            <div class="icon-menu">
-                <span class="divide"></span>
-                <span class="divide"></span>
-                <span class="divide"></span>
-            </div>
-        """.trimIndent())
 
-        `$`(".icon-menu").on("click") { _, _ -> showSidebar() }
+        document.body?.let { `$`(it) }?.run { on("click", ".icon-menu") { _, _ -> showSidebar() } }
 
         installSearchBar()
 
         addPdfLinks()
-
-        addLinkToMainWebsitePage()
     }
 
     private var currSearchString = ""
@@ -132,12 +130,8 @@ object Sidebar {
         tocRoot.prepend(searchBar)
     }
 
-    private fun addLinkToMainWebsitePage() {
-        `$`("$TOC ul:first").prepend("<a href=\"http://kotlinlang.org\" class=\"toc-element toggled underlined\">Main page</a>")
-    }
 
     private fun addPdfLinks() {
-        `$`("$TOC ul:first").prepend("<a href=\"./pdf/kotlin-spec.pdf\" target=\"_blank\" class=\"toc-element toggled underlined\">Download full PDF</a>")
         `$`("$TOC > ul > li > ul > li").each { _, el ->
             val sectionName = `$`(el).find("> a").attr("href").substringBefore(".html")
             `$`(el).prepend("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf\"></a>")
