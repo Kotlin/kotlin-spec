@@ -61,7 +61,7 @@ You can help us make the Kotlin specification better by one of the following way
 
 We welcome any and all feedback to the specification, but may tweak, change or iterate with you on the contribution before including it in the specification.
 
-TODO(Legal)
+Further details on how to contribute to the specification are available in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Reference
 
