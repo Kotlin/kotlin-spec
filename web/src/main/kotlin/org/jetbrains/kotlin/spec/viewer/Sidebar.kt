@@ -103,7 +103,7 @@ object Sidebar {
         searchBar.placeholder = "Search..."
         searchBar.title = "Currently, only exact matches are supported"
 
-        searchBar.addEventListener("keyup", callback = cb@ { e ->
+        searchBar.addEventListener("keyup", callback = cb@{ e ->
             // If key isn't "Enter" then return
             if ((e as? KeyboardEvent)?.which != 13) return@cb
 
