@@ -896,7 +896,7 @@ Declaring a function `inline` has two additional effects:
 Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values.
 They may only be called inside the function body or passed to other functions as inline arguments.
 
-Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by [object literals][Object literals] or other non-inlined lambda literals).
+Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by [object literals][Object literals] or other noinline lambda literals).
 
 Noinline parameters may be treated as any other values.
 They may also be passed to other functions as `noinline` or `crossinline` arguments.
@@ -939,6 +939,8 @@ A tail-recursive function that contains a recursive call to itself may be optimi
 
 In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function.
 If a function declaration is marked with the `tailrec` modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.
+
+TODO(actual kotlin-specific rules on what qualifies for TCO)
 
 ### Property declaration
 
@@ -1407,17 +1409,73 @@ A type parameter is **used in contravariant position** in the following cases:
 A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.
 
 A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in **variance conflict** and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the [visibility][Declaration visibility] section for details).
+This applies only to member declarations of the corresponding class, extensions are not subject to this limitation.
 
 This restrictions may be lifted in particular cases by [annotating][Annotations] the corresponding type parameter usage with a special built-in annotation `kotlin.UnsafeVariance`.
 By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.
 
-TODO: examples
+> Examples:
+> 
+> ```kotlin
+> class Inv<T> {
+>     fun a(): T {...} // Ok, covariant usage
+>     fun b(value: T) {...} // Ok, contravariant usage
+>     fun c(p: Out<T>) {...} // Ok, covariant usage
+>     fun d(): Out<T> {...} // Ok, covariant usage
+>     fun e(p: In<T>) {...} // Ok, contravariant usage
+>     fun f(): In<T> {...} // Ok, contravariant usage
+> }
+> 
+> class Out<out T> { // T is covariant
+>     fun a(): T {...} // Ok, covariant usage
+>     fun b(value: T) {...} // ERROR, contravariant usage
+>     fun c(p: Inv<T>) {...} // ERROR, invariant usage
+>     fun d(): Inv<T> {...} // ERROR, invariant usage
+> }
+> 
+> class In<in T> { // T is contravariant
+>     fun a(): T {...} // ERROR, covariant usage
+>     fun b(value: T) {...} // Ok, contravariant usage
+>     fun c(p: Inv<T>) {...} // ERROR, invariant usage
+>     fun d(): Inv<T> {...} // ERROR, invariant usage
+> }
+> ``` 
+>
+> Any of these restrictions may be lifted using `@UnsafeVariance` annotation on the type argument:
+>
+> ```kotlin
+> class Out<out T> { // T is covariant
+>     fun b(value: @UnsafeVariance T) {...} // Ok
+> }
+> 
+> class In<in T> { // T is contravariant
+>     fun a(): @UnsafeVariance T {...} // Ok
+> }
+> ```
+> 
+> Using `@UnsafeVariance` is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors.
+> For example, receiving a value in a contravariant position for a covariant class parameter is usually ok if the function involved is guaranteed not to mutate internal state of the class.
+>
+> For examples on how restrictions are lifted for private visibility (private-to-this), see [visibility section][Declaration visibility]
 
 #### Reified type parameters
 
 Type parameters of inline function declarations (and only those) can be declared `reified` using the corresponding keyword.
 A reified type parameter is a [runtime-available][Runtime-available types] type inside the function scope, see the corresponding section for details.
 Reified type parameters can only be substituted by other [runtime-available types][Runtime-available types] when using such functions.
+
+> Example:
+>
+> ```kotlin
+> fun <T> foo(value: Any?) {
+>     // ERROR, is-operator is only allowed for runtime-available types
+>     if(value is T) ... 
+> }
+> 
+> inline fun <reified T> foo(value: Any?) {
+>     if(value is T) ... // Ok
+> }
+> ```
 
 ### Declaration visibility
 
