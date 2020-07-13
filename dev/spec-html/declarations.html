@@ -1848,7 +1848,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values. </span><span class="sentence">They may only be called inside the function body or passed to other functions as inline arguments.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by <a href="expressions-expressions.html#object-literals">object literals</a> or other non-inlined lambda literals).</span></p>
+<p><span class="sentence">Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by <a href="expressions-expressions.html#object-literals">object literals</a> or other noinline lambda literals).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Noinline parameters may be treated as any other values. </span><span class="sentence">They may also be passed to other functions as <code>noinline</code> or <code>crossinline</code> arguments.</span></p>
@@ -1892,6 +1892,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function. </span><span class="sentence">If a function declaration is marked with the <code>tailrec</code> modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.</span></p>
 </div>
+
 <h3 id="property-declaration">Property declaration</h3>
 <div id="grammar-rule-propertyDeclaration-pasted-4" class="grammar-rule">
 <dl>
@@ -2381,16 +2382,71 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in <strong>variance conflict</strong> and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the <a href="declarations.html#declaration-visibility">visibility</a> section for details).</span></p>
+<p><span class="sentence">A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in <strong>variance conflict</strong> and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the <a href="declarations.html#declaration-visibility">visibility</a> section for details). </span><span class="sentence">This applies only to member declarations of the corresponding class, extensions are not subject to this limitation.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">This restrictions may be lifted in particular cases by <a href="annotations.html#annotations">annotating</a> the corresponding type parameter usage with a special built-in annotation <code>kotlin.UnsafeVariance</code>. </span><span class="sentence">By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.</span></p>
 </div>
-
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">class</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb49-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb49-3" title="3">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb49-4" title="4">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb49-5" title="5">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb49-6" title="6">    <span class="kw">fun</span> <span class="fu">e</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb49-7" title="7">    <span class="kw">fun</span> <span class="fu">f</span><span class="op">():</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb49-8" title="8"><span class="op">}</span></a>
+<a class="sourceLine" id="cb49-9" title="9"></a>
+<a class="sourceLine" id="cb49-10" title="10"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
+<a class="sourceLine" id="cb49-11" title="11">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb49-12" title="12">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, contravariant usage</span></a>
+<a class="sourceLine" id="cb49-13" title="13">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb49-14" title="14">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb49-15" title="15"><span class="op">}</span></a>
+<a class="sourceLine" id="cb49-16" title="16"></a>
+<a class="sourceLine" id="cb49-17" title="17"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
+<a class="sourceLine" id="cb49-18" title="18">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, covariant usage</span></a>
+<a class="sourceLine" id="cb49-19" title="19">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb49-20" title="20">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb49-21" title="21">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb49-22" title="22"><span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Any of these restrictions may be lifted using <code>@UnsafeVariance</code> annotation on the type argument:</span></p>
+</div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
+<a class="sourceLine" id="cb50-2" title="2">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> @<span class="dt">UnsafeVariance</span> <span class="va">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb50-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb50-4" title="4"></a>
+<a class="sourceLine" id="cb50-5" title="5"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
+<a class="sourceLine" id="cb50-6" title="6">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> @<span class="dt">UnsafeVariance</span> <span class="fu">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb50-7" title="7"><span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Using <code>@UnsafeVariance</code> is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors. </span><span class="sentence">For example, receiving a value in a contravariant position for a covariant class parameter is usually ok if the function involved is guaranteed not to mutate internal state of the class.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For examples on how restrictions are lifted for private visibility (private-to-this), see <a href="declarations.html#declaration-visibility">visibility section</a></span></p>
+</div>
+</blockquote>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
 <p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="runtime-type-information.html#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substituted by other <a href="runtime-type-information.html#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb51-2" title="2">    <span class="co">// ERROR, is-operator is only allowed for runtime-available types</span></a>
+<a class="sourceLine" id="cb51-3" title="3">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... </a>
+<a class="sourceLine" id="cb51-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb51-5" title="5"></a>
+<a class="sourceLine" id="cb51-6" title="6"><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb51-7" title="7">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb51-8" title="8"><span class="op">}</span></a></code></pre></div>
+</blockquote>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">
 <p><span class="sentence">Each declaration has a visibility property relative to the scope it is declared in. </span><span class="sentence">By default, all the declarations are <code>public</code>, meaning that they can be accessed from any other scope their outer scope can be accessed from. </span><span class="sentence">The only exception to this rule are <a href="inheritance.html#overriding">overriding declarations</a> that by default inherit the visibility from the declaration they override. </span><span class="sentence">Declarations may be also marked <code>public</code> explicitly.</span></p>
@@ -2423,18 +2479,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></a>
-<a class="sourceLine" id="cb49-2" title="2">    <span class="co">// not allowed, T is in contravariant position</span></a>
-<a class="sourceLine" id="cb49-3" title="3">    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
-<a class="sourceLine" id="cb49-4" title="4">    <span class="co">// allowed, set2 is private-to-this</span></a>
-<a class="sourceLine" id="cb49-5" title="5">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
-<a class="sourceLine" id="cb49-6" title="6">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb49-7" title="7">        <span class="co">// allowed, set2 is called on this</span></a>
-<a class="sourceLine" id="cb49-8" title="8">        <span class="kw">this</span>.set2(t) </a>
-<a class="sourceLine" id="cb49-9" title="9">        <span class="co">// not allowed, set2 is called on other</span></a>
-<a class="sourceLine" id="cb49-10" title="10">        other.set2(t) </a>
-<a class="sourceLine" id="cb49-11" title="11">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb49-12" title="12"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></a>
+<a class="sourceLine" id="cb52-2" title="2">    <span class="co">// not allowed, T is in contravariant position</span></a>
+<a class="sourceLine" id="cb52-3" title="3">    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
+<a class="sourceLine" id="cb52-4" title="4">    <span class="co">// allowed, set2 is private-to-this</span></a>
+<a class="sourceLine" id="cb52-5" title="5">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
+<a class="sourceLine" id="cb52-6" title="6">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb52-7" title="7">        <span class="co">// allowed, set2 is called on this</span></a>
+<a class="sourceLine" id="cb52-8" title="8">        <span class="kw">this</span>.set2(t) </a>
+<a class="sourceLine" id="cb52-9" title="9">        <span class="co">// not allowed, set2 is called on other</span></a>
+<a class="sourceLine" id="cb52-10" title="10">        other.set2(t) </a>
+<a class="sourceLine" id="cb52-11" title="11">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb52-12" title="12"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -2463,14 +2519,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb50-2" title="2">    <span class="co">// not allowed, t is internal, getValue is public</span></a>
-<a class="sourceLine" id="cb50-3" title="3">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
-<a class="sourceLine" id="cb50-4" title="4"><span class="op">}</span></a>
-<a class="sourceLine" id="cb50-5" title="5"><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb50-6" title="6">    <span class="co">// allowed through @PublishedApi</span></a>
-<a class="sourceLine" id="cb50-7" title="7">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
-<a class="sourceLine" id="cb50-8" title="8"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb53-2" title="2">    <span class="co">// not allowed, t is internal, getValue is public</span></a>
+<a class="sourceLine" id="cb53-3" title="3">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb53-6" title="6">    <span class="co">// allowed through @PublishedApi</span></a>
+<a class="sourceLine" id="cb53-7" title="7">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
+<a class="sourceLine" id="cb53-8" title="8"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 </body>
 </html>
