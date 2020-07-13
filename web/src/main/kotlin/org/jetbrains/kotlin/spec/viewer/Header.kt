@@ -21,16 +21,16 @@ object Header {
     private const val PDF_ICON = "./resources/images/pdf.png"
     private const val DOWNLOAD_FULL_PDF_HTML =
             """<a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
-                  <img src="$PDF_ICON" class="full-pdf-icon">
+                Download PDF
                    </a>"""
 
 
     fun init(mode: Mode, shouldBeShowedMarkup: Boolean) {
-        val headerHtml = HEADER_HTML.format(ICON_BAR_HTML, MAIN_PAGE_LINK_HTML, DOWNLOAD_FULL_PDF_HTML,
+        val headerHtml = HEADER_HTML.format(ICON_BAR_HTML, MAIN_PAGE_LINK_HTML,
                 when (mode) {
                     Mode.Dev -> SentenceFinder.FINDER_BAR_HTML.format(*(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show")))
                     Mode.User -> ""
-                }
+                },  DOWNLOAD_FULL_PDF_HTML
         ).trimIndent()
 
         `$`(document.body ?: return).prepend(headerHtml)
