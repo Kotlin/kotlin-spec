@@ -1,5 +1,5 @@
 package org.jetbrains.kotlin.spec.utils
 
-enum class Mode{
+enum class Mode {
     Dev, User
 }
