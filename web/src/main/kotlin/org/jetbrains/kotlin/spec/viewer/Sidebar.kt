@@ -83,11 +83,18 @@ object Sidebar {
         }
 
 
-        document.body?.let { `$`(it) }?.run { on("click", ".icon-menu") { _, _ -> showSidebar() } }
+        document.body?.let { `$`(it) }?.run {
+            on("click", ".icon-menu") { _, _ -> showSidebar() }
+            on("click", ".toc-element") { _, _ -> hideSidebar() }
+        }
 
         installSearchBar()
 
         addPdfLinks()
+    }
+
+    private fun hideSidebar() {
+        `$`(".icon-menu").removeClass("active")
     }
 
     private var currSearchString = ""
