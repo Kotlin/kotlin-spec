@@ -536,7 +536,7 @@ A type-checking expression checks whether the runtime type of $E$ is a subtype o
 
 The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
 
-> Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), we allow the type $T$ to include non-runtime-available components.
+> Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), it is allowed for the type $T$ to include non-runtime-available components.
 
 Type-checking expression always has type `kotlin.Boolean`.
 
@@ -636,7 +636,7 @@ A *cast expression* is a binary expression which uses cast operators `as` or `as
 
 An **`as` cast expression** `E as T` is called *an unchecked cast* expression.
 This expression perform a runtime check whether the runtime type of $E$ is a [subtype][Subtyping] of $T$ and throws an exception otherwise.
-If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is platform-dependent whether an exception is thrown at this point.
+If type $T$ is a [runtime-available][Runtime-available types] type without generic parameters, then this exception is thrown immediately when evaluating the cast expression, otherwise it is implementation-defined whether an exception is thrown at this point.
 
 An unchecked cast expression result always has the same type as the type $T$ specified in the expression.
 
@@ -665,6 +665,7 @@ The checked cast expression result has the type which is the [nullable][Nullable
 
 Any expression in Kotlin may be prefixed with any number of [annotations][Annotations].
 These do not change the value of the expression and can be used by external tools and for implementing platform-dependent features.
+See [annotations][Annotations] chapter of this document for further information and examples of annotations.
 
 #### Prefix increment expressions
 
