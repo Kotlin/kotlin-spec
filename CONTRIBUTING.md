@@ -19,9 +19,20 @@ If you are contributing information specific to a particular Kotlin version or a
 
 ## What to contribute?
 
+There are three main ways how you can contribute to the Kotlin specification, which we outline below.
+However, if your idea does not fit into these categories, do not hesitate and still send it our way, as we welcome all contributions and will carefully consider even the most unconventional ones.
+
 ### Improve the text
 
-TODO
+The most straightforward way of improving the specification is making its text better.
+The specification is written in Markdown and compiled to the resulting HTML and PDF files via [Pandoc](https://pandoc.org/).
+As Markdown is pretty lightweight and flexible, we have only a limited set of guidelines on how it should be written.
+
+* A sentence should be placed on a single line, such an arrangement makes it easier to compare changes between different versions.
+* Kotlin code blocks should be marked as such using `` ```kotlin ... ``` `` markdown.
+* As we are using implicit header references, a preferred way of referencing to a section named `Awesome section title` is `[as follows][Awesome section title]`.
+	- The few exceptions to this rule are when you need to reference a particular section with a duplicated name, these sections usually have a predefined `{#anchor}`.
+	They should be referenced using the explicit anchor either `[in place](#anchor)` or via a `[reference][anchor reference]` defined separately as `[anchor reference]: #anchor`.
 
 ### Provide additional tests
 
