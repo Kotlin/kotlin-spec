@@ -44,10 +44,14 @@ After installing these dependencies, building the specification is as easy as ru
 ./gradlew buildWeb buildPdf
 ```
 
-which creates both HTML and PDF versions of the specification in `./build/`.
+which creates both HTML and PDF versions of the specification in `./build/spec`.
 
 > When doing the build for the very first time, you will see Gradle downloading `ideaIC-LATEST-EAP-SNAPSHOT.zip`, which may take quite a long time.
 > This IDEA snapshot is used for specification and grammar tests, and will be cached (until a new version is available), so this lengthy download should happen only once (in a while).
+
+The PDF version is available in two flavours: single-file PDF, containing the complete specification, and a set of section-based PDFs, containing their respective sections.
+
+The HTML version consists of a set of section-based pages linked together via an interactive table of contents.
 
 ## Contributing
 
