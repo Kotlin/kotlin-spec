@@ -26,7 +26,7 @@ object Header {
                 when (mode) {
                     Mode.Dev -> SentenceFinder.FINDER_BAR_HTML.format(*(if (shouldBeShowedMarkup) arrayOf("hide", "Hide") else arrayOf("show", "Show")))
                     Mode.User -> ""
-                },  DOWNLOAD_FULL_PDF_HTML
+                }, DOWNLOAD_FULL_PDF_HTML
         ).trimIndent()
 
         `$`(document.body ?: return).prepend(headerHtml)

@@ -23,17 +23,30 @@ class SpecTestsLoader {
         private const val LOADING_ICON_HTML = "<img src=\"$LOADING_ICON_PATH\" />"
         private const val SET_BRANCH_ICON = "./resources/images/set-branch.png"
 
-        private const val LOAD_TESTS_TEXT = "Load tests"
         private val notLoadedTestsText = "Tests for \"{1}\" in \"${GithubTestsLoader.getBranch()}\" branch aren't yet written."
 
         private const val SECTION_PATH_SEPARATOR = ", "
+
+        fun getButtonToLoadTests(link: JQuery, isToReload: Boolean = false) = when (isToReload) {
+            false -> """
+        <a href="#" 
+            data-id="${link.attr("id")}" 
+            data-type="${link.prop("tagName").toString().toLowerCase()}" 
+            class="load-tests" 
+            title="Show tests coverage">
+            <button>Load tests</button>
+        </a>"""
+            else -> """
+              <button>Reoad tests</button>  
+            """.trimIndent()
+        }
 
         fun insertLoadIcon(headerElement: JQuery, mode: Mode) {
             headerElement.append(
                     buildString {
                         if (mode == Mode.Dev)
                             append("""<a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>""")
-                        append("""<a href="#" data-id="${headerElement.attr("id")}" data-type="${headerElement.prop("tagName").toString().toLowerCase()}" class="load-tests" title="Show tests coverage">Load tests</a>""")
+                        append(getButtonToLoadTests(headerElement))
                     }
             )
         }
@@ -179,7 +192,7 @@ class SpecTestsLoader {
                     if (paragraphsInfo != null)
                         parseTestFiles(sectionTestSet, sectionName, sectionsPath, paragraphsInfo)
 
-                    link.html("Reload tests")
+                    link.html(getButtonToLoadTests(link, true))
 
                     if (originalSectionName == sectionName) {
                         section.nextAll(".paragraph.with-tests").first().get()[0].scrollIntoView()
@@ -195,7 +208,7 @@ class SpecTestsLoader {
                     if (numberSectionsLoaded == 0) {
                         window.alert(notLoadedTestsText.format(sectionPrevLoaded))
                     }
-                    link.html(LOAD_TESTS_TEXT)
+                    link.html(getButtonToLoadTests(link, true))
                 }
 
         nestedSections.forEach { sectionId ->
