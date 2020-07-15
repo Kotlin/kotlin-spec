@@ -69,6 +69,7 @@ object Sidebar {
     }
 
     fun init() {
+        `$`("$TOC").toggleClass("displayed")
         expandItemsHierarchyByUrl(shouldScrollToItem = true)
 
         `$`(window).on("hashchange") { _, _ -> expandItemsHierarchyByUrl() }
