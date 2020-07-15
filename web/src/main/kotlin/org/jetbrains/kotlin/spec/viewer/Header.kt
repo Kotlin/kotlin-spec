@@ -12,13 +12,9 @@ object Header {
 
 
     private val MAIN_PAGE_LINK_HTML =
-            """<a class=main-page href="http://kotlinlang.org" class="main-page">
-                <img src="https://kotlinlang.org/assets/images/favicon.ico" width="30" height="30">
-                Kotlin
-             </a>""".trimMargin()
+            """<a class=main-page href="http://kotlinlang.org">Kotlin</a>""".trimMargin()
 
 
-    private const val PDF_ICON = "./resources/images/pdf.png"
     private const val DOWNLOAD_FULL_PDF_HTML =
             """<a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
                 Download PDF
