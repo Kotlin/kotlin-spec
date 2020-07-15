@@ -36,7 +36,24 @@ As Markdown is pretty lightweight and flexible, we have only a limited set of gu
 
 ### Provide additional tests
 
-TODO
+Besides being a description of how Kotlin should work in different situations, the specification also includes a number of *tests* which check whether a compiler implementation is compatible with the specification.
+
+> Note: as of now, these tests cover only a subset of the specification; in the future, we hope for this test suite to evolve into a complete Kotlin compatibility testing kit.
+
+To access these tests, one may use the "Load tests" link available next to every section header in the HTML version.
+After loading the tests, the section will be marked into paragraphs (represented as numbered outlines) and sentences (represented as numbered highlights), with available tests linked to the sentences.
+
+A specification test is linked to one *primary* sentence, which is the main thing the test is checking, and zero or more *secondary* sentences, which are somewhat related to what the test is about.
+Sentences are identified by their section path plus their paragraph number plus their sentence number.
+
+If a sentence have one or more tests linked to it (aka a *tested sentence*), it is highlighted in green; otherwise, it is highlighted in gray.
+When you click on a tested sentence, a popup window is shown, which contains the following information:
+
+* TODO
+
+If you want to contribute a new test for a statement in the specification, you should do the following.
+
+* TODO
 
 ### Enhance the grammar
 
