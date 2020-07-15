@@ -8,6 +8,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 object Sidebar {
+    private const val LOAD_PDF_ICON = "./resources/images/pdf.png"
     private const val TOC = "#TOC"
     private const val OFFSET_BEFORE_SCROLLED_ELEMENT = 100
 
@@ -142,12 +143,14 @@ object Sidebar {
     private fun addPdfLinks() {
         `$`("$TOC > ul > li > ul > li").each { _, el ->
             val sectionName = `$`(el).find("> a").attr("href").substringBefore(".html")
-            `$`(el).prepend("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf\"></a>")
+            `$`(el).prepend("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf\" title=\"Download section as pdf\"></a>")
         }
 
         `$`("h2").each { _, el ->
             val sectionName = `$`(el).attr("id")
-            `$`(el).after("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\">Download PDF</a>")
+            `$`(el).after("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
+                    + """
+<img src="${LOAD_PDF_ICON}" />""".trimIndent() + "</a>")
         }
     }
 }
