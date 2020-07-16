@@ -25,6 +25,36 @@ This expansion of a particular syntax form to a different piece of code is usual
 Operator functions are function which are [declared][Function declaration] with a special keyword `operator` and are not different from regular functions when called via [function calls][Function calls and property access].
 However, operator functions can also be used in definition by convention.
 
+> Note: it is not important whether an operator function is a member or an extension, nor whether it is suspending or not.
+> The only requirements are the ones listed in the respected sections.
+>
+> For example, for an operator form `a + b` where `a` is of type `A` and `b` is of type `B` any of the following function definitions are applicable:
+>
+> ```kotlin
+> class A {
+>     // member function 
+>     operator fun plus(b: B) = ... 
+>     // suspending member function
+>     suspend operator fun plus(b: B) = ... 
+> }
+> 
+> // extension function
+> operator fun A.plus(b: B) = ...
+> // suspending extension function
+> suspend operator fun A.plus(b: B) = ...
+> ```
+> 
+> Assuming additional implicit receiver of this type is available, it may also be an extension defined in another type:
+>
+> ```kotlin
+> object Ctx {
+>     // extension that is a member of some context type
+>     operator fun A.plus(b: B) = ...
+> 
+>     fun add(a: A, b: B) = a + b
+> }
+> ```
+
 > Note: different platforms may add additional criteria on whether a function may be considered a suitable candidate for operator convention.
 
 The details of individual expansions are available in the sections of their respective operators, here we would like to describe how they *interoperate*.

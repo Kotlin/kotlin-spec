@@ -388,6 +388,24 @@ If when expression is not [exhaustive][Exhaustive when expressions], it has type
 > }
 > ```
 
+When with bound value also allows for an inline property declaration of the form `when (val V = E) { ... }` inside the parentheses.
+This declares a new property (see [declaration sections][Property declaration] for details) alongside the usual mechanics of the *when-expression*.
+The scope of this property is limited to the `when` expression, including both conditions and control structure bodies of the expression.
+As its form is limited to a simple "assignment-like" declaration with an initializer, this property does not allow getters, setters, delegation or destructuring.
+It is also required to be immutable.
+Conceptually, it is very similar to declaring such a property before the when-expression and using it as subject, but with a difference in scoping of this property described above.
+
+> Example:
+>
+> ```kotlin
+> when(val a = b + c) {
+>     !is Foo -> a + 1
+>     else -> b
+> }
+> 
+> val y = a // illegal, a is not visible here anymore
+> ```
+
 #### Exhaustive when expressions
 
 A when expression is called **_exhaustive_** if at least one of the following is true:

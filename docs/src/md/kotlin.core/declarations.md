@@ -587,7 +587,7 @@ However, as functional interface essentially represents a single function, Kotli
 > 
 > ```kotlin
 > fun interface FI {
->      fun bar(s: Int): Int
+>     fun bar(s: Int): Int
 > }
 > 
 > fun foo() {
