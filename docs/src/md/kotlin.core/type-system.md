@@ -771,7 +771,7 @@ Kotlin supports null safety by having two type universes --- nullable and non-nu
 All classifier type declarations, built-in or user-defined, create non-nullable types, i.e., types which cannot hold `null` value at runtime.
 
 To specify a nullable version of type $T$, one needs to use $T?$ as a type.
-Redundant nullability specifiers are ignored --- $T?? \equiv T?$.
+Redundant nullability specifiers are ignored: $T?? \equiv T?$.
 
 > Note: informally, question mark means "$T?$ may hold values of type $T$ or value `null`"
 
