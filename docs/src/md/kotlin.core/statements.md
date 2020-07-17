@@ -1,4 +1,4 @@
-## Statements {#statements-statements}
+## Statements
 
 :::{.paste target=grammar-rule-statements}
 :::
@@ -73,7 +73,7 @@ After the expansion, the resulting [function call expression][Function calls and
 
 > Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions-expressions] of this specification.
 
-[Expressions-expressions]: #expressions-expressions
+[Expressions-expressions]: #expressions
 
 #### Safe assignments
 
