@@ -136,8 +136,8 @@ After that, a new independent set of inference variables is picked and this proc
 
 In other sections (for example, [Expressions][Expressions-expressions] and [Statements][Statements-statements]) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.
 
-[Expressions-expressions]: #expressions-expressions
-[Statements-statements]: #statements-statements
+[Expressions-expressions]: #expressions
+[Statements-statements]: #statements
 
 The [greatest lower bound] of two types is converted directly as-is, as the greatest lower bound is always an intersection type.
 

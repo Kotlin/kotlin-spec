@@ -1,4 +1,4 @@
-## Expressions {#expressions-expressions}
+## Expressions
 
 ### Glossary {-}
 
@@ -17,7 +17,7 @@ An expression is used as a statement if it is encountered in any position where 
 
 Some expressions are allowed to be used as statements, only if certain restrictions are met; this may affect the semantics, the compile-time type information or/and the safety of these expressions.
 
-[Statements-statements]: #statements-statements
+[Statements-statements]: #statements
 
 ### Constant literals
 
