@@ -2,6 +2,7 @@ package org.jetbrains.kotlin.spec.viewer
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
@@ -39,7 +40,7 @@ object Sidebar {
         expandItemsHierarchy(sectionMenuItem)
     }
 
-    private fun expandItemsHierarchyByUrl(shouldScrollToItem: Boolean = false) {
+    private fun expandItemsHierarchyByUrl(shouldScrollToItem: Boolean = true) {
         val sectionIdFromHash = window.location.hash.removePrefix("#")
         val sectionIdFromPath = window.location.pathname.split("/").last().removeSuffix(".html")
 
@@ -69,6 +70,17 @@ object Sidebar {
         `$`(".icon-menu").toggleClass("active")
     }
 
+    private fun setScrollSettings() {
+        `$`(window).scroll {
+            val x = (`$`(document).scrollTop().toDouble())
+            val y = maxOf(-61.0, -x)
+            `$`(TOC).css("margin-top", y)
+            `$`(".toc-body").css("height", "-moz-calc(100% - ${161 + y}px)")
+                    .css("height", "-webkit-calc(100% - ${161 + y}px)")
+                    .css("height", "calc(100% - ${161 + y}px)")
+        }
+    }
+
     fun init() {
         `$`("$TOC").toggleClass("displayed")
         expandItemsHierarchyByUrl(shouldScrollToItem = true)
@@ -89,8 +101,8 @@ object Sidebar {
             on("click", ".icon-menu") { _, _ -> showSidebar() }
             on("click", ".toc-element") { _, _ -> hideSidebar() }
         }
-
-        installSearchBar()
+        initTocHeader()
+        setScrollSettings()
 
         addPdfLinks()
     }
@@ -102,8 +114,19 @@ object Sidebar {
     private var currSearchString = ""
     private var currResultIdx = 0
 
-    private fun installSearchBar() {
-        val tocRoot = `$`(TOC)
+    private fun initTocHeader() {
+        //mark toc body with a toggle class
+        `$`(TOC).children("ul").first().toggleClass("toc-body")
+
+        val tocHeader = document.createElement("div")
+        tocHeader.className = "toc-header"
+        tocHeader.innerHTML = "Table of content"
+        installSearchBar(tocHeader)
+
+        `$`(TOC).prepend(tocHeader)
+    }
+
+    private fun installSearchBar(tocRoot: Element) {
         val searchBar = document.createElement("input") as? HTMLInputElement ?: return
 
         searchBar.id = "toc-search-bar"
@@ -135,7 +158,6 @@ object Sidebar {
             expandItemsHierarchy(currItem)
             scrollToActiveItem()
         })
-
         tocRoot.prepend(searchBar)
     }
 
