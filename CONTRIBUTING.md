@@ -44,16 +44,35 @@ To access these tests, one may use the "Load tests" link available next to every
 After loading the tests, the section will be marked into paragraphs (represented as numbered outlines) and sentences (represented as numbered highlights), with available tests linked to the sentences.
 
 A specification test is linked to one *primary* sentence, which is the main thing the test is checking, and zero or more *secondary* sentences, which are somewhat related to what the test is about.
-Sentences are identified by their section path plus their paragraph number plus their sentence number.
+Sentences are identified by their section path plus their paragraph number plus their sentence number (aka sentence identifier).
 
 If a sentence have one or more tests linked to it (aka a *tested sentence*), it is highlighted in green; otherwise, it is highlighted in gray.
-When you click on a tested sentence, a popup window is shown, which contains the following information:
+When you click on a tested sentence, a popup window is shown, which contains the available test cases for the sentence as a code snippet, augmented with the following information:
 
-* TODO
+* Test kind; currently we support these kinds of tests:
+	+ front-end diagnostics tests;
+	+ codegen box tests;
+* Test type; currently we support these kinds of tests:
+	+ positive tests, which should successfully compile;
+	+ negative tests, which should not compile with a compile-time error;
+* Test linkage: primary or secondary;
+* Test description.
 
-If you want to contribute a new test for a statement in the specification, you should do the following.
+The test code can be run from the popup by clicking the green arrow icon; you can also tweak the code by switching to edit mode via the plus sign icon.
 
-* TODO
+As of now, these tests are hosted in the main [Kotlin compiler repository][spec-test-data], and are used in its continuous integration process.
+Because of this, we do not curently have a very user-friendly story of contributing additional specification tests.
+
+If you nontheless want to contribute a new test for a statement in the specification, you should do the following.
+
+* Write the test case itself as a standalone code snippet;
+* Link it to one primary sentence and zero or more secondary sentences via their sentence identifiers;
+* Describe the test using the aforementioned classification (kind, type, linkage, description);
+* Drop us an email with this information.
+
+TODO(Maybe provide a test case template somewhere?)
+
+[spec-test-data]: https://github.com/JetBrains/kotlin/tree/master/compiler/tests-spec
 
 ### Enhance the grammar
 
