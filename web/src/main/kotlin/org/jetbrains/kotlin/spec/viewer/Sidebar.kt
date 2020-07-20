@@ -149,9 +149,8 @@ object Sidebar {
 
         `$`("h2").each { _, el ->
             val sectionName = `$`(el).attr("id")
-            `$`(el).after("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
-                    + """
-<img src="${LOAD_PDF_ICON}" />""".trimIndent() + "</a>")
+            `$`(el).append("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
+                    + """<img src="${LOAD_PDF_ICON}" />""".trimIndent() + "</a>")
         }
     }
 }

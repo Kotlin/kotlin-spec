@@ -166,7 +166,7 @@ class SpecTestsLoader {
     private var numberSectionsLoaded = 0
 
     fun onTestsLoadingLinkClick(link: JQuery) {
-        val section = link.parent("h3, h4, h5")
+        val section = link.parent("h2, h3, h4, h5")
         val paragraphsInfo = getParagraphsInfo(section)
         val nestedSections = getNestedSections(section)
         val sectionName = section.attr("id")

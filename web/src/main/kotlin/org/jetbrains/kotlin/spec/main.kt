@@ -28,7 +28,7 @@ fun init() {
     Header.init(mode, shouldBeShowedMarkup)
 
 
-    `$`("h3, h4, h5").each { _, el ->
+    `$`("h2, h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
         if (idValue != "introduction"
                 && idValue != "experimental-features"
