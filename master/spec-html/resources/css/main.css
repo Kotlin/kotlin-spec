@@ -63,17 +63,15 @@ h2 {
 #TOC {
     position: fixed;
     left: 0;
-    top: 61px;
+    top: 60px;
     width: 300px;
     height: 100%;
-    overflow: auto;
 
-    font-size: 13.5px;
+    font-size: 13px;
     font-family: Arial, serif;
 
     z-index: 2;
     border-right: 1px solid rgba(39, 40, 44, 0.20);
-    padding: 0 0 30px 0;
     box-sizing: border-box;
 
     -webkit-transition: left 0.5s ease-out 0.25s;
@@ -86,24 +84,46 @@ h2 {
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
 }
 
-#TOC::before,
 #TOC {
     background: #f8f8f9;
 }
 
-#TOC::before {
-    content: "Table of Contents";
-    width: 299px;
+.toc-body {
     display: block;
+    position: relative;
+    box-sizing: border-box;
+    width: 299px;
+    overflow: auto;
+    height: -moz-calc(100% - 161px); /* Firefox */
+    height: -webkit-calc(100% - 161px); /* Chrome, Safari */
+    height: calc(100% - 161px); /* IE9+ and future browsers */
+}
 
-    position: fixed;
-    padding: 20px 0 40px 15px;
+.toc-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.toc-body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(183, 84, 84, 0.3);
+}
+
+.toc-body::-webkit-scrollbar-thumb {
+    background-color: #c5bfbf8a;
+}
+
+.toc-header {
+    display: block;
+    width: 299px;
+    position: relative;
     font-size: 20px;
     font-weight: bold;
-    margin-bottom: 10px;
     text-align: left;
+    color: grey;
     box-sizing: border-box;
     z-index: 3;
+    padding: 10px 0px 50px 10px;
+    top: 0;
+    border-bottom: 1px solid rgba(39, 40, 44, 0.08);
 }
 
 #TOC ul a.underlined {
@@ -126,7 +146,6 @@ h2 {
     margin-top: 8px;
     z-index: 2;
     opacity: 0.7;
-
 }
 
 #TOC ul a.download-section-as-pdf:hover {
@@ -143,10 +162,6 @@ h2 {
 
 #TOC.loaded > ul:before {
     display: none;
-}
-
-#TOC > ul {
-    margin-top: 100px;
 }
 
 #TOC ul li {
@@ -225,8 +240,8 @@ h2 {
     padding-left: 90px;
 }
 
-#TOC #toc-search-bar {
-    margin: 60px 10px 5px 10px;
+#toc-search-bar {
+    margin: 35px 10px 5px 0px;
     position: fixed;
     width: 280px;
     z-index: 3;
@@ -250,18 +265,23 @@ h2 {
     position: fixed;
     cursor: pointer;
     padding: 5px;
+    opacity: 0.7;
 }
 
 .icon-menu .divide {
     display: block;
     height: 2px;
     margin: 3px 0;
-    background: white;
+    background: #c7bcbc;
+}
+
+.icon-menu:hover {
+    opacity: 1;
 }
 
 @media (max-width: 1050px) {
     body {
-        padding-left: 1em;
+        padding-left: 40px;
     }
 
     .header-bar .download-full-pdf {
@@ -287,13 +307,23 @@ h2 {
     .header-bar .main-page {
         margin-left: 40px;
     }
+
+    #TOC .toc-header{
+        padding-left: 50px;
+    }
+
+    #TOC .toc-header #toc-search-bar{
+        width: 240px;
+    }
 }
 
 
 @media (max-width: 500px) {
 
     #TOC.active,
-    #TOC::before{
+    #TOC.active .header-bar,
+    #TOC.active .toc-body,
+    #TOC.active .toc-header {
         width: 100%;
     }
 
@@ -302,8 +332,15 @@ h2 {
     }
 
     #TOC ul a.download-section-as-pdf {
-
         right: 25px;
+    }
+    #TOC.active .toc-header{
+        padding-left: 10px;
+    }
+
+
+    #TOC.active .toc-header #toc-search-bar{
+        width: 95%
     }
 
 }
@@ -1089,7 +1126,7 @@ span.TODO-marker {
 
 .header-bar {
     display: block;
-    position: fixed;
+    position: absolute;
     height: 50px;
     background: #333333;
     width: 100%;
@@ -1097,7 +1134,7 @@ span.TODO-marker {
     top: 0;
     border-bottom: 1px solid #a0a0a0;
     text-align: left;
-    z-index: 1;
+    z-index: 3;
     padding-top: 10px;
     padding-left: 10px;
 }
@@ -1143,6 +1180,7 @@ span.TODO-marker {
     margin-top: 5px;
     font-family: sans-serif;
     opacity: 0.7;
+    font-weight: lighter;
 }
 
 .spec-location-search {
