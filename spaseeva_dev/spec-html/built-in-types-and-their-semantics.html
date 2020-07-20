@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="./resources/css/main.css">
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  
+  <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
+  <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
+  <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
+  <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
+  
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P98');</script>
+  <!-- End Google Tag Manager -->
+</head>
+<body>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+<p class="subtitle">Version 1.4-beta+0.2</p>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="TOC">
+<ul>
+<li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
+<ul>
+<li><a href="introduction.html#introduction" id="toc-element-introduction" class="toc-element unnumbered">Introduction</a>
+<ul>
+<li><a href="introduction.html#experimental-features" id="toc-element-experimental-features" class="toc-element unnumbered">Experimental features</a></li>
+<li><a href="introduction.html#acknowledgments" id="toc-element-acknowledgments" class="toc-element unnumbered">Acknowledgments</a></li>
+<li><a href="introduction.html#feedback" id="toc-element-feedback" class="toc-element unnumbered">Feedback</a></li>
+<li><a href="introduction.html#reference" id="toc-element-reference" class="toc-element unnumbered">Reference</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
+<li><a href="syntax-and-grammar.html#keywords-and-operators" id="toc-element-keywords-and-operators" class="toc-element">Keywords and operators</a></li>
+<li><a href="syntax-and-grammar.html#literals" id="toc-element-literals" class="toc-element">Literals</a></li>
+<li><a href="syntax-and-grammar.html#identifiers" id="toc-element-identifiers" class="toc-element">Identifiers</a></li>
+<li><a href="syntax-and-grammar.html#string-mode-grammar" id="toc-element-string-mode-grammar" class="toc-element">String mode grammar</a></li>
+<li><a href="syntax-and-grammar.html#tokens" id="toc-element-tokens" class="toc-element">Tokens</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-grammar" id="toc-element-syntax-grammar" class="toc-element">Syntax grammar</a></li>
+<li><a href="syntax-and-grammar.html#documentation-comments" id="toc-element-documentation-comments" class="toc-element">Documentation comments</a></li>
+</ul></li>
+<li><a href="type-system.html#type-system" id="toc-element-type-system" class="toc-element">Type system</a>
+<ul>
+<li><a href="type-system.html#glossary" id="toc-element-glossary" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="type-system.html#introduction-1" id="toc-element-introduction-1" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="type-system.html#type-kinds" id="toc-element-type-kinds" class="toc-element">Type kinds</a>
+<ul>
+<li><a href="type-system.html#built-in-types" id="toc-element-built-in-types" class="toc-element">Built-in types</a>
+<ul>
+<li><a href="type-system.html#kotlin.any-typesystem" id="toc-element-kotlin.any-typesystem" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="type-system.html#kotlin.nothing-typesystem" id="toc-element-kotlin.nothing-typesystem" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="type-system.html#kotlin.function-typesystem" id="toc-element-kotlin.function-typesystem" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="type-system.html#built-in-integer-types-typesystem" id="toc-element-built-in-integer-types-typesystem" class="toc-element">Built-in integer types</a></li>
+<li><a href="type-system.html#array-types" id="toc-element-array-types" class="toc-element">Array types</a></li>
+</ul></li>
+<li><a href="type-system.html#classifier-types" id="toc-element-classifier-types" class="toc-element">Classifier types</a>
+<ul>
+<li><a href="type-system.html#simple-classifier-types" id="toc-element-simple-classifier-types" class="toc-element">Simple classifier types</a></li>
+<li><a href="type-system.html#parameterized-classifier-types" id="toc-element-parameterized-classifier-types" class="toc-element">Parameterized classifier types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-parameters" id="toc-element-type-parameters" class="toc-element">Type parameters</a>
+<ul>
+<li><a href="type-system.html#function-type-parameters" id="toc-element-function-type-parameters" class="toc-element">Function type parameters</a></li>
+<li><a href="type-system.html#mixed-site-variance" id="toc-element-mixed-site-variance" class="toc-element">Mixed-site variance</a></li>
+<li><a href="type-system.html#declaration-site-variance" id="toc-element-declaration-site-variance" class="toc-element">Declaration-site variance</a></li>
+<li><a href="type-system.html#use-site-variance" id="toc-element-use-site-variance" class="toc-element">Use-site variance</a></li>
+</ul></li>
+<li><a href="type-system.html#type-capturing" id="toc-element-type-capturing" class="toc-element">Type capturing</a></li>
+<li><a href="type-system.html#type-containment" id="toc-element-type-containment" class="toc-element">Type containment</a></li>
+<li><a href="type-system.html#function-types" id="toc-element-function-types" class="toc-element">Function types</a>
+<ul>
+<li><a href="type-system.html#suspending-function-types" id="toc-element-suspending-function-types" class="toc-element">Suspending function types</a></li>
+</ul></li>
+<li><a href="type-system.html#flexible-types" id="toc-element-flexible-types" class="toc-element">Flexible types</a>
+<ul>
+<li><a href="type-system.html#dynamic-type" id="toc-element-dynamic-type" class="toc-element">Dynamic type</a></li>
+<li><a href="type-system.html#platform-types" id="toc-element-platform-types" class="toc-element">Platform types</a></li>
+</ul></li>
+<li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
+<ul>
+<li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+</ul></li>
+<li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
+<li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
+<li><a href="type-system.html#union-types" id="toc-element-union-types" class="toc-element">Union types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-contexts-and-scopes" id="toc-element-type-contexts-and-scopes" class="toc-element">Type contexts and scopes</a>
+<ul>
+<li><a href="type-system.html#inner-and-nested-type-contexts" id="toc-element-inner-and-nested-type-contexts" class="toc-element">Inner and nested type contexts</a></li>
+</ul></li>
+<li><a href="type-system.html#subtyping" id="toc-element-subtyping" class="toc-element">Subtyping</a>
+<ul>
+<li><a href="type-system.html#subtyping-rules" id="toc-element-subtyping-rules" class="toc-element">Subtyping rules</a></li>
+<li><a href="type-system.html#subtyping-for-flexible-types" id="toc-element-subtyping-for-flexible-types" class="toc-element">Subtyping for flexible types</a></li>
+<li><a href="type-system.html#subtyping-for-intersection-types" id="toc-element-subtyping-for-intersection-types" class="toc-element">Subtyping for intersection types</a></li>
+<li><a href="type-system.html#subtyping-for-integer-literal-types" id="toc-element-subtyping-for-integer-literal-types" class="toc-element">Subtyping for integer literal types</a></li>
+<li><a href="type-system.html#subtyping-for-nullable-types" id="toc-element-subtyping-for-nullable-types" class="toc-element">Subtyping for nullable types</a></li>
+</ul></li>
+<li><a href="type-system.html#upper-and-lower-bounds" id="toc-element-upper-and-lower-bounds" class="toc-element">Upper and lower bounds</a>
+<ul>
+<li><a href="type-system.html#least-upper-bound" id="toc-element-least-upper-bound" class="toc-element">Least upper bound</a></li>
+<li><a href="type-system.html#greatest-lower-bound" id="toc-element-greatest-lower-bound" class="toc-element">Greatest lower bound</a></li>
+</ul></li>
+<li><a href="type-system.html#type-approximation" id="toc-element-type-approximation" class="toc-element">Type approximation</a></li>
+<li><a href="type-system.html#type-decaying" id="toc-element-type-decaying" class="toc-element">Type decaying</a></li>
+<li><a href="type-system.html#references" id="toc-element-references" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-types-and-their-semantics" id="toc-element-built-in-types-and-their-semantics" class="toc-element">Built-in types and their semantics</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.any-builtins" id="toc-element-kotlin.any-builtins" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.nothing-builtins" id="toc-element-kotlin.nothing-builtins" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.unit" id="toc-element-kotlin.unit" class="toc-element"><code>kotlin.Unit</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.boolean" id="toc-element-kotlin.boolean" class="toc-element"><code>kotlin.Boolean</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-integer-types-builtins" id="toc-element-built-in-integer-types-builtins" class="toc-element">Built-in integer types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#integer-type-widening" id="toc-element-integer-type-widening" class="toc-element">Integer type widening</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types" id="toc-element-built-in-floating-point-arithmetic-types" class="toc-element">Built-in floating point arithmetic types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.char" id="toc-element-kotlin.char" class="toc-element"><code>kotlin.Char</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.string" id="toc-element-kotlin.string" class="toc-element"><code>kotlin.String</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.enum" id="toc-element-kotlin.enum" class="toc-element"><code>kotlin.Enum</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-array-types" id="toc-element-built-in-array-types" class="toc-element">Built-in array types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-array-types" id="toc-element-specialized-array-types" class="toc-element">Specialized array types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#iterator-types" id="toc-element-iterator-types" class="toc-element">Iterator types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-iterator-types" id="toc-element-specialized-iterator-types" class="toc-element">Specialized iterator types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.throwable" id="toc-element-kotlin.throwable" class="toc-element"><code>kotlin.Throwable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.comparable" id="toc-element-kotlin.comparable" class="toc-element"><code>kotlin.Comparable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.function-builtins" id="toc-element-kotlin.function-builtins" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-annotation-types" id="toc-element-built-in-annotation-types" class="toc-element">Built-in annotation types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#reflection-support-builtin-types" id="toc-element-reflection-support-builtin-types" class="toc-element">Reflection support builtin types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kclass" id="toc-element-kotlin.reflect.kclass" class="toc-element"><code>kotlin.reflect.KClass</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kcallable" id="toc-element-kotlin.reflect.kcallable" class="toc-element"><code>kotlin.reflect.KCallable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kproperty" id="toc-element-kotlin.reflect.kproperty" class="toc-element"><code>kotlin.reflect.KProperty</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kfunction" id="toc-element-kotlin.reflect.kfunction" class="toc-element"><code>kotlin.reflect.KFunction</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="declarations.html#declarations" id="toc-element-declarations" class="toc-element">Declarations</a>
+<ul>
+<li><a href="declarations.html#glossary-1" id="toc-element-glossary-1" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="declarations.html#introduction-2" id="toc-element-introduction-2" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="declarations.html#classifier-declaration" id="toc-element-classifier-declaration" class="toc-element">Classifier declaration</a>
+<ul>
+<li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
+<li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
+<li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
+</ul></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
+<li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
+<li><a href="declarations.html#interface-declaration" id="toc-element-interface-declaration" class="toc-element">Interface declaration</a>
+<ul>
+<li><a href="declarations.html#functional-interface-declaration" id="toc-element-functional-interface-declaration" class="toc-element">Functional interface declaration</a></li>
+</ul></li>
+<li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
+<li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+</ul></li>
+<li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
+<ul>
+<li><a href="declarations.html#function-signature" id="toc-element-function-signature" class="toc-element">Function signature</a></li>
+<li><a href="declarations.html#named-positional-and-default-parameters" id="toc-element-named-positional-and-default-parameters" class="toc-element">Named, positional and default parameters</a></li>
+<li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
+<li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
+<li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+</ul></li>
+<li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
+<ul>
+<li><a href="declarations.html#read-only-property-declaration" id="toc-element-read-only-property-declaration" class="toc-element">Read-only property declaration</a></li>
+<li><a href="declarations.html#mutable-property-declaration" id="toc-element-mutable-property-declaration" class="toc-element">Mutable property declaration</a></li>
+<li><a href="declarations.html#local-property-declaration" id="toc-element-local-property-declaration" class="toc-element">Local property declaration</a></li>
+<li><a href="declarations.html#getters-and-setters" id="toc-element-getters-and-setters" class="toc-element">Getters and setters</a></li>
+<li><a href="declarations.html#delegated-property-declaration" id="toc-element-delegated-property-declaration" class="toc-element">Delegated property declaration</a></li>
+<li><a href="declarations.html#extension-property-declaration" id="toc-element-extension-property-declaration" class="toc-element">Extension property declaration</a></li>
+<li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
+<li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
+<li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+</ul></li>
+<li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
+<li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
+<ul>
+<li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
+<li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+</ul></li>
+<li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
+</ul></li>
+<li><a href="inheritance.html#inheritance" id="toc-element-inheritance" class="toc-element">Inheritance</a>
+<ul>
+<li><a href="inheritance.html#classifier-type-inheritance" id="toc-element-classifier-type-inheritance" class="toc-element">Classifier type inheritance</a>
+<ul>
+<li><a href="inheritance.html#abstract-classes-inheritance" id="toc-element-abstract-classes-inheritance" class="toc-element">Abstract classes</a></li>
+<li><a href="inheritance.html#sealed-classes" id="toc-element-sealed-classes" class="toc-element">Sealed classes</a></li>
+<li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
+</ul></li>
+<li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
+</ul></li>
+<li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
+<ul>
+<li><a href="scopes-and-identifiers.html#linked-scopes" id="toc-element-linked-scopes" class="toc-element">Linked scopes</a></li>
+<li><a href="scopes-and-identifiers.html#identifiers-and-paths" id="toc-element-identifiers-and-paths" class="toc-element">Identifiers and paths</a></li>
+<li><a href="scopes-and-identifiers.html#labels" id="toc-element-labels" class="toc-element">Labels</a></li>
+</ul></li>
+<li><a href="statements.html#statements" id="toc-element-statements" class="toc-element">Statements</a>
+<ul>
+<li><a href="statements.html#assignments" id="toc-element-assignments" class="toc-element">Assignments</a>
+<ul>
+<li><a href="statements.html#simple-assignments" id="toc-element-simple-assignments" class="toc-element">Simple assignments</a></li>
+<li><a href="statements.html#operator-assignments" id="toc-element-operator-assignments" class="toc-element">Operator assignments</a></li>
+<li><a href="statements.html#safe-assignments" id="toc-element-safe-assignments" class="toc-element">Safe assignments</a></li>
+</ul></li>
+<li><a href="statements.html#loop-statements" id="toc-element-loop-statements" class="toc-element">Loop statements</a>
+<ul>
+<li><a href="statements.html#while-loop-statements" id="toc-element-while-loop-statements" class="toc-element">While-loop statements</a></li>
+<li><a href="statements.html#do-while-loop-statements" id="toc-element-do-while-loop-statements" class="toc-element">Do-while-loop statements</a></li>
+<li><a href="statements.html#for-loop-statements" id="toc-element-for-loop-statements" class="toc-element">For-loop statements</a></li>
+</ul></li>
+<li><a href="statements.html#code-blocks" id="toc-element-code-blocks" class="toc-element">Code blocks</a>
+<ul>
+<li><a href="statements.html#coercion-to-kotlin.unit" id="toc-element-coercion-to-kotlin.unit" class="toc-element">Coercion to <code>kotlin.Unit</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="expressions.html#expressions" id="toc-element-expressions" class="toc-element">Expressions</a>
+<ul>
+<li><a href="expressions.html#glossary-2" id="toc-element-glossary-2" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="expressions.html#introduction-3" id="toc-element-introduction-3" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="expressions.html#constant-literals" id="toc-element-constant-literals" class="toc-element">Constant literals</a>
+<ul>
+<li><a href="expressions.html#boolean-literals" id="toc-element-boolean-literals" class="toc-element">Boolean literals</a></li>
+<li><a href="expressions.html#integer-literals" id="toc-element-integer-literals" class="toc-element">Integer literals</a>
+<ul>
+<li><a href="expressions.html#decimal-integer-literals" id="toc-element-decimal-integer-literals" class="toc-element">Decimal integer literals</a></li>
+<li><a href="expressions.html#hexadecimal-integer-literals" id="toc-element-hexadecimal-integer-literals" class="toc-element">Hexadecimal integer literals</a></li>
+<li><a href="expressions.html#binary-integer-literals" id="toc-element-binary-integer-literals" class="toc-element">Binary integer literals</a></li>
+</ul></li>
+<li><a href="expressions.html#the-types-for-integer-literals" id="toc-element-the-types-for-integer-literals" class="toc-element">The types for integer literals</a></li>
+<li><a href="expressions.html#real-literals" id="toc-element-real-literals" class="toc-element">Real literals</a></li>
+<li><a href="expressions.html#character-literals" id="toc-element-character-literals" class="toc-element">Character literals</a>
+<ul>
+<li><a href="expressions.html#escaped-characters" id="toc-element-escaped-characters" class="toc-element">Escaped characters</a></li>
+</ul></li>
+<li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
+<li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
+</ul></li>
+<li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
+<li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
+<li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
+<li><a href="expressions.html#when-expressions" id="toc-element-when-expressions" class="toc-element">When expressions</a>
+<ul>
+<li><a href="expressions.html#exhaustive-when-expressions" id="toc-element-exhaustive-when-expressions" class="toc-element">Exhaustive when expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#logical-disjunction-expressions" id="toc-element-logical-disjunction-expressions" class="toc-element">Logical disjunction expressions</a></li>
+<li><a href="expressions.html#logical-conjunction-expressions" id="toc-element-logical-conjunction-expressions" class="toc-element">Logical conjunction expressions</a></li>
+<li><a href="expressions.html#equality-expressions" id="toc-element-equality-expressions" class="toc-element">Equality expressions</a>
+<ul>
+<li><a href="expressions.html#reference-equality-expressions" id="toc-element-reference-equality-expressions" class="toc-element">Reference equality expressions</a></li>
+<li><a href="expressions.html#value-equality-expressions" id="toc-element-value-equality-expressions" class="toc-element">Value equality expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#comparison-expressions" id="toc-element-comparison-expressions" class="toc-element">Comparison expressions</a></li>
+<li><a href="expressions.html#type-checking-and-containment-checking-expressions" id="toc-element-type-checking-and-containment-checking-expressions" class="toc-element">Type-checking and containment-checking expressions</a>
+<ul>
+<li><a href="expressions.html#type-checking-expressions" id="toc-element-type-checking-expressions" class="toc-element">Type-checking expressions</a></li>
+<li><a href="expressions.html#containment-checking-expressions" id="toc-element-containment-checking-expressions" class="toc-element">Containment-checking expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#elvis-operator-expressions" id="toc-element-elvis-operator-expressions" class="toc-element">Elvis operator expressions</a></li>
+<li><a href="expressions.html#range-expressions" id="toc-element-range-expressions" class="toc-element">Range expressions</a></li>
+<li><a href="expressions.html#additive-expressions" id="toc-element-additive-expressions" class="toc-element">Additive expressions</a></li>
+<li><a href="expressions.html#multiplicative-expressions" id="toc-element-multiplicative-expressions" class="toc-element">Multiplicative expressions</a></li>
+<li><a href="expressions.html#cast-expressions" id="toc-element-cast-expressions" class="toc-element">Cast expressions</a></li>
+<li><a href="expressions.html#prefix-expressions" id="toc-element-prefix-expressions" class="toc-element">Prefix expressions</a>
+<ul>
+<li><a href="expressions.html#annotated-expressions" id="toc-element-annotated-expressions" class="toc-element">Annotated expressions</a></li>
+<li><a href="expressions.html#prefix-increment-expressions" id="toc-element-prefix-increment-expressions" class="toc-element">Prefix increment expressions</a></li>
+<li><a href="expressions.html#prefix-decrement-expressions" id="toc-element-prefix-decrement-expressions" class="toc-element">Prefix decrement expressions</a></li>
+<li><a href="expressions.html#unary-minus-expressions" id="toc-element-unary-minus-expressions" class="toc-element">Unary minus expressions</a></li>
+<li><a href="expressions.html#unary-plus-expressions" id="toc-element-unary-plus-expressions" class="toc-element">Unary plus expressions</a></li>
+<li><a href="expressions.html#logical-not-expressions" id="toc-element-logical-not-expressions" class="toc-element">Logical not expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#postfix-operator-expressions" id="toc-element-postfix-operator-expressions" class="toc-element">Postfix operator expressions</a>
+<ul>
+<li><a href="expressions.html#postfix-increment-expressions" id="toc-element-postfix-increment-expressions" class="toc-element">Postfix increment expressions</a></li>
+<li><a href="expressions.html#postfix-decrement-expressions" id="toc-element-postfix-decrement-expressions" class="toc-element">Postfix decrement expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#not-null-assertion-expressions" id="toc-element-not-null-assertion-expressions" class="toc-element">Not-null assertion expressions</a></li>
+<li><a href="expressions.html#indexing-expressions" id="toc-element-indexing-expressions" class="toc-element">Indexing expressions</a></li>
+<li><a href="expressions.html#call-and-property-access-expressions" id="toc-element-call-and-property-access-expressions" class="toc-element">Call and property access expressions</a>
+<ul>
+<li><a href="expressions.html#navigation-operators" id="toc-element-navigation-operators" class="toc-element">Navigation operators</a></li>
+<li><a href="expressions.html#callable-references" id="toc-element-callable-references" class="toc-element">Callable references</a></li>
+<li><a href="expressions.html#class-literals" id="toc-element-class-literals" class="toc-element">Class literals</a></li>
+<li><a href="expressions.html#function-calls-and-property-access" id="toc-element-function-calls-and-property-access" class="toc-element">Function calls and property access</a></li>
+<li><a href="expressions.html#spread-operator-expressions" id="toc-element-spread-operator-expressions" class="toc-element">Spread operator expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#function-literals" id="toc-element-function-literals" class="toc-element">Function literals</a>
+<ul>
+<li><a href="expressions.html#anonymous-function-declarations" id="toc-element-anonymous-function-declarations" class="toc-element">Anonymous function declarations</a></li>
+<li><a href="expressions.html#lambda-literals" id="toc-element-lambda-literals" class="toc-element">Lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#object-literals" id="toc-element-object-literals" class="toc-element">Object literals</a>
+<ul>
+<li><a href="expressions.html#functional-interface-lambda-literals" id="toc-element-functional-interface-lambda-literals" class="toc-element">Functional interface lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#this-expressions" id="toc-element-this-expressions" class="toc-element">This-expressions</a></li>
+<li><a href="expressions.html#super-forms" id="toc-element-super-forms" class="toc-element">Super-forms</a></li>
+<li><a href="expressions.html#jump-expressions" id="toc-element-jump-expressions" class="toc-element">Jump expressions</a>
+<ul>
+<li><a href="expressions.html#throw-expressions" id="toc-element-throw-expressions" class="toc-element">Throw expressions</a></li>
+<li><a href="expressions.html#return-expressions" id="toc-element-return-expressions" class="toc-element">Return expressions</a></li>
+<li><a href="expressions.html#continue-expressions" id="toc-element-continue-expressions" class="toc-element">Continue expressions</a></li>
+<li><a href="expressions.html#break-expressions" id="toc-element-break-expressions" class="toc-element">Break expressions</a></li>
+</ul></li>
+</ul></li>
+<li><a href="operator-overloading.html#operator-overloading" id="toc-element-operator-overloading" class="toc-element">Operator overloading</a>
+<ul>
+<li><a href="operator-overloading.html#destructuring-declarations" id="toc-element-destructuring-declarations" class="toc-element">Destructuring declarations</a></li>
+</ul></li>
+<li><a href="packages-and-imports.html#packages-and-imports" id="toc-element-packages-and-imports" class="toc-element">Packages and imports</a>
+<ul>
+<li><a href="packages-and-imports.html#importing" id="toc-element-importing" class="toc-element">Importing</a></li>
+<li><a href="packages-and-imports.html#modules" id="toc-element-modules" class="toc-element">Modules</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#overload-resolution" id="toc-element-overload-resolution" class="toc-element">Overload resolution</a>
+<ul>
+<li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
+<li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
+<li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
+<li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+<ul>
+<li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
+<li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
+<ul>
+<li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#call-with-an-explicit-super-form-receiver" id="toc-element-call-with-an-explicit-super-form-receiver" class="toc-element">Call with an explicit super-form receiver</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
+<li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
+<li><a href="overload-resolution.html#call-without-an-explicit-receiver" id="toc-element-call-without-an-explicit-receiver" class="toc-element">Call without an explicit receiver</a></li>
+<li><a href="overload-resolution.html#call-with-named-parameters" id="toc-element-call-with-named-parameters" class="toc-element">Call with named parameters</a></li>
+<li><a href="overload-resolution.html#call-with-trailing-lambda-expressions" id="toc-element-call-with-trailing-lambda-expressions" class="toc-element">Call with trailing lambda expressions</a></li>
+<li><a href="overload-resolution.html#call-with-specified-type-parameters" id="toc-element-call-with-specified-type-parameters" class="toc-element">Call with specified type parameters</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#determining-function-applicability-for-a-specific-call" id="toc-element-determining-function-applicability-for-a-specific-call" class="toc-element">Determining function applicability for a specific call</a>
+<ul>
+<li><a href="overload-resolution.html#rationale" id="toc-element-rationale" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#description" id="toc-element-description" class="toc-element">Description</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set" id="toc-element-choosing-the-most-specific-candidate-from-the-overload-candidate-set" class="toc-element">Choosing the most specific candidate from the overload candidate set</a>
+<ul>
+<li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
+<ul>
+<li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
+<li><a href="overload-resolution.html#bidirectional-resolution-for-callable-calls" id="toc-element-bidirectional-resolution-for-callable-calls" class="toc-element">Bidirectional resolution for callable calls</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#type-inference-and-overload-resolution" id="toc-element-type-inference-and-overload-resolution" class="toc-element">Type inference and overload resolution</a></li>
+<li><a href="overload-resolution.html#conflicting-overloads" id="toc-element-conflicting-overloads" class="toc-element">Conflicting overloads</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis" id="toc-element-control--and-data-flow-analysis" class="toc-element">Control- and data-flow analysis</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#control-flow-graph" id="toc-element-control-flow-graph" class="toc-element">Control flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#expressions-cdfa" id="toc-element-expressions-cdfa" class="toc-element">Expressions</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#function-calls-and-operators" id="toc-element-function-calls-and-operators" class="toc-element">Function calls and operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#conditional-expressions-1" id="toc-element-conditional-expressions-1" class="toc-element">Conditional expressions</a></li>
+<li><a href="control--and-data-flow-analysis.html#boolean-operators" id="toc-element-boolean-operators" class="toc-element">Boolean operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#other-expressions" id="toc-element-other-expressions" class="toc-element">Other expressions</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#statements-cdfa" id="toc-element-statements-cdfa" class="toc-element">Statements</a></li>
+<li><a href="control--and-data-flow-analysis.html#declarations-1" id="toc-element-declarations-1" class="toc-element">Declarations</a></li>
+<li><a href="control--and-data-flow-analysis.html#examples" id="toc-element-examples" class="toc-element">Examples</a></li>
+<li><a href="control--and-data-flow-analysis.html#kotlin.nothing-and-its-influence-on-the-cfg" id="toc-element-kotlin.nothing-and-its-influence-on-the-cfg" class="toc-element"><code>kotlin.Nothing</code> and its influence on the CFG</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+ instruction</a></li>
+<li><a href="control--and-data-flow-analysis.html#variable-initialization-analysis" id="toc-element-variable-initialization-analysis" class="toc-element">Variable initialization analysis</a></li>
+<li><a href="control--and-data-flow-analysis.html#smart-casting-analysis" id="toc-element-smart-casting-analysis" class="toc-element">Smart casting analysis</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#references-1" id="toc-element-references-1" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#kotlin-type-constraints" id="toc-element-kotlin-type-constraints" class="toc-element">Kotlin type constraints</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#type-constraint-definition" id="toc-element-type-constraint-definition" class="toc-element">Type constraint definition</a></li>
+<li><a href="kotlin-type-constraints.html#type-constraint-solving" id="toc-element-type-constraint-solving" class="toc-element">Type constraint solving</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#checking-constraint-system-soundness" id="toc-element-checking-constraint-system-soundness" class="toc-element">Checking constraint system soundness</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#a-sample-bound-inference-algorithm" id="toc-element-a-sample-bound-inference-algorithm" class="toc-element">A sample bound inference algorithm</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution" id="toc-element-finding-optimal-constraint-system-solution" class="toc-element">Finding optimal constraint system solution</a></li>
+<li><a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints" id="toc-element-the-relations-on-types-as-constraints" class="toc-element">The relations on types as constraints</a></li>
+</ul></li>
+</ul></li>
+<li><a href="type-inference.html#type-inference" id="toc-element-type-inference" class="toc-element">Type inference</a>
+<ul>
+<li><a href="type-inference.html#smart-casts" id="toc-element-smart-casts" class="toc-element">Smart casts</a>
+<ul>
+<li><a href="type-inference.html#data-flow-framework" id="toc-element-data-flow-framework" class="toc-element">Data-flow framework</a>
+<ul>
+<li><a href="type-inference.html#smart-cast-lattices" id="toc-element-smart-cast-lattices" class="toc-element">Smart cast lattices</a></li>
+<li><a href="type-inference.html#smart-cast-transfer-functions" id="toc-element-smart-cast-transfer-functions" class="toc-element">Smart cast transfer functions</a></li>
+</ul></li>
+<li><a href="type-inference.html#smart-cast-types" id="toc-element-smart-cast-types" class="toc-element">Smart cast types</a></li>
+<li><a href="type-inference.html#smart-cast-sink-stability" id="toc-element-smart-cast-sink-stability" class="toc-element">Smart cast sink stability</a>
+<ul>
+<li><a href="type-inference.html#effectively-immutable-smart-cast-sinks" id="toc-element-effectively-immutable-smart-cast-sinks" class="toc-element">Effectively immutable smart cast sinks</a></li>
+</ul></li>
+<li><a href="type-inference.html#loop-handling" id="toc-element-loop-handling" class="toc-element">Loop handling</a></li>
+<li><a href="type-inference.html#bound-smart-casts" id="toc-element-bound-smart-casts" class="toc-element">Bound smart casts</a></li>
+</ul></li>
+<li><a href="type-inference.html#local-type-inference" id="toc-element-local-type-inference" class="toc-element">Local type inference</a></li>
+<li><a href="type-inference.html#function-signature-type-inference" id="toc-element-function-signature-type-inference" class="toc-element">Function signature type inference</a>
+<ul>
+<li><a href="type-inference.html#named-and-anonymous-function-declarations" id="toc-element-named-and-anonymous-function-declarations" class="toc-element">Named and anonymous function declarations</a></li>
+<li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
+</ul></li>
+</ul></li>
+<li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
+<ul>
+<li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
+<li><a href="runtime-type-information.html#reflection" id="toc-element-reflection" class="toc-element">Reflection</a></li>
+</ul></li>
+<li><a href="exceptions.html#exceptions" id="toc-element-exceptions" class="toc-element">Exceptions</a>
+<ul>
+<li><a href="exceptions.html#catching-exceptions" id="toc-element-catching-exceptions" class="toc-element">Catching exceptions</a></li>
+<li><a href="exceptions.html#throwing-exceptions" id="toc-element-throwing-exceptions" class="toc-element">Throwing exceptions</a></li>
+</ul></li>
+<li><a href="annotations.html#annotations" id="toc-element-annotations" class="toc-element">Annotations</a>
+<ul>
+<li><a href="annotations.html#annotation-values" id="toc-element-annotation-values" class="toc-element">Annotation values</a></li>
+<li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
+<li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
+<li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+</ul></li>
+<li><a href="asynchronous-programming-with-coroutines.html#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
+<ul>
+<li><a href="asynchronous-programming-with-coroutines.html#suspending-functions" id="toc-element-suspending-functions" class="toc-element">Suspending functions</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#coroutines" id="toc-element-coroutines" class="toc-element">Coroutines</a></li>
+</ul></li>
+<li><a href="concurrency.html#concurrency" id="toc-element-concurrency" class="toc-element">Concurrency</a></li>
+</ul></li>
+</ul>
+</div>
+<span style="visibility: hidden; counter-reset: chapter 2;"></span>
+<h2 id="built-in-types-and-their-semantics">Built-in types and their semantics</h2>
+<div class="paragraph">
+<p><span class="sentence">Kotlin has several built-in classifier types, which are important for the rest of this document. </span><span class="sentence">Some information about these types is given in the <a href="type-system.html#built-in-types">type system section</a>, here we extend it with additional non-type-system-relevant details.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: these types may have regular declarations in the standard library, but they also introduce semantics not representable via Kotlin source code.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">In this section we describe these types and their semantics.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this section is not meant to be a detailed description of all types available in the standard library, for that please refer to the standard library documentation.</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.any-builtins"><code>kotlin.Any</code></h3>
+<div class="paragraph">
+<p><span class="sentence">Besides being the <a href="type-system.html#kotlin.any-typesystem">unified supertype</a> of all non-nullable types, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Any</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Any}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Any</span></span></span></span></span></span>
+
+ must also provide the following methods.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Boolean</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns <code>true</code> iff a value is equal to some other value. </span><span class="sentence">Implementations of <code>equals</code> must satisfy the properties of reflexivity (<code>x.equals(x)</code> is always true), symmetry (<code>x.equals(y) == y.equals(x)</code>), transitivity (if <code>x.equals(y)</code> is true and <code>y.equals(z)</code> is true, <code>x.equals(z)</code> is also true) and consistency (<code>x.equals(y)</code> should not change its result between multiple invocations). </span><span class="sentence">A non-null value also must never be considered equal to <code>null</code>, i.e., <code>x.equals(null)</code> must be <code>false</code>.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">hashCode</span><span class="op">():</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns the hash code for a value. </span><span class="sentence">Implementations of <code>hashCode</code> must satisfy the following property: if two values are equals w.r.t. <code>equals</code>, <code>hashCode</code> must consistently produce the same result.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">public</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns a string representation of a value.</span></p>
+</div></li>
+</ul>
+<h3 id="kotlin.nothing-builtins"><code>kotlin.Nothing</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ is an <a href="type-system.html#kotlin.nothing-typesystem">uninhabited type</a>, which means the evaluation of an expression with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ type can never complete normally. </span><span class="sentence">Therefore, it is used to mark special situations, such as</span></p>
+</div>
+<ul>
+<li><span class="sentence">non-terminating expressions</span></li>
+<li><span class="sentence">exceptional control flow</span></li>
+<li><span class="sentence">control flow transfer</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Further details about how <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Nothing</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Nothing}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Nothing</span></span></span></span></span></span>
+
+ should be handled are available <a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis">here</a> and <a href="type-inference.html#type-inference">here</a>.</span></p>
+</div>
+<h3 id="kotlin.unit"><code>kotlin.Unit</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Unit</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Unit}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Unit</span></span></span></span></span></span>
+
+ is a unit type, i.e., a type with only one value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Unit</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Unit}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Unit</span></span></span></span></span></span>
+
+; all values of type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Unit</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Unit}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Unit</span></span></span></span></span></span>
+
+ should reference the same underlying <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Unit</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Unit}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Unit</span></span></span></span></span></span>
+
+ object. </span><span class="sentence">It is somewhat similar in purpose to <code>void</code> return type in other programming languages in that it signifies an <em>absense of a value</em> (i.e. the returned type for a function returning nothing), but is different in that there is, in fact, a single value of this type.</span></p>
+</div>
+<h3 id="kotlin.boolean"><code>kotlin.Boolean</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Boolean</code> is the boolean logic type of Kotlin, representing a value which may be either <code>true</code> or <code>false</code>. </span><span class="sentence">It is the type of <a href="expressions.html#boolean-literals">boolean literals</a> as well as the type returned or expected by some built-in Kotlin operators.</span></p>
+</div>
+<h3 id="built-in-integer-types-builtins">Built-in integer types</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin has several built-in classifier types, which represent signed integer numbers of different bit size. </span><span class="sentence">These types are important w.r.t. <a href="type-system.html#built-in-integer-types-typesystem">type system</a> and <a href="expressions.html#integer-literals">integer literals</a>. </span><span class="sentence">Every built-in integer type <code>I</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;I&gt;</code></a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The signed integer types are the following.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>kotlin.Int</code></span></li>
+<li><span class="sentence"><code>kotlin.Short</code></span></li>
+<li><span class="sentence"><code>kotlin.Byte</code></span></li>
+<li><span class="sentence"><code>kotlin.Long</code></span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin does not have a built-in arbitrary-precision integer type.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: Kotlin does not have any built-in unsigned integer types.</span></p>
+</div>
+</blockquote>
+
+<div class="paragraph">
+<p><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Int</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msup><mn>2</mn><mn>31</mn></msup></mrow><annotation encoding="application/x-tex">-2^{31}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span>
+
+ to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{31} - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>
+
+. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Int</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Short</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msup><mn>2</mn><mn>15</mn></msup></mrow><annotation encoding="application/x-tex">-2^{15}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span>
+
+ to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>15</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{15} - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>
+
+. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Short</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Byte</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msup><mn>2</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">-2^{7}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">7</span></span></span></span></span></span></span></span></span></span></span></span>
+
+ to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>7</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{7} - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">7</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>
+
+. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Byte</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Long</code> is the type of integer numbers that is required to be able to hold the values at least in the range from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msup><mn>2</mn><mn>63</mn></msup></mrow><annotation encoding="application/x-tex">-2^{63}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">6</span><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></span>
+
+ to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>63</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{63} - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">6</span><span class="mord mtight">3</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>
+
+. </span><span class="sentence">If an arithmetic operation on <code>kotlin.Long</code> results in arithmetic overflow, the result is unspecified.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: by “arithmetic overflow” we assume both positive and negative integer overflows.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may specify behaviour for an arithmetic overflow.</span></p>
+</div>
+</blockquote>
+<h4 id="integer-type-widening">Integer type widening</h4>
+<div class="paragraph">
+<p><span class="sentence">In <a href="overload-resolution.html#overload-resolution">overload resolution</a>, we actually have a priority between built-in integer types which is very similar to a <a href="type-system.html#subtyping">subtyping</a> relation between these types; however, this priority is important only w.r.t. overload resolution and does not entail any actual subtyping between built-in integer types.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In order to introduce this priority we describe a type transformation called <em>widening</em> of integer types. </span><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(T)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mclose">)</span></span></span></span>
+
+ for a built-in integer type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+ is defined as follows:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">kotlin.Byte</mi><mo>⁡</mo><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">kotlin.Long</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Int}}) = \operatorname{\texttt{kotlin.Int}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Long}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Byte</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Long</span></span></span></span></span></span>
+
+</span></li>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo lspace="0.22em" rspace="0.22em"><mi mathvariant="normal">&amp;</mi><mo>⁡</mo></mo><mi mathvariant="normal">kotlin.Byte</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Short}}) = \operatorname{\texttt{kotlin.Short}}\mathbin{\operatorname{\&amp;}}\operatorname{\texttt{kotlin.Byte}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.9166599999999999em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mop"><span class="mord mathrm">&amp;</span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Byte</span></span></span></span></span></span>
+
+</span></li>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo><mo>=</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(T) = T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+ for any other <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span></span></span></span>
+
+ means, for the purposes of overload resolution, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Int}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span></span></span></span>
+
+ is preferred over any other built-in integer type and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Short}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61111em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span></span></span></span>
+
+ is preferred to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">kotlin.Byte</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\texttt{kotlin.Byte}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.22222em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Byte</span></span></span></span></span></span>
+
+. </span><span class="sentence">Using <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span></span></span></span>
+
+, we can reduce this priority to subtyping: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+ is more preferred than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+ if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>T</mi><mo stretchy="false">)</mo><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>U</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(T) &lt;: \operatorname{\text{Widen}}(U)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mclose">)</span></span></span></span>
+
+; this scheme allows to handle built-in integer types transparently when selecting the <a href="overload-resolution.html#algorithm-of-msc-selection">most specific overload candidate</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For example, consider the following two functions:</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Short</span><span class="op">)</span> = <span class="dv">2</span></a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4">...</a>
+<a class="sourceLine" id="cb4-5" title="5"></a>
+<a class="sourceLine" id="cb4-6" title="6">foo(<span class="dv">2</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">As the integer literal 2 has a type that is applicable for both versions of <code>foo</code> (see <a href="overload-resolution.html#overload-resolution">Overload resolution section</a> for details) and the types <code>kotlin.Int</code> and <code>kotlin.Short</code> are not related w.r.t. subtyping, it would not be possible to select a more specific candidate out of the two. </span><span class="sentence">However, if we consider <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Int}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mclose">)</span></span></span></span>
+
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Short}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mclose">)</span></span></span></span>
+
+ respectively as the types of <code>value</code>, first candidate becomes more specific than the second, because <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo stretchy="false">)</mo><mo>&lt;</mo><mo>:</mo><mi mathvariant="normal">Widen</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Int}}) &lt;: \operatorname{\text{Widen}}(\operatorname{\texttt{kotlin.Short}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">Widen</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mclose">)</span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
+<h3 id="built-in-floating-point-arithmetic-types">Built-in floating point arithmetic types</h3>
+<div class="paragraph">
+<p><span class="sentence">There are two built-in classifier types which represent floating-point numbers: <code>kotlin.Float</code> and <code>kotlin.Double</code>. </span><span class="sentence">These types may or may not have different runtime representations, depending on the used platform and/or implementation. </span><span class="sentence">Consult the specific platform reference for further details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Float</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> single-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Float</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Float&gt;</code></a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Double</code> is the type of floating-point number that is able to contain all the numbers as a <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> double-precision binary floating number with the same precision. </span><span class="sentence"><code>kotlin.Double</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;kotlin.Double&gt;</code></a>.</span></p>
+</div>
+
+<div class="paragraph">
+<p><span class="sentence">Platform implementations may give additional information on how these types are represented on a particular platform.</span></p>
+</div>
+<h3 id="kotlin.char"><code>kotlin.Char</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Char</code> is the built-in classifier type which represents a single Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of <a href="expressions.html#character-literals">character literals</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.string"><code>kotlin.String</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.String</code> is the built-in classifier type which represents a sequence of Unicode symbol in <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c069119_ISO_IEC_10646_2017.zip">UCS-2</a> character encoding. </span><span class="sentence">It is the type of the result of <a href="expressions.html#string-interpolation-expressions">string interpolation</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: a platform implementation may <em>extend</em> the supported character encodings, e.g., to UTF-16.</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.enum"><code>kotlin.Enum</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is the built-in parameterized classifier type which is used as a superclass for all <a href="declarations.html#enum-class-declaration">enum classes</a>: every enum class <code>E</code> is implicitly a subtype of <code>kotlin.Enum&lt;E&gt;</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> has the following characteristics.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> is a subtype of <a href="built-in-types-and-their-semantics.html#kotlin.comparable"><code>kotlin.Comparable&lt;T&gt;</code></a></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following properties.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Contains the name of this enumeration constant, exactly as declared in its declaration.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">public</span> <span class="kw">final</span> <span class="kw">val</span> <span class="va">ordinal</span><span class="op">:</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Contains the ordinal of this enumeration constant, i.e., its position in the declaration, starting from zero.</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following methods.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div></li>
+<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Boolean</span></a></code></pre></div></li>
+<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">hashCode</span><span class="op">():</span> <span class="dt">Int</span></a></code></pre></div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.</span></p>
+</div>
+</blockquote></li>
+<li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">protected</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">clone</span><span class="op">():</span> <span class="dt">Any</span></a></code></pre></div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the <code>clone()</code> implementation throws an exception, as enumeration objects cannot be copied.</span></p>
+</div>
+</blockquote></li>
+</ul>
+<h3 id="built-in-array-types">Built-in array types</h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> is the built-in parameterized classifier type which is used to represent an indexed fixed-size collection of elements of type <code>T</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It is final (i.e., cannot be inherited from) and has the following public constructor.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">public</span> <span class="kw">inline</span> <span class="kw">constructor</span>(size: <span class="kw">Int</span>, init: (<span class="kw">Int</span>) -&gt; T)</a></code></pre></div>
+<span class="sentence">Creates a new array with the specified size, where each element is calculated by calling the specified <code>init</code> function with the corresponding element’s index. </span><span class="sentence">The function <code>init</code> is called for each array element sequentially starting from the first one.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> provides the following methods and properties.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">get</span>(index: <span class="kw">Int</span>): T</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns the array element at the specified index. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="kw">set</span>(index: <span class="kw">Int</span>, value: T): <span class="kw">Unit</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Sets the array element at the specified index to the specified value. </span><span class="sentence">If the [index] is out of bounds of this array, throws an <code>IndexOutOfBoundsException</code>.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">size</span><span class="op">:</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns the array size.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span><span class="op">():</span> <span class="dt">Iterator</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Creates an <a href="built-in-types-and-their-semantics.html#iterator-types">iterator</a> for iterating over the elements of the array.</span></p>
+</div></li>
+</ul>
+<h4 id="specialized-array-types">Specialized array types</h4>
+<div class="paragraph">
+<p><span class="sentence">In addition to the general <code>kotlin.Array&lt;T&gt;</code> type, Kotlin also has the following specialized array types:</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>kotlin.DoubleArray</code> (for <code>kotlin.Array&lt;kotlin.Double&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.FloatArray</code> (for <code>kotlin.Array&lt;kotlin.Float&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.LongArray</code> (for <code>kotlin.Array&lt;kotlin.Long&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.IntArray</code> (for <code>kotlin.Array&lt;kotlin.Int&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.ShortArray</code> (for <code>kotlin.Array&lt;kotlin.Short&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.ByteArray</code> (for <code>kotlin.Array&lt;kotlin.Byte&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.CharArray</code> (for <code>kotlin.Array&lt;kotlin.Char&gt;</code>)</span></li>
+<li><span class="sentence"><code>kotlin.BooleanArray</code> (for <code>kotlin.Array&lt;kotlin.Boolean&gt;</code>)</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">These array types are similar to the corresponding <code>kotlin.Array&lt;T&gt;</code> type; i.e., <code>kotlin.IntArray</code> has the same methods and properties as <code>kotlin.Array&lt;Int&gt;</code>, with the following changes.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">public</span> <span class="kw">constructor</span>(size: <span class="kw">Int</span>)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Creates a new array with the specified size, where each element is set to the corresponding built-in type default value.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: default values are platform-specific.</span></p>
+</div>
+</blockquote></li>
+<li><div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">iterator</span><span class="op">():</span> {<span class="dt">TYPE</span>}<span class="fu">Iterator</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Creates a <a href="built-in-types-and-their-semantics.html#specialized-iterator-types">specialized iterator</a> for iterating over the elements of the array.</span></p>
+</div></li>
+</ul>
+<h3 id="iterator-types">Iterator types</h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Iterator&lt;out T&gt;</code> is the built-in parameterized classifier type which is used to represent a sequence of elements of type <code>T</code>, allowing for sequential access to these elements.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It provides the following methods.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb18"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span><span class="op">():</span> <span class="dt">T</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns the next element in the sequence.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb19"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">hasNext</span><span class="op">():</span> <span class="dt">Boolean</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns <code>true</code> if the sequence has more elements.</span></p>
+</div></li>
+</ul>
+<h4 id="specialized-iterator-types">Specialized iterator types</h4>
+<div class="paragraph">
+<p><span class="sentence">Specialized iterator types are iterator types used for <a href="built-in-types-and-their-semantics.html#specialized-array-types">specialized array types</a>. </span><span class="sentence">They inherit <code>kotlin.Iterator&lt;out T&gt;</code> for their type (i.e., <code>kotlin.CharIterator</code> inherits <code>kotlin.Iterator&lt;Char&gt;</code>) and provide the following methods.</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb20"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">next</span><span class="op">{</span>TYPE<span class="op">}</span>(): <span class="op">{</span>TYPE<span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Returns the next element in the sequence as a specific type.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this additional method allows the compiler and/or developer to avoid unneeded platform-specific boxing/unboxing conversions.</span></p>
+</div>
+</blockquote></li>
+</ul>
+<h3 id="kotlin.throwable"><code>kotlin.Throwable</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Throwable</code> is the built-in classifier type that is the base type of all <a href="exceptions.html#exceptions">exception types</a>. </span><span class="sentence">Any value that is used in a <a href="expressions.html#throw-expressions"><code>throw</code> expression</a> must have a static type that is a subtype of <code>kotlin.Throwable</code>. </span><span class="sentence">Any type that is used in a <code>catch</code> part of the <a href="expressions.html#try-expressions"><code>try</code> expression</a> must be a subtype of (or equal to) <code>kotlin.Throwable</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">It provides at least the following properties:</span></p>
+</div>
+<ul>
+<li><div class="sourceCode" id="cb21"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb21-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String?</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">An optional message depicting the cause of the throw.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb22"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">cause</span><span class="op">:</span> <span class="dt">Throwable?</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">An optional other value of type <code>kotlin.Throwable</code> allowing for nested throwables to be constructed.</span></p>
+</div></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Other members may exist, please refer to the standard library documentation for details. </span><span class="sentence">No subtype of <code>kotlin.Throwable</code> is allowed to have type parameters. </span><span class="sentence">Declaring such a type is a compile-time error.</span></p>
+</div>
+<h3 id="kotlin.comparable"><code>kotlin.Comparable</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Comparable&lt;in T&gt;</code> is a built-in parameterized type which represents values that may be compared for total ordering. </span><span class="sentence">It provides the following member function:</span></p>
+</div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">public</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">This function is used to implement <a href="expressions.html#comparison-expressions">comparison operators</a> through <a href="operator-overloading.html#operator-overloading">overloadable operator convention</a> for standard library classes.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: a type is not required to be a subtype of <code>kotlin.Comparable</code> in order to implement total ordering operations</span></p>
+</div>
+</blockquote>
+<h3 id="kotlin.function-builtins"><code>kotlin.Function</code></h3>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.Function&lt;out R&gt;</code> is the base classifier type of all <a href="type-system.html#function-types">function types</a>. </span><span class="sentence">See the relevant section for details.</span></p>
+</div>
+<h3 id="built-in-annotation-types">Built-in annotation types</h3>
+<div class="paragraph">
+<p><span class="sentence">Kotlin has a number of built-in <a href="annotations.html#annotations">annotation types</a>, which are covered in more detail <a href="annotations.html#built-in-annotations">here</a>.</span></p>
+</div>
+<h3 id="reflection-support-builtin-types">Reflection support builtin types</h3>
+<h4 id="kotlin.reflect.kclass"><code>kotlin.reflect.KClass</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KClass&lt;T: Any&gt;</code> is the class used to represent runtime type information for <a href="runtime-type-information.html#runtime-available-types">runtime-available classifier types</a>. </span><span class="sentence">It is also used in platform-specific reflection facilities.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This is the type of <a href="expressions.html#class-literals">class literals</a>. </span><span class="sentence">This type is required to introduce <code>equals</code> and <code>hashCode</code> member function implementations (see <a href="built-in-types-and-their-semantics.html#kotlin.any-builtins"><code>kotlin.Any</code></a>) that allow for comparison and hashing of runtime type information, e.g., that class literals are equal if they represent the same runtime type and not equal otherwise. </span><span class="sentence">Platform definitions, as well as particular implementations, may introduce additional members for this type.</span></p>
+</div>
+<h4 id="kotlin.reflect.kcallable"><code>kotlin.reflect.KCallable</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KCallable&lt;out R&gt;</code> is the class used to represent runtime information for callables (i.e. properties and functions). </span><span class="sentence">It is mainly used as base type for other types described in this section. </span><span class="sentence">It provides at least the following property:</span></p>
+</div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">public</span> <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">This property contains the name of the callable. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kproperty"><code>kotlin.reflect.KProperty</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KProperty&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#property-declaration">properties</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">property references</a>. </span><span class="sentence">This type is used in <a href="declarations.html#delegated-property-declaration">property delegation</a>. </span><span class="sentence"><code>kotlin.reflect.KProperty&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+<h4 id="kotlin.reflect.kfunction"><code>kotlin.reflect.KFunction</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><code>kotlin.reflect.KFunction&lt;out R&gt;</code> is the class used to represent runtime information for <a href="declarations.html#function-declaration">functions</a>. </span><span class="sentence">It is the base type of <a href="expressions.html#callable-references">function references</a>. </span><span class="sentence"><code>kotlin.reflect.KFunction&lt;R&gt;</code> is a subtype of <code>kotlin.reflect.KCallable&lt;R&gt;</code> and <code>kotlin.Function&lt;R&gt;</code>. </span><span class="sentence">Other members or base types for this class may be provided by platform and/or implementation.</span></p>
+</div>
+</body>
+</html>
