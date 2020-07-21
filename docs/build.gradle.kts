@@ -134,6 +134,8 @@ tasks.create<JavaExec>("execute") {
 
     main = project.findProperty("mainClass") as? String ?: ""
     args = (project.findProperty("args") as? String)?.split(" ") ?: emptyList()
+    val wd = project.findProperty("workDir") as? String
+    workingDir = wd?.let { File(it) } ?: File(".")
 
     standardInput = System.`in`
     standardOutput = System.out
