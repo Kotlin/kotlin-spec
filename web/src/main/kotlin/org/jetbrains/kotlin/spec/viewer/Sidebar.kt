@@ -149,7 +149,7 @@ object Sidebar {
 
         `$`("h2").each { _, el ->
             val sectionName = `$`(el).attr("id")
-            `$`(el).append("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
+            `$`(el).append("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" onclick=\"event.stopPropagation();\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
                     + """<img src="${LOAD_PDF_ICON}" />""".trimIndent() + "</a>")
         }
     }
