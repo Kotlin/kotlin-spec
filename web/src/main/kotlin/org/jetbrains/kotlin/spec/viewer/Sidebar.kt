@@ -59,9 +59,19 @@ object Sidebar {
         element.parent("li").find("> a").toggleClass("toggled")
     }
 
-    private fun showSidebar() {
+    private fun toggleSidebar() {
+        val `$html` = `$`("html")
+        if (`$html`.hasClass("with-toggled-toc-if-needed")) {
+            `$html`.removeClass("with-toggled-toc-if-needed")
+            toggleSidebar()
+        }
         `$`(TOC_BAR).toggleClass("active")
+        `$html`.toggleClass("with-toggled-toc")
         `$`(".icon-menu").toggleClass("active")
+    }
+
+    private fun hideSideBareIfNeeded() {
+        `$`("html").addClass("with-toggled-toc-if-needed")
     }
 
     private fun setScrollSettings() {
@@ -82,7 +92,10 @@ object Sidebar {
 
         expandItemsHierarchyByUrl(shouldScrollToItem = true)
 
-        `$`(window).on("hashchange") { _, _ -> expandItemsHierarchyByUrl() }
+        `$`(window).on("hashchange") { _, _ ->
+            expandItemsHierarchyByUrl()
+            hideSideBareIfNeeded()
+        }
         `$`("$TOC > ul > li, #TOC > ul > li > ul > li").show() // show "Kotlin core" subsections by default
         `$`(TOC).addClass("loaded")
         `$`("$TOC > ul > li ul").on("click") { e, _ ->
@@ -94,16 +107,11 @@ object Sidebar {
         }
 
         document.body?.let { `$`(it) }?.run {
-            on("click", ".icon-menu") { _, _ -> showSidebar() }
-            on("click", ".toc-element") { _, _ -> hideSidebar() }
+            on("click", ".icon-menu") { _, _ -> toggleSidebar() }
         }
         installSearchBar()
         setScrollSettings()
         addPdfLinks()
-    }
-
-    private fun hideSidebar() {
-        `$`(".icon-menu").removeClass("active")
     }
 
     private var currSearchString = ""
