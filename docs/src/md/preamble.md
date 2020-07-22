@@ -1,4 +1,4 @@
-<script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+<script data-main="resources/js/main.js?v=2" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
 
 <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
 <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
