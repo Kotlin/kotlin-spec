@@ -63,7 +63,7 @@
 \opMathTT{\Enum}{kotlin.Enum}
 
 \opMathTEXT{\ATS}{ATS}
-\opMathTEXT{\LTS}{LTS}
+\opMathTEXT{\ILT}{ILT}
 \opMathTEXT{\Widen}{Widen}
 
 \opMathTEXT{\PD}{PD}

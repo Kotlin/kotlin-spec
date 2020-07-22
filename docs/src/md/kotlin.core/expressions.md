@@ -81,8 +81,8 @@ A literal without the mark has a special [integer literal type][Integer literal 
 - Otherwise, if the value is greater than maximum `kotlin.Int` value (see [built-in integer types][Built-in integer types]), it has type `kotlin.Long`;
 - Otherwise, it has an integer literal type containing all the built-in integer types guaranteed to be able to represent this value.
 
-> Example: integer literal `0x01` has value $1$ and therefore has type $\LTS(\Byte, \Short, \Int, \Long)$.
-> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\LTS(\Int, \Long)$.
+> Example: integer literal `0x01` has value $1$ and therefore has type $\ILT(\Byte, \Short, \Int, \Long)$.
+> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\ILT(\Int, \Long)$.
 
 #### Real literals
 

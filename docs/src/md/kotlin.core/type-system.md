@@ -849,7 +849,7 @@ One of the main uses of intersection types are [smart casts][Smart casts].
 
 #### Integer literal types
 
-An integer literal type containing types $T_1, \ldots, T_N$, denoted $\LTS(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
+An integer literal type containing types $T_1, \ldots, T_N$, denoted $\ILT(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
 Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types].
 
 Integer literal types are the types of [integer literals][Integer literals] and have special handling w.r.t. [subtyping][Subtyping for integer literal types].
@@ -965,14 +965,14 @@ Moreover, any type $T$ with supertypes $S_1, \ldots, S_N$ is also a subtype of $
 
 All integer literal type are equivalent w.r.t. subtyping, meaning that for any sets $T_1, \ldots, T_K$ and $U_1, \ldots, U_N$ of built-in integer types:
 
-- $\LTS(T_1, \ldots, T_K) <: \LTS(U_1, \ldots, U_N)$
-- $\LTS(U_1, \ldots, U_N) <: \LTS(T_1, \ldots, T_K)$
-- $\forall T_i \in \{T_1, \ldots, T_K\} : \LTS(T_1, \ldots, T_K) <: T_i$
-- $\forall T_i \in \{T_1, \ldots, T_K\} : T_i <: \LTS(T_1, \ldots, T_K)$
+- $\ILT(T_1, \ldots, T_K) <: \ILT(U_1, \ldots, U_N)$
+- $\ILT(U_1, \ldots, U_N) <: \ILT(T_1, \ldots, T_K)$
+- $\forall T_i \in \{T_1, \ldots, T_K\} : \ILT(T_1, \ldots, T_K) <: T_i$
+- $\forall T_i \in \{T_1, \ldots, T_K\} : T_i <: \ILT(T_1, \ldots, T_K)$
 
-> Note: the last two rules mean $\LTS(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 \hor \ldots \hor T_K$, depending on the context.
-> Viewing $\LTS$ as intersection type allows us to use integer literals where built-in integer types are expected.
-> Making $\LTS$ behave as union type is needed to support cases when they appear in contravariant position.
+> Note: the last two rules mean $\ILT(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 \hor \ldots \hor T_K$, depending on the context.
+> Viewing $\ILT$ as intersection type allows us to use integer literals where built-in integer types are expected.
+> Making $\ILT$ behave as union type is needed to support cases when they appear in contravariant position.
 
 > Example:
 > ```kotlin
@@ -982,23 +982,23 @@ All integer literal type are equivalent w.r.t. subtyping, meaning that for any s
 >
 > fun <S> select(a: S, b: In<S>): S = ...
 > 
-> fun ltsAsIntersection() {
->     val a: Int = 42 // LTS(Byte, Short, Int, Long) <: Int
+> fun iltAsIntersection() {
+>     val a: Int = 42 // ILT(Byte, Short, Int, Long) <: Int
 >     
 >     fun foo(a: Short) {}
 >     
->     foo(1377) // LTS(Short, Int, Long) <: Short
+>     foo(1377) // ILT(Short, Int, Long) <: Short
 > }
 > 
-> fun ltsAsUnion() {
+> fun iltAsUnion() {
 >     val a: Short = 42
 >     
 >     select(a, 1337.asIn())
 >         // For argument a:
 >         //   Short <: S
 >         // For argument b:
->         //   In<LTS(Short, Int, Long)> <: In<S> =>
->         //     S <: LTS(Short, Int, Long)
+>         //   In<ILT(Short, Int, Long)> <: In<S> =>
+>         //     S <: ILT(Short, Int, Long)
 >         // Solution: S =:= Short
 > }
 > ```
