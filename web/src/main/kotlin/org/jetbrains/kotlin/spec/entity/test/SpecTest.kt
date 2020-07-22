@@ -8,7 +8,7 @@ class SpecTest(val testInfo: TestInfo, val testPlace: TestPlace, content: String
     val testCases: List<TestCase> = testArea.parseTest(content)
 }
 
-class TestCase(val code: String, infoElements: Map<String, String?>? = null)
+class TestCase(val code: String, val infoElements: Map<String, String?>? = null)
 class TestPlace(val paragraph: Int, val testType: TestType, val sentence: Int)
 
 
