@@ -76,4 +76,9 @@ TODO(Maybe provide a test case template somewhere?)
 
 ### Enhance the grammar
 
-TODO
+Kotlin grammar included in the specification is actually compiled from a standalone grammar description.
+It is written in ANTLR v4 format and available in the [`grammar`](./grammar) folder.
+Further information about how it can be used is available in the [grammar README.md](./grammar/README.md).
+
+If you want to contribute any grammar improvements, they should be made against the ANTLR version and not against the compiled version included in the specificaion.
+To send them, please follow the general instructions on how to contribute.
