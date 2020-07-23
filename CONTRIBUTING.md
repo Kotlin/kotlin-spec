@@ -1,6 +1,6 @@
 # Contributing
 
-If you want to contribute to the Kotlin language specificaion, welcome!
+If you want to contribute to the Kotlin language specification, welcome!
 This document describes the ways one could help with the specification together with the most important contribution guidelines.
 
 ## How to contribute?
@@ -61,9 +61,9 @@ When you click on a tested sentence, a popup window is shown, which contains the
 The test code can be run from the popup by clicking the green arrow icon; you can also tweak the code by switching to edit mode via the plus sign icon.
 
 As of now, these tests are hosted in the main [Kotlin compiler repository][spec-test-data], and are used in its continuous integration process.
-Because of this, we do not curently have a very user-friendly story of contributing additional specification tests.
+Because of this, we do not currently have a very user-friendly story of contributing additional specification tests.
 
-If you nontheless want to contribute a new test for a statement in the specification, you should do the following.
+If you nonetheless want to contribute a new test for a statement in the specification, you should do the following.
 
 * Write the test case itself as a standalone code snippet;
 * Link it to one primary sentence and zero or more secondary sentences via their sentence identifiers;
@@ -80,5 +80,5 @@ Kotlin grammar included in the specification is actually compiled from a standal
 It is written in ANTLR v4 format and available in the [`grammar`](./grammar) folder.
 Further information about how it can be used is available in the [grammar README.md](./grammar/README.md).
 
-If you want to contribute any grammar improvements, they should be made against the ANTLR version and not against the compiled version included in the specificaion.
+If you want to contribute any grammar improvements, they should be made against the ANTLR version and not against the compiled version included in the specification.
 To send them, please follow the general instructions on how to contribute.

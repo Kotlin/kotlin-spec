@@ -34,7 +34,7 @@ The human-friendly version is available on the [Kotlin Website](https://kotlinla
 The specification is built using [Gradle](https://gradle.org/).
 Therefore, most dependencies are downloaded by the build system.
 
-However, there are several external depencencies which should be installed separately.
+However, there are several external dependencies which should be installed separately.
 For instructions on how to do this, please refer to your operating system documentation.
 
 * [Pandoc](https://pandoc.org/) (tested with version 2.9.1)
