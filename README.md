@@ -12,6 +12,10 @@ However, if you are simply wondering, why some code you wrote works the way it d
 Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way irregardless of the underlying platform.
 In the future, we plan to extend it with additional platform-specific sections covering Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
+## Compatibility
+
+Kotlin Language Specification is still in progress and has **experimental** stability level, meaning no compatibility should be expected between even incremental releases, any functionality can be added, removed or changed without warning. 
+
 ## Artifacts
 
 HTML version of the specification is available on the [Kotlin Website](https://kotlinlang.org/spec).
