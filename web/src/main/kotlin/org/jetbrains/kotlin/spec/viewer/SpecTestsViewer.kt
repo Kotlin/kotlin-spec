@@ -61,6 +61,12 @@ class SpecTestsViewer {
 
         private const val MAIN_FUN_CODE = "\nfun main() { println(\"Test passed\") }"
         private const val SAMPLE_WRAP_CODE = "//sampleStart\n{1}\n//sampleEnd"
+
+        val excludedSectionsToLoadTests = setOf(
+                "introduction", "experimental-features", "acknowledgments", "reference", "feedback",
+                "syntax-and-grammar", "lexical-grammar", "whitespace-and-comments", "keywords-and-operators",
+                "literals", "identifiers", "string-mode-grammar", "tokens", "syntax-grammar", "documentation-comments"
+        )
     }
 
     private lateinit var currentSpecSentenceTests: SpecSentence

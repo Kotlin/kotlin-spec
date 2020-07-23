@@ -30,11 +30,7 @@ fun init() {
 
     `$`("h2, h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
-        if (idValue != "introduction"
-                && idValue != "experimental-features"
-                && idValue != "acknowledgments"
-                && idValue != "reference"
-                && idValue != "feedback") {
+        if (idValue !in SpecTestsViewer.excludedSectionsToLoadTests) {
             SpecTestsLoader.insertLoadIcon(`$`(el), mode)
         }
     }
