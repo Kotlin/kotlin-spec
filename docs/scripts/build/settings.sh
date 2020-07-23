@@ -26,6 +26,6 @@ init_settings() {
     if [ "${type}" == "pdf" ]; then
         PREAMBLE_OPTIONS="-H ./preamble.tex"
     elif [ "${type}" == "html" ]; then
-      PREAMBLE_OPTIONS="-H ./preamble.md --include-before-body ./preface.html --include-after-body ./epilogue.html"
+      PREAMBLE_OPTIONS="-H ./preamble.html --include-before-body ./preface.html --include-after-body ./epilogue.html"
     fi
 }
