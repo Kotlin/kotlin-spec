@@ -27,14 +27,12 @@ fun init() {
 
     Header.init(mode, shouldBeShowedMarkup)
 
-
     `$`("h2, h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
         if (idValue !in SpecTestsViewer.excludedSectionsToLoadTests) {
             SpecTestsLoader.insertLoadIcon(`$`(el), mode)
         }
     }
-
 
     if (shouldBeShowedMarkup && mode != Mode.User) {
         SpecTestsLoader.showMarkup()
@@ -130,6 +128,17 @@ fun init() {
         on("click", "h2, h3, h4, h5") { e, _ ->
             SpecPlaceHighlighter.onHeaderGetLinkClick(`$`(e.currentTarget))
         }
+    }
+
+    `$`(document).ready {
+        val firstH2Heading = `$`("h2").first()
+        if (firstH2Heading.length != 0) {
+            val headingValue = firstH2Heading.contents()[0]?.nodeValue
+            if (headingValue != null) {
+                document.title = "$headingValue - ${document.title}"
+            }
+        }
+        true
     }
 }
 
