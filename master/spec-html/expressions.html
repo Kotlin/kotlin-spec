@@ -81,7 +81,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script data-main="resources/js/main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          urlArgs : "v=3"
+      };
+  </script>
+  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
   
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
@@ -101,6 +107,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <!-- End Google Tag Manager -->
 </head>
 <body>
+<div class="header-bar">
+    <div class="icon-menu">
+        <span class="divide"></span>
+        <span class="divide"></span>
+        <span class="divide"></span>
+    </div>
+    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
+        Download PDF
+    </a>
+</div>
+<div class="toc-bar">
+    <div class="toc-header">
+        <div>Table of contents</div>
+        <input id="toc-search-bar" placeholder="Search..." title="Currently, only exact matches are supported">
+    </div>
+    <div class="toc-body empty"></div>
+</div>
 <header>
 <h1 class="title">Kotlin language specification</h1>
 <p class="subtitle">Version 1.4-beta+0.2</p>
@@ -703,11 +727,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: integer literal <code>0x01</code> has value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>
 
- and therefore has type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">LTS</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Byte</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Long</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{LTS}}(\operatorname{\texttt{kotlin.Byte}}, \operatorname{\texttt{kotlin.Short}}, \operatorname{\texttt{kotlin.Int}}, \operatorname{\texttt{kotlin.Long}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">LTS</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Byte</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Long</span></span></span><span class="mclose">)</span></span></span></span>
+ and therefore has type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">ILT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Byte</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Short</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Long</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{ILT}}(\operatorname{\texttt{kotlin.Byte}}, \operatorname{\texttt{kotlin.Short}}, \operatorname{\texttt{kotlin.Int}}, \operatorname{\texttt{kotlin.Long}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">ILT</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Byte</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Short</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Long</span></span></span><span class="mclose">)</span></span></span></span>
 
 . </span><span class="sentence">Integer literal <code>70000</code> has value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70000</mn></mrow><annotation encoding="application/x-tex">70000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">7</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span><span class="mord">0</span></span></span></span>
 
-, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">LTS</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Long</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{LTS}}(\operatorname{\texttt{kotlin.Int}}, \operatorname{\texttt{kotlin.Long}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">LTS</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Long</span></span></span><span class="mclose">)</span></span></span></span>
+, which is not representable using types <code>kotlin.Byte</code> and <code>kotlin.Short</code> and therefore has type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">ILT</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi mathvariant="normal">kotlin.Int</mi><mo>⁡</mo><mo separator="true">,</mo><mi mathvariant="normal">kotlin.Long</mi><mo>⁡</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{ILT}}(\operatorname{\texttt{kotlin.Int}}, \operatorname{\texttt{kotlin.Long}})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop"><span class="mord text"><span class="mord">ILT</span></span></span><span class="mopen">(</span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Int</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">kotlin.Long</span></span></span><span class="mclose">)</span></span></span></span>
 
 .</span></p>
 </div>

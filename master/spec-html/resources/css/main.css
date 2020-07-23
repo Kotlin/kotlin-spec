@@ -33,13 +33,12 @@ body {
 }
 
 h2 {
-    display: inline-block;
+    display: block;
 }
 
 .download-section-as-pdf-text-link {
     display: inline-block;
     position: relative;
-    top: -10px;
     padding-left: 8px;
     opacity: 0.7;
 }
@@ -51,21 +50,17 @@ h2 {
 .download-section-as-pdf-text-link img {
     width: 20px;
 }
-
-#TOC {
-    display: none
+.toc-body.empty{
+    background: url(../images/loading.gif) no-repeat center;
 }
 
-#TOC.displayed {
-    display: block;
-}
-
-#TOC {
+.toc-bar {
     position: fixed;
     left: 0;
     top: 60px;
     width: 300px;
     height: 100%;
+    background: #fbfbfd;
 
     font-size: 13px;
     font-family: Arial, serif;
@@ -74,18 +69,9 @@ h2 {
     border-right: 1px solid rgba(39, 40, 44, 0.20);
     box-sizing: border-box;
 
-    -webkit-transition: left 0.5s ease-out 0.25s;
-    -moz-transition: left 0.5s ease-out 0.25s;
-    -o-transition: left 0.5s ease-out 0.25s;
-    transition: left 0.5s ease-out 0.25s;
-
     -webkit-box-shadow: -10px 0px 0px 10px rgba(0, 0, 0, 0.15);
     -moz-box-shadow: 2px 5px 18px 0px rgba(0, 0, 0, 0.15);
     box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.15);
-}
-
-#TOC {
-    background: #f8f8f9;
 }
 
 .toc-body {
@@ -118,10 +104,9 @@ h2 {
     font-size: 20px;
     font-weight: bold;
     text-align: left;
-    color: grey;
     box-sizing: border-box;
     z-index: 3;
-    padding: 10px 0px 50px 10px;
+    padding: 10px 10px 20px 10px;
     top: 0;
     border-bottom: 1px solid rgba(39, 40, 44, 0.08);
 }
@@ -143,21 +128,13 @@ h2 {
     display: block;
     right: 15px;
     position: absolute;
-    margin-top: 8px;
+    margin-top: 6px;
     z-index: 2;
     opacity: 0.7;
 }
 
 #TOC ul a.download-section-as-pdf:hover {
     opacity: 1;
-}
-
-#TOC > ul:before {
-    content: "Loading...";
-    text-align: center;
-    display: block;
-    margin-bottom: 20px;
-    font-size: 14px;
 }
 
 #TOC.loaded > ul:before {
@@ -241,9 +218,7 @@ h2 {
 }
 
 #toc-search-bar {
-    margin: 35px 10px 5px 0px;
-    position: fixed;
-    width: 280px;
+    width: 100%;
     z-index: 3;
     box-sizing: border-box;
     border: 1px solid rgba(39, 40, 44, 0.20);
@@ -258,7 +233,8 @@ h2 {
 }
 
 .icon-menu {
-    margin-top: 10px;
+    margin-top: 16px;
+    margin-left: 5px;
     display: none;
     height: 17px;
     width: 17px;
@@ -296,51 +272,35 @@ h2 {
         display: block;
     }
 
-    #TOC {
+    .toc-bar {
         left: -310px;
     }
 
-    #TOC.active {
+    .toc-bar.active {
         left: 0;
     }
 
     .header-bar .main-page {
         margin-left: 40px;
     }
-
-    #TOC .toc-header{
-        padding-left: 50px;
-    }
-
-    #TOC .toc-header #toc-search-bar{
-        width: 240px;
-    }
 }
 
 
 @media (max-width: 500px) {
 
-    #TOC.active,
-    #TOC.active .header-bar,
-    #TOC.active .toc-body,
-    #TOC.active .toc-header {
+    .toc-bar.active,
+    .toc-bar.active .toc-bar,
+    .toc-bar.active .toc-body,
+    .toc-bar.active .toc-header {
         width: 100%;
     }
 
-    #TOC.active #toc-search-bar {
-        width: 95%;
-    }
-
-    #TOC ul a.download-section-as-pdf {
+    .toc-bar ul a.download-section-as-pdf {
         right: 25px;
     }
-    #TOC.active .toc-header{
-        padding-left: 10px;
-    }
 
-
-    #TOC.active .toc-header #toc-search-bar{
-        width: 95%
+    .toc-bar.active.toc-header{
+        padding: 10px 20px 0 0;
     }
 
 }
@@ -1127,7 +1087,7 @@ span.TODO-marker {
 .header-bar {
     display: block;
     position: absolute;
-    height: 50px;
+    height: 61px;
     background: #333333;
     width: 100%;
     left: 0;
@@ -1135,19 +1095,48 @@ span.TODO-marker {
     border-bottom: 1px solid #a0a0a0;
     text-align: left;
     z-index: 3;
-    padding-top: 10px;
-    padding-left: 10px;
+    vertical-align: middle;
+    line-height: 61px;
+}
+
+.with-toggled-toc .header-bar {
+    position: fixed;
+}
+
+.with-toggled-toc .toc-bar {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 500px) {
+    .with-toggled-toc, .with-toggled-toc body {
+        overflow: hidden;
+    }
+
+    .with-toggled-toc-if-needed, .with-toggled-toc-if-needed body {
+        overflow: visible !important;
+    }
+
+    .with-toggled-toc-if-needed .header-bar {
+        position: absolute !important;
+    }
+
+    .with-toggled-toc-if-needed .toc-bar {
+        margin-top: auto;
+    }
+
+    .with-toggled-toc-if-needed .toc-bar {
+        display: none;
+    }
 }
 
 .main-page {
-    background: url("https://kotlinlang.org/assets/images/favicon.ico") no-repeat;
+    background: url("https://kotlinlang.org/assets/images/favicon.ico") center left no-repeat;
     background-size: 25px;
-    height: 30px;
     padding-left: 28px;
-    font-size: 25px;
+    margin-left: 20px;
+    font-size: 28px;
     font-family: sans-serif;
     font-weight: bold;
-    line-height: 1.80;
 }
 
 .main-page:focus {
@@ -1170,14 +1159,12 @@ span.TODO-marker {
 
 .header-bar .download-full-pdf:hover {
     opacity: 1;
-
 }
 
 .header-bar .download-full-pdf {
-    right: 80px;
-    position: absolute;
+    float: right;
+    margin-right: 30px;
     color: white;
-    margin-top: 5px;
     font-family: sans-serif;
     opacity: 0.7;
     font-weight: lighter;
