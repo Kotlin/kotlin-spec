@@ -26,7 +26,7 @@ PDF version can be downloaded using the links in the HTML version or using the [
 
 The grammar is a part of the specification and is also contained in this repository.
 
-The reference grammar files in ANTLR4 format are located in the [grammar folder](https://github.com/Kotlin/kotlin-spec/tree/master/grammar/src/main/antlr/).
+The reference grammar files in ANTLR4 format are located in the [grammar folder](./grammar/src/main/antlr/).
 The human-friendly version is available on the [Kotlin Website](https://kotlinlang.org/docs/reference/grammar.html), in the [HTML](https://kotlinlang.org/spec/syntax-and-grammar.html) or [PDF](https://kotlinlang.org/spec/pdf/sections/syntax-and-grammar.pdf) version of the specification.
 
 ## Building the specification
