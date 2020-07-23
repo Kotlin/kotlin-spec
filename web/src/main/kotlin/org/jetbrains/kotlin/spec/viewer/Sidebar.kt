@@ -70,7 +70,7 @@ object Sidebar {
         `$`(".icon-menu").toggleClass("active")
     }
 
-    private fun hideSideBareIfNeeded() {
+    private fun hideSideBarIfNeeded() {
         `$`("html").addClass("with-toggled-toc-if-needed")
     }
 
@@ -94,7 +94,7 @@ object Sidebar {
 
         `$`(window).on("hashchange") { _, _ ->
             expandItemsHierarchyByUrl()
-            hideSideBareIfNeeded()
+            hideSideBarIfNeeded()
         }
         `$`("$TOC > ul > li, #TOC > ul > li > ul > li").show() // show "Kotlin core" subsections by default
         `$`(TOC).addClass("loaded")
