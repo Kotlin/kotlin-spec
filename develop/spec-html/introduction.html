@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marat Akhin" />
+  <meta name="author" content="Mikhail Belyaev" />
+  <title>Kotlin language specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./resources/css/main.css">
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          urlArgs : "v=3"
+      };
+  </script>
+  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+  
+  <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
+  <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
+  <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
+  <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
+  <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
+  
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-5P98');</script>
+  <!-- End Google Tag Manager -->
+</head>
+<body>
+<div class="header-bar">
+    <div class="icon-menu">
+        <span class="divide"></span>
+        <span class="divide"></span>
+        <span class="divide"></span>
+    </div>
+    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
+        Download PDF
+    </a>
+</div>
+<div class="toc-bar">
+    <div class="toc-header">
+        <div>Table of contents</div>
+        <input id="toc-search-bar" placeholder="Search..." title="Currently, only exact matches are supported">
+    </div>
+    <div class="toc-body empty"></div>
+</div>
+<header>
+<h1 class="title">Kotlin language specification</h1>
+<p class="subtitle">Version 1.4-rfc+0.3</p>
+<p class="author">Marat Akhin</p>
+<p class="author">Mikhail Belyaev</p>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="TOC">
+<ul>
+<li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
+<ul>
+<li><a href="introduction.html#introduction" id="toc-element-introduction" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="compatibility.html#compatibility" id="toc-element-compatibility" class="toc-element">Compatibility</a>
+<ul>
+<li><a href="compatibility.html#experimental-features" id="toc-element-experimental-features" class="toc-element unnumbered">Experimental features</a></li>
+<li><a href="compatibility.html#acknowledgments" id="toc-element-acknowledgments" class="toc-element unnumbered">Acknowledgments</a></li>
+<li><a href="compatibility.html#feedback" id="toc-element-feedback" class="toc-element unnumbered">Feedback</a></li>
+<li><a href="compatibility.html#reference" id="toc-element-reference" class="toc-element unnumbered">Reference</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
+<ul>
+<li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
+<li><a href="syntax-and-grammar.html#keywords-and-operators" id="toc-element-keywords-and-operators" class="toc-element">Keywords and operators</a></li>
+<li><a href="syntax-and-grammar.html#literals" id="toc-element-literals" class="toc-element">Literals</a></li>
+<li><a href="syntax-and-grammar.html#identifiers" id="toc-element-identifiers" class="toc-element">Identifiers</a></li>
+<li><a href="syntax-and-grammar.html#string-mode-grammar" id="toc-element-string-mode-grammar" class="toc-element">String mode grammar</a></li>
+<li><a href="syntax-and-grammar.html#tokens" id="toc-element-tokens" class="toc-element">Tokens</a></li>
+</ul></li>
+<li><a href="syntax-and-grammar.html#syntax-grammar" id="toc-element-syntax-grammar" class="toc-element">Syntax grammar</a></li>
+<li><a href="syntax-and-grammar.html#documentation-comments" id="toc-element-documentation-comments" class="toc-element">Documentation comments</a></li>
+</ul></li>
+<li><a href="type-system.html#type-system" id="toc-element-type-system" class="toc-element">Type system</a>
+<ul>
+<li><a href="type-system.html#glossary" id="toc-element-glossary" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="type-system.html#introduction-1" id="toc-element-introduction-1" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="type-system.html#type-kinds" id="toc-element-type-kinds" class="toc-element">Type kinds</a>
+<ul>
+<li><a href="type-system.html#built-in-types" id="toc-element-built-in-types" class="toc-element">Built-in types</a>
+<ul>
+<li><a href="type-system.html#kotlin.any-typesystem" id="toc-element-kotlin.any-typesystem" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="type-system.html#kotlin.nothing-typesystem" id="toc-element-kotlin.nothing-typesystem" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="type-system.html#kotlin.function-typesystem" id="toc-element-kotlin.function-typesystem" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="type-system.html#built-in-integer-types-typesystem" id="toc-element-built-in-integer-types-typesystem" class="toc-element">Built-in integer types</a></li>
+<li><a href="type-system.html#array-types" id="toc-element-array-types" class="toc-element">Array types</a></li>
+</ul></li>
+<li><a href="type-system.html#classifier-types" id="toc-element-classifier-types" class="toc-element">Classifier types</a>
+<ul>
+<li><a href="type-system.html#simple-classifier-types" id="toc-element-simple-classifier-types" class="toc-element">Simple classifier types</a></li>
+<li><a href="type-system.html#parameterized-classifier-types" id="toc-element-parameterized-classifier-types" class="toc-element">Parameterized classifier types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-parameters" id="toc-element-type-parameters" class="toc-element">Type parameters</a>
+<ul>
+<li><a href="type-system.html#function-type-parameters" id="toc-element-function-type-parameters" class="toc-element">Function type parameters</a></li>
+<li><a href="type-system.html#mixed-site-variance" id="toc-element-mixed-site-variance" class="toc-element">Mixed-site variance</a></li>
+<li><a href="type-system.html#declaration-site-variance" id="toc-element-declaration-site-variance" class="toc-element">Declaration-site variance</a></li>
+<li><a href="type-system.html#use-site-variance" id="toc-element-use-site-variance" class="toc-element">Use-site variance</a></li>
+</ul></li>
+<li><a href="type-system.html#type-capturing" id="toc-element-type-capturing" class="toc-element">Type capturing</a></li>
+<li><a href="type-system.html#type-containment" id="toc-element-type-containment" class="toc-element">Type containment</a></li>
+<li><a href="type-system.html#function-types" id="toc-element-function-types" class="toc-element">Function types</a>
+<ul>
+<li><a href="type-system.html#suspending-function-types" id="toc-element-suspending-function-types" class="toc-element">Suspending function types</a></li>
+</ul></li>
+<li><a href="type-system.html#flexible-types" id="toc-element-flexible-types" class="toc-element">Flexible types</a>
+<ul>
+<li><a href="type-system.html#dynamic-type" id="toc-element-dynamic-type" class="toc-element">Dynamic type</a></li>
+<li><a href="type-system.html#platform-types" id="toc-element-platform-types" class="toc-element">Platform types</a></li>
+</ul></li>
+<li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
+<ul>
+<li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+</ul></li>
+<li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
+<li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
+<li><a href="type-system.html#union-types" id="toc-element-union-types" class="toc-element">Union types</a></li>
+</ul></li>
+<li><a href="type-system.html#type-contexts-and-scopes" id="toc-element-type-contexts-and-scopes" class="toc-element">Type contexts and scopes</a>
+<ul>
+<li><a href="type-system.html#inner-and-nested-type-contexts" id="toc-element-inner-and-nested-type-contexts" class="toc-element">Inner and nested type contexts</a></li>
+</ul></li>
+<li><a href="type-system.html#subtyping" id="toc-element-subtyping" class="toc-element">Subtyping</a>
+<ul>
+<li><a href="type-system.html#subtyping-rules" id="toc-element-subtyping-rules" class="toc-element">Subtyping rules</a></li>
+<li><a href="type-system.html#subtyping-for-flexible-types" id="toc-element-subtyping-for-flexible-types" class="toc-element">Subtyping for flexible types</a></li>
+<li><a href="type-system.html#subtyping-for-intersection-types" id="toc-element-subtyping-for-intersection-types" class="toc-element">Subtyping for intersection types</a></li>
+<li><a href="type-system.html#subtyping-for-integer-literal-types" id="toc-element-subtyping-for-integer-literal-types" class="toc-element">Subtyping for integer literal types</a></li>
+<li><a href="type-system.html#subtyping-for-nullable-types" id="toc-element-subtyping-for-nullable-types" class="toc-element">Subtyping for nullable types</a></li>
+</ul></li>
+<li><a href="type-system.html#upper-and-lower-bounds" id="toc-element-upper-and-lower-bounds" class="toc-element">Upper and lower bounds</a>
+<ul>
+<li><a href="type-system.html#least-upper-bound" id="toc-element-least-upper-bound" class="toc-element">Least upper bound</a></li>
+<li><a href="type-system.html#greatest-lower-bound" id="toc-element-greatest-lower-bound" class="toc-element">Greatest lower bound</a></li>
+</ul></li>
+<li><a href="type-system.html#type-approximation" id="toc-element-type-approximation" class="toc-element">Type approximation</a></li>
+<li><a href="type-system.html#type-decaying" id="toc-element-type-decaying" class="toc-element">Type decaying</a></li>
+<li><a href="type-system.html#references" id="toc-element-references" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-types-and-their-semantics" id="toc-element-built-in-types-and-their-semantics" class="toc-element">Built-in types and their semantics</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.any-builtins" id="toc-element-kotlin.any-builtins" class="toc-element"><code>kotlin.Any</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.nothing-builtins" id="toc-element-kotlin.nothing-builtins" class="toc-element"><code>kotlin.Nothing</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.unit" id="toc-element-kotlin.unit" class="toc-element"><code>kotlin.Unit</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.boolean" id="toc-element-kotlin.boolean" class="toc-element"><code>kotlin.Boolean</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-integer-types-builtins" id="toc-element-built-in-integer-types-builtins" class="toc-element">Built-in integer types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#integer-type-widening" id="toc-element-integer-type-widening" class="toc-element">Integer type widening</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types" id="toc-element-built-in-floating-point-arithmetic-types" class="toc-element">Built-in floating point arithmetic types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.char" id="toc-element-kotlin.char" class="toc-element"><code>kotlin.Char</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.string" id="toc-element-kotlin.string" class="toc-element"><code>kotlin.String</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.enum" id="toc-element-kotlin.enum" class="toc-element"><code>kotlin.Enum</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-array-types" id="toc-element-built-in-array-types" class="toc-element">Built-in array types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-array-types" id="toc-element-specialized-array-types" class="toc-element">Specialized array types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#iterator-types" id="toc-element-iterator-types" class="toc-element">Iterator types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#specialized-iterator-types" id="toc-element-specialized-iterator-types" class="toc-element">Specialized iterator types</a></li>
+</ul></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.throwable" id="toc-element-kotlin.throwable" class="toc-element"><code>kotlin.Throwable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.comparable" id="toc-element-kotlin.comparable" class="toc-element"><code>kotlin.Comparable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.function-builtins" id="toc-element-kotlin.function-builtins" class="toc-element"><code>kotlin.Function</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#built-in-annotation-types" id="toc-element-built-in-annotation-types" class="toc-element">Built-in annotation types</a></li>
+<li><a href="built-in-types-and-their-semantics.html#reflection-support-builtin-types" id="toc-element-reflection-support-builtin-types" class="toc-element">Reflection support builtin types</a>
+<ul>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kclass" id="toc-element-kotlin.reflect.kclass" class="toc-element"><code>kotlin.reflect.KClass</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kcallable" id="toc-element-kotlin.reflect.kcallable" class="toc-element"><code>kotlin.reflect.KCallable</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kproperty" id="toc-element-kotlin.reflect.kproperty" class="toc-element"><code>kotlin.reflect.KProperty</code></a></li>
+<li><a href="built-in-types-and-their-semantics.html#kotlin.reflect.kfunction" id="toc-element-kotlin.reflect.kfunction" class="toc-element"><code>kotlin.reflect.KFunction</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="declarations.html#declarations" id="toc-element-declarations" class="toc-element">Declarations</a>
+<ul>
+<li><a href="declarations.html#glossary-1" id="toc-element-glossary-1" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="declarations.html#introduction-2" id="toc-element-introduction-2" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="declarations.html#classifier-declaration" id="toc-element-classifier-declaration" class="toc-element">Classifier declaration</a>
+<ul>
+<li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
+<li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
+<li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
+</ul></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
+<li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
+<li><a href="declarations.html#interface-declaration" id="toc-element-interface-declaration" class="toc-element">Interface declaration</a>
+<ul>
+<li><a href="declarations.html#functional-interface-declaration" id="toc-element-functional-interface-declaration" class="toc-element">Functional interface declaration</a></li>
+</ul></li>
+<li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
+<li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+</ul></li>
+<li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
+<ul>
+<li><a href="declarations.html#function-signature" id="toc-element-function-signature" class="toc-element">Function signature</a></li>
+<li><a href="declarations.html#named-positional-and-default-parameters" id="toc-element-named-positional-and-default-parameters" class="toc-element">Named, positional and default parameters</a></li>
+<li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
+<li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
+<li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+</ul></li>
+<li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
+<ul>
+<li><a href="declarations.html#read-only-property-declaration" id="toc-element-read-only-property-declaration" class="toc-element">Read-only property declaration</a></li>
+<li><a href="declarations.html#mutable-property-declaration" id="toc-element-mutable-property-declaration" class="toc-element">Mutable property declaration</a></li>
+<li><a href="declarations.html#local-property-declaration" id="toc-element-local-property-declaration" class="toc-element">Local property declaration</a></li>
+<li><a href="declarations.html#getters-and-setters" id="toc-element-getters-and-setters" class="toc-element">Getters and setters</a></li>
+<li><a href="declarations.html#delegated-property-declaration" id="toc-element-delegated-property-declaration" class="toc-element">Delegated property declaration</a></li>
+<li><a href="declarations.html#extension-property-declaration" id="toc-element-extension-property-declaration" class="toc-element">Extension property declaration</a></li>
+<li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
+<li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
+<li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+</ul></li>
+<li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
+<li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
+<ul>
+<li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
+<li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+</ul></li>
+<li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
+</ul></li>
+<li><a href="inheritance.html#inheritance" id="toc-element-inheritance" class="toc-element">Inheritance</a>
+<ul>
+<li><a href="inheritance.html#classifier-type-inheritance" id="toc-element-classifier-type-inheritance" class="toc-element">Classifier type inheritance</a>
+<ul>
+<li><a href="inheritance.html#abstract-classes-inheritance" id="toc-element-abstract-classes-inheritance" class="toc-element">Abstract classes</a></li>
+<li><a href="inheritance.html#sealed-classes" id="toc-element-sealed-classes" class="toc-element">Sealed classes</a></li>
+<li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
+</ul></li>
+<li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
+</ul></li>
+<li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
+<ul>
+<li><a href="scopes-and-identifiers.html#linked-scopes" id="toc-element-linked-scopes" class="toc-element">Linked scopes</a></li>
+<li><a href="scopes-and-identifiers.html#identifiers-and-paths" id="toc-element-identifiers-and-paths" class="toc-element">Identifiers and paths</a></li>
+<li><a href="scopes-and-identifiers.html#labels" id="toc-element-labels" class="toc-element">Labels</a></li>
+</ul></li>
+<li><a href="statements.html#statements" id="toc-element-statements" class="toc-element">Statements</a>
+<ul>
+<li><a href="statements.html#assignments" id="toc-element-assignments" class="toc-element">Assignments</a>
+<ul>
+<li><a href="statements.html#simple-assignments" id="toc-element-simple-assignments" class="toc-element">Simple assignments</a></li>
+<li><a href="statements.html#operator-assignments" id="toc-element-operator-assignments" class="toc-element">Operator assignments</a></li>
+<li><a href="statements.html#safe-assignments" id="toc-element-safe-assignments" class="toc-element">Safe assignments</a></li>
+</ul></li>
+<li><a href="statements.html#loop-statements" id="toc-element-loop-statements" class="toc-element">Loop statements</a>
+<ul>
+<li><a href="statements.html#while-loop-statements" id="toc-element-while-loop-statements" class="toc-element">While-loop statements</a></li>
+<li><a href="statements.html#do-while-loop-statements" id="toc-element-do-while-loop-statements" class="toc-element">Do-while-loop statements</a></li>
+<li><a href="statements.html#for-loop-statements" id="toc-element-for-loop-statements" class="toc-element">For-loop statements</a></li>
+</ul></li>
+<li><a href="statements.html#code-blocks" id="toc-element-code-blocks" class="toc-element">Code blocks</a>
+<ul>
+<li><a href="statements.html#coercion-to-kotlin.unit" id="toc-element-coercion-to-kotlin.unit" class="toc-element">Coercion to <code>kotlin.Unit</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="expressions.html#expressions" id="toc-element-expressions" class="toc-element">Expressions</a>
+<ul>
+<li><a href="expressions.html#glossary-2" id="toc-element-glossary-2" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="expressions.html#introduction-3" id="toc-element-introduction-3" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="expressions.html#constant-literals" id="toc-element-constant-literals" class="toc-element">Constant literals</a>
+<ul>
+<li><a href="expressions.html#boolean-literals" id="toc-element-boolean-literals" class="toc-element">Boolean literals</a></li>
+<li><a href="expressions.html#integer-literals" id="toc-element-integer-literals" class="toc-element">Integer literals</a>
+<ul>
+<li><a href="expressions.html#decimal-integer-literals" id="toc-element-decimal-integer-literals" class="toc-element">Decimal integer literals</a></li>
+<li><a href="expressions.html#hexadecimal-integer-literals" id="toc-element-hexadecimal-integer-literals" class="toc-element">Hexadecimal integer literals</a></li>
+<li><a href="expressions.html#binary-integer-literals" id="toc-element-binary-integer-literals" class="toc-element">Binary integer literals</a></li>
+</ul></li>
+<li><a href="expressions.html#the-types-for-integer-literals" id="toc-element-the-types-for-integer-literals" class="toc-element">The types for integer literals</a></li>
+<li><a href="expressions.html#real-literals" id="toc-element-real-literals" class="toc-element">Real literals</a></li>
+<li><a href="expressions.html#character-literals" id="toc-element-character-literals" class="toc-element">Character literals</a>
+<ul>
+<li><a href="expressions.html#escaped-characters" id="toc-element-escaped-characters" class="toc-element">Escaped characters</a></li>
+</ul></li>
+<li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
+<li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
+</ul></li>
+<li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
+<li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
+<li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
+<li><a href="expressions.html#when-expressions" id="toc-element-when-expressions" class="toc-element">When expressions</a>
+<ul>
+<li><a href="expressions.html#exhaustive-when-expressions" id="toc-element-exhaustive-when-expressions" class="toc-element">Exhaustive when expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#logical-disjunction-expressions" id="toc-element-logical-disjunction-expressions" class="toc-element">Logical disjunction expressions</a></li>
+<li><a href="expressions.html#logical-conjunction-expressions" id="toc-element-logical-conjunction-expressions" class="toc-element">Logical conjunction expressions</a></li>
+<li><a href="expressions.html#equality-expressions" id="toc-element-equality-expressions" class="toc-element">Equality expressions</a>
+<ul>
+<li><a href="expressions.html#reference-equality-expressions" id="toc-element-reference-equality-expressions" class="toc-element">Reference equality expressions</a></li>
+<li><a href="expressions.html#value-equality-expressions" id="toc-element-value-equality-expressions" class="toc-element">Value equality expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#comparison-expressions" id="toc-element-comparison-expressions" class="toc-element">Comparison expressions</a></li>
+<li><a href="expressions.html#type-checking-and-containment-checking-expressions" id="toc-element-type-checking-and-containment-checking-expressions" class="toc-element">Type-checking and containment-checking expressions</a>
+<ul>
+<li><a href="expressions.html#type-checking-expressions" id="toc-element-type-checking-expressions" class="toc-element">Type-checking expressions</a></li>
+<li><a href="expressions.html#containment-checking-expressions" id="toc-element-containment-checking-expressions" class="toc-element">Containment-checking expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#elvis-operator-expressions" id="toc-element-elvis-operator-expressions" class="toc-element">Elvis operator expressions</a></li>
+<li><a href="expressions.html#range-expressions" id="toc-element-range-expressions" class="toc-element">Range expressions</a></li>
+<li><a href="expressions.html#additive-expressions" id="toc-element-additive-expressions" class="toc-element">Additive expressions</a></li>
+<li><a href="expressions.html#multiplicative-expressions" id="toc-element-multiplicative-expressions" class="toc-element">Multiplicative expressions</a></li>
+<li><a href="expressions.html#cast-expressions" id="toc-element-cast-expressions" class="toc-element">Cast expressions</a></li>
+<li><a href="expressions.html#prefix-expressions" id="toc-element-prefix-expressions" class="toc-element">Prefix expressions</a>
+<ul>
+<li><a href="expressions.html#annotated-expressions" id="toc-element-annotated-expressions" class="toc-element">Annotated expressions</a></li>
+<li><a href="expressions.html#prefix-increment-expressions" id="toc-element-prefix-increment-expressions" class="toc-element">Prefix increment expressions</a></li>
+<li><a href="expressions.html#prefix-decrement-expressions" id="toc-element-prefix-decrement-expressions" class="toc-element">Prefix decrement expressions</a></li>
+<li><a href="expressions.html#unary-minus-expressions" id="toc-element-unary-minus-expressions" class="toc-element">Unary minus expressions</a></li>
+<li><a href="expressions.html#unary-plus-expressions" id="toc-element-unary-plus-expressions" class="toc-element">Unary plus expressions</a></li>
+<li><a href="expressions.html#logical-not-expressions" id="toc-element-logical-not-expressions" class="toc-element">Logical not expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#postfix-operator-expressions" id="toc-element-postfix-operator-expressions" class="toc-element">Postfix operator expressions</a>
+<ul>
+<li><a href="expressions.html#postfix-increment-expressions" id="toc-element-postfix-increment-expressions" class="toc-element">Postfix increment expressions</a></li>
+<li><a href="expressions.html#postfix-decrement-expressions" id="toc-element-postfix-decrement-expressions" class="toc-element">Postfix decrement expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#not-null-assertion-expressions" id="toc-element-not-null-assertion-expressions" class="toc-element">Not-null assertion expressions</a></li>
+<li><a href="expressions.html#indexing-expressions" id="toc-element-indexing-expressions" class="toc-element">Indexing expressions</a></li>
+<li><a href="expressions.html#call-and-property-access-expressions" id="toc-element-call-and-property-access-expressions" class="toc-element">Call and property access expressions</a>
+<ul>
+<li><a href="expressions.html#navigation-operators" id="toc-element-navigation-operators" class="toc-element">Navigation operators</a></li>
+<li><a href="expressions.html#callable-references" id="toc-element-callable-references" class="toc-element">Callable references</a></li>
+<li><a href="expressions.html#class-literals" id="toc-element-class-literals" class="toc-element">Class literals</a></li>
+<li><a href="expressions.html#function-calls-and-property-access" id="toc-element-function-calls-and-property-access" class="toc-element">Function calls and property access</a></li>
+<li><a href="expressions.html#spread-operator-expressions" id="toc-element-spread-operator-expressions" class="toc-element">Spread operator expressions</a></li>
+</ul></li>
+<li><a href="expressions.html#function-literals" id="toc-element-function-literals" class="toc-element">Function literals</a>
+<ul>
+<li><a href="expressions.html#anonymous-function-declarations" id="toc-element-anonymous-function-declarations" class="toc-element">Anonymous function declarations</a></li>
+<li><a href="expressions.html#lambda-literals" id="toc-element-lambda-literals" class="toc-element">Lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#object-literals" id="toc-element-object-literals" class="toc-element">Object literals</a>
+<ul>
+<li><a href="expressions.html#functional-interface-lambda-literals" id="toc-element-functional-interface-lambda-literals" class="toc-element">Functional interface lambda literals</a></li>
+</ul></li>
+<li><a href="expressions.html#this-expressions" id="toc-element-this-expressions" class="toc-element">This-expressions</a></li>
+<li><a href="expressions.html#super-forms" id="toc-element-super-forms" class="toc-element">Super-forms</a></li>
+<li><a href="expressions.html#jump-expressions" id="toc-element-jump-expressions" class="toc-element">Jump expressions</a>
+<ul>
+<li><a href="expressions.html#throw-expressions" id="toc-element-throw-expressions" class="toc-element">Throw expressions</a></li>
+<li><a href="expressions.html#return-expressions" id="toc-element-return-expressions" class="toc-element">Return expressions</a></li>
+<li><a href="expressions.html#continue-expressions" id="toc-element-continue-expressions" class="toc-element">Continue expressions</a></li>
+<li><a href="expressions.html#break-expressions" id="toc-element-break-expressions" class="toc-element">Break expressions</a></li>
+</ul></li>
+</ul></li>
+<li><a href="operator-overloading.html#operator-overloading" id="toc-element-operator-overloading" class="toc-element">Operator overloading</a>
+<ul>
+<li><a href="operator-overloading.html#destructuring-declarations" id="toc-element-destructuring-declarations" class="toc-element">Destructuring declarations</a></li>
+</ul></li>
+<li><a href="packages-and-imports.html#packages-and-imports" id="toc-element-packages-and-imports" class="toc-element">Packages and imports</a>
+<ul>
+<li><a href="packages-and-imports.html#importing" id="toc-element-importing" class="toc-element">Importing</a></li>
+<li><a href="packages-and-imports.html#modules" id="toc-element-modules" class="toc-element">Modules</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#overload-resolution" id="toc-element-overload-resolution" class="toc-element">Overload resolution</a>
+<ul>
+<li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
+<li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
+<li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
+<li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
+<li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+<ul>
+<li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
+<li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
+<ul>
+<li><a href="overload-resolution.html#call-with-an-explicit-type-receiver" id="toc-element-call-with-an-explicit-type-receiver" class="toc-element">Call with an explicit type receiver</a></li>
+<li><a href="overload-resolution.html#call-with-an-explicit-super-form-receiver" id="toc-element-call-with-an-explicit-super-form-receiver" class="toc-element">Call with an explicit super-form receiver</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#infix-function-call" id="toc-element-infix-function-call" class="toc-element">Infix function call</a></li>
+<li><a href="overload-resolution.html#operator-call" id="toc-element-operator-call" class="toc-element">Operator call</a></li>
+<li><a href="overload-resolution.html#call-without-an-explicit-receiver" id="toc-element-call-without-an-explicit-receiver" class="toc-element">Call without an explicit receiver</a></li>
+<li><a href="overload-resolution.html#call-with-named-parameters" id="toc-element-call-with-named-parameters" class="toc-element">Call with named parameters</a></li>
+<li><a href="overload-resolution.html#call-with-trailing-lambda-expressions" id="toc-element-call-with-trailing-lambda-expressions" class="toc-element">Call with trailing lambda expressions</a></li>
+<li><a href="overload-resolution.html#call-with-specified-type-parameters" id="toc-element-call-with-specified-type-parameters" class="toc-element">Call with specified type parameters</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#determining-function-applicability-for-a-specific-call" id="toc-element-determining-function-applicability-for-a-specific-call" class="toc-element">Determining function applicability for a specific call</a>
+<ul>
+<li><a href="overload-resolution.html#rationale" id="toc-element-rationale" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#description" id="toc-element-description" class="toc-element">Description</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set" id="toc-element-choosing-the-most-specific-candidate-from-the-overload-candidate-set" class="toc-element">Choosing the most specific candidate from the overload candidate set</a>
+<ul>
+<li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
+<li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
+<ul>
+<li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
+<li><a href="overload-resolution.html#bidirectional-resolution-for-callable-calls" id="toc-element-bidirectional-resolution-for-callable-calls" class="toc-element">Bidirectional resolution for callable calls</a></li>
+</ul></li>
+<li><a href="overload-resolution.html#type-inference-and-overload-resolution" id="toc-element-type-inference-and-overload-resolution" class="toc-element">Type inference and overload resolution</a></li>
+<li><a href="overload-resolution.html#conflicting-overloads" id="toc-element-conflicting-overloads" class="toc-element">Conflicting overloads</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#control--and-data-flow-analysis" id="toc-element-control--and-data-flow-analysis" class="toc-element">Control- and data-flow analysis</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#control-flow-graph" id="toc-element-control-flow-graph" class="toc-element">Control flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#expressions-cdfa" id="toc-element-expressions-cdfa" class="toc-element">Expressions</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#function-calls-and-operators" id="toc-element-function-calls-and-operators" class="toc-element">Function calls and operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#conditional-expressions-1" id="toc-element-conditional-expressions-1" class="toc-element">Conditional expressions</a></li>
+<li><a href="control--and-data-flow-analysis.html#boolean-operators" id="toc-element-boolean-operators" class="toc-element">Boolean operators</a></li>
+<li><a href="control--and-data-flow-analysis.html#other-expressions" id="toc-element-other-expressions" class="toc-element">Other expressions</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#statements-cdfa" id="toc-element-statements-cdfa" class="toc-element">Statements</a></li>
+<li><a href="control--and-data-flow-analysis.html#declarations-1" id="toc-element-declarations-1" class="toc-element">Declarations</a></li>
+<li><a href="control--and-data-flow-analysis.html#examples" id="toc-element-examples" class="toc-element">Examples</a></li>
+<li><a href="control--and-data-flow-analysis.html#kotlin.nothing-and-its-influence-on-the-cfg" id="toc-element-kotlin.nothing-and-its-influence-on-the-cfg" class="toc-element"><code>kotlin.Nothing</code> and its influence on the CFG</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
+<ul>
+<li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
+
+ instruction</a></li>
+<li><a href="control--and-data-flow-analysis.html#variable-initialization-analysis" id="toc-element-variable-initialization-analysis" class="toc-element">Variable initialization analysis</a></li>
+<li><a href="control--and-data-flow-analysis.html#smart-casting-analysis" id="toc-element-smart-casting-analysis" class="toc-element">Smart casting analysis</a></li>
+</ul></li>
+<li><a href="control--and-data-flow-analysis.html#references-1" id="toc-element-references-1" class="toc-element unnumbered">References</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#kotlin-type-constraints" id="toc-element-kotlin-type-constraints" class="toc-element">Kotlin type constraints</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#type-constraint-definition" id="toc-element-type-constraint-definition" class="toc-element">Type constraint definition</a></li>
+<li><a href="kotlin-type-constraints.html#type-constraint-solving" id="toc-element-type-constraint-solving" class="toc-element">Type constraint solving</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#checking-constraint-system-soundness" id="toc-element-checking-constraint-system-soundness" class="toc-element">Checking constraint system soundness</a>
+<ul>
+<li><a href="kotlin-type-constraints.html#a-sample-bound-inference-algorithm" id="toc-element-a-sample-bound-inference-algorithm" class="toc-element">A sample bound inference algorithm</a></li>
+</ul></li>
+<li><a href="kotlin-type-constraints.html#finding-optimal-constraint-system-solution" id="toc-element-finding-optimal-constraint-system-solution" class="toc-element">Finding optimal constraint system solution</a></li>
+<li><a href="kotlin-type-constraints.html#the-relations-on-types-as-constraints" id="toc-element-the-relations-on-types-as-constraints" class="toc-element">The relations on types as constraints</a></li>
+</ul></li>
+</ul></li>
+<li><a href="type-inference.html#type-inference" id="toc-element-type-inference" class="toc-element">Type inference</a>
+<ul>
+<li><a href="type-inference.html#smart-casts" id="toc-element-smart-casts" class="toc-element">Smart casts</a>
+<ul>
+<li><a href="type-inference.html#data-flow-framework" id="toc-element-data-flow-framework" class="toc-element">Data-flow framework</a>
+<ul>
+<li><a href="type-inference.html#smart-cast-lattices" id="toc-element-smart-cast-lattices" class="toc-element">Smart cast lattices</a></li>
+<li><a href="type-inference.html#smart-cast-transfer-functions" id="toc-element-smart-cast-transfer-functions" class="toc-element">Smart cast transfer functions</a></li>
+</ul></li>
+<li><a href="type-inference.html#smart-cast-types" id="toc-element-smart-cast-types" class="toc-element">Smart cast types</a></li>
+<li><a href="type-inference.html#smart-cast-sink-stability" id="toc-element-smart-cast-sink-stability" class="toc-element">Smart cast sink stability</a>
+<ul>
+<li><a href="type-inference.html#effectively-immutable-smart-cast-sinks" id="toc-element-effectively-immutable-smart-cast-sinks" class="toc-element">Effectively immutable smart cast sinks</a></li>
+</ul></li>
+<li><a href="type-inference.html#loop-handling" id="toc-element-loop-handling" class="toc-element">Loop handling</a></li>
+<li><a href="type-inference.html#bound-smart-casts" id="toc-element-bound-smart-casts" class="toc-element">Bound smart casts</a></li>
+</ul></li>
+<li><a href="type-inference.html#local-type-inference" id="toc-element-local-type-inference" class="toc-element">Local type inference</a></li>
+<li><a href="type-inference.html#function-signature-type-inference" id="toc-element-function-signature-type-inference" class="toc-element">Function signature type inference</a>
+<ul>
+<li><a href="type-inference.html#named-and-anonymous-function-declarations" id="toc-element-named-and-anonymous-function-declarations" class="toc-element">Named and anonymous function declarations</a></li>
+<li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
+</ul></li>
+</ul></li>
+<li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
+<ul>
+<li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
+<li><a href="runtime-type-information.html#reflection" id="toc-element-reflection" class="toc-element">Reflection</a></li>
+</ul></li>
+<li><a href="exceptions.html#exceptions" id="toc-element-exceptions" class="toc-element">Exceptions</a>
+<ul>
+<li><a href="exceptions.html#catching-exceptions" id="toc-element-catching-exceptions" class="toc-element">Catching exceptions</a></li>
+<li><a href="exceptions.html#throwing-exceptions" id="toc-element-throwing-exceptions" class="toc-element">Throwing exceptions</a></li>
+</ul></li>
+<li><a href="annotations.html#annotations" id="toc-element-annotations" class="toc-element">Annotations</a>
+<ul>
+<li><a href="annotations.html#annotation-values" id="toc-element-annotation-values" class="toc-element">Annotation values</a></li>
+<li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
+<li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
+<li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+</ul></li>
+<li><a href="asynchronous-programming-with-coroutines.html#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
+<ul>
+<li><a href="asynchronous-programming-with-coroutines.html#suspending-functions" id="toc-element-suspending-functions" class="toc-element">Suspending functions</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#coroutines" id="toc-element-coroutines" class="toc-element">Coroutines</a></li>
+</ul></li>
+<li><a href="concurrency.html#concurrency" id="toc-element-concurrency" class="toc-element">Concurrency</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="introduction" class="unnumbered">Introduction</h2>
+<div class="paragraph">
+<p><span class="sentence">Kotlin took inspiration from many programming languages, including (but not limited to) Java, Scala, C# and Groovy. </span><span class="sentence">One of the main ideas behind Kotlin is being <em>pragmatic</em>, i.e., being a programming language useful for day-to-day development, which helps the users get the job done via its features and its tools. </span><span class="sentence">Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin is a multiplatform, statically typed, general-purpose programming language. </span><span class="sentence">Currently, as of version 1.4, it supports compilation to the following platforms.</span></p>
+</div>
+<ul>
+<li><span class="sentence">JVM (Java Virtual Machine)</span></li>
+<li><span class="sentence">JS (JavaScript)</span></li>
+<li><span class="sentence">Native (native binaries for various architectures)</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Furthermore, it supports transparent interoperability between different platforms via its Kotlin Multiplatform Project (Kotlin MPP) feature.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null-safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., <code>null</code> value). </span><span class="sentence">Kotlin also extends its static type system with elements of gradual and flow typing, for better interoperability with other languages and ease of development.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Kotlin is an object-oriented language which also has a lot of functional programming elements. </span><span class="sentence">From the object-oriented side, it supports nominal subtyping with bounded parametric polymorphism (akin to generics) and mixed-site variance. </span><span class="sentence">From the functional programming side, it has first-class support for higher-order functions and lambda literals.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This specification covers Kotlin/Core, i.e., fundamental parts of Kotlin which should function <em>mostly</em> the same way irregardless of the underlying platform. </span><span class="sentence">These parts include such important things as language <a href="control--and-data-flow-analysis.html#expressions-cdfa">expressions</a>, <a href="control--and-data-flow-analysis.html#declarations-1">declarations</a>, <a href="type-system.html#type-system">type system</a> and <a href="overload-resolution.html#overload-resolution">overload resolution</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: due to the complexities of platform-specific implementations, platforms may extend, reduce or change the way some aspects of Kotlin/Core function. </span><span class="sentence">We mark these platform-dependent Kotlin/Core fragments in the specification to the best of our abilities.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Platform-specific parts of Kotlin and its multiplatform capabilities will be covered in their respective sub-specifications, i.e., Kotlin/JVM, Kotlin/JS and Kotlin/Native.</span></p>
+</div>
+</body>
+</html>
