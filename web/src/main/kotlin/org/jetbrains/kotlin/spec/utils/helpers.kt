@@ -1,6 +1,8 @@
 package org.jetbrains.kotlin.spec.utils
 
 import org.w3c.dom.Location
+import org.w3c.dom.get
+import kotlin.browser.window
 
 fun String.format(vararg args: Any): String {
     return this.replace(Regex("""\{(\d+)}""", RegexOption.MULTILINE)) {
@@ -32,3 +34,13 @@ val Location.searchMap: MutableMap<String, String>
 
         return objURL
     }
+
+val isDevMode = window.localStorage["isDevMode"] != null || window.location.searchMap["mode"] == "dev"
+
+val shouldBeShowedMarkup = window.localStorage["showMarkup"] != null
+
+val sentenceToBeHighlighted = window.location.searchMap["sentence"]
+
+val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
+
+val sectionToBeHighlighted = window.location.hash.takeIf { it.isNotEmpty() }?.substring(1)

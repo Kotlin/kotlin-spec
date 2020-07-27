@@ -11,6 +11,7 @@ object SentenceFinder {
             <input type="text" name="spec-sentence-location" />
             <button class="spec-sentence-find">Find sentence</button>
             <a href="#" class="{1}-markup-link">{2} markup</a>
+            <a href="#" class="disable-dev-mode">Disable dev mode</a>
         </div>
         <div class="spec-location-format">Format: sections-hierarchy{,} -> paragraph {n} -> sentence {m}</div>
         </div>"""

@@ -4,8 +4,8 @@ import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
-import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.isDevMode
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
 import kotlin.browser.window
@@ -41,10 +41,10 @@ class SpecTestsLoader {
             """.trimIndent()
         }
 
-        fun insertLoadIcon(headerElement: JQuery, mode: Mode) {
+        fun insertLoadIcon(headerElement: JQuery) {
             headerElement.append(
                     buildString {
-                        if (mode == Mode.Dev)
+                        if (isDevMode)
                             append("""<a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>""")
                         append(getButtonToLoadTests(headerElement))
                     }

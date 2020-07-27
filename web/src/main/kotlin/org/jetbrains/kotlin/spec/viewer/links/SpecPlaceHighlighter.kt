@@ -3,10 +3,7 @@ package org.jetbrains.kotlin.spec.viewer.links
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
-import org.jetbrains.kotlin.spec.utils.Mode
-import org.jetbrains.kotlin.spec.utils.Popup
-import org.jetbrains.kotlin.spec.utils.PopupConfig
-import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.*
 import org.w3c.dom.HTMLElement
 import kotlin.browser.window
 
@@ -124,13 +121,13 @@ object SpecPlaceHighlighter {
         "$protocol//$hostname$pathname${if (search.isNotEmpty()) "?$search" else ""}#$sectionId"
     }
 
-    fun onSentenceGetLinkClick(element: JQuery, mode: Mode) {
+    fun onSentenceGetLinkClick(element: JQuery) {
         Popup(
                 PopupConfig(
                         title = "Sentence info",
                         content = """<div class="sentence-links-popup">{1}</div>""".format(
                                 buildString {
-                                    if (mode == Mode.Dev) {
+                                    if (isDevMode) {
                                         append("""<div class="sentence-links-row">
                                                     <span class="link-sentence-description-link-type">Link for compiler test:</span>
                                                     <input type="text" class="sentence-path-for-compiler-test" value="${element.data("path")}">
@@ -147,7 +144,7 @@ object SpecPlaceHighlighter {
                                 }
                         ).trimIndent(),
                         width = 800,
-                        height = if (mode == Mode.Dev) 150 else 100
+                        height = if (isDevMode) 150 else 100
                 )
         ).apply { open() }
         `$`(".sentence-path-for-compiler-test").select().focus()
