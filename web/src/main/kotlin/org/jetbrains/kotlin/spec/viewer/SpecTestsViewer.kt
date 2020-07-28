@@ -65,7 +65,8 @@ class SpecTestsViewer {
         val excludedSectionsToLoadTests = setOf(
                 "introduction", "experimental-features", "acknowledgments", "reference", "feedback",
                 "syntax-and-grammar", "lexical-grammar", "whitespace-and-comments", "keywords-and-operators",
-                "literals", "identifiers", "string-mode-grammar", "tokens", "syntax-grammar", "documentation-comments"
+                "literals", "identifiers", "string-mode-grammar", "tokens", "syntax-grammar", "documentation-comments",
+                "compatibility"
         )
     }
 
