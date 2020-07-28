@@ -28,7 +28,7 @@ These parts include such important things as language [expressions], [declaratio
 
 Platform-specific parts of Kotlin and its multiplatform capabilities will be covered in their respective sub-specifications, i.e., Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
-## Compatibility
+### Compatibility
 
 Kotlin Language Specification is still in progress and has **experimental** stability level, meaning no compatibility should be expected between even incremental releases, any functionality can be added, removed or changed without warning.
 
