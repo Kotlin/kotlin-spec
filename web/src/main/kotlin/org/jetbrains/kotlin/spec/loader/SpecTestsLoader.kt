@@ -37,7 +37,7 @@ class SpecTestsLoader {
             <button>Load tests</button>
         </a>"""
             else -> """
-              <button>Reoad tests</button>  
+              <button>Reload tests</button>  
             """.trimIndent()
         }
 
