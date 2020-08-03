@@ -67,6 +67,8 @@ You can help us make the Kotlin specification better by one of the following way
 1. Discuss the specification on the Kotlin [forums](https://discuss.kotlinlang.org/)
 1. Drop an email to [Marat Akhin](mailto:marat.akhin@jetbrains.com) or [Mikhail Belyaev](mailto:mikhail.belyaev@jetbrains.com) with your suggestions
 
+> Note: if doing a pull request, it should be based on the `develop` branch.
+
 We welcome any and all feedback to the specification, but may tweak, change or iterate with you on the contribution before including it in the specification.
 
 Further details on how to contribute to the specification are available in [CONTRIBUTING.md](CONTRIBUTING.md).
