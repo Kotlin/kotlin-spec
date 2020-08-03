@@ -39,7 +39,7 @@ Parameterized type
 ~ A concrete type, which is the result of type constructor instantiation
 
 Type parameter
-~ Formal type argument of a type constructor
+~ Formal type parameter of a type constructor
 
 Type argument
 ~ Actual type argument in a parameterized type
