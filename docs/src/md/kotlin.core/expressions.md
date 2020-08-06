@@ -553,8 +553,41 @@ A type-checking expression uses a type-checking operator `is` or `!is` and has a
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
 The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
+However, in cases when the compile-time type of $E$ and $T$ have a common supertype classifier $S$ (i.e. $E$ is a subtype of `List<Int>` and $T$ is `MutableList<Int>` which is also a subtype of `List<Int>`) and the type parameters for this supertype can be directly mapped to parameters of the classifier $T$, the corresponding type arguments may be specified directly in $T$, but must conform to the corresponding supertype in the type of $E$.
 
-> Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), it is allowed for the type $T$ to include non-runtime-available components.
+TODO: better writing
+
+> Example:
+>
+> ```kotlin
+> interface Foo<A, B>
+> class Fee<T, U>: Foo<U, T>
+> 
+> fun f(foo: Foo<String, Int>) {
+>     // valid: you can specify parameters 
+>     // as long as they correspond to base type
+>     if(foo is Fee<Int, String>) { ... }
+>     // invalid: Fee<String, Int> is not a subtype
+>     // of Foo<String, Int>
+>     if(foo is Fee<String, Int>) { ... }
+>     // valid: may be specified partially
+>     if(foo is Fee<Int, *>) { ... }
+> ```
+
+If **all** type parameters of $T$ can be derived from the supertypes of the compile-time type of $E$, they may be omitted altogether, using the so called *bare type* syntax sugar.
+
+> Example:
+>
+> ```kotlin
+> interface Foo<A, B>
+> class Fee<T, U>: Foo<U, T>
+> 
+> fun f(foo: Foo<String, Int>) {
+>     // valid: same as foo is Fee<Int, String>
+>     if(foo is Fee) { ... }
+> ```
+
+TODO: this introduces some serious holes in type system, see [KT-15533](https://youtrack.jetbrains.com/issue/KT-15533) / [KT-15706](https://youtrack.jetbrains.com/issue/KT-15706)
 
 Type-checking expression always has type `kotlin.Boolean`.
 
@@ -665,6 +698,9 @@ This situation should be reported as a compile-time warning.
 
 If type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
 This is another potentially erroneous situation, which should be reported as a compile-time warning.
+
+Similarly to [type checking expressions][Type-checking expressions], some type arguments may be excluded from this check if they are known from the supertype of $E$ and, if all type arguments of $T$ are known, they may be omitted altogether.
+See [type checking section][Type-checking expressions] for explanation.
 
 The checked cast expression result has the type which is the [nullable][Nullable types] variant of the type $T$ specified in the expression.
 
