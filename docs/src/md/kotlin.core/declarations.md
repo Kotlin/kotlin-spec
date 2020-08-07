@@ -344,10 +344,10 @@ All these functions consider only data properties $\{\dataClassParam_i\}$; e.g.,
 
 There are several rules as to how these generated functions may be explicified or inherited.
 
-> Note: a generated function is explicified, if its implementation is provided explicitly in the body of the data class.
-> A generated function is inherited, if its implementation is taken from a supertype of the data class.
+> Note: a generated function is explicified, if its implementation (with matching [function signature]) is provided explicitly in the body of the data class .
+> A generated function is inherited, if its implementation (with matching [function signature]) is taken from a supertype of the data class.
 
-The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how overriding works in normal classes.
+The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how [overriding] works in normal classes.
 If a correct explicit implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be explicified.
 
@@ -357,8 +357,8 @@ Other functions (`copy`, `componentN`) **cannot** be inherited.
 
 In addition, for every generated function, if any of the base types provide an open function with a [matching signature][Function signature], it is automatically overridden by the generated function as if it was generated with an `override` modifier.
 
-> Note: base classes may also have functions that have a conflicting signature with the same function name.
-> As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.
+> Note: data classes or their supertypes may also have functions which have a matching name and/or signature with one of the generated functions.
+> As expected, these cases result in either [override][Overriding] or [overload][Conflicting overloads] conflicts the same way they would with a normal class declaration, or they create two separate functions which follow the rules of [overloading][Overload resolution].
 
 Data classes have the following restrictions:
 
