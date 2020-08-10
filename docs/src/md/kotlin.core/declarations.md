@@ -344,7 +344,7 @@ All these functions consider only data properties $\{\dataClassParam_i\}$; e.g.,
 
 There are several rules as to how these generated functions may be explicified or inherited.
 
-> Note: a generated function is explicified, if its implementation (with matching [function signature]) is provided explicitly in the body of the data class .
+> Note: a generated function is explicified, if its implementation (with matching [function signature]) is provided explicitly in the body of the data class.
 > A generated function is inherited, if its implementation (with matching [function signature]) is taken from a supertype of the data class.
 
 The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how [overriding] works in normal classes.
