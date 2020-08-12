@@ -553,9 +553,10 @@ A type-checking expression uses a type-checking operator `is` or `!is` and has a
 A type-checking expression checks whether the runtime type of $E$ is a subtype of $T$ for `is` operator, or not a subtype of $T$ for `!is` operator.
 
 The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
-However, in cases when the compile-time type of $E$ and $T$ have a common supertype classifier $S$ (i.e. $E$ is a subtype of `List<Int>` and $T$ is `MutableList<Int>` which is also a subtype of `List<Int>`) and the type parameters for this supertype can be directly mapped to parameters of the classifier $T$, the corresponding type arguments may be specified directly in $T$, but must conform to the corresponding supertype in the type of $E$.
 
-TODO: better writing
+If the type $T$ is not a parameterized type, it must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
+If $T$ is a parameterized type, the [bare type argument inference] is performed for the compile-time known type of $E$ and the type constructor $TC$ of $T$.
+After that, given the result arguments of this bare type inference $A_0, A_1 \ldots A_N$, $T$ must suffice the constraint $T!! <: TC[A_0, A_1 \ldots A_N]$, checking each of its argument for conformance with the type of $E$.
 
 > Example:
 >
@@ -574,7 +575,8 @@ TODO: better writing
 >     if(foo is Fee<Int, *>) { ... }
 > ```
 
-If **all** type parameters of $T$ can be derived from the supertypes of the compile-time type of $E$, they may be omitted altogether, using the so called *bare type* syntax sugar.
+$T$ may also be specified without arguments by using the *bare type syntax* in which case the same process of [bare type argument inference] is performed, with the difference being that the resulting arguments $A_0, A_1 \ldots A_N$ are used as arguments for $T$ directly.
+If any of these arguments are inferred to be star-projections, this is a compile-time error.
 
 > Example:
 >
@@ -699,7 +701,7 @@ This situation should be reported as a compile-time warning.
 If type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
 This is another potentially erroneous situation, which should be reported as a compile-time warning.
 
-Similarly to [type checking expressions][Type-checking expressions], some type arguments may be excluded from this check if they are known from the supertype of $E$ and, if all type arguments of $T$ are known, they may be omitted altogether.
+Similarly to [type checking expressions][Type-checking expressions], some type arguments may be excluded from this check if they are known from the supertype of $E$ and, if all type arguments of $T$ can be inferred, they may be omitted altogether using the *bare type syntax*.
 See [type checking section][Type-checking expressions] for explanation.
 
 The checked cast expression result has the type which is the [nullable][Nullable types] variant of the type $T$ specified in the expression.

@@ -531,3 +531,20 @@ The external constraints on lambda parameters, return value and body may come fr
 
 TODO(Type approximation for public API)
 TODO(Lambda analysis order (and the order of overloading vs type inference in general))
+
+### Bare type argument inference
+
+Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$ the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
+It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expression] and [casting][Cast expressions] operators.
+The process is performed as follows.
+
+First, let's consider the simple case of $T$ being non-nullable, non-intersection type. 
+Then, a simple [type constraint system][Kotlin type constraints] is constructed by introducing type variables for $A_0, A_1 \ldots A_N$ and then solving the constraint $TC[A_0, A_1 \ldots A_N] <: T$.
+
+If $T$ is an intersection type, the same process is performed for every member of the intersection type individually and then the resulting type argument values for each parameter $A_K$ are merged using the following principle:
+
+- If all values for a particular parameters are star-projections, the result is a star-projection;
+- If some of the values are not star-projections and are strictly equal to each other, the result is one of their values;
+- Else, the result is a star-projection.
+
+If $T$ is a nullable type $U?$, the steps given above are performed for its non-nullable counterpart type $U$.
