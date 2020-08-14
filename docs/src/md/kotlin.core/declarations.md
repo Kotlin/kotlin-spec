@@ -1174,7 +1174,7 @@ e.setValue(thisRef, property, y)
 where 
 
 - `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
-- `getValue` is a suitable operator function available on `e`;
+- `setValue` is a suitable operator function available on `e`;
 - `thisRef` is the [receiver][Receivers] object for the property.
   This argument is `null` for local properties;
 - `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details);
