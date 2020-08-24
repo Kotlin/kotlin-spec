@@ -54,14 +54,22 @@ A callable declaration (that is, a [property][Property declaration] or [member f
 
 It is illegal for a declaration to be both `private` and either `open`, `abstract` or `override`, such declarations should result in a compile-time error.
 
-A callable declaration $D$ inside a classifier declaration *subsumes* a corresponding declaration $B$ of the base classifier type if the [function signature][Function signature] of $D$ (if any) matches the function signature of $B$ (if any).
+A callable declaration $D$ inside a classifier declaration *subsumes* a name-matching declaration $B$ of the base classifier type if the following are true.
+
+* $B$ and $D$ are declarations of the same kind (property declarations or function declarations);
+* [Function signature][Function signature] of $D$ (if any) matches function signature of $B$ (if any).
 
 If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes it, and $D$ has an `override` modifier, $D$ is *overriding* the base declaration $B$.
 
-A declaration $D$ which overrides declaration $B$ should satisfy the following conditions.
+A function declaration $D$ which overrides function declaration $B$ should satisfy the following conditions.
 
 - Return type of $D$ is a subtype of return type of $B$;
 - [Suspendability][Coroutines] of $D$ and $B$ must be the same.
+
+A property declaration $D$ which overrides property declaration $B$ should satisfy the following conditions.
+
+- Mutability of $D$ is not stronger than mutability of $B$ (where read-only `val` is stronger than mutable `var`);
+- Type of $D$ is a subtype of type of $B$; except for the case when both $D$ and $B$ are mutable (`var`), then types of $D$ and $B$ must be equivalent.
 
 Otherwise, it is a compile-time error.
 
