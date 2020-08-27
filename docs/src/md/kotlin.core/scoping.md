@@ -121,7 +121,7 @@ Labels are special syntactic marks which allow one to reference certain code fra
 > Note: in Kotlin version 1.3 and earlier, labels were allowed to be placed on any expression or statement.
 
 Labels can be *redeclared*, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
-Labels are *scoped, meaning that they are only available in the scope they were declared in.
+Labels are *scoped*, meaning that they are only available in the scope they were declared in.
 
 Labels are used by certain expressions, such as [`break`][Break expressions], [`continue`][Continue expressions] and [`return`][Return expressions], to specify exactly what entity the expression corresponds to.
 Please refer to the corresponding sections for details.
