@@ -28,6 +28,8 @@ Statement scopes include:
 - The bodies of [constructors][Constructor declaration];
 - The bodies of instance initialization blocks in [classifier declarations][Classifier declaration].
 
+TODO(The top level scope of script Kotlin file is a funky statement scope, as it allows, for example, object declarations).
+
 All declarations in a particular scope introduce new _bindings_ of identifiers in this scope to their respective entities in the program.
 These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated).
 Top-level scopes additionally allow to introduce new bindings using [`import` directives][Packages and imports] from other top-level scopes.
