@@ -1256,6 +1256,9 @@ See corresponding sections for details.
 
 Object literals are used to define anonymous objects in Kotlin.
 Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions.
+
+> Note: in object literals, only [inner classes][Nested and inner classifiers] are allowed; [interfaces][Interface declaration], [objects][Object declaration] or [nested classes][Nested and inner classifiers] are forbidden.
+
 Anonymous objects, just like [regular object declarations][Classifier declaration], can have at most one base class and zero or more base interfaces declared in its supertype specifiers.
 
 The main difference between a regular object declaration and an anonymous object is its type.
@@ -1267,7 +1270,7 @@ When a value of an anonymous object type escapes current scope:
 - If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;
 - If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.
 
-TODO(Explain how escaping actually works for locals and stuff...)
+TODO(Explain how escaping actually works for locals, local types and stuff)
 
 > Note: an implicit cast may arise, for example, from the results of [type inference][Type inference].
 
