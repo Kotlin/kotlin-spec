@@ -33,6 +33,8 @@ There are three kinds of classifier declarations:
 * interface declarations;
 * object declarations.
 
+> Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
+
 #### Class declaration
 
 A simple class declaration consists of the following parts.
@@ -50,7 +52,7 @@ A simple class declaration consists of the following parts.
 
 and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
-Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
+Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects or inner classes.
 
 > Note: if supertype specifiers are absent, the declared type is considered to be implicitly derived from `kotlin.Any`.
 
@@ -228,9 +230,71 @@ An inner class declaration $\ID$ nested in another classifier declaration $\PD$ 
 
 This association happens when instantiating an object of type $\ID$, as its constructor may be invoked only when a receiver of type $\PD$ is available, and this receiver becomes associated with the new instantiated object of type $\ID$.
 
-For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
+Inner classes cannot be declared in [interface declarations][Interface declaration], as interfaces cannot be instantiated.
 
-> Note: inner classes cannot be declared in [objects][Classifier declaration].
+Inner classes cannot be declared in a [statement scope][Scopes and identifiers], as such scope does not have an object to associate the inner class with.
+
+Inner classes cannot be declared in [object declarations][Object declaration], as object declarations also create a single named value of their type, which makes additional association unnecessary.
+
+> Note: for information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
+
+> Note: unlike object declarations, in [object literals] only inner classes are allowed, as types of object literals are unnamed, making their nested classifiers available only through explicit receiver, effectively forcing them to be inner.
+
+> Examples:
+>
+> ```kotlin
+> interface Quz {
+>     interface Bar
+>     class Nested
+>     // Error: no parent object to reference,
+>     //   as interfaces cannot be instantiated
+>     // inner class Inner
+> }
+> 
+> class Foo {
+>     interface Bar
+>     class Nested
+>     inner class Inner
+> }
+> 
+> object Single {
+>     interface Bar
+>     class Nested
+>     // Error: value of type Single is available as-is,
+>     //   no reason to make an inner class
+>     // inner class Inner
+> }
+> 
+> fun foo() {
+>     // Error: interfaces cannot be local
+>     // interface Bar
+> 
+>     class Nested
+> 
+>     // Error: inner classes cannot be local
+>     // inner class Inner
+> }
+> 
+> fun test() {
+>     val fooV = Foo()
+> 
+>     Quz.Nested()
+>     Foo.Nested()
+>     fooV.Inner()
+> 
+>     Single.Nested()
+> 
+>     val anon = object {
+>         // Error: cannot reference <anon>.Bar
+>         // interface Bar
+>         // Error: cannot reference <anon>.Nested
+>         // class Nested
+>         inner class Inner
+>     }
+> 
+>     anon.Inner()
+> }
+> ```
 
 ##### Inheritance delegation
 
@@ -555,11 +619,13 @@ Annotation classes cannot be constructed directly, but their primary constructor
 Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 
 In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
+* An interface can be declared only in a declaration scope;
+  * Additionally, an interface cannot be declared in an [object literal];
 * An interface cannot have a class as its supertype;
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
 * Interface properties cannot be delegated;
-* An interface cannot have inner classes (but can have nested classes and companion objects);
+* An interface cannot have inner classes;
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
     * Trying to declare a non-public member property or function in an interface is an compile-time error.
@@ -636,16 +702,21 @@ No other values of this type may be declared, making object a single existing va
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
 * An object can only be declared in a declaration scope;
+  * Additionally, an object cannot be declared in an [object literal];
 * An object type cannot be used as a supertype for other types;
 * An object cannot have an explicit primary or secondary constructor;
 * An object cannot have a companion object;
-* An object may not have inner classes;
+* An object cannot have inner classes;
 * An object cannot be parameterized, i.e., cannot have type parameters.
 
 > Note: an object is assumed to implicitly have a default parameterless primary constructor.
 
 > Note: this section is about declaration of _named_ objects. 
 > Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
+
+#### Local class declaration
+
+TODO()
 
 #### Classifier initialization
 
