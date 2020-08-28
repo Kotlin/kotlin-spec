@@ -238,7 +238,7 @@ Inner classes cannot be declared in [object declarations][Object declaration], a
 
 > Note: for information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
 
-> Note: unlike object declarations, in [object literals] only inner classes are allowed, as types of object literals are unnamed, making their nested classifiers available only through explicit receiver, effectively forcing them to be inner.
+> Note: unlike object declarations, in [object literals] only inner classes are allowed, as types of object literals are anonymous, making their nested classifiers available only through explicit receiver, effectively forcing them to be inner.
 
 > Examples:
 >
