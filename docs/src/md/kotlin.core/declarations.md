@@ -598,8 +598,8 @@ Annotation classes have the following properties:
 
 - They cannot have any secondary constructors;
 - All the primary constructor parameters must use the property syntax;
-- They implicitly inherit `kotlin.Annotation` class (and cannot have any other base classes);
-- They cannot implement interfaces;
+- They implicitly implement `kotlin.Annotation` interface (and cannot implement additional interfaces);
+- They cannot have any specified base classes;
 - They are implicitly closed and cannot be inherited from;
 - They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
 - They cannot have companion objects;
