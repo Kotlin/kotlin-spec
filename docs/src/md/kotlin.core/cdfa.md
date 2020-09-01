@@ -1338,6 +1338,242 @@ At line 7 there is another compile-time error when both properties are used, as 
 
 See the [corresponding section][Smart casts] for details.
 
+#### Function contracts
+
+> Note: as of Kotlin 1.4.0, contracts for user-defined functions are an experimental feature and, thus, not described here
+
+Some standard-library functions in Kotlin are defined in such a way that they adhere to a specific *call contract* that affects the way calls to such functions are analysed from the perspective of the caller's control flow graph.
+A function's call contract consists of one or more *effects*.
+
+There are several kinds of effects:
+
+- Calls-in-place effect for a function-type parameter of the function;
+- Returns-implies-condition effect for a boolean parameter of the function;
+- Particular implementations may introduce other types of effects.
+
+**Calls-in-place** effect of function $F$ for a function-type parameter $P$ specifies that for every call of $F$ parameter $P$ will be also invoked as a function.
+This effect may also have one of the three invocation types: 
+
+- *At-least-once*, meaning that the $P$ will be invoked at least once;
+- *Exactly-once*, meaning that the $P$ will be invoked exactly once;
+- *At-most-once*, meaning that the $P$ will be invoked at most once.
+
+These effects change the call graph that is produced for a function call of $F$ when supplied a lambda-expression parameter for $P$.
+Without any effect, the graph looks like this:
+
+For a function call
+
+```kotlin
+f(..., { lambda-body... }, ...)
+```
+
+```diagram
+              |
+              +-----------------------------------------+
+              v                                         v
++-------------+--------------+             +------------+------------+       
+|                            |             |                         |       
+|   $N = { lambda-body...}   |             |   eval lambda-body...   |       
+|                            |             |                         |       
++-------------+--------------+             +-------------------------+  
+              |
+              v
+             ...
+              +
+              v
++-------------+--------------+
+|                            |
+|   $result = f(...,$N,..)   |
+|                            |
++-------------+--------------+
+              |
+              v
+```
+
+Please note that control flow information is passed inside the lambda body, but no information is extracted from it.
+If the corresponding parameter $P$ is introduced with *exactly-once* effect, this changes to:
+
+```diagram
+              |
+              +-----------------------------------------+
+              v                                         v
++-------------+--------------+             +------------+------------+
+|                            |             |                         |
+|   $N = { lambda-body...}   |             |   eval lambda-body...   |
+|                            |             |                         |  
++-------------+--------------+             +------------+------------+
+              |                                         |
+              v                                         |
+             ...                                        |
+              +                                         |
+              v                                         |
++-------------+--------------+                          |
+|                            |                          |
+|   $result = f(...,$N,..)   |                          |
+|                            |                          |
++-------------+--------------+                          |
+              |                                         v
+              +-----------------------------------------+
+              |
+              v
+```
+
+If the corresponding parameter $P$ is introduced with *at-least-once* effect, this changes to:
+
+```diagram
+              |
+              +--------------------------------+    +--------------------+
+              v                                v    v                    |
++-------------+--------------+    +------------+----+-------+    +-------+------+
+|                            |    |                         |    |              |
+|   $N = { lambda-body...}   |    |   eval lambda-body...   |    |   backedge   |
+|                            |    |                         |    |              |
++-------------+--------------+    +------------+---+--------+    +-------+------+
+              |                                |   |                     ^
+              v                                |   +---------------------+
+             ...                               |
+              +                                |
+              v                                |
++-------------+--------------+                 |
+|                            |                 |
+|   $result = f(...,$N,..)   |                 |
+|                            |                 |
++-------------+--------------+                 |
+              |                                v
+              +--------------------------------+
+              |
+              v
+```
+
+If the corresponding parameter $P$ is introduced with *at-most-once* effect, this changes to:
+
+```diagram
+              |
+              +---------------------+-------------------+
+              v                     |                   |
++-------------+--------------+      |      +------------+------------+
+|                            |      |      |                         |
+|   $N = { lambda-body...}   |      |      |   eval lambda-body...   |
+|                            |      |      |                         |  
++-------------+--------------+      |      +------------+------------+
+              |                     |                   |
+              v                     |                   |
+             ...                    |                   |
+              +                     |                   |
+              v                     |                   |
++-------------+--------------+      |                   |
+|                            |      |                   |
+|   $result = f(...,$N,..)   |      |                   |
+|                            |      |                   |
++-------------+--------------+      |                   |
+              |                     v                   v
+              +---------------------+-------------------+
+              |
+              v
+```
+
+This allows the control-flow information to be extracted from lambda expression according to the policy of their invocation.
+
+**Returns-implies-condition** effect of function $F$ for a boolean parameter $P$ specifies that if, when invoked normally, a call to $F$ returns, $P$ is assumed to be true.
+For a function call
+
+```kotlin
+f(..., p, ...)
+```
+
+this changes normal call graph that looks like this:
+
+```diagram
+              +
+              v               
+     +~~~~~~~~+~~~~~~~~+       
+     :                 :                  
+     :   $N = eval p   :                  
+     :                 :                  
+     +~~~~~~~~+~~~~~~~~+  
+              |
+              v
+             ...
+              +
+              v
++-------------+--------------+
+|                            |
+|   $result = f(...,$N,..)   |
+|                            |
++-------------+--------------+
+              |
+              v
+```
+
+to look like this:
+
+```diagram
+              +
+              v               
+     +~~~~~~~~+~~~~~~~~+       
+     :                 :                  
+     :   $N = eval p   :                  
+     :                 :                  
+     +~~~~~~~~+~~~~~~~~+  
+              |
+              v
+             ...
+              +
+              v
++-------------+--------------+
+|                            |
+|   $result = f(...,$N,..)   |
+|                            |
++-------------+--------------+
+              |
+              v
+       +------+--------+
+       |               |
+       |   assume $N   |
+       |               |
+       +------+--------+
+              |
+              v
+```
+
+> The following standard library functions have contracts with the following effects:
+> 
+> - `kotlin.run`, `kotlin.with`, `kotlin.let`, `kotlin.apply`, `kotlin.also` (all overloads): calls-in-place effect with invocation kind "exactly-once" for its functional argument;
+> - `kotlin.check`, `kotlin.require` (all overloads): returns-implies-condition effect on the boolean parameter.
+
+> Examples:
+> 
+> This code would result in a initialized variable analysis violation if `run` was not a standard function with corresponding contract:
+>
+> ```kotlin
+> val x: Int
+> run { // run invokes its argument exactly once
+>     x = 4
+> }
+> // could be error: x is not initialized
+> // but is ok
+> println(x) 
+> ```
+> 
+> Several examples of contract-introduced [smart-cast][Smart casts]:
+>
+> ```kotlin
+> val x: Any = ...
+> check(x is Int)
+> // x is known to be Int thanks to assume introduced by 
+> // the contract of check
+> val y = x + 4 // would be illegal without contract
+> ``` 
+> 
+> ```kotlin
+> val x: Int? = ...
+> // x is known to be non-null thanks to assume introduced by 
+> // the contract of require
+> require(x != null)
+> val y = x + 4 // would be illegal without contract
+> ```
+>
+
 ### References {-}
 
 1. Frances E. Allen. "Control flow analysis." ACM SIGPLAN Notices, 1970.
