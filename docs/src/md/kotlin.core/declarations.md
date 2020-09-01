@@ -614,6 +614,31 @@ Annotation classes have the following properties:
 
 Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
 
+#### Inline class declaration
+
+> Note: as of Kotlin 1.4.0, user-defined inline classes are an experimental feature.
+> There is, however, a number of inline classes in Kotlin standard library
+
+A class may be declared **inline** by using `inline` modifier in its declaration.
+Inline classes must adhere to the following limitations:
+
+* Inline classes are closed and cannot be [inherited][Inheritance] from;
+* Inline classes cannot be `inner`, `data` or `enum` classes;
+* Inline classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
+* This property cannot be specified as `vararg` constructor argument;
+* This property must be declared `public`;
+* This property must be of [a runtime-available type][Runtime-available types];
+* They must not override `equals` and `hashCode` member functions of `kotlin.Any`;
+* They must not have any base classes besides `kotlin.Any`;
+* No other properties of this class may have backing fields.
+
+Inline classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
+Unless `toString` is overriden by the inline class definition, it is also implicitly overriden by delegating to the data property.
+In addition to these, an inline class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
+This also means that the property may be boxed back to the inline class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+
+Due to these restrictions, it is highly discouraged to use inline classes with the [reference equality operators][Reference equality expressions].
+
 #### Interface declaration
 
 Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 

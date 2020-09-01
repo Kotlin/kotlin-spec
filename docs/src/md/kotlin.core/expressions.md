@@ -484,7 +484,10 @@ These expressions check if two values are equal (`===`) or non-equal (`!==`) *by
 In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
 A value created by any constructor call is never equal by reference to a null reference.
 
-For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:
+There is an exception to these rules: values of [inline classes][Inline class declaration] are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler.
+It is thus highly discouraged to compare inline classes by reference.
+
+For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, and for values of inline classes, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
