@@ -535,7 +535,7 @@ TODO(Lambda analysis order (and the order of overloading vs type inference in ge
 ### Bare type argument inference
 
 Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$ the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
-It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expression] and [casting][Cast expressions] operators.
+It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expressions] and [casting][Cast expressions] operators.
 The process is performed as follows.
 
 First, let's consider the simple case of $T$ being non-nullable, non-intersection type. 
