@@ -600,6 +600,51 @@ where $L = L_1 \hor \ldots \hor L_p$ and $U = U_1 \amp \ldots \amp U_q$.
 
 TODO(Need to think more about this part)
 
+> Examples: also show the use of [type containment] to establish [subtyping].
+>
+> ```kotlin
+> interface Root<T>
+> 
+> interface Derived<T> : Root<T>
+> 
+> interface Bounded<T : A> : Root<T>
+> 
+> interface A
+> interface B : A
+> interface C : B
+> 
+> fun <T> mk(): T = ...
+> 
+> fun test01() {
+> 
+>     val bInB: Bounded<in B> = mk()
+> 
+>     // Bounded<in B> <: Bounded<KB> where B <: KB <: A
+>     //   (from type capturing)
+>     // Bounded<KB> <: Root<KB>
+>     //   (from supertype relation)
+> 
+>     val rInC Root<in C> = bInB
+> 
+>     // ?- Bounded<in B> <: Root<in C>
+>     //
+>     // Root<KB> <: Root<in C> where B <: KB <: A
+>     //   (from above facts)
+>     // KB ⪯ in C
+>     //   (from subtyping for parameterized types)
+>     // KB ⪯ in KC where C <: KC <: C
+>     //   (from type containment rules)
+>     // KB :> KC
+>     //   (from type containment rules)
+>     // (A :> KB :> B) :> (C :> KC :> C)
+>     //   (from subtyping for captured types)
+>     // B :> C
+>     //   (from supertype relation)
+>     // True
+> 
+> }
+> ```
+
 #### Type containment
 
 Type containment operator $\preceq$ is used to decide, whether a type $A$ is contained in another type $B$ denoted $A \preceq B$, for the purposes of establishing type argument [subtyping][Subtyping].
