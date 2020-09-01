@@ -300,6 +300,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
+<li><a href="declarations.html#inline-class-declaration" id="toc-element-inline-class-declaration" class="toc-element">Inline class declaration</a></li>
 <li><a href="declarations.html#interface-declaration" id="toc-element-interface-declaration" class="toc-element">Interface declaration</a>
 <ul>
 <li><a href="declarations.html#functional-interface-declaration" id="toc-element-functional-interface-declaration" class="toc-element">Functional interface declaration</a></li>
@@ -1331,7 +1332,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value. </span><span class="sentence">In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference. </span><span class="sentence">A value created by any constructor call is never equal by reference to a null reference.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:</span></p>
+<p><span class="sentence">There is an exception to these rules: values of <a href="declarations.html#inline-class-declaration">inline classes</a> are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler. </span><span class="sentence">It is thus highly discouraged to compare inline classes by reference.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, and for values of inline classes, the following holds:</span></p>
 </div>
 <ul>
 <li><span class="sentence">If these values are <a href="expressions.html#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>

@@ -300,6 +300,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
+<li><a href="declarations.html#inline-class-declaration" id="toc-element-inline-class-declaration" class="toc-element">Inline class declaration</a></li>
 <li><a href="declarations.html#interface-declaration" id="toc-element-interface-declaration" class="toc-element">Interface declaration</a>
 <ul>
 <li><a href="declarations.html#functional-interface-declaration" id="toc-element-functional-interface-declaration" class="toc-element">Functional interface declaration</a></li>
@@ -1384,6 +1385,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Annotation classes cannot be constructed directly, but their primary constructors are used when specifying <a href="annotations.html#annotations">code annotations</a> for other entities.</span></p>
+</div>
+<h4 id="inline-class-declaration">Inline class declaration</h4>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: as of Kotlin 1.4.0, user-defined inline classes are an experimental feature. </span><span class="sentence">There is, however, a number of inline classes in Kotlin standard library</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">A class may be declared <strong>inline</strong> by using <code>inline</code> modifier in its declaration. </span><span class="sentence">Inline classes must adhere to the following limitations:</span></p>
+</div>
+<ul>
+<li><span class="sentence">Inline classes are closed and cannot be <a href="inheritance.html#inheritance">inherited</a> from;</span></li>
+<li><span class="sentence">Inline classes cannot be <code>inner</code>, <code>data</code> or <code>enum</code> classes;</span></li>
+<li><span class="sentence">Inline classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;</span></li>
+<li><span class="sentence">This property cannot be specified as <code>vararg</code> constructor argument;</span></li>
+<li><span class="sentence">This property must be declared <code>public</code>;</span></li>
+<li><span class="sentence">This property must be of <a href="runtime-type-information.html#runtime-available-types">a runtime-available type</a>;</span></li>
+<li><span class="sentence">They must not override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code>;</span></li>
+<li><span class="sentence">They must not have any base classes besides <code>kotlin.Any</code>;</span></li>
+<li><span class="sentence">No other properties of this class may have backing fields.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">Inline classes implicitly override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code> by delegating them to their only data property. </span><span class="sentence">Unless <code>toString</code> is overriden by the inline class definition, it is also implicitly overriden by delegating to the data property. </span><span class="sentence">In addition to these, an inline class is allowed by the implementation to be <strong>inlined</strong> where applicable, so that its data property is operated on instead. </span><span class="sentence">This also means that the property may be boxed back to the inline class by using its primary constructor at any time if the compiler decides it is the right thing to do.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Due to these restrictions, it is highly discouraged to use inline classes with the <a href="expressions.html#reference-equality-expressions">reference equality operators</a>.</span></p>
 </div>
 <h4 id="interface-declaration">Interface declaration</h4>
 <div class="paragraph">
