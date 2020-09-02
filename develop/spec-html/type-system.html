@@ -1729,46 +1729,118 @@ s and takes them in”.</span></p>
 <div class="paragraph">
 <p><span class="sentence">Examples: also show the use of <a href="type-system.html#type-containment">type containment</a> to establish <a href="type-system.html#subtyping">subtyping</a>.</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">interface</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
-<a class="sourceLine" id="cb6-2" title="2"></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="kw">interface</span> <span class="dt">Derived</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">interface</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">interface</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw">interface</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span></a>
 <a class="sourceLine" id="cb6-4" title="4"></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">interface</span> <span class="dt">Bounded</span><span class="op">&lt;</span><span class="dt">T</span> <span class="op">:</span> <span class="dt">A</span><span class="op">&gt;</span> <span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">interface</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
 <a class="sourceLine" id="cb6-6" title="6"></a>
 <a class="sourceLine" id="cb6-7" title="7"><span class="kw">interface</span> <span class="dt">A</span></a>
 <a class="sourceLine" id="cb6-8" title="8"><span class="kw">interface</span> <span class="dt">B</span> <span class="op">:</span> <span class="dt">A</span></a>
 <a class="sourceLine" id="cb6-9" title="9"><span class="kw">interface</span> <span class="dt">C</span> <span class="op">:</span> <span class="dt">B</span></a>
 <a class="sourceLine" id="cb6-10" title="10"></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = ...</a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></a>
 <a class="sourceLine" id="cb6-12" title="12"></a>
-<a class="sourceLine" id="cb6-13" title="13"><span class="kw">fun</span> <span class="fu">test01</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="kw">interface</span> <span class="dt">Bounded</span><span class="op">&lt;</span><span class="dt">T</span> <span class="op">:</span> <span class="dt">A</span><span class="op">&gt;</span> <span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
 <a class="sourceLine" id="cb6-14" title="14"></a>
-<a class="sourceLine" id="cb6-15" title="15">    <span class="kw">val</span> <span class="va">bInB</span><span class="op">:</span> <span class="dt">Bounded</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">B</span><span class="op">&gt;</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb6-15" title="15"><span class="kw">fun</span> <span class="fu">test01</span><span class="op">()</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb6-16" title="16"></a>
-<a class="sourceLine" id="cb6-17" title="17">    <span class="co">// Bounded&lt;in B&gt; &lt;: Bounded&lt;KB&gt; where B &lt;: KB &lt;: A</span></a>
-<a class="sourceLine" id="cb6-18" title="18">    <span class="co">//   (from type capturing)</span></a>
-<a class="sourceLine" id="cb6-19" title="19">    <span class="co">// Bounded&lt;KB&gt; &lt;: Root&lt;KB&gt;</span></a>
-<a class="sourceLine" id="cb6-20" title="20">    <span class="co">//   (from supertype relation)</span></a>
-<a class="sourceLine" id="cb6-21" title="21"></a>
-<a class="sourceLine" id="cb6-22" title="22">    <span class="kw">val</span> <span class="va">rInC</span> Root&lt;<span class="kw">in</span> C&gt; = bInB</a>
+<a class="sourceLine" id="cb6-17" title="17">    <span class="kw">val</span> <span class="va">bounded</span><span class="op">:</span> <span class="dt">Bounded</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">B</span><span class="op">&gt;</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb6-18" title="18"></a>
+<a class="sourceLine" id="cb6-19" title="19">    <span class="co">// Bounded&lt;in B&gt; &lt;: Bounded&lt;KB&gt; where B &lt;: KB &lt;: A</span></a>
+<a class="sourceLine" id="cb6-20" title="20">    <span class="co">//   (from type capturing)</span></a>
+<a class="sourceLine" id="cb6-21" title="21">    <span class="co">// Bounded&lt;KB&gt; &lt;: Root&lt;KB&gt;</span></a>
+<a class="sourceLine" id="cb6-22" title="22">    <span class="co">//   (from supertype relation)</span></a>
 <a class="sourceLine" id="cb6-23" title="23"></a>
-<a class="sourceLine" id="cb6-24" title="24">    <span class="co">// ?- Bounded&lt;in B&gt; &lt;: Root&lt;in C&gt;</span></a>
-<a class="sourceLine" id="cb6-25" title="25">    <span class="co">//</span></a>
-<a class="sourceLine" id="cb6-26" title="26">    <span class="co">// Root&lt;KB&gt; &lt;: Root&lt;in C&gt; where B &lt;: KB &lt;: A</span></a>
-<a class="sourceLine" id="cb6-27" title="27">    <span class="co">//   (from above facts)</span></a>
-<a class="sourceLine" id="cb6-28" title="28">    <span class="co">// KB ⪯ in C</span></a>
-<a class="sourceLine" id="cb6-29" title="29">    <span class="co">//   (from subtyping for parameterized types)</span></a>
-<a class="sourceLine" id="cb6-30" title="30">    <span class="co">// KB ⪯ in KC where C &lt;: KC &lt;: C</span></a>
-<a class="sourceLine" id="cb6-31" title="31">    <span class="co">//   (from type containment rules)</span></a>
-<a class="sourceLine" id="cb6-32" title="32">    <span class="co">// KB :&gt; KC</span></a>
+<a class="sourceLine" id="cb6-24" title="24">    <span class="kw">val</span> <span class="va">test</span><span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">C</span><span class="op">&gt;</span> <span class="op">=</span> bounded</a>
+<a class="sourceLine" id="cb6-25" title="25"></a>
+<a class="sourceLine" id="cb6-26" title="26">    <span class="co">// ?- Bounded&lt;in B&gt; &lt;: Root&lt;in C&gt;</span></a>
+<a class="sourceLine" id="cb6-27" title="27">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-28" title="28">    <span class="co">// Root&lt;KB&gt; &lt;: Root&lt;in C&gt; where B &lt;: KB &lt;: A</span></a>
+<a class="sourceLine" id="cb6-29" title="29">    <span class="co">//   (from above facts)</span></a>
+<a class="sourceLine" id="cb6-30" title="30">    <span class="co">// KB ⪯ in C</span></a>
+<a class="sourceLine" id="cb6-31" title="31">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-32" title="32">    <span class="co">// KB ⪯ in KC where C &lt;: KC &lt;: C</span></a>
 <a class="sourceLine" id="cb6-33" title="33">    <span class="co">//   (from type containment rules)</span></a>
-<a class="sourceLine" id="cb6-34" title="34">    <span class="co">// (A :&gt; KB :&gt; B) :&gt; (C :&gt; KC :&gt; C)</span></a>
-<a class="sourceLine" id="cb6-35" title="35">    <span class="co">//   (from subtyping for captured types)</span></a>
-<a class="sourceLine" id="cb6-36" title="36">    <span class="co">// B :&gt; C</span></a>
-<a class="sourceLine" id="cb6-37" title="37">    <span class="co">//   (from supertype relation)</span></a>
-<a class="sourceLine" id="cb6-38" title="38">    <span class="co">// True</span></a>
-<a class="sourceLine" id="cb6-39" title="39"></a>
-<a class="sourceLine" id="cb6-40" title="40"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-34" title="34">    <span class="co">// KB :&gt; KC</span></a>
+<a class="sourceLine" id="cb6-35" title="35">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-36" title="36">    <span class="co">// (A :&gt; KB :&gt; B) :&gt; (C :&gt; KC :&gt; C)</span></a>
+<a class="sourceLine" id="cb6-37" title="37">    <span class="co">//   (from subtyping for captured types)</span></a>
+<a class="sourceLine" id="cb6-38" title="38">    <span class="co">// B :&gt; C</span></a>
+<a class="sourceLine" id="cb6-39" title="39">    <span class="co">//   (from supertype relation)</span></a>
+<a class="sourceLine" id="cb6-40" title="40">    <span class="co">// True</span></a>
+<a class="sourceLine" id="cb6-41" title="41"></a>
+<a class="sourceLine" id="cb6-42" title="42"><span class="op">}</span></a>
+<a class="sourceLine" id="cb6-43" title="43"></a>
+<a class="sourceLine" id="cb6-44" title="44"><span class="kw">interface</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-45" title="45"></a>
+<a class="sourceLine" id="cb6-46" title="46"><span class="kw">fun</span> <span class="fu">test02</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-47" title="47"></a>
+<a class="sourceLine" id="cb6-48" title="48">    <span class="kw">val</span> <span class="va">foo</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">B</span><span class="op">&gt;</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb6-49" title="49"></a>
+<a class="sourceLine" id="cb6-50" title="50">    <span class="co">// Foo&lt;out B&gt; &lt;: Foo&lt;KB&gt; where KB &lt;: B</span></a>
+<a class="sourceLine" id="cb6-51" title="51">    <span class="co">//   (from type capturing)</span></a>
+<a class="sourceLine" id="cb6-52" title="52">    <span class="co">// Foo&lt;KB&gt; &lt;: Root&lt;Out&lt;KB&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-53" title="53">    <span class="co">//   (from supertype relation)</span></a>
+<a class="sourceLine" id="cb6-54" title="54"></a>
+<a class="sourceLine" id="cb6-55" title="55">    <span class="kw">val</span> <span class="va">test</span><span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">B</span><span class="op">&gt;&gt;</span> <span class="op">=</span> foo</a>
+<a class="sourceLine" id="cb6-56" title="56"></a>
+<a class="sourceLine" id="cb6-57" title="57">    <span class="co">// ?- Foo&lt;out B&gt; &lt;: Root&lt;out Out&lt;B&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-58" title="58">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-59" title="59">    <span class="co">// Root&lt;Out&lt;KB&gt;&gt; &lt;: Root&lt;out Out&lt;B&gt;&gt; where KB &lt;: B</span></a>
+<a class="sourceLine" id="cb6-60" title="60">    <span class="co">//   (from above facts)</span></a>
+<a class="sourceLine" id="cb6-61" title="61">    <span class="co">// Out&lt;KB&gt; ⪯ out Out&lt;B&gt;</span></a>
+<a class="sourceLine" id="cb6-62" title="62">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-63" title="63">    <span class="co">// Out&lt;KB&gt; &lt;: Out&lt;B&gt;</span></a>
+<a class="sourceLine" id="cb6-64" title="64">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-65" title="65">    <span class="co">// Out&lt;out KB&gt; &lt;: Out&lt;out B&gt;</span></a>
+<a class="sourceLine" id="cb6-66" title="66">    <span class="co">//   (from declaration-site variance)</span></a>
+<a class="sourceLine" id="cb6-67" title="67">    <span class="co">// out KB ⪯ out B</span></a>
+<a class="sourceLine" id="cb6-68" title="68">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-69" title="69">    <span class="co">// out KB ⪯ out KB&#39; where B &lt;: KB&#39; &lt;: B</span></a>
+<a class="sourceLine" id="cb6-70" title="70">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-71" title="71">    <span class="co">// KB &lt;: KB&#39;</span></a>
+<a class="sourceLine" id="cb6-72" title="72">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-73" title="73">    <span class="co">// (KB :&lt; B) &lt;: (B &lt;: KB&#39; &lt;: B)</span></a>
+<a class="sourceLine" id="cb6-74" title="74">    <span class="co">//   (from subtyping for captured types)</span></a>
+<a class="sourceLine" id="cb6-75" title="75">    <span class="co">// B &lt;: B</span></a>
+<a class="sourceLine" id="cb6-76" title="76">    <span class="co">//   (from subtyping definition)</span></a>
+<a class="sourceLine" id="cb6-77" title="77">    <span class="co">// True</span></a>
+<a class="sourceLine" id="cb6-78" title="78"></a>
+<a class="sourceLine" id="cb6-79" title="79"><span class="op">}</span></a>
+<a class="sourceLine" id="cb6-80" title="80"></a>
+<a class="sourceLine" id="cb6-81" title="81"><span class="kw">interface</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-82" title="82"></a>
+<a class="sourceLine" id="cb6-83" title="83"><span class="kw">fun</span> <span class="fu">test03</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-84" title="84"></a>
+<a class="sourceLine" id="cb6-85" title="85">    <span class="kw">val</span> <span class="va">bar</span><span class="op">:</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">B</span><span class="op">&gt;</span> <span class="op">=</span> mk()</a>
+<a class="sourceLine" id="cb6-86" title="86"></a>
+<a class="sourceLine" id="cb6-87" title="87">    <span class="co">// Bar&lt;out B&gt; &lt;: Bar&lt;KB&gt; where KB &lt;: B</span></a>
+<a class="sourceLine" id="cb6-88" title="88">    <span class="co">//   (from type capturing)</span></a>
+<a class="sourceLine" id="cb6-89" title="89">    <span class="co">// Bar&lt;KB&gt; &lt;: Root&lt;Inv&lt;KB&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-90" title="90">    <span class="co">//   (from supertype relation)</span></a>
+<a class="sourceLine" id="cb6-91" title="91"></a>
+<a class="sourceLine" id="cb6-92" title="92">    <span class="kw">val</span> <span class="va">test</span><span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">B</span><span class="op">&gt;&gt;</span> <span class="op">=</span> bar</a>
+<a class="sourceLine" id="cb6-93" title="93"></a>
+<a class="sourceLine" id="cb6-94" title="94">    <span class="co">// ?- Bar&lt;out B&gt; &lt;: Root&lt;out Inv&lt;B&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-95" title="95">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-96" title="96">    <span class="co">// Root&lt;Inv&lt;KB&gt;&gt; &lt;: Root&lt;out Inv&lt;B&gt;&gt; where KB &lt;: B</span></a>
+<a class="sourceLine" id="cb6-97" title="97">    <span class="co">//   (from above facts)</span></a>
+<a class="sourceLine" id="cb6-98" title="98">    <span class="co">// Inv&lt;KB&gt; ⪯ out Inv&lt;B&gt;</span></a>
+<a class="sourceLine" id="cb6-99" title="99">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-100" title="100">    <span class="co">// Inv&lt;KB&gt; &lt;: Inv&lt;B&gt;</span></a>
+<a class="sourceLine" id="cb6-101" title="101">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-102" title="102">    <span class="co">// KB ⪯ B</span></a>
+<a class="sourceLine" id="cb6-103" title="103">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-104" title="104">    <span class="co">// KB ⪯ KB&#39; where B &lt;: KB&#39; &lt;: B</span></a>
+<a class="sourceLine" id="cb6-105" title="105">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-106" title="106">    <span class="co">// KB =:= KB&#39;</span></a>
+<a class="sourceLine" id="cb6-107" title="107">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-108" title="108">    <span class="co">// (Nothing &lt;: KB :&lt; B) =:= (B &lt;: KB&#39; &lt;: B)</span></a>
+<a class="sourceLine" id="cb6-109" title="109">    <span class="co">//   (from subtyping for captured types)</span></a>
+<a class="sourceLine" id="cb6-110" title="110">    <span class="co">// False</span></a>
+<a class="sourceLine" id="cb6-111" title="111"></a>
+<a class="sourceLine" id="cb6-112" title="112"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h4 id="type-containment">Type containment</h4>
 <div class="paragraph">
@@ -1875,7 +1947,7 @@ s and takes them in”.</span></p>
 
 , <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
 
- is converted to captured type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>:</mo><mi>A</mi><mo>&lt;</mo><mo>:</mo><msub><mi>K</mi><mi>A</mi></msub><mo>&lt;</mo><mo>:</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">K_A : A &lt;: K_A &lt;: A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
+ is considered as if it is a captured type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>:</mo><mi>A</mi><mo>&lt;</mo><mo>:</mo><msub><mi>K</mi><mi>A</mi></msub><mo>&lt;</mo><mo>:</mo><mi>A</mi></mrow><annotation encoding="application/x-tex">K_A : A &lt;: K_A &lt;: A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
 
 .</span></p>
 </div>
