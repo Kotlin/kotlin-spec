@@ -603,28 +603,30 @@ TODO(Need to think more about this part)
 > Examples: also show the use of [type containment] to establish [subtyping].
 >
 > ```kotlin
+> interface Inv<T>
+> interface Out<out T>
+> interface In<in T>
+> 
 > interface Root<T>
-> 
-> interface Derived<T> : Root<T>
-> 
-> interface Bounded<T : A> : Root<T>
 > 
 > interface A
 > interface B : A
 > interface C : B
 > 
-> fun <T> mk(): T = ...
+> fun <T> mk(): T = TODO()
+> 
+> interface Bounded<T : A> : Root<T>
 > 
 > fun test01() {
 > 
->     val bInB: Bounded<in B> = mk()
+>     val bounded: Bounded<in B> = mk()
 > 
 >     // Bounded<in B> <: Bounded<KB> where B <: KB <: A
 >     //   (from type capturing)
 >     // Bounded<KB> <: Root<KB>
 >     //   (from supertype relation)
 > 
->     val rInC Root<in C> = bInB
+>     val test: Root<in C> = bounded
 > 
 >     // ?- Bounded<in B> <: Root<in C>
 >     //
@@ -641,6 +643,76 @@ TODO(Need to think more about this part)
 >     // B :> C
 >     //   (from supertype relation)
 >     // True
+> 
+> }
+> 
+> interface Foo<T> : Root<Out<T>>
+> 
+> fun test02() {
+> 
+>     val foo: Foo<out B> = mk()
+> 
+>     // Foo<out B> <: Foo<KB> where KB <: B
+>     //   (from type capturing)
+>     // Foo<KB> <: Root<Out<KB>>
+>     //   (from supertype relation)
+> 
+>     val test: Root<out Out<B>> = foo
+> 
+>     // ?- Foo<out B> <: Root<out Out<B>>
+>     //
+>     // Root<Out<KB>> <: Root<out Out<B>> where KB <: B
+>     //   (from above facts)
+>     // Out<KB> ⪯ out Out<B>
+>     //   (from subtyping for parameterized types)
+>     // Out<KB> <: Out<B>
+>     //   (from type containment rules)
+>     // Out<out KB> <: Out<out B>
+>     //   (from declaration-site variance)
+>     // out KB ⪯ out B
+>     //   (from subtyping for parameterized types)
+>     // out KB ⪯ out KB' where B <: KB' <: B
+>     //   (from type containment rules)
+>     // KB <: KB'
+>     //   (from type containment rules)
+>     // (KB :< B) <: (B <: KB' <: B)
+>     //   (from subtyping for captured types)
+>     // B <: B
+>     //   (from subtyping definition)
+>     // True
+> 
+> }
+> 
+> interface Bar<T> : Root<Inv<T>>
+> 
+> fun test03() {
+> 
+>     val bar: Bar<out B> = mk()
+> 
+>     // Bar<out B> <: Bar<KB> where KB <: B
+>     //   (from type capturing)
+>     // Bar<KB> <: Root<Inv<KB>>
+>     //   (from supertype relation)
+> 
+>     val test: Root<out Inv<B>> = bar
+> 
+>     // ?- Bar<out B> <: Root<out Inv<B>>
+>     //
+>     // Root<Inv<KB>> <: Root<out Inv<B>> where KB <: B
+>     //   (from above facts)
+>     // Inv<KB> ⪯ out Inv<B>
+>     //   (from subtyping for parameterized types)
+>     // Inv<KB> <: Inv<B>
+>     //   (from type containment rules)
+>     // KB ⪯ B
+>     //   (from subtyping for parameterized types)
+>     // KB ⪯ KB' where B <: KB' <: B
+>     //   (from type containment rules)
+>     // KB =:= KB'
+>     //   (from type containment rules)
+>     // (Nothing <: KB :< B) =:= (B <: KB' <: B)
+>     //   (from subtyping for captured types)
+>     // False
 > 
 > }
 > ```
@@ -671,7 +743,7 @@ Rules for captured types follow the same structure.
 * $\outV K_A \preceq \outV K_B$ if $K_A <: K_B$
 * $\inV K_A \preceq \inV K_B$ if $K_A :> K_B$
 
-In case we need to establish type containment between regular type $A$ and captured type $K_B$, $A$ is converted to captured type $K_A : A <: K_A <: A$.
+In case we need to establish type containment between regular type $A$ and captured type $K_B$, $A$ is considered as if it is a captured type $K_A : A <: K_A <: A$.
 
 #### Function types
 
