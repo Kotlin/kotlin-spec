@@ -233,7 +233,7 @@ Smart casts are introduced by the following Kotlin constructions.
 - [Not-null assertion expressions][Not-null assertion expressions] (operator `!!`);
 - [Cast expressions][Cast expressions] (operator `as`);
 - [Type-checking expressions][Type-checking expressions] (operator `is`);
-- [Direct assignments][Assignments];
+- [Simple assignments];
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
 
 > Note: property declarations are not listed here, as their types are derived from initializers.
