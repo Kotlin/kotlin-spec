@@ -715,6 +715,28 @@ TODO(Need to think more about this part)
 >     // False
 > 
 > }
+>
+> interface Recursive<T : Recursive<T>>
+> 
+> fun <T : Recursive<T>> probe(e: Recursive<T>): T = mk()
+> 
+> fun test04() {
+>     val rec: Recursive<*> = mk()
+> 
+>     probe(rec)
+> 
+>     // ?- Recursive<*> <: Recursive<T>
+>     //
+>     // Recursive<KS> <: Recursive<KT>
+>     //     where Nothing <: KS <: Recursive<KS>
+>     //           Nothing <: KT <: Recursive<KT>
+>     //   (from type capturing)
+>     // KS ⪯ KT
+>     //   (from subtyping for parameterized types)
+>     // KS =:= KT
+>     //   (from type containment rules)
+>     // True
+> }
 > ```
 
 #### Type containment
