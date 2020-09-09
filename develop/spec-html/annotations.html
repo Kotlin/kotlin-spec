@@ -728,31 +728,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Repeatable</code> is an annotation which is only used on annotation classes to specify whether this particular annotation is repeatable. </span><span class="sentence">Annotations are non-repeatable by default.</span></p>
 </div></li>
 <li><div class="paragraph">
-<p><span class="sentence"><code>kotlin.Experimental</code> / <code>kotlin.UseExperimental</code></span></p>
+<p><span class="sentence"><code>kotlin.RequiresOptIn</code> / <code>kotlin.OptIn</code></span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Experimental</code> is an annotation class with a single field:</span></p>
+<p><span class="sentence"><code>kotlin.RequiresOptIn</code> is an annotation class with two fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> <span class="op">=</span> Level.ERROR</a></code></pre></div>
-<span class="sentence">The severity level of the experimental status with two possible values: <code>Level.WARNING</code> and <code>Level.ERROR</code>.</span></li>
+<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The message describing the particular opt-in requirements.</span></p>
+</div></li>
+<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> <span class="op">=</span> Level.ERROR</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The severity level of the experimental status with two possible values: <code>Level.WARNING</code> and <code>Level.ERROR</code>.</span></p>
+</div></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">This annotation is used to introduce implementation-defined experimental language or standard library features.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.UseExperimental</code> is an annotation class with a single field:</span></p>
+<p><span class="sentence"><code>kotlin.OptIn</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></a></code></pre></div>
 <span class="sentence">The classes which this annotation allows to use.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">This annotation is used to explicitly mark declarations which use experimental features marked by <code>kotlin.Experimental</code>.</span></p>
+<p><span class="sentence">This annotation is used to explicitly mark declarations which use experimental features marked by <code>kotlin.RequiresOptIn</code>.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">It is implementation-defined how this annotation is processed.</span></p>
-</div></li>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: before Kotlin 1.4.0, there were two other built-in annotations: <code>@Experimental</code> (now replaced by <code>@RequiresOptIn</code>) and <code>@UseExperimental</code> (now replaced by <code>@OptIn</code>) serving the same purpose which are now deprecated.</span></p>
+</div>
+</blockquote></li>
 <li><div class="paragraph">
 <p><span class="sentence"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></span></p>
 </div>
@@ -760,15 +771,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">A message supporting the deprecation.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> <span class="op">=</span> ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> <span class="op">=</span> ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional replacement for the deprecated code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> <span class="op">=</span> DeprecationLevel.WARNING</a></code></pre></div>
+<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> <span class="op">=</span> DeprecationLevel.WARNING</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The deprecation level with three possible values: <code>DeprecationLevel.WARNING</code>, <code>DeprecationLevel.ERROR</code> and <code>DeprecationLevel.HIDDEN</code>.</span></p>
 </div></li>
@@ -777,11 +788,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The replacement code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An array of imports needed for the replacement code to work correctly.</span></p>
 </div></li>
@@ -800,7 +811,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <span class="sentence">The names of features this annotation is suppressing.</span></li>
 </ul>
 <div class="paragraph">
@@ -813,7 +824,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
 <span class="sentence">The version of Kotlin language.</span></li>
 </ul>
 <div class="paragraph">
