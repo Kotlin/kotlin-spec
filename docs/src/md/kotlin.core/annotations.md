@@ -112,9 +112,15 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
   `kotlin.annotation.Repeatable` is an annotation which is only used on annotation classes to specify whether this particular annotation is repeatable.
   Annotations are non-repeatable by default.
 
-* `kotlin.Experimental` / `kotlin.UseExperimental`
+* `kotlin.RequiresOptIn` / `kotlin.OptIn`
 
-  `kotlin.Experimental` is an annotation class with a single field:
+  `kotlin.RequiresOptIn` is an annotation class with two fields:
+
+  * ```kotlin
+    val message: String = ""
+    ```
+
+    The message describing the particular opt-in requirements.
 
   * ```kotlin
     val level: Level = Level.ERROR
@@ -124,7 +130,7 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
 
   This annotation is used to introduce implementation-defined experimental language or standard library features.
 
-  `kotlin.UseExperimental` is an annotation class with a single field:
+  `kotlin.OptIn` is an annotation class with a single field:
 
   * ```kotlin
     vararg val markerClass: KClass<out Annotation>
@@ -132,9 +138,11 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
 
     The classes which this annotation allows to use.
 
-  This annotation is used to explicitly mark declarations which use experimental features marked by `kotlin.Experimental`.
+  This annotation is used to explicitly mark declarations which use experimental features marked by `kotlin.RequiresOptIn`.
 
   It is implementation-defined how this annotation is processed.
+  
+  > Note: before Kotlin 1.4.0, there were two other built-in annotations: `@Experimental` (now replaced by `@RequiresOptIn`) and `@UseExperimental` (now replaced by `@OptIn`) serving the same purpose which are now deprecated.
 
   TODO(Experimental status is still experimental itself)
 
