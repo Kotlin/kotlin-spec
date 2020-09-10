@@ -548,3 +548,21 @@ If $T$ is an intersection type, the same process is performed for every member o
 - Else, the result is a star-projection.
 
 If $T$ is a nullable type $U?$, the steps given above are performed for its non-nullable counterpart type $U$.
+
+## Builder-style type inference
+
+Some functions or parameters of functions in the standard library are annotated with the special [`@BuilderInference`][`kotlin.BuilderInference`] annotation, making call to these functions eligible for the special kind of type inference: **builder-style type inference**.
+In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:
+
+- It must be of an extension-function type;
+- It must be marked with the `@BuilderInference` annotation.
+
+In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
+For a call to an eligible function with a lambda parameter $L$ the inference is performed [as described above][Statements with lambda literals], but the type parameters of the receiver parameter of the lambda expression are *postponed* till the body of the lambda expression is proceeded.
+After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:
+
+- For each call to a member function of the receiver or an extension function of the receiver marked with the `@BuilderInference` annotation, the type constraints are collected and gathered into a single constraint system;
+- This system is solved in order to infer the actual type arguments of the receiver.
+
+> Note: notable examples of builder-style inference-enabled functions are `kotlin.sequence` and `kotlin.iterator`.
+> See standard library documentation for details.

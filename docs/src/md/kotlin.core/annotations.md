@@ -234,3 +234,11 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
   `kotlin.PublishedApi` is an annotation class with no fields which is applicable to any declaration.
   It may be applied to any declaration with `internal` visibility to make it available to `public` `inline` declarations.
   See [Declaration visibility section][Declaration visibility] for details.
+
+* `kotlin.BuilderInference`
+
+  Marks the annotated function of function argument as eligible for [builder-style type inference][Builder-style type inference].
+  See corresponding section for details.
+  
+  > Note: as of Kotlin 1.4.0, this annotation is experimental and, in order to use it in one's code, one must explicitly enable it using opt-in annotations given above.
+  > The particular marker class used to perform this is implementation-defined.
