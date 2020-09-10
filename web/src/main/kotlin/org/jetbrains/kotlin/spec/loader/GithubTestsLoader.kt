@@ -5,7 +5,7 @@ import js.externals.jquery.JQueryXHR
 import js.externals.jquery.`$`
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
-import org.jetbrains.kotlin.spec.entity.SectionTestMap
+import org.jetbrains.kotlin.spec.entity.TestsLoadingInfo
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.SpecTest
 import org.jetbrains.kotlin.spec.entity.test.TestPlace
@@ -25,7 +25,12 @@ interface GithubTestsLoader {
         private const val LINKED_SPEC_TESTS_FOLDER = "linked"
         private const val HELPERS_FOLDER = "helpers"
 
+        private const val SECTIONS_MAP_FILENAME = "sectionsMap.json"
+        private const val TESTS_MAP_FILENAME = "testsMap.json"
+
         const val DEFAULT_BRANCH = "spec-tests"
+
+        protected val testAreasToLoad = TestArea.values()
 
         fun getBranch() = window.localStorage.getItem("spec-tests-branch") ?: DEFAULT_BRANCH
 
@@ -54,27 +59,60 @@ interface GithubTestsLoader {
 
 
         fun loadTestMapFileFromRawGithub(
+                mainSectionName: String,
                 path: String,
                 testType: TestOrigin,
-                testAreasToLoad: List<TestArea>
-        ): Promise<Map<TestArea, SectionTestMap>> = Promise { resolve, _ ->
-            val resultMap = mutableMapOf<TestArea, SectionTestMap>()
+                sectionsMapByTestArea: Map<TestArea, TestsLoadingInfo.Sections>
+        ): Promise<Map<TestArea, TestsLoadingInfo.Tests>> = Promise { resolve, _ ->
+            val resultMap = mutableMapOf<TestArea, TestsLoadingInfo.Tests>()
+            val loadableTestAreas: MutableSet<TestArea> = mutableSetOf()
+            testAreasToLoad.forEach {
+                if (sectionsMapByTestArea.isTestsMapExists(testArea = it, requestedMainSection = mainSectionName, requestedSubsectionPath = path)) {
+                    loadableTestAreas.add(it)
+                }
+            }
             `$`.`when`(
-                    *(testAreasToLoad.associateWith {
-                        `$`.ajax(getFullTestMapPath(testType, it, path), jQueryAjaxSettings { })
+                    *(loadableTestAreas.associateWith {
+                        `$`.ajax(getFullTestMapPath(testType, it, mainSectionName, path), jQueryAjaxSettings { })
                                 .then({ response: Any?, _: Any ->
-                                    resultMap[it] = SectionTestMap(parseJsonText(response.toString()))
+                                    resultMap[it] = TestsLoadingInfo.Tests(parseJsonText(response.toString()))
                                 })
                     }.values.toTypedArray())
             ).then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
         }
 
-        private fun getFullTestMapPath(testOrigin: TestOrigin, testArea: TestArea, path: String) =
+        private fun Map<TestArea, TestsLoadingInfo.Sections>.isTestsMapExists(testArea: TestArea, requestedMainSection: String, requestedSubsectionPath: String): Boolean {
+            val subsectionsArray = this[testArea]?.json?.jsonObject?.get(requestedMainSection) ?: return false
+            subsectionsArray.jsonArray.forEach { jsonElement ->
+                if (jsonElement.primitive.content == requestedSubsectionPath)
+                    return true
+            }
+            return false
+        }
+
+        private fun getFullTestMapPath(testOrigin: TestOrigin, testArea: TestArea, mainSectionName: String, path: String) =
                 when (testOrigin) {
-                    TestOrigin.SPEC_TEST -> "{1}/{2}/{3}/{4}/{5}/{6}"
-                            .format(RAW_GITHUB_URL, getBranch(), SPEC_TEST_DATA_PATH, testArea.path, LINKED_SPEC_TESTS_FOLDER, path)
-                    TestOrigin.IMPLEMENTATION_TEST -> "{1}/{2}/{3}".format(RAW_GITHUB_URL, getBranch(), path)
+                    TestOrigin.SPEC_TEST -> "{1}/{2}/{3}/{4}/{5}/{6}/{7}/{8}"
+                            .format(RAW_GITHUB_URL, getBranch(), SPEC_TEST_DATA_PATH, testArea.path, LINKED_SPEC_TESTS_FOLDER, mainSectionName, path, TESTS_MAP_FILENAME)
+                    TestOrigin.IMPLEMENTATION_TEST -> "{1}/{2}/{3}/{4}/{5}".format(RAW_GITHUB_URL, getBranch(), mainSectionName, path, TESTS_MAP_FILENAME)
                 }
+
+
+        fun loadSectionsMapFileFromRawGithub(): Promise<Map<TestArea, TestsLoadingInfo.Sections>> = Promise { resolve, _ ->
+            val resultMap = mutableMapOf<TestArea, TestsLoadingInfo.Sections>()
+            `$`.`when`(
+                    *(testAreasToLoad.asList().associateWith {
+                        `$`.ajax(getFullSectionsMapPath(it), jQueryAjaxSettings { })
+                                .then({ response: Any?, _: Any ->
+                                    resultMap[it] = TestsLoadingInfo.Sections(parseJsonText(response.toString()))
+                                })
+                    }.values.toTypedArray())
+            ).then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
+        }
+
+        private fun getFullSectionsMapPath(testArea: TestArea) = "{1}/{2}/{3}/{4}/{5}/{6}"
+                .format(RAW_GITHUB_URL, getBranch(), SPEC_TEST_DATA_PATH, testArea.path, LINKED_SPEC_TESTS_FOLDER, SECTIONS_MAP_FILENAME)
+
 
         private fun getFullHelperPath(testArea: TestArea, helperFile: String) =
                 "{1}/{2}/{3}/{4}/{5}/{6}"
@@ -97,5 +135,5 @@ interface GithubTestsLoader {
 
     }
 
-    fun loadTestFiles(sectionName: String, sectionsPath: List<String>, testAreasToLoad: Array<TestArea>): Promise<Promise<SpecSection>>
+    fun loadTestFiles(sectionName: String, mainSectionName: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
 }
