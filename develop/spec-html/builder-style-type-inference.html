@@ -13,69 +13,6 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
   <link rel="stylesheet" href="./resources/css/main.css">
   <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
   <!--[if lt IE 9]>
@@ -606,205 +543,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 </div>
-<span style="visibility: hidden; counter-reset: chapter 4;"></span>
-<h2 id="inheritance">Inheritance</h2>
+<span style="visibility: hidden; counter-reset: chapter 14;"></span>
+<h2 id="builder-style-type-inference">Builder-style type inference</h2>
 <div class="paragraph">
-<p><span class="sentence">Kotlin is an object-oriented language with its object model based on <strong>inheritance</strong>.</span></p>
-</div>
-<h3 id="classifier-type-inheritance">Classifier type inheritance</h3>
-<div class="paragraph">
-<p><span class="sentence">Classifier types may be inherited from each other: the type inherited <em>from</em> is called the <em>base type</em>, while the type which inherits the base type is called the <em>derived type</em>. </span><span class="sentence">The following limitations are imposed on the possible inheritance structure.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A class or object type is allowed to inherit from only one class type (called its <strong>direct superclass</strong>) and multiple interface types. </span><span class="sentence">As specified in the <a href="declarations.html#class-declaration">declaration section</a>, if the superclass of a class or object type is not specified, it is assumed to be <a href="built-in-types-and-their-semantics.html#kotlin.any-builtins"><code>kotlin.Any</code></a>. </span><span class="sentence">This means, among other things, that every class or object type always has a direct superclass.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A class is called <strong>closed</strong> and cannot be inherited from if it is not explicitly declared as either <code>open</code> or <code>abstract</code>.</span></p>
-</div>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: classes are neither <code>open</code> nor <code>abstract</code> by default.</span></p>
-</div>
-</blockquote>
-<div class="paragraph">
-<p><span class="sentence">A <a href="declarations.html#data-class-declaration"><code>data class</code></a>, <a href="declarations.html#enum-class-declaration"><code>enum class</code></a> or <a href="declarations.html#annotation-class-declaration"><code>annotation class</code></a> cannot be declared <code>open</code> or <code>abstract</code>, i.e., are always closed and cannot be inherited from. </span><span class="sentence">Declaring a class <code>sealed</code> also implicitly declares it <code>abstract</code>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">An interface type may be inherited from any number of other interface types (and only interface types), if the resulting type is <a href="type-system.html#parameterized-classifier-types">well-formed</a>.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Object types cannot be inherited from.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">Inheritance is the primary mechanism of introducing <a href="type-system.html#subtyping">subtyping relations</a> between user-defined types in Kotlin. </span><span class="sentence">When a classifier type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
-
- is declared with base types <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>B</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">B_1, \dots, B_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
-
-, it introduces subtyping relations <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>&lt;</mo><mo>:</mo><msub><mi>B</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mi>A</mi><mo>&lt;</mo><mo>:</mo><msub><mi>B</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">A &lt;: B_1, \ldots, A &lt;: B_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
-
-, which are then used in <a href="overload-resolution.html#overload-resolution">overload resolution</a> and <a href="type-inference.html#type-inference">type inference</a> mechanisms.</span></p>
-</div>
-<h4 id="abstract-classes-inheritance">Abstract classes</h4>
-<div class="paragraph">
-<p><span class="sentence">A class declared <code>abstract</code> cannot be instantiated, i.e., an object of this class cannot be created directly. </span><span class="sentence">Abstract classes are implicitly <code>open</code> and their primary purpose is to be inherited from. </span><span class="sentence">Only abstract classes allow for <code>abstract</code> <a href="declarations.html#property-declaration">property</a> and <a href="declarations.html#function-declaration">function</a> declarations in their scope.</span></p>
-</div>
-<h4 id="sealed-classes">Sealed classes</h4>
-<div class="paragraph">
-<p><span class="sentence">A class may be declared <code>sealed</code>, making it special from the inheritance point-of-view.</span></p>
+<p><span class="sentence">Some functions or parameters of functions in the standard library are annotated with the special [<code>@BuilderInference</code>][<code>kotlin.BuilderInference</code>] annotation, making call to these functions eligible for the special kind of type inference: <strong>builder-style type inference</strong>. </span><span class="sentence">In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A <code>sealed</code> class is implicitly <code>abstract</code> (and these two modifiers are exclusive);</span></li>
-<li><span class="sentence">It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);</span></li>
-<li><span class="sentence">It allows for exhaustiveness checking of <a href="expressions.html#when-expressions">when expressions</a> for values of this type.</span></li>
+<li><span class="sentence">It must be of an extension-function type;</span></li>
+<li><span class="sentence">It must be marked with the <code>@BuilderInference</code> annotation.</span></li>
 </ul>
-<h4 id="inheritance-from-built-in-types">Inheritance from built-in types</h4>
 <div class="paragraph">
-<p><span class="sentence"><a href="type-system.html#built-in-types">Built-in types</a> follow the same rules as user-defined types do. </span><span class="sentence">Most of them are closed class types and cannot be inherited from. </span><span class="sentence"><a href="type-system.html#function-types">Function types</a> are treated as interfaces and can be inherited from as such.</span></p>
-</div>
-<h3 id="overriding">Overriding</h3>
-<div class="paragraph">
-<p><span class="sentence">A callable declaration (that is, a <a href="declarations.html#property-declaration">property</a> or <a href="declarations.html#function-declaration">member function</a> declaration) inside a classifier declaration is said to be <em>overridable</em> if:</span></p>
+<p><span class="sentence">In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources. </span><span class="sentence">For a call to an eligible function with a lambda parameter <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">L</span></span></span></span>
+
+ the inference is performed <a href="type-inference.html#statements-with-lambda-literals">as described above</a>, but the type parameters of the receiver parameter of the lambda expression are <em>postponed</em> till the body of the lambda expression is proceeded. </span><span class="sentence">After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Its visibility (and the visibility of its getter and setter, if present) is not <code>private</code>;</span></li>
-<li><span class="sentence">It is declared as <code>open</code>, <code>abstract</code> or <code>override</code> (interface methods and properties are implicitly <code>abstract</code> if they don’t have a body or <code>open</code> if they do).</span></li>
+<li><span class="sentence">For each call to a member function of the receiver or an extension function of the receiver marked with the <code>@BuilderInference</code> annotation, the type constraints are collected and gathered into a single constraint system;</span></li>
+<li><span class="sentence">This system is solved in order to infer the actual type arguments of the receiver.</span></li>
 </ul>
-<div class="paragraph">
-<p><span class="sentence">It is illegal for a declaration to be both <code>private</code> and either <code>open</code>, <code>abstract</code> or <code>override</code>, such declarations should result in a compile-time error.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A callable declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- inside a classifier declaration <em>subsumes</em> a name-matching declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- of the base classifier type if the following are true.</span></p>
-</div>
-<ul>
-<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- are declarations of the same kind (property declarations or function declarations);</span></li>
-<li><span class="sentence"><a href="declarations.html#function-signature">Function signature</a> of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- (if any) matches function signature of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- (if any).</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">If the declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- of the base classifier type is overridable, the declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- of the derived classifier type subsumes it, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- has an <code>override</code> modifier, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- is <em>overriding</em> the base declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
-.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">A function declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- which overrides function declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- should satisfy the following conditions.</span></p>
-</div>
-<ul>
-<li><span class="sentence">Return type of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- is a subtype of return type of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
-;</span></li>
-<li><span class="sentence"><a href="asynchronous-programming-with-coroutines.html#coroutines">Suspendability</a> of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- must be the same.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">A property declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- which overrides property declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- should satisfy the following conditions.</span></p>
-</div>
-<ul>
-<li><span class="sentence">Mutability of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- is not stronger than mutability of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- (where read-only <code>val</code> is stronger than mutable <code>var</code>);</span></li>
-<li><span class="sentence">Type of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- is a subtype of type of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
-; except for the case when both <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- are mutable (<code>var</code>), then types of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi></mrow><annotation encoding="application/x-tex">D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span></span></span></span>
-
- and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
-
- must be equivalent.</span></li>
-</ul>
-<div class="paragraph">
-<p><span class="sentence">Otherwise, it is a compile-time error.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the base declaration is not overridable and/or the overriding declaration does not have an <code>override</code> modifier, it is not permitted and should result in a compile-time error.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the overriding declaration <em>does not</em> have its visibility specified, its visibility is implicitly set to be the same as the visibility of the overridden declaration.</span></p>
-</div>
-<div class="paragraph">
-<p><span class="sentence">If the overriding declaration <em>does</em> have its visibility specified, it must not be stronger than the visibility of the overridden declaration.</span></p>
-</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Examples:</span></p>
-</div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">open</span> <span class="kw">class</span> <span class="dt">B</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">protected</span> <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">f</span><span class="op">()</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="op">}</span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">class</span> <span class="dt">C</span> <span class="op">:</span> <span class="dt">B</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-5" title="5">    <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">f</span><span class="op">()</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb1-6" title="6">    <span class="co">// `f` is protected, as its visibility is</span></a>
-<a class="sourceLine" id="cb1-7" title="7">    <span class="co">//   inherited from the base declaration</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="op">}</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="kw">class</span> <span class="dt">D</span> <span class="op">:</span> <span class="dt">B</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-10" title="10">    <span class="kw">public</span> <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">f</span><span class="op">()</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb1-11" title="11">    <span class="co">// this is correct, as public visibility is</span></a>
-<a class="sourceLine" id="cb1-12" title="12">    <span class="co">//   weaker that protected visibility</span></a>
-<a class="sourceLine" id="cb1-13" title="13">    <span class="co">//   from the base declaration</span></a>
-<a class="sourceLine" id="cb1-14" title="14"><span class="op">}</span></a>
-<a class="sourceLine" id="cb1-15" title="15"></a>
-<a class="sourceLine" id="cb1-16" title="16"><span class="kw">open</span> <span class="kw">class</span> <span class="dt">P</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">g</span><span class="op">()</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb1-18" title="18"><span class="op">}</span></a>
-<a class="sourceLine" id="cb1-19" title="19"></a>
-<a class="sourceLine" id="cb1-20" title="20"><span class="kw">class</span> <span class="dt">Q</span> <span class="op">:</span> <span class="dt">P</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-21" title="21">    <span class="kw">protected</span> <span class="kw">open</span> <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">g</span><span class="op">()</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb1-22" title="22">    <span class="co">// this is an error, as protected visibility is</span></a>
-<a class="sourceLine" id="cb1-23" title="23">    <span class="co">//   stronger that public visibility</span></a>
-<a class="sourceLine" id="cb1-24" title="24">    <span class="co">//   from the base declaration</span></a>
-<a class="sourceLine" id="cb1-25" title="25"><span class="op">}</span></a></code></pre></div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Important: platforms may introduce additional cases of both <em>overridability</em> and <em>subsumption</em> of declarations, as well as limit the overriding mechanism due to implementation limitations.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: Kotlin does not have a concept of full hiding (or shadowing) of declarations.</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: if a declaration binds a new function to the same name as was introduced in the base class, but which does not subsume it, it is neither a compile-time error nor an overriding declaration. </span><span class="sentence">In this case these two declarations follow the normal rules of <a href="overload-resolution.html#overload-resolution">overloading</a>. </span><span class="sentence">However, these declarations may still result in a compile-time error as a result of <a href="overload-resolution.html#conflicting-overloads">conflicting overload</a> detection.</span></p>
+<p><span class="sentence">Note: notable examples of builder-style inference-enabled functions are <code>kotlin.sequence</code> and <code>kotlin.iterator</code>. </span><span class="sentence">See standard library documentation for details.</span></p>
 </div>
 </blockquote>
 </body>
