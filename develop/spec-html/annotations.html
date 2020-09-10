@@ -860,6 +860,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: as of Kotlin 1.4.0, this annotation is experimental and, in order to use it in one’s code, one must explicitly enable it using opt-in annotations given above. </span><span class="sentence">The particular marker class used to perform this is implementation-defined.</span></p>
 </div>
 </blockquote></li>
+<li><div class="paragraph">
+<p><span class="sentence"><code>kotlin.RestrictSuspension</code></span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In some cases we may want to limit which <a href="asynchronous-programming-with-coroutines.html#suspending-functions">suspending functions</a> can be called in another suspending function with an extension receiver of a specific type; i.e., if we want to provide a coroutine-enabled DSL, but disallow the use of arbitrary suspending functions. </span><span class="sentence">To do so, the type <code>T</code> of that extension receiver needs to be annotated with <code>kotlin.RestrictSuspension</code>, which enables the following limitations.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Suspending functions with an extention receiver of type <code>T</code> are restricted from calling other suspending functions besides those accessible on this receiver.</span></li>
+<li><span class="sentence">Suspending functions of type <code>T</code> can be called only on an extention receiver.</span></li>
+</ul></li>
 </ul>
 </body>
 </html>
