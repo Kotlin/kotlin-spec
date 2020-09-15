@@ -44,7 +44,7 @@ Overload resolution also applies to properties if they are used as functions thr
 
 The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order of appearance.
 It is not allowed to access a value through an identifier in code which (syntactically) precedes the binding itself.
-On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur leading to possibly undefined behaviour.
+On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur leading to unspecified behaviour.
 
 > Note: Kotlin compiler may attempt to detect and report such initialization cycles as compile-time warnings or errors.
 

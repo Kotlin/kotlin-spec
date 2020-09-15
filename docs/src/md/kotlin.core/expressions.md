@@ -427,7 +427,7 @@ A when expression is called **_exhaustive_** if at least one of the following is
 For object types, the type test condition may be replaced with equality check with the object value.
 
 > Note: if one were to override `equals` for an object type incorrectly (i.e., so that an object is not equal to itself), it would break the exhaustiveness check.
-> Such situations are considered to have undefined behaviour.
+> It is unspecified whether this situation leads to an exception or an undefined value for this `when` expression.
 
 ```kotlin
 sealed class Base
