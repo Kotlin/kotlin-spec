@@ -13,6 +13,69 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
   <link rel="stylesheet" href="./resources/css/main.css">
   <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
   <!--[if lt IE 9]>
@@ -538,6 +601,14 @@
 <ul>
 <li><a href="asynchronous-programming-with-coroutines.html#suspending-functions" id="toc-element-suspending-functions" class="toc-element">Suspending functions</a></li>
 <li><a href="asynchronous-programming-with-coroutines.html#coroutines" id="toc-element-coroutines" class="toc-element">Coroutines</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#implementation-details" id="toc-element-implementation-details" class="toc-element">Implementation details</a>
+<ul>
+<li><a href="asynchronous-programming-with-coroutines.html#kotlin.coroutine.continuationt" id="toc-element-kotlin.coroutine.continuationt" class="toc-element"><code>kotlin.coroutine.Continuation&lt;T&gt;</code></a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#continuation-passing-style" id="toc-element-continuation-passing-style" class="toc-element">Continuation Passing Style</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#coroutine-state-machine" id="toc-element-coroutine-state-machine" class="toc-element">Coroutine state machine</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#coroutine-interception" id="toc-element-coroutine-interception" class="toc-element">Coroutine interception</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#coroutine-intrinsics" id="toc-element-coroutine-intrinsics" class="toc-element">Coroutine intrinsics</a></li>
+</ul></li>
 </ul></li>
 <li><a href="concurrency.html#concurrency" id="toc-element-concurrency" class="toc-element">Concurrency</a></li>
 </ul></li>
@@ -586,6 +657,7 @@
 <p><span class="sentence">Important: an exception to this rule are non-suspending inlined lambda parameters: if the higher-order function invoking such a lambda is called from a suspending function, this lambda is allowed to also have suspension points and call other suspending functions.</span></p>
 </div>
 </blockquote>
+
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: suspending functions interleaving each other in this manner are not dissimilar to how functions from different threads interact on platforms with multi-threading support. </span><span class="sentence">There are, however, several key differences. </span><span class="sentence">First, suspending functions may pause only at suspension points, i.e., they cannot be paused at an arbitrary execution point. </span><span class="sentence">Second, this interleaving may happen on a single platform thread.</span></p>
@@ -618,5 +690,30 @@
 <div class="paragraph">
 <p><span class="sentence">The implementation of coroutines is platform-dependent. </span><span class="sentence">Please refer to the platform documentation for details.</span></p>
 </div>
+<h3 id="implementation-details">Implementation details</h3>
+<div class="paragraph">
+<p><span class="sentence">Despite being platform-dependent, there are several aspects of coroutine implementation in Kotlin, which are common across all platforms and belong to the Kotlin/Core. </span><span class="sentence">We describe these details below.</span></p>
+</div>
+<h4 id="kotlin.coroutine.continuationt"><code>kotlin.coroutine.Continuation&lt;T&gt;</code></h4>
+<div class="paragraph">
+<p><span class="sentence"><a href="declarations.html#interface-declaration">Interface</a> <code>kotlin.coroutine.Continuation&lt;T&gt;</code> is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.</span></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">public</span> <span class="kw">interface</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">public</span> <span class="kw">val</span> <span class="va">context</span><span class="op">:</span> <span class="dt">CoroutineContext</span></a>
+<a class="sourceLine" id="cb1-3" title="3">    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">resumeWith</span><span class="op">(</span><span class="va">result</span><span class="op">:</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span></a>
+<a class="sourceLine" id="cb1-4" title="4">}</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Every suspending function is associated with a generated <code>Continuation</code> subtype, which handles the suspension implementation; the function itself is adapted to accept an additional continuation parameter to support the <a href="asynchronous-programming-with-coroutines.html#continuation-passing-style">Continuation Passing Style</a>. </span><span class="sentence">The return type of the suspending function becomes the type parameter <code>T</code> of the continuation.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>CoroutineContext</code> represents the context of the continuation and is an indexed set from <code>CoroutineContext.Key</code> to <code>CoroutineContext.Element</code> (e.g., a special kind of map). </span><span class="sentence">It is used to store coroutine-local information, and takes important part in <a href="asynchronous-programming-with-coroutines.html#coroutine-interception">Coroutine interception</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><code>resumeWith</code> function is used to propagate the results in between suspension points: it is called with the result (or exception) of the last suspension point and resumes the coroutine execution.</span></p>
+</div>
+<h4 id="continuation-passing-style">Continuation Passing Style</h4>
+<h4 id="coroutine-state-machine">Coroutine state machine</h4>
+<h4 id="coroutine-interception">Coroutine interception</h4>
+<h4 id="coroutine-intrinsics">Coroutine intrinsics</h4>
 </body>
 </html>
