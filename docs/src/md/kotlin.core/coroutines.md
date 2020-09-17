@@ -31,6 +31,8 @@ Suspending functions may call non-suspending functions without any limitations; 
 
 > Important: an exception to this rule are non-suspending inlined lambda parameters: if the higher-order function invoking such a lambda is called from a suspending function, this lambda is allowed to also have suspension points and call other suspending functions.
 
+TODO(Cover other possible exceptions w.r.t. `inline`/`noinline`/`crossinline` combinations)
+
 > Note: suspending functions interleaving each other in this manner are not dissimilar to how functions from different threads interact on platforms with multi-threading support.
 > There are, however, several key differences.
 > First, suspending functions may pause only at suspension points, i.e., they cannot be paused at an arbitrary execution point.
@@ -58,4 +60,34 @@ One of the ways of starting suspending function from a non-suspending context is
 The implementation of coroutines is platform-dependent.
 Please refer to the platform documentation for details.
 
-TODO(Coroutine support in the standard library?)
+### Implementation details
+
+Despite being platform-dependent, there are several aspects of coroutine implementation in Kotlin, which are common across all platforms and belong to the Kotlin/Core.
+We describe these details below.
+
+#### `kotlin.coroutine.Continuation<T>`
+
+[Interface][Interface declaration] `kotlin.coroutine.Continuation<T>` is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.
+
+```kotlin
+public interface Continuation<in T> {
+    public val context: CoroutineContext
+    public fun resumeWith(result: Result<T>)
+}
+```
+
+Every suspending function is associated with a generated `Continuation` subtype, which handles the suspension implementation; the function itself is adapted to accept an additional continuation parameter to support the [Continuation Passing Style].
+The return type of the suspending function becomes the type parameter `T` of the continuation.
+
+`CoroutineContext` represents the context of the continuation and is an indexed set from `CoroutineContext.Key` to `CoroutineContext.Element` (e.g., a special kind of map).
+It is used to store coroutine-local information, and takes important part in [Coroutine interception].
+
+`resumeWith` function is used to propagate the results in between suspension points: it is called with the result (or exception) of the last suspension point and resumes the coroutine execution.
+
+#### Continuation Passing Style
+
+#### Coroutine state machine
+
+#### Coroutine interception
+
+#### Coroutine intrinsics
