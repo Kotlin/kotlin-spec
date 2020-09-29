@@ -9,7 +9,7 @@ This repository contains the specification of the [Kotlin programming language](
 It would be most useful to those who are interested in how Kotlin works on a finer lever and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
 However, if you are simply wondering, why some code you wrote works the way it does, this specification might help you get an answer to that.
 
-Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way irregardless of the underlying platform.
+Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way regardless of the underlying platform.
 In the future, we plan to extend it with additional platform-specific sections covering Kotlin/JVM, Kotlin/JS and Kotlin/Native.
 
 ## Compatibility
