@@ -65,9 +65,9 @@ Please refer to the platform documentation for details.
 Despite being platform-dependent, there are several aspects of coroutine implementation in Kotlin, which are common across all platforms and belong to the Kotlin/Core.
 We describe these details below.
 
-#### `kotlin.coroutine.Continuation<T>`
+#### `kotlin.coroutines.Continuation<T>`
 
-[Interface][Interface declaration] `kotlin.coroutine.Continuation<T>` is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.
+[Interface][Interface declaration] `kotlin.coroutines.Continuation<T>` is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.
 
 ```kotlin
 public interface Continuation<in T> {
@@ -84,10 +84,41 @@ It is used to store coroutine-local information, and takes important part in [Co
 
 `resumeWith` function is used to propagate the results in between suspension points: it is called with the result (or exception) of the last suspension point and resumes the coroutine execution.
 
+To avoid the need to explicitly create the `Result<T>` when calling `resumeWith`, the coroutine implementation provides the following extension functions.
+
+```kotlin
+fun <T> Continuation<T>.resume(value: T)
+fun <T> Continuation<T>.resumeWithException(exception: Throwable)
+```
+
 #### Continuation Passing Style
 
 #### Coroutine state machine
 
-#### Coroutine interception
+#### Continuation interception
+
+Asyncronous computations in many cases need to control how they are executed, with varying degrees of precision.
+For example, in typical user interface (UI) applications, updates to the interface should be executed on a special UI thread; in server-side applications, long-running computations are often offloaded to a separate thread pool, etc.
+
+Continuation interceptors allow us to intercept the coroutine execution between suspension points and perform some operations on it, usually wrapping the coroutine continuation in another continuation.
+This is done using the `kotlin.coroutines.ContinuationInterceptor` interface.
+
+```kotlin
+interface ContinuationInterceptor : CoroutineContext.Element {
+    companion object Key : CoroutineContext.Key<ContinuationInterceptor>
+    fun <T> interceptContinuation(continuation: Continuation<T>): Continuation<T>
+    fun releaseInterceptedContinuation(continuation: Continuation<*>)
+}
+```
+
+As seen from the declaration, `ContinuationInterceptor` is a `CoroutineContext.Element`, and to perform the continuation interception, an instance of `ContinuationInterceptor` should be available in the coroutine context, where it is used similarly to the following line of code.
+
+```kotlin
+val intercepted = continuation.context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation
+```
+
+When the cached `intercepted` continuation is no longer needed, it is released using `ContinuationInterceptor.releaseInterceptedContinuation(...)`.
+
+> Note: this machinery is performed "behind-the-scenes" by the coroutine framework implementation.
 
 #### Coroutine intrinsics
