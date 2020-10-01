@@ -603,10 +603,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="asynchronous-programming-with-coroutines.html#coroutines" id="toc-element-coroutines" class="toc-element">Coroutines</a></li>
 <li><a href="asynchronous-programming-with-coroutines.html#implementation-details" id="toc-element-implementation-details" class="toc-element">Implementation details</a>
 <ul>
-<li><a href="asynchronous-programming-with-coroutines.html#kotlin.coroutine.continuationt" id="toc-element-kotlin.coroutine.continuationt" class="toc-element"><code>kotlin.coroutine.Continuation&lt;T&gt;</code></a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#kotlin.coroutines.continuationt" id="toc-element-kotlin.coroutines.continuationt" class="toc-element"><code>kotlin.coroutines.Continuation&lt;T&gt;</code></a></li>
 <li><a href="asynchronous-programming-with-coroutines.html#continuation-passing-style" id="toc-element-continuation-passing-style" class="toc-element">Continuation Passing Style</a></li>
 <li><a href="asynchronous-programming-with-coroutines.html#coroutine-state-machine" id="toc-element-coroutine-state-machine" class="toc-element">Coroutine state machine</a></li>
-<li><a href="asynchronous-programming-with-coroutines.html#coroutine-interception" id="toc-element-coroutine-interception" class="toc-element">Coroutine interception</a></li>
+<li><a href="asynchronous-programming-with-coroutines.html#continuation-interception" id="toc-element-continuation-interception" class="toc-element">Continuation interception</a></li>
 <li><a href="asynchronous-programming-with-coroutines.html#coroutine-intrinsics" id="toc-element-coroutine-intrinsics" class="toc-element">Coroutine intrinsics</a></li>
 </ul></li>
 </ul></li>
@@ -694,9 +694,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Despite being platform-dependent, there are several aspects of coroutine implementation in Kotlin, which are common across all platforms and belong to the Kotlin/Core. </span><span class="sentence">We describe these details below.</span></p>
 </div>
-<h4 id="kotlin.coroutine.continuationt"><code>kotlin.coroutine.Continuation&lt;T&gt;</code></h4>
+<h4 id="kotlin.coroutines.continuationt"><code>kotlin.coroutines.Continuation&lt;T&gt;</code></h4>
 <div class="paragraph">
-<p><span class="sentence"><a href="declarations.html#interface-declaration">Interface</a> <code>kotlin.coroutine.Continuation&lt;T&gt;</code> is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.</span></p>
+<p><span class="sentence"><a href="declarations.html#interface-declaration">Interface</a> <code>kotlin.coroutines.Continuation&lt;T&gt;</code> is the main supertype of all coroutines and represents the basis upon which the coroutine machinery is implemented.</span></p>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">public</span> <span class="kw">interface</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb1-2" title="2">    <span class="kw">public</span> <span class="kw">val</span> <span class="va">context</span><span class="op">:</span> <span class="dt">CoroutineContext</span></a>
@@ -706,14 +706,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Every suspending function is associated with a generated <code>Continuation</code> subtype, which handles the suspension implementation; the function itself is adapted to accept an additional continuation parameter to support the <a href="asynchronous-programming-with-coroutines.html#continuation-passing-style">Continuation Passing Style</a>. </span><span class="sentence">The return type of the suspending function becomes the type parameter <code>T</code> of the continuation.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence"><code>CoroutineContext</code> represents the context of the continuation and is an indexed set from <code>CoroutineContext.Key</code> to <code>CoroutineContext.Element</code> (e.g., a special kind of map). </span><span class="sentence">It is used to store coroutine-local information, and takes important part in <a href="asynchronous-programming-with-coroutines.html#coroutine-interception">Coroutine interception</a>.</span></p>
+<p><span class="sentence"><code>CoroutineContext</code> represents the context of the continuation and is an indexed set from <code>CoroutineContext.Key</code> to <code>CoroutineContext.Element</code> (e.g., a special kind of map). </span><span class="sentence">It is used to store coroutine-local information, and takes important part in [Coroutine interception].</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence"><code>resumeWith</code> function is used to propagate the results in between suspension points: it is called with the result (or exception) of the last suspension point and resumes the coroutine execution.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">To avoid the need to explicitly create the <code>Result&lt;T&gt;</code> when calling <code>resumeWith</code>, the coroutine implementation provides the following extension functions.</span></p>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;.</span><span class="fu">resume</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw">fun</span> &lt;T&gt; Continuation&lt;T&gt;.resumeWithException(exception: Throwable)</a></code></pre></div>
 <h4 id="continuation-passing-style">Continuation Passing Style</h4>
 <h4 id="coroutine-state-machine">Coroutine state machine</h4>
-<h4 id="coroutine-interception">Coroutine interception</h4>
+<h4 id="continuation-interception">Continuation interception</h4>
+<div class="paragraph">
+<p><span class="sentence">Asyncronous computations in many cases need to control how they are executed, with varying degrees of precision. </span><span class="sentence">For example, in typical user interface (UI) applications, updates to the interface should be executed on a special UI thread; in server-side applications, long-running computations are often offloaded to a separate thread pool, etc.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Continuation interceptors allow us to intercept the coroutine execution between suspension points and perform some operations on it, usually wrapping the coroutine continuation in another continuation. </span><span class="sentence">This is done using the <code>kotlin.coroutines.ContinuationInterceptor</code> interface.</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">interface</span> <span class="dt">ContinuationInterceptor</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Element <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-2" title="2">    <span class="kw">companion</span> <span class="kw">object</span> <span class="dt">Key</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Key&lt;ContinuationInterceptor&gt;</a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">interceptContinuation</span><span class="op">(</span><span class="va">continuation</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb3-4" title="4">    <span class="kw">fun</span> releaseInterceptedContinuation(continuation: Continuation&lt;*&gt;)</a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">As seen from the declaration, <code>ContinuationInterceptor</code> is a <code>CoroutineContext.Element</code>, and to perform the continuation interception, an instance of <code>ContinuationInterceptor</code> should be available in the coroutine context, where it is used similarly to the following line of code.</span></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">val</span> <span class="va">intercepted</span> <span class="op">=</span> continuation.context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">When the cached <code>intercepted</code> continuation is no longer needed, it is released using <code>ContinuationInterceptor.releaseInterceptedContinuation(...)</code>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: this machinery is performed “behind-the-scenes” by the coroutine framework implementation.</span></p>
+</div>
+</blockquote>
 <h4 id="coroutine-intrinsics">Coroutine intrinsics</h4>
 </body>
 </html>
