@@ -1365,7 +1365,7 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Important: in some cases, the greatest lower bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
-TODO(Add examples of this exceptional case, e.g., (List..List?) & Any \eq (List..List?))
+TODO(Add examples of this exceptional case, e.g., (List..List?) & Any =:= (List..List?))
 
 In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of $\GLB$ for particular two types.
 The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.
