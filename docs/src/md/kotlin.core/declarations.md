@@ -612,7 +612,35 @@ Annotation classes have the following properties:
     - Other annotation types;
     - Arrays of any other allowed type.
 
-Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+
+> Examples:
+>
+> ```kotlin
+> // a couple annotation classes
+> annotation class Super(val x: Int, val f: Float = 3.14f)
+> annotation class Duper(val supers: Array<Super>)
+> 
+> // the same classes used as annotations
+> @Duper(arrayOf(Super(2, 3.1f), Super(3)))
+> class SuperClass {
+>     @Super(4)
+>     val x = 3
+> }
+> 
+> // annotation class without parameters
+> annotation class Transmogrifiable
+> 
+> @Transmogrifiable
+> fun f(): Int = TODO()
+> 
+> // variable argument properties are supported
+> annotation class WithTypes(vararg val classes: KClass<out Annotation>)
+>
+> @WithTypes(Super::class, Transmogrifiable::class)
+> val x = 4
+> 
+> ```
 
 #### Inline class declaration
 
@@ -741,7 +769,20 @@ Similarly to interfaces, we shall specify object declarations by highlighting th
 
 #### Local class declaration
 
-TODO()
+A class (but not an interface or an object) may be declared *locally* inside a [statement scope][Scopes and identifiers] (namely, inside a function).
+Such declarations are similar to [object literals][Object literals] in that they may capture values available in the scope they are declared in:
+
+```kotlin
+fun foo() {
+    val x = 2
+    class Local {
+        val y = x
+    }
+    Local().y // 2
+}
+```
+
+Enum classes and annotation classes cannot be declared locally.
 
 #### Classifier initialization
 
@@ -765,9 +806,10 @@ When a classifier type is initialized using a particular secondary constructor $
 
 The initialization order stays the same if any of the entities involved are omitted, in which case the corresponding step is also omitted (e.g., if the object is created using the primary constructor, the body of the secondary one is not invoked).
 
-If any step in the initialization order creates a loop, it may result in unspecified behaviour.
+If any step in the initialization order creates a loop, it results in unspecified behaviour.
 
-If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is undefined.
+If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is unspecified.
+It stays unspecified even after the "proper" initialization is performed.
 
 > Note: this can also happen if a property is captured in a lambda expression used in some way during subsequent initialization steps.
 
