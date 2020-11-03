@@ -6,7 +6,7 @@
 ## Description
 
 This subproject contains the Kotlin grammar source files in the ANTLR v4 format and the infrastructure used to test the parser generated from the grammar.
-The grammar test suite includes Kotlin compiler [PSI tests](https://github.com/JetBrains/kotlin/tree/master/compiler/testData/psi), Kotlin compiler [diagnostics tests](https://github.com/JetBrains/kotlin/tree/master/compiler/testData/diagnostics/tests) and grammar [custom tests](./grammar/testData/grammar).
+The grammar test suite includes Kotlin compiler [PSI tests](https://github.com/JetBrains/kotlin/tree/master/compiler/testData/psi), Kotlin compiler [diagnostics tests](https://github.com/JetBrains/kotlin/tree/master/compiler/testData/diagnostics/tests) and grammar [custom tests](./testData/grammar).
 
 ## How to use
 
