@@ -870,21 +870,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following methods.</span></p>
+<p><span class="sentence"><code>kotlin.Enum&lt;T&gt;</code> provides the following member functions.</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div></li>
+<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">compareTo</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">The implementation of <code>kotlin.Comparable</code>. </span><span class="sentence">The result of <code>a.compareTo(b)</code> for enum class instances <code>a</code> and <code>b</code> is equivalent to <code>a.ordinal.compareTo(b.ordinal)</code>.</span></p>
+</div></li>
 <li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Boolean</span></a></code></pre></div></li>
 <li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">public</span> <span class="kw">override</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">hashCode</span><span class="op">():</span> <span class="dt">Int</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">These methods are defined to their default behaviour: only the same entry of an enum class is equal to itself and no other object. </span><span class="sentence">Hash implementation is required to be consistent, but unspecified.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.</span></p>
 </div>
 </blockquote></li>
 <li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">protected</span> <span class="kw">final</span> <span class="kw">fun</span> <span class="fu">clone</span><span class="op">():</span> <span class="dt">Any</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Throws an unspecified exception.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: the <code>clone()</code> implementation throws an exception, as enumeration objects cannot be copied.</span></p>
+<p><span class="sentence">Note: the <code>clone()</code> implementation throws an exception, as enumeration objects cannot be copied and on some platforms <code>clone</code> function serves for copying.</span></p>
 </div>
 </blockquote></li>
 </ul>
@@ -897,7 +906,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">public</span> <span class="kw">inline</span> <span class="kw">constructor</span>(size: <span class="kw">Int</span>, init: (<span class="kw">Int</span>) -&gt; T)</a></code></pre></div>
-<span class="sentence">Creates a new array with the specified size, where each element is calculated by calling the specified <code>init</code> function with the corresponding element’s index. </span><span class="sentence">The function <code>init</code> is called for each array element sequentially starting from the first one.</span></li>
+<span class="sentence">Creates a new array with the specified size, where each element is calculated by calling the specified <code>init</code> function with the corresponding element’s index. </span><span class="sentence">The function <code>init</code> is called for each array element sequentially starting from the first one. </span><span class="sentence">This constructor is special in two ways: first, it is <code>inline</code> and inline constructors are not generally allowed in Kotlin. </span><span class="sentence">Second, it is required for the parameter <code>T</code> to be instantiated with a <a href="runtime-type-information.html#runtime-available-types">runtime-available type</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Array&lt;T&gt;</code> provides the following methods and properties.</span></p>
