@@ -1054,7 +1054,8 @@ This means that, even if the order at declaration-site was different, arguments 
 Default arguments not specified in the call are all evaluated **after** all provided arguments, in the order of their appearance in function declaration.
 Afterwards, the function itself is invoked.
 
-> Note: this means default argument expressions are reevaluated on every function call expression.
+> Note: this means default argument expressions which are used (i.e., for which the call-site does not provide explicit arguments) are reevaluated at every such call-site.
+> Default argument expressions which are not used (i.e., for which the call-site provides explicit arguments) are **not** evaluated at such call-sites.
 
 > Examples: we use a notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order.
 > 
