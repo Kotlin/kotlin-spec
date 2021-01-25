@@ -4,7 +4,7 @@ import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "0.4.1"
+    id("org.jetbrains.intellij") version "0.4.26"
     antlr
     `maven-publish`
     id("kotlin") version "1.3.50"
