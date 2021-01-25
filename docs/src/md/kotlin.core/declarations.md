@@ -990,6 +990,8 @@ In summary, argument list should have the following form:
 
 Missing arguments are bound to their default values, if they exist.
 
+The evaluation order of argument list is described in [Function calls and property access] section of this specification.
+
 #### Variable length parameters
 
 One of the parameters may be designated as being variable length (aka *vararg*).

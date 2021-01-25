@@ -1054,6 +1054,8 @@ This means that, even if the order at declaration-site was different, arguments 
 Default arguments not specified in the call are all evaluated **after** all provided arguments, in the order of their appearance in function declaration.
 Afterwards, the function itself is invoked.
 
+> Note: this means default argument expressions are reevaluated on every function call expression.
+
 > Examples: we use a notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order.
 > 
 > ```kotlin
