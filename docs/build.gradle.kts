@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 plugins {
     application
-    id("kotlin") version "1.3.41"
+    id("kotlin") version "1.3.50"
     id("at.phatbl.shellexec")
 }
 
@@ -26,10 +26,10 @@ fun getScriptText(scriptName: String): String {
 
     val res = with(StringBuilder()) {
         append("PROJECT_DIR=$projectDir$ls")
-        if(disableTODOS) append("TODO_OPTION=--disable-todos$ls")
+        if (disableTODOS) append("TODO_OPTION=--disable-todos$ls")
         else append("TODO_OPTION=--enable-todos$ls")
 
-        if(enableStaticMath) append("STATIC_MATH_OPTION=--enable-static-math$ls")
+        if (enableStaticMath) append("STATIC_MATH_OPTION=--enable-static-math$ls")
         else append("STATIC_MATH_OPTION=--disable-static-math$ls")
 
         append(buildTemplate)
@@ -43,8 +43,8 @@ repositories {
     mavenCentral()
 }
 
-java.sourceSets {
-    "main" {
+sourceSets {
+    main {
         java.srcDir("src/main/kotlin")
     }
 }
@@ -96,7 +96,7 @@ tasks.create<JavaExec>("convertGrammar") {
 
     outputs.file(outputFile)
 
-    classpath = java.sourceSets["main"].runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
     main = "org.jetbrains.kotlin.spec.ConvertGrammarKt"
     args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
@@ -130,7 +130,7 @@ tasks.create<ShellExec>("buildHtmlBySections") {
 tasks.create<JavaExec>("execute") {
     group = "internal"
 
-    classpath = java.sourceSets["main"].runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
 
     main = project.findProperty("mainClass") as? String ?: ""
     args = (project.findProperty("args") as? String)?.split(" ") ?: emptyList()

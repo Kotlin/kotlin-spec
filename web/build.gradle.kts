@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     java
-    id("kotlin2js") version "1.3.41"
-    id("kotlin-dce-js") version "1.3.41"
+    id("kotlin2js") version "1.3.50"
+    id("kotlin-dce-js") version "1.3.50"
     id("org.jetbrains.kotlin.frontend") version "0.0.45"
 }
 
@@ -28,8 +28,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.12.0")
 }
 
-java.sourceSets {
-    "main" {
+sourceSets {
+    main {
         java.srcDir("src/main/kotlin")
     }
 }

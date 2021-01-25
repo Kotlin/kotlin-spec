@@ -7,10 +7,10 @@ plugins {
     id("org.jetbrains.intellij") version "0.4.1"
     antlr
     `maven-publish`
-    id("kotlin") version "1.3.41"
+    id("kotlin") version "1.3.50"
 }
 
-apply(plugin="at.phatbl.shellexec")
+apply(plugin = "at.phatbl.shellexec")
 
 group = "org.jetbrains.kotlin.spec.grammar"
 version = "0.1"
@@ -36,11 +36,11 @@ publishing {
     }
 }
 
-java.sourceSets {
-    "main" {
+sourceSets {
+    main {
         java.srcDir("src/main")
     }
-    "test" {
+    test {
         java.srcDir("src/test")
     }
 }
@@ -51,7 +51,8 @@ dependencies {
 }
 
 tasks.withType<AntlrTask> {
-    outputDirectory = File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
+    outputDirectory =
+        File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
 
     arguments.add("-package")
     arguments.add("org.jetbrains.kotlin.spec.grammar")
@@ -72,8 +73,10 @@ tasks.create("removeCompilerTestData") {
 }
 
 tasks.create<ShellExec>("downloadCompilerTests") {
-    command = """svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/psi testData/psi --force
-        |svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/diagnostics/tests testData/diagnostics --force""".trimMargin()
+    doFirst {
+        workingDir = File("$projectDir")
+        command = File("$projectDir/scripts/build/downloadCompilerTests.sh").readText()
+    }
 }
 
 tasks.create("syncWithCompilerTests") {
@@ -91,7 +94,8 @@ tasks.create("prepareDiagnosticsCompilerTests") {
         val rangeStartOrEndPattern = Pattern.compile("(<!$individualDiagnostic(,\\s*$individualDiagnostic)*!>)|(<!>)")
         val filePattern = Pattern.compile("""// ?FILE: ?""")
         val ls = System.lineSeparator()
-        val sourceCodeByFilePattern = Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
+        val sourceCodeByFilePattern =
+            Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
 
         File("${project.rootDir}/${project.name}/testData/diagnostics").walkTopDown().forEach {
             if (it.name.endsWith(".fir.kt")) {
@@ -111,7 +115,9 @@ tasks.create("prepareDiagnosticsCompilerTests") {
                         val code = matcher.group("code")
 
                         if (extension == "kt" || extension == "kts")
-                            File("${it.parent}/${it.nameWithoutExtension}.$filename.$extension").writeText(rangeStartOrEndPattern.matcher(code).replaceAll(""))
+                            File("${it.parent}/${it.nameWithoutExtension}.$filename.$extension").writeText(
+                                rangeStartOrEndPattern.matcher(code).replaceAll("")
+                            )
                     }
                     it.delete()
                 } else {
@@ -134,4 +140,4 @@ jar.manifest {
     )
 }
 
-jar.from(configurations.runtime.map { if (it.isDirectory) it else zipTree(it) })
+jar.from(configurations.runtime.files.map { if (it.isDirectory) it else zipTree(it) })
