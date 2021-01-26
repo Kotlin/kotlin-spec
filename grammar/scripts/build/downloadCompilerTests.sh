@@ -14,7 +14,7 @@ git remote add origin https://github.com/JetBrains/kotlin
 git fetch origin master
 git pull origin master
 
-cp -R compiler/testData/psi ${PROJECT_DIR}/testData/psi
-cp -R compiler/testData/diagnostics/tests ${PROJECT_DIR}/testData/diagnostics
+cp -R compiler/testData/psi/. ${PROJECT_DIR}/testData/psi
+cp -R compiler/testData/diagnostics/tests/. ${PROJECT_DIR}/testData/diagnostics
 
 rm -rf ${KOTLIN_COMPILER_DIR}
