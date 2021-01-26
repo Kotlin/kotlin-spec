@@ -50,6 +50,10 @@ dependencies {
     antlr("org.antlr:antlr4:4.+")
 }
 
+tasks.compileKotlin {
+    dependsOn("generateGrammarSource")
+}
+
 tasks.withType<AntlrTask> {
     outputDirectory =
         File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
