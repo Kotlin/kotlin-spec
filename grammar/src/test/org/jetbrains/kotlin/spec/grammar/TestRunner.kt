@@ -33,8 +33,8 @@ class TestRunner {
          * It can be used to run specific tests instead of running all ones
          * For instance, `Regex("""secondEmptyCatch\.kt$""")`
          */
-        private val testPathFilter: Regex? = Regex("annotatedTypeInCatchBlockSignature.kt")
-//        private val testPathFilter: Regex? = null
+//        private val testPathFilter: Regex? = Regex("annotatedTypeInCatchBlockSignature.kt")
+        private val testPathFilter: Regex? = null
 
         private val antlrTreeFileHeaderPattern =
                 Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
