@@ -196,15 +196,19 @@ getter
 
 setter
     : modifiers? SET
-      (NL* LPAREN NL* parameterWithOptionalType (NL* COMMA)? NL* RPAREN (NL* COLON NL* type)? NL* functionBody)?
+      (NL* LPAREN NL* functionValueParameterWithOptionalType (NL* COMMA)? NL* RPAREN (NL* COLON NL* type)? NL* functionBody)?
     ;
 
 parametersWithOptionalType
-    : LPAREN NL* (parameterWithOptionalType (NL* COMMA NL* parameterWithOptionalType)* (NL* COMMA)?)? NL* RPAREN
+    : LPAREN NL* (functionValueParameterWithOptionalType (NL* COMMA NL* functionValueParameterWithOptionalType)* (NL* COMMA)?)? NL* RPAREN
+    ;
+
+functionValueParameterWithOptionalType
+    : parameterModifiers? parameterWithOptionalType (NL* ASSIGNMENT NL* expression)?
     ;
 
 parameterWithOptionalType
-    : parameterModifiers? simpleIdentifier NL* (COLON NL* type)?
+    : simpleIdentifier NL* (COLON NL* type)?
     ;
 
 parameter
@@ -468,7 +472,7 @@ indexingSuffix
     ;
 
 navigationSuffix
-    : NL* memberAccessOperator NL* (simpleIdentifier | parenthesizedExpression | CLASS)
+    : memberAccessOperator NL* (simpleIdentifier | parenthesizedExpression | CLASS)
     ;
 
 callSuffix
@@ -589,7 +593,7 @@ functionLiteral
     ;
 
 objectLiteral
-    : OBJECT NL* (COLON NL* delegationSpecifiers NL*)? classBody
+    : OBJECT (NL* COLON NL* delegationSpecifiers NL*)? (NL* classBody)?
     ;
 
 thisExpression
@@ -658,7 +662,7 @@ jumpExpression
     ;
 
 callableReference
-    : receiverType? NL* COLONCOLON NL* (simpleIdentifier | CLASS)
+    : receiverType? COLONCOLON NL* (simpleIdentifier | CLASS)
     ;
 
 assignmentAndOperator
@@ -729,8 +733,8 @@ excl
     ;
 
 memberAccessOperator
-    : DOT
-    | safeNav
+    : NL* DOT
+    | NL* safeNav
     | COLONCOLON
     ;
 

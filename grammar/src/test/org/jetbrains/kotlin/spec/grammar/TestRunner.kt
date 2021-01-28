@@ -28,6 +28,7 @@ class TestRunner {
 
         private const val FORCE_APPLY_CHANGES = false
         private const val FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE = true
+        private const val DUMP_ERRONEOUS_DATA = true
 
         /*
          * It can be used to run specific tests instead of running all ones
@@ -91,7 +92,8 @@ class TestRunner {
                 "Expected and actual ANTLR parsetree are not equals",
                 testData.antlrParseTreeText,
                 dumpParseTree,
-                FORCE_APPLY_CHANGES
+                FORCE_APPLY_CHANGES || (header != null && header.hash != testData.sourceCodeHash),
+                DUMP_ERRONEOUS_DATA
         )
 
         val lexerHasErrors = lexerErrors.isNotEmpty()

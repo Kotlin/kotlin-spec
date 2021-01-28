@@ -98,14 +98,16 @@ tasks.create("syncWithCompilerTests") {
 
 tasks.create("prepareDiagnosticsCompilerTests") {
     doFirst {
-        val individualDiagnostic = """(\w+;)?(\w+:)?(\w+)(?:\(.*?[^\\]\))?"""
-        val rangeStartOrEndPattern = Pattern.compile("(<!$individualDiagnostic(,\\s*$individualDiagnostic)*!>)|(<!>)")
+        //language=RegExp
+        val individualDiagnostic = """[^!,]*"""
+        val rangeStartOrEndPattern = Pattern.compile("(<!(([^>])|((?<!\\!)\\>))+!>)|(<!>)")
         val filePattern = Pattern.compile("""// ?FILE: ?""")
         val ls = System.lineSeparator()
         val sourceCodeByFilePattern =
             Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
 
         File("${project.rootDir}/${project.name}/testData/diagnostics").walkTopDown().forEach {
+            println("Processing file $it")
             if (it.name.endsWith(".fir.kt")) {
                 it.delete()
             } else if (it.extension == "kt") {

@@ -1,4 +1,4 @@
-File: inferenceForNestedBinaryCall.kt - f3f8f4ddf001468b61f58bee730402d0
+File: inferenceForNestedBinaryCall.kt - e9e3f5c82f6eff23bc721265ae36eb84
   NL("\n")
   NL("\n")
   NL("\n")
@@ -11,6 +11,14 @@ File: inferenceForNestedBinaryCall.kt - f3f8f4ddf001468b61f58bee730402d0
       NL("\n")
       NL("\n")
   importList
+    importHeader
+      IMPORT("import")
+      identifier
+        simpleIdentifier
+          Identifier("checkSubtype")
+      semi
+        NL("\n")
+        NL("\n")
   topLevelObject
     declaration
       functionDeclaration
@@ -160,40 +168,41 @@ File: inferenceForNestedBinaryCall.kt - f3f8f4ddf001468b61f58bee730402d0
                                                   primaryExpression
                                                     simpleIdentifier
                                                       Identifier("id")
-                                callSuffix
-                                  valueArguments
-                                    LPAREN("(")
-                                    valueArgument
-                                      expression
-                                        disjunction
-                                          conjunction
-                                            equality
-                                              comparison
-                                                genericCallLikeComparison
-                                                  infixOperation
-                                                    elvisExpression
-                                                      infixFunctionCall
-                                                        rangeExpression
-                                                          additiveExpression
-                                                            multiplicativeExpression
-                                                              asExpression
-                                                                prefixUnaryExpression
-                                                                  postfixUnaryExpression
-                                                                    primaryExpression
-                                                                      literalConstant
-                                                                        IntegerLiteral("2")
-                                                        simpleIdentifier
-                                                          Identifier("foo")
-                                                        rangeExpression
-                                                          additiveExpression
-                                                            multiplicativeExpression
-                                                              asExpression
-                                                                prefixUnaryExpression
-                                                                  postfixUnaryExpression
-                                                                    primaryExpression
-                                                                      literalConstant
-                                                                        IntegerLiteral("3")
-                                    RPAREN(")")
+                                                  postfixUnarySuffix
+                                                    callSuffix
+                                                      valueArguments
+                                                        LPAREN("(")
+                                                        valueArgument
+                                                          expression
+                                                            disjunction
+                                                              conjunction
+                                                                equality
+                                                                  comparison
+                                                                    genericCallLikeComparison
+                                                                      infixOperation
+                                                                        elvisExpression
+                                                                          infixFunctionCall
+                                                                            rangeExpression
+                                                                              additiveExpression
+                                                                                multiplicativeExpression
+                                                                                  asExpression
+                                                                                    prefixUnaryExpression
+                                                                                      postfixUnaryExpression
+                                                                                        primaryExpression
+                                                                                          literalConstant
+                                                                                            IntegerLiteral("2")
+                                                                            simpleIdentifier
+                                                                              Identifier("foo")
+                                                                            rangeExpression
+                                                                              additiveExpression
+                                                                                multiplicativeExpression
+                                                                                  asExpression
+                                                                                    prefixUnaryExpression
+                                                                                      postfixUnaryExpression
+                                                                                        primaryExpression
+                                                                                          literalConstant
+                                                                                            IntegerLiteral("3")
+                                                        RPAREN(")")
               semis
                 NL("\n")
               statement
@@ -215,39 +224,41 @@ File: inferenceForNestedBinaryCall.kt - f3f8f4ddf001468b61f58bee730402d0
                                               primaryExpression
                                                 simpleIdentifier
                                                   Identifier("checkSubtype")
-                            callSuffix
-                              typeArguments
-                                LANGLE("<")
-                                typeProjection
-                                  type
-                                    typeReference
-                                      userType
-                                        simpleUserType
-                                          simpleIdentifier
-                                            Identifier("Int")
-                                RANGLE(">")
-                              valueArguments
-                                LPAREN("(")
-                                valueArgument
-                                  expression
-                                    disjunction
-                                      conjunction
-                                        equality
-                                          comparison
-                                            genericCallLikeComparison
-                                              infixOperation
-                                                elvisExpression
-                                                  infixFunctionCall
-                                                    rangeExpression
-                                                      additiveExpression
-                                                        multiplicativeExpression
-                                                          asExpression
-                                                            prefixUnaryExpression
-                                                              postfixUnaryExpression
-                                                                primaryExpression
-                                                                  simpleIdentifier
-                                                                    Identifier("i")
-                                RPAREN(")")
+                                              postfixUnarySuffix
+                                                typeArguments
+                                                  LANGLE("<")
+                                                  typeProjection
+                                                    type
+                                                      typeReference
+                                                        userType
+                                                          simpleUserType
+                                                            simpleIdentifier
+                                                              Identifier("Int")
+                                                  RANGLE(">")
+                                              postfixUnarySuffix
+                                                callSuffix
+                                                  valueArguments
+                                                    LPAREN("(")
+                                                    valueArgument
+                                                      expression
+                                                        disjunction
+                                                          conjunction
+                                                            equality
+                                                              comparison
+                                                                genericCallLikeComparison
+                                                                  infixOperation
+                                                                    elvisExpression
+                                                                      infixFunctionCall
+                                                                        rangeExpression
+                                                                          additiveExpression
+                                                                            multiplicativeExpression
+                                                                              asExpression
+                                                                                prefixUnaryExpression
+                                                                                  postfixUnaryExpression
+                                                                                    primaryExpression
+                                                                                      simpleIdentifier
+                                                                                        Identifier("i")
+                                                    RPAREN(")")
               semis
                 NL("\n")
             RCURL("}")
