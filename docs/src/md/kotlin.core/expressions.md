@@ -418,9 +418,13 @@ A when expression is called **_exhaustive_** if at least one of the following is
         - A constant expression evaluating to `false`;
         
           > Important: here the term "constant expression" refers to any expression constructed of [constant literals][Constant literals], [string interpolation][String interpolation expressions] over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time
-    - The bound expression is of a [`sealed class`][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression.
-      This should include checks for all direct subtypes of this sealed class.
-      If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
+    - The bound expression is of a [`sealed`][Sealed classes and interfaces] class or interface and all of its [*direct non-sealed subtypes*][Sealed classes and interfaces] $T_1, \ldots, T_n$ are covered in this expression.
+      A subtype $T_i$ is considered covered if when expression contains one of the following:
+      * a type test condition $is T_i$;
+      * a type test condition $is S_i$ (where $S_i$ is sealed and $T_i <: S_i$);
+      * a type test condition $!is S_j$ (where $S_j$ is sealed and $\exists j \neq i : T_j <: S_j$.
+
+	  Additionally, an enum subtype $E_i$ is considered covered also if all its enumerated values are checked for equality using constant expression;
     - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
@@ -440,6 +444,28 @@ val c = when(b) {
     is Derived1 -> ...
     Derived2 -> ...
     // no else needed here
+}
+```
+
+```kotlin
+sealed interface I1
+sealed interface I2
+sealed interface I3
+
+class D1 : I1, I2
+class D2 : I1, I3
+
+sealed class D3 : I1, I3
+
+fun foo() {
+    val b: I1 = mk()
+
+    val c = when(a) {
+        !is I3 -> {} // covers D1
+        is D2 -> {} // covers D2
+        // D3 is sealed and does not take part
+        // in the exhaustiveness check
+    }
 }
 ```
 

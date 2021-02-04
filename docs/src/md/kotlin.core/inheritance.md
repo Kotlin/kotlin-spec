@@ -31,13 +31,15 @@ A class declared `abstract` cannot be instantiated, i.e., an object of this clas
 Abstract classes are implicitly `open` and their primary purpose is to be inherited from.
 Only abstract classes allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
 
-#### Sealed classes
+#### Sealed classes and interfaces
 
-A class may be declared `sealed`, making it special from the inheritance point-of-view.
+A class or interface (but not a [functional interface][Functional interface declaration]) may be declared `sealed`, making it special from the inheritance point-of-view.
 
 - A `sealed` class is implicitly `abstract` (and these two modifiers are exclusive);
-- It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);
-- It allows for exhaustiveness checking of [when expressions][When expressions] for values of this type.
+- A `selaed` class or interface can only be inherited from by types declared in the same package and in the same [module][Modules], and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from `sealed` types);
+- `Sealed` classes and interfaces allow for exhaustiveness checking of [when expressions][When expressions] for values of such types.
+  Any sealed type `S` is associated with its *direct non-sealed subtypes*: a set of non-sealed types, which are either direct subtypes of `S` or transitive subtypes of `S` via some number of other *sealed* types.
+  These direct non-sealed subtypes form the boundary for exhaustiveness checks.
 
 #### Inheritance from built-in types
 
