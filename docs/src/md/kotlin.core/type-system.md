@@ -1398,7 +1398,7 @@ All [union types][Union types] are subject to *type decaying*, when they are con
 
 Type decaying function $\delta$ is defined as follows.
 
-* $\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
+* $\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \LUB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
 
 > Note: a set of most specific common supertypes $\mathbb{S}(A, B)$ is a reduction of a set of all common supertypes $\mathbb{U}(A, B)$, which excludes all types $T \in \mathbb{U}$ such that $\exists V \in \mathbb{U} : V \neq T \land V <: T$.
 
