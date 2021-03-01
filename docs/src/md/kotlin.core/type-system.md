@@ -1384,8 +1384,10 @@ This is achieved via *type approximation*, which we describe below.
 
 Type approximation function $\alpha$ is defined as follows.
 
-* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
+* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least single common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
 * $\alpha(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
+
+> Note: when we talk about the least **single** common supertype of $A$ and $B$, we mean exactly that: if they have several unrelated common supertypes (e.g., several common superinterfaces), we continue going up the supertypes, until we find a single common supertype or reach [`kotlin.Any?`][`kotlin.Any`].
 
 TODO(Type approximation for captured types)
 
