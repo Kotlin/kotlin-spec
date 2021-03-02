@@ -10,10 +10,6 @@ The grammar test suite includes Kotlin compiler [PSI tests](https://github.com/J
 
 ## How to use
 
-The grammar testing infrastructure has the additional dependencies:
-
-* [SVN](https://subversion.apache.org/) (tested with version 1.14.0)
-
 To run the grammar tests, do the following:
 
 1. Download the Kotlin compiler PSI and diagnostics tests: `./gradlew :grammar:downloadCompilerTests`;
