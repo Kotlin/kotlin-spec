@@ -778,6 +778,7 @@ classModifier
     | ANNOTATION
     | DATA
     | INNER
+    | VALUE
     ;
 
 memberModifier
