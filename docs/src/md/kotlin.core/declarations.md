@@ -642,17 +642,17 @@ Annotation classes cannot be constructed directly unless passed as arguments to 
 > 
 > ```
 
-#### Inline class declaration
+#### Value class declaration
 
-> Note: as of Kotlin 1.4.0, user-defined inline classes are an experimental feature.
-> There is, however, a number of inline classes in Kotlin standard library
+> Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature.
+> There is, however, a number of value classes in Kotlin standard library
 
-A class may be declared **inline** by using `inline` modifier in its declaration.
-Inline classes must adhere to the following limitations:
+A class may be declared a **value** class by using `inline` or `value` modifier in its declaration.
+Value classes must adhere to the following limitations:
 
-* Inline classes are closed and cannot be [inherited][Inheritance] from;
-* Inline classes cannot be `inner`, `data` or `enum` classes;
-* Inline classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
+* Value classes are closed and cannot be [inherited][Inheritance] from;
+* Value classes cannot be `inner`, `data` or `enum` classes;
+* Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
 * This property cannot be specified as `vararg` constructor argument;
 * This property must be declared `public`;
 * This property must be of [a runtime-available type][Runtime-available types];
@@ -660,12 +660,17 @@ Inline classes must adhere to the following limitations:
 * They must not have any base classes besides `kotlin.Any`;
 * No other properties of this class may have backing fields.
 
-Inline classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
-Unless `toString` is overriden by the inline class definition, it is also implicitly overriden by delegating to the data property.
-In addition to these, an inline class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
-This also means that the property may be boxed back to the inline class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+> Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4
+> experimental inline classes and will be deprecated in the future
 
-Due to these restrictions, it is highly discouraged to use inline classes with the [reference equality operators][Reference equality expressions].
+Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
+Unless `toString` is overriden by the value class definition, it is also implicitly overriden by delegating to the data property.
+In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
+This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+
+Due to these restrictions, it is highly discouraged to use value classes with the [reference equality operators][Reference equality expressions].
+
+> Note: in the future versions of Kotlin, value classes may be allowed to have more than one data property
 
 #### Interface declaration
 
