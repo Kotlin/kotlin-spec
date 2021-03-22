@@ -1,5 +1,6 @@
 import at.phatbl.shellexec.ShellExec
 import java.io.File
+import java.net.URI
 import java.util.regex.Pattern
 
 plugins {
