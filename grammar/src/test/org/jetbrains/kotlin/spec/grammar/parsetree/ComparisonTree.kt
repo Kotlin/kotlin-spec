@@ -58,7 +58,7 @@ data class ComparisonTree(
     }
 }
 
-fun isDiffCompatible(left: ComparisonTree, right: ComparisonTree): Boolean {
+fun isDiffCompatible_28_1_21(left: ComparisonTree, right: ComparisonTree): Boolean {
     if (left.text == "postfixUnaryExpression" &&
             left.children.firstOrNull()?.children?.firstOrNull()?.text == "callableReference")
         return true
@@ -70,7 +70,7 @@ fun isDiffCompatible(left: ComparisonTree, right: ComparisonTree): Boolean {
     return false
 }
 
-fun main() {
+fun regression_28_1_21() {
 
 
     File("/home/belyaev/kotlin-spec/grammar/testData")
@@ -89,7 +89,7 @@ fun main() {
 
                 val diffs = ct1.allDifferences(ct2)
                 print("Diffs compatible?")
-                val diffsCompatible = diffs.all { (l, r) -> isDiffCompatible(l, r) }
+                val diffsCompatible = diffs.all { (l, r) -> isDiffCompatible_28_1_21(l, r) }
                 println(diffsCompatible)
 
                 if (diffsCompatible) {
@@ -98,3 +98,36 @@ fun main() {
 
             }
 }
+
+fun isDiffCompatible_22_3_21(left: ComparisonTree, right: ComparisonTree): Boolean {
+    if (left.text == """Identifier("value")""" && right.text == """VALUE("value")""") return true
+    return false
+}
+
+fun main() {
+    File("/home/belyaev/kotlin-spec/grammar/testData")
+        .walkTopDown()
+        .filter { it.name.endsWith(".actual") }
+        .forEach { file ->
+            println("Processing: $file")
+            val original = File(file.parent, file.name.removeSuffix(".actual"))
+            check(original.exists())
+            println("Original: $original")
+            val source = File(file.parent, original.name.removeSuffix(".antlrtree.txt") + ".kt")
+            println("Source: $source")
+
+            val ct1 = ComparisonTree.parse(original)
+            val ct2 = ComparisonTree.parse(file)
+
+            val diffs = ct1.allDifferences(ct2)
+            print("Diffs compatible?")
+            val diffsCompatible = diffs.all { (l, r) -> isDiffCompatible_22_3_21(l, r) }
+            println(diffsCompatible)
+
+            if (diffsCompatible) {
+                FileUtil.writeToFile(original, file.readBytes())
+            }
+
+        }
+}
+

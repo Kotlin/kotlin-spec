@@ -915,6 +915,7 @@ simpleIdentifier
     | ACTUAL
     | CONST
     | SUSPEND
+    | VALUE
     ;
 
 identifier
