@@ -1,10 +1,11 @@
 import at.phatbl.shellexec.ShellExec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Paths
+import java.net.URI
 
 plugins {
     application
-    id("kotlin") version "1.3.50"
+    id("kotlin") version "1.4.31"
     id("at.phatbl.shellexec")
 }
 
@@ -39,7 +40,16 @@ fun getScriptText(scriptName: String): String {
 }
 
 repositories {
-    maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
+    maven {
+        url = URI("https://maven.pkg.github.com/vorpal-research/kotlin-maven")
+        credentials {
+            username = "vorpal-reseacher"
+            password = "\u0031\u0030\u0062\u0037\u0064\u0066\u0031\u0032\u0063\u0064" +
+                    "\u0035\u0034\u0038\u0037\u0034\u0065\u0030\u0034\u0035\u0035" +
+                    "\u0038\u0031\u0063\u0039\u0039\u0062\u0031\u0066\u0032\u0030" +
+                    "\u0038\u0065\u0031\u0061\u0035\u0033\u0065\u0036\u0032\u0038"
+        }
+    }
     mavenCentral()
 }
 
@@ -50,12 +60,12 @@ sourceSets {
 }
 
 dependencies {
-    compile("ru.spbstu:g4toEBNF:0.0.0.3")
-    compile("ru.spbstu:kotlin-pandoc:0.0.10")
-    compile("ru.spbstu:simple-diagrammer:0.0.0.6")
-    compile("com.github.ajalt:clikt:1.7.0")
-    compile("com.zaxxer:nuprocess:2.0.1")
-    compile("org.antlr:antlr4:4.+")
+    implementation("ru.spbstu:g4-to-ebnf:0.0.0.4")
+    implementation("ru.spbstu:kotlin-pandoc:0.0.13")
+    implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
+    implementation("com.github.ajalt:clikt:1.7.0")
+    implementation("com.zaxxer:nuprocess:2.0.1")
+    implementation("org.antlr:antlr4:4.+")
 }
 
 tasks.withType<KotlinCompile> {

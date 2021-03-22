@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     java
-    id("kotlin2js") version "1.3.50"
-    id("kotlin-dce-js") version "1.3.50"
+    id("kotlin2js") version "1.4.31"
+    id("kotlin-dce-js") version "1.4.31"
     id("org.jetbrains.kotlin.frontend") version "0.0.45"
 }
 
