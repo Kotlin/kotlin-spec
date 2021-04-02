@@ -622,6 +622,10 @@
   ~ `'0'` (`'b'` | `'B'`) [_BinDigit_](#grammar-rule-BinDigit) {[_BinDigitOrSeparator_](#grammar-rule-BinDigitOrSeparator)} [_BinDigit_](#grammar-rule-BinDigit)  
   | `'0'` (`'b'` | `'B'`) [_BinDigit_](#grammar-rule-BinDigit)
 :::
+:::{ .grammar-rule #grammar-rule-UnsignedLiteral }
+**_UnsignedLiteral_**  
+  ~ ([_IntegerLiteral_](#grammar-rule-IntegerLiteral) | [_HexLiteral_](#grammar-rule-HexLiteral)   | [_BinLiteral_](#grammar-rule-BinLiteral)) [`'L'`] (`'u'` | `'U'`)
+:::
 :::{ .grammar-rule #grammar-rule-LongLiteral }
 **_LongLiteral_**  
   ~ ([_IntegerLiteral_](#grammar-rule-IntegerLiteral) | [_HexLiteral_](#grammar-rule-HexLiteral)   | [_BinLiteral_](#grammar-rule-BinLiteral)) `'L'`
