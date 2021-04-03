@@ -624,7 +624,7 @@
 :::
 :::{ .grammar-rule #grammar-rule-UnsignedLiteral }
 **_UnsignedLiteral_**  
-  ~ ([_IntegerLiteral_](#grammar-rule-IntegerLiteral) | [_HexLiteral_](#grammar-rule-HexLiteral)   | [_BinLiteral_](#grammar-rule-BinLiteral)) [`'L'`] (`'u'` | `'U'`)
+  ~ ([_IntegerLiteral_](#grammar-rule-IntegerLiteral) | [_HexLiteral_](#grammar-rule-HexLiteral)   | [_BinLiteral_](#grammar-rule-BinLiteral)) (`'u'` | `'U'`) [`'L'`]
 :::
 :::{ .grammar-rule #grammar-rule-LongLiteral }
 **_LongLiteral_**  
