@@ -755,21 +755,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: second expansions of the form <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mtext> </mtext><mtext mathvariant="monospace">=</mtext><mtext> </mtext><mo>…</mo></mrow><annotation encoding="application/x-tex">A\ \texttt{=}\ \ldots</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span><span class="mspace"> </span><span class="mord text"><span class="mord texttt">=</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace"> </span><span class="minner">…</span></span></span></span>
-
- are applicable only if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
-
- is a mutable property.</span></p>
+<p><span class="sentence">Note: before Kotlin version 1.3, there were additional overloadable functions for <code>%</code> called <code>mod</code>/<code>modAssign</code></span></p>
 </div>
 </blockquote>
+<div class="paragraph">
+<p><span class="sentence">After the expansion, the resulting <a href="expressions.html#function-calls-and-property-access">function call expression</a> or <a href="statements.html#simple-assignments">simple assignment</a> is processed according to their corresponding rules and overload resolution and type checking are performed. </span><span class="sentence">If both expansion variants result in correctly resolved and inferred code, this should be reported as an operator overloading ambiguity. </span><span class="sentence">If only one of the expansion variants can be resolved correctly, this variant is picked as the correct one. </span><span class="sentence">If neither of variants result in correct code, the operator calls must be reported as unresolved.</span></p>
+</div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin version 1.2.31, there are additional overloadable functions for <code>%</code> called <code>mod</code>/<code>modAssign</code>, which are deprecated.</span></p>
+<p><span class="sentence">Example: consider the following compound operator statement: <code>x[y] += z</code>. </span><span class="sentence">The corresponding expansion variants are <code>x.get(y).plusAssign(z)</code> and <code>x.set(x.get(y).plus(z))</code> according to expansion rules for corresponding operators. </span><span class="sentence">If, the call to <code>set</code> in the second variant results in resolution or inference error, the whole corresponding expansion is deemed unresolved and the first variant is picked if applicable.</span></p>
 </div>
 </blockquote>
-<div class="paragraph">
-<p><span class="sentence">After the expansion, the resulting <a href="expressions.html#function-calls-and-property-access">function call expression</a> or <a href="statements.html#simple-assignments">simple assignment</a> is processed according to their corresponding rules.</span></p>
-</div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: although for most real-world use cases operators <code>++</code> and <code>--</code> are similar to operator assignments, in Kotlin they are expressions and are described in the <a href="expressions.html#expressions">corresponding section</a> of this specification.</span></p>
