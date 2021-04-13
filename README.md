@@ -6,7 +6,7 @@
 
 This repository contains the specification of the [Kotlin programming language](https://kotlinlang.org), which describes how parts of the language should function *in more detail*, as compared to a more traditional user documentation on the [Kotlin Website](https://kotlinlang.org/docs/reference/).
 
-It would be most useful to those who are interested in how Kotlin works on a finer lever and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
+It would be most useful to those who are interested in how Kotlin works on a finer level and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
 However, if you are simply wondering, why some code you wrote works the way it does, this specification might help you get an answer to that.
 
 Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way irregardless of the underlying platform.
