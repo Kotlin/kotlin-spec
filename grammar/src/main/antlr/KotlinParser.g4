@@ -563,7 +563,7 @@ lineStringContent
     ;
 
 lineStringExpression
-    : LineStrExprStart expression RCURL
+    : LineStrExprStart NL* expression NL* RCURL
     ;
 
 multiLineStringContent
