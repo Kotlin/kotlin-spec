@@ -28,6 +28,7 @@ The main source of suspension points are calls to other suspending functions whi
 
 Non-suspending functions may not call suspending functions directly, as they do not support suspension points.
 Suspending functions may call non-suspending functions without any limitations; such calls do not create suspension points.
+This restriction is also known as ["function colouring"](https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/).
 
 > Important: an exception to this rule are non-suspending inlined lambda parameters: if the higher-order function invoking such a lambda is called from a suspending function, this lambda is allowed to also have suspension points and call other suspending functions.
 
@@ -93,11 +94,109 @@ fun <T> Continuation<T>.resumeWithException(exception: Throwable)
 
 #### Continuation Passing Style
 
+Each suspendable function goes through a transformation from normally invoked function to continuation passing style (CPS).
+For a suspendable function with parameters $p_1, p_2, \ldots, p_N$ and result type $T$ a new function is generated, with an additional parameter $p_{N+1}$ of type [`kotlin.coroutines.Continuation<T>`] and return type changed to [`kotlin.Any?`][`kotlin.Any`].
+The calling convention for such function is different from regular functions as a suspendable function may either *suspend* or *return*.
+
+* If the function returns a result, it is returned directly from the function as normal;
+* If the function suspends, it returns a special marker value \coroutineSuspended{} to signal its suspended state.
+
+The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning \coroutineSuspended{}.
+If the user wants to suspend a coroutine, they need to perform the following steps.
+
+* Access the coroutine's continuation object by calling [`suspendCoroutineUninterceptedOrReturn` intrinsic][Coroutine intrinsics] or any of its wrappers;
+* Store the continuation object to resume it later;
+* Pass the \coroutineSuspended{} marker to the intrinsic, which is then returned from the function.
+
+As Kotlin does not currently support denotable [union types], the return type is changed to [`kotlin.Any?`][`kotlin.Any`], so it can hold both the original return type $T$ and \coroutineSuspended{}.
+
 #### Coroutine state machine
+
+Kotlin implements suspendable functions as state machines, since such implementation does not require specific runtime support.
+This dictates the explicit `suspend` marking (function colouring) of Kotlin coroutines: the compiler has to know which function can potentially suspend, to turn it into a state machine.
+
+Each suspendable lambda is compiled to a continuation class, with fields representing its local variables, and an integer field for current state in the state machine.
+Suspension point is where such lambda can suspend: either a suspending function call or [`suspendCoroutineUninterceptedOrReturn` intrinsic][Coroutine intrinsics] call.
+For a lambda with $N$ suspension points and $M$ return statements, which are not suspension points themselves, $N + M$ states are generated (one for each suspension point plus one for each non-suspending return statement).
+
+> Example:
+>
+> ```kotlin
+> // Lambda body with multiple suspension points
+> val a = a()
+> val y = foo(a).await() // suspension point #1
+> b()
+> val z = bar(a, y).await() // suspension point #2
+> c(z)
+> ```
+>
+> ```kotlin
+> // State machine code for the lambda after CPS transformation
+> //     (written in pseudo-Kotlin with gotos)
+> class <anonymous> private constructor(
+>     completion: Continuation<Any?>
+> ): SuspendLambda<...>(completion) {
+>     // The current state of the state machine
+>     var label = 0
+>     
+>     // local variables of the coroutine
+>     var a: A? = null
+>     var y: Y? = null
+>     
+>     fun invokeSuspend(result: Any?): Any? {
+>         // state jump table
+>         if (label == 0) goto L0
+>         if (label == 1) goto L1
+>         if (label == 2) goto L2
+>         else throw IllegalStateException()
+>         
+>       L0:
+>         // result is expected to be `null` at this invocation
+>         
+>         a = a()
+>         label = 1
+>         // 'this' is passed as a continuation 
+>         result = foo(a).await(this) 
+>         // return if await had suspended execution
+>         if (result == COROUTINE_SUSPENDED)
+>             return COROUTINE_SUSPENDED
+>       L1:
+>         // error handling
+>         result.throwOnFailure()
+>         // external code has resumed this coroutine
+>         // passing the result of .await() 
+>         y = (Y) result
+>         b()
+>         label = 2
+>         // 'this' is passed as a continuation
+>         result = bar(a, y).await(this)
+>         // return if await had suspended execution
+>         if (result == COROUTINE_SUSPENDED)
+>             return COROUTINE_SUSPENDED
+>       L2:
+>         // error handling
+>         result.throwOnFailure()
+>         // external code has resumed this coroutine
+>         // passing the result of .await()
+>         Z z = (Z) result
+>         c(z)
+>         label = -1 // No more steps are allowed
+>         return Unit
+>     }          
+>     
+>     fun create(completion: Continuation<Any?>): Continuation<Any?> {
+>     	<anonymous>(completion)
+>     }          
+>     
+>     fun invoke(completion: Continuation<Any?>): Any? {
+>         create(completion).invokeSuspend(Unit)
+>     }
+> }
+> ```
 
 #### Continuation interception
 
-Asyncronous computations in many cases need to control how they are executed, with varying degrees of precision.
+Asynchronous computations in many cases need to control how they are executed, with varying degrees of precision.
 For example, in typical user interface (UI) applications, updates to the interface should be executed on a special UI thread; in server-side applications, long-running computations are often offloaded to a separate thread pool, etc.
 
 Continuation interceptors allow us to intercept the coroutine execution between suspension points and perform some operations on it, usually wrapping the coroutine continuation in another continuation.
@@ -122,3 +221,39 @@ When the cached `intercepted` continuation is no longer needed, it is released u
 > Note: this machinery is performed "behind-the-scenes" by the coroutine framework implementation.
 
 #### Coroutine intrinsics
+
+Accessing the low-level continuations is performed using a limited number of built-in intrinsic functions, which form the complete coroutine API.
+The rest of asynchronous programming support is provided as a Kotlin library.
+The complete built-in API for working with coroutines is shown below.
+
+```kotlin
+fun <T> (suspend () -> T).createCoroutineUnintercepted(
+    completion: Continuation<T>
+): Continuation<Unit>
+
+suspend fun <T>
+    suspendCoroutineUninterceptedOrReturn(
+        block: (Continuation<T>) -> Any?): T
+
+fun <T> (suspend () -> T).
+    startCoroutineUninterceptedOrReturn(
+        completion: Continuation<T>): Any?
+
+fun <T> Continuation<T>.intercepted(): Continuation<T>
+
+// Additional functions for types with explicit receiver
+
+fun <R, T> (suspend R.() -> T).createCoroutineUnintercepted(
+    completion: Continuation<T>
+): Continuation<Unit>
+
+fun <T> (suspend R.() -> T).
+    startCoroutineUninterceptedOrReturn(
+        completion: Continuation<T>): Any?
+```
+
+Function `createCoroutineUnintercepted` is used to create a coroutine corresponding to its extension receiver suspending function, which invokes the passed `completion` continuation upon completion.
+This function does not start the coroutine, however; to do that, one have to call `Continuation<T>.resumeWith` function on the created continuation object.
+Suspending function `suspendCoroutineUninterceptedOrReturn` provides access to the current continuation (similarly to how `call/cc` works in Scheme).
+If its lambda returns the \coroutineSuspended{} marker, it also suspends the coroutine.
+Together with `Continuation<T>.resumeWith` function, which resumes or starts a coroutine, these functions form a complete coroutine API built into the Kotlin compiler.
