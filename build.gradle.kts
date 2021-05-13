@@ -1,3 +1,5 @@
+import at.phatbl.shellexec.ShellExec
+
 plugins {
     id("at.phatbl.shellexec") version "1.1.3"
 }
@@ -107,4 +109,9 @@ tasks.create<Delete>("clean") {
     dependsOn("docs:clean")
 
     delete("$projectDir/build")
+}
+
+tasks.create<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {
+    group = "internal"
+    command = """echo -e Run the following command: git checkout release \&\& git subtree push --prefix grammar/src/main/antlr git@github.com:Kotlin/kotlin-grammar-apache2 release"""
 }
