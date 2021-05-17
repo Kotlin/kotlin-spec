@@ -158,6 +158,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -650,7 +651,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Non-suspending functions may not call suspending functions directly, as they do not support suspension points. </span><span class="sentence">Suspending functions may call non-suspending functions without any limitations; such calls do not create suspension points.</span></p>
+<p><span class="sentence">Non-suspending functions may not call suspending functions directly, as they do not support suspension points. </span><span class="sentence">Suspending functions may call non-suspending functions without any limitations; such calls do not create suspension points. </span><span class="sentence">This restriction is also known as <a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">“function colouring”</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -717,23 +718,133 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;.</span><span class="fu">resume</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span></a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="kw">fun</span> &lt;T&gt; Continuation&lt;T&gt;.resumeWithException(exception: Throwable)</a></code></pre></div>
 <h4 id="continuation-passing-style">Continuation Passing Style</h4>
+<div class="paragraph">
+<p><span class="sentence">Each suspendable function goes through a transformation from normally invoked function to continuation passing style (CPS). </span><span class="sentence">For a suspendable function with parameters <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>p</mi><mn>2</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>p</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">p_1, p_2, \ldots, p_N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ and result type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+ a new function is generated, with an additional parameter <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>N</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">p_{N+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.638891em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.328331em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">N</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span>
+
+ of type <a href="asynchronous-programming-with-coroutines.html#kotlin.coroutines.continuationt"><code>kotlin.coroutines.Continuation&lt;T&gt;</code></a> and return type changed to <a href="built-in-types-and-their-semantics.html#kotlin.any-builtins"><code>kotlin.Any?</code></a>. </span><span class="sentence">The calling convention for such function is different from regular functions as a suspendable function may either <em>suspend</em> or <em>return</em>.</span></p>
+</div>
+<ul>
+<li><span class="sentence">If the function returns a result, it is returned directly from the function as normal;</span></li>
+<li><span class="sentence">If the function suspends, it returns a special marker value  to signal its suspended state.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning . </span><span class="sentence">If the user wants to suspend a coroutine, they need to perform the following steps.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Access the coroutine’s continuation object by calling <a href="asynchronous-programming-with-coroutines.html#coroutine-intrinsics"><code>suspendCoroutineUninterceptedOrReturn</code> intrinsic</a> or any of its wrappers;</span></li>
+<li><span class="sentence">Store the continuation object to resume it later;</span></li>
+<li><span class="sentence">Pass the  marker to the intrinsic, which is then returned from the function.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">As Kotlin does not currently support denotable <a href="type-system.html#union-types">union types</a>, the return type is changed to <a href="built-in-types-and-their-semantics.html#kotlin.any-builtins"><code>kotlin.Any?</code></a>, so it can hold both the original return type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
+
+ and .</span></p>
+</div>
 <h4 id="coroutine-state-machine">Coroutine state machine</h4>
+<div class="paragraph">
+<p><span class="sentence">Kotlin implements suspendable functions as state machines, since such implementation does not require specific runtime support. </span><span class="sentence">This dictates the explicit <code>suspend</code> marking (function colouring) of Kotlin coroutines: the compiler has to know which function can potentially suspend, to turn it into a state machine.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Each suspendable lambda is compiled to a continuation class, with fields representing its local variables, and an integer field for current state in the state machine. </span><span class="sentence">Suspension point is where such lambda can suspend: either a suspending function call or <a href="asynchronous-programming-with-coroutines.html#coroutine-intrinsics"><code>suspendCoroutineUninterceptedOrReturn</code> intrinsic</a> call. </span><span class="sentence">For a lambda with <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span></span></span></span>
+
+ suspension points and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi></mrow><annotation encoding="application/x-tex">M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span></span></span></span>
+
+ return statements, which are not suspension points themselves, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>+</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">N + M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span></span></span></span>
+
+ states are generated (one for each suspension point plus one for each non-suspending return statement).</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="co">// Lambda body with multiple suspension points</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">val</span> <span class="va">a</span> <span class="op">=</span> a()</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> foo(a).await() <span class="co">// suspension point #1</span></a>
+<a class="sourceLine" id="cb3-4" title="4">b()</a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="kw">val</span> <span class="va">z</span> <span class="op">=</span> bar(a, y).await() <span class="co">// suspension point #2</span></a>
+<a class="sourceLine" id="cb3-6" title="6">c(z)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="co">// State machine code for the lambda after CPS transformation</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="co">//     (written in pseudo-Kotlin with gotos)</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="kw">class</span> <span class="op">&lt;</span><span class="dt">anonymous</span><span class="op">&gt;</span> <span class="dt">private</span> <span class="kw">constructor</span>(</a>
+<a class="sourceLine" id="cb4-4" title="4">    completion: Continuation&lt;<span class="kw">Any</span>?&gt;</a>
+<a class="sourceLine" id="cb4-5" title="5">): SuspendLambda&lt;...&gt;(completion) <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-6" title="6">    <span class="co">// The current state of the state machine</span></a>
+<a class="sourceLine" id="cb4-7" title="7">    <span class="kw">var</span> <span class="va">label</span> <span class="op">=</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb4-8" title="8">    </a>
+<a class="sourceLine" id="cb4-9" title="9">    <span class="co">// local variables of the coroutine</span></a>
+<a class="sourceLine" id="cb4-10" title="10">    <span class="kw">var</span> <span class="va">a</span><span class="op">:</span> <span class="dt">A?</span> <span class="op">=</span> <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-11" title="11">    <span class="kw">var</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Y?</span> <span class="op">=</span> <span class="kw">null</span></a>
+<a class="sourceLine" id="cb4-12" title="12">    </a>
+<a class="sourceLine" id="cb4-13" title="13">    <span class="kw">fun</span> <span class="fu">invokeSuspend</span><span class="op">(</span><span class="va">result</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">):</span> <span class="dt">Any?</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-14" title="14">        <span class="co">// state jump table</span></a>
+<a class="sourceLine" id="cb4-15" title="15">        <span class="cf">if</span> (label == <span class="dv">0</span>) goto L0</a>
+<a class="sourceLine" id="cb4-16" title="16">        <span class="cf">if</span> (label == <span class="dv">1</span>) goto L1</a>
+<a class="sourceLine" id="cb4-17" title="17">        <span class="cf">if</span> (label == <span class="dv">2</span>) goto L2</a>
+<a class="sourceLine" id="cb4-18" title="18">        <span class="cf">else</span> <span class="kw">throw</span> IllegalStateException()</a>
+<a class="sourceLine" id="cb4-19" title="19">        </a>
+<a class="sourceLine" id="cb4-20" title="20">      L0:</a>
+<a class="sourceLine" id="cb4-21" title="21">        <span class="co">// result is expected to be `null` at this invocation</span></a>
+<a class="sourceLine" id="cb4-22" title="22">        </a>
+<a class="sourceLine" id="cb4-23" title="23">        a = a()</a>
+<a class="sourceLine" id="cb4-24" title="24">        label = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb4-25" title="25">        <span class="co">// &#39;this&#39; is passed as a continuation </span></a>
+<a class="sourceLine" id="cb4-26" title="26">        result = foo(a).await(<span class="kw">this</span>) </a>
+<a class="sourceLine" id="cb4-27" title="27">        <span class="co">// return if await had suspended execution</span></a>
+<a class="sourceLine" id="cb4-28" title="28">        <span class="cf">if</span> (result == COROUTINE_SUSPENDED)</a>
+<a class="sourceLine" id="cb4-29" title="29">            <span class="kw">return</span> COROUTINE_SUSPENDED</a>
+<a class="sourceLine" id="cb4-30" title="30">      L1:</a>
+<a class="sourceLine" id="cb4-31" title="31">        <span class="co">// error handling</span></a>
+<a class="sourceLine" id="cb4-32" title="32">        result.throwOnFailure()</a>
+<a class="sourceLine" id="cb4-33" title="33">        <span class="co">// external code has resumed this coroutine</span></a>
+<a class="sourceLine" id="cb4-34" title="34">        <span class="co">// passing the result of .await() </span></a>
+<a class="sourceLine" id="cb4-35" title="35">        y = (Y) result</a>
+<a class="sourceLine" id="cb4-36" title="36">        b()</a>
+<a class="sourceLine" id="cb4-37" title="37">        label = <span class="dv">2</span></a>
+<a class="sourceLine" id="cb4-38" title="38">        <span class="co">// &#39;this&#39; is passed as a continuation</span></a>
+<a class="sourceLine" id="cb4-39" title="39">        result = bar(a, y).await(<span class="kw">this</span>)</a>
+<a class="sourceLine" id="cb4-40" title="40">        <span class="co">// return if await had suspended execution</span></a>
+<a class="sourceLine" id="cb4-41" title="41">        <span class="cf">if</span> (result == COROUTINE_SUSPENDED)</a>
+<a class="sourceLine" id="cb4-42" title="42">            <span class="kw">return</span> COROUTINE_SUSPENDED</a>
+<a class="sourceLine" id="cb4-43" title="43">      L2:</a>
+<a class="sourceLine" id="cb4-44" title="44">        <span class="co">// error handling</span></a>
+<a class="sourceLine" id="cb4-45" title="45">        result.throwOnFailure()</a>
+<a class="sourceLine" id="cb4-46" title="46">        <span class="co">// external code has resumed this coroutine</span></a>
+<a class="sourceLine" id="cb4-47" title="47">        <span class="co">// passing the result of .await()</span></a>
+<a class="sourceLine" id="cb4-48" title="48">        Z z = (Z) result</a>
+<a class="sourceLine" id="cb4-49" title="49">        c(z)</a>
+<a class="sourceLine" id="cb4-50" title="50">        label = <span class="dv">-1</span> <span class="co">// No more steps are allowed</span></a>
+<a class="sourceLine" id="cb4-51" title="51">        <span class="kw">return</span> <span class="kw">Unit</span></a>
+<a class="sourceLine" id="cb4-52" title="52">    <span class="op">}</span>          </a>
+<a class="sourceLine" id="cb4-53" title="53">    </a>
+<a class="sourceLine" id="cb4-54" title="54">    <span class="kw">fun</span> <span class="fu">create</span><span class="op">(</span><span class="va">completion</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">Any?</span><span class="op">&gt;):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">Any?</span><span class="op">&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-55" title="55">      &lt;anonymous&gt;(completion)</a>
+<a class="sourceLine" id="cb4-56" title="56">    <span class="op">}</span>          </a>
+<a class="sourceLine" id="cb4-57" title="57">    </a>
+<a class="sourceLine" id="cb4-58" title="58">    <span class="kw">fun</span> <span class="fu">invoke</span><span class="op">(</span><span class="va">completion</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">Any?</span><span class="op">&gt;):</span> <span class="dt">Any?</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-59" title="59">        create(completion).invokeSuspend(<span class="kw">Unit</span>)</a>
+<a class="sourceLine" id="cb4-60" title="60">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb4-61" title="61"><span class="op">}</span></a></code></pre></div>
+</blockquote>
 <h4 id="continuation-interception">Continuation interception</h4>
 <div class="paragraph">
-<p><span class="sentence">Asyncronous computations in many cases need to control how they are executed, with varying degrees of precision. </span><span class="sentence">For example, in typical user interface (UI) applications, updates to the interface should be executed on a special UI thread; in server-side applications, long-running computations are often offloaded to a separate thread pool, etc.</span></p>
+<p><span class="sentence">Asynchronous computations in many cases need to control how they are executed, with varying degrees of precision. </span><span class="sentence">For example, in typical user interface (UI) applications, updates to the interface should be executed on a special UI thread; in server-side applications, long-running computations are often offloaded to a separate thread pool, etc.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Continuation interceptors allow us to intercept the coroutine execution between suspension points and perform some operations on it, usually wrapping the coroutine continuation in another continuation. </span><span class="sentence">This is done using the <code>kotlin.coroutines.ContinuationInterceptor</code> interface.</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">interface</span> <span class="dt">ContinuationInterceptor</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Element <span class="op">{</span></a>
-<a class="sourceLine" id="cb3-2" title="2">    <span class="kw">companion</span> <span class="kw">object</span> <span class="dt">Key</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Key&lt;ContinuationInterceptor&gt;</a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">interceptContinuation</span><span class="op">(</span><span class="va">continuation</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
-<a class="sourceLine" id="cb3-4" title="4">    <span class="kw">fun</span> releaseInterceptedContinuation(continuation: Continuation&lt;*&gt;)</a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">interface</span> <span class="dt">ContinuationInterceptor</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Element <span class="op">{</span></a>
+<a class="sourceLine" id="cb5-2" title="2">    <span class="kw">companion</span> <span class="kw">object</span> <span class="dt">Key</span> <span class="op">:</span> <span class="dt">CoroutineContext</span>.Key&lt;ContinuationInterceptor&gt;</a>
+<a class="sourceLine" id="cb5-3" title="3">    <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">interceptContinuation</span><span class="op">(</span><span class="va">continuation</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb5-4" title="4">    <span class="kw">fun</span> releaseInterceptedContinuation(continuation: Continuation&lt;*&gt;)</a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">As seen from the declaration, <code>ContinuationInterceptor</code> is a <code>CoroutineContext.Element</code>, and to perform the continuation interception, an instance of <code>ContinuationInterceptor</code> should be available in the coroutine context, where it is used similarly to the following line of code.</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">val</span> <span class="va">intercepted</span> <span class="op">=</span> continuation.context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">intercepted</span> <span class="op">=</span> continuation.context[ContinuationInterceptor]?.interceptContinuation(continuation) ?: continuation</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">When the cached <code>intercepted</code> continuation is no longer needed, it is released using <code>ContinuationInterceptor.releaseInterceptedContinuation(...)</code>.</span></p>
 </div>
@@ -743,5 +854,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <h4 id="coroutine-intrinsics">Coroutine intrinsics</h4>
+<div class="paragraph">
+<p><span class="sentence">Accessing the low-level continuations is performed using a limited number of built-in intrinsic functions, which form the complete coroutine API. </span><span class="sentence">The rest of asynchronous programming support is provided as a Kotlin library. </span><span class="sentence">The complete built-in API for working with coroutines is shown below.</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">(</span><span class="va">suspend</span> (<span class="op">)</span> -&gt; <span class="fu">T</span>)<span class="op">.</span><span class="fu">createCoroutineUnintercepted</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb7-2" title="2">    <span class="va">completion</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="op">):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">Unit</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb7-4" title="4"></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="fu">suspend</span> <span class="kw">fun</span> &lt;T&gt;</a>
+<a class="sourceLine" id="cb7-6" title="6">    suspendCoroutineUninterceptedOrReturn(</a>
+<a class="sourceLine" id="cb7-7" title="7">        block: (Continuation&lt;T&gt;) -&gt; <span class="kw">Any</span>?): T</a>
+<a class="sourceLine" id="cb7-8" title="8"></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">(</span><span class="va">suspend</span> (<span class="op">)</span> -&gt; <span class="fu">T</span>)<span class="op">.</span></a>
+<a class="sourceLine" id="cb7-10" title="10">    <span class="fu">startCoroutineUninterceptedOrReturn</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb7-11" title="11">        <span class="va">completion</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;):</span> <span class="dt">Any?</span></a>
+<a class="sourceLine" id="cb7-12" title="12"></a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="kw">fun</span> &lt;T&gt; Continuation&lt;T&gt;.intercepted(): Continuation&lt;T&gt;</a>
+<a class="sourceLine" id="cb7-14" title="14"></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="co">// Additional functions for types with explicit receiver</span></a>
+<a class="sourceLine" id="cb7-16" title="16"></a>
+<a class="sourceLine" id="cb7-17" title="17"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">R</span>, <span class="dt">T</span><span class="op">&gt;</span> <span class="op">(</span><span class="va">suspend</span> <span class="va">R</span>.(<span class="op">)</span> -&gt; <span class="fu">T</span>)<span class="op">.</span><span class="fu">createCoroutineUnintercepted</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb7-18" title="18">    <span class="va">completion</span><span class="op">:</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb7-19" title="19"><span class="op">):</span> <span class="dt">Continuation</span><span class="op">&lt;</span><span class="dt">Unit</span><span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb7-20" title="20"></a>
+<a class="sourceLine" id="cb7-21" title="21"><span class="kw">fun</span> &lt;T&gt; (suspend R.() -&gt; T).</a>
+<a class="sourceLine" id="cb7-22" title="22">    startCoroutineUninterceptedOrReturn(</a>
+<a class="sourceLine" id="cb7-23" title="23">        completion: Continuation&lt;T&gt;): <span class="kw">Any</span>?</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">Function <code>createCoroutineUnintercepted</code> is used to create a coroutine corresponding to its extension receiver suspending function, which invokes the passed <code>completion</code> continuation upon completion. </span><span class="sentence">This function does not start the coroutine, however; to do that, one have to call <code>Continuation&lt;T&gt;.resumeWith</code> function on the created continuation object. </span><span class="sentence">Suspending function <code>suspendCoroutineUninterceptedOrReturn</code> provides access to the current continuation (similarly to how <code>call/cc</code> works in Scheme). </span><span class="sentence">If its lambda returns the  marker, it also suspends the coroutine. </span><span class="sentence">Together with <code>Continuation&lt;T&gt;.resumeWith</code> function, which resumes or starts a coroutine, these functions form a complete coroutine API built into the Kotlin compiler.</span></p>
+</div>
 </body>
 </html>
