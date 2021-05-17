@@ -224,7 +224,7 @@ When the cached `intercepted` continuation is no longer needed, it is released u
 
 Accessing the low-level continuations is performed using a limited number of built-in intrinsic functions, which form the complete coroutine API.
 The rest of asynchronous programming support is provided as a Kotlin library.
-The complete built-in API for working with coroutines is shown below.
+The complete built-in API for working with coroutines is shown below (all of these are declared in package `kotlin.coroutines.intrinsics` of the standard library).
 
 ```kotlin
 fun <T> (suspend () -> T).createCoroutineUnintercepted(

@@ -1340,7 +1340,7 @@ See the [corresponding section][Smart casts] for details.
 
 #### Function contracts
 
-> Note: as of Kotlin 1.4.0, contracts for user-defined functions are an experimental feature and, thus, not described here
+> Note: as of Kotlin 1.5.0, contracts for user-defined functions are an experimental feature and, thus, not described here
 
 Some standard-library functions in Kotlin are defined in such a way that they adhere to a specific *call contract* that affects the way calls to such functions are analysed from the perspective of the caller's control flow graph.
 A function's call contract consists of one or more *effects*.

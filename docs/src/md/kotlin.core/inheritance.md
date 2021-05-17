@@ -36,7 +36,7 @@ Only abstract classes allow for `abstract` [property][Property declaration] and 
 A class or interface (but not a [functional interface][Functional interface declaration]) may be declared `sealed`, making it special from the inheritance point-of-view.
 
 - A `sealed` class is implicitly `abstract` (and these two modifiers are exclusive);
-- A `selaed` class or interface can only be inherited from by types declared in the same package and in the same [module][Modules], and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from `sealed` types);
+- A `sealed` class or interface can only be inherited from by types declared in the same package and in the same [module][Modules], and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from `sealed` types);
 - `Sealed` classes and interfaces allow for exhaustiveness checking of [when expressions][When expressions] for values of such types.
   Any sealed type `S` is associated with its *direct non-sealed subtypes*: a set of non-sealed types, which are either direct subtypes of `S` or transitive subtypes of `S` via some number of other *sealed* types.
   These direct non-sealed subtypes form the boundary for exhaustiveness checks.
