@@ -552,10 +552,28 @@
 </ul></li>
 </ul>
 </div>
-<span style="visibility: hidden; counter-reset: chapter 19;"></span>
-<h2 id="concurrency">Concurrency</h2>
+<span style="visibility: hidden; counter-reset: chapter 14;"></span>
+<h2 id="builder-style-type-inference">Builder-style type inference</h2>
 <div class="paragraph">
-<p><span class="sentence">Kotlin Core does not specify the semantics of the code running in concurrent environments. </span><span class="sentence">For information on threading APIs, memory model, supported synchronization and other concurrency-related capabilities of Kotlin on your platform, please refer to platform documentation.</span></p>
+<p><span class="sentence">Some functions or parameters of functions in the standard library are annotated with the special <a href="annotations.html#built-in-annotations"><code>@BuilderInference</code></a> annotation, making calls to these functions eligible for the special kind of type inference: <strong>builder-style type inference</strong>. </span><span class="sentence">In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:</span></p>
 </div>
+<ul>
+<li><span class="sentence">It must be of an extension-function type;</span></li>
+<li><span class="sentence">It must be marked with the <code>@BuilderInference</code> annotation.</span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources. </span><span class="sentence">For a call to an eligible function with a lambda parameter <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">L</span></span></span></span>
+
+ the inference is performed <a href="type-inference.html#statements-with-lambda-literals">as described above</a>, but the type parameters of the receiver parameter of the lambda expression are <em>postponed</em> till the body of the lambda expression is proceeded. </span><span class="sentence">After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:</span></p>
+</div>
+<ul>
+<li><span class="sentence">For each call to a member function of the receiver or an extension function of the receiver marked with the <code>@BuilderInference</code> annotation, the type constraints are collected and gathered into a single constraint system;</span></li>
+<li><span class="sentence">This system is solved in order to infer the actual type arguments of the receiver.</span></li>
+</ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: notable examples of builder-style inference-enabled functions are <code>kotlin.sequence</code> and <code>kotlin.iterator</code>. </span><span class="sentence">See standard library documentation for details.</span></p>
+</div>
+</blockquote>
 </body>
 </html>
