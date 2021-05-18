@@ -33,6 +33,8 @@ There are three kinds of classifier declarations:
 * interface declarations;
 * object declarations.
 
+> Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
+
 #### Class declaration
 
 A simple class declaration consists of the following parts.
@@ -50,7 +52,7 @@ A simple class declaration consists of the following parts.
 
 and creates a simple classifier type $c : S_1, \ldots, S_s$.
 
-Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects.
+Supertype specifiers are used to create inheritance relation between the declared type and the specified supertype. You can use classes and interfaces as supertypes, but not objects or inner classes.
 
 > Note: if supertype specifiers are absent, the declared type is considered to be implicitly derived from `kotlin.Any`.
 
@@ -228,9 +230,71 @@ An inner class declaration $\ID$ nested in another classifier declaration $\PD$ 
 
 This association happens when instantiating an object of type $\ID$, as its constructor may be invoked only when a receiver of type $\PD$ is available, and this receiver becomes associated with the new instantiated object of type $\ID$.
 
-For information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
+Inner classes cannot be declared in [interface declarations][Interface declaration], as interfaces cannot be instantiated.
 
-> Note: inner classes cannot be declared in [objects][Classifier declaration].
+Inner classes cannot be declared in a [statement scope][Scopes and identifiers], as such scope does not have an object to associate the inner class with.
+
+Inner classes cannot be declared in [object declarations][Object declaration], as object declarations also create a single named value of their type, which makes additional association unnecessary.
+
+> Note: for information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
+
+> Note: unlike object declarations, in [object literals] only inner classes are allowed, as types of object literals are anonymous, making their nested classifiers available only through explicit receiver, effectively forcing them to be inner.
+
+> Examples:
+>
+> ```kotlin
+> interface Quz {
+>     interface Bar
+>     class Nested
+>     // Error: no parent object to reference,
+>     //   as interfaces cannot be instantiated
+>     // inner class Inner
+> }
+> 
+> class Foo {
+>     interface Bar
+>     class Nested
+>     inner class Inner
+> }
+> 
+> object Single {
+>     interface Bar
+>     class Nested
+>     // Error: value of type Single is available as-is,
+>     //   no reason to make an inner class
+>     // inner class Inner
+> }
+> 
+> fun foo() {
+>     // Error: interfaces cannot be local
+>     // interface Bar
+> 
+>     class Nested
+> 
+>     // Error: inner classes cannot be local
+>     // inner class Inner
+> }
+> 
+> fun test() {
+>     val fooV = Foo()
+> 
+>     Quz.Nested()
+>     Foo.Nested()
+>     fooV.Inner()
+> 
+>     Single.Nested()
+> 
+>     val anon = object {
+>         // Error: cannot reference <anon>.Bar
+>         // interface Bar
+>         // Error: cannot reference <anon>.Nested
+>         // class Nested
+>         inner class Inner
+>     }
+> 
+>     anon.Inner()
+> }
+> ```
 
 ##### Inheritance delegation
 
@@ -344,10 +408,10 @@ All these functions consider only data properties $\{\dataClassParam_i\}$; e.g.,
 
 There are several rules as to how these generated functions may be explicified or inherited.
 
-> Note: a generated function is explicified, if its implementation is provided explicitly in the body of the data class.
-> A generated function is inherited, if its implementation is taken from a supertype of the data class.
+> Note: a generated function is explicified, if its implementation (with matching [function signature]) is provided explicitly in the body of the data class.
+> A generated function is inherited, if its implementation (with matching [function signature]) is taken from a supertype of the data class.
 
-The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how overriding works in normal classes.
+The declarations of `equals`, `hashCode` and `toString` may be explicified similarly to how [overriding] works in normal classes.
 If a correct explicit implementation is available, no function is generated.
 Other functions (`copy`, `componentN`) **cannot** be explicified.
 
@@ -357,8 +421,8 @@ Other functions (`copy`, `componentN`) **cannot** be inherited.
 
 In addition, for every generated function, if any of the base types provide an open function with a [matching signature][Function signature], it is automatically overridden by the generated function as if it was generated with an `override` modifier.
 
-> Note: base classes may also have functions that have a conflicting signature with the same function name.
-> As expected, these cases result in override or overload conflicts the same way they would with a normal class declaration.
+> Note: data classes or their supertypes may also have functions which have a matching name and/or signature with one of the generated functions.
+> As expected, these cases result in either [override][Overriding] or [overload][Conflicting overloads] conflicts the same way they would with a normal class declaration, or they create two separate functions which follow the rules of [overloading][Overload resolution].
 
 Data classes have the following restrictions:
 
@@ -534,8 +598,8 @@ Annotation classes have the following properties:
 
 - They cannot have any secondary constructors;
 - All the primary constructor parameters must use the property syntax;
-- They implicitly inherit `kotlin.Annotation` class (and cannot have any other base classes);
-- They cannot implement interfaces;
+- They implicitly implement `kotlin.Annotation` interface (and cannot implement additional interfaces);
+- They cannot have any specified base classes;
 - They are implicitly closed and cannot be inherited from;
 - They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
 - They cannot have companion objects;
@@ -548,18 +612,77 @@ Annotation classes have the following properties:
     - Other annotation types;
     - Arrays of any other allowed type.
 
-Annotation classes cannot be constructed directly, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+
+> Examples:
+>
+> ```kotlin
+> // a couple annotation classes
+> annotation class Super(val x: Int, val f: Float = 3.14f)
+> annotation class Duper(val supers: Array<Super>)
+> 
+> // the same classes used as annotations
+> @Duper(arrayOf(Super(2, 3.1f), Super(3)))
+> class SuperClass {
+>     @Super(4)
+>     val x = 3
+> }
+> 
+> // annotation class without parameters
+> annotation class Transmogrifiable
+> 
+> @Transmogrifiable
+> fun f(): Int = TODO()
+> 
+> // variable argument properties are supported
+> annotation class WithTypes(vararg val classes: KClass<out Annotation>)
+>
+> @WithTypes(Super::class, Transmogrifiable::class)
+> val x = 4
+> 
+> ```
+
+#### Value class declaration
+
+> Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature.
+> There is, however, a number of value classes in Kotlin standard library.
+
+A class may be declared a **value** class by using `inline` or `value` modifier in its declaration.
+Value classes must adhere to the following limitations:
+
+* Value classes are closed and cannot be [inherited][Inheritance] from;
+* Value classes cannot be `inner`, `data` or `enum` classes;
+* Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
+* This property cannot be specified as `vararg` constructor argument;
+* This property must be declared `public`;
+* This property must be of [a runtime-available type][Runtime-available types];
+* They must not override `equals` and `hashCode` member functions of `kotlin.Any`;
+* They must not have any base classes besides `kotlin.Any`;
+* No other properties of this class may have backing fields.
+
+> Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
+
+Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
+Unless `toString` is overriden by the value class definition, it is also implicitly overriden by delegating to the data property.
+In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
+This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+
+Due to these restrictions, it is highly discouraged to use value classes with the [reference equality operators][Reference equality expressions].
+
+> Note: in the future versions of Kotlin, value classes may be allowed to have more than one data property.
 
 #### Interface declaration
 
 Interfaces differ from classes in that they cannot be directly instantiated in the program, they are meant as a way of describing a contract which should be satisfied by the interface's subtypes. 
 In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
+* An interface can be declared only in a declaration scope;
+  * Additionally, an interface cannot be declared in an [object literal];
 * An interface cannot have a class as its supertype;
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
 * Interface properties cannot be delegated;
-* An interface cannot have inner classes (but can have nested classes and companion objects);
+* An interface cannot have inner classes;
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
     * Trying to declare a non-public member property or function in an interface is an compile-time error.
@@ -636,16 +759,34 @@ No other values of this type may be declared, making object a single existing va
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
 * An object can only be declared in a declaration scope;
+  * Additionally, an object cannot be declared in an [object literal];
 * An object type cannot be used as a supertype for other types;
 * An object cannot have an explicit primary or secondary constructor;
 * An object cannot have a companion object;
-* An object may not have inner classes;
+* An object cannot have inner classes;
 * An object cannot be parameterized, i.e., cannot have type parameters.
 
 > Note: an object is assumed to implicitly have a default parameterless primary constructor.
 
 > Note: this section is about declaration of _named_ objects. 
 > Kotlin also has a concept of _anonymous_ objects, or object literals, which are similar to their named counterparts, but are expressions rather than declarations and, as such, are described in the [corresponding section][Object literals].
+
+#### Local class declaration
+
+A class (but not an interface or an object) may be declared *locally* inside a [statement scope][Scopes and identifiers] (namely, inside a function).
+Such declarations are similar to [object literals][Object literals] in that they may capture values available in the scope they are declared in:
+
+```kotlin
+fun foo() {
+    val x = 2
+    class Local {
+        val y = x
+    }
+    Local().y // 2
+}
+```
+
+Enum classes and annotation classes cannot be declared locally.
 
 #### Classifier initialization
 
@@ -669,9 +810,10 @@ When a classifier type is initialized using a particular secondary constructor $
 
 The initialization order stays the same if any of the entities involved are omitted, in which case the corresponding step is also omitted (e.g., if the object is created using the primary constructor, the body of the secondary one is not invoked).
 
-If any step in the initialization order creates a loop, it is considered to be undefined behaviour.
+If any step in the initialization order creates a loop, it results in unspecified behaviour.
 
-If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is undefined.
+If any of the properties are accessed before they are initialized w.r.t initialization order (e.g., if a method called in an initialization block accesses a property declared *after* the initialization block), the value of the property is unspecified.
+It stays unspecified even after the "proper" initialization is performed.
 
 > Note: this can also happen if a property is captured in a lambda expression used in some way during subsequent initialization steps.
 
@@ -851,6 +993,8 @@ In summary, argument list should have the following form:
 * Zero or more named arguments.
 
 Missing arguments are bound to their default values, if they exist.
+
+The evaluation order of argument list is described in [Function calls and property access] section of this specification.
 
 #### Variable length parameters
 
@@ -1174,7 +1318,7 @@ e.setValue(thisRef, property, y)
 where 
 
 - `e` is the delegating entity; the compiler needs to make sure that this is accessible in any place `x` is accessible;
-- `getValue` is a suitable operator function available on `e`;
+- `setValue` is a suitable operator function available on `e`;
 - `thisRef` is the [receiver][Receivers] object for the property.
   This argument is `null` for local properties;
 - `property` is an object of the type `kotlin.KProperty<*>` that contains information relevant to `x` (for example, its name, see standard library documentation for details);

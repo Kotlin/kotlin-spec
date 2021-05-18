@@ -233,7 +233,7 @@ Smart casts are introduced by the following Kotlin constructions.
 - [Not-null assertion expressions][Not-null assertion expressions] (operator `!!`);
 - [Cast expressions][Cast expressions] (operator `as`);
 - [Type-checking expressions][Type-checking expressions] (operator `is`);
-- [Direct assignments][Assignments];
+- [Simple assignments];
 - Platform-specific cases: different platforms may add other kinds of expressions which introduce additional smart cast sources.
 
 > Note: property declarations are not listed here, as their types are derived from initializers.
@@ -531,3 +531,38 @@ The external constraints on lambda parameters, return value and body may come fr
 
 TODO(Type approximation for public API)
 TODO(Lambda analysis order (and the order of overloading vs type inference in general))
+
+### Bare type argument inference
+
+Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$, the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
+It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expressions] and [casting][Cast expressions] operators.
+The process is performed as follows.
+
+First, let's consider the simple case of $T$ being non-nullable, non-intersection type. 
+Then, a simple [type constraint system][Kotlin type constraints] is constructed by introducing type variables for $A_0, A_1 \ldots A_N$ and then solving the constraint $TC[A_0, A_1 \ldots A_N] <: T$.
+
+If $T$ is an intersection type, the same process is performed for every member of the intersection type individually and then the resulting type argument values for each parameter $A_K$ are merged using the following principle:
+
+- If all values for a particular parameters are star-projections, the result is a star-projection;
+- If some of the values are not star-projections and are strictly equal to each other, the result is one of their values;
+- Else, the result is a star-projection.
+
+If $T$ is a nullable type $U?$, the steps given above are performed for its non-nullable counterpart type $U$.
+
+## Builder-style type inference
+
+Some functions or parameters of functions in the standard library are annotated with the special [`@BuilderInference`][Built-in annotations] annotation, making calls to these functions eligible for the special kind of type inference: **builder-style type inference**.
+In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:
+
+- It must be of an extension-function type;
+- It must be marked with the `@BuilderInference` annotation.
+
+In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
+For a call to an eligible function with a lambda parameter $L$ the inference is performed [as described above][Statements with lambda literals], but the type parameters of the receiver parameter of the lambda expression are *postponed* till the body of the lambda expression is proceeded.
+After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:
+
+- For each call to a member function of the receiver or an extension function of the receiver marked with the `@BuilderInference` annotation, the type constraints are collected and gathered into a single constraint system;
+- This system is solved in order to infer the actual type arguments of the receiver.
+
+> Note: notable examples of builder-style inference-enabled functions are `kotlin.sequence` and `kotlin.iterator`.
+> See standard library documentation for details.

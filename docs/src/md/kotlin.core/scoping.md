@@ -28,6 +28,8 @@ Statement scopes include:
 - The bodies of [constructors][Constructor declaration];
 - The bodies of instance initialization blocks in [classifier declarations][Classifier declaration].
 
+TODO(The top level scope of script Kotlin file is a funky statement scope, as it allows, for example, object declarations).
+
 All declarations in a particular scope introduce new _bindings_ of identifiers in this scope to their respective entities in the program.
 These entities may be types or values, where values refer to objects, functions or properties (which may also be delegated).
 Top-level scopes additionally allow to introduce new bindings using [`import` directives][Packages and imports] from other top-level scopes.
@@ -42,7 +44,7 @@ Overload resolution also applies to properties if they are used as functions thr
 
 The main difference between declaration scopes and statement scopes is that names in the statement scope are bound in the order of appearance.
 It is not allowed to access a value through an identifier in code which (syntactically) precedes the binding itself.
-On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur leading to possibly undefined behaviour.
+On the contrary, in declaration scopes it is fully allowed, although initialization cycles may occur leading to unspecified behaviour.
 
 > Note: Kotlin compiler may attempt to detect and report such initialization cycles as compile-time warnings or errors.
 
@@ -119,7 +121,7 @@ Labels are special syntactic marks which allow one to reference certain code fra
 > Note: in Kotlin version 1.3 and earlier, labels were allowed to be placed on any expression or statement.
 
 Labels can be *redeclared*, meaning that the same label identifier may be reused with different parts of code (or even on the same expression/loop) several times.
-Labels are *scoped, meaning that they are only available in the scope they were declared in.
+Labels are *scoped*, meaning that they are only available in the scope they were declared in.
 
 Labels are used by certain expressions, such as [`break`][Break expressions], [`continue`][Continue expressions] and [`return`][Return expressions], to specify exactly what entity the expression corresponds to.
 Please refer to the corresponding sections for details.

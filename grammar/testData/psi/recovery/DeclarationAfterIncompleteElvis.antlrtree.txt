@@ -156,7 +156,13 @@ File: DeclarationAfterIncompleteElvis.kt - 483bc1306a1528b137f89e3d987737d5
                         elvis
                           QUEST_NO_WS("?")
                           COLON(":")
-        NL("\n")
+                        NL("\n")
+                        infixFunctionCall
+                          rangeExpression
+                            additiveExpression
+                              multiplicativeExpression
+                                asExpression
+                                  prefixUnaryExpression
   topLevelObject
     declaration
       propertyDeclaration
@@ -222,38 +228,24 @@ File: DeclarationAfterIncompleteElvis.kt - 483bc1306a1528b137f89e3d987737d5
                                 asExpression
                                   prefixUnaryExpression
                                     postfixUnaryExpression
-  topLevelObject
-    declaration
-      functionDeclaration
-        FUN("fun")
-        simpleIdentifier
-          Identifier("baz")
-        functionValueParameters
-          LPAREN("(")
-          RPAREN(")")
-        functionBody
-          ASSIGNMENT("=")
-          expression
-            disjunction
-              conjunction
-                equality
-                  comparison
-                    genericCallLikeComparison
-                      infixOperation
-                        elvisExpression
-                          infixFunctionCall
-                            rangeExpression
-                              additiveExpression
-                                multiplicativeExpression
-                                  asExpression
-                                    prefixUnaryExpression
-                                      postfixUnaryExpression
-                                        primaryExpression
-                                          literalConstant
-                                            IntegerLiteral("5")
-    semis
-      NL("\n")
-      NL("\n")
+                                      primaryExpression
+                                        functionLiteral
+                                          anonymousFunction
+                                            FUN("fun")
+                                            type
+                                              typeReference
+                                                userType
+                                                  simpleUserType
+                                                    simpleIdentifier
+                                                      Identifier("baz")
+                    callSuffix
+                      valueArguments
+                        LPAREN("(")
+                        RPAREN(")")
+  ASSIGNMENT("=")
+  IntegerLiteral("5")
+  NL("\n")
+  NL("\n")
   topLevelObject
     declaration
       propertyDeclaration

@@ -43,7 +43,9 @@ object TestUtil {
                 if (result.endsWith(ls)) result else result + ls
             }
 
-    fun assertEqualsToFile(message: String, expectedFile: File, actual: String, forceApplyChanges: Boolean) {
+    fun assertEqualsToFile(message: String, expectedFile: File, actual: String,
+                           forceApplyChanges: Boolean,
+                           dumpErroneousData: Boolean) {
         val actualText = StringUtil.convertLineSeparators(actual.trim { it <= ' ' }).trimTrailingWhitespacesAndAddNewlineAtEOF()
 
         if (!expectedFile.exists()) {
@@ -60,6 +62,11 @@ object TestUtil {
                 println("Changes are applied forcibly for $expectedFile")
                 assumeTrue(false)
             } else {
+                if (dumpErroneousData) {
+                    val dumpFile = File(expectedFile.parent, expectedFile.name + ".actual")
+                    FileUtil.writeToFile(dumpFile, actualText)
+                    println("Actual file dumped for $expectedFile")
+                }
                 throw FileComparisonFailure(message + ": " + expectedFile.name, expected, actual, expectedFile.absolutePath)
             }
         }

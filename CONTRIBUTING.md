@@ -11,6 +11,8 @@ You have several options on how to contribute.
 1. Make a [pull request](https://github.com/Kotlin/kotlin-spec/pulls)
 1. Drop an email to [Marat Akhin](mailto:marat.akhin@jetbrains.com) or [Mikhail Belyaev](mailto:mikhail.belyaev@jetbrains.com)
 
+> Note: if doing a pull request, it should be based on the `develop` branch.
+
 In any of these cases, if we are talking about semantic changes to the specification, please try to include not only the improvements themselves, but also the reasoning on why you believe such a change is needed.
 
 > If we are talking about simple, but still very much appreciated improvements, e.g., fixing grammar, spelling or punctuation mistakes, no justification is required for those.

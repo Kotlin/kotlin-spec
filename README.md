@@ -6,7 +6,7 @@
 
 This repository contains the specification of the [Kotlin programming language](https://kotlinlang.org), which describes how parts of the language should function *in more detail*, as compared to a more traditional user documentation on the [Kotlin Website](https://kotlinlang.org/docs/reference/).
 
-It would be most useful to those who are interested in how Kotlin works on a finer lever and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
+It would be most useful to those who are interested in how Kotlin works on a finer level and how its features interoperate, e.g., language enthusiasts, compiler writers and Kotlin power-users.
 However, if you are simply wondering, why some code you wrote works the way it does, this specification might help you get an answer to that.
 
 Currently, the specification covers only what we call *Kotlin/Core*: fundamental parts of Kotlin which should function the same way irregardless of the underlying platform.
@@ -66,6 +66,8 @@ You can help us make the Kotlin specification better by one of the following way
 1. Make a [pull request](https://github.com/Kotlin/kotlin-spec/pulls) and extends the specification
 1. Discuss the specification on the Kotlin [forums](https://discuss.kotlinlang.org/)
 1. Drop an email to [Marat Akhin](mailto:marat.akhin@jetbrains.com) or [Mikhail Belyaev](mailto:mikhail.belyaev@jetbrains.com) with your suggestions
+
+> Note: if doing a pull request, it should be based on the `develop` branch.
 
 We welcome any and all feedback to the specification, but may tweak, change or iterate with you on the contribution before including it in the specification.
 

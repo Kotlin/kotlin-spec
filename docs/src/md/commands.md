@@ -112,3 +112,5 @@
 
 \opMathIT{\Assigned}{Assigned}
 \opMathIT{\Unassigned}{Unassigned}
+
+\newcommand{\coroutineSuspended}{\texttt{CO\-RO\-U\-TINE\-\_SUS\-PEN\-DED}}

@@ -183,11 +183,14 @@ It is the type of the result of [string interpolation][String interpolation expr
   
     Contains the ordinal of this enumeration constant, i.e., its position in the declaration, starting from zero.
 
-`kotlin.Enum<T>` provides the following methods.
+`kotlin.Enum<T>` provides the following member functions.
 
 * ```kotlin
   public override final fun compareTo(other: T): Int
   ```
+  
+    The implementation of `kotlin.Comparable`.
+    The result of `a.compareTo(b)` for enum class instances `a` and `b` is equivalent to `a.ordinal.compareTo(b.ordinal)`.
 
 * ```kotlin
   public override final fun equals(other: Any?): Boolean
@@ -197,13 +200,18 @@ It is the type of the result of [string interpolation][String interpolation expr
   public override final fun hashCode(): Int
   ```
 
-    > Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.
+    These member functions are defined to their default behaviour: only the same entry of an enum class is equal to itself and no other object.
+    Hash implementation is required to be consistent, but unspecified.
+
+    > Note: the presence of these final member functions ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.
 
 * ```kotlin
   protected final fun clone(): Any
   ```
   
-    > Note: the `clone()` implementation throws an exception, as enumeration objects cannot be copied.
+    Throws an unspecified exception.
+  
+    > Note: the `clone()` implementation throws an exception, as enumeration objects cannot be copied and on some platforms `clone` function serves for copying.
 
 ### Built-in array types
 
@@ -217,6 +225,8 @@ It is final (i.e., cannot be inherited from) and has the following public constr
   
     Creates a new array with the specified size, where each element is calculated by calling the specified `init` function with the corresponding element's index.
     The function `init` is called for each array element sequentially starting from the first one.
+    This constructor is special in two ways: first, it is `inline` and inline constructors are not generally allowed in Kotlin.
+    Second, it is required for the parameter `T` to be instantiated with a [runtime-available type][Runtime-available types].
 
 `kotlin.Array<T>` provides the following methods and properties.
 

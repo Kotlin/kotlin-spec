@@ -2,10 +2,11 @@ package org.jetbrains.kotlin.spec.loader
 
 import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.entity.TestsLoadingInfo
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
-import org.jetbrains.kotlin.spec.utils.Mode
 import org.jetbrains.kotlin.spec.utils.format
+import org.jetbrains.kotlin.spec.utils.isDevMode
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
 import kotlin.browser.window
@@ -37,14 +38,14 @@ class SpecTestsLoader {
             <button>Load tests</button>
         </a>"""
             else -> """
-              <button>Reoad tests</button>  
+              <button>Reload tests</button>  
             """.trimIndent()
         }
 
-        fun insertLoadIcon(headerElement: JQuery, mode: Mode) {
+        fun insertLoadIcon(headerElement: JQuery) {
             headerElement.append(
                     buildString {
-                        if (mode == Mode.Dev)
+                        if (isDevMode)
                             append("""<a href="#" class="set-branch" title="The compiler repo branch from which the tests will be taken"><img src="$SET_BRANCH_ICON" /></a></span>""")
                         append(getButtonToLoadTests(headerElement))
                     }
@@ -165,15 +166,24 @@ class SpecTestsLoader {
     private var originalSectionName: String? = null
     private var numberSectionsLoaded = 0
 
+
     fun onTestsLoadingLinkClick(link: JQuery) {
+        loader.loadSectionsMapFiles()
+                .then { sectionsMapsByTestArea ->
+                    loadTests(link, sectionsMapsByTestArea)
+                }
+    }
+
+    private fun loadTests(link: JQuery, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>) {
         val section = link.parent("h2, h3, h4, h5")
         val paragraphsInfo = getParagraphsInfo(section)
         val nestedSections = getNestedSections(section)
-        val sectionName = section.attr("id")
-        val sectionsPath = mutableListOf(getParentSectionName(section, "h2"))
+        val sectionToLoadName = section.attr("id")
+        val sectionsPath: MutableList<String> = mutableListOf()
+        val mainSectionsPath = getParentSectionName(section, "h2")
 
         if (originalSectionName == null) {
-            originalSectionName = sectionName
+            originalSectionName = sectionToLoadName
             numberSectionsLoaded = 1
         }
 
@@ -186,24 +196,28 @@ class SpecTestsLoader {
             sectionsPath.add(getParentSectionName(section, "h4"))
         }
 
-        loader.loadTestFiles(sectionName, sectionsPath, TestArea.values())
+        loader.loadTestFiles(
+                sectionToLoadName = sectionToLoadName,
+                mainSectionPath = mainSectionsPath,
+                sectionsPath = sectionsPath,
+                sectionsMapsByTestArea = sectionsMapsByTestArea)
                 .then { sectionTestSet ->
 
                     if (paragraphsInfo != null)
-                        parseTestFiles(sectionTestSet, sectionName, sectionsPath, paragraphsInfo)
+                        parseTestFiles(sectionTestSet, sectionToLoadName, sectionsPath, paragraphsInfo)
 
                     link.html(getButtonToLoadTests(link, true))
 
-                    if (originalSectionName == sectionName) {
+                    if (originalSectionName == sectionToLoadName) {
                         section.nextAll(".paragraph.with-tests").first().get()[0].scrollIntoView()
                         originalSectionName = null
-                        sectionPrevLoaded = sectionName
+                        sectionPrevLoaded = sectionToLoadName
                     }
                 }.catch {
                     numberSectionsLoaded--
-                    if (originalSectionName == sectionName) {
+                    if (originalSectionName == sectionToLoadName) {
                         originalSectionName = null
-                        sectionPrevLoaded = sectionName
+                        sectionPrevLoaded = sectionToLoadName
                     }
                     if (numberSectionsLoaded == 0) {
                         window.alert(notLoadedTestsText.format(sectionPrevLoaded))
@@ -213,7 +227,7 @@ class SpecTestsLoader {
 
         nestedSections.forEach { sectionId ->
             numberSectionsLoaded++
-            `$`("#${sectionId.replace(".", """\\.""")} .load-tests").click()
+            loadTests(`$`("#${sectionId.replace(".", """\\.""")} .load-tests").click(), sectionsMapsByTestArea)
         }
     }
 }

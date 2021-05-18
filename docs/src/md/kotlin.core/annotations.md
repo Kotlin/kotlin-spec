@@ -112,9 +112,15 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
   `kotlin.annotation.Repeatable` is an annotation which is only used on annotation classes to specify whether this particular annotation is repeatable.
   Annotations are non-repeatable by default.
 
-* `kotlin.Experimental` / `kotlin.UseExperimental`
+* `kotlin.RequiresOptIn` / `kotlin.OptIn`
 
-  `kotlin.Experimental` is an annotation class with a single field:
+  `kotlin.RequiresOptIn` is an annotation class with two fields:
+
+  * ```kotlin
+    val message: String = ""
+    ```
+
+    The message describing the particular opt-in requirements.
 
   * ```kotlin
     val level: Level = Level.ERROR
@@ -124,7 +130,7 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
 
   This annotation is used to introduce implementation-defined experimental language or standard library features.
 
-  `kotlin.UseExperimental` is an annotation class with a single field:
+  `kotlin.OptIn` is an annotation class with a single field:
 
   * ```kotlin
     vararg val markerClass: KClass<out Annotation>
@@ -132,9 +138,11 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
 
     The classes which this annotation allows to use.
 
-  This annotation is used to explicitly mark declarations which use experimental features marked by `kotlin.Experimental`.
+  This annotation is used to explicitly mark declarations which use experimental features marked by `kotlin.RequiresOptIn`.
 
   It is implementation-defined how this annotation is processed.
+  
+  > Note: before Kotlin 1.4.0, there were two other built-in annotations: `@Experimental` (now replaced by `@RequiresOptIn`) and `@UseExperimental` (now replaced by `@OptIn`) serving the same purpose which are now deprecated.
 
   TODO(Experimental status is still experimental itself)
 
@@ -226,3 +234,19 @@ Annotations may be declared *repeatable* (meaning that the same annotation may b
   `kotlin.PublishedApi` is an annotation class with no fields which is applicable to any declaration.
   It may be applied to any declaration with `internal` visibility to make it available to `public` `inline` declarations.
   See [Declaration visibility section][Declaration visibility] for details.
+
+* `kotlin.BuilderInference`
+
+  Marks the annotated function of function argument as eligible for [builder-style type inference][Builder-style type inference].
+  See corresponding section for details.
+  
+  > Note: as of Kotlin 1.4.0, this annotation is experimental and, in order to use it in one's code, one must explicitly enable it using opt-in annotations given above.
+  > The particular marker class used to perform this is implementation-defined.
+
+* `kotlin.RestrictSuspension`
+
+  In some cases we may want to limit which [suspending functions] can be called in another suspending function with an extension receiver of a specific type; i.e., if we want to provide a coroutine-enabled DSL, but disallow the use of arbitrary suspending functions.
+  To do so, the type `T` of that extension receiver needs to be annotated with `kotlin.RestrictSuspension`, which enables the following limitations.
+
+  * Suspending functions with an extention receiver of type `T` are restricted from calling other suspending functions besides those accessible on this receiver.
+  * Suspending functions of type `T` can be called only on an extention receiver.

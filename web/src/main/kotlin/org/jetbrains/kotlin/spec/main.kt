@@ -2,39 +2,40 @@ package org.jetbrains.kotlin.spec
 
 import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
-import org.jetbrains.kotlin.spec.utils.Mode
-import org.jetbrains.kotlin.spec.utils.searchMap
+import org.jetbrains.kotlin.spec.utils.*
 import org.jetbrains.kotlin.spec.viewer.Header
 import org.jetbrains.kotlin.spec.viewer.NavigationType
 import org.jetbrains.kotlin.spec.viewer.Sidebar
 import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
 import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
+import org.w3c.dom.set
 import kotlin.browser.document
-import kotlin.browser.localStorage
 import kotlin.browser.window
+
+fun turnOnPermanentDevModeIfNeeded() {
+    if (window.location.searchMap["mode"] == "dev") {
+        window.localStorage["isDevMode"] = "true"
+    }
+}
 
 fun init() {
     val specTestsLoader = SpecTestsLoader()
     val specTestsViewer = SpecTestsViewer()
-    val shouldBeShowedMarkup = localStorage.getItem("showMarkup") != null
-    val sentenceToBeHighlighted = window.location.searchMap["sentence"]
-    val paragraphToBeHighlighted = window.location.searchMap["paragraph"]
-    val sectionToBeHighlighted = window.location.hash
-    val mode = Mode.User
+
+    turnOnPermanentDevModeIfNeeded()
 
     Sidebar.init()
-
-    Header.init(mode, shouldBeShowedMarkup)
+    Header.init()
 
     `$`("h2, h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
         if (idValue !in SpecTestsViewer.excludedSectionsToLoadTests) {
-            SpecTestsLoader.insertLoadIcon(`$`(el), mode)
+            SpecTestsLoader.insertLoadIcon(`$`(el))
         }
     }
 
-    if (shouldBeShowedMarkup && mode != Mode.User) {
+    if (shouldBeShowedMarkup && isDevMode) {
         SpecTestsLoader.showMarkup()
     }
 
@@ -46,8 +47,8 @@ fun init() {
         SpecPlaceHighlighter.highlightParagraph(paragraphToBeHighlighted)
     }
 
-    if (sectionToBeHighlighted.isNotEmpty()) {
-        SpecPlaceHighlighter.highlightSection(sectionToBeHighlighted.substring(1))
+    if (sectionToBeHighlighted != null) {
+        SpecPlaceHighlighter.highlightSection(sectionToBeHighlighted)
     }
 
     document.body?.let { `$`(it) }?.run {
@@ -83,7 +84,7 @@ fun init() {
             false
         }
         on("click", ".number-info[data-path]") { e, _ ->
-            SpecPlaceHighlighter.onSentenceGetLinkClick(`$`(e.currentTarget), mode)
+            SpecPlaceHighlighter.onSentenceGetLinkClick(`$`(e.currentTarget))
             e.stopPropagation()
             false
         }
@@ -114,13 +115,19 @@ fun init() {
         }
 
         on("click", ".show-markup-link") { _, _ ->
-            localStorage.setItem("showMarkup", "true")
+            window.localStorage["showMarkup"] = "true"
             SpecTestsLoader.showMarkup()
             false
         }
 
+        on("click", ".disable-dev-mode") { _, _ ->
+            window.localStorage.removeItem("isDevMode")
+            window.location.reload()
+            false
+        }
+
         on("click", ".hide-markup-link") { _, _ ->
-            localStorage.removeItem("showMarkup")
+            window.localStorage.removeItem("showMarkup")
             window.location.reload()
             false
         }

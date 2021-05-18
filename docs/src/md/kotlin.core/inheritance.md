@@ -31,13 +31,15 @@ A class declared `abstract` cannot be instantiated, i.e., an object of this clas
 Abstract classes are implicitly `open` and their primary purpose is to be inherited from.
 Only abstract classes allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
 
-#### Sealed classes
+#### Sealed classes and interfaces
 
-A class may be declared `sealed`, making it special from the inheritance point-of-view.
+A class or interface (but not a [functional interface][Functional interface declaration]) may be declared `sealed`, making it special from the inheritance point-of-view.
 
 - A `sealed` class is implicitly `abstract` (and these two modifiers are exclusive);
-- It can only be inherited from by class and object types declared in the same file (including class and object types declared as nested classes for this class, but not nested classes in other classes);
-- It allows for exhaustiveness checking of [when expressions][When expressions] for values of this type.
+- A `sealed` class or interface can only be inherited from by types declared in the same package and in the same [module][Modules], and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from `sealed` types);
+- `Sealed` classes and interfaces allow for exhaustiveness checking of [when expressions][When expressions] for values of such types.
+  Any sealed type `S` is associated with its *direct non-sealed subtypes*: a set of non-sealed types, which are either direct subtypes of `S` or transitive subtypes of `S` via some number of other *sealed* types.
+  These direct non-sealed subtypes form the boundary for exhaustiveness checks.
 
 #### Inheritance from built-in types
 
@@ -54,14 +56,22 @@ A callable declaration (that is, a [property][Property declaration] or [member f
 
 It is illegal for a declaration to be both `private` and either `open`, `abstract` or `override`, such declarations should result in a compile-time error.
 
-A callable declaration $D$ inside a classifier declaration *subsumes* a corresponding declaration $B$ of the base classifier type if the [function signature][Function signature] of $D$ (if any) matches the function signature of $B$ (if any).
+A callable declaration $D$ inside a classifier declaration *subsumes* a name-matching declaration $B$ of the base classifier type if the following are true.
+
+* $B$ and $D$ are declarations of the same kind (property declarations or function declarations);
+* [Function signature][Function signature] of $D$ (if any) matches function signature of $B$ (if any).
 
 If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes it, and $D$ has an `override` modifier, $D$ is *overriding* the base declaration $B$.
 
-A declaration $D$ which overrides declaration $B$ should satisfy the following conditions.
+A function declaration $D$ which overrides function declaration $B$ should satisfy the following conditions.
 
 - Return type of $D$ is a subtype of return type of $B$;
 - [Suspendability][Coroutines] of $D$ and $B$ must be the same.
+
+A property declaration $D$ which overrides property declaration $B$ should satisfy the following conditions.
+
+- Mutability of $D$ is not stronger than mutability of $B$ (where read-only `val` is stronger than mutable `var`);
+- Type of $D$ is a subtype of type of $B$; except for the case when both $D$ and $B$ are mutable (`var`), then types of $D$ and $B$ must be equivalent.
 
 Otherwise, it is a compile-time error.
 

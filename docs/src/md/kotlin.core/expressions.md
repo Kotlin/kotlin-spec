@@ -418,16 +418,20 @@ A when expression is called **_exhaustive_** if at least one of the following is
         - A constant expression evaluating to `false`;
         
           > Important: here the term "constant expression" refers to any expression constructed of [constant literals][Constant literals], [string interpolation][String interpolation expressions] over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time
-    - The bound expression is of a [`sealed class`][Sealed classes] type and all of its subtypes are covered using type test conditions in this expression.
-      This should include checks for all direct subtypes of this sealed class.
-      If any of the direct subtypes is also a sealed class, there should either be a check for this subtype or all its subtypes should be covered;
+    - The bound expression is of a [`sealed`][Sealed classes and interfaces] class or interface and all of its [*direct non-sealed subtypes*][Sealed classes and interfaces] $T_1, \ldots, T_n$ are covered in this expression.
+      A subtype $T_i$ is considered covered if when expression contains one of the following:
+      * a type test condition $is T_i$;
+      * a type test condition $is S_i$ (where $S_i$ is sealed and $T_i <: S_i$);
+      * a type test condition $!is S_j$ (where $S_j$ is sealed and $\exists j \neq i : T_j <: S_j$.
+
+	  Additionally, an enum subtype $E_i$ is considered covered also if all its enumerated values are checked for equality using constant expression;
     - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
     - The bound expression is of a [nullable type][Nullable types] $T?$ and one of the cases above is met for its non-nullable counterpart $T$ together with another condition which checks the bound value for equality with `null`.
 
 For object types, the type test condition may be replaced with equality check with the object value.
 
 > Note: if one were to override `equals` for an object type incorrectly (i.e., so that an object is not equal to itself), it would break the exhaustiveness check.
-> Such situations are considered to have undefined behaviour.
+> It is unspecified whether this situation leads to an exception or an undefined value for this `when` expression.
 
 ```kotlin
 sealed class Base
@@ -440,6 +444,28 @@ val c = when(b) {
     is Derived1 -> ...
     Derived2 -> ...
     // no else needed here
+}
+```
+
+```kotlin
+sealed interface I1
+sealed interface I2
+sealed interface I3
+
+class D1 : I1, I2
+class D2 : I1, I3
+
+sealed class D3 : I1, I3
+
+fun foo() {
+    val b: I1 = mk()
+
+    val c = when(a) {
+        !is I3 -> {} // covers D1
+        is D2 -> {} // covers D2
+        // D3 is sealed and does not take part
+        // in the exhaustiveness check
+    }
 }
 ```
 
@@ -484,7 +510,10 @@ These expressions check if two values are equal (`===`) or non-equal (`!==`) *by
 In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference.
 A value created by any constructor call is never equal by reference to a null reference.
 
-For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, the following holds:
+There is an exception to these rules: values of [value classes][Value class declaration] are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler.
+It is thus highly discouraged to compare inline classes by reference.
+
+For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, and for values of inline classes, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
@@ -554,7 +583,42 @@ A type-checking expression checks whether the runtime type of $E$ is a subtype o
 
 The type $T$ must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
 
-> Note: in cases when the compile-time type of $E$ and type $T$ are statically known to be related by subtyping (e.g., $E$ has type `List<String>` and $T$ is `MutableList<String>`), it is allowed for the type $T$ to include non-runtime-available components.
+If the type $T$ is not a parameterized type, it must be [runtime-available][Runtime-available types], otherwise it is a compile-time error.
+If $T$ is a parameterized type, the [bare type argument inference] is performed for the compile-time known type of $E$ and the type constructor $TC$ of $T$.
+After that, given the result arguments of this bare type inference $A_0, A_1 \ldots A_N$, $T$ must suffice the constraint $T!! <: TC[A_0, A_1 \ldots A_N]$, checking each of its argument for conformance with the type of $E$.
+
+> Example:
+>
+> ```kotlin
+> interface Foo<A, B>
+> class Fee<T, U>: Foo<U, T>
+> 
+> fun f(foo: Foo<String, Int>) {
+>     // valid: you can specify parameters 
+>     // as long as they correspond to base type
+>     if(foo is Fee<Int, String>) { ... }
+>     // invalid: Fee<String, Int> is not a subtype
+>     // of Foo<String, Int>
+>     if(foo is Fee<String, Int>) { ... }
+>     // valid: may be specified partially
+>     if(foo is Fee<Int, *>) { ... }
+> ```
+
+$T$ may also be specified without arguments by using the *bare type syntax* in which case the same process of [bare type argument inference] is performed, with the difference being that the resulting arguments $A_0, A_1 \ldots A_N$ are used as arguments for $T$ directly.
+If any of these arguments are inferred to be star-projections, this is a compile-time error.
+
+> Example:
+>
+> ```kotlin
+> interface Foo<A, B>
+> class Fee<T, U>: Foo<U, T>
+> 
+> fun f(foo: Foo<String, Int>) {
+>     // valid: same as foo is Fee<Int, String>
+>     if(foo is Fee) { ... }
+> ```
+
+TODO: this introduces some serious holes in type system, see [KT-15533](https://youtrack.jetbrains.com/issue/KT-15533) / [KT-15706](https://youtrack.jetbrains.com/issue/KT-15706)
 
 Type-checking expression always has type `kotlin.Boolean`.
 
@@ -665,6 +729,9 @@ This situation should be reported as a compile-time warning.
 
 If type $T$ is a [runtime-available][Runtime-available types] type **with** generic parameters, type parameters are **not** checked w.r.t. subtyping.
 This is another potentially erroneous situation, which should be reported as a compile-time warning.
+
+Similarly to [type checking expressions][Type-checking expressions], some type arguments may be excluded from this check if they are known from the supertype of $E$ and, if all type arguments of $T$ can be inferred, they may be omitted altogether using the *bare type syntax*.
+See [type checking section][Type-checking expressions] for explanation.
 
 The checked cast expression result has the type which is the [nullable][Nullable types] variant of the type $T$ specified in the expression.
 
@@ -1013,6 +1080,9 @@ This means that, even if the order at declaration-site was different, arguments 
 Default arguments not specified in the call are all evaluated **after** all provided arguments, in the order of their appearance in function declaration.
 Afterwards, the function itself is invoked.
 
+> Note: this means default argument expressions which are used (i.e., for which the call-site does not provide explicit arguments) are reevaluated at every such call-site.
+> Default argument expressions which are not used (i.e., for which the call-site provides explicit arguments) are **not** evaluated at such call-sites.
+
 > Examples: we use a notation similar to the [control-flow section][Control- and data-flow analysis] to illustrate the evaluation order.
 > 
 > ```kotlin
@@ -1218,6 +1288,9 @@ See corresponding sections for details.
 
 Object literals are used to define anonymous objects in Kotlin.
 Anonymous objects are similar to regular objects, but they (obviously) have no name and thus can be used only as expressions.
+
+> Note: in object literals, only [inner classes][Nested and inner classifiers] are allowed; [interfaces][Interface declaration], [objects][Object declaration] or [nested classes][Nested and inner classifiers] are forbidden.
+
 Anonymous objects, just like [regular object declarations][Classifier declaration], can have at most one base class and zero or more base interfaces declared in its supertype specifiers.
 
 The main difference between a regular object declaration and an anonymous object is its type.
@@ -1229,7 +1302,7 @@ When a value of an anonymous object type escapes current scope:
 - If the type has only one declared supertype, it is implicitly downcasted to this declared supertype;
 - If the type has several declared supertypes, there must be an implicit or explicit cast to any suitable type visible outside the scope, otherwise it is a compile-time error.
 
-TODO(Explain how escaping actually works for locals and stuff...)
+TODO(Explain how escaping actually works for locals, local types and stuff)
 
 > Note: an implicit cast may arise, for example, from the results of [type inference][Type inference].
 

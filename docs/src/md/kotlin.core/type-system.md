@@ -39,7 +39,7 @@ Parameterized type
 ~ A concrete type, which is the result of type constructor instantiation
 
 Type parameter
-~ Formal type argument of a type constructor
+~ Formal type parameter of a type constructor
 
 Type argument
 ~ Actual type argument in a parameterized type
@@ -600,6 +600,145 @@ where $L = L_1 \hor \ldots \hor L_p$ and $U = U_1 \amp \ldots \amp U_q$.
 
 TODO(Need to think more about this part)
 
+> Examples: also show the use of [type containment] to establish [subtyping].
+>
+> ```kotlin
+> interface Inv<T>
+> interface Out<out T>
+> interface In<in T>
+> 
+> interface Root<T>
+> 
+> interface A
+> interface B : A
+> interface C : B
+> 
+> fun <T> mk(): T = TODO()
+> 
+> interface Bounded<T : A> : Root<T>
+> 
+> fun test01() {
+> 
+>     val bounded: Bounded<in B> = mk()
+> 
+>     // Bounded<in B> <: Bounded<KB> where B <: KB <: A
+>     //   (from type capturing)
+>     // Bounded<KB> <: Root<KB>
+>     //   (from supertype relation)
+> 
+>     val test: Root<in C> = bounded
+> 
+>     // ?- Bounded<in B> <: Root<in C>
+>     //
+>     // Root<KB> <: Root<in C> where B <: KB <: A
+>     //   (from above facts)
+>     // KB ⪯ in C
+>     //   (from subtyping for parameterized types)
+>     // KB ⪯ in KC where C <: KC <: C
+>     //   (from type containment rules)
+>     // KB :> KC
+>     //   (from type containment rules)
+>     // (A :> KB :> B) :> (C :> KC :> C)
+>     //   (from subtyping for captured types)
+>     // B :> C
+>     //   (from supertype relation)
+>     // True
+> 
+> }
+> 
+> interface Foo<T> : Root<Out<T>>
+> 
+> fun test02() {
+> 
+>     val foo: Foo<out B> = mk()
+> 
+>     // Foo<out B> <: Foo<KB> where KB <: B
+>     //   (from type capturing)
+>     // Foo<KB> <: Root<Out<KB>>
+>     //   (from supertype relation)
+> 
+>     val test: Root<out Out<B>> = foo
+> 
+>     // ?- Foo<out B> <: Root<out Out<B>>
+>     //
+>     // Root<Out<KB>> <: Root<out Out<B>> where KB <: B
+>     //   (from above facts)
+>     // Out<KB> ⪯ out Out<B>
+>     //   (from subtyping for parameterized types)
+>     // Out<KB> <: Out<B>
+>     //   (from type containment rules)
+>     // Out<out KB> <: Out<out B>
+>     //   (from declaration-site variance)
+>     // out KB ⪯ out B
+>     //   (from subtyping for parameterized types)
+>     // out KB ⪯ out KB' where B <: KB' <: B
+>     //   (from type containment rules)
+>     // KB <: KB'
+>     //   (from type containment rules)
+>     // (KB :< B) <: (B <: KB' <: B)
+>     //   (from subtyping for captured types)
+>     // B <: B
+>     //   (from subtyping definition)
+>     // True
+> 
+> }
+> 
+> interface Bar<T> : Root<Inv<T>>
+> 
+> fun test03() {
+> 
+>     val bar: Bar<out B> = mk()
+> 
+>     // Bar<out B> <: Bar<KB> where KB <: B
+>     //   (from type capturing)
+>     // Bar<KB> <: Root<Inv<KB>>
+>     //   (from supertype relation)
+> 
+>     val test: Root<out Inv<B>> = bar
+> 
+>     // ?- Bar<out B> <: Root<out Inv<B>>
+>     //
+>     // Root<Inv<KB>> <: Root<out Inv<B>> where KB <: B
+>     //   (from above facts)
+>     // Inv<KB> ⪯ out Inv<B>
+>     //   (from subtyping for parameterized types)
+>     // Inv<KB> <: Inv<B>
+>     //   (from type containment rules)
+>     // KB ⪯ B
+>     //   (from subtyping for parameterized types)
+>     // KB ⪯ KB' where B <: KB' <: B
+>     //   (from type containment rules)
+>     // KB =:= KB'
+>     //   (from type containment rules)
+>     // (Nothing <: KB :< B) =:= (B <: KB' <: B)
+>     //   (from subtyping for captured types)
+>     // False
+> 
+> }
+>
+> interface Recursive<T : Recursive<T>>
+> 
+> fun <T : Recursive<T>> probe(e: Recursive<T>): T = mk()
+> 
+> fun test04() {
+>     val rec: Recursive<*> = mk()
+> 
+>     probe(rec)
+> 
+>     // ?- Recursive<*> <: Recursive<T>
+>     //
+>     // Recursive<KS> <: Recursive<KT>
+>     //     where Nothing <: KS <: Recursive<KS>
+>     //           Nothing <: KT <: Recursive<KT>
+>     //   (from type capturing)
+>     // KS ⪯ KT
+>     //   (from subtyping for parameterized types)
+>     // KS =:= KT
+>     //   (from type containment rules)
+>     // True
+> }
+> ```
+
 #### Type containment
 
 Type containment operator $\preceq$ is used to decide, whether a type $A$ is contained in another type $B$ denoted $A \preceq B$, for the purposes of establishing type argument [subtyping][Subtyping].
@@ -626,7 +765,7 @@ Rules for captured types follow the same structure.
 * $\outV K_A \preceq \outV K_B$ if $K_A <: K_B$
 * $\inV K_A \preceq \inV K_B$ if $K_A :> K_B$
 
-In case we need to establish type containment between regular type $A$ and captured type $K_B$, $A$ is converted to captured type $K_A : A <: K_A <: A$.
+In case we need to establish type containment between regular type $A$ and captured type $K_B$, $A$ is considered as if it is a captured type $K_A : A <: K_A <: A$.
 
 #### Function types
 
@@ -1226,6 +1365,8 @@ This normalization procedure, if finite, creates a *canonical* representation of
 
 > Important: in some cases, the greatest lower bound is handled as described [here][The relations on types as constraints], from the point of view of type constraint system.
 
+TODO(Add examples of this exceptional case, e.g., (List..List?) & Any =:= (List..List?))
+
 In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of $\GLB$ for particular two types.
 The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.
 
@@ -1243,8 +1384,10 @@ This is achieved via *type approximation*, which we describe below.
 
 Type approximation function $\alpha$ is defined as follows.
 
-* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
+* $\alpha(A\langle \tau_A \rangle \amp B\langle \tau_B \rangle) = (\alpha {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where type $S$ is the least single common supertype of $A$ and $B$, substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\alpha {\downarrow}$ is a function which applies type approximation function to the type arguments if needed;
 * $\alpha(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \alpha(\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle))$, where $\delta$ is the [type decaying][Type decaying] function.
+
+> Note: when we talk about the least **single** common supertype of $A$ and $B$, we mean exactly that: if they have several unrelated common supertypes (e.g., several common superinterfaces), we continue going up the supertypes, until we find a single common supertype or reach [`kotlin.Any?`][`kotlin.Any`].
 
 TODO(Type approximation for captured types)
 
@@ -1257,7 +1400,7 @@ All [union types][Union types] are subject to *type decaying*, when they are con
 
 Type decaying function $\delta$ is defined as follows.
 
-* $\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \GLB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
+* $\delta(A\langle \tau_A \rangle \hor B\langle \tau_B \rangle) = \amp_{S \in \mathbb{S}(A, B)} (\delta {\downarrow} \circ \LUB)(S\langle \tau_{A \rightarrow S} \rangle, S\langle \tau_{B \rightarrow S} \rangle)$, where substitution $\tau_{P \rightarrow Q}$ is the result of chain applying substitutions from type $P$ to type $Q :> P$, $\delta {\downarrow}$ is a function which applies type decaying function to the type arguments if needed, $\mathbb{S}(A, B)$ is a set of most specific common supertypes of $A$ and $B$.
 
 > Note: a set of most specific common supertypes $\mathbb{S}(A, B)$ is a reduction of a set of all common supertypes $\mathbb{U}(A, B)$, which excludes all types $T \in \mathbb{U}$ such that $\exists V \in \mathbb{U} : V \neq T \land V <: T$.
 

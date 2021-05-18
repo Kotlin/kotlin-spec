@@ -1,16 +1,17 @@
 import at.phatbl.shellexec.ShellExec
 import java.io.File
+import java.net.URI
 import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "0.4.1"
+    id("org.jetbrains.intellij") version "0.6.5"
     antlr
     `maven-publish`
-    id("kotlin") version "1.3.41"
+    id("kotlin") version "1.4.31"
 }
 
-apply(plugin="at.phatbl.shellexec")
+apply(plugin = "at.phatbl.shellexec")
 
 group = "org.jetbrains.kotlin.spec.grammar"
 version = "0.1"
@@ -19,9 +20,17 @@ val jar: Jar by tasks
 val archivePrefix = "kotlin-grammar-parser"
 
 repositories {
-    maven { setUrl("https://dl.bintray.com/vorpal-research/kotlin-maven") }
+    maven {
+        url = URI("https://maven.pkg.github.com/vorpal-research/kotlin-maven")
+        credentials {
+            username = "vorpal-reseacher"
+            password = "\u0031\u0030\u0062\u0037\u0064\u0066\u0031\u0032\u0063\u0064" +
+                    "\u0035\u0034\u0038\u0037\u0034\u0065\u0030\u0034\u0035\u0035" +
+                    "\u0038\u0031\u0063\u0039\u0039\u0062\u0031\u0066\u0032\u0030" +
+                    "\u0038\u0065\u0031\u0061\u0035\u0033\u0065\u0036\u0032\u0038"
+        }
+    }
     mavenCentral()
-    jcenter()
 }
 
 publishing {
@@ -36,11 +45,11 @@ publishing {
     }
 }
 
-java.sourceSets {
-    "main" {
+sourceSets {
+    main {
         java.srcDir("src/main")
     }
-    "test" {
+    test {
         java.srcDir("src/test")
     }
 }
@@ -50,8 +59,17 @@ dependencies {
     antlr("org.antlr:antlr4:4.+")
 }
 
+tasks.compileKotlin {
+    dependsOn("generateGrammarSource")
+}
+
+intellij {
+    version = "IC-2020.2"
+}
+
 tasks.withType<AntlrTask> {
-    outputDirectory = File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
+    outputDirectory =
+        File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
 
     arguments.add("-package")
     arguments.add("org.jetbrains.kotlin.spec.grammar")
@@ -72,8 +90,10 @@ tasks.create("removeCompilerTestData") {
 }
 
 tasks.create<ShellExec>("downloadCompilerTests") {
-    command = """svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/psi testData/psi --force
-        |svn export https://github.com/JetBrains/kotlin/trunk/compiler/testData/diagnostics/tests testData/diagnostics --force""".trimMargin()
+    doFirst {
+        workingDir = File("$projectDir")
+        command = File("$projectDir/scripts/build/downloadCompilerTests.sh").readText()
+    }
 }
 
 tasks.create("syncWithCompilerTests") {
@@ -87,13 +107,16 @@ tasks.create("syncWithCompilerTests") {
 
 tasks.create("prepareDiagnosticsCompilerTests") {
     doFirst {
-        val individualDiagnostic = """(\w+;)?(\w+:)?(\w+)(?:\(.*?[^\\]\))?"""
-        val rangeStartOrEndPattern = Pattern.compile("(<!$individualDiagnostic(,\\s*$individualDiagnostic)*!>)|(<!>)")
+        //language=RegExp
+        val individualDiagnostic = """[^!,]*"""
+        val rangeStartOrEndPattern = Pattern.compile("(<!(([^>])|((?<!\\!)\\>))+!>)|(<!>)")
         val filePattern = Pattern.compile("""// ?FILE: ?""")
         val ls = System.lineSeparator()
-        val sourceCodeByFilePattern = Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
+        val sourceCodeByFilePattern =
+            Pattern.compile("""^(?<filename>.*?)\.(?<extension>kts?|java)($ls)*(?<code>[\s\S]*)$""")
 
         File("${project.rootDir}/${project.name}/testData/diagnostics").walkTopDown().forEach {
+            println("Processing file $it")
             if (it.name.endsWith(".fir.kt")) {
                 it.delete()
             } else if (it.extension == "kt") {
@@ -111,7 +134,9 @@ tasks.create("prepareDiagnosticsCompilerTests") {
                         val code = matcher.group("code")
 
                         if (extension == "kt" || extension == "kts")
-                            File("${it.parent}/${it.nameWithoutExtension}.$filename.$extension").writeText(rangeStartOrEndPattern.matcher(code).replaceAll(""))
+                            File("${it.parent}/${it.nameWithoutExtension}.$filename.$extension").writeText(
+                                rangeStartOrEndPattern.matcher(code).replaceAll("")
+                            )
                     }
                     it.delete()
                 } else {
@@ -134,4 +159,4 @@ jar.manifest {
     )
 }
 
-jar.from(configurations.runtime.map { if (it.isDirectory) it else zipTree(it) })
+jar.from(configurations.runtime.files.map { if (it.isDirectory) it else zipTree(it) })

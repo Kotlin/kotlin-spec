@@ -65,11 +65,16 @@ All of these operators are overloadable operator functions with the following ex
     - $A\texttt{.remAssign(}B\texttt{)}$ if a suitable `remAssign` operator function exists and is available;
     - $A\ \texttt{=}\ A\texttt{.rem(}B\texttt{)}$ if a suitable `rem` operator function exists and is available.
 
-> Note: second expansions of the form $A\ \texttt{=}\ \ldots$ are applicable only if $A$ is a mutable property.
+> Note: before Kotlin version 1.3, there were additional overloadable functions for `%` called `mod`/`modAssign`
 
-> Note: as of Kotlin version 1.2.31, there are additional overloadable functions for `%` called `mod`/`modAssign`, which are deprecated.
+After the expansion, the resulting [function call expression][Function calls and property access] or [simple assignment][Simple assignments] is processed according to their corresponding rules, and overload resolution and type checking are performed.
+If both expansion variants result in correctly resolved and inferred code, this should be reported as an operator overloading ambiguity.
+If only one of the expansion variants can be resolved correctly, this variant is picked as the correct one.
+If neither of variants result in correct code, the operator calls must be reported as unresolved.
 
-After the expansion, the resulting [function call expression][Function calls and property access] or [simple assignment][Simple assignments] is processed according to their corresponding rules.
+> Example: consider the following compound operator statement: `x[y] += z`.
+> The corresponding expansion variants are `x.get(y).plusAssign(z)` and `x.set(x.get(y).plus(z))` according to expansion rules for corresponding operators.
+> If, for example, the call to `set` in the second variant results in resolution or inference error, the whole corresponding expansion is deemed unresolved and the first variant is picked if applicable.
 
 > Note: although for most real-world use cases operators `++` and `--` are similar to operator assignments, in Kotlin they are expressions and are described in the [corresponding section][Expressions-expressions] of this specification.
 

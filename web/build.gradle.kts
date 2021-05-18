@@ -6,15 +6,15 @@ import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 
 plugins {
     java
-    id("kotlin2js") version "1.3.41"
-    id("kotlin-dce-js") version "1.3.41"
+    id("kotlin2js") version "1.4.31"
+    id("kotlin-dce-js") version "1.4.31"
     id("org.jetbrains.kotlin.frontend") version "0.0.45"
 }
 
 group = "org.jetbrains.kotlin.spec"
 version = "0.1"
 
-val buildMode = "production" // production | development
+val buildMode = findProperty("mode")?.toString() ?: "production" // production | development
 
 repositories {
     mavenCentral()
@@ -28,8 +28,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.12.0")
 }
 
-java.sourceSets {
-    "main" {
+sourceSets {
+    main {
         java.srcDir("src/main/kotlin")
     }
 }
