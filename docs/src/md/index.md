@@ -4,7 +4,7 @@ title: Kotlin language specification
 author:
 - Marat Akhin
 - Mikhail Belyaev
-subtitle: Version 1.4-rfc+0.3
+subtitle: Version 1.5-rfc+0.1
 ---
 
 <#include "commands.md">
