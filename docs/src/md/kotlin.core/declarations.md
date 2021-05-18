@@ -645,7 +645,7 @@ Annotation classes cannot be constructed directly unless passed as arguments to 
 #### Value class declaration
 
 > Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature.
-> There is, however, a number of value classes in Kotlin standard library
+> There is, however, a number of value classes in Kotlin standard library.
 
 A class may be declared a **value** class by using `inline` or `value` modifier in its declaration.
 Value classes must adhere to the following limitations:
@@ -660,8 +660,7 @@ Value classes must adhere to the following limitations:
 * They must not have any base classes besides `kotlin.Any`;
 * No other properties of this class may have backing fields.
 
-> Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4
-> experimental inline classes and will be deprecated in the future
+> Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
 
 Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
 Unless `toString` is overriden by the value class definition, it is also implicitly overriden by delegating to the data property.
@@ -670,7 +669,7 @@ This also means that the property may be boxed back to the value class by using 
 
 Due to these restrictions, it is highly discouraged to use value classes with the [reference equality operators][Reference equality expressions].
 
-> Note: in the future versions of Kotlin, value classes may be allowed to have more than one data property
+> Note: in the future versions of Kotlin, value classes may be allowed to have more than one data property.
 
 #### Interface declaration
 

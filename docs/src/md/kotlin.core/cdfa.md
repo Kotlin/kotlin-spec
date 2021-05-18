@@ -1354,9 +1354,9 @@ There are several kinds of effects:
 **Calls-in-place** effect of function $F$ for a function-type parameter $P$ specifies that for every call of $F$ parameter $P$ will be also invoked as a function.
 This effect may also have one of the three invocation types: 
 
-- *At-least-once*, meaning that the $P$ will be invoked at least once;
-- *Exactly-once*, meaning that the $P$ will be invoked exactly once;
-- *At-most-once*, meaning that the $P$ will be invoked at most once.
+- *At-least-once*, meaning that $P$ will be invoked at least once;
+- *Exactly-once*, meaning that $P$ will be invoked exactly once;
+- *At-most-once*, meaning that $P$ will be invoked at most once.
 
 These effects change the call graph that is produced for a function call of $F$ when supplied a lambda-expression parameter for $P$.
 Without any effect, the graph looks like this:
@@ -1472,7 +1472,7 @@ If the corresponding parameter $P$ is introduced with *at-most-once* effect, thi
               v
 ```
 
-This allows the control-flow information to be extracted from lambda expression according to the policy of their invocation.
+This allows the control-flow information to be extracted from lambda expression according to the policy of its invocation.
 
 **Returns-implies-condition** effect of function $F$ for a boolean parameter $P$ specifies that if, when invoked normally, a call to $F$ returns, $P$ is assumed to be true.
 For a function call

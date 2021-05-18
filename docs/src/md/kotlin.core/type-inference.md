@@ -534,7 +534,7 @@ TODO(Lambda analysis order (and the order of overloading vs type inference in ge
 
 ### Bare type argument inference
 
-Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$ the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
+Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$, the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
 It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expressions] and [casting][Cast expressions] operators.
 The process is performed as follows.
 
@@ -551,7 +551,7 @@ If $T$ is a nullable type $U?$, the steps given above are performed for its non-
 
 ## Builder-style type inference
 
-Some functions or parameters of functions in the standard library are annotated with the special [`@BuilderInference`][Built-in annotations] annotation, making call to these functions eligible for the special kind of type inference: **builder-style type inference**.
+Some functions or parameters of functions in the standard library are annotated with the special [`@BuilderInference`][Built-in annotations] annotation, making calls to these functions eligible for the special kind of type inference: **builder-style type inference**.
 In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:
 
 - It must be of an extension-function type;

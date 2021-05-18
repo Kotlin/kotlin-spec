@@ -200,10 +200,10 @@ It is the type of the result of [string interpolation][String interpolation expr
   public override final fun hashCode(): Int
   ```
 
-    These methods are defined to their default behaviour: only the same entry of an enum class is equal to itself and no other object.
+    These member functions are defined to their default behaviour: only the same entry of an enum class is equal to itself and no other object.
     Hash implementation is required to be consistent, but unspecified.
 
-    > Note: the presence of these final methods ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.
+    > Note: the presence of these final member functions ensures the semantics of equality and comparison for the enumeration objects, as they cannot be overridden by the user.
 
 * ```kotlin
   protected final fun clone(): Any
