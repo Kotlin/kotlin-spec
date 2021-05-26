@@ -200,8 +200,6 @@ If a call is correct, for a callable `f` with an explicit receiver `e` of type `
 5. Star-imported extension callables named `f`, whose receiver type conforms to type `T`;
 6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type `T`.
 
-> Note: here type `U` conforms to type `T`, if $T <: U$.
-
 > Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
 > In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
 > These sets are considered in the order of the implicit [receiver priority][Receivers].
