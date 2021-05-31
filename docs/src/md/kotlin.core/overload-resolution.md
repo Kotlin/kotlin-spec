@@ -194,11 +194,11 @@ A call of callable `f` with an explicit receiver `e` is correct if at least one 
 If a call is correct, for a callable `f` with an explicit receiver `e` of type `T` the following sets are analyzed (**in the given order**):
 
 1. Non-extension member callables named `f` of type `T`;
-2. Local extension callables named `f`, whose receiver type conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
-3. Explicitly imported extension callables named `f`, whose receiver type conforms to type `T`;
-4. Extension callables named `f`, whose receiver type conforms to type `T`, declared in the package scope;
-5. Star-imported extension callables named `f`, whose receiver type conforms to type `T`;
-6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type `T`.
+2. Local extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+3. Explicitly imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
+4. Extension callables named `f`, whose receiver type `U` conforms to type `T`, declared in the package scope;
+5. Star-imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
+6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type `U` conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
 
