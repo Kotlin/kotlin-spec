@@ -704,22 +704,6 @@ A functional interface has an associated [function type][Function types], which 
 If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration][Object literals] or as a complete [class][Classifier declaration].
 However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).
 
-* If a lambda literal `L` is preceded with a functional interface name `T`, and the type of `L` is a subtype of the associated function type of `T`, this expression creates an instance of `T` with lambda literal `L` used as its abstract member function implementation.
-
-> Example:
-> 
-> ```kotlin
-> fun interface FI {
->     fun bar(s: Int): Int
-> }
-> 
-> fun foo() {
->     val fi = FI { it }
->     val fi2 = FI { s: Int -> s + 42 }
->     val fi3 = FI { s: Number -> s.toInt() }
-> }
-> ```
-
 * If an expression `L` is used as an argument of functional type `T` in a [function call][Function calls and property access], and the type of `L` is a subtype of the associated function type of `T`, this argument is considered as an instance of `T` with expression `L` used as its abstract member function implementation.
 
 > Example:
@@ -744,10 +728,31 @@ However, as functional interface essentially represents a single function, Kotli
 > }
 > ```
 
+* When encountered in a function call as the *function being called*, a functional interface name `T` is considered to be representing a function of type `(T) -> T`, which allows conversion-like function calls as in the examples below.
+
+> Example:
+> 
+> ```kotlin
+> fun interface FI {
+>     fun bar(s: Int): Int
+> }
+> 
+> fun foo() {
+>     val fi = FI { it }
+>     val fi2 = FI { s: Int -> s + 42 }
+>     val fi3 = FI { s: Number -> s.toInt() }
+>     val fi4 = FI({ it })
+>
+>     val lambda = { s: Int -> s + 42 }
+>     val fi5 = FI(lambda)
+> }
+> ```
+
 > Informally: this feature is known as "Single Abstract Method" (SAM) conversion.
 
 > Note: in Kotlin version 1.3 and earlier, SAM conversion was not available for Kotlin functional interfaces.
-> It was, however, available on Kotlin/JVM for Java functional interfaces.
+
+> Note: SAM conversion is also available on Kotlin/JVM for Java functional interfaces.
 
 #### Object declaration
 
