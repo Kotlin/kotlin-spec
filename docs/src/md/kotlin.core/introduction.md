@@ -5,7 +5,7 @@ One of the main ideas behind Kotlin is being *pragmatic*, i.e., being a programm
 Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.
 
 Kotlin is a multiplatform, statically typed, general-purpose programming language.
-Currently, as of version 1.4, it supports compilation to the following platforms.
+Currently, as of version 1.5, it supports compilation to the following platforms.
 
 * JVM (Java Virtual Machine)
 * JS (JavaScript)
