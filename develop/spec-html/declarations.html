@@ -1502,7 +1502,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an <a href="expressions.html#object-literals">anonymous object declaration</a> or as a complete <a href="declarations.html#classifier-declaration">class</a>. </span><span class="sentence">However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).</span></p>
 </div>
 <ul>
-<li><span class="sentence">If a lambda literal <code>L</code> is preceded with a functional interface name <code>T</code>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this expression creates an instance of <code>T</code> with lambda literal <code>L</code> used as its abstract member function implementation.</span></li>
+<li><span class="sentence">If an expression <code>L</code> is used as an argument of functional type <code>T</code> in a <a href="expressions.html#function-calls-and-property-access">function call</a>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this argument is considered as an instance of <code>T</code> with expression <code>L</code> used as its abstract member function implementation.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -1512,14 +1512,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb23-2" title="2">    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">s</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span></a>
 <a class="sourceLine" id="cb23-3" title="3">}</a>
 <a class="sourceLine" id="cb23-4" title="4"></a>
-<a class="sourceLine" id="cb23-5" title="5"><span class="kw">fun</span> foo() <span class="op">{</span></a>
-<a class="sourceLine" id="cb23-6" title="6">    <span class="kw">val</span> <span class="va">fi</span> <span class="op">=</span> FI <span class="op">{</span> it <span class="op">}</span></a>
-<a class="sourceLine" id="cb23-7" title="7">    <span class="kw">val</span> <span class="va">fi2</span> <span class="op">=</span> FI <span class="op">{</span> s: <span class="kw">Int</span> -&gt; s + <span class="dv">42</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb23-8" title="8">    <span class="kw">val</span> <span class="va">fi3</span> <span class="op">=</span> FI <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
-<a class="sourceLine" id="cb23-9" title="9"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb23-5" title="5"><span class="kw">fun</span> doIt(fi: FI) <span class="op">{}</span></a>
+<a class="sourceLine" id="cb23-6" title="6"></a>
+<a class="sourceLine" id="cb23-7" title="7"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb23-8" title="8">    doIt <span class="op">{</span> it <span class="op">}</span></a>
+<a class="sourceLine" id="cb23-9" title="9">    doIt <span class="op">{</span> s: <span class="kw">Int</span> -&gt; s + <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb23-10" title="10">    doIt <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
+<a class="sourceLine" id="cb23-11" title="11"></a>
+<a class="sourceLine" id="cb23-12" title="12">    doIt(<span class="kw">fun</span><span class="op">(</span><span class="va">s</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span> <span class="kw">return</span> s; <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb23-13" title="13"></a>
+<a class="sourceLine" id="cb23-14" title="14">    <span class="kw">val</span> <span class="va">l</span> <span class="op">=</span> <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
+<a class="sourceLine" id="cb23-15" title="15"></a>
+<a class="sourceLine" id="cb23-16" title="16">    doIt(l)</a>
+<a class="sourceLine" id="cb23-17" title="17"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <ul>
-<li><span class="sentence">If an expression <code>L</code> is used as an argument of functional type <code>T</code> in a <a href="expressions.html#function-calls-and-property-access">function call</a>, and the type of <code>L</code> is a subtype of the associated function type of <code>T</code>, this argument is considered as an instance of <code>T</code> with expression <code>L</code> used as its abstract member function implementation.</span></li>
+<li><span class="sentence">When encountered in a function call as the <em>function being called</em>, a functional interface name <code>T</code> is considered to be representing a function of type <code>(T) -&gt; T</code>, which allows conversion-like function calls as in the examples below.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -1529,19 +1537,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb24-2" title="2">    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">s</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span></a>
 <a class="sourceLine" id="cb24-3" title="3">}</a>
 <a class="sourceLine" id="cb24-4" title="4"></a>
-<a class="sourceLine" id="cb24-5" title="5"><span class="kw">fun</span> doIt(fi: FI) <span class="op">{}</span></a>
-<a class="sourceLine" id="cb24-6" title="6"></a>
-<a class="sourceLine" id="cb24-7" title="7"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb24-8" title="8">    doIt <span class="op">{</span> it <span class="op">}</span></a>
-<a class="sourceLine" id="cb24-9" title="9">    doIt <span class="op">{</span> s: <span class="kw">Int</span> -&gt; s + <span class="dv">42</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb24-10" title="10">    doIt <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
-<a class="sourceLine" id="cb24-11" title="11"></a>
-<a class="sourceLine" id="cb24-12" title="12">    doIt(<span class="kw">fun</span><span class="op">(</span><span class="va">s</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span> <span class="kw">return</span> s; <span class="op">}</span>)</a>
-<a class="sourceLine" id="cb24-13" title="13"></a>
-<a class="sourceLine" id="cb24-14" title="14">    <span class="kw">val</span> <span class="va">l</span> <span class="op">=</span> <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
-<a class="sourceLine" id="cb24-15" title="15"></a>
-<a class="sourceLine" id="cb24-16" title="16">    doIt(l)</a>
-<a class="sourceLine" id="cb24-17" title="17"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb24-5" title="5"><span class="kw">fun</span> foo() <span class="op">{</span></a>
+<a class="sourceLine" id="cb24-6" title="6">    <span class="kw">val</span> <span class="va">fi</span> <span class="op">=</span> FI <span class="op">{</span> it <span class="op">}</span></a>
+<a class="sourceLine" id="cb24-7" title="7">    <span class="kw">val</span> <span class="va">fi2</span> <span class="op">=</span> FI <span class="op">{</span> s: <span class="kw">Int</span> -&gt; s + <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb24-8" title="8">    <span class="kw">val</span> <span class="va">fi3</span> <span class="op">=</span> FI <span class="op">{</span> s: Number -&gt; s.toInt() <span class="op">}</span></a>
+<a class="sourceLine" id="cb24-9" title="9">    <span class="kw">val</span> <span class="va">fi4</span> <span class="op">=</span> FI(<span class="op">{</span> it <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb24-10" title="10"></a>
+<a class="sourceLine" id="cb24-11" title="11">    <span class="kw">val</span> <span class="va">lambda</span> <span class="op">=</span> <span class="op">{</span> s: <span class="kw">Int</span> -&gt; s + <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb24-12" title="12">    <span class="kw">val</span> <span class="va">fi5</span> <span class="op">=</span> FI(lambda)</a>
+<a class="sourceLine" id="cb24-13" title="13"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -1550,7 +1554,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, SAM conversion was not available for Kotlin functional interfaces. </span><span class="sentence">It was, however, available on Kotlin/JVM for Java functional interfaces.</span></p>
+<p><span class="sentence">Note: in Kotlin version 1.3 and earlier, SAM conversion was not available for Kotlin functional interfaces.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: SAM conversion is also available on Kotlin/JVM for Java functional interfaces.</span></p>
 </div>
 </blockquote>
 <h4 id="object-declaration">Object declaration</h4>
