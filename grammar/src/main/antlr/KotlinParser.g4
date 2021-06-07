@@ -618,10 +618,16 @@ whenSubject
     ;
 
 whenExpression
-    : WHEN NL* whenSubject? NL* LCURL NL* (whenEntry NL*)* NL* RCURL
+    : WHEN NL* whenSubject NL* LCURL NL* (patternEntry NL*)* NL* RCURL
+    | WHEN NL* LCURL NL* (whenEntry NL*)* NL* RCURL
     ;
 
 whenEntry
+    : expression NL* ARROW NL* controlStructureBody semi?
+    | ELSE NL* ARROW NL* controlStructureBody semi?
+    ;
+
+patternEntry
     : guardedPattern (NL* COMMA NL* guardedPattern)* (NL* COMMA)? NL* ARROW NL* controlStructureBody semi?
     | ELSE NL* ARROW NL* controlStructureBody semi?
     ;
