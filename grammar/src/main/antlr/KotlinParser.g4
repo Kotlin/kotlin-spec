@@ -622,23 +622,31 @@ whenExpression
     ;
 
 whenEntry
-    : whenCondition (NL* COMMA NL* whenCondition)* (NL* COMMA)? NL* ARROW NL* controlStructureBody semi?
+    : guardedPattern (NL* COMMA NL* guardedPattern)* (NL* COMMA)? NL* ARROW NL* controlStructureBody semi?
     | ELSE NL* ARROW NL* controlStructureBody semi?
     ;
 
-whenCondition
-    : expression
+patternExpression: infixOperation;
+
+pattern
+    : patternExpression
     | rangeTest
     | typeTest
     ;
 
 rangeTest
-    : inOperator NL* expression
+    : inOperator NL* patternExpression
     ;
 
 typeTest
     : isOperator NL* type
     ;
+
+guardedPattern
+    : pattern (NL* CONJ NL* guardExpression)*
+    ;
+
+guardExpression: equality;
 
 tryExpression
     : TRY NL* block ((NL* catchBlock)+ (NL* finallyBlock)? | NL* finallyBlock)
