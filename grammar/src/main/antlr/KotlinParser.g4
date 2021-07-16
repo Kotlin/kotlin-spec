@@ -760,7 +760,8 @@ modifier
     | propertyModifier
     | inheritanceModifier
     | parameterModifier
-    | platformModifier) NL*
+    | platformModifier
+    | contextModifier) NL*
     ;
 
 typeModifiers
@@ -770,6 +771,7 @@ typeModifiers
 typeModifier
     : annotation
     | SUSPEND NL*
+    | contextModifier NL*
     ;
 
 classModifier
@@ -841,6 +843,9 @@ platformModifier
     : EXPECT
     | ACTUAL
     ;
+
+contextModifier
+    : CONTEXT NL* LPAREN NL* type NL* (COMMA NL* type)* RPAREN;
 
 // SECTION: annotations
 
