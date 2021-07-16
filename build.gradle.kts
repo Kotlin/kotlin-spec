@@ -19,7 +19,7 @@ tasks.create<Copy>("copyStatic") {
 tasks.create<Copy>("copyBuiltJs") {
     group = "internal"
 
-    mustRunAfter("web:webpack-bundle")
+    mustRunAfter("web:build")
 
     from("$projectDir/web/build/js")
     into(jsBuildDir)
@@ -56,7 +56,7 @@ tasks.create("buildJs") {
     group = "internal"
 
     dependsOn("copyStatic")
-    dependsOn("web:webpack-bundle")
+    dependsOn("web:build")
     dependsOn("copyBuiltJs")
 
     doFirst {
@@ -72,7 +72,7 @@ tasks.create("buildWeb") {
     dependsOn("copyHtml")
     dependsOn("buildJs")
 
-    finalizedBy("web:clean", "docs:clean")
+    //finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create("buildWebFullOnly") {
@@ -100,15 +100,6 @@ tasks.create("buildPdf") {
     dependsOn("copyPdf")
 
     finalizedBy("web:clean", "docs:clean")
-}
-
-tasks.create<Delete>("clean") {
-    group = "build"
-
-    dependsOn("web:clean")
-    dependsOn("docs:clean")
-
-    delete("$projectDir/build")
 }
 
 tasks.create<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {

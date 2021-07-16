@@ -40,7 +40,7 @@ object InlineKatex : PandocVisitor() {
             }
         }
 
-        val npx = "../web/build/node_modules/.bin/katex"
+        val npx = "../build/js/node_modules/.bin/katex"
         val katex = if(display) NuProcessBuilder(processListener, npx, "--display-mode")
         else NuProcessBuilder(processListener, npx)
 

@@ -5,7 +5,7 @@ import java.net.URI
 
 plugins {
     application
-    id("kotlin") version "1.4.31"
+    id("org.jetbrains.kotlin.jvm") version "1.4.31"
     id("at.phatbl.shellexec")
 }
 
