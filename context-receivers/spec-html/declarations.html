@@ -316,6 +316,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#named-positional-and-default-parameters" id="toc-element-named-positional-and-default-parameters" class="toc-element">Named, positional and default parameters</a></li>
 <li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
+<li><a href="declarations.html#contextual-function-declaration" id="toc-element-contextual-function-declaration" class="toc-element">Contextual function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 </ul></li>
@@ -2053,7 +2054,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">An <em>extension function declaration</em> is similar to a standard function declaration, but introduces an additional special function parameter, the <em>receiver parameter</em>. </span><span class="sentence">This parameter is designated by specifying the receiver type (the type before <code>.</code> in function name), which becomes the type of this receiver parameter. </span><span class="sentence">This parameter is not named and must always be supplied (either explicitly or implicitly), e.g. it cannot be a variable-argument parameter, have a default value, etc.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the <a href="overload-resolution.html#receivers"><em>receiver</em></a> of the call, be it implicit or explicit. </span><span class="sentence">This parameter is available inside the scope of the function as the implicit receiver or <code>this</code>-expression, while nested scopes may introduce additional receivers that take precedence over this one. </span><span class="sentence">See <a href="overload-resolution.html#receivers">the receiver section</a> for details. </span><span class="sentence">This receiver is also available (as usual) in nested scope using labeled <code>this</code> syntax using the name of the declared function as the label.</span></p>
+<p><span class="sentence">Calling such a function is special because the receiver parameter is not supplied as an argument of the call, but as the <a href="overload-resolution.html#receivers"><em>receiver</em></a> of the call, be it implicit or explicit. </span><span class="sentence">This parameter is available inside the scope of the function as the implicit receiver or <code>this</code>-expression, while nested scopes may introduce additional receivers that take precedence over this one. </span><span class="sentence">See <a href="overload-resolution.html#receivers">the receiver section</a> for details. </span><span class="sentence">This receiver is also available (as usual) in nested scope using labeled <code>this</code> syntax using the name of the declared function or the receiver type classifier name as the label.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">For more information on how a particular receiver for each call is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
@@ -2079,6 +2080,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb30-8" title="8">    <span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span> println(<span class="kw">this</span>) <span class="op">}</span> <span class="co">// this has type Bar</span></a>
 <a class="sourceLine" id="cb30-9" title="9">    <span class="kw">fun</span> <span class="fu">Int</span><span class="op">.</span><span class="fu">foo</span><span class="op">()</span> <span class="op">{</span> println(<span class="kw">this</span>) <span class="op">}</span> <span class="co">// this has type Int</span></a>
 <a class="sourceLine" id="cb30-10" title="10"><span class="op">}</span></a></code></pre></div>
+<h4 id="contextual-function-declaration">Contextual function declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A <em>contextual function declaration</em> further extends the extension function declaration syntax with a number of additional special function parameters, the <em>context receiver parameters</em>, provided using the special <code>context</code> soft keyword. </span><span class="sentence">As with extension receivers, these parameters are not named an must always be supplied. </span><span class="sentence">Unlike extension receivers, context receivers may only be provided implicitly at call site. </span><span class="sentence">See <a href="overload-resolution.html#receivers">the receiver section</a> for details. </span><span class="sentence">All context receiver parameters are available inside the scope of the function as implicit receivers and cannot be referenced using unlabeled <code>this</code>-expression syntax. </span><span class="sentence">They are, however, available using labeled <code>this</code> syntax using the name of the receiver type classifier as the label.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">For more information on how a particular receiver for each call is chosen, please refer to the <a href="overload-resolution.html#overload-resolution">overloading section</a>.</span></p>
+</div>
+
 <h4 id="inlining">Inlining</h4>
 <div class="paragraph">
 <p><span class="sentence">A function may be declared <code>inline</code> using a special <code>inline</code> modifier. </span><span class="sentence">This allows the compiler to inline the function at call-site, replacing the call with the body of the function with arguments mapped to corresponding parameters. </span><span class="sentence">It is unspecified whether inlining will actually be performed, however.</span></p>
