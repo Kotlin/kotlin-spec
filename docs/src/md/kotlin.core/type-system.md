@@ -890,6 +890,19 @@ However, as [lambda literals] do not have any explicitly declared function type,
 > }
 > ```
 
+##### Function types with context receivers
+
+In addition to extension receiver, a function type (suspending or not) can additionally specify a number of **context receivers**.
+
+A function type with context receivers
+
+$$\mathtt{context}(T_1, \ldots, T_n) \FTR$$
+
+consists of a number of **context receiver types** $T_1, \ldots, T_n$ and the base function type $\FTR$ which may or may not have an extension receiver and may or may not be suspending.
+Function types with context receivers are equivalent only if corresponding base function types are equivalent and the sets of context receiver types are pairwise equivalent.
+
+TODO: this is very shaky
+
 #### Flexible types
 
 Kotlin, being a multi-platform language, needs to support transparent interoperability with platform-dependent code.
