@@ -287,7 +287,7 @@ typeProjectionModifier
     ;
 
 functionType
-    : (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
+    : (contextModifier NL*)? (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
     ;
 
 functionTypeParameters
