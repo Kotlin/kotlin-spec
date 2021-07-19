@@ -1,8 +1,8 @@
 package org.jetbrains.kotlin.spec.utils
 
 import js.externals.jquery.`$`
-import kotlin.browser.document
-import kotlin.browser.window
+import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlin.math.round
 
 data class PopupConfig(

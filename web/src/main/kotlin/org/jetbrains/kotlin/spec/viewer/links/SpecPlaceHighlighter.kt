@@ -5,7 +5,7 @@ import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.*
 import org.w3c.dom.HTMLElement
-import kotlin.browser.window
+import kotlinx.browser.window
 
 data class SpecPlaceComponents(
         val sectionId: String,

@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.spec.entity.test.TestPlace
 import org.jetbrains.kotlin.spec.entity.test.parameters.TestInfo
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
 import org.jetbrains.kotlin.spec.utils.format
-import kotlin.browser.window
+import kotlinx.browser.window
 import kotlin.js.Promise
 
 interface GithubTestsLoader {

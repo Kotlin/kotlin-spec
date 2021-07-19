@@ -2,7 +2,7 @@ package org.jetbrains.kotlin.spec.utils
 
 import org.w3c.dom.Location
 import org.w3c.dom.get
-import kotlin.browser.window
+import kotlinx.browser.window
 
 fun String.format(vararg args: Any): String {
     return this.replace(Regex("""\{(\d+)}""", RegexOption.MULTILINE)) {
