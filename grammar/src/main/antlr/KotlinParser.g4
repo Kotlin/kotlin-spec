@@ -921,6 +921,7 @@ simpleIdentifier
     | CONST
     | SUSPEND
     | VALUE
+    | CONTEXT
     ;
 
 identifier
