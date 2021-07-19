@@ -831,18 +831,23 @@ In addition to extension receiver, a function type (suspending or not) can addit
 
 A function type with context receivers
 
-$$\mathtt{context}(T_1, \ldots, T_m) \FTR(\RT, A_1, \ldots, A_n) \rightarrow R$$
+$$\mathtt{context}(T_1, \ldots, T_m)\quad\FTR(\RT, A_1, \ldots, A_n) \rightarrow R$$
 
 or 
 
-$$\mathtt{context}(T_1, \ldots, T_m) \FT(A_1, \ldots, A_n) \rightarrow R$$
+$$\mathtt{context}(T_1, \ldots, T_m)\quad\FT(A_1, \ldots, A_n) \rightarrow R$$
 
 consists of a number of **context receiver types** $T_1, \ldots, T_m$ and the base function type $\FTR$ or $\FT$ which may or may not have an extension receiver.
 All context receivers can be considered as additional arguments to the corresponding function type, meaning that
 
-$$\mathtt{context}(T_1, \ldots, T_m) \FTR(\RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(T_1, \ldots, T_m, \RT, A_1, \ldots, A_n, R) $$
-
-$$\mathtt{context}(T_1, \ldots, T_m) \FT(A_1, \ldots, A_n) \rightarrow R \equiv \FT(T_1, \ldots, T_m, A_1, \ldots, A_n, R) $$
+$$
+  \begin{aligned}
+    &\mathtt{context}(T_1, \ldots, T_m)\quad\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \\
+    &\quad{}\quad{}\quad{}\quad{}\equiv \FT(T_1, \ldots, T_m, \RT, A_1, \ldots, A_n, R) \\
+    &\mathtt{context}(T_1, \ldots, T_m)\quad\FT(A_1, \ldots, A_n) \rightarrow R \\
+    &\quad{}\quad{}\quad{}\quad{}\equiv \FT(T_1, \ldots, T_m, A_1, \ldots, A_n, R)
+  \end{aligned}
+$$
 
 > Note: this means that, for example, all these types are equivalent w.r.t. type system
 >
