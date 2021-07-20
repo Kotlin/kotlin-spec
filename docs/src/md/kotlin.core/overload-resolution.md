@@ -522,6 +522,9 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 >     // (2) is preferred by the lambda return type
 > }
 > ```
+
+> Example:
+>
 > ```kotlin
 > @OverloadResolutionByLambdaReturnType
 > fun foo(cb: Unit.() -> String) = Unit // (1)
@@ -538,6 +541,9 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 >     //   as their parameters are not SEERT
 > }
 > ```
+
+> Example:
+>
 > ```kotlin
 > @OverloadResolutionByLambdaReturnType
 > fun foo(cb: Unit.() -> String) = Unit // (1)
@@ -552,6 +558,9 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 >     //   as its lambda takes one parameter
 > }
 > ```
+
+> Example:
+>
 > ```kotlin
 > @OverloadResolutionByLambdaReturnType
 > fun foo(cb: (Unit) -> String) = Unit // (1)
@@ -660,7 +669,7 @@ TODO(Examples)
 > Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behaviour, leading to an infinite compilation.
 
 > Important: an exception to this limitation is when a [lambda return type is used to refine function applicability][Using lambda return type to refine function applicability].
-By limiting the scope of interdependency between type inference and overload resolution to a single step, we avoid creating an oscillating behaviour.
+By limiting the scope of interdependence between type inference and overload resolution to a single step, we avoid creating an oscillating behaviour.
 
 ### Conflicting overloads
 

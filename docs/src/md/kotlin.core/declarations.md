@@ -569,7 +569,7 @@ In addition to these, every enum class type `E` has the following **static** mem
 > 
 > ...
 > 
-> // enum class can have additional declarations that may be overriden in its values:
+> // enum class can have additional declarations that may be overridden in its values:
 > enum class Direction(val symbol: Char) {
 >     UP('^') {
 >         override val opposite: Direction
@@ -663,7 +663,7 @@ Value classes must adhere to the following limitations:
 > Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
 
 Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
-Unless `toString` is overriden by the value class definition, it is also implicitly overriden by delegating to the data property.
+Unless `toString` is overridden by the value class definition, it is also implicitly overridden by delegating to the data property.
 In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
 This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
 
@@ -1642,7 +1642,7 @@ By supplying this annotation the author of the code explicitly declares that saf
 > ```
 > 
 > Using `@UnsafeVariance` is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors.
-> For example, receiving a value in a contravariant position for a covariant class parameter is usually ok if the function involved is guaranteed not to mutate internal state of the class.
+> For example, receiving a value in a contravariant position for a covariant class parameter is usually OK if the function involved is guaranteed not to mutate internal state of the class.
 >
 > For examples on how restrictions are lifted for private visibility (private-to-this), see [visibility section][Declaration visibility]
 

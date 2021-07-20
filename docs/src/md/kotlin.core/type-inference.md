@@ -557,7 +557,7 @@ In order to allow builder-style inference for a function parameter, this paramet
 - It must be of an extension-function type;
 - It must be marked with the `@BuilderInference` annotation.
 
-In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
+In essence, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
 For a call to an eligible function with a lambda parameter $L$ the inference is performed [as described above][Statements with lambda literals], but the type parameters of the receiver parameter of the lambda expression are *postponed* till the body of the lambda expression is proceeded.
 After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:
 

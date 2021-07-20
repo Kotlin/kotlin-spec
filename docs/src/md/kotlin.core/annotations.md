@@ -248,8 +248,8 @@ See corresponding section for details.
 In some cases we may want to limit which [suspending functions] can be called in another suspending function with an extension receiver of a specific type; i.e., if we want to provide a coroutine-enabled DSL, but disallow the use of arbitrary suspending functions.
 To do so, the type `T` of that extension receiver needs to be annotated with `kotlin.RestrictSuspension`, which enables the following limitations.
 
-* Suspending functions with an extention receiver of type `T` are restricted from calling other suspending functions besides those accessible on this receiver.
-* Suspending functions of type `T` can be called only on an extention receiver.
+* Suspending functions with an extension receiver of type `T` are restricted from calling other suspending functions besides those accessible on this receiver.
+* Suspending functions of type `T` can be called only on an extension receiver.
 
 #### `kotlin.OverloadResolutionByLambdaReturnType`
 
