@@ -442,8 +442,10 @@ This check may result in one of the following outcomes:
 
 In case 1, the more applicable candidate of the two is found and no additional steps are needed.
 
-In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable.
-If this step does not allow for deciding the more specific candidate, this is an **overload ambiguity** which must be reported as a compile-time error.
+In case 2, an additional step is performed.
+
+- Any non-parameterized callable is a more specific candidate than any parameterized callable;
+  If there are several non-parameterized candidates, further steps are limited to those candidates.
 
 In case 3, several additional steps are performed in order.
 
@@ -458,7 +460,8 @@ In case 3, several additional steps are performed in order.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
-If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
+If after these additional steps there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
+If there are still more than one most specific candidate afterwards, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
@@ -467,6 +470,106 @@ If the callables in check are properties with available `invoke`, the same proce
 - First, the properties are compared for applicability and the most applicable property is chosen as described above.
   If several properties are equally applicable, this is an overload ambiguity as usual;
 - Second, for the property selected at first step, the most applicable operator `invoke` overload is chosen.
+
+#### Using lambda return type to refine function applicability
+
+If the most specific candidate set $C$ is ambiguous (has more than one callable) and contains at least one callable marked with [`kotlin.OverloadResolutionByLambdaReturnType`], several additional checks and steps are performed to reduce it, by attempting to infer a single lambda return type and use it to refine function applicability.
+
+First, we perform the following checks.
+
+1. We *check* if the function call contains **exactly one** [lambda][Lambda literals] argument $A$ which requires type inference (which does not have an explicitly defined type).
+
+2. For every function in $C$ we collect parameters $P_i$ corresponding to argument $A$ and *check* their function types $T_i$ to be structurally equal excluding return types (SEERT).
+
+> Informally: SEERT checks whether function types have the exactly same input parameters.
+
+> Examples: the following two function types are considered SEERT.
+>
+> * `(Int, String) -> Int`
+> * `(Int, String) -> Double`
+>
+> The following two function types are not considered SEERT.
+>
+> * `Int.(String) -> Int`
+> * `(Int, String) -> Double`
+
+If all checks succeed, we can perform the [type inference][Statements with lambda literals] for the lambda argument $A$, as in all cases its parameter types are known (corollary from check 2 succeeding) and their corresponding constraints can be added to the constraint system.
+The constraint system solution gives us the inferred lambda return type $R_{\text{inf}}$, which may be used to refine function applicability, by removing overload candidates with incompatible lambda return types.
+
+This is performed by repeating the [function applicability test][Determining function applicability for a specific call] on the most specific candidate set $C$, with the additional constraint $R \equiv R_{\text{inf}}$ added for the corresponding lambda argument $A$.
+Candidates which remain applicable with this additional constraint are added to the refined set $C^\prime$.
+
+> Note: If any of the checks described above fails, we continue with the set $C^\prime = C$.
+
+If set $C^\prime$ contains more than one candidate, we attempt to prefer candidates **without** [`kotlin.OverloadResolutionByLambdaReturnType`] annotation.
+If there are any, they are included in the resulting most specific candidate set $C_{\text{res}}$, with which we finish the [MSC selection][Algorithm of MSC selection].
+Otherwise, we finish the MSC selection with the set $C^\prime$.
+
+TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.t. this procedure)
+
+> Example:
+>
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testOk01() {
+>     foo { 42 }
+>     // Both (1) and (2) are applicable
+>     // (2) is preferred by the lambda return type
+> }
+> ```
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: Unit.() -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testError01() {
+>     val take = Unit
+>     // Overload ambiguity
+>     foo { 42 }
+>     // Both (1) and (2) are applicable
+>     // None is preferred by the lambda return type
+>     //   as their parameters are not SEERT
+> }
+> ```
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: Unit.() -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testOk02() {
+>     val take = Unit
+>     foo { a -> 42 }
+>     // Only (2) is applicable
+>     //   as its lambda takes one parameter
+> }
+> ```
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> CharSequence) = Unit // (2)
+> 
+> fun testError02() {
+>     // Error: required String, found CharSequence
+>     foo { a ->
+>         val a: CharSequence = "42"
+>         a
+>     }
+>     // Both (1) and (2) are applicable
+>     // (1) is the only most specific candidate
+>     //   We do not attempt refinement by the lambda return type
+> }
+> ```
 
 ### Resolving callable references
 
@@ -555,6 +658,9 @@ TODO(Examples)
 [Type inference][Type inference] in Kotlin is a very complicated process, and it is performed *after* overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.
 
 > Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behaviour, leading to an infinite compilation.
+
+> Important: an exception to this limitation is when a [lambda return type is used to refine function applicability][Using lambda return type to refine function applicability].
+By limiting the scope of interdependency between type inference and overload resolution to a single step, we avoid creating an oscillating behaviour.
 
 ### Conflicting overloads
 

@@ -253,8 +253,8 @@ To do so, the type `T` of that extension receiver needs to be annotated with `ko
 
 #### `kotlin.OverloadResolutionByLambdaReturnType`
 
-This annotation is used to allow using lambda return type to [determine function applicability][Determining function applicability for a specific call] during [overload resolution].
-Further details are available in the [corresponding section][Using lambda return type to determine function applicability].
+This annotation is used to allow using lambda return type to refine [function applicability][Determining function applicability for a specific call] during [overload resolution].
+Further details are available in the [corresponding section][Using lambda return type to refine function applicability].
 
 > Note: as of Kotlin $\currentKotlinMajorVersion{}$, this annotation is experimental and, in order to use it in one's code, one must explicitly enable it using opt-in annotations given above.
 > The particular marker class used to perform this is implementation-defined.
