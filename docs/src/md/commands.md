@@ -1,5 +1,7 @@
 <#mode quote>
 
+\newcommand{\currentKotlinMajorVersion}{\textrm{1.5}}
+
 \newcommand{\opMathTT}[2]{%
   \expandafter\newcommand{#1}{\operatorname{\texttt{#2}}}%
 }
@@ -113,4 +115,4 @@
 \opMathIT{\Assigned}{Assigned}
 \opMathIT{\Unassigned}{Unassigned}
 
-\newcommand{\coroutineSuspended}{\texttt{CO\-RO\-U\-TINE\-\_SUS\-PEN\-DED}}
+\newcommand{\coroutineSuspended}{\texttt{COROUTINE\_SUSPENDED}}
