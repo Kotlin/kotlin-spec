@@ -159,6 +159,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
+
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.pdf#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -316,7 +317,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.pdf#named-positional-and-default-parameters" id="toc-element-named-positional-and-default-parameters" class="toc-element">Named, positional and default parameters</a></li>
 <li><a href="declarations.pdf#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.pdf#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
-<li><a href="declarations.pdf#contextual-function-declaration" id="toc-element-contextual-function-declaration" class="toc-element">Contextual function declaration</a></li>
 <li><a href="declarations.pdf#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.pdf#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 </ul></li>
@@ -506,6 +506,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.pdf#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
 <li><a href="overload-resolution.pdf#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+<li><a href="overload-resolution.pdf#using-lambda-return-type-to-refine-function-applicability" id="toc-element-using-lambda-return-type-to-refine-function-applicability" class="toc-element">Using lambda return type to refine function applicability</a></li>
 </ul></li>
 <li><a href="overload-resolution.pdf#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
 <ul>
@@ -597,7 +598,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="annotations.pdf#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
 <li><a href="annotations.pdf#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
 <li><a href="annotations.pdf#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
-<li><a href="annotations.pdf#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+<li><a href="annotations.pdf#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a>
+<ul>
+<li><a href="annotations.pdf#kotlin.annotation.retention" id="toc-element-kotlin.annotation.retention" class="toc-element"><code>kotlin.annotation.Retention</code></a></li>
+<li><a href="annotations.pdf#kotlin.annotation.target" id="toc-element-kotlin.annotation.target" class="toc-element"><code>kotlin.annotation.Target</code></a></li>
+<li><a href="annotations.pdf#kotlin.annotation.repeatable" id="toc-element-kotlin.annotation.repeatable" class="toc-element"><code>kotlin.annotation.Repeatable</code></a></li>
+<li><a href="annotations.pdf#kotlin.requiresoptin-kotlin.optin" id="toc-element-kotlin.requiresoptin-kotlin.optin" class="toc-element"><code>kotlin.RequiresOptIn</code> / <code>kotlin.OptIn</code></a></li>
+<li><a href="annotations.pdf#kotlin.deprecated-kotlin.replacewith" id="toc-element-kotlin.deprecated-kotlin.replacewith" class="toc-element"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></a></li>
+<li><a href="annotations.pdf#kotlin.suppress" id="toc-element-kotlin.suppress" class="toc-element"><code>kotlin.Suppress</code></a></li>
+<li><a href="annotations.pdf#kotlin.sincekotlin" id="toc-element-kotlin.sincekotlin" class="toc-element"><code>kotlin.SinceKotlin</code></a></li>
+<li><a href="annotations.pdf#kotlin.unsafevariance" id="toc-element-kotlin.unsafevariance" class="toc-element"><code>kotlin.UnsafeVariance</code></a></li>
+<li><a href="annotations.pdf#kotlin.dslmarker" id="toc-element-kotlin.dslmarker" class="toc-element"><code>kotlin.DslMarker</code></a></li>
+<li><a href="annotations.pdf#kotlin.publishedapi" id="toc-element-kotlin.publishedapi" class="toc-element"><code>kotlin.PublishedApi</code></a></li>
+<li><a href="annotations.pdf#kotlin.builderinference" id="toc-element-kotlin.builderinference" class="toc-element"><code>kotlin.BuilderInference</code></a></li>
+<li><a href="annotations.pdf#kotlin.restrictsuspension" id="toc-element-kotlin.restrictsuspension" class="toc-element"><code>kotlin.RestrictSuspension</code></a></li>
+<li><a href="annotations.pdf#kotlin.overloadresolutionbylambdareturntype" id="toc-element-kotlin.overloadresolutionbylambdareturntype" class="toc-element"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="asynchronous-programming-with-coroutines.pdf#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
 <ul>
@@ -730,20 +746,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ul>
 <li><span class="sentence">If the function returns a result, it is returned directly from the function as normal;</span></li>
-<li><span class="sentence">If the function suspends, it returns a special marker value  to signal its suspended state.</span></li>
+<li><span class="sentence">If the function suspends, it returns a special marker value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">COROUTINE_SUSPENDED</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\texttt{COROUTINE\_SUSPENDED}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.70625em;vertical-align:-0.09514em;"></span><span class="mord text"><span class="mord texttt">COROUTINE_SUSPENDED</span></span><span class="mord"></span></span></span></span>
+
+ to signal its suspended state.</span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning . </span><span class="sentence">If the user wants to suspend a coroutine, they need to perform the following steps.</span></p>
+<p><span class="sentence">The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">COROUTINE_SUSPENDED</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\texttt{COROUTINE\_SUSPENDED}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.70625em;vertical-align:-0.09514em;"></span><span class="mord text"><span class="mord texttt">COROUTINE_SUSPENDED</span></span><span class="mord"></span></span></span></span>
+
+. </span><span class="sentence">If the user wants to suspend a coroutine, they need to perform the following steps.</span></p>
 </div>
 <ul>
 <li><span class="sentence">Access the coroutine’s continuation object by calling <a href="asynchronous-programming-with-coroutines.pdf#coroutine-intrinsics"><code>suspendCoroutineUninterceptedOrReturn</code> intrinsic</a> or any of its wrappers;</span></li>
 <li><span class="sentence">Store the continuation object to resume it later;</span></li>
-<li><span class="sentence">Pass the  marker to the intrinsic, which is then returned from the function.</span></li>
+<li><span class="sentence">Pass the <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">COROUTINE_SUSPENDED</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\texttt{COROUTINE\_SUSPENDED}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.70625em;vertical-align:-0.09514em;"></span><span class="mord text"><span class="mord texttt">COROUTINE_SUSPENDED</span></span><span class="mord"></span></span></span></span>
+
+ marker to the intrinsic, which is then returned from the function.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">As Kotlin does not currently support denotable <a href="type-system.pdf#union-types">union types</a>, the return type is changed to <a href="built-in-types-and-their-semantics.pdf#kotlin.any-builtins"><code>kotlin.Any?</code></a>, so it can hold both the original return type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span>
 
- and .</span></p>
+ and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">COROUTINE_SUSPENDED</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\texttt{COROUTINE\_SUSPENDED}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.70625em;vertical-align:-0.09514em;"></span><span class="mord text"><span class="mord texttt">COROUTINE_SUSPENDED</span></span><span class="mord"></span></span></span></span>
+
+.</span></p>
 </div>
 <h4 id="coroutine-state-machine">Coroutine state machine</h4>
 <div class="paragraph">
@@ -885,7 +909,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb7-22" title="22">    startCoroutineUninterceptedOrReturn(</a>
 <a class="sourceLine" id="cb7-23" title="23">        completion: Continuation&lt;T&gt;): <span class="kw">Any</span>?</a></code></pre></div>
 <div class="paragraph">
-<p><span class="sentence">Function <code>createCoroutineUnintercepted</code> is used to create a coroutine corresponding to its extension receiver suspending function, which invokes the passed <code>completion</code> continuation upon completion. </span><span class="sentence">This function does not start the coroutine, however; to do that, one have to call <code>Continuation&lt;T&gt;.resumeWith</code> function on the created continuation object. </span><span class="sentence">Suspending function <code>suspendCoroutineUninterceptedOrReturn</code> provides access to the current continuation (similarly to how <code>call/cc</code> works in Scheme). </span><span class="sentence">If its lambda returns the  marker, it also suspends the coroutine. </span><span class="sentence">Together with <code>Continuation&lt;T&gt;.resumeWith</code> function, which resumes or starts a coroutine, these functions form a complete coroutine API built into the Kotlin compiler.</span></p>
+<p><span class="sentence">Function <code>createCoroutineUnintercepted</code> is used to create a coroutine corresponding to its extension receiver suspending function, which invokes the passed <code>completion</code> continuation upon completion. </span><span class="sentence">This function does not start the coroutine, however; to do that, one have to call <code>Continuation&lt;T&gt;.resumeWith</code> function on the created continuation object. </span><span class="sentence">Suspending function <code>suspendCoroutineUninterceptedOrReturn</code> provides access to the current continuation (similarly to how <code>call/cc</code> works in Scheme). </span><span class="sentence">If its lambda returns the <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">COROUTINE_SUSPENDED</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\texttt{COROUTINE\_SUSPENDED}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.70625em;vertical-align:-0.09514em;"></span><span class="mord text"><span class="mord texttt">COROUTINE_SUSPENDED</span></span><span class="mord"></span></span></span></span>
+
+ marker, it also suspends the coroutine. </span><span class="sentence">Together with <code>Continuation&lt;T&gt;.resumeWith</code> function, which resumes or starts a coroutine, these functions form a complete coroutine API built into the Kotlin compiler.</span></p>
 </div>
 </body>
 </html>
