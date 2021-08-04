@@ -54,7 +54,7 @@ sourceSets {
 
 dependencies {
     implementation("ru.spbstu:g4-to-ebnf:0.0.0.4")
-    implementation("ru.spbstu:kotlin-pandoc:0.0.13")
+    implementation("ru.spbstu:kotlin-pandoc:0.0.15")
     implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
     implementation("com.github.ajalt:clikt:1.7.0")
     implementation("com.zaxxer:nuprocess:2.0.1")
@@ -65,30 +65,13 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.create<ShellExec>("buildPdf") {
-    group = "internal"
-
-    dependsOn("convertGrammar")
-
-    doFirst {
-        workingDir = File(scriptsDir)
-        command = getScriptText("buildPdf")
-
-        File(pdfBuildDir).mkdirs()
-    }
-}
-
-tasks.create<ShellExec>("buildPdfBySections") {
-    group = "internal"
-
-    dependsOn("convertGrammar")
-
-    doFirst {
-        workingDir = File(scriptsDir)
-        command = getScriptText("buildPdfBySections")
-
-        Paths.get("$pdfBuildDir/sections").toFile().apply { deleteRecursively(); mkdirs() }
-    }
+tasks.create<Jar>("filtersJar") {
+    from(
+        sourceSets.main.get().output,
+        *configurations.runtimeClasspath.get().map { if (it.isDirectory()) it else zipTree(it) }.toTypedArray()
+    )
+    archiveFileName.set("filters.jar")
+    with(tasks.jar.get())
 }
 
 tasks.create<JavaExec>("convertGrammar") {
@@ -97,6 +80,7 @@ tasks.create<JavaExec>("convertGrammar") {
     val parserGrammar = "KotlinParser.g4"
     val outputFile = "./src/md/kotlin.core/grammar.generated.md"
 
+    inputs.files("$grammarsDir/$lexerGrammar", "$grammarsDir/$parserGrammar")
     outputs.file(outputFile)
 
     classpath = sourceSets["main"].runtimeClasspath
@@ -104,30 +88,52 @@ tasks.create<JavaExec>("convertGrammar") {
     args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
 
-tasks.create<ShellExec>("buildHtml") {
+tasks.create("prepareShell") {
     group = "internal"
 
-    dependsOn("convertGrammar")
+    val disableTODOS = project.findProperty("disableTODOS") != null
+    val enableStaticMath = project.findProperty("enableStaticMath") != null
+
+    if (enableStaticMath) {
+        dependsOn(":kotlinNpmInstall") // we need npm to install Katex to run it
+    }
 
     doFirst {
-        workingDir = File(scriptsDir)
-        command = getScriptText("buildHtml")
+        val res = with(StringBuilder()) {
+            appendln("PROJECT_DIR=$projectDir")
+            if (disableTODOS) appendln("TODO_OPTION=--disable-todos")
+            else appendln("TODO_OPTION=--enable-todos")
 
-        File(htmlBuildDir).mkdirs()
+            if (enableStaticMath) {
+                appendln("STATIC_MATH_OPTION=--enable-static-math")
+                appendln("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
+            }
+            else appendln("STATIC_MATH_OPTION=--disable-static-math")
+        }
+
+        File("$buildDir/prepare.sh").writeText("$res")
     }
+
 }
 
-tasks.create<ShellExec>("buildHtmlBySections") {
+tasks.create("buildPdf") {
     group = "internal"
+    dependsOn("pdf:build")
+}
 
-    dependsOn("convertGrammar")
+tasks.create("buildPdfBySections") {
+    group = "internal"
+    dependsOn("pdfSections:build")
+}
 
-    doFirst {
-        workingDir = File(scriptsDir)
-        command = getScriptText("buildHtmlBySections")
+tasks.create("buildHtml") {
+    group = "internal"
+    dependsOn("html:build")
+}
 
-        Paths.get(htmlBuildDir).toFile().apply { deleteRecursively(); mkdirs() }
-    }
+tasks.create("buildHtmlBySections") {
+    group = "internal"
+    dependsOn("htmlSections:build")
 }
 
 tasks.create<JavaExec>("execute") {

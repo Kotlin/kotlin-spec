@@ -3,16 +3,13 @@ package org.jetbrains.kotlin.spec
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.convert
-import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import org.jetbrains.kotlin.spec.SpecTodoFilter.disableTODOS
 import ru.spbstu.pandoc.*
-import java.io.File
 
 private fun String.splitAt(index: Int) = substring(0, minOf(index, length)) to substring(minOf(index, length))
 
-private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
+class SpecTodoFilterVisitor(val format: Format, val disableTODOS: Boolean) : PandocVisitor() {
     fun makeInlineTODO(contents: List<Inline>): Inline? = when {
         disableTODOS -> null
         format.isLaTeX() -> {
@@ -102,12 +99,12 @@ private class SpecTodoFilterVisitor(val format: Format) : PandocVisitor() {
     }
 }
 
-private object SpecTodoFilter : CliktCommand() {
+object SpecTodoFilter : CliktCommand() {
     val format: Format by argument("Pandoc output format").convert { Format(it) }
     val disableTODOS: Boolean by option().flag("--enable-todos", default = false)
 
     override fun run() {
-        makeFilter(SpecTodoFilterVisitor(format))
+        makeFilter(SpecTodoFilterVisitor(format, disableTODOS))
     }
 }
 

@@ -20,6 +20,10 @@ pluginManagement {
 val withGrammarProject: String? by settings
 
 include("docs")
+include("docs:pdf")
+include("docs:pdfSections")
+include("docs:html")
+include("docs:htmlSections")
 include("web")
 
 if (withGrammarProject?.toBoolean() != false) {

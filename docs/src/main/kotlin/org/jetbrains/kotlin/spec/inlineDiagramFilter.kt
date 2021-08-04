@@ -29,16 +29,21 @@ private enum class ImgFormat(val suffix: String) { PNG(".png"), SVG(".svg");
     }
 }
 
-private val visitor = object : PandocVisitor() {
+class SpecInlineDiagramFilterVisitor(
+    val defaultFormat: String?,
+    val format: Format,
+    val imageDirectory: File?,
+    val embed: Boolean
+) : PandocVisitor() {
     override fun visit(b: Block.CodeBlock): Block {
         if ("diagram" !in b.attr.classes) return super.visit(b)
 
         val props = b.attr.propertiesMap
         val altText = props["alt-text"]
-        val format = props["format"] ?: Main.defaultFormat ?: "svg"
+        val imageFormat = props["format"] ?: defaultFormat ?: "svg"
 
         // this is a hack, but for some reason the same svg is much smaller in HTML than in LaTeX
-        val scaling = if (Main.format.isHTML()) 0.7 else 0.35
+        val scaling = if (format.isHTML()) 0.7 else 0.35
 
         val dprops = DiagramProperties(
                 fontSpec = "Fira Mono;Consolas;Monospaced",
@@ -55,7 +60,14 @@ private val visitor = object : PandocVisitor() {
                 clazz = "diagram"
                 id = b.attr.id
                 plain {
-                    renderToFile(ImgFormat.fromExtension(format), diag, altText)
+                    renderToFile(
+                        ImgFormat.fromExtension(imageFormat),
+                        diag,
+                        altText,
+                        imageDirectory,
+                        embed,
+                        format
+                    )
                 }
             }
         }.first()
@@ -64,9 +76,16 @@ private val visitor = object : PandocVisitor() {
 
 private val htmlFormats = setOf("html", "html4", "html5", "revealjs", "s5", "slideous", "slidy")
 
-private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText: String?) {
-    if (Main.format.isHTML() && Main.embed) {
-        when(format) {
+private fun InlineBuilder.renderToFile(
+    imageFormat: ImgFormat,
+    diag: Diagram,
+    altText: String?,
+    imageDirectory: File?,
+    embed: Boolean,
+    format: Format
+) {
+    if (format.isHTML() && embed) {
+        when(imageFormat) {
             ImgFormat.SVG -> rawInline(format = Format.HTML) {
                 "<img src='${ exportAsInlineSVG(diag) }' />"
             }
@@ -76,9 +95,9 @@ private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText
         }
         return
     }
-    val file = createTempFile(suffix = format.suffix, directory = Main.imageDirectory)
+    val file = createTempFile(suffix = imageFormat.suffix, directory = imageDirectory)
 
-    when (format) {
+    when (imageFormat) {
         ImgFormat.SVG -> exportAsSVG(diag, file)
         ImgFormat.PNG -> exportAsPNG(diag, file)
     }
@@ -87,13 +106,13 @@ private fun InlineBuilder.renderToFile(format: ImgFormat, diag: Diagram, altText
 }
 
 private object Main : CliktCommand() {
-    val format: Format by argument("Pandoc output format").convert { Format(it) }
-    val imageDirectory: File? by option().convert { File(it) }
-    val embed: Boolean by option().flag()
-    val defaultFormat: String? by option()
+    private val format: Format by argument("Pandoc output format").convert { Format(it) }
+    private val imageDirectory: File? by option().convert { File(it) }
+    private val embed: Boolean by option().flag()
+    private val defaultFormat: String? by option()
 
     override fun run() {
-        makeFilter(visitor)
+        makeFilter(SpecInlineDiagramFilterVisitor(defaultFormat, format, imageDirectory, embed))
     }
 }
 

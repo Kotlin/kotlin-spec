@@ -71,8 +71,6 @@ tasks.create("buildWeb") {
     dependsOn("docs:buildHtmlBySections")
     dependsOn("copyHtml")
     dependsOn("buildJs")
-
-    //finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create("buildWebFullOnly") {
@@ -98,8 +96,6 @@ tasks.create("buildPdf") {
     dependsOn("docs:buildPdf")
     dependsOn("docs:buildPdfBySections")
     dependsOn("copyPdf")
-
-    finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {

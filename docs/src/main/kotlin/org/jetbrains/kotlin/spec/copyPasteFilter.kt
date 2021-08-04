@@ -18,7 +18,7 @@ private class IdCollector : PandocVisitor() {
     }
 }
 
-private object SpecCopyPasteFilterVisitor : PandocVisitor() {
+object SpecCopyPasteFilterVisitor : PandocVisitor() {
     var nextId: Int = 0
 
     private val collector = IdCollector()

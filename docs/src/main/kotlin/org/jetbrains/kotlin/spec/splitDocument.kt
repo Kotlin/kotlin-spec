@@ -6,15 +6,12 @@ import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import kotlinx.warnings.Warnings
-import org.jetbrains.kotlin.spec.SplitDocument.generateTOC
 import ru.spbstu.pandoc.*
 import ru.spbstu.pandoc.builder.BlockBuilder
 import ru.spbstu.pandoc.builder.blocks
 import ru.spbstu.pandoc.jackson.constructObjectMapper
 import ru.spbstu.pandoc.jackson.readValue
 import java.io.File
-import java.io.FileOutputStream
-import java.io.PrintStream
 
 private class IdMapper(val splitLevel: Int) : PandocVisitor() {
     var currentSection: String = ""
@@ -142,7 +139,7 @@ fun setSectionCounterHtml(secNumber: Int, splitLevel: Int): Block {
     return Block.RawBlock(Format.HTML, """<span style="visibility: hidden; counter-reset: $counterName ${secNumber - 1};"></span>""")
 }
 
-private class Splitter(val outputDirectory: File, val format: String, val splitLevel: Int = 2) : PandocVisitor() {
+class Splitter(val outputDirectory: File, val format: String, val generateTOC: Boolean, val splitLevel: Int = 2) : PandocVisitor() {
     override fun visit(doc: Pandoc): Pandoc {
         val linkFixer = LinkFixer(splitLevel, format)
         val newDoc = linkFixer.visit(doc)
@@ -219,7 +216,7 @@ private object SplitDocument : CliktCommand() {
     override fun run() {
         val doc: Pandoc = mapper.readValue(System.`in`)
         outputDirectory.mkdirs()
-        Splitter(outputDirectory, format).visit(doc)
+        Splitter(outputDirectory, format, generateTOC).visit(doc)
     }
 }
 
