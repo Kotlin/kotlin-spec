@@ -708,10 +708,10 @@ TODO(Need to think more about this part)
 >     //   (from subtyping for parameterized types)
 >     // KB ⪯ KB' where B <: KB' <: B
 >     //   (from type containment rules)
->     // KB =:= KB'
+>     // KB ⊆ KB'
 >     //   (from type containment rules)
->     // (Nothing <: KB :< B) =:= (B <: KB' <: B)
->     //   (from subtyping for captured types)
+>     // (Nothing <: KB :< B) ⊆ (B <: KB' <: B)
+>     //
 >     // False
 > 
 > }
@@ -723,19 +723,44 @@ TODO(Need to think more about this part)
 > fun test04() {
 >     val rec: Recursive<*> = mk()
 > 
->     probe(rec)
-> 
->     // ?- Recursive<*> <: Recursive<T>
->     //
->     // Recursive<KS> <: Recursive<KT>
->     //     where Nothing <: KS <: Recursive<KS>
->     //           Nothing <: KT <: Recursive<KT>
+>     // Recursive<*> <: Recursive<KS> where KS <: Recursive<KS>
 >     //   (from type capturing)
+>     // Recursive<KS> <: Root<KS>
+>     //   (from supertype relation)
+> 
+>     val root: Root<*> = rec
+> 
+>     // ?- Recursive<*> <: Root<*>
+>     //
+>     // Root<KS> <: Root<KT>
+>     //     where Nothing <: KS <: Recursive<KS>
+>     //           Nothing <: KT <: Any?
+>     //   (from above facts and type capturing)
 >     // KS ⪯ KT
 >     //   (from subtyping for parameterized types)
->     // KS =:= KT
+>     // KS ⊆ KT
 >     //   (from type containment rules)
+>     // (Nothing <: KS <: Recursive<KS>) ⊆ (Nothing <: KT <: Any?)
+>     //
 >     // True
+> 
+>     val rootRec: Root<Recursive<*>> = rec
+> 
+>     // ?- Recursive<*> <: Root<Recursive<*>>
+>     //
+>     // Root<KS> <: Root<Recursive<*>>
+>     //     where Nothing <: KS <: Recursive<KS>
+>     //   (from above facts)
+>     // KS ⪯ Recursive<*>
+>     //   (from subtyping for parameterized types)
+>     // KS ⪯ KT where Recursive<*> <: KT <: Recursive<*>
+>     //   (from type containment rules)
+>     // KS ⊆ KT
+>     //   (from type containment rules)
+>     // (Nothing <: KS <: Recursive<KS) ⊆ (Recursive<*> <: KT <: Recursive<*>)
+>     //
+>     // False
+>     
 > }
 > ```
 
@@ -758,7 +783,7 @@ $\preceq$ is defined as follows.
 
 Rules for captured types follow the same structure.
 
-* $K_A \preceq K_B$ if $K_A \equiv K_B$
+* $K_A \preceq K_B$ if $K_A \subseteq K_B$
 * $K_A \preceq \outV K_B$ if $K_A <: K_B$
 * $K_A \preceq \inV K_B$ if $K_A :> K_B$
 

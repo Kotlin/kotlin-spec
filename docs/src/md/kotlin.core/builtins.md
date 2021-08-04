@@ -52,7 +52,7 @@ Further details about how $\Nothing$ should be handled are available [here][Cont
 ### `kotlin.Unit`
 
 $\Unit$ is a unit type, i.e., a type with only one value $\Unit$; all values of type $\Unit$ should reference the same underlying $\Unit$ object.
-It is somewhat similar in purpose to `void` return type in other programming languages in that it signifies an *absense of a value* (i.e. the returned type for a function returning nothing), but is different in that there is, in fact, a single value of this type.
+It is somewhat similar in purpose to `void` return type in other programming languages in that it signifies an *absence of a value* (i.e. the returned type for a function returning nothing), but is different in that there is, in fact, a single value of this type.
 
 ### `kotlin.Boolean`
 

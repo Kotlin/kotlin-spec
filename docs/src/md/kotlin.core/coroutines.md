@@ -1,6 +1,5 @@
 ## Asynchronous programming with coroutines
 
-TODO([Kotlin 1.3+, Experimental] Everything: state machine, context, etc.)
 TODO([Kotlin 1.3+, Experimental] Update w.r.t. structured concurrency)
 
 ### Suspending functions
@@ -99,16 +98,16 @@ For a suspendable function with parameters $p_1, p_2, \ldots, p_N$ and result ty
 The calling convention for such function is different from regular functions as a suspendable function may either *suspend* or *return*.
 
 * If the function returns a result, it is returned directly from the function as normal;
-* If the function suspends, it returns a special marker value \coroutineSuspended{} to signal its suspended state.
+* If the function suspends, it returns a special marker value $\coroutineSuspended{}$ to signal its suspended state.
 
-The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning \coroutineSuspended{}.
+The calling convention is maintained by the compiler during the CPS transformation, which prevents the user from manually returning $\coroutineSuspended{}$.
 If the user wants to suspend a coroutine, they need to perform the following steps.
 
 * Access the coroutine's continuation object by calling [`suspendCoroutineUninterceptedOrReturn` intrinsic][Coroutine intrinsics] or any of its wrappers;
 * Store the continuation object to resume it later;
-* Pass the \coroutineSuspended{} marker to the intrinsic, which is then returned from the function.
+* Pass the $\coroutineSuspended{}$ marker to the intrinsic, which is then returned from the function.
 
-As Kotlin does not currently support denotable [union types], the return type is changed to [`kotlin.Any?`][`kotlin.Any`], so it can hold both the original return type $T$ and \coroutineSuspended{}.
+As Kotlin does not currently support denotable [union types], the return type is changed to [`kotlin.Any?`][`kotlin.Any`], so it can hold both the original return type $T$ and $\coroutineSuspended{}$.
 
 #### Coroutine state machine
 
@@ -256,5 +255,5 @@ fun <T> (suspend R.() -> T).
 Function `createCoroutineUnintercepted` is used to create a coroutine corresponding to its extension receiver suspending function, which invokes the passed `completion` continuation upon completion.
 This function does not start the coroutine, however; to do that, one have to call `Continuation<T>.resumeWith` function on the created continuation object.
 Suspending function `suspendCoroutineUninterceptedOrReturn` provides access to the current continuation (similarly to how `call/cc` works in Scheme).
-If its lambda returns the \coroutineSuspended{} marker, it also suspends the coroutine.
+If its lambda returns the $\coroutineSuspended{}$ marker, it also suspends the coroutine.
 Together with `Continuation<T>.resumeWith` function, which resumes or starts a coroutine, these functions form a complete coroutine API built into the Kotlin compiler.
