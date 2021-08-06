@@ -13,9 +13,7 @@ This section describes *overload resolution process* in detail.
 Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
 Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.
 
-### Basics
-
-#### Receivers
+### Receivers
 
 Every function or property that is defined as a method or an extension has one or more special parameters called _receiver_ parameters.
 When calling such a callable using [navigation operators][Navigation operators] (`.` or `?.`) the left hand side value is called an _explicit receiver_ of this particular call.
@@ -27,6 +25,7 @@ Implicit receivers are available in a syntactic scope according to the following
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the declared object is available as implicit `this`;
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit `this`;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
+- If a function or a property is [contextual][Contextual function declarations], its context receiver parameters are available inside the declaration as implicit receivers;
 - If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
 
 > Important: a phantom static implicit `this` is a special receiver, which is included in the receiver chain for the purposes of handling static functions from [enum classes][Enum class declaration].
@@ -35,23 +34,31 @@ Implicit receivers are available in a syntactic scope according to the following
 The available receivers are prioritized in the following way:
 
 - Receivers provided in the most inner scope have higher priority as ordered w.r.t. [link relation][Linked scopes];
+- Receivers from context receiver parameters have **lower** priority than other _non-top-level_ receivers;
 - The implicit `this` receiver has higher priority than phantom static implicit `this`;
 - The phantom static implicit `this` receiver has higher priority than the current class companion object receiver;
 - Current class companion object receiver has higher priority than any of the superclass companion objects;
 - Superclass companion object receivers are prioritized according to the inheritance order.
 
-> Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.
+> Important: DSL-specific annotations (marked with [`kotlin.DslMarker`] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope.
 
-> Important: DSL-specific annotations (marked with [`kotlin.DslMarker`] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope. 
+As some scope may immediately provide _several_ receivers (e.g., [contextual function][Contextual function declaration] scope with its context receiver parameters), they will all have the same priority w.r.t. implicit receiver ordering.
+These same-priority implicit receivers form a _one-only implicit receiver group_, which is considered as a special implicit receiver with the following semantics.
+When using a one-only implicit receiver group as an implicit receiver for the purposes of overload resolution, _every implicit receiver_ from the group is considered as if it is the singular implicit receiver, and if two or more implicit receivers from the group can be used, it is an **overload ambiguity** which must be reported as a compile-time error.
 
-The implicit receiver having the highest priority is also called the _default implicit receiver_.
-The default implicit receiver is available in a scope as `this`.
-Other available receivers may be accessed using [labeled this-expressions][This-expressions].
+The implicit receiver having the highest priority (if singular) is also called the _default implicit receiver_.
+If the default implicit receiver is not a receiver from the context receiver parameters, it is available in a scope as `this`.
+In other cases and for other available receivers one may use [labeled this-expressions][This-expressions] for access.
+
+> Note: several implicit receivers with the highest priority may happen, for example, inside a top-level [contextual function declaration].
 
 If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.
 
 For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver associated with the declaration scope the extension is declared in is called *dispatch receiver*. 
 For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.
+
+For [contextual callables], the receivers used as the context receiver parameters are called *context receivers*.
+Context receivers must always be implicit.
 
 > Note: by definition, local extension callables do not have a dispatch receiver, as they are declared in a statement scope.
 
@@ -86,7 +93,9 @@ For a particular callable invocation, any or both receivers may be involved, but
 > }
 > ```
 
-#### The forms of call-expression
+TODO(Context receiver examples)
+
+### The forms of call-expression
 
 Any function in Kotlin may be called in several different ways:
 
@@ -102,7 +111,7 @@ For each of these cases, a compiler should first pick a number of _overload cand
 
 > Important: the overload candidates are picked **before** the most specific function is chosen.
 
-#### Callables and `invoke` convention
+### Callables and `invoke` convention
 
 A *callable* $X$ for the purpose of this section is one of the following:
 
@@ -139,7 +148,14 @@ An *extension callable* is one of the following:
 
 A *local callable* is any callable which is declared in a [statement scope][Scopes and identifiers].
 
-#### c-level partition
+### Contextual callables
+
+A _contextual callable_ is any callable with one or more context receiver parameters.
+
+* For function-like callables, their [declaration][Contextual function declaration] should contain one or more context receiver parameters;
+* For property-like callables with member or extension operator `invoke`, the `invoke` operator declaration should contain one or more context receiver parameters.
+
+### c-level partition
 
 When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:
 
@@ -156,7 +172,7 @@ Extension callables produce the following sets, considered separately, ordered b
 Let us define this partition of callables to overload candidate sets as *c-level partition* (callable-level partition).
 As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed **last**, after all other applicable steps.
 
-### Building the overload candidate set
+### Building the overload candidate set (OCS)
 
 #### Fully-qualified call
 
@@ -196,15 +212,17 @@ A call of callable `f` with an explicit receiver `e` is correct if at least one 
 If a call is correct, for a callable `f` with an explicit receiver `e` of type `T` the following sets are analyzed (**in the given order**):
 
 1. Non-extension member callables named `f` of type `T`;
-2. Extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
-    * First, we assume there is **no implicit receiver** available for the dispatch receiver of `f` (i.e., we analyze _local_ extension callables only);
-    * Second, we consider each implicit receiver available for the dispatch receiver of `f` in the order of the implicit [receiver priority][Receivers];
+2. Local extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
 3. Explicitly imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
 4. Extension callables named `f`, whose receiver type `U` conforms to type `T`, declared in the package scope;
 5. Star-imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
 6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type `U` conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
+
+> Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
+> In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
+> These sets are considered in the order of the implicit [receiver priority][Receivers].
 
 There is a important special case here, however, as a callable may be a [property-like callable with an operator function `invoke`][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
 In this situation, such callable belongs to the **lowest priority** set of its parts (e.g., for the above case, priority 5 set).
@@ -309,6 +327,7 @@ For an identifier named `f` the following sets are analyzed (**in the given orde
 
 1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
 2. The overload candidate sets for each pair of implicit receivers `e` and `d` available in the current scope, calculated as if `e` is the [explicit receiver][Call with an explicit receiver], in order of the [receiver priority][Receivers];
+    * In case `e` or `d` is a one-only implicit receiver group (e.g., involving implicit receivers from context receiver parameters), and several implicit receivers from the group create a non-empty candidate set, this is an **overload ambiguity** which must be reported as a compile-time error;
 3. Top-level non-extension functions named `f`, in the order of:
    a. Callables explicitly imported into the current file;
    b. Callables declared in the same package;
@@ -317,7 +336,7 @@ For an identifier named `f` the following sets are analyzed (**in the given orde
 
 Similarly to how it works for [calls with explicit receiver][Call with an explicit receiver], a property-like callable with an `invoke function` belongs to the **lowest priority** set of its parts.
 
-When analyzing these sets, the **first** set which contains **any** callable with the corresponding name and conforming types is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
+When analyzing these sets, the **first** set which contains **any** [applicable callable][Determining function applicability for a specific call] is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
 
 After we have fixed the overload candidate set, we search this set for the [most specific callable][Choosing the most specific candidate from the overload candidate set].
 
@@ -362,7 +381,7 @@ Determining function applicability for a specific call is a [type constraint][Ko
 First, for every non-lambda argument of the function called, type inference is performed.
 Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
-Second, the following constraint system is built:
+Second, the following _applicability constraint system_ is built:
 
 - For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter of type $U_j$, a constraint $T_i <: U_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
@@ -373,14 +392,30 @@ TODO: in fact, it is an intersection of both non-suspend and suspend variants
 
 TODO: taking into account the fact that $\FT(L) -> R <: \FTR(L) -> R <: \FT(L) -> R$, this is not entirely correct. It's not that important for applicability though.
 
-If this constraint system is sound, the function is applicable for the call.
-Only applicable functions are considered for the next step: [choosing the most specific candidate from the overload candidate set][Choosing the most specific candidate from the overload candidate set].
-
-Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type $\Nothing$ is deemed not applicable for any member callables, regardless of other parameters.
+Receiver parameters are handled in the same way as other parameters in this constraint system, with one important exception: any receiver of type $\Nothing$ is deemed not applicable for any member callables, regardless of other parameters.
 This is due to the fact that, as $\Nothing$ is the subtype of any other type in Kotlin type system, it would have allowed **all** member callables of **all** available types to participate in the overload resolution, which is theoretically possible, but very resource-consuming and does not make much sense from the practical point of view.
 Extension callables are still available, because they are limited to the declarations available or imported in the current scope.
 
 > Note: although it is impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type $\NothingQ$.
+
+If the applicability constraint system is sound, the callable is _context-agnostic_ applicable for the call.
+
+If a _context-agnostic_ applicable callable is not [contextual][Contextual callables], it is _fully applicable_ for the call.
+
+If a _context-agnostic_ applicable callable is contextual, we check if its context receiver parameters can be satisfied w.r.t. the call.
+
+* For each context receiver parameter $P_i$ of type $T_i$ we perform the following.
+    * Find the **first** implicit receiver $r_j$ of a suitable type $R_j <: T_i$, in order of the [receiver priority][Receivers];
+        * The suitability check is done by adding the constraint $R_j <: T_i$ to the applicability constraint system;
+        * If the applicability constraint system becomes unsound, we move to the next implicit receiver;
+        * If the applicability constraint system remains sound, we fix the use of implicit receiver $r_j$ for the context receiver parameter $P_i$.
+    * If $r_j$ is a one-only implicit receiver group and several implicit receivers from the group satisfy the context receiver parameter $P_i$, this is an **overload ambiguity** which must be reported as a compile-time error;
+    * If we cannot find an implicit receiver of a suitable type for some context receiver parameter, the check fails and the callable is considered inapplicable;
+* If we found an implicit receiver of a suitable type for every context receiver parameter, the check succeeds.
+
+If this check is successful, the contextual callable is _fully applicable_ for the call.
+
+Only fully applicable callables are considered for the next step: [choosing the most specific candidate from the overload candidate set][Choosing the most specific candidate from the overload candidate set].
 
 ### Choosing the most specific candidate from the overload candidate set
 
@@ -431,6 +466,9 @@ For every two distinct members of the candidate set $F_1$ and $F_2$, the followi
 
 > Note: this constraint system checks whether $F_1$ can forward itself to $F_2$.
 
+> Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
+> The $\Widen$ operator ensures the desired priority between overloads with integer type arguments.
+
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
 The check is then repeated with $F_1$ and $F_2$ swapped.
 
@@ -454,9 +492,8 @@ In case 3, several additional steps are performed in order.
 - For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
   The candidate with the least number of non-specified default parameters is a more specific candidate;
 - For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
-
-> Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
-> In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
+- Any [contextual callable][Contextual callables] is a more specific candidate than any non-contextual callable;
+- A contextual callable $A$ is a more specific candidate than another contextual callable $B$, if $A$ has _strictly more_ context receiver parameters than $B$.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
@@ -712,6 +749,8 @@ Second, the type information needed to perform the resolution steps is acquired 
 The `invoke` operator convention **does not** apply to callable reference candidates.
 Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable being called and the callable being referenced are to be resolved _simultaneously_.
 
+> Important: callable references to [contextual callables] are not supported.
+
 #### Resolving callable references not used as arguments to a call
 
 In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:
@@ -719,7 +758,7 @@ In a simple case when the callable reference is not used as an argument to an ov
 - For each callable reference candidate, we perform the following steps:
   - We build its type constraints and add them to the constraint system of the expression the callable reference is used in;
   - A callable reference is deemed applicable if the constraint system is sound;
-- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set];
+- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set (OCS)];
 - If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.
 - Otherwise, the single callable in the set is chosen as the result of the resolution process.
 
