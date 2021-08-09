@@ -1502,6 +1502,23 @@ For all other purposes, extension properties are not different from non-extensio
 > }
 > ```
 
+#### Contextual property declaration
+
+A _contextual property declaration_ further extends the extension property declaration syntax with a number of additional special function parameters, the _context receiver parameters_, very much alike a [contextual function declaration], supplied using the `context` soft keyword.
+As with extension receivers, these parameters are not named and must always be supplied.
+Unlike extension receivers, these must always be provided implicitly at call site.
+See [the receiver section][Receivers] for details.
+
+A contextual property declaration may be extension or non-extension, but follows the same limitations as extension properties described in the [corresponding section][Extension property declaration].
+
+All context receiver parameters can be accessed inside getter and setter scopes of the property as the implicit receiver or `this`.
+It may also be accessed inside nested scopes using [labeled `this` syntax][This-expressions] using the type of the context receiver as the label.
+
+Same as [contextual function declarations][contextual function declaration], context receiver types of a particular propery must all be different from each other and no pair of these types may be in a [subtyping relation][Subtyping].
+They may, however, contain a type that is also used as the extension receiver of the function or a type in a subtyping relation with it.
+
+TODO: Examples
+
 #### Property initialization
 
 All non-abstract properties must be definitely initialized before their first use. 
