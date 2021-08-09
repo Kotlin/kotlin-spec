@@ -25,7 +25,7 @@ Implicit receivers are available in a syntactic scope according to the following
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the declared object is available as implicit `this`;
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit `this`;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
-- If a function or a property is [contextual][Contextual function declarations], its context receiver parameters are available inside the declaration as implicit receivers;
+- If a function or a property is [contextual][Contextual function declaration], its context receiver parameters are available inside the declaration as implicit receivers;
 - If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
 
 > Important: a phantom static implicit `this` is a special receiver, which is included in the receiver chain for the purposes of handling static functions from [enum classes][Enum class declaration].
@@ -148,7 +148,7 @@ An *extension callable* is one of the following:
 
 A *local callable* is any callable which is declared in a [statement scope][Scopes and identifiers].
 
-### Contextual callables
+#### Contextual callables
 
 A _contextual callable_ is any callable with one or more context receiver parameters.
 
@@ -467,7 +467,7 @@ For every two distinct members of the candidate set $F_1$ and $F_2$, the followi
 > Note: this constraint system checks whether $F_1$ can forward itself to $F_2$.
 
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
-> The $\Widen$ operator ensures the desired priority between overloads with integer type arguments.
+> The $\Widen$ operator ensures the [desired priority][Integer type widening] between overloads with integer type arguments.
 
 If the resulting constraint system is sound, it means that $F_1$ is equally or more applicable than $F_2$ as an overload candidate (aka applicability criteria).
 The check is then repeated with $F_1$ and $F_2$ swapped.
