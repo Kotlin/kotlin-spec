@@ -274,6 +274,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#getters-and-setters">Getters and setters</a></li>
 <li><a href="#delegated-property-declaration">Delegated property declaration</a></li>
 <li><a href="#extension-property-declaration">Extension property declaration</a></li>
+<li><a href="#contextual-property-declaration">Contextual property declaration</a></li>
 <li><a href="#property-initialization">Property initialization</a></li>
 <li><a href="#constant-properties">Constant properties</a></li>
 <li><a href="#late-initialized-properties">Late-initialized properties</a></li>
@@ -8920,6 +8921,20 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <a class="sourceLine" id="cb87-9" title="9">    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
 <a class="sourceLine" id="cb87-10" title="10"><span class="op">}</span></a></code></pre></div>
 </blockquote>
+<h4 id="contextual-property-declaration">Contextual property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A <em>contextual property declaration</em> further extends the extension property declaration syntax with a number of additional special function parameters, the <em>context receiver parameters</em>, very much alike a <a href="#contextual-function-declaration">contextual function declaration</a>, supplied using the <code>context</code> soft keyword. </span><span class="sentence">As with extension receivers, these parameters are not named and must always be supplied. </span><span class="sentence">Unlike extension receivers, these must always be provided implicitly at call site. </span><span class="sentence">See <a href="#receivers">the receiver section</a> for details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A contextual property declaration may be extension or non-extension, but follows the same limitations as extension properties described in the <a href="#extension-property-declaration">corresponding section</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All context receiver parameters can be accessed inside getter and setter scopes of the property as the implicit receiver or <code>this</code>. </span><span class="sentence">It may also be accessed inside nested scopes using <a href="#this-expressions">labeled <code>this</code> syntax</a> using the type of the context receiver as the label.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Same as <a href="#contextual-function-declaration">contextual function declarations</a>, context receiver types of a particular propery must all be different from each other and no pair of these types may be in a <a href="#subtyping">subtyping relation</a>. </span><span class="sentence">They may, however, contain a type that is also used as the extension receiver of the function or a type in a subtyping relation with it.</span></p>
+</div>
+
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
 <p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="#control--and-data-flow-analysis">here</a>.</span></p>

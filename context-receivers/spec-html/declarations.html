@@ -329,6 +329,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.pdf#getters-and-setters" id="toc-element-getters-and-setters" class="toc-element">Getters and setters</a></li>
 <li><a href="declarations.pdf#delegated-property-declaration" id="toc-element-delegated-property-declaration" class="toc-element">Delegated property declaration</a></li>
 <li><a href="declarations.pdf#extension-property-declaration" id="toc-element-extension-property-declaration" class="toc-element">Extension property declaration</a></li>
+<li><a href="declarations.pdf#contextual-property-declaration" id="toc-element-contextual-property-declaration" class="toc-element">Contextual property declaration</a></li>
 <li><a href="declarations.pdf#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
 <li><a href="declarations.pdf#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
 <li><a href="declarations.pdf#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
@@ -2526,6 +2527,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb51-9" title="9">    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
 <a class="sourceLine" id="cb51-10" title="10"><span class="op">}</span></a></code></pre></div>
 </blockquote>
+<h4 id="contextual-property-declaration">Contextual property declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A <em>contextual property declaration</em> further extends the extension property declaration syntax with a number of additional special function parameters, the <em>context receiver parameters</em>, very much alike a <a href="declarations.pdf#contextual-function-declaration">contextual function declaration</a>, supplied using the <code>context</code> soft keyword. </span><span class="sentence">As with extension receivers, these parameters are not named and must always be supplied. </span><span class="sentence">Unlike extension receivers, these must always be provided implicitly at call site. </span><span class="sentence">See <a href="overload-resolution.pdf#receivers">the receiver section</a> for details.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">A contextual property declaration may be extension or non-extension, but follows the same limitations as extension properties described in the <a href="declarations.pdf#extension-property-declaration">corresponding section</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">All context receiver parameters can be accessed inside getter and setter scopes of the property as the implicit receiver or <code>this</code>. </span><span class="sentence">It may also be accessed inside nested scopes using <a href="expressions.pdf#this-expressions">labeled <code>this</code> syntax</a> using the type of the context receiver as the label.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Same as <a href="declarations.pdf#contextual-function-declaration">contextual function declarations</a>, context receiver types of a particular propery must all be different from each other and no pair of these types may be in a <a href="type-system.pdf#subtyping">subtyping relation</a>. </span><span class="sentence">They may, however, contain a type that is also used as the extension receiver of the function or a type in a subtyping relation with it.</span></p>
+</div>
+
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
 <p><span class="sentence">All non-abstract properties must be definitely initialized before their first use. </span><span class="sentence">To guarantee this, Kotlin compiler uses a number of analyses which are described in more detail <a href="control--and-data-flow-analysis.pdf#control--and-data-flow-analysis">here</a>.</span></p>
