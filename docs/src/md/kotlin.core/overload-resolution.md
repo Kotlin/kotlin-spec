@@ -26,15 +26,18 @@ Implicit receivers are available in a syntactic scope according to the following
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit `this`;
 - If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
 - If a function or a property is [contextual][Contextual function declaration], its context receiver parameters are available inside the declaration as implicit receivers;
-- If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
+- If a lambda expression has an [extension function type][Function types], `this` argument of the lambda expression is also available inside the lambda expression declaration;
+- If a lambda expression has a [function type with context receivers][Function types], implicit receivers of its context receiver types are also available inside the lambda expression declaration.
 
 > Important: a phantom static implicit `this` is a special receiver, which is included in the receiver chain for the purposes of handling static functions from [enum classes][Enum class declaration].
 > It may also be used on platforms to handle their static-like entities, e.g., static methods on JVM platform.
 
+Receivers from context receiver parameters or context receiver types are called _context-provided_ receivers.
+
 The available receivers are prioritized in the following way:
 
 - Receivers provided in the most inner scope have higher priority as ordered w.r.t. [link relation][Linked scopes];
-- Receivers from context receiver parameters have **lower** priority than other _non-top-level_ receivers;
+- Context-provided receivers have **lower** priority than other _non-top-level_ receivers;
 - The implicit `this` receiver has higher priority than phantom static implicit `this`;
 - The phantom static implicit `this` receiver has higher priority than the current class companion object receiver;
 - Current class companion object receiver has higher priority than any of the superclass companion objects;
@@ -46,11 +49,11 @@ As some scope may immediately provide _several_ receivers (e.g., [contextual fun
 These same-priority implicit receivers form a _one-only implicit receiver group_, which is considered as a special implicit receiver with the following semantics.
 When using a one-only implicit receiver group as an implicit receiver for the purposes of overload resolution, _every implicit receiver_ from the group is considered as if it is the singular implicit receiver, and if two or more implicit receivers from the group can be used, it is an **overload ambiguity** which must be reported as a compile-time error.
 
-The implicit receiver having the highest priority (if singular) is also called the _default implicit receiver_.
-If the default implicit receiver is not a receiver from the context receiver parameters, it is available in a scope as `this`.
-In other cases and for other available receivers one may use [labeled this-expressions][This-expressions] for access.
+The implicit receiver having the highest priority (if not a one-only implicit receiver group) is also called the _default implicit receiver_.
+The default implicit receiver is available in a scope as `this`.
+Alternatively, one may use [labeled this-expressions][This-expressions] for access to implicit receivers.
 
-> Note: several implicit receivers with the highest priority may happen, for example, inside a top-level [contextual function declaration].
+> Note: a one-only implicit receiver group may have the highest priority, for example, inside a top-level [contextual function declaration].
 
 If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.
 
@@ -327,14 +330,14 @@ For an identifier named `f` the following sets are analyzed (**in the given orde
 
 1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
 2. The overload candidate sets for each pair of implicit receivers `e` and `d` available in the current scope, calculated as if `e` is the [explicit receiver][Call with an explicit receiver], in order of the [receiver priority][Receivers];
-    * In case `e` or `d` is a one-only implicit receiver group (e.g., involving implicit receivers from context receiver parameters), and several implicit receivers from the group create a non-empty candidate set, this is an **overload ambiguity** which must be reported as a compile-time error;
+    * In case `e` or `d` is a one-only implicit receiver group (e.g., involving implicit context-provided receivers), and _several_ implicit receivers from the group create a non-empty candidate set, this is an **overload ambiguity** which must be reported as a compile-time error;
 3. Top-level non-extension functions named `f`, in the order of:
    a. Callables explicitly imported into the current file;
    b. Callables declared in the same package;
    c. Callables star-imported into the current file;
    d. Implicitly imported callables (either from the Kotlin standard library or platform-specific ones).
 
-Similarly to how it works for [calls with explicit receiver][Call with an explicit receiver], a property-like callable with an `invoke function` belongs to the **lowest priority** set of its parts.
+Similarly to how it works for [calls with explicit receiver][Call with an explicit receiver], a property-like callable with an `invoke` function belongs to the **lowest priority** set of its parts.
 
 When analyzing these sets, the **first** set which contains **any** [applicable callable][Determining function applicability for a specific call] is picked for [c-level partition][c-level partition], which gives us the resulting overload candidate set.
 
@@ -482,8 +485,7 @@ In case 1, the more applicable candidate of the two is found and no additional s
 
 In case 2, an additional step is performed.
 
-- Any non-parameterized callable is a more specific candidate than any parameterized callable;
-  If there are several non-parameterized candidates, further steps are limited to those candidates.
+- Any non-parameterized callable is a more specific candidate than any parameterized callable.
 
 In case 3, several additional steps are performed in order.
 
