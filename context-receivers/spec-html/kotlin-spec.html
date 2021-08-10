@@ -12524,7 +12524,8 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <li><span class="sentence">In a <a href="#classifier-declaration">classifier declaration</a> scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit <code>this</code>;</span></li>
 <li><span class="sentence">If a function or a property is an extension, <code>this</code> parameter of the extension is also available inside the extension declaration;</span></li>
 <li><span class="sentence">If a function or a property is <a href="#contextual-function-declaration">contextual</a>, its context receiver parameters are available inside the declaration as implicit receivers;</span></li>
-<li><span class="sentence">If a lambda expression has an extension function type, <code>this</code> argument of the lambda expression is also available inside the lambda expression declaration.</span></li>
+<li><span class="sentence">If a lambda expression has an <a href="#function-types">extension function type</a>, <code>this</code> argument of the lambda expression is also available inside the lambda expression declaration;</span></li>
+<li><span class="sentence">If a lambda expression has a <a href="#function-types">function type with context receivers</a>, implicit receivers of its context receiver types are also available inside the lambda expression declaration.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
@@ -12532,11 +12533,14 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </div>
 </blockquote>
 <div class="paragraph">
+<p><span class="sentence">Receivers from context receiver parameters or context receiver types are called <em>context-provided</em> receivers.</span></p>
+</div>
+<div class="paragraph">
 <p><span class="sentence">The available receivers are prioritized in the following way:</span></p>
 </div>
 <ul>
 <li><span class="sentence">Receivers provided in the most inner scope have higher priority as ordered w.r.t. <a href="#linked-scopes">link relation</a>;</span></li>
-<li><span class="sentence">Receivers from context receiver parameters have <strong>lower</strong> priority than other <em>non-top-level</em> receivers;</span></li>
+<li><span class="sentence">Context-provided receivers have <strong>lower</strong> priority than other <em>non-top-level</em> receivers;</span></li>
 <li><span class="sentence">The implicit <code>this</code> receiver has higher priority than phantom static implicit <code>this</code>;</span></li>
 <li><span class="sentence">The phantom static implicit <code>this</code> receiver has higher priority than the current class companion object receiver;</span></li>
 <li><span class="sentence">Current class companion object receiver has higher priority than any of the superclass companion objects;</span></li>
@@ -12551,11 +12555,11 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">As some scope may immediately provide <em>several</em> receivers (e.g., <a href="#contextual-function-declaration">contextual function</a> scope with its context receiver parameters), they will all have the same priority w.r.t. implicit receiver ordering. </span><span class="sentence">These same-priority implicit receivers form a <em>one-only implicit receiver group</em>, which is considered as a special implicit receiver with the following semantics. </span><span class="sentence">When using a one-only implicit receiver group as an implicit receiver for the purposes of overload resolution, <em>every implicit receiver</em> from the group is considered as if it is the singular implicit receiver, and if two or more implicit receivers from the group can be used, it is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The implicit receiver having the highest priority (if singular) is also called the <em>default implicit receiver</em>. </span><span class="sentence">If the default implicit receiver is not a receiver from the context receiver parameters, it is available in a scope as <code>this</code>. </span><span class="sentence">In other cases and for other available receivers one may use <a href="#this-expressions">labeled this-expressions</a> for access.</span></p>
+<p><span class="sentence">The implicit receiver having the highest priority (if not a one-only implicit receiver group) is also called the <em>default implicit receiver</em>. </span><span class="sentence">The default implicit receiver is available in a scope as <code>this</code>. </span><span class="sentence">Alternatively, one may use <a href="#this-expressions">labeled this-expressions</a> for access to implicit receivers.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: several implicit receivers with the highest priority may happen, for example, inside a top-level <a href="#contextual-function-declaration">contextual function declaration</a>.</span></p>
+<p><span class="sentence">Note: a one-only implicit receiver group may have the highest priority, for example, inside a top-level <a href="#contextual-function-declaration">contextual function declaration</a>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -12942,7 +12946,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <li><span class="sentence">Local non-extension callables named <code>f</code> in the current scope and its <a href="#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
 <li><span class="sentence">The overload candidate sets for each pair of implicit receivers <code>e</code> and <code>d</code> available in the current scope, calculated as if <code>e</code> is the <a href="#call-with-an-explicit-receiver">explicit receiver</a>, in order of the <a href="#receivers">receiver priority</a>;</span>
 <ul>
-<li><span class="sentence">In case <code>e</code> or <code>d</code> is a one-only implicit receiver group (e.g., involving implicit receivers from context receiver parameters), and several implicit receivers from the group create a non-empty candidate set, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error;</span></li>
+<li><span class="sentence">In case <code>e</code> or <code>d</code> is a one-only implicit receiver group (e.g., involving implicit context-provided receivers), and <em>several</em> implicit receivers from the group create a non-empty candidate set, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error;</span></li>
 </ul></li>
 <li><span class="sentence">Top-level non-extension functions named <code>f</code>, in the order of:</span>
 <ol type="a">
@@ -12953,7 +12957,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </ol></li>
 </ol>
 <div class="paragraph">
-<p><span class="sentence">Similarly to how it works for <a href="#call-with-an-explicit-receiver">calls with explicit receiver</a>, a property-like callable with an <code>invoke function</code> belongs to the <strong>lowest priority</strong> set of its parts.</span></p>
+<p><span class="sentence">Similarly to how it works for <a href="#call-with-an-explicit-receiver">calls with explicit receiver</a>, a property-like callable with an <code>invoke</code> function belongs to the <strong>lowest priority</strong> set of its parts.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">When analyzing these sets, the <strong>first</strong> set which contains <strong>any</strong> <a href="#determining-function-applicability-for-a-specific-call">applicable callable</a> is picked for <a href="#c-level-partition">c-level partition</a>, which gives us the resulting overload candidate set.</span></p>
@@ -13239,7 +13243,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">In case 2, an additional step is performed.</span></p>
 </div>
 <ul>
-<li><span class="sentence">Any non-parameterized callable is a more specific candidate than any parameterized callable; If there are several non-parameterized candidates, further steps are limited to those candidates.</span></li>
+<li><span class="sentence">Any non-parameterized callable is a more specific candidate than any parameterized callable.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">In case 3, several additional steps are performed in order.</span></p>
