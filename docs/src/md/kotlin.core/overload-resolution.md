@@ -580,6 +580,64 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 > }
 > ```
 
+### Resolving properties
+
+As [properties][Property declaration] in Kotlin can have custom [getters and setters], be [extension][Extension property declaration], [delegated][Delegated property declaration] or [contextual][Contextual property declaration], they are also subject to overload resolution.
+Overload resolution for properties works similarly to how it works for [callables][Callables and `invoke` convention], i.e., it consists of two steps: [building the overload candidate set] of [applicable][Determining function applicability for a specific call] candidates, and then [choosing the most specific candidate from the overload candidate set].
+
+Informally, access to a property is resolved as if it is a callable invocation corresponding to its getter or setter, and the overload resolution is performed on this invocation.
+
+> Example: one may consider property access in class `A` to be resolved as if it has been transformed to class `AA`.
+>
+> ```kotlin
+> class A {
+>     val a: Int = 5 // (1)
+> 
+>     val Double.a: Boolean // (2)
+>         get() = this != 42.0
+> 
+>     fun test() {
+> 
+>         println(a) // Resolves to (1)
+> 
+>         with(42.0) {
+>             println(this@A.a) // Resolves to (1)
+>             println(this.a) // Resolves to (2)
+>             println(a) // Resolves to (2)
+>         }
+>     }
+> }
+> ```
+>
+> ```kotlin
+> class AA {
+>     fun a(): Int = 5 // (1)
+> 
+>     fun Double.a(): Boolean // (2)
+>               = this != 42.0
+> 
+>     fun test() {
+> 
+>         println(a()) // Resolves to (1)
+> 
+>         with(42.0) {
+>             println(this@AA.a()) // Resolves to (1)
+>             println(this.a()) // Resolves to (2)
+>             println(a()) // Resolves to (2)
+>         }
+>     }
+> }
+> ```
+
+The overload resolution for properties has the following features distinct from overload resolution for callables.
+
+* Properties without getter or setter are assumed to have default implementations for accessors;
+* The overload resolution takes into account the kind of property (e.g., an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.);
+* When building the overload candidate set, only candidates which are property getters and setters are considered;
+    > Note: this means `invoke` operator convention cannot take part in _property_ overload resolution.
+
+TODO(Anything else?)
+
 ### Resolving callable references
 
 [Callable references] introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.
