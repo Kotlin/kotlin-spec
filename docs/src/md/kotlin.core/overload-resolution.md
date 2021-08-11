@@ -13,7 +13,9 @@ This section describes *overload resolution process* in detail.
 Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
 Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.
 
-### Receivers
+### Basics
+
+#### Receivers
 
 Every function or property that is defined as a method or an extension has one or more special parameters called _receiver_ parameters.
 When calling such a callable using [navigation operators][Navigation operators] (`.` or `?.`) the left hand side value is called an _explicit receiver_ of this particular call.
@@ -84,7 +86,7 @@ For a particular callable invocation, any or both receivers may be involved, but
 > }
 > ```
 
-### The forms of call-expression
+#### The forms of call-expression
 
 Any function in Kotlin may be called in several different ways:
 
@@ -100,7 +102,7 @@ For each of these cases, a compiler should first pick a number of _overload cand
 
 > Important: the overload candidates are picked **before** the most specific function is chosen.
 
-### Callables and `invoke` convention
+#### Callables and `invoke` convention
 
 A *callable* $X$ for the purpose of this section is one of the following:
 
@@ -137,7 +139,7 @@ An *extension callable* is one of the following:
 
 A *local callable* is any callable which is declared in a [statement scope][Scopes and identifiers].
 
-### c-level partition
+#### c-level partition
 
 When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:
 
@@ -154,7 +156,7 @@ Extension callables produce the following sets, considered separately, ordered b
 Let us define this partition of callables to overload candidate sets as *c-level partition* (callable-level partition).
 As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed **last**, after all other applicable steps.
 
-### Building the overload candidate set (OCS)
+### Building the overload candidate set
 
 #### Fully-qualified call
 
@@ -596,7 +598,7 @@ In a simple case when the callable reference is not used as an argument to an ov
 - For each callable reference candidate, we perform the following steps:
   - We build its type constraints and add them to the constraint system of the expression the callable reference is used in;
   - A callable reference is deemed applicable if the constraint system is sound;
-- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set (OCS)];
+- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set];
 - If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.
 - Otherwise, the single callable in the set is chosen as the result of the resolution process.
 
