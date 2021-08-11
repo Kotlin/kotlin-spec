@@ -196,17 +196,15 @@ A call of callable `f` with an explicit receiver `e` is correct if at least one 
 If a call is correct, for a callable `f` with an explicit receiver `e` of type `T` the following sets are analyzed (**in the given order**):
 
 1. Non-extension member callables named `f` of type `T`;
-2. Local extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+2. Extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+    * First, we assume there is **no implicit receiver** available for the dispatch receiver of `f` (i.e., we analyze _local_ extension callables only);
+    * Second, we consider each implicit receiver available for the dispatch receiver of `f` in the order of the implicit [receiver priority][Receivers];
 3. Explicitly imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
 4. Extension callables named `f`, whose receiver type `U` conforms to type `T`, declared in the package scope;
 5. Star-imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
 6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type `U` conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
-
-> Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
-> In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
-> These sets are considered in the order of the implicit [receiver priority][Receivers].
 
 There is a important special case here, however, as a callable may be a [property-like callable with an operator function `invoke`][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
 In this situation, such callable belongs to the **lowest priority** set of its parts (e.g., for the above case, priority 5 set).
