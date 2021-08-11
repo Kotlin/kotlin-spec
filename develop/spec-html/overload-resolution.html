@@ -909,7 +909,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ol type="1">
 <li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>T</code>;</span></li>
-<li><span class="sentence">Local extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>, in the current scope and its <a href="scopes-and-identifiers.pdf#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
+<li><span class="sentence">Extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>, in the current scope and its <a href="scopes-and-identifiers.pdf#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span>
+<ul>
+<li><span class="sentence">First, we assume there is <strong>no implicit receiver</strong> available for the dispatch receiver of <code>f</code> (i.e., we analyze <em>local</em> extension callables only);</span></li>
+<li><span class="sentence">Second, we consider each implicit receiver available for the dispatch receiver of <code>f</code> in the order of the implicit <a href="overload-resolution.pdf#receivers">receiver priority</a>;</span></li>
+</ul></li>
 <li><span class="sentence">Explicitly imported extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>;</span></li>
 <li><span class="sentence">Extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>, declared in the package scope;</span></li>
 <li><span class="sentence">Star-imported extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>;</span></li>
@@ -920,11 +924,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>&lt;</mo><mo>:</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">T &lt;: U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
 
 .</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver. </span><span class="sentence">In this case, the case with <strong>no implicit receiver</strong> is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to <a href="overload-resolution.pdf#call-without-an-explicit-receiver">the rules for implicit receivers</a>. </span><span class="sentence">These sets are considered in the order of the implicit <a href="overload-resolution.pdf#receivers">receiver priority</a>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
