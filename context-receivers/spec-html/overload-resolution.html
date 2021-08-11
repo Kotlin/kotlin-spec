@@ -516,6 +516,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.pdf#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
 <li><a href="overload-resolution.pdf#using-lambda-return-type-to-refine-function-applicability" id="toc-element-using-lambda-return-type-to-refine-function-applicability" class="toc-element">Using lambda return type to refine function applicability</a></li>
 </ul></li>
+<li><a href="overload-resolution.pdf#resolving-properties" id="toc-element-resolving-properties" class="toc-element">Resolving properties</a></li>
 <li><a href="overload-resolution.pdf#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
 <ul>
 <li><a href="overload-resolution.pdf#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
@@ -1584,6 +1585,61 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb9-15" title="15">    <span class="co">//   We do not attempt refinement by the lambda return type</span></a>
 <a class="sourceLine" id="cb9-16" title="16"><span class="op">}</span></a></code></pre></div>
 </blockquote>
+<h3 id="resolving-properties">Resolving properties</h3>
+<div class="paragraph">
+<p><span class="sentence">As <a href="declarations.pdf#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.pdf#getters-and-setters">getters and setters</a>, be <a href="declarations.pdf#extension-property-declaration">extension</a>, <a href="declarations.pdf#delegated-property-declaration">delegated</a> or <a href="declarations.pdf#contextual-property-declaration">contextual</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for properties works similarly to how it works for <a href="overload-resolution.pdf#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="overload-resolution.pdf#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="overload-resolution.pdf#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.pdf#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Informally, access to a property is resolved as if it is a callable invocation corresponding to its getter or setter, and the overload resolution is performed on this invocation.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: one may consider property access in class <code>A</code> to be resolved as if it has been transformed to class <code>AA</code>.</span></p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-2" title="2">    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4">    <span class="kw">val</span> <span class="va">Double.a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb10-5" title="5">        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> != <span class="fl">42.0</span></a>
+<a class="sourceLine" id="cb10-6" title="6"></a>
+<a class="sourceLine" id="cb10-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-8" title="8"></a>
+<a class="sourceLine" id="cb10-9" title="9">        println(a) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb10-10" title="10"></a>
+<a class="sourceLine" id="cb10-11" title="11">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-12" title="12">            println(<span class="kw">this@A</span>.a) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb10-13" title="13">            println(<span class="kw">this</span>.a) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb10-14" title="14">            println(a) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb10-15" title="15">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb10-16" title="16">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb10-17" title="17"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">class</span> <span class="dt">AA</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">Int</span> = <span class="dv">5</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">a</span><span class="op">():</span> <span class="dt">Boolean</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb11-5" title="5">              = <span class="kw">this</span> != <span class="fl">42.0</span></a>
+<a class="sourceLine" id="cb11-6" title="6"></a>
+<a class="sourceLine" id="cb11-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-8" title="8"></a>
+<a class="sourceLine" id="cb11-9" title="9">        println(a()) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb11-10" title="10"></a>
+<a class="sourceLine" id="cb11-11" title="11">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-12" title="12">            println(<span class="kw">this@AA</span>.a()) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb11-13" title="13">            println(<span class="kw">this</span>.a()) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb11-14" title="14">            println(a()) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb11-15" title="15">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb11-16" title="16">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb11-17" title="17"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The overload resolution for properties has the following features distinct from overload resolution for callables.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Properties without getter or setter are assumed to have default implementations for accessors;</span></li>
+<li><span class="sentence">The overload resolution takes into account the kind of property (e.g., an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.);</span></li>
+<li><span class="sentence">When building the overload candidate set, only candidates which are property getters and setters are considered; &gt; Note: this means <code>invoke</code> operator convention cannot take part in <em>property</em> overload resolution.</span></li>
+</ul>
+
 <h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="expressions.pdf#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
@@ -1620,10 +1676,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
 </div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb10-3" title="3">...</a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb12-3" title="3">...</a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
 </div>
@@ -1632,12 +1688,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case:</span></p>
 </div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
@@ -1648,9 +1704,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">In another case:</span></p>
 </div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb13-2" title="2"></a>
-<a class="sourceLine" id="cb13-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb15-2" title="2"></a>
+<a class="sourceLine" id="cb15-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
