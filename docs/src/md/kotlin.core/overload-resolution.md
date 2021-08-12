@@ -631,8 +631,8 @@ Informally, access to a property is resolved as if it is a callable invocation c
 
 The overload resolution for properties has the following features distinct from overload resolution for callables.
 
-* Properties without getter or setter are assumed to have default implementations for accessors;
-* The overload resolution takes into account the kind of property (e.g., an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.);
+* Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its [backing field][Getters and setters]);
+* The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;
 * When building the overload candidate set, only candidates which are property getters and setters are considered;
     > Note: this means `invoke` operator convention cannot take part in _property_ overload resolution.
 
