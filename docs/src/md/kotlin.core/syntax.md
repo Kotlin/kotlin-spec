@@ -682,7 +682,7 @@ This allows not only using non-alphanumeric characters (like `@` or `#`) in name
 Actual set of characters that is allowed to be escaped may, however, be a subject to platform restrictions.
 Consult particular platform sections for details.
 
-> Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: `(`, `)`, `{`, `}`, `[`, `]`, `.`
+> Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: `.`, `;`, `[`, `]`, `/`, `<`, `>`, `:`, `\\` .
 
 Escaped identifiers are treated the same as corresponding non-escaped identifier if it is allowed.
 For example, an escaped identifier ``` `foo` ``` and non-escaped identifier `foo` may be used interchangeably and refer to the same program entity.
