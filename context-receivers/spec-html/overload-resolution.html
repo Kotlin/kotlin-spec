@@ -480,8 +480,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.pdf#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
 <li><a href="overload-resolution.pdf#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
-<li><a href="overload-resolution.pdf#basics" id="toc-element-basics" class="toc-element">Basics</a>
-<ul>
 <li><a href="overload-resolution.pdf#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
 <li><a href="overload-resolution.pdf#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
 <li><a href="overload-resolution.pdf#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a>
@@ -489,8 +487,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="overload-resolution.pdf#contextual-callables" id="toc-element-contextual-callables" class="toc-element">Contextual callables</a></li>
 </ul></li>
 <li><a href="overload-resolution.pdf#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
-</ul></li>
-<li><a href="overload-resolution.pdf#building-the-overload-candidate-set" id="toc-element-building-the-overload-candidate-set" class="toc-element">Building the overload candidate set</a>
+<li><a href="overload-resolution.pdf#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
 <ul>
 <li><a href="overload-resolution.pdf#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
 <li><a href="overload-resolution.pdf#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
@@ -656,8 +653,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
 </div>
-<h3 id="basics">Basics</h3>
-<h4 id="receivers">Receivers</h4>
+<h3 id="receivers">Receivers</h3>
 <div class="paragraph">
 <p><span class="sentence">Every function or property that is defined as a method or an extension has one or more special parameters called <em>receiver</em> parameters. </span><span class="sentence">When calling such a callable using <a href="expressions.pdf#navigation-operators">navigation operators</a> (<code>.</code> or <code>?.</code>) the left hand side value is called an <em>explicit receiver</em> of this particular call. </span><span class="sentence">In addition to the explicit receiver, each call may indirectly access zero or more <em>implicit receivers</em>.</span></p>
 </div>
@@ -754,7 +750,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 
-<h4 id="the-forms-of-call-expression">The forms of call-expression</h4>
+<h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
 <div class="paragraph">
 <p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
 </div>
@@ -776,7 +772,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: the overload candidates are picked <strong>before</strong> the most specific function is chosen.</span></p>
 </div>
 </blockquote>
-<h4 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h4>
+<h3 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h3>
 <div class="paragraph">
 <p><span class="sentence">A <em>callable</em> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
 
@@ -856,7 +852,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A <em>local callable</em> is any callable which is declared in a <a href="scopes-and-identifiers.pdf#scopes-and-identifiers">statement scope</a>.</span></p>
 </div>
-<h5 id="contextual-callables">Contextual callables</h5>
+<h4 id="contextual-callables">Contextual callables</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>contextual callable</em> is any callable with one or more context receiver parameters.</span></p>
 </div>
@@ -864,7 +860,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">For function-like callables, their <a href="declarations.pdf#contextual-function-declaration">declaration</a> should contain one or more context receiver parameters;</span></li>
 <li><span class="sentence">For property-like callables with member or extension operator <code>invoke</code>, the <code>invoke</code> operator declaration should contain one or more context receiver parameters.</span></li>
 </ul>
-<h4 id="c-level-partition">c-level partition</h4>
+<h3 id="c-level-partition">c-level partition</h3>
 <div class="paragraph">
 <p><span class="sentence">When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
 </div>
@@ -884,7 +880,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let us define this partition of callables to overload candidate sets as <em>c-level partition</em> (callable-level partition). </span><span class="sentence">As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed <strong>last</strong>, after all other applicable steps.</span></p>
 </div>
-<h3 id="building-the-overload-candidate-set">Building the overload candidate set</h3>
+<h3 id="building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</h3>
 <h4 id="fully-qualified-call">Fully-qualified call</h4>
 <div class="paragraph">
 <p><span class="sentence">If a call is fully-qualified (that is, it contains a complete <a href="scopes-and-identifiers.pdf#identifiers-and-paths">package path</a>), then the overload candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>
@@ -1587,7 +1583,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h3 id="resolving-property-access">Resolving property access</h3>
 <div class="paragraph">
-<p><span class="sentence">As <a href="declarations.pdf#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.pdf#getters-and-setters">getters and setters</a>, be <a href="declarations.pdf#extension-property-declaration">extension</a>, <a href="declarations.pdf#delegated-property-declaration">delegated</a> or <a href="declarations.pdf#contextual-property-declaration">contextual</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="overload-resolution.pdf#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="overload-resolution.pdf#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="overload-resolution.pdf#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.pdf#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+<p><span class="sentence">As <a href="declarations.pdf#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.pdf#getters-and-setters">getters and setters</a>, be <a href="declarations.pdf#extension-property-declaration">extension</a>, <a href="declarations.pdf#delegated-property-declaration">delegated</a> or <a href="declarations.pdf#contextual-property-declaration">contextual</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="overload-resolution.pdf#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: [building the overload candidate set] of <a href="overload-resolution.pdf#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.pdf#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1727,7 +1723,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
 </ul></li>
-<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.pdf#building-the-overload-candidate-set">as building OCS for regular calls</a>;</span></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.pdf#building-the-overload-candidate-set-ocs">as building OCS for regular calls</a>;</span></li>
 <li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
 <li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
 </ul>
