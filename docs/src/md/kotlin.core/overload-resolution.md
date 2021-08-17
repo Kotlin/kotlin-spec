@@ -580,12 +580,22 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 > }
 > ```
 
-### Resolving properties
+### Resolving property access
 
 As [properties][Property declaration] in Kotlin can have custom [getters and setters], be [extension][Extension property declaration], [delegated][Delegated property declaration] or [contextual][Contextual property declaration], they are also subject to overload resolution.
-Overload resolution for properties works similarly to how it works for [callables][Callables and `invoke` convention], i.e., it consists of two steps: [building the overload candidate set] of [applicable][Determining function applicability for a specific call] candidates, and then [choosing the most specific candidate from the overload candidate set].
+Overload resolution for property access works similarly to how it works for [callables][Callables and `invoke` convention], i.e., it consists of two steps: [building the overload candidate set] of [applicable][Determining function applicability for a specific call] candidates, and then [choosing the most specific candidate from the overload candidate set].
 
-Informally, access to a property is resolved as if it is a callable invocation corresponding to its getter or setter, and the overload resolution is performed on this invocation.
+> *Important*: this section concerns *only* properties accessed using property access syntax `a.x` or just `x` *without call suffix*.
+> If a property is accessed with a call suffix, it is treated as any other callable and is required to have a suitable `invoke` overload available, see the rest of this part for details
+
+There are two variants of property access syntax: readonly property access and property assignment.
+
+> Note: there is also [safe navigation syntax][Navigation operators] for both assignment and readonly access, but that is expanded to non-safe navigation syntax covered by this section.
+> Please refer to corresponding sections for details.
+
+Readonly property access `a.x` is resolved the same way as if the property access in question was a special function call `a.x$get()` and each property `val/var x: T` was replaced with corresponding function `fun x$get(): T` having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter.
+For different flavors of property declarations and getters, refer to [corresponding section][Property declaration].
+Please note that this excludes any possibility to employ `invoke`-convention as these ephemeral functions cannot be properties themselves.
 
 > Example: one may consider property access in class `A` to be resolved as if it has been transformed to class `AA`.
 >
@@ -611,19 +621,75 @@ Informally, access to a property is resolved as if it is a callable invocation c
 >
 > ```kotlin
 > class AA {
->     fun a(): Int = 5 // (1)
+>     fun a$get(): Int = 5 // (1)
 > 
->     fun Double.a(): Boolean // (2)
+>     fun Double.a$get(): Boolean // (2)
 >               = this != 42.0
 > 
 >     fun test() {
 > 
->         println(a()) // Resolves to (1)
+>         println(a$get()) // Resolves to (1)
 > 
 >         with(42.0) {
->             println(this@AA.a()) // Resolves to (1)
->             println(this.a()) // Resolves to (2)
->             println(a()) // Resolves to (2)
+>             println(this@AA.a$get()) // Resolves to (1)
+>             println(this.a$get()) // Resolves to (2)
+>             println(a$get()) // Resolves to (2)
+>         }
+>     }
+> }
+> ```
+
+Property assignment `a.x = y` is resolved the same way as if it was replaced with a special function call `a.x$set(y)` and each property `var/val x: T` was replaced with a corresponding function `fun x$set(value: T)`  having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter.
+For different flavors of property declarations and setters, refer to [corresponding section][Property declaration].
+Please note that, although a readonly property declaration (using the keyword `val`) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate.
+Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.
+
+> Note: informally, one may look at property assignment resolution as a sub-kind of readonly property resolution described above, first resolving the property as if it was accessed in a readonly fashion, and then using the setter.
+> Readonly property access and property assignment syntax used in the same position **never** resolve to different property candidates
+
+> Example: one may consider property access in class `B` to be resolved as if it has been transformed to class `BB`.
+> Declaration bodies for ephemeral functions are ommited to avoid confusion
+>
+> ```kotlin
+> class B {
+>     var b: Int = 5 // (1)
+> 
+>     val Double.b: Int // (2)
+>         get() = this.toInt()
+> 
+>     fun test() {
+>         b = 5 // Resolves to (1)
+> 
+>         with(42.0) {
+>             // Resolves to (1)
+>             this@B.b = 5 
+>             // Resolves to (2) and compiler error: cannot assign readonly property
+>             this.b = 5 
+>             // Resolves to (2) and compiler error: cannot assign readonly property
+>             b = 5 
+>         }
+>     }
+> }
+> ```
+>
+> ```kotlin
+> class BB {
+>     fun b$get(): Int // (1, getter)
+>     fun b$set(value: Int) // (1, setter)
+> 
+>     fun Double.b$get(): Int // (2, getter)
+>     fun Double.b$set(value: Int) // (2, setter)
+> 
+>     fun test() {
+>         b$set(5) // Resolves to (1)
+> 
+>         with(42.0) {
+>             // Resolves to (1)
+>             this@B.b$set(5) 
+>             // Resolves to (2)
+>             this.b$set(5) 
+>             // Resolves to (2)
+>             this.b$set(5) 
 >         }
 >     }
 > }
@@ -633,8 +699,7 @@ The overload resolution for properties has the following features distinct from 
 
 * Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its [backing field][Getters and setters]);
 * The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;
-* When building the overload candidate set, only candidates which are property getters and setters are considered;
-    > Note: this means `invoke` operator convention cannot take part in _property_ overload resolution.
+* [Object declarations][object declaration] and [enumeration entries][Enum class declaration] may be accessed using the property access syntax given that they may be resolved in the current scope.
 
 TODO(Anything else?)
 
