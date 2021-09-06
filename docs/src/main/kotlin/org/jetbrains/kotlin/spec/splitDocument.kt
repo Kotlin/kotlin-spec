@@ -33,9 +33,9 @@ private class IdMapper(val splitLevel: Int) : PandocVisitor() {
     }
 }
 
-private class LinkFixer(splitLevel: Int, format: String) : PandocVisitor() {
+private class LinkFixer(splitLevel: Int, val format: String) : PandocVisitor() {
     val ids: IdMapper = IdMapper(splitLevel)
-    val ext = if (format !== "html") "pdf" else "html"
+    val ext = if (format != "html") "pdf" else "html"
 
     override fun visit(doc: Pandoc): Pandoc {
         doc.accept(ids)
