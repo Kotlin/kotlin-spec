@@ -34,8 +34,33 @@ A path may include not only a package, but also an [object][Classifier declarati
 The last component may reference any named declaration within that scope (that is, top-level scope of all files in the package or an object declaration scope) may be imported using their names.
 
 There are two special kinds of imports: star-imports ending in an asterisk (`*`) and renaming imports employing the `as` operator.
-Star-imports import all named entities inside the corresponding scope, but have weaker priority during [overload resolution][Overload resolution] of functions and properties.
-Renaming imports work just like regular imports, but introduce the entity into the current file with the specified name.
+
+Star-imports import all named entities inside the corresponding scope, but have lesser priority during [overload resolution][Overload resolution] of functions and properties.
+
+Renaming imports work just like regular imports, but introduce the entity into the current file with the specified name, such that an unqualified access to this entity is possible _only using the newly specified name_.
+This means that renaming imports of entities from the same package effectively _change_ their unqualified name.
+
+> Example:
+>
+> ```kotlin
+> package foo
+> 
+> import foo.foo as baz
+> 
+> fun foo() {} // (1)
+> fun bar() {} // (2)
+> 
+> fun test() {
+>     // Qualified access is unchanged by the renaming import
+>     foo.foo() // resolves to (1)
+>     foo.bar() // resolved to (2)
+> 
+>     // Unqualified access considers the rename of `foo` to `baz`
+>     foo() // Unresolved reference
+>     bar() // resolves to (2)
+>     baz() // resolves to (1)
+> }
+> ```
 
 Imports from objects have certain limitations: only object members may be imported and star-imports are not allowed.
 
