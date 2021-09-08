@@ -135,5 +135,5 @@ interface GithubTestsLoader {
 
     }
 
-    fun loadTestFiles(sectionName: String, mainSectionName: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
+    fun loadTestFiles(sectionToLoadName: String, mainSectionPath: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
 }
