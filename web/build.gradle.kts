@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackOutput
 
 plugins {
-    id("org.jetbrains.kotlin.js") version "1.4.31"
+    kotlin("js")
 }
 
 group = "org.jetbrains.kotlin.spec"

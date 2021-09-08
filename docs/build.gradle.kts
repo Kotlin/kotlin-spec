@@ -5,7 +5,7 @@ import java.net.URI
 
 plugins {
     application
-    id("org.jetbrains.kotlin.jvm") version "1.4.31"
+    kotlin("jvm")
     id("at.phatbl.shellexec")
 }
 
@@ -72,6 +72,8 @@ tasks.create<Jar>("filtersJar") {
     )
     archiveFileName.set("filters.jar")
     with(tasks.jar.get())
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.create<JavaExec>("convertGrammar") {

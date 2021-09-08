@@ -8,10 +8,9 @@ plugins {
     id("org.jetbrains.intellij") version "0.6.5"
     antlr
     `maven-publish`
-    id("kotlin") version "1.4.31"
+    kotlin("jvm")
+    id("at.phatbl.shellexec")
 }
-
-apply(plugin = "at.phatbl.shellexec")
 
 group = "org.jetbrains.kotlin.spec.grammar"
 version = "0.1"

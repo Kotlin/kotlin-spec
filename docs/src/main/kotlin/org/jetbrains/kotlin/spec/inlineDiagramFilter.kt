@@ -95,7 +95,7 @@ private fun InlineBuilder.renderToFile(
         }
         return
     }
-    val file = createTempFile(suffix = imageFormat.suffix, directory = imageDirectory)
+    val file = File.createTempFile(/*prefix*/ "tmp", /*suffix*/ imageFormat.suffix, /*directory*/ imageDirectory)
 
     when (imageFormat) {
         ImgFormat.SVG -> exportAsSVG(diag, file)
