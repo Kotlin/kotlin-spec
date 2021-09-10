@@ -1128,6 +1128,46 @@ In short, an analysis is defined on the CFG by introducing:
 The result of an analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e., an abstract state for each node such that the transfer function maps the state to itself.
 For the particular shapes of the transfer function used in program analyses, given a finite $\mathbf{S}$, the fixed point always exists, although the details of how this works go out of scope of this document.
 
+#### Types of lattices
+
+* Flat lattice over set $A = \{a1, \ldots, ai, \ldots, an\}$ of _incomparable_ elements is built by adding a top element $\top$, which is _greater_ than other elements, and a bottom element $\bot$, which is _less_ than other elements.
+  This forms the following lattice structure.
+
+  ```diagram
+                  +-------+
+                  |       |
+      +-----------+   ⊤   +-----------+
+      |           |       |           |
+      |           +---+---+           |
+      |               |               |
+      |               |               |
+  +---+---+       +---+---+       +---+---+
+  |       |       |       |       |       |
+  |   a1  |  ...  |   ai  |  ...  |   an  |
+  |       |       |       |       |       |
+  +---+---+       +---+---+       +---+---+
+      |               |               |
+      |               |               |
+      |           +---+---+           |
+      |           |       |           |
+      +-----------+   ⊥   +-----------+
+                  |       |
+                  +-------+
+  ```
+
+  The flat lattice is usually used for analyses interested in _exact_ facts, such as definite (un)assignment or constant propagation, as the fixed point results are either exact elements from the set $A$, or top/bottom elements.
+
+* Map lattice of a set $A = \{a_1, \ldots, a_n\}$ to a lattice $L$ is a lattice with sets of functions from $A$ to $L$ as its elements.
+
+  $$
+  \begin{aligned}
+  A \to L &= \left\{ \left[ a_1 \to l_1, \ldots, a_n \to l_n \right] | \forall i: a_i \in A, l_i \in L \right\}\\
+  f \leq g &\Leftrightarrow \forall a_i \in A : f(a_i) \leq g(a_i), \text{ where } f, g \in A \to L
+  \end{aligned}
+  $$
+
+  The map lattice is usually used as the "top-level" lattice for bootstrapping the monotone framework analysis, by providing a way to represent the mapping from program entities (e.g., variables or expressions) to interesting facts (e.g., their initialization or availability) as a lattice.
+
 #### Preliminary analysis and $\killDataFlow$ instruction
 
 Some analyses described further in this document are based on special instruction called $\killDataFlow(\upsilon)$ where $\upsilon$ is a program variable.
@@ -1298,7 +1338,7 @@ The outer backedge has one predecessor with state $\{ \texttt{x} \rightarrow 2, 
 
 Kotlin allows [non-delegated properties][Property declaration] to not have initializers in their declaration as long as the property is *definitely assigned* before its first usage.
 This property is checked by the variable initialization analysis (VIA).
-VIA operates on abstract values from a flat *assignedness* lattice of two values $\{\Assigned, \Unassigned\}$.
+VIA operates on abstract values from the *assignedness* lattice, which is a flat lattice constructed over the set $\{\Assigned, \Unassigned\}$.
 The analysis itself uses abstract values from a map lattice of all property declarations to their abstract states based on the assignedness lattice.
 The abstract states are propagated in a forward manner using the standard join operation to merge states from different paths.
 
@@ -1589,3 +1629,4 @@ to look like this:
 1. Frances E. Allen. "Control flow analysis." ACM SIGPLAN Notices, 1970.
 2. Flemming Nielson, Hanne R. Nielson, and Chris Hankin. "Principles of program analysis." Springer, 2015.
 3. Kam, John B., and Jeffrey D. Ullman. "Monotone data flow analysis frameworks." Acta informatica 7.3 (1977): 305-317.
+4. Anders Moller, and Michael I. Schwartzbach. "Static Program Analysis." 2018 (\url{https://cs.au.dk/~amoeller/spa/})
