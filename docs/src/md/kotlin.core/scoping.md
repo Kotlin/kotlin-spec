@@ -16,7 +16,9 @@ Declaration scopes include:
 - The project [packages][Packages and imports];
 - The top level scopes of non-script Kotlin files;
 - The bodies of [classifier declarations][Classifier declaration];
-- The bodies of [object literals][Object literals].
+- The bodies of [object literals][Object literals];
+- Function parameter scope containing the declared value parameters in a [function declaration] or a non-primary [constructor declaration];
+- Primary constructor parameter scope containing the declared value parameters in a [primary constructor][Constructor declaration].
 
 Statement scopes include:
 
@@ -26,7 +28,8 @@ Statement scopes include:
 - The bodies of [function literals][Function literals];
 - The bodies of getters and setters of [properties][Property declaration];
 - The bodies of [constructors][Constructor declaration];
-- The bodies of instance initialization blocks in [classifier declarations][Classifier declaration].
+- The bodies of instance initialization blocks in [classifier declarations][Classifier declaration];
+- Special initialization scope for a body of a [classifier declaration][Classifier declaration].
 
 TODO(The top level scope of script Kotlin file is a funky statement scope, as it allows, for example, object declarations).
 
@@ -92,7 +95,12 @@ Scopes are downwards-linked (DLD) or upwards-linked (ULD) as follows:
 - A [classifier or nested class declaration][Classifier declaration] scope is DLD to any nested statement scopes;
 - A [classifier or nested class declaration][Classifier declaration] scope is ULD to its companion object declaration scope;
 - An [inner class declaration][Nested and inner classifiers] scope is DLD to any nested statement scopes;
-- An [inner class declaration][Nested and inner classifiers] scope is ULD to the classifier declaration scope of its parent classifier.
+- An [inner class declaration][Nested and inner classifiers] scope is ULD to the classifier declaration scope of its parent classifier;
+- A function or non-primary constructor parameter scope is ULD to the scope containing the function declaration and DLD to the function body;
+- A primary constructor parameter scope is ULD to the scope containing the classifier declaration (but not the classifier declaration scope itself) and DLD to the classifier initialization scope;
+- The instance initialization blocks are ULD to the classifier initialization scope.
+
+TODO: rewrite all the corresponding section (parameter declarations, initializers, etc) referring to the newly-introduced scopes
 
 > Important: linked scopes **do not** cover cases when identifiers from supertypes are used in subtypes, as this is covered by the [inheritance][Inheritance] rules.
 
