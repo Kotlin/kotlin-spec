@@ -532,10 +532,27 @@ Specifically, it uses the following basic principle.
 #### Value equality expressions
 
 *Value equality expressions* are binary expressions which use value equality operators: `==` and `!=`.
-These operators are overloadable, but are different from [other overloadable operators][Operator overloading] and have the following expansion:
+These operators are overloadable, but are different from [other overloadable operators][Operator overloading] in that the expansion depends 
+on the form of the arguments.
 
-- `A == B` is exactly the same as `(A as? Any)?.equals(B) ?: (B === null)` where `equals` is the method of `kotlin.Any`;
-- `A != B` is exactly the same as `!((A as? Any)?.equals(B) ?: (B === null))` where `equals` is the method of `kotlin.Any`.
+*Reference equality contract* for the `equals` method implementation consists of the following requirements imposed on `kotlin.Any.equals` override: 
+
+1. $\forall \mathtt{A}, \mathtt{B} : \mathtt{A === B} \implies \mathtt{A.equals(B)}$
+2. $\forall \mathtt{A}, \mathtt{B} : \mathtt{B === null} \implies \mathtt{!A.equals(B)}$
+
+The operators themselves have the following expansion:
+
+- `A != B` is exactly the same as `!(A == B)`;
+- `A == B` has a more complex expansion:
+  - If either of `A` or `B` is a null literal `null`, then `A == B` is exactly the same as `A === B`;
+  - If both of `A` and `B` have compile-time types that are [built-in floating point arithmetic types] or their nullable variants, then `A == B` is exactly the same as `(A === null && B === null) || (A !== null && B !== null && ieee754Equals(A!!, B!!))` where `ieee754Equals` is a special intrinsic function unavailable in user-side Kotlin which performs equality comparison of two floating-point numbers according to [IEEE 754][IEEE754] equality specification;
+  - Otherwise, `A == B` is semantically equivalent to `(A as? Any)?.equals(B as Any?) ?: (B === null)`, assuming that `operator equals` abides the reference equality contract. This means that if the compiler implementation can prove that `A === null` or `B === null` or `A === B`, this expansion may be optimized to never call `equals` function at all.
+
+> Note: the expansion involving a call to `equals` operator function always resolves to the member function of `kotlin.Any` as there is no way to provide a more suitable overload candidate.
+> Furthermore, it is not possible to write an `operator`-qualified function with this name that is not an override of this member function.
+
+> Note: the floating-point type expansion given above means that, in some situations and on some platforms, `A == B` and `(A as Any?) == (B as Any?)` may produce different results if `A` and `B` are floating-point numbers.
+> For example, on JVM platform the overriden `equals` implementation for floating-point numbers does not follow the IEEE 754 definition of equality, so `A == A` is false, while `(A as Any?) == (A as Any?)` is true if `A` has a `NaN` value.
 
 Value equality expressions always have type `kotlin.Boolean` as does the `equals` method in `kotlin.Any`.
 
@@ -556,12 +573,18 @@ Specifically, it uses the following basic principle.
 *Comparison expressions* are binary expressions which use the comparison operators: `<`, `>`, `<=` and `>=`.
 These operators are [overloadable][Operator overloading] with the following expansion:
 
-- `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
-- `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
-- `A <= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
-- `A >= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
+- If both `A` and `B` have the same compile-time type which is also one of the [built-in floating point arithmetic types], then:
+    - `A < B` is exactly the same as `ieee754Less(A, B)`
+    - `A > B` is exactly the same as `ieee754Less(B, A)`
+    - `A <= B` is exactly the same as `ieee754Less(A, B) || ieee754Equals(A, B)`
+    - `A >= B` is exactly the same as `ieee754Less(B, A) || ieee754Equals(A, B)`
+- Otherwise:
+    - `A < B` is exactly the same as `integerLess(A.compareTo(B), 0)`
+    - `A > B` is exactly the same as `integerLess(0, A.compareTo(B))`
+    - `A <= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
+    - `A >= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
 
-where `compareTo` is a valid operator function available in the current scope and `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers.
+where `compareTo` is a valid operator function available in the current scope, `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers and `ieee754Less` and `ieee754Equals` are special intrinsic functions unavailable in user-side Kotlin which perform [IEEE 754][IEEE754] compliant "less-than" and equality comparision respectively.
 
 The `compareTo` operator function must have return type `kotlin.Int`, otherwise such declaration is a compile-time error.
 
