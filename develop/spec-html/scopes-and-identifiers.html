@@ -659,7 +659,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The project <a href="packages-and-imports.html#packages-and-imports">packages</a>;</span></li>
 <li><span class="sentence">The top level scopes of non-script Kotlin files;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>.</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>;</span></li>
+<li><span class="sentence">Function parameter scope containing the declared value parameters in a <a href="declarations.html#function-declaration">function declaration</a> or a non-primary <a href="declarations.html#constructor-declaration">constructor declaration</a>;</span></li>
+<li><span class="sentence">Primary constructor parameter scope containing the declared value parameters in a <a href="declarations.html#constructor-declaration">primary constructor</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Statement scopes include:</span></p>
@@ -671,7 +673,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The bodies of <a href="expressions.html#function-literals">function literals</a>;</span></li>
 <li><span class="sentence">The bodies of getters and setters of <a href="declarations.html#property-declaration">properties</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#constructor-declaration">constructors</a>;</span></li>
-<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>.</span></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
+<li><span class="sentence">Special initialization scope for a body of a <a href="declarations.html#classifier-declaration">classifier declaration</a>.</span></li>
 </ul>
 
 <div class="paragraph">
@@ -746,8 +749,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is DLD to any nested statement scopes;</span></li>
 <li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is ULD to its companion object declaration scope;</span></li>
 <li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is DLD to any nested statement scopes;</span></li>
-<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is ULD to the classifier declaration scope of its parent classifier.</span></li>
+<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is ULD to the classifier declaration scope of its parent classifier;</span></li>
+<li><span class="sentence">A function or non-primary constructor parameter scope is ULD to the scope containing the function declaration and DLD to the function body;</span></li>
+<li><span class="sentence">A primary constructor parameter scope is ULD to the scope containing the classifier declaration (but not the classifier declaration scope itself) and DLD to the classifier initialization scope;</span></li>
+<li><span class="sentence">The instance initialization blocks are ULD to the classifier initialization scope.</span></li>
 </ul>
+
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: linked scopes <strong>do not</strong> cover cases when identifiers from supertypes are used in subtypes, as this is covered by the <a href="inheritance.html#inheritance">inheritance</a> rules.</span></p>
