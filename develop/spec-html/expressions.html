@@ -1448,12 +1448,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h4 id="value-equality-expressions">Value equality expressions</h4>
 <div class="paragraph">
-<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are overloadable, but are different from <a href="operator-overloading.html#operator-overloading">other overloadable operators</a> and have the following expansion:</span></p>
+<p><span class="sentence"><em>Value equality expressions</em> are binary expressions which use value equality operators: <code>==</code> and <code>!=</code>. </span><span class="sentence">These operators are overloadable, but are different from <a href="operator-overloading.html#operator-overloading">other overloadable operators</a> in that the expansion depends on the form of the arguments.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence"><em>Reference equality contract</em> for the <code>equals</code> method implementation consists of the following requirements imposed on <code>kotlin.Any.equals</code> override:</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∀</mi><mi mathvariant="monospace">A</mi><mo separator="true">,</mo><mi mathvariant="monospace">B</mi><mo>:</mo><mrow><mi mathvariant="monospace">A</mi><mo>=</mo><mo>=</mo><mo>=</mo><mi mathvariant="monospace">B</mi></mrow><mtext>  </mtext><mo>⟹</mo><mtext>  </mtext><mrow><mi mathvariant="monospace">A</mi><mi mathvariant="monospace">.</mi><mi mathvariant="monospace">e</mi><mi mathvariant="monospace">q</mi><mi mathvariant="monospace">u</mi><mi mathvariant="monospace">a</mi><mi mathvariant="monospace">l</mi><mi mathvariant="monospace">s</mi><mo stretchy="false">(</mo><mi mathvariant="monospace">B</mi><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">\forall \mathtt{A}, \mathtt{B} : \mathtt{A === B} \implies \mathtt{A.equals(B)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">∀</span><span class="mord"><span class="mord mathtt">A</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">B</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.6351100000000001em;vertical-align:-0.024em;"></span><span class="mord"><span class="mord mathtt">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mrel">=</span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathtt">B</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⟹</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathtt">A</span><span class="mord mathtt">.</span><span class="mord mathtt">e</span><span class="mord mathtt">q</span><span class="mord mathtt">u</span><span class="mord mathtt">a</span><span class="mord mathtt">l</span><span class="mord mathtt">s</span><span class="mopen">(</span><span class="mord mathtt">B</span><span class="mclose">)</span></span></span></span></span>
+
+</span></li>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∀</mi><mi mathvariant="monospace">A</mi><mo separator="true">,</mo><mi mathvariant="monospace">B</mi><mo>:</mo><mrow><mi mathvariant="monospace">B</mi><mo>=</mo><mo>=</mo><mo>=</mo><mi mathvariant="monospace">n</mi><mi mathvariant="monospace">u</mi><mi mathvariant="monospace">l</mi><mi mathvariant="monospace">l</mi></mrow><mtext>  </mtext><mo>⟹</mo><mtext>  </mtext><mrow><mo stretchy="false">!</mo><mi mathvariant="monospace">A</mi><mi mathvariant="monospace">.</mi><mi mathvariant="monospace">e</mi><mi mathvariant="monospace">q</mi><mi mathvariant="monospace">u</mi><mi mathvariant="monospace">a</mi><mi mathvariant="monospace">l</mi><mi mathvariant="monospace">s</mi><mo stretchy="false">(</mo><mi mathvariant="monospace">B</mi><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">\forall \mathtt{A}, \mathtt{B} : \mathtt{B === null} \implies \mathtt{!A.equals(B)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord">∀</span><span class="mord"><span class="mord mathtt">A</span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathtt">B</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.6351100000000001em;vertical-align:-0.024em;"></span><span class="mord"><span class="mord mathtt">B</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mrel">=</span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathtt">n</span><span class="mord mathtt">u</span><span class="mord mathtt">l</span><span class="mord mathtt">l</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⟹</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mclose">!</span><span class="mord mathtt">A</span><span class="mord mathtt">.</span><span class="mord mathtt">e</span><span class="mord mathtt">q</span><span class="mord mathtt">u</span><span class="mord mathtt">a</span><span class="mord mathtt">l</span><span class="mord mathtt">s</span><span class="mopen">(</span><span class="mord mathtt">B</span><span class="mclose">)</span></span></span></span></span>
+
+</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">The operators themselves have the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>A == B</code> is exactly the same as <code>(A as? Any)?.equals(B) ?: (B === null)</code> where <code>equals</code> is the method of <code>kotlin.Any</code>;</span></li>
-<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!((A as? Any)?.equals(B) ?: (B === null))</code> where <code>equals</code> is the method of <code>kotlin.Any</code>.</span></li>
+<li><span class="sentence"><code>A != B</code> is exactly the same as <code>!(A == B)</code>;</span></li>
+<li><span class="sentence"><code>A == B</code> has a more complex expansion:</span>
+<ul>
+<li><span class="sentence">If either of <code>A</code> or <code>B</code> is a null literal <code>null</code>, then <code>A == B</code> is exactly the same as <code>A === B</code>;</span></li>
+<li><span class="sentence">If both of <code>A</code> and <code>B</code> have compile-time types that are <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">built-in floating point arithmetic types</a> or their nullable variants, then <code>A == B</code> is exactly the same as <code>(A === null &amp;&amp; B === null) || (A !== null &amp;&amp; B !== null &amp;&amp; ieee754Equals(A!!, B!!))</code> where <code>ieee754Equals</code> is a special intrinsic function unavailable in user-side Kotlin which performs equality comparison of two floating-point numbers according to <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> equality specification;</span></li>
+<li><span class="sentence">Otherwise, <code>A == B</code> is semantically equivalent to <code>(A as? Any)?.equals(B as Any?) ?: (B === null)</code>, assuming that <code>operator equals</code> abides the reference equality contract. </span><span class="sentence">This means that if the compiler implementation can prove that <code>A === null</code> or <code>B === null</code> or <code>A === B</code>, this expansion may be optimized to never call <code>equals</code> function at all.</span></li>
+</ul></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the expansion involving a call to <code>equals</code> operator function always resolves to the member function of <code>kotlin.Any</code> as there is no way to provide a more suitable overload candidate. </span><span class="sentence">Furthermore, it is not possible to write an <code>operator</code>-qualified function with this name that is not an override of this member function.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: the floating-point type expansion given above means that, in some situations and on some platforms, <code>A == B</code> and <code>(A as Any?) == (B as Any?)</code> may produce different results if <code>A</code> and <code>B</code> are floating-point numbers. </span><span class="sentence">For example, on JVM platform the overriden <code>equals</code> implementation for floating-point numbers does not follow the IEEE 754 definition of equality, so <code>A == A</code> is false, while <code>(A as Any?) == (A as Any?)</code> is true if <code>A</code> has a <code>NaN</code> value.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Value equality expressions always have type <code>kotlin.Boolean</code> as does the <code>equals</code> method in <code>kotlin.Any</code>.</span></p>
 </div>
@@ -1492,13 +1521,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><em>Comparison expressions</em> are binary expressions which use the comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> and <code>&gt;=</code>. </span><span class="sentence">These operators are <a href="operator-overloading.html#operator-overloading">overloadable</a> with the following expansion:</span></p>
 </div>
 <ul>
+<li><span class="sentence">If both <code>A</code> and <code>B</code> have the same compile-time type which is also one of the <a href="built-in-types-and-their-semantics.html#built-in-floating-point-arithmetic-types">built-in floating point arithmetic types</a>, then:</span>
+<ul>
+<li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>ieee754Less(A, B)</code></span></li>
+<li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>ieee754Less(B, A)</code></span></li>
+<li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>ieee754Less(A, B) || ieee754Equals(A, B)</code></span></li>
+<li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>ieee754Less(B, A) || ieee754Equals(A, B)</code></span></li>
+</ul></li>
+<li><span class="sentence">Otherwise:</span>
+<ul>
 <li><span class="sentence"><code>A &lt; B</code> is exactly the same as <code>integerLess(A.compareTo(B), 0)</code></span></li>
 <li><span class="sentence"><code>A &gt; B</code> is exactly the same as <code>integerLess(0, A.compareTo(B))</code></span></li>
 <li><span class="sentence"><code>A &lt;= B</code> is exactly the same as <code>!integerLess(0, A.compareTo(B))</code></span></li>
 <li><span class="sentence"><code>A &gt;= B</code> is exactly the same as <code>!integerLess(A.compareTo(B), 0)</code></span></li>
+</ul></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope and <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers.</span></p>
+<p><span class="sentence">where <code>compareTo</code> is a valid operator function available in the current scope, <code>integerLess</code> is a special intrinsic function unavailable in user-side Kotlin which performs integer “less-than” comparison of two integer numbers and <code>ieee754Less</code> and <code>ieee754Equals</code> are special intrinsic functions unavailable in user-side Kotlin which perform <a href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a> compliant “less-than” and equality comparision respectively.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The <code>compareTo</code> operator function must have return type <code>kotlin.Int</code>, otherwise such declaration is a compile-time error.</span></p>
