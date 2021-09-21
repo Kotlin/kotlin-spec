@@ -7,10 +7,13 @@
 
 ### Introduction {-}
 
-Kotlin supports _callable overloading_, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called.
+Kotlin supports _overloading_ for callables and properties, that is, the ability for several callables (functions or function-like properties) or properties with the same name to coexist in the same scope, with the compiler picking the most suitable one when such entity is referenced.
 This section describes *overload resolution process* in detail.
 
-Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
+> Note: most of this section explains the overload resolution process for callables, as the overload resolution process for properties uses the same framework.
+> Important differences w.r.t. properties are covered in the [corresponding section][Resolving property access].
+
+Unlike many object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
 Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.
 
 ### Basics
@@ -588,12 +591,12 @@ Overload resolution for property access works similarly to how it works for [cal
 > *Important*: this section concerns *only* properties accessed using property access syntax `a.x` or just `x` *without call suffix*.
 > If a property is accessed with a call suffix, it is treated as any other callable and is required to have a suitable `invoke` overload available, see the rest of this part for details
 
-There are two variants of property access syntax: readonly property access and property assignment.
+There are two variants of property access syntax: read-only property access and property assignment.
 
-> Note: there is also [safe navigation syntax][Navigation operators] for both assignment and readonly access, but that is expanded to non-safe navigation syntax covered by this section.
+> Note: there is also [safe navigation syntax][Navigation operators] for both assignment and read-only access, but that is expanded to non-safe navigation syntax covered by this section.
 > Please refer to corresponding sections for details.
 
-Readonly property access `a.x` is resolved the same way as if the property access in question was a special function call `a.x$get()` and each property `val/var x: T` was replaced with corresponding function `fun x$get(): T` having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter.
+Read-only property access `a.x` is resolved the same way as if the property access in question was a special function call `a.x$get()` and each property `val/var x: T` was replaced with corresponding function `fun x$get(): T` having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter.
 For different flavors of property declarations and getters, refer to [corresponding section][Property declaration].
 Please note that this excludes any possibility to employ `invoke`-convention as these ephemeral functions cannot be properties themselves.
 
@@ -641,14 +644,14 @@ Please note that this excludes any possibility to employ `invoke`-convention as 
 
 Property assignment `a.x = y` is resolved the same way as if it was replaced with a special function call `a.x$set(y)` and each property `var/val x: T` was replaced with a corresponding function `fun x$set(value: T)`  having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter.
 For different flavors of property declarations and setters, refer to [corresponding section][Property declaration].
-Please note that, although a readonly property declaration (using the keyword `val`) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate.
+Please note that, although a read-only property declaration (using the keyword `val`) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate.
 Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.
 
-> Note: informally, one may look at property assignment resolution as a sub-kind of readonly property resolution described above, first resolving the property as if it was accessed in a readonly fashion, and then using the setter.
-> Readonly property access and property assignment syntax used in the same position **never** resolve to different property candidates
+> Note: informally, one may look at property assignment resolution as a sub-kind of read-only property resolution described above, first resolving the property as if it was accessed in a read-only fashion, and then using the setter.
+> Read-only property access and property assignment syntax used in the same position **never** resolve to different property candidates
 
 > Example: one may consider property access in class `B` to be resolved as if it has been transformed to class `BB`.
-> Declaration bodies for ephemeral functions are ommited to avoid confusion
+> Declaration bodies for ephemeral functions are omitted to avoid confusion
 >
 > ```kotlin
 > class B {
@@ -663,9 +666,9 @@ Such a candidate (in case it is selected as the final candidate) will result in 
 >         with(42.0) {
 >             // Resolves to (1)
 >             this@B.b = 5 
->             // Resolves to (2) and compiler error: cannot assign readonly property
+>             // Resolves to (2) and compiler error: cannot assign read-only property
 >             this.b = 5 
->             // Resolves to (2) and compiler error: cannot assign readonly property
+>             // Resolves to (2) and compiler error: cannot assign read-only property
 >             b = 5 
 >         }
 >     }
