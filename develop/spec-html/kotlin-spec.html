@@ -12498,10 +12498,15 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </dl>
 <h3 id="introduction-4" class="unnumbered">Introduction</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin supports <em>callable overloading</em>, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
+<p><span class="sentence">Kotlin supports <em>overloading</em> for callables and properties, that is, the ability for several callables (functions or function-like properties) or properties with the same name to coexist in the same scope, with the compiler picking the most suitable one when such entity is referenced. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
+<p><span class="sentence">Note: most of this section explains the overload resolution process for callables, as the overload resolution process for properties uses the same framework. </span><span class="sentence">Important differences w.r.t. properties are covered in the <a href="#resolving-property-access">corresponding section</a>.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Unlike many object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
 </div>
 <h3 id="basics">Basics</h3>
 <h4 id="receivers">Receivers</h4>
@@ -13361,15 +13366,15 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">There are two variants of property access syntax: readonly property access and property assignment.</span></p>
+<p><span class="sentence">There are two variants of property access syntax: read-only property access and property assignment.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: there is also <a href="#navigation-operators">safe navigation syntax</a> for both assignment and readonly access, but that is expanded to non-safe navigation syntax covered by this section. </span><span class="sentence">Please refer to corresponding sections for details.</span></p>
+<p><span class="sentence">Note: there is also <a href="#navigation-operators">safe navigation syntax</a> for both assignment and read-only access, but that is expanded to non-safe navigation syntax covered by this section. </span><span class="sentence">Please refer to corresponding sections for details.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Readonly property access <code>a.x</code> is resolved the same way as if the property access in question was a special function call <code>a.x$get()</code> and each property <code>val/var x: T</code> was replaced with corresponding function <code>fun x$get(): T</code> having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter. </span><span class="sentence">For different flavors of property declarations and getters, refer to <a href="#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that this excludes any possibility to employ <code>invoke</code>-convention as these ephemeral functions cannot be properties themselves.</span></p>
+<p><span class="sentence">Read-only property access <code>a.x</code> is resolved the same way as if the property access in question was a special function call <code>a.x$get()</code> and each property <code>val/var x: T</code> was replaced with corresponding function <code>fun x$get(): T</code> having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter. </span><span class="sentence">For different flavors of property declarations and getters, refer to <a href="#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that this excludes any possibility to employ <code>invoke</code>-convention as these ephemeral functions cannot be properties themselves.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -13411,16 +13416,16 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <a class="sourceLine" id="cb151-17" title="17">}</a></code></pre></div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Property assignment <code>a.x = y</code> is resolved the same way as if it was replaced with a special function call <code>a.x$set(y)</code> and each property <code>var/val x: T</code> was replaced with a corresponding function <code>fun x$set(value: T)</code> having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter. </span><span class="sentence">For different flavors of property declarations and setters, refer to <a href="#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that, although a readonly property declaration (using the keyword <code>val</code>) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate. </span><span class="sentence">Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.</span></p>
+<p><span class="sentence">Property assignment <code>a.x = y</code> is resolved the same way as if it was replaced with a special function call <code>a.x$set(y)</code> and each property <code>var/val x: T</code> was replaced with a corresponding function <code>fun x$set(value: T)</code> having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter. </span><span class="sentence">For different flavors of property declarations and setters, refer to <a href="#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that, although a read-only property declaration (using the keyword <code>val</code>) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate. </span><span class="sentence">Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: informally, one may look at property assignment resolution as a sub-kind of readonly property resolution described above, first resolving the property as if it was accessed in a readonly fashion, and then using the setter. </span><span class="sentence">Readonly property access and property assignment syntax used in the same position <strong>never</strong> resolve to different property candidates</span></p>
+<p><span class="sentence">Note: informally, one may look at property assignment resolution as a sub-kind of read-only property resolution described above, first resolving the property as if it was accessed in a read-only fashion, and then using the setter. </span><span class="sentence">Read-only property access and property assignment syntax used in the same position <strong>never</strong> resolve to different property candidates</span></p>
 </div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Example: one may consider property access in class <code>B</code> to be resolved as if it has been transformed to class <code>BB</code>. </span><span class="sentence">Declaration bodies for ephemeral functions are ommited to avoid confusion</span></p>
+<p><span class="sentence">Example: one may consider property access in class <code>B</code> to be resolved as if it has been transformed to class <code>BB</code>. </span><span class="sentence">Declaration bodies for ephemeral functions are omitted to avoid confusion</span></p>
 </div>
 <div class="sourceCode" id="cb152"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb152-1" title="1"><span class="kw">class</span> <span class="dt">B</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb152-2" title="2">    <span class="kw">var</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
@@ -13434,9 +13439,9 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <a class="sourceLine" id="cb152-10" title="10">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
 <a class="sourceLine" id="cb152-11" title="11">            <span class="co">// Resolves to (1)</span></a>
 <a class="sourceLine" id="cb152-12" title="12">            <span class="kw">this@B</span>.b = <span class="dv">5</span> </a>
-<a class="sourceLine" id="cb152-13" title="13">            <span class="co">// Resolves to (2) and compiler error: cannot assign readonly property</span></a>
+<a class="sourceLine" id="cb152-13" title="13">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
 <a class="sourceLine" id="cb152-14" title="14">            <span class="kw">this</span>.b = <span class="dv">5</span> </a>
-<a class="sourceLine" id="cb152-15" title="15">            <span class="co">// Resolves to (2) and compiler error: cannot assign readonly property</span></a>
+<a class="sourceLine" id="cb152-15" title="15">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
 <a class="sourceLine" id="cb152-16" title="16">            b = <span class="dv">5</span> </a>
 <a class="sourceLine" id="cb152-17" title="17">        <span class="op">}</span></a>
 <a class="sourceLine" id="cb152-18" title="18">    <span class="op">}</span></a>
