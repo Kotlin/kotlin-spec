@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 export PROJECT_DIR
 
 SECTIONS_DIR="$PROJECT_DIR/src/md/kotlin.core"

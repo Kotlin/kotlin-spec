@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 source directories.sh
 source ${BUILD_DIR}/prepare.sh
 source settings.sh
