@@ -24,6 +24,7 @@
 \newcommand{\hor}{\mathbin{\operatorname{|}}}
 
 \newcommand{\sur}{\mathrel{\operatorname{\cancel{<:>}}}}
+\newcommand{\notSubtype}{\mathrel{\operatorname{\cancel{<:}}}}
 
 \newcommand{\Ss}{\mathbb{S}}
 

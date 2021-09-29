@@ -418,11 +418,12 @@ A when expression is called **_exhaustive_** if at least one of the following is
         - A constant expression evaluating to `false`;
         
           > Important: here the term "constant expression" refers to any expression constructed of [constant literals][Constant literals], [string interpolation][String interpolation expressions] over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time
-    - The bound expression is of a [`sealed`][Sealed classes and interfaces] class or interface and all of its [*direct non-sealed subtypes*][Sealed classes and interfaces] $T_1, \ldots, T_n$ are covered in this expression.
+    - The bound expression is of a [`sealed`][Sealed classes and interfaces] class or interface `S` and all of its [*direct non-sealed subtypes*][Sealed classes and interfaces] $T_1, \ldots, T_n$ are covered in this expression.
       A subtype $T_i$ is considered covered if when expression contains one of the following:
-      * a type test condition $is T_i$;
-      * a type test condition $is S_i$ (where $S_i$ is sealed and $T_i <: S_i$);
-      * a type test condition $!is S_j$ (where $S_j$ is sealed and $\exists j \neq i : T_j <: S_j$.
+      * a type test condition $\is S_j$, where $S_j <: S, T_i <: S_j$;
+      * a type test condition $\notIs S_j$, where $S_j <: S, T_i \notSubtype S_j, \exists k \neq i : T_k <: S_j$.
+
+      > Note: in case the set of direct non-sealed subtypes for sealed type `S` is empty (i.e., its sealed hierarchy is uninhabited), the exhaustiveness of when expression is implementation-defined.
 
 	  Additionally, an enum subtype $E_i$ is considered covered also if all its enumerated values are checked for equality using constant expression;
     - The bound expression is of an [`enum class`][Enum class declaration] type and all its enumerated values are checked for equality using constant expression;
@@ -552,7 +553,7 @@ The operators themselves have the following expansion:
 > Furthermore, it is not possible to write an `operator`-qualified function with this name that is not an override of this member function.
 
 > Note: the floating-point type expansion given above means that, in some situations and on some platforms, `A == B` and `(A as Any?) == (B as Any?)` may produce different results if `A` and `B` are floating-point numbers.
-> For example, on JVM platform the overriden `equals` implementation for floating-point numbers does not follow the IEEE 754 definition of equality, so `A == A` is false, while `(A as Any?) == (A as Any?)` is true if `A` has a `NaN` value.
+> For example, on JVM platform the overridden `equals` implementation for floating-point numbers does not follow the IEEE 754 definition of equality, so `A == A` is false, while `(A as Any?) == (A as Any?)` is true if `A` has a `NaN` value.
 
 Value equality expressions always have type `kotlin.Boolean` as does the `equals` method in `kotlin.Any`.
 
@@ -584,7 +585,7 @@ These operators are [overloadable][Operator overloading] with the following expa
     - `A <= B` is exactly the same as `!integerLess(0, A.compareTo(B))`
     - `A >= B` is exactly the same as `!integerLess(A.compareTo(B), 0)`
 
-where `compareTo` is a valid operator function available in the current scope, `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers and `ieee754Less` and `ieee754Equals` are special intrinsic functions unavailable in user-side Kotlin which perform [IEEE 754][IEEE754] compliant "less-than" and equality comparision respectively.
+where `compareTo` is a valid operator function available in the current scope, `integerLess` is a special intrinsic function unavailable in user-side Kotlin which performs integer "less-than" comparison of two integer numbers and `ieee754Less` and `ieee754Equals` are special intrinsic functions unavailable in user-side Kotlin which perform [IEEE 754][IEEE754] compliant "less-than" and equality comparison respectively.
 
 The `compareTo` operator function must have return type `kotlin.Int`, otherwise such declaration is a compile-time error.
 
