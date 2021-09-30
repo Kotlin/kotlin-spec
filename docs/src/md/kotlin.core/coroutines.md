@@ -80,7 +80,7 @@ Every suspending function is associated with a generated `Continuation` subtype,
 The return type of the suspending function becomes the type parameter `T` of the continuation.
 
 `CoroutineContext` represents the context of the continuation and is an indexed set from `CoroutineContext.Key` to `CoroutineContext.Element` (e.g., a special kind of map).
-It is used to store coroutine-local information, and takes important part in [Coroutine interception].
+It is used to store coroutine-local information, and takes important part in [Continuation interception].
 
 `resumeWith` function is used to propagate the results in between suspension points: it is called with the result (or exception) of the last suspension point and resumes the coroutine execution.
 
