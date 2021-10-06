@@ -41,7 +41,7 @@ In most situations, it is not allowed to bind several values to the same identif
 
 An exception to this rule are [function declarations][Function declaration], which are matched by [signatures][Function signature] and allow defining several functions with the same name in the same scope.
 When [calling functions][Call and property access expressions], a process called [overload resolution][Overload resolution] allows for differentiating between such functions.
-Overload resolution also applies to properties if they are used as functions through `invoke`-convention, but it does not allow defining several properties with the same name in the same scope.
+Overload resolution also applies to properties if they are used as functions through `invoke`-convention, but it does not allow defining several properties with the same name and with the same receivers in the same scope.
 
 > Note: platforms may introduce additional restrictions on which identifiers may be declared together in the same or linked scopes.
 

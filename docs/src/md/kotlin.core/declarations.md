@@ -18,6 +18,9 @@ TODO(Examples)
 Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are *named*, i.e. they also assign an identifier to their own entity, however, some declarations may be *anonymous*.
 
 Every declaration is accessible in a particular *scope*, which is dependent both on where the declaration is located and on the declaration itself.
+Every named declaration introduces a binding for this name in the scope it is declared in.
+For most of the declarations, this scope is the declaration scope introduced by the **parent** declaration, e.g. the declaration this declaration is syntactically nested in.
+See [scoping section][Scopes and identifiers] for details.
 
 ### Classifier declaration
 
@@ -34,6 +37,8 @@ There are three kinds of classifier declarations:
 * object declarations.
 
 > Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
+
+
 
 #### Class declaration
 
@@ -219,6 +224,13 @@ This also means that, if a class declaration includes a class supertype specifie
 >     constructor() : super() {}
 > }
 > ```
+
+###### Constructor declaration scopes
+
+Similar to [function declarations][Function declaration scopes], a constructor introduces two scopes: a constructor parameter scope and a constructor body scope, see function declaration section for details.
+The constructor parameter scope is upward-linked to the static classifier declaration scope of its classifier.
+In addition to this, primary constructor parameter scope is downward-linked to the classifier initialization scope.
+There is also no primary constructor body scope as primary constructor has no body.
 
 ##### Nested and inner classifiers
 
@@ -880,6 +892,20 @@ It stays unspecified even after the "proper" initialization is performed.
 > }
 > ```
 
+#### Classifier declaration scopes
+
+Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the **static** classifier body scope and the **actual** classifier body scope
+Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier.
+All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope.
+Static classifier body scope is upwards-linked to the actual classifier body scope.
+For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.
+
+In addition to this, objects and classes introduce a special *object initialization scope*, which is not syntactically delimited.
+The scopes of each initialization expression of every property in the class body, as well as the scopes of each initialization block, is upward-linked to the object initialization scope, which itself is upward-linked to the actual classifier body scope.
+
+If a classifier declares a primary constructor, the parameters of this constructor are bound in the special *primary constructor parameter scope*, which is downward-linked to the initialization scope and upward-linked to the scope the classifier is declared in.
+The interface delegation expressions (if any) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
+
 ### Function declaration
 
 :::{.paste target=grammar-rule-functionDeclaration}
@@ -1131,6 +1157,12 @@ In order to be applicable for such an optimization, the function must adhere to 
 If a function declaration is marked with the `tailrec` modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.
 
 TODO(actual kotlin-specific rules on what qualifies for TCO)
+
+#### Function declaration scopes
+
+Every function declaration body introduces a *function body scope*, which is a statement scope containing everything declared inside the function body and is delimited by the function body itself.
+
+In addition to this scope, function parameters exist in a special *function parameter scope*, which is upward-linked to the scope the function is declared in and downward-linked to the function body scope.
 
 ### Property declaration
 
@@ -1536,6 +1568,16 @@ A property may be declared late-initialized if:
     + One of the [built-in floating types][Built-in floating point arithmetic types];
     + [`kotlin.Boolean`][`kotlin.Boolean`];
     + [`kotlin.Char`][`kotlin.Char`].
+
+#### Property declaration scopes
+
+Every property getter and setter introduce the same function parameter scope and function body scope as a corresponding function would, see [function declaration scopes] for details. 
+Getter and setter parameter scopes are upward-linked to the scope property is declared in.
+Property itself introduces a new binding in the scope it is declared in.
+
+Initialization expressions and delegate expressions for properties, however, are special.
+If the property declaration resides in a classifier body scope, its initialization expression or delegate expression is resolved in the initialization scope of the same classifier.
+If the property declaration is local or top-level, its initialization expression or delegate expression is resolved in the scope the property is declared in.
 
 ### Type alias
 
