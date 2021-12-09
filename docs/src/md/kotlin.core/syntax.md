@@ -659,7 +659,7 @@
 
 :::{ .grammar-rule #grammar-rule-Letter }
 **_Letter_**  
-  ~ <any unicode character of classes LL, LM, LO, LT, LU or NL>
+  ~ <any unicode character of classes Lu, Ll, Lt, Lm, Lo>
 :::
 :::{ .grammar-rule #grammar-rule-QuotedSymbol }
 **_QuotedSymbol_**  
@@ -667,7 +667,7 @@
 :::
 :::{ .grammar-rule #grammar-rule-UnicodeDigit }
 **_UnicodeDigit_**  
-  ~ <any unicode character of class ND>
+  ~ <any unicode character of class Nd>
 :::
 :::{ .grammar-rule #grammar-rule-Identifier }
 **_Identifier_**  
