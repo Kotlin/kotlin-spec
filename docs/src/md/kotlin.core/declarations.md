@@ -478,6 +478,7 @@ Data classes have the following restrictions:
 > data class DC(val x: Int) {
 >     override fun equals(other: Any?) = false
 >     override fun toString(): String = super.toString()
+> }
 > ``` 
 > 
 > may be equivalent to
@@ -1156,6 +1157,39 @@ A tail-recursive function that contains a recursive call to itself may be optimi
 In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function.
 If a function declaration is marked with the `tailrec` modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.
 
+> Examples:
+>
+> ```kotlin
+> // this is not a tail-recursive function
+> // so tailrec modifier will produce a warning
+> tailrec fun factorial(i: Int): Int {
+>     if (i == 0) return 1
+>     return i * factorial(i - 1)
+> }
+> // this is a tail-recursive function
+> tailrec fun factorialTC(i: Int, result: Int = 1): Int {
+>     if (i == 0) return result
+>     return factorialTC(i - 1, i * result)
+> }
+> ```
+> 
+> `factorialTC` declaration given above should be compiled to loop form similar to the following declaration
+> 
+> ```kotlin
+> fun factorialLoop(i: Int, result: Int = 1): Int {
+>     var $i: Int = i
+>     var $result: Int = result
+>     while(true) {
+>        if ($i == 0) return $result
+>        else {
+>            $i = $i - 1
+>            $result = $i * $result
+>        }
+>     }
+> }
+> ```
+> 
+
 TODO(actual kotlin-specific rules on what qualifies for TCO)
 
 #### Function declaration scopes
@@ -1585,11 +1619,23 @@ If the property declaration is local or top-level, its initialization expression
 :::
 
 Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. 
-If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. 
+If type alias is parameterized, its type parameters must be [unbounded][Type parameters] and cannot specify variance. 
+Bounds and variance of these parameters is always defined to be the same as the corresponding parameters in the type being aliased, unless they are not referenced in the aliased type, in which case they are considered unbounded and invariant.
 Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
 At the moment, Kotlin supports only top-level type aliases. 
 The scope where it is accessible is defined by its [*visibility modifiers*][Declaration visibility].
+
+> Examples:
+> ```kotlin
+> // simple typ ealias declaration
+> typealias IntList = List<Int>
+> // parameterized type alias declaration
+> // T has out variance implicitly
+> typealias IntMap<T> = Map<Int, T>
+> // type parameter may be unreferenced
+> typealias Strange<T> = String
+> ```
 
 ### Declarations with type parameters
 
