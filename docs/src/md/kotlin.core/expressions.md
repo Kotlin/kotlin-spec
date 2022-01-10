@@ -200,6 +200,27 @@ On the other hand, multiline interpolation expressions allow such symbols inside
 
 String interpolation expression always has type `kotlin.String`.
 
+> Examples:
+> 
+> The following code
+> ```kotlin
+> val a = "Hello, $x is ${foo()}"
+> val b = """
+> Hello, $x
+> is "${foo()}"
+> """
+> ```
+> 
+> is equivalent to
+> 
+> ```kotlin
+> val a = "Hello, " + (x?.toString() ?: "null") + 
+>         " is " + (foo()?.toString() ?: "null")
+> val b =  "\nHello, " + (x?.toString() ?: "null") + 
+>          "\nis \"" + (foo()?.toString() ?: "null") + "\"\n"
+> ```
+> 
+
 ### Try-expressions
 
 :::{.paste target=grammar-rule-tryExpression}
