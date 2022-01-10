@@ -1,5 +1,21 @@
 ## Syntax and grammar
 
+### Notation
+
+This section uses a BNF-based notation similar to EBNF with the following conventions:
+
+- Any sequence of characters given in single-quotes and monospace font denote a terminal sequence; 
+- Special terminal sequences that needs specification are given in angle brackets: <...>;
+- Normal parentheses are used sparingly to specify priority between other operations;
+- A sequence of rules A and B: (A B);
+- Choice between rules A and B: (A | B);
+- Optional use of rule A: \[A\];
+- Repetition of rule A: {A}.
+
+Rule names starting with capital letters denote lexical rules, while rule names starting with lowercase letters denote syntactic rules.
+
+> Note: this notation is similar to ISO EBNF as per standard ISO/IEC 14977, but does not employ any special symbols for concatenation or termination and does not use some of the additional notation symbols
+
 ### Lexical grammar
 
 #### Whitespace and comments
