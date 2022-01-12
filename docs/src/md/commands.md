@@ -1,6 +1,6 @@
 <#mode quote>
 
-\newcommand{\currentKotlinMajorVersion}{\textrm{1.5}}
+\newcommand{\currentKotlinMajorVersion}{\textrm{1.6}}
 
 \newcommand{\opMathTT}[2]{%
   \expandafter\newcommand{#1}{\operatorname{\texttt{#2}}}%
