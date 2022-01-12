@@ -1,5 +1,7 @@
 <#mode quote>
 
+\newcommand{\currentKotlinMajorVersion}{\textrm{1.6}}
+
 \newcommand{\opMathTT}[2]{%
   \expandafter\newcommand{#1}{\operatorname{\texttt{#2}}}%
 }
@@ -22,6 +24,7 @@
 \newcommand{\hor}{\mathbin{\operatorname{|}}}
 
 \newcommand{\sur}{\mathrel{\operatorname{\cancel{<:>}}}}
+\newcommand{\notSubtype}{\mathrel{\operatorname{\cancel{<:}}}}
 
 \newcommand{\Ss}{\mathbb{S}}
 
@@ -113,4 +116,4 @@
 \opMathIT{\Assigned}{Assigned}
 \opMathIT{\Unassigned}{Unassigned}
 
-\newcommand{\coroutineSuspended}{\texttt{CO\-RO\-U\-TINE\-\_SUS\-PEN\-DED}}
+\newcommand{\coroutineSuspended}{\texttt{COROUTINE\_SUSPENDED}}

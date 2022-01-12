@@ -1,5 +1,21 @@
 ## Syntax and grammar
 
+### Notation
+
+This section uses a BNF-based notation similar to EBNF with the following conventions:
+
+- Any sequence of characters given in single-quotes and monospace font denote a terminal sequence; 
+- Special terminal sequences that needs specification are given in angle brackets: <...>;
+- Normal parentheses are used sparingly to specify priority between other operations;
+- A sequence of rules A and B: (A B);
+- Choice between rules A and B: (A | B);
+- Optional use of rule A: \[A\];
+- Repetition of rule A: {A}.
+
+Rule names starting with capital letters denote lexical rules, while rule names starting with lowercase letters denote syntactic rules.
+
+> Note: this notation is similar to ISO EBNF as per standard ISO/IEC 14977, but does not employ any special symbols for concatenation or termination and does not use some of the additional notation symbols
+
 ### Lexical grammar
 
 #### Whitespace and comments
@@ -659,7 +675,7 @@
 
 :::{ .grammar-rule #grammar-rule-Letter }
 **_Letter_**  
-  ~ <any unicode character of classes LL, LM, LO, LT, LU or NL>
+  ~ <any unicode character of categories Lu, Ll, Lt, Lm or Lo>
 :::
 :::{ .grammar-rule #grammar-rule-QuotedSymbol }
 **_QuotedSymbol_**  
@@ -667,7 +683,7 @@
 :::
 :::{ .grammar-rule #grammar-rule-UnicodeDigit }
 **_UnicodeDigit_**  
-  ~ <any unicode character of class ND>
+  ~ <any unicode character of category Nd>
 :::
 :::{ .grammar-rule #grammar-rule-Identifier }
 **_Identifier_**  
@@ -682,7 +698,7 @@ This allows not only using non-alphanumeric characters (like `@` or `#`) in name
 Actual set of characters that is allowed to be escaped may, however, be a subject to platform restrictions.
 Consult particular platform sections for details.
 
-> Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: `(`, `)`, `{`, `}`, `[`, `]`, `.`
+> Note: for example, the following characters are not allowed in identifiers used as declaration names on the JVM platform even when escaped due to JVM restrictions: `.`, `;`, `[`, `]`, `/`, `<`, `>`, `:`, `\\` .
 
 Escaped identifiers are treated the same as corresponding non-escaped identifier if it is allowed.
 For example, an escaped identifier ``` `foo` ``` and non-escaped identifier `foo` may be used interchangeably and refer to the same program entity.

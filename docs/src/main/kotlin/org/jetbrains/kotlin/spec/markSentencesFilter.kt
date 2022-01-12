@@ -85,7 +85,7 @@ private fun splitSentences(inlines: List<Inline>): MutableList<List<Inline>> {
 private fun process(inlines: List<Inline>): List<Inline> =
         splitSentences(inlines).map { Inline.Span(Attr(classes = listOf(SENTENCE_CLASS)), it) }
 
-private object SpecSentencesFilterVisitor : PandocVisitor() {
+object SpecSentencesFilterVisitor : PandocVisitor() {
     override fun visit(b: Block.Para): Block {
         return Block.Div(
                 Attr(classes = listOf(PARAGRAPH_CLASS)),

@@ -26,4 +26,4 @@ object MathInCode : PandocVisitor() {
     }
 }
 
-fun main(args: Array<String>) = makeFilter(MathInCode)
+fun main() = makeFilter(MathInCode)

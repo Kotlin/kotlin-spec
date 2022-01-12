@@ -10,8 +10,8 @@ import org.jetbrains.kotlin.spec.viewer.SpecTestsViewer
 import org.jetbrains.kotlin.spec.viewer.links.SentenceFinder
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter
 import org.w3c.dom.set
-import kotlin.browser.document
-import kotlin.browser.window
+import kotlinx.browser.document
+import kotlinx.browser.window
 
 fun turnOnPermanentDevModeIfNeeded() {
     if (window.location.searchMap["mode"] == "dev") {

@@ -18,6 +18,9 @@ TODO(Examples)
 Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are *named*, i.e. they also assign an identifier to their own entity, however, some declarations may be *anonymous*.
 
 Every declaration is accessible in a particular *scope*, which is dependent both on where the declaration is located and on the declaration itself.
+Every named declaration introduces a binding for this name in the scope it is declared in.
+For most of the declarations, this scope is the declaration scope introduced by the **parent** declaration, e.g. the declaration this declaration is syntactically nested in.
+See [scoping section][Scopes and identifiers] for details.
 
 ### Classifier declaration
 
@@ -34,6 +37,8 @@ There are three kinds of classifier declarations:
 * object declarations.
 
 > Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
+
+
 
 #### Class declaration
 
@@ -219,6 +224,13 @@ This also means that, if a class declaration includes a class supertype specifie
 >     constructor() : super() {}
 > }
 > ```
+
+###### Constructor declaration scopes
+
+Similar to [function declarations][Function declaration scopes], a constructor introduces two scopes: a constructor parameter scope and a constructor body scope, see function declaration section for details.
+The constructor parameter scope is upward-linked to the static classifier declaration scope of its classifier.
+In addition to this, primary constructor parameter scope is downward-linked to the classifier initialization scope.
+There is also no primary constructor body scope as primary constructor has no body.
 
 ##### Nested and inner classifiers
 
@@ -466,6 +478,7 @@ Data classes have the following restrictions:
 > data class DC(val x: Int) {
 >     override fun equals(other: Any?) = false
 >     override fun toString(): String = super.toString()
+> }
 > ``` 
 > 
 > may be equivalent to
@@ -569,7 +582,7 @@ In addition to these, every enum class type `E` has the following **static** mem
 > 
 > ...
 > 
-> // enum class can have additional declarations that may be overriden in its values:
+> // enum class can have additional declarations that may be overridden in its values:
 > enum class Direction(val symbol: Char) {
 >     UP('^') {
 >         override val opposite: Direction
@@ -604,13 +617,15 @@ Annotation classes have the following properties:
 - They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
 - They cannot have companion objects;
 - They cannot have nested classes;
-- They cannot have type parameters;
 - The types of primary constructor parameters are limited to:
     - `kotlin.String`;
     - `kotlin.KClass`;
     - [Built-in number types][Built-in types];
     - Other annotation types;
     - Arrays of any other allowed type.
+
+> Note: annotation classes can have type parameters, but cannot use them as types for their primary constructor parameters.
+> Their main use is for various annotation processing tools, which can access the type arguments from the source code.
 
 Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
 
@@ -663,7 +678,7 @@ Value classes must adhere to the following limitations:
 > Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
 
 Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
-Unless `toString` is overriden by the value class definition, it is also implicitly overriden by delegating to the data property.
+Unless `toString` is overridden by the value class definition, it is also implicitly overridden by delegating to the data property.
 In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
 This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
 
@@ -704,22 +719,6 @@ A functional interface has an associated [function type][Function types], which 
 If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration][Object literals] or as a complete [class][Classifier declaration].
 However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).
 
-* If a lambda literal `L` is preceded with a functional interface name `T`, and the type of `L` is a subtype of the associated function type of `T`, this expression creates an instance of `T` with lambda literal `L` used as its abstract member function implementation.
-
-> Example:
-> 
-> ```kotlin
-> fun interface FI {
->     fun bar(s: Int): Int
-> }
-> 
-> fun foo() {
->     val fi = FI { it }
->     val fi2 = FI { s: Int -> s + 42 }
->     val fi3 = FI { s: Number -> s.toInt() }
-> }
-> ```
-
 * If an expression `L` is used as an argument of functional type `T` in a [function call][Function calls and property access], and the type of `L` is a subtype of the associated function type of `T`, this argument is considered as an instance of `T` with expression `L` used as its abstract member function implementation.
 
 > Example:
@@ -744,10 +743,31 @@ However, as functional interface essentially represents a single function, Kotli
 > }
 > ```
 
+* When encountered in a function call as the *function being called*, a functional interface name `T` is considered to be representing a function of type `(T) -> T`, which allows conversion-like function calls as in the examples below.
+
+> Example:
+> 
+> ```kotlin
+> fun interface FI {
+>     fun bar(s: Int): Int
+> }
+> 
+> fun foo() {
+>     val fi = FI { it }
+>     val fi2 = FI { s: Int -> s + 42 }
+>     val fi3 = FI { s: Number -> s.toInt() }
+>     val fi4 = FI({ it })
+>
+>     val lambda = { s: Int -> s + 42 }
+>     val fi5 = FI(lambda)
+> }
+> ```
+
 > Informally: this feature is known as "Single Abstract Method" (SAM) conversion.
 
 > Note: in Kotlin version 1.3 and earlier, SAM conversion was not available for Kotlin functional interfaces.
-> It was, however, available on Kotlin/JVM for Java functional interfaces.
+
+> Note: SAM conversion is also available on Kotlin/JVM for Java functional interfaces.
 
 #### Object declaration
 
@@ -872,6 +892,20 @@ It stays unspecified even after the "proper" initialization is performed.
 >     //   uninitialized properties may leak outside
 > }
 > ```
+
+#### Classifier declaration scopes
+
+Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the **static** classifier body scope and the **actual** classifier body scope
+Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier.
+All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope.
+Static classifier body scope is upwards-linked to the actual classifier body scope.
+For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.
+
+In addition to this, objects and classes introduce a special *object initialization scope*, which is not syntactically delimited.
+The scopes of each initialization expression of every property in the class body, as well as the scopes of each initialization block, is upward-linked to the object initialization scope, which itself is upward-linked to the actual classifier body scope.
+
+If a classifier declares a primary constructor, the parameters of this constructor are bound in the special *primary constructor parameter scope*, which is downward-linked to the initialization scope and upward-linked to the scope the classifier is declared in.
+The interface delegation expressions (if any) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
 
 ### Function declaration
 
@@ -1123,7 +1157,46 @@ A tail-recursive function that contains a recursive call to itself may be optimi
 In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function.
 If a function declaration is marked with the `tailrec` modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.
 
+> Examples:
+>
+> ```kotlin
+> // this is not a tail-recursive function
+> // so tailrec modifier will produce a warning
+> tailrec fun factorial(i: Int): Int {
+>     if (i == 0) return 1
+>     return i * factorial(i - 1)
+> }
+> // this is a tail-recursive function
+> tailrec fun factorialTC(i: Int, result: Int = 1): Int {
+>     if (i == 0) return result
+>     return factorialTC(i - 1, i * result)
+> }
+> ```
+> 
+> `factorialTC` declaration given above should be compiled to loop form similar to the following declaration
+> 
+> ```kotlin
+> fun factorialLoop(i: Int, result: Int = 1): Int {
+>     var $i: Int = i
+>     var $result: Int = result
+>     while(true) {
+>        if ($i == 0) return $result
+>        else {
+>            $i = $i - 1
+>            $result = $i * $result
+>        }
+>     }
+> }
+> ```
+> 
+
 TODO(actual kotlin-specific rules on what qualifies for TCO)
+
+#### Function declaration scopes
+
+Every function declaration body introduces a *function body scope*, which is a statement scope containing everything declared inside the function body and is delimited by the function body itself.
+
+In addition to this scope, function parameters exist in a special *function parameter scope*, which is upward-linked to the scope the function is declared in and downward-linked to the function body scope.
 
 ### Property declaration
 
@@ -1530,17 +1603,39 @@ A property may be declared late-initialized if:
     + [`kotlin.Boolean`][`kotlin.Boolean`];
     + [`kotlin.Char`][`kotlin.Char`].
 
+#### Property declaration scopes
+
+Every property getter and setter introduce the same function parameter scope and function body scope as a corresponding function would, see [function declaration scopes] for details. 
+Getter and setter parameter scopes are upward-linked to the scope property is declared in.
+Property itself introduces a new binding in the scope it is declared in.
+
+Initialization expressions and delegate expressions for properties, however, are special.
+If the property declaration resides in a classifier body scope, its initialization expression or delegate expression is resolved in the initialization scope of the same classifier.
+If the property declaration is local or top-level, its initialization expression or delegate expression is resolved in the scope the property is declared in.
+
 ### Type alias
 
 :::{.paste target=grammar-rule-typeAlias}
 :::
 
 Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. 
-If type alias is parameterized, its type parameters must be [unbounded][Type parameters]. 
+If type alias is parameterized, its type parameters must be [unbounded][Type parameters] and cannot specify variance. 
+Bounds and variance of these parameters is always defined to be the same as the corresponding parameters in the type being aliased, unless they are not referenced in the aliased type, in which case they are considered unbounded and invariant.
 Another restriction is that recursive type aliases are forbidden --- the type alias name cannot be used in its own right-hand side.
 
 At the moment, Kotlin supports only top-level type aliases. 
 The scope where it is accessible is defined by its [*visibility modifiers*][Declaration visibility].
+
+> Examples:
+> ```kotlin
+> // simple typ ealias declaration
+> typealias IntList = List<Int>
+> // parameterized type alias declaration
+> // T has out variance implicitly
+> typealias IntMap<T> = Map<Int, T>
+> // type parameter may be unreferenced
+> typealias Strange<T> = String
+> ```
 
 ### Declarations with type parameters
 
@@ -1637,7 +1732,7 @@ By supplying this annotation the author of the code explicitly declares that saf
 > ```
 > 
 > Using `@UnsafeVariance` is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors.
-> For example, receiving a value in a contravariant position for a covariant class parameter is usually ok if the function involved is guaranteed not to mutate internal state of the class.
+> For example, receiving a value in a contravariant position for a covariant class parameter is usually OK if the function involved is guaranteed not to mutate internal state of the class.
 >
 > For examples on how restrictions are lifted for private visibility (private-to-this), see [visibility section][Declaration visibility]
 

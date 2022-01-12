@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 FORMAT_PANDOC_OPTIONS="-f markdown-raw_html+smart+tex_math_double_backslash"
 
 #--variable=subparagraph is a fix for https://stackoverflow.com/questions/42916124/not-able-to-use-titlesec-with-markdown-and-pandoc

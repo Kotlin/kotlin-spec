@@ -534,7 +534,7 @@ TODO(Lambda analysis order (and the order of overloading vs type inference in ge
 
 ### Bare type argument inference
 
-Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$, the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: S$ where $T <: S$.
+Bare type argument inference is a special kind of type inference where, given a type $T$ and a constructor $TC$, the type arguments $A_0, A_1 \ldots A_N$ are inferred such that $TC[A_0, A_1 \ldots A_N] <: T$.
 It is used together with *bare types* syntax sugar that can be employed in [type checking][Type-checking expressions] and [casting][Cast expressions] operators.
 The process is performed as follows.
 
@@ -557,7 +557,7 @@ In order to allow builder-style inference for a function parameter, this paramet
 - It must be of an extension-function type;
 - It must be marked with the `@BuilderInference` annotation.
 
-In essense, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
+In essence, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
 For a call to an eligible function with a lambda parameter $L$ the inference is performed [as described above][Statements with lambda literals], but the type parameters of the receiver parameter of the lambda expression are *postponed* till the body of the lambda expression is proceeded.
 After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:
 

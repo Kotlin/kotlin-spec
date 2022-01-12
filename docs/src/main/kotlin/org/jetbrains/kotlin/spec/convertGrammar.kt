@@ -38,7 +38,7 @@ private fun convertGrammar(outputMarkdownFilePath: String, grammarDir: String, l
 
     outputMarkdownFile.bufferedWriter().use { writer ->
         val rules = parseRules(parserGrammarWithInlinedLexerRules.byteInputStream())
-        writer.append(rules.toMarkdown(true)).appendln()
+        writer.append(rules.toMarkdown(true)).appendLine()
     }
 }
 

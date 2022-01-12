@@ -29,9 +29,9 @@ class LoaderByTestsMapFile : GithubTestsLoader {
     private fun loadSectionsMapFile() = loadSectionsMapFileFromRawGithub()
 
 
-    private fun getPromisesForTestFilesFromTestMap(testsMap: TestsLoadingInfo.Tests?, testArea: TestArea): Array<Promise<SpecTest>> {
+    private fun getPromisesForTestFilesFromTestMap(testsMap_: TestsLoadingInfo.Tests?, testArea: TestArea): Array<Promise<SpecTest>> {
         val promises = mutableListOf<Promise<SpecTest>>()
-        val testsMap = testsMap?.json ?: return promises.toTypedArray()
+        val testsMap = testsMap_?.json ?: return promises.toTypedArray()
 
         for ((paragraph, testsByParagraphs) in testsMap.jsonObject) {
             for ((testType, testsByTypes) in testsByParagraphs.jsonObject) {

@@ -3,7 +3,7 @@
 An *exception* type declaration is any type declaration that meets the following criteria:
 
 - It is a [class or object declaration][Classifier declaration];
-- It has `kotlin.Throwable` as one of its supertype (either explicitly or implicitly);
+- It has `kotlin.Throwable` as one of its supertypes (either explicitly or implicitly);
 - It has no type parameters.
 
 Any object of an exception type may be *thrown* or *caught*.

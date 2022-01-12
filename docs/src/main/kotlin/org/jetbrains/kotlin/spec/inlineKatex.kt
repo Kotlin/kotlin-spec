@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import com.zaxxer.nuprocess.NuAbstractProcessHandler
 import com.zaxxer.nuprocess.NuProcess
 import com.zaxxer.nuprocess.NuProcessBuilder
@@ -16,7 +17,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-object InlineKatex : PandocVisitor() {
+class InlineKatex(val katexBinary: String?) : PandocVisitor() {
     val katexCache: MutableMap<String, Inline> = mutableMapOf()
 
     fun katex(text: String, display: Boolean): Inline {
@@ -40,7 +41,7 @@ object InlineKatex : PandocVisitor() {
             }
         }
 
-        val npx = "../web/build/node_modules/.bin/katex"
+        val npx = katexBinary ?: "katex"
         val katex = if(display) NuProcessBuilder(processListener, npx, "--display-mode")
         else NuProcessBuilder(processListener, npx)
 
@@ -67,11 +68,12 @@ private object DoNothing: PandocVisitor() {
 private object InlineKatexFilter : CliktCommand() {
     val format: Format by argument("Pandoc output format").convert { Format(it) }
     val disableStaticMath by option().flag("--enable-static-math")
+    val katex by option()
 
     val isHTML get() = format.isHTML()
 
     override fun run() {
-        if(isHTML && !disableStaticMath) makeFilter(InlineKatex)
+        if(isHTML && !disableStaticMath) makeFilter(InlineKatex(katexBinary = katex))
         else makeFilter(DoNothing)
     }
 }

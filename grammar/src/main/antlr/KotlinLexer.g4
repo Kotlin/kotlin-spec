@@ -323,12 +323,11 @@ fragment EscapeSeq
 // SECTION: characters
 
 fragment Letter
-    : UNICODE_CLASS_LL
+    : UNICODE_CLASS_LU
+    | UNICODE_CLASS_LL
+    | UNICODE_CLASS_LT
     | UNICODE_CLASS_LM
     | UNICODE_CLASS_LO
-    | UNICODE_CLASS_LT
-    | UNICODE_CLASS_LU
-    | UNICODE_CLASS_NL
     ;
 
 // SECTION: strings

@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.spec.entity.test.TestPlace
 import org.jetbrains.kotlin.spec.entity.test.parameters.TestInfo
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
 import org.jetbrains.kotlin.spec.utils.format
-import kotlin.browser.window
+import kotlinx.browser.window
 import kotlin.js.Promise
 
 interface GithubTestsLoader {
@@ -135,5 +135,5 @@ interface GithubTestsLoader {
 
     }
 
-    fun loadTestFiles(sectionName: String, mainSectionName: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
+    fun loadTestFiles(sectionToLoadName: String, mainSectionPath: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
 }

@@ -70,8 +70,7 @@ A *resolved type* in this context is any type which does not contain inference v
 - Otherwise, if $T$ is a flexible type of the form $(\alpha..\alpha?)$ where $\alpha$ is an inference variable, a new bound $(S..S?) <: \alpha$ is added to current solution;
 - Otherwise, if $S$ is a nullable type of the form $A?$ and:
     - If $T$ is a known non-nullable type (a classifier type, a nullability-asserted type $B!!$, a type variable with a known non-nullable lower bound, or an intersection type containing a known non-nullable type), this is an inference error;
-    - Otherwise, if $T$ is also a nullable type of the form $B?$, the constraint is reduced to $A <: B$;
-    - Otherwise, the constraint is reduced to $A <: T$;
+    - Otherwise, the constraint is reduced to $A <: T$. Also, if $T$ is also a nullable type of the form $B?$, an additional constraint $A!! <: B$ is introduced;
 - Otherwise, if $S$ is a flexible type of the form $(B..A?)$ and:
     - If $T$ is a nullable type of form $C?$, the constraint is reduced to $(B..A) <: C$, or to $A <: C$ if $A \equiv B$;
     - Otherwise, the constraint is reduced to $(B..A) <: T$, or to $A <: T$ if $A \equiv B$;

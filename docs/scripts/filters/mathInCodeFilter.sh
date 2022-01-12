@@ -1,3 +1,2 @@
-export PROJECT_DIR
-
-cd $PROJECT_DIR/../ && ./gradlew -PmainClass="org.jetbrains.kotlin.spec.MathInCodeFilterKt" -Pargs="$*" execute -q
+#!/bin/env bash
+java -cp $PROJECT_DIR/build/libs/filters.jar org.jetbrains.kotlin.spec.MathInCodeFilterKt $*

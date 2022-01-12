@@ -7,13 +7,18 @@
 
 ### Introduction {-}
 
-Kotlin supports _callable overloading_, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called.
+Kotlin supports _overloading_ for callables and properties, that is, the ability for several callables (functions or function-like properties) or properties with the same name to coexist in the same scope, with the compiler picking the most suitable one when such entity is referenced.
 This section describes *overload resolution process* in detail.
 
-Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
+> Note: most of this section explains the overload resolution process for callables, as the overload resolution process for properties uses the same framework.
+> Important differences w.r.t. properties are covered in the [corresponding section][Resolving property access].
+
+Unlike many object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit.
 Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.
 
-### Receivers
+### Basics
+
+#### Receivers
 
 Every function or property that is defined as a method or an extension has one or more special parameters called _receiver_ parameters.
 When calling such a callable using [navigation operators][Navigation operators] (`.` or `?.`) the left hand side value is called an _explicit receiver_ of this particular call.
@@ -40,7 +45,7 @@ The available receivers are prioritized in the following way:
 
 > Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.
 
-> Important: DSL-specific annotations (marked with [`kotlin.DslMarker`][Built-in annotations] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope. 
+> Important: DSL-specific annotations (marked with [`kotlin.DslMarker`] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope. 
 
 The implicit receiver having the highest priority is also called the _default implicit receiver_.
 The default implicit receiver is available in a scope as `this`.
@@ -84,7 +89,7 @@ For a particular callable invocation, any or both receivers may be involved, but
 > }
 > ```
 
-### The forms of call-expression
+#### The forms of call-expression
 
 Any function in Kotlin may be called in several different ways:
 
@@ -100,7 +105,7 @@ For each of these cases, a compiler should first pick a number of _overload cand
 
 > Important: the overload candidates are picked **before** the most specific function is chosen.
 
-### Callables and `invoke` convention
+#### Callables and `invoke` convention
 
 A *callable* $X$ for the purpose of this section is one of the following:
 
@@ -137,7 +142,7 @@ An *extension callable* is one of the following:
 
 A *local callable* is any callable which is declared in a [statement scope][Scopes and identifiers].
 
-### c-level partition
+#### c-level partition
 
 When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:
 
@@ -154,7 +159,7 @@ Extension callables produce the following sets, considered separately, ordered b
 Let us define this partition of callables to overload candidate sets as *c-level partition* (callable-level partition).
 As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed **last**, after all other applicable steps.
 
-### Building the overload candidate set (OCS)
+### Building the overload candidate set
 
 #### Fully-qualified call
 
@@ -194,17 +199,15 @@ A call of callable `f` with an explicit receiver `e` is correct if at least one 
 If a call is correct, for a callable `f` with an explicit receiver `e` of type `T` the following sets are analyzed (**in the given order**):
 
 1. Non-extension member callables named `f` of type `T`;
-2. Local extension callables named `f`, whose receiver type conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
-3. Explicitly imported extension callables named `f`, whose receiver type conforms to type `T`;
-4. Extension callables named `f`, whose receiver type conforms to type `T`, declared in the package scope;
-5. Star-imported extension callables named `f`, whose receiver type conforms to type `T`;
-6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type `T`.
+2. Extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+    * First, we assume there is **no implicit receiver** available for the dispatch receiver of `f` (i.e., we analyze _local_ extension callables only);
+    * Second, we consider each implicit receiver available for the dispatch receiver of `f` in the order of the implicit [receiver priority][Receivers];
+3. Explicitly imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
+4. Extension callables named `f`, whose receiver type `U` conforms to type `T`, declared in the package scope;
+5. Star-imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
+6. Implicitly imported extension callables named `f` (either from the Kotlin standard library or platform-specific ones), whose receiver type `U` conforms to type `T`.
 
 > Note: here type `U` conforms to type `T`, if $T <: U$.
-
-> Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver.
-> In this case, the case with **no implicit receiver** is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to [the rules for implicit receivers][Call without an explicit receiver].
-> These sets are considered in the order of the implicit [receiver priority][Receivers].
 
 There is a important special case here, however, as a callable may be a [property-like callable with an operator function `invoke`][Callables and `invoke` convention], and these may belong to different sets (e.g., the property itself may be star-imported, while the `invoke` operator on it is a local extension).
 In this situation, such callable belongs to the **lowest priority** set of its parts (e.g., for the above case, priority 5 set).
@@ -442,8 +445,10 @@ This check may result in one of the following outcomes:
 
 In case 1, the more applicable candidate of the two is found and no additional steps are needed.
 
-In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable.
-If this step does not allow for deciding the more specific candidate, this is an **overload ambiguity** which must be reported as a compile-time error.
+In case 2, an additional step is performed.
+
+- Any non-parameterized callable is a more specific candidate than any parameterized callable;
+  If there are several non-parameterized candidates, further steps are limited to those candidates.
 
 In case 3, several additional steps are performed in order.
 
@@ -458,7 +463,8 @@ In case 3, several additional steps are performed in order.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
-If after these additional steps there are still several candidates which are equally applicable for the call, this is an **overload ambiguity** which must be reported as a compile-time error.
+If after these additional steps there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
+If there are still more than one most specific candidate afterwards, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
 
@@ -467,6 +473,238 @@ If the callables in check are properties with available `invoke`, the same proce
 - First, the properties are compared for applicability and the most applicable property is chosen as described above.
   If several properties are equally applicable, this is an overload ambiguity as usual;
 - Second, for the property selected at first step, the most applicable operator `invoke` overload is chosen.
+
+#### Using lambda return type to refine function applicability
+
+If the most specific candidate set $C$ is ambiguous (has more than one callable) and contains at least one callable marked with [`kotlin.OverloadResolutionByLambdaReturnType`], several additional checks and steps are performed to reduce it, by attempting to infer a single lambda return type and use it to refine function applicability.
+
+First, we perform the following checks.
+
+1. We *check* if the function call contains **exactly one** [lambda][Lambda literals] argument $A$ which requires type inference (which does not have an explicitly defined type).
+
+2. For every function in $C$ we collect parameters $P_i$ corresponding to argument $A$ and *check* their function types $T_i$ to be structurally equal excluding return types (SEERT).
+
+> Informally: SEERT checks whether function types have the exactly same input parameters.
+
+> Examples: the following two function types are considered SEERT.
+>
+> * `(Int, String) -> Int`
+> * `(Int, String) -> Double`
+>
+> The following two function types are not considered SEERT.
+>
+> * `Int.(String) -> Int`
+> * `(Int, String) -> Double`
+
+If all checks succeed, we can perform the [type inference][Statements with lambda literals] for the lambda argument $A$, as in all cases its parameter types are known (corollary from check 2 succeeding) and their corresponding constraints can be added to the constraint system.
+The constraint system solution gives us the inferred lambda return type $R_{\text{inf}}$, which may be used to refine function applicability, by removing overload candidates with incompatible lambda return types.
+
+This is performed by repeating the [function applicability test][Determining function applicability for a specific call] on the most specific candidate set $C$, with the additional constraint $R \equiv R_{\text{inf}}$ added for the corresponding lambda argument $A$.
+Candidates which remain applicable with this additional constraint are added to the refined set $C^\prime$.
+
+> Note: If any of the checks described above fails, we continue with the set $C^\prime = C$.
+
+If set $C^\prime$ contains more than one candidate, we attempt to prefer candidates **without** [`kotlin.OverloadResolutionByLambdaReturnType`] annotation.
+If there are any, they are included in the resulting most specific candidate set $C_{\text{res}}$, with which we finish the [MSC selection][Algorithm of MSC selection].
+Otherwise, we finish the MSC selection with the set $C^\prime$.
+
+TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.t. this procedure)
+
+> Example:
+>
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testOk01() {
+>     foo { 42 }
+>     // Both (1) and (2) are applicable
+>     // (2) is preferred by the lambda return type
+> }
+> ```
+
+> Example:
+>
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: Unit.() -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testError01() {
+>     val take = Unit
+>     // Overload ambiguity
+>     foo { 42 }
+>     // Both (1) and (2) are applicable
+>     // None is preferred by the lambda return type
+>     //   as their parameters are not SEERT
+> }
+> ```
+
+> Example:
+>
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: Unit.() -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> Int) = Unit // (2)
+> 
+> fun testOk02() {
+>     val take = Unit
+>     foo { a -> 42 }
+>     // Only (2) is applicable
+>     //   as its lambda takes one parameter
+> }
+> ```
+
+> Example:
+>
+> ```kotlin
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> String) = Unit // (1)
+> 
+> @OverloadResolutionByLambdaReturnType
+> fun foo(cb: (Unit) -> CharSequence) = Unit // (2)
+> 
+> fun testError02() {
+>     // Error: required String, found CharSequence
+>     foo { a ->
+>         val a: CharSequence = "42"
+>         a
+>     }
+>     // Both (1) and (2) are applicable
+>     // (1) is the only most specific candidate
+>     //   We do not attempt refinement by the lambda return type
+> }
+> ```
+
+### Resolving property access
+
+As [properties][Property declaration] in Kotlin can have custom [getters and setters], be [extension][Extension property declaration], [delegated][Delegated property declaration] or [contextual][Contextual property declaration], they are also subject to overload resolution.
+Overload resolution for property access works similarly to how it works for [callables][Callables and `invoke` convention], i.e., it consists of two steps: [building the overload candidate set] of [applicable][Determining function applicability for a specific call] candidates, and then [choosing the most specific candidate from the overload candidate set].
+
+> *Important*: this section concerns *only* properties accessed using property access syntax `a.x` or just `x` *without call suffix*.
+> If a property is accessed with a call suffix, it is treated as any other callable and is required to have a suitable `invoke` overload available, see the rest of this part for details
+
+There are two variants of property access syntax: read-only property access and property assignment.
+
+> Note: there is also [safe navigation syntax][Navigation operators] for both assignment and read-only access, but that is expanded to non-safe navigation syntax covered by this section.
+> Please refer to corresponding sections for details.
+
+Read-only property access `a.x` is resolved the same way as if the property access in question was a special function call `a.x$get()` and each property `val/var x: T` was replaced with corresponding function `fun x$get(): T` having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter.
+For different flavors of property declarations and getters, refer to [corresponding section][Property declaration].
+Please note that this excludes any possibility to employ `invoke`-convention as these ephemeral functions cannot be properties themselves.
+
+> Example: one may consider property access in class `A` to be resolved as if it has been transformed to class `AA`.
+>
+> ```kotlin
+> class A {
+>     val a: Int = 5 // (1)
+> 
+>     val Double.a: Boolean // (2)
+>         get() = this != 42.0
+> 
+>     fun test() {
+> 
+>         println(a) // Resolves to (1)
+> 
+>         with(42.0) {
+>             println(this@A.a) // Resolves to (1)
+>             println(this.a) // Resolves to (2)
+>             println(a) // Resolves to (2)
+>         }
+>     }
+> }
+> ```
+>
+> ```kotlin
+> class AA {
+>     fun a$get(): Int = 5 // (1)
+> 
+>     fun Double.a$get(): Boolean // (2)
+>               = this != 42.0
+> 
+>     fun test() {
+> 
+>         println(a$get()) // Resolves to (1)
+> 
+>         with(42.0) {
+>             println(this@AA.a$get()) // Resolves to (1)
+>             println(this.a$get()) // Resolves to (2)
+>             println(a$get()) // Resolves to (2)
+>         }
+>     }
+> }
+> ```
+
+Property assignment `a.x = y` is resolved the same way as if it was replaced with a special function call `a.x$set(y)` and each property `var/val x: T` was replaced with a corresponding function `fun x$set(value: T)`  having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter.
+For different flavors of property declarations and setters, refer to [corresponding section][Property declaration].
+Please note that, although a read-only property declaration (using the keyword `val`) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate.
+Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.
+
+> Note: informally, one may look at property assignment resolution as a sub-kind of read-only property resolution described above, first resolving the property as if it was accessed in a read-only fashion, and then using the setter.
+> Read-only property access and property assignment syntax used in the same position **never** resolve to different property candidates
+
+> Example: one may consider property access in class `B` to be resolved as if it has been transformed to class `BB`.
+> Declaration bodies for ephemeral functions are omitted to avoid confusion
+>
+> ```kotlin
+> class B {
+>     var b: Int = 5 // (1)
+> 
+>     val Double.b: Int // (2)
+>         get() = this.toInt()
+> 
+>     fun test() {
+>         b = 5 // Resolves to (1)
+> 
+>         with(42.0) {
+>             // Resolves to (1)
+>             this@B.b = 5 
+>             // Resolves to (2) and compiler error: cannot assign read-only property
+>             this.b = 5 
+>             // Resolves to (2) and compiler error: cannot assign read-only property
+>             b = 5 
+>         }
+>     }
+> }
+> ```
+>
+> ```kotlin
+> class BB {
+>     fun b$get(): Int // (1, getter)
+>     fun b$set(value: Int) // (1, setter)
+> 
+>     fun Double.b$get(): Int // (2, getter)
+>     fun Double.b$set(value: Int) // (2, setter)
+> 
+>     fun test() {
+>         b$set(5) // Resolves to (1)
+> 
+>         with(42.0) {
+>             // Resolves to (1)
+>             this@B.b$set(5) 
+>             // Resolves to (2)
+>             this.b$set(5) 
+>             // Resolves to (2)
+>             this.b$set(5) 
+>         }
+>     }
+> }
+> ```
+
+The overload resolution for properties has the following features distinct from overload resolution for callables.
+
+* Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its [backing field][Getters and setters]);
+* The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;
+* [Object declarations][object declaration] and [enumeration entries][Enum class declaration] may be accessed using the property access syntax given that they may be resolved in the current scope.
+
+TODO(Anything else?)
 
 ### Resolving callable references
 
@@ -484,7 +722,7 @@ In a simple case when the callable reference is not used as an argument to an ov
 - For each callable reference candidate, we perform the following steps:
   - We build its type constraints and add them to the constraint system of the expression the callable reference is used in;
   - A callable reference is deemed applicable if the constraint system is sound;
-- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set (OCS)];
+- For all applicable candidates, the resolution sets are built according to the same rules [as building OCS for regular calls][Building the overload candidate set];
 - If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.
 - Otherwise, the single callable in the set is chosen as the result of the resolution process.
 
@@ -555,6 +793,9 @@ TODO(Examples)
 [Type inference][Type inference] in Kotlin is a very complicated process, and it is performed *after* overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.
 
 > Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behaviour, leading to an infinite compilation.
+
+> Important: an exception to this limitation is when a [lambda return type is used to refine function applicability][Using lambda return type to refine function applicability].
+By limiting the scope of interdependence between type inference and overload resolution to a single step, we avoid creating an oscillating behaviour.
 
 ### Conflicting overloads
 

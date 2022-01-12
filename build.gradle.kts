@@ -1,6 +1,7 @@
 import at.phatbl.shellexec.ShellExec
 
 plugins {
+    kotlin("jvm") version "1.4.31" apply false
     id("at.phatbl.shellexec") version "1.1.3"
 }
 
@@ -19,7 +20,7 @@ tasks.create<Copy>("copyStatic") {
 tasks.create<Copy>("copyBuiltJs") {
     group = "internal"
 
-    mustRunAfter("web:webpack-bundle")
+    mustRunAfter("web:build")
 
     from("$projectDir/web/build/js")
     into(jsBuildDir)
@@ -56,7 +57,7 @@ tasks.create("buildJs") {
     group = "internal"
 
     dependsOn("copyStatic")
-    dependsOn("web:webpack-bundle")
+    dependsOn("web:build")
     dependsOn("copyBuiltJs")
 
     doFirst {
@@ -71,8 +72,6 @@ tasks.create("buildWeb") {
     dependsOn("docs:buildHtmlBySections")
     dependsOn("copyHtml")
     dependsOn("buildJs")
-
-    finalizedBy("web:clean", "docs:clean")
 }
 
 tasks.create("buildWebFullOnly") {
@@ -98,20 +97,9 @@ tasks.create("buildPdf") {
     dependsOn("docs:buildPdf")
     dependsOn("docs:buildPdfBySections")
     dependsOn("copyPdf")
-
-    finalizedBy("web:clean", "docs:clean")
-}
-
-tasks.create<Delete>("clean") {
-    group = "build"
-
-    dependsOn("web:clean")
-    dependsOn("docs:clean")
-
-    delete("$projectDir/build")
 }
 
 tasks.create<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {
     group = "internal"
-    command = """echo -e Run the following command: git checkout release \&\& git subtree push --prefix grammar/src/main/antlr git@github.com:Kotlin/kotlin-grammar-apache2 release"""
+    command = """echo -e Run the following commands: git checkout release; ...; git subtree push --prefix grammar/src/main/antlr git@github.com:Kotlin/kotlin-grammar-apache2 release"""
 }

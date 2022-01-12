@@ -4,8 +4,8 @@ import js.externals.jquery.JQuery
 import js.externals.jquery.`$`
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.KeyboardEvent
-import kotlin.browser.document
-import kotlin.browser.window
+import kotlinx.browser.document
+import kotlinx.browser.window
 
 object Sidebar {
     private const val LOAD_PDF_ICON = "./resources/images/pdf.png"

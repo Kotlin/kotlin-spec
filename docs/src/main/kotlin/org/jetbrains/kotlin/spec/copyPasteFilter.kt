@@ -18,7 +18,7 @@ private class IdCollector : PandocVisitor() {
     }
 }
 
-private object SpecCopyPasteFilterVisitor : PandocVisitor() {
+object SpecCopyPasteFilterVisitor : PandocVisitor() {
     var nextId: Int = 0
 
     private val collector = IdCollector()
@@ -55,7 +55,7 @@ private object SpecCopyPasteFilterVisitor : PandocVisitor() {
 
                 if (block is Attributes) {
                     val id = if(b.attr.id.isNotBlank()) b.attr.id else "$target-pasted-${nextId++}"
-                    return block.copy(attr = block.attr.copy(id = id)) as Block
+                    return block.copy(attr = block.attr.copy(id = id))
                 }
                 return block
             }
@@ -72,7 +72,7 @@ private object SpecCopyPasteFilterVisitor : PandocVisitor() {
 
                 if (inline is Attributes) {
                     val id = if(i.attr.id.isNotBlank()) i.attr.id else "$target-pasted-${nextId++}"
-                    return inline.copy(attr = inline.attr.copy(id = id)) as Inline
+                    return inline.copy(attr = inline.attr.copy(id = id))
                 }
                 return inline
             }

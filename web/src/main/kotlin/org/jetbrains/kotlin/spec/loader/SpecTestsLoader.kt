@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.isDevMode
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
-import kotlin.browser.window
+import kotlinx.browser.window
 import kotlin.js.Promise
 
 class SpecTestsLoader {
