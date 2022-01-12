@@ -585,7 +585,7 @@ TODO(Explain why anonymous function declarations DO NOT have a defined type w.r.
 
 ### Resolving property access
 
-As [properties][Property declaration] in Kotlin can have custom [getters and setters], be [extension][Extension property declaration], [delegated][Delegated property declaration] or [contextual][Contextual property declaration], they are also subject to overload resolution.
+As [properties][Property declaration] in Kotlin can have custom [getters and setters], be [extension][Extension property declaration] or [delegated][Delegated property declaration], they are also subject to overload resolution.
 Overload resolution for property access works similarly to how it works for [callables][Callables and `invoke` convention], i.e., it consists of two steps: [building the overload candidate set] of [applicable][Determining function applicability for a specific call] candidates, and then [choosing the most specific candidate from the overload candidate set].
 
 > *Important*: this section concerns *only* properties accessed using property access syntax `a.x` or just `x` *without call suffix*.
@@ -701,7 +701,7 @@ Such a candidate (in case it is selected as the final candidate) will result in 
 The overload resolution for properties has the following features distinct from overload resolution for callables.
 
 * Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its [backing field][Getters and setters]);
-* The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;
+* The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, an extension mutable property is considered to have an extension getter and setter, etc.;
 * [Object declarations][object declaration] and [enumeration entries][Enum class declaration] may be accessed using the property access syntax given that they may be resolved in the current scope.
 
 TODO(Anything else?)
