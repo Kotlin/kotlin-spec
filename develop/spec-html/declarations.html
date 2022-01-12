@@ -127,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <header>
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.5-rfc+0.1</p>
+<p class="subtitle">Version 1.6-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -174,6 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
 <ul>
+<li><a href="syntax-and-grammar.html#notation" id="toc-element-notation" class="toc-element">Notation</a></li>
 <li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
 <ul>
 <li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
@@ -294,7 +295,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
 <ul>
-<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration-scopes" id="toc-element-constructor-declaration-scopes" class="toc-element">Constructor declaration scopes</a></li>
+</ul></li>
 <li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
@@ -310,6 +314,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
 <li><a href="declarations.html#local-class-declaration" id="toc-element-local-class-declaration" class="toc-element">Local class declaration</a></li>
 <li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+<li><a href="declarations.html#classifier-declaration-scopes" id="toc-element-classifier-declaration-scopes" class="toc-element">Classifier declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
 <ul>
@@ -319,6 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+<li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
 <ul>
@@ -331,6 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
 <li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
 <li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+<li><a href="declarations.html#property-declaration-scopes" id="toc-element-property-declaration-scopes" class="toc-element">Property declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
 <li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
@@ -657,7 +664,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Declarations in Kotlin are used to introduce entities (values, types, etc.); most declarations are <em>named</em>, i.e. they also assign an identifier to their own entity, however, some declarations may be <em>anonymous</em>.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Every declaration is accessible in a particular <em>scope</em>, which is dependent both on where the declaration is located and on the declaration itself.</span></p>
+<p><span class="sentence">Every declaration is accessible in a particular <em>scope</em>, which is dependent both on where the declaration is located and on the declaration itself. </span><span class="sentence">Every named declaration introduces a binding for this name in the scope it is declared in. </span><span class="sentence">For most of the declarations, this scope is the declaration scope introduced by the <strong>parent</strong> declaration, e.g. the declaration this declaration is syntactically nested in. </span><span class="sentence">See <a href="scopes-and-identifiers.html#scopes-and-identifiers">scoping section</a> for details.</span></p>
 </div>
 <h3 id="classifier-declaration">Classifier declaration</h3>
 <div id="grammar-rule-classDeclaration-pasted-0" class="grammar-rule">
@@ -944,6 +951,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb4-26" title="26">    <span class="kw">constructor</span>() : <span class="kw">super</span>() <span class="op">{}</span></a>
 <a class="sourceLine" id="cb4-27" title="27"><span class="op">}</span></a></code></pre></div>
 </blockquote>
+<h6 id="constructor-declaration-scopes">Constructor declaration scopes</h6>
+<div class="paragraph">
+<p><span class="sentence">Similar to <a href="declarations.html#function-declaration-scopes">function declarations</a>, a constructor introduces two scopes: a constructor parameter scope and a constructor body scope, see function declaration section for details. </span><span class="sentence">The constructor parameter scope is upward-linked to the static classifier declaration scope of its classifier. </span><span class="sentence">In addition to this, primary constructor parameter scope is downward-linked to the classifier initialization scope. </span><span class="sentence">There is also no primary constructor body scope as primary constructor has no body.</span></p>
+</div>
 <h5 id="nested-and-inner-classifiers">Nested and inner classifiers</h5>
 <div class="paragraph">
 <p><span class="sentence">If a classifier declaration <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">ND</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\text{ND}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord text"><span class="mord">ND</span></span></span></span></span></span>
@@ -1261,7 +1272,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">data</span> <span class="kw">class</span> <span class="dt">DC</span><span class="op">(</span><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb13-2" title="2">    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">equals</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> = <span class="kw">false</span></a>
-<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span> = <span class="kw">super</span>.toString()</a></code></pre></div>
+<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">toString</span><span class="op">():</span> <span class="dt">String</span> = <span class="kw">super</span>.toString()</a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">may be equivalent to</span></p>
 </div>
@@ -1762,6 +1774,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb26-50" title="50">    <span class="co">//   uninitialized properties may leak outside</span></a>
 <a class="sourceLine" id="cb26-51" title="51"><span class="op">}</span></a></code></pre></div>
 </blockquote>
+<h4 id="classifier-declaration-scopes">Classifier declaration scopes</h4>
+<div class="paragraph">
+<p><span class="sentence">Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the <strong>static</strong> classifier body scope and the <strong>actual</strong> classifier body scope Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier. </span><span class="sentence">All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope. </span><span class="sentence">Static classifier body scope is upwards-linked to the actual classifier body scope. </span><span class="sentence">For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In addition to this, objects and classes introduce a special <em>object initialization scope</em>, which is not syntactically delimited. </span><span class="sentence">The scopes of each initialization expression of every property in the class body, as well as the scopes of each initialization block, is upward-linked to the object initialization scope, which itself is upward-linked to the actual classifier body scope.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">If a classifier declares a primary constructor, the parameters of this constructor are bound in the special <em>primary constructor parameter scope</em>, which is downward-linked to the initialization scope and upward-linked to the scope the classifier is declared in. </span><span class="sentence">The interface delegation expressions (if any) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.</span></p>
+</div>
 <h3 id="function-declaration">Function declaration</h3>
 <div id="grammar-rule-functionDeclaration-pasted-2" class="grammar-rule">
 <dl>
@@ -2164,7 +2186,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">In order to be applicable for such an optimization, the function must adhere to tail recursive form: for all paths containing recursive calls the result of the recursive call must also be the result of the function. </span><span class="sentence">If a function declaration is marked with the <code>tailrec</code> modifier, but is not actually applicable for the optimization, it must produce a compile-time warning.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb32-1" title="1"><span class="co">// this is not a tail-recursive function</span></a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="co">// so tailrec modifier will produce a warning</span></a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorial</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-4" title="4">    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb32-5" title="5">    <span class="kw">return</span> i * factorial(i - <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb32-6" title="6"><span class="op">}</span></a>
+<a class="sourceLine" id="cb32-7" title="7"><span class="co">// this is a tail-recursive function</span></a>
+<a class="sourceLine" id="cb32-8" title="8"><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorialTC</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb32-9" title="9">    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> result</a>
+<a class="sourceLine" id="cb32-10" title="10">    <span class="kw">return</span> factorialTC(i - <span class="dv">1</span>, i * result)</a>
+<a class="sourceLine" id="cb32-11" title="11"><span class="op">}</span></a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence"><code>factorialTC</code> declaration given above should be compiled to loop form similar to the following declaration</span></p>
+</div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">fun</span> <span class="fu">factorialLoop</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-2" title="2">    <span class="kw">var</span> $<span class="va">i</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> i</a>
+<a class="sourceLine" id="cb33-3" title="3">    <span class="kw">var</span> $<span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> result</a>
+<a class="sourceLine" id="cb33-4" title="4">    <span class="cf">while</span>(<span class="kw">true</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-5" title="5">       <span class="cf">if</span> ($i == <span class="dv">0</span>) <span class="kw">return</span> $result</a>
+<a class="sourceLine" id="cb33-6" title="6">       <span class="cf">else</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-7" title="7">           $i = $i - <span class="dv">1</span></a>
+<a class="sourceLine" id="cb33-8" title="8">           $result = $i * $result</a>
+<a class="sourceLine" id="cb33-9" title="9">       <span class="op">}</span></a>
+<a class="sourceLine" id="cb33-10" title="10">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb33-11" title="11"><span class="op">}</span></a></code></pre></div>
+</blockquote>
 
+<h4 id="function-declaration-scopes">Function declaration scopes</h4>
+<div class="paragraph">
+<p><span class="sentence">Every function declaration body introduces a <em>function body scope</em>, which is a statement scope containing everything declared inside the function body and is delimited by the function body itself.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">In addition to this scope, function parameters exist in a special <em>function parameter scope</em>, which is upward-linked to the scope the function is declared in and downward-linked to the function body scope.</span></p>
+</div>
 <h3 id="property-declaration">Property declaration</h3>
 <div id="grammar-rule-propertyDeclaration-pasted-4" class="grammar-rule">
 <dl>
@@ -2198,13 +2257,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A read-only property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
-<a class="sourceLine" id="cb32-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span> <span class="co">// (1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
+<a class="sourceLine" id="cb34-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span> <span class="co">// (1)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">or</span></p>
 </div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
-<a class="sourceLine" id="cb33-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = ... <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
+<a class="sourceLine" id="cb35-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = ... <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">All of the right-hand value <code>e</code>, the type <code>T</code> in both positions, and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if we cannot infer the resulting property type from the type of <code>e</code> or from the type of getter in expression form (2), the type <code>T</code> must be specified explicitly either as the property type, or as the getter return type. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
 </div>
@@ -2223,9 +2282,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A mutable property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> and/or custom <a href="declarations.html#getters-and-setters">setter</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
-<a class="sourceLine" id="cb34-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></a>
-<a class="sourceLine" id="cb34-3" title="3">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">TS</span><span class="op">)</span> <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
+<a class="sourceLine" id="cb36-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb36-3" title="3">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">TS</span><span class="op">)</span> <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation when read from and to the setter invocation when written to.</span></p>
 </div>
@@ -2236,14 +2295,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Local property declarations also support <a href="operator-overloading.html#destructuring-declarations"><em>destructuring</em> declaration</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb35"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">val</span> <span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">T</span><span class="op">,</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span><span class="op">,</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span><span class="op">,</span> ...) = <span class="va">e</span></a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">val</span> <span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">T</span><span class="op">,</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span><span class="op">,</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span><span class="op">,</span> ...) = <span class="va">e</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">which is a syntactic sugar for the following expansion</span></p>
 </div>
-<div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e.component1()</a>
-<a class="sourceLine" id="cb36-2" title="2"><span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span> <span class="op">=</span> e.component2()</a>
-<a class="sourceLine" id="cb36-3" title="3"><span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span> <span class="op">=</span> e.component3()</a>
-<a class="sourceLine" id="cb36-4" title="4">...</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb38-1" title="1"><span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e.component1()</a>
+<a class="sourceLine" id="cb38-2" title="2"><span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span> <span class="op">=</span> e.component2()</a>
+<a class="sourceLine" id="cb38-3" title="3"><span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span> <span class="op">=</span> e.component3()</a>
+<a class="sourceLine" id="cb38-4" title="4">...</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Some of the entries in the destructuring declaration may be replaced with an <em>ignore marker</em> <code>_</code>, which signifies that no variable is declared and no <code>componentN()</code> function is called.</span></p>
 </div>
@@ -2254,9 +2313,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">As mentioned before, a property declaration may include a custom getter and/or custom setter (together called <em>accessors</em>) in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
-<a class="sourceLine" id="cb37-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></a>
-<a class="sourceLine" id="cb37-3" title="3">    <span class="kw">set</span><span class="op">(</span><span class="va">anyValidArgumentName</span><span class="op">:</span> <span class="dt">TS</span><span class="op">):</span> <span class="dt">RT</span> <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
+<a class="sourceLine" id="cb39-2" title="2">    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb39-3" title="3">    <span class="kw">set</span><span class="op">(</span><span class="va">anyValidArgumentName</span><span class="op">:</span> <span class="dt">TS</span><span class="op">):</span> <span class="dt">RT</span> <span class="op">{</span> ... <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">These functions have the following requirements</span></p>
 </div>
@@ -2295,9 +2354,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">One can also omit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
-<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb38-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
-<a class="sourceLine" id="cb38-2" title="2">    <span class="kw">get</span></a>
-<a class="sourceLine" id="cb38-3" title="3">    <span class="kw">set</span></a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb40-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</a>
+<a class="sourceLine" id="cb40-2" title="2">    <span class="kw">get</span></a>
+<a class="sourceLine" id="cb40-3" title="3">    <span class="kw">set</span></a></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.</span></p>
@@ -2330,17 +2389,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">For the former, one may consider these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb41-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb40"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb40-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
-<a class="sourceLine" id="cb40-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
-<a class="sourceLine" id="cb40-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb42-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb42-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
+<a class="sourceLine" id="cb42-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="operator-overloading.html#operator-overloading">overloadable</a> form which is expanded into the following:</span></p>
 </div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb41-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb43-1" title="1">e.getValue(thisRef, property)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -2353,18 +2412,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb42-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb44-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
-<a class="sourceLine" id="cb43-2" title="2"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
-<a class="sourceLine" id="cb43-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a>
-<a class="sourceLine" id="cb43-4" title="4">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e</a>
+<a class="sourceLine" id="cb45-2" title="2"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
+<a class="sourceLine" id="cb45-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb45-4" title="4">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb44-1" title="1">e.setValue(thisRef, property, y)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb46-1" title="1">e.setValue(thisRef, property, y)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -2382,24 +2441,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">is the same as</span></p>
-</div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb46-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
-<a class="sourceLine" id="cb46-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
-<a class="sourceLine" id="cb46-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
-<div class="paragraph">
-<p><span class="sentence">and</span></p>
-</div>
-<div class="sourceCode" id="cb47"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb47-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
 <div class="sourceCode" id="cb48"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb48-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
 <a class="sourceLine" id="cb48-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
-<a class="sourceLine" id="cb48-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a>
-<a class="sourceLine" id="cb48-4" title="4">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb48-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">and</span></p>
+</div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</a></code></pre></div>
+<div class="paragraph">
+<p><span class="sentence">is the same as</span></p>
+</div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</a>
+<a class="sourceLine" id="cb50-2" title="2"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></a>
+<a class="sourceLine" id="cb50-3" title="3">    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</a>
+<a class="sourceLine" id="cb50-4" title="4">    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
 </div>
@@ -2411,73 +2470,73 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></a>
-<a class="sourceLine" id="cb49-2" title="2">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> =</a>
-<a class="sourceLine" id="cb49-3" title="3">    getOrElse(property.name) <span class="op">{</span></a>
-<a class="sourceLine" id="cb49-4" title="4">        <span class="kw">throw</span> NoSuchElementException()</a>
-<a class="sourceLine" id="cb49-5" title="5">    <span class="op">}</span> <span class="kw">as</span> R</a>
-<a class="sourceLine" id="cb49-6" title="6"></a>
-<a class="sourceLine" id="cb49-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></a>
-<a class="sourceLine" id="cb49-8" title="8">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> =</a>
-<a class="sourceLine" id="cb49-9" title="9">    <span class="kw">set</span><span class="op">(</span><span class="va">property</span>.<span class="va">name</span>, <span class="va">newValue</span><span class="op">)</span></a>
-<a class="sourceLine" id="cb49-10" title="10"></a>
-<a class="sourceLine" id="cb49-11" title="11"><span class="kw">fun</span> handleConfig(config: MutableMap&lt;<span class="kw">String</span>, <span class="kw">Any</span>?&gt;) <span class="op">{</span></a>
-<a class="sourceLine" id="cb49-12" title="12">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
-<a class="sourceLine" id="cb49-13" title="13">    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
-<a class="sourceLine" id="cb49-14" title="14">    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
-<a class="sourceLine" id="cb49-15" title="15"></a>
-<a class="sourceLine" id="cb49-16" title="16">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
-<a class="sourceLine" id="cb49-17" title="17">    <span class="co">// Throwing NSEE as there is no &quot;port&quot; key in the map</span></a>
-<a class="sourceLine" id="cb49-18" title="18">    <span class="co">// println(&quot;$parent: going to $host:$port&quot;)</span></a>
-<a class="sourceLine" id="cb49-19" title="19"></a>
-<a class="sourceLine" id="cb49-20" title="20">    <span class="co">// Delegating property access to Map.setValue</span></a>
-<a class="sourceLine" id="cb49-21" title="21">    port = <span class="dv">443</span></a>
-<a class="sourceLine" id="cb49-22" title="22">    <span class="co">// Map now contains &quot;port&quot; key</span></a>
-<a class="sourceLine" id="cb49-23" title="23"></a>
-<a class="sourceLine" id="cb49-24" title="24">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
-<a class="sourceLine" id="cb49-25" title="25">    <span class="co">// Not throwing NSEE as there is &quot;port&quot; key in the map</span></a>
-<a class="sourceLine" id="cb49-26" title="26">    println(<span class="st">&quot;$parent: going to $host:$port&quot;</span>)</a>
-<a class="sourceLine" id="cb49-27" title="27"><span class="op">}</span></a>
-<a class="sourceLine" id="cb49-28" title="28"></a>
-<a class="sourceLine" id="cb49-29" title="29"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb49-30" title="30">    handleConfig(mutableMapOf(</a>
-<a class="sourceLine" id="cb49-31" title="31">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb49-32" title="32">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
-<a class="sourceLine" id="cb49-33" title="33">    ))</a>
-<a class="sourceLine" id="cb49-34" title="34"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb51-2" title="2">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> =</a>
+<a class="sourceLine" id="cb51-3" title="3">    getOrElse(property.name) <span class="op">{</span></a>
+<a class="sourceLine" id="cb51-4" title="4">        <span class="kw">throw</span> NoSuchElementException()</a>
+<a class="sourceLine" id="cb51-5" title="5">    <span class="op">}</span> <span class="kw">as</span> R</a>
+<a class="sourceLine" id="cb51-6" title="6"></a>
+<a class="sourceLine" id="cb51-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb51-8" title="8">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> =</a>
+<a class="sourceLine" id="cb51-9" title="9">    <span class="kw">set</span><span class="op">(</span><span class="va">property</span>.<span class="va">name</span>, <span class="va">newValue</span><span class="op">)</span></a>
+<a class="sourceLine" id="cb51-10" title="10"></a>
+<a class="sourceLine" id="cb51-11" title="11"><span class="kw">fun</span> handleConfig(config: MutableMap&lt;<span class="kw">String</span>, <span class="kw">Any</span>?&gt;) <span class="op">{</span></a>
+<a class="sourceLine" id="cb51-12" title="12">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
+<a class="sourceLine" id="cb51-13" title="13">    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
+<a class="sourceLine" id="cb51-14" title="14">    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
+<a class="sourceLine" id="cb51-15" title="15"></a>
+<a class="sourceLine" id="cb51-16" title="16">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
+<a class="sourceLine" id="cb51-17" title="17">    <span class="co">// Throwing NSEE as there is no &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb51-18" title="18">    <span class="co">// println(&quot;$parent: going to $host:$port&quot;)</span></a>
+<a class="sourceLine" id="cb51-19" title="19"></a>
+<a class="sourceLine" id="cb51-20" title="20">    <span class="co">// Delegating property access to Map.setValue</span></a>
+<a class="sourceLine" id="cb51-21" title="21">    port = <span class="dv">443</span></a>
+<a class="sourceLine" id="cb51-22" title="22">    <span class="co">// Map now contains &quot;port&quot; key</span></a>
+<a class="sourceLine" id="cb51-23" title="23"></a>
+<a class="sourceLine" id="cb51-24" title="24">    <span class="co">// Delegating property accesses to Map.getValue</span></a>
+<a class="sourceLine" id="cb51-25" title="25">    <span class="co">// Not throwing NSEE as there is &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb51-26" title="26">    println(<span class="st">&quot;$parent: going to $host:$port&quot;</span>)</a>
+<a class="sourceLine" id="cb51-27" title="27"><span class="op">}</span></a>
+<a class="sourceLine" id="cb51-28" title="28"></a>
+<a class="sourceLine" id="cb51-29" title="29"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb51-30" title="30">    handleConfig(mutableMapOf(</a>
+<a class="sourceLine" id="cb51-31" title="31">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb51-32" title="32">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
+<a class="sourceLine" id="cb51-33" title="33">    ))</a>
+<a class="sourceLine" id="cb51-34" title="34"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example with <code>provideDelegate</code>:</span></p>
 </div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">provideDelegate</span><span class="op">(</span></a>
-<a class="sourceLine" id="cb50-2" title="2">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>,</a>
-<a class="sourceLine" id="cb50-3" title="3">        <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;</span> =</a>
-<a class="sourceLine" id="cb50-4" title="4">    <span class="cf">if</span> (containsKey(property.name)) <span class="kw">this</span></a>
-<a class="sourceLine" id="cb50-5" title="5">    <span class="cf">else</span> <span class="kw">throw</span> NoSuchElementException()</a>
-<a class="sourceLine" id="cb50-6" title="6"></a>
-<a class="sourceLine" id="cb50-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></a>
-<a class="sourceLine" id="cb50-8" title="8">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> = ...</a>
-<a class="sourceLine" id="cb50-9" title="9"></a>
-<a class="sourceLine" id="cb50-10" title="10"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></a>
-<a class="sourceLine" id="cb50-11" title="11">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> = ...</a>
-<a class="sourceLine" id="cb50-12" title="12"></a>
-<a class="sourceLine" id="cb50-13" title="13"><span class="kw">fun</span> <span class="fu">handleConfig</span><span class="op">(</span><span class="va">config</span><span class="op">:</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Any?</span><span class="op">&gt;)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb50-14" title="14">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
-<a class="sourceLine" id="cb50-15" title="15">    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
-<a class="sourceLine" id="cb50-16" title="16">    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
-<a class="sourceLine" id="cb50-17" title="17">    <span class="co">// Throwing NSEE here as `provideDelegate`</span></a>
-<a class="sourceLine" id="cb50-18" title="18">    <span class="co">//   checks for &quot;port&quot; key in the map</span></a>
-<a class="sourceLine" id="cb50-19" title="19"></a>
-<a class="sourceLine" id="cb50-20" title="20">    ...</a>
-<a class="sourceLine" id="cb50-21" title="21"><span class="op">}</span></a>
-<a class="sourceLine" id="cb50-22" title="22"></a>
-<a class="sourceLine" id="cb50-23" title="23"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb50-24" title="24">    handleConfig(mutableMapOf(</a>
-<a class="sourceLine" id="cb50-25" title="25">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb50-26" title="26">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
-<a class="sourceLine" id="cb50-27" title="27">    ))</a>
-<a class="sourceLine" id="cb50-28" title="28"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">provideDelegate</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb52-2" title="2">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>,</a>
+<a class="sourceLine" id="cb52-3" title="3">        <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;</span> =</a>
+<a class="sourceLine" id="cb52-4" title="4">    <span class="cf">if</span> (containsKey(property.name)) <span class="kw">this</span></a>
+<a class="sourceLine" id="cb52-5" title="5">    <span class="cf">else</span> <span class="kw">throw</span> NoSuchElementException()</a>
+<a class="sourceLine" id="cb52-6" title="6"></a>
+<a class="sourceLine" id="cb52-7" title="7"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb52-8" title="8">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> = ...</a>
+<a class="sourceLine" id="cb52-9" title="9"></a>
+<a class="sourceLine" id="cb52-10" title="10"><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></a>
+<a class="sourceLine" id="cb52-11" title="11">        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> = ...</a>
+<a class="sourceLine" id="cb52-12" title="12"></a>
+<a class="sourceLine" id="cb52-13" title="13"><span class="kw">fun</span> <span class="fu">handleConfig</span><span class="op">(</span><span class="va">config</span><span class="op">:</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Any?</span><span class="op">&gt;)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb52-14" title="14">    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></a>
+<a class="sourceLine" id="cb52-15" title="15">    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></a>
+<a class="sourceLine" id="cb52-16" title="16">    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></a>
+<a class="sourceLine" id="cb52-17" title="17">    <span class="co">// Throwing NSEE here as `provideDelegate`</span></a>
+<a class="sourceLine" id="cb52-18" title="18">    <span class="co">//   checks for &quot;port&quot; key in the map</span></a>
+<a class="sourceLine" id="cb52-19" title="19"></a>
+<a class="sourceLine" id="cb52-20" title="20">    ...</a>
+<a class="sourceLine" id="cb52-21" title="21"><span class="op">}</span></a>
+<a class="sourceLine" id="cb52-22" title="22"></a>
+<a class="sourceLine" id="cb52-23" title="23"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb52-24" title="24">    handleConfig(mutableMapOf(</a>
+<a class="sourceLine" id="cb52-25" title="25">        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</a>
+<a class="sourceLine" id="cb52-26" title="26">        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></a>
+<a class="sourceLine" id="cb52-27" title="27">    ))</a>
+<a class="sourceLine" id="cb52-28" title="28"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
@@ -2511,16 +2570,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb51"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">val</span> <span class="va">Int.foo</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> + <span class="dv">1</span></a>
-<a class="sourceLine" id="cb51-2" title="2"></a>
-<a class="sourceLine" id="cb51-3" title="3"><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb51-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="op">}</span></a>
-<a class="sourceLine" id="cb51-6" title="6"></a>
-<a class="sourceLine" id="cb51-7" title="7"><span class="kw">class</span> <span class="dt">Bar</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb51-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
-<a class="sourceLine" id="cb51-9" title="9">    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
-<a class="sourceLine" id="cb51-10" title="10"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">val</span> <span class="va">Int.foo</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> + <span class="dv">1</span></a>
+<a class="sourceLine" id="cb53-2" title="2"></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb53-4" title="4">    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="op">}</span></a>
+<a class="sourceLine" id="cb53-6" title="6"></a>
+<a class="sourceLine" id="cb53-7" title="7"><span class="kw">class</span> <span class="dt">Bar</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb53-8" title="8">    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Bar</span></a>
+<a class="sourceLine" id="cb53-9" title="9">    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></a>
+<a class="sourceLine" id="cb53-10" title="10"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
@@ -2547,13 +2606,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb52"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb52-1" title="1"><span class="co">// Correct constant properties</span></a>
-<a class="sourceLine" id="cb52-2" title="2"><span class="kw">const</span> <span class="kw">val</span> <span class="va">answer</span> <span class="op">=</span> <span class="dv">2</span> * <span class="dv">21</span></a>
-<a class="sourceLine" id="cb52-3" title="3"><span class="kw">const</span> <span class="kw">val</span> <span class="va">msg</span> <span class="op">=</span> <span class="st">&quot;Hello World!&quot;</span></a>
-<a class="sourceLine" id="cb52-4" title="4"><span class="kw">const</span> <span class="kw">val</span> <span class="va">calculated</span> <span class="op">=</span> answer + <span class="dv">45</span></a>
-<a class="sourceLine" id="cb52-5" title="5"></a>
-<a class="sourceLine" id="cb52-6" title="6"><span class="co">// Incorrect constant property</span></a>
-<a class="sourceLine" id="cb52-7" title="7"><span class="kw">const</span> <span class="kw">val</span> <span class="va">emptyStringHashCode</span> <span class="op">=</span> <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb54-1" title="1"><span class="co">// Correct constant properties</span></a>
+<a class="sourceLine" id="cb54-2" title="2"><span class="kw">const</span> <span class="kw">val</span> <span class="va">answer</span> <span class="op">=</span> <span class="dv">2</span> * <span class="dv">21</span></a>
+<a class="sourceLine" id="cb54-3" title="3"><span class="kw">const</span> <span class="kw">val</span> <span class="va">msg</span> <span class="op">=</span> <span class="st">&quot;Hello World!&quot;</span></a>
+<a class="sourceLine" id="cb54-4" title="4"><span class="kw">const</span> <span class="kw">val</span> <span class="va">calculated</span> <span class="op">=</span> answer + <span class="dv">45</span></a>
+<a class="sourceLine" id="cb54-5" title="5"></a>
+<a class="sourceLine" id="cb54-6" title="6"><span class="co">// Incorrect constant property</span></a>
+<a class="sourceLine" id="cb54-7" title="7"><span class="kw">const</span> <span class="kw">val</span> <span class="va">emptyStringHashCode</span> <span class="op">=</span> <span class="st">&quot;&quot;</span>.hashCode()</a></code></pre></div>
 </blockquote>
 <h4 id="late-initialized-properties">Late-initialized properties</h4>
 <div class="paragraph">
@@ -2574,6 +2633,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence"><a href="built-in-types-and-their-semantics.html#kotlin.char"><code>kotlin.Char</code></a>.</span></li>
 </ul></li>
 </ul>
+<h4 id="property-declaration-scopes">Property declaration scopes</h4>
+<div class="paragraph">
+<p><span class="sentence">Every property getter and setter introduce the same function parameter scope and function body scope as a corresponding function would, see <a href="declarations.html#function-declaration-scopes">function declaration scopes</a> for details. </span><span class="sentence">Getter and setter parameter scopes are upward-linked to the scope property is declared in. </span><span class="sentence">Property itself introduces a new binding in the scope it is declared in.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Initialization expressions and delegate expressions for properties, however, are special. </span><span class="sentence">If the property declaration resides in a classifier body scope, its initialization expression or delegate expression is resolved in the initialization scope of the same classifier. </span><span class="sentence">If the property declaration is local or top-level, its initialization expression or delegate expression is resolved in the scope the property is declared in.</span></p>
+</div>
 <h3 id="type-alias">Type alias</h3>
 <div id="grammar-rule-typeAlias-pasted-5" class="grammar-rule">
 <dl>
@@ -2591,11 +2657,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a>. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
+<p><span class="sentence">Type alias introduces an alternative name for the specified type and supports both simple and parameterized types. </span><span class="sentence">If type alias is parameterized, its type parameters must be <a href="type-system.html#type-parameters">unbounded</a> and cannot specify variance. </span><span class="sentence">Bounds and variance of these parameters is always defined to be the same as the corresponding parameters in the type being aliased, unless they are not referenced in the aliased type, in which case they are considered unbounded and invariant. </span><span class="sentence">Another restriction is that recursive type aliases are forbidden — the type alias name cannot be used in its own right-hand side.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">At the moment, Kotlin supports only top-level type aliases. </span><span class="sentence">The scope where it is accessible is defined by its <a href="declarations.html#declaration-visibility"><em>visibility modifiers</em></a>.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples:</span></p>
+</div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb55-1" title="1"><span class="co">// simple typ ealias declaration</span></a>
+<a class="sourceLine" id="cb55-2" title="2"><span class="kw">typealias</span> IntList = List&lt;<span class="kw">Int</span>&gt;</a>
+<a class="sourceLine" id="cb55-3" title="3"><span class="co">// parameterized type alias declaration</span></a>
+<a class="sourceLine" id="cb55-4" title="4"><span class="co">// T has out variance implicitly</span></a>
+<a class="sourceLine" id="cb55-5" title="5"><span class="kw">typealias</span> IntMap&lt;T&gt; = Map&lt;<span class="kw">Int</span>, T&gt;</a>
+<a class="sourceLine" id="cb55-6" title="6"><span class="co">// type parameter may be unreferenced</span></a>
+<a class="sourceLine" id="cb55-7" title="7"><span class="kw">typealias</span> Strange&lt;T&gt; = <span class="kw">String</span></a></code></pre></div>
+</blockquote>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="paragraph">
 <p><span class="sentence">Most declarations may be introduced as <em>generic</em>, introducing type parameters that must be explicitly specified or <a href="type-inference.html#type-inference">inferred</a> when the corresponding declaration is used. </span><span class="sentence">For declarations that introduce new types this mechanism provides the means of introducing a <a href="type-system.html#parameterized-classifier-types">parameterized type</a>. </span><span class="sentence">Please refer to the corresponding section for details.</span></p>
@@ -2663,38 +2741,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">class</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb53-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
-<a class="sourceLine" id="cb53-3" title="3">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
-<a class="sourceLine" id="cb53-4" title="4">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
-<a class="sourceLine" id="cb53-5" title="5">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
-<a class="sourceLine" id="cb53-6" title="6">    <span class="kw">fun</span> <span class="fu">e</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
-<a class="sourceLine" id="cb53-7" title="7">    <span class="kw">fun</span> <span class="fu">f</span><span class="op">():</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
-<a class="sourceLine" id="cb53-8" title="8"><span class="op">}</span></a>
-<a class="sourceLine" id="cb53-9" title="9"></a>
-<a class="sourceLine" id="cb53-10" title="10"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
-<a class="sourceLine" id="cb53-11" title="11">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
-<a class="sourceLine" id="cb53-12" title="12">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, contravariant usage</span></a>
-<a class="sourceLine" id="cb53-13" title="13">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
-<a class="sourceLine" id="cb53-14" title="14">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
-<a class="sourceLine" id="cb53-15" title="15"><span class="op">}</span></a>
-<a class="sourceLine" id="cb53-16" title="16"></a>
-<a class="sourceLine" id="cb53-17" title="17"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
-<a class="sourceLine" id="cb53-18" title="18">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, covariant usage</span></a>
-<a class="sourceLine" id="cb53-19" title="19">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
-<a class="sourceLine" id="cb53-20" title="20">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
-<a class="sourceLine" id="cb53-21" title="21">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
-<a class="sourceLine" id="cb53-22" title="22"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">class</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb56-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb56-3" title="3">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb56-4" title="4">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb56-5" title="5">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb56-6" title="6">    <span class="kw">fun</span> <span class="fu">e</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb56-7" title="7">    <span class="kw">fun</span> <span class="fu">f</span><span class="op">():</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb56-8" title="8"><span class="op">}</span></a>
+<a class="sourceLine" id="cb56-9" title="9"></a>
+<a class="sourceLine" id="cb56-10" title="10"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
+<a class="sourceLine" id="cb56-11" title="11">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></a>
+<a class="sourceLine" id="cb56-12" title="12">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, contravariant usage</span></a>
+<a class="sourceLine" id="cb56-13" title="13">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb56-14" title="14">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb56-15" title="15"><span class="op">}</span></a>
+<a class="sourceLine" id="cb56-16" title="16"></a>
+<a class="sourceLine" id="cb56-17" title="17"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
+<a class="sourceLine" id="cb56-18" title="18">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, covariant usage</span></a>
+<a class="sourceLine" id="cb56-19" title="19">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></a>
+<a class="sourceLine" id="cb56-20" title="20">    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb56-21" title="21">    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></a>
+<a class="sourceLine" id="cb56-22" title="22"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Any of these restrictions may be lifted using <code>@UnsafeVariance</code> annotation on the type argument:</span></p>
 </div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb54-1" title="1"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
-<a class="sourceLine" id="cb54-2" title="2">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> @<span class="dt">UnsafeVariance</span> <span class="va">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
-<a class="sourceLine" id="cb54-3" title="3"><span class="op">}</span></a>
-<a class="sourceLine" id="cb54-4" title="4"></a>
-<a class="sourceLine" id="cb54-5" title="5"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
-<a class="sourceLine" id="cb54-6" title="6">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> @<span class="dt">UnsafeVariance</span> <span class="fu">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
-<a class="sourceLine" id="cb54-7" title="7"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb57-1" title="1"><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></a>
+<a class="sourceLine" id="cb57-2" title="2">    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> @<span class="dt">UnsafeVariance</span> <span class="va">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb57-4" title="4"></a>
+<a class="sourceLine" id="cb57-5" title="5"><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></a>
+<a class="sourceLine" id="cb57-6" title="6">    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> @<span class="dt">UnsafeVariance</span> <span class="fu">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb57-7" title="7"><span class="op">}</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Using <code>@UnsafeVariance</code> is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors. </span><span class="sentence">For example, receiving a value in a contravariant position for a covariant class parameter is usually OK if the function involved is guaranteed not to mutate internal state of the class.</span></p>
 </div>
@@ -2710,14 +2788,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb55-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb55-2" title="2">    <span class="co">// ERROR, is-operator is only allowed for runtime-available types</span></a>
-<a class="sourceLine" id="cb55-3" title="3">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... </a>
-<a class="sourceLine" id="cb55-4" title="4"><span class="op">}</span></a>
-<a class="sourceLine" id="cb55-5" title="5"></a>
-<a class="sourceLine" id="cb55-6" title="6"><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb55-7" title="7">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... <span class="co">// Ok</span></a>
-<a class="sourceLine" id="cb55-8" title="8"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb58-1" title="1"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb58-2" title="2">    <span class="co">// ERROR, is-operator is only allowed for runtime-available types</span></a>
+<a class="sourceLine" id="cb58-3" title="3">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... </a>
+<a class="sourceLine" id="cb58-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb58-5" title="5"></a>
+<a class="sourceLine" id="cb58-6" title="6"><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb58-7" title="7">    <span class="cf">if</span>(value <span class="kw">is</span> T) ... <span class="co">// Ok</span></a>
+<a class="sourceLine" id="cb58-8" title="8"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">
@@ -2751,18 +2829,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb56"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></a>
-<a class="sourceLine" id="cb56-2" title="2">    <span class="co">// not allowed, T is in contravariant position</span></a>
-<a class="sourceLine" id="cb56-3" title="3">    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
-<a class="sourceLine" id="cb56-4" title="4">    <span class="co">// allowed, set2 is private-to-this</span></a>
-<a class="sourceLine" id="cb56-5" title="5">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
-<a class="sourceLine" id="cb56-6" title="6">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb56-7" title="7">        <span class="co">// allowed, set2 is called on this</span></a>
-<a class="sourceLine" id="cb56-8" title="8">        <span class="kw">this</span>.set2(t) </a>
-<a class="sourceLine" id="cb56-9" title="9">        <span class="co">// not allowed, set2 is called on other</span></a>
-<a class="sourceLine" id="cb56-10" title="10">        other.set2(t) </a>
-<a class="sourceLine" id="cb56-11" title="11">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb56-12" title="12"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb59-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></a>
+<a class="sourceLine" id="cb59-2" title="2">    <span class="co">// not allowed, T is in contravariant position</span></a>
+<a class="sourceLine" id="cb59-3" title="3">    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
+<a class="sourceLine" id="cb59-4" title="4">    <span class="co">// allowed, set2 is private-to-this</span></a>
+<a class="sourceLine" id="cb59-5" title="5">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </a>
+<a class="sourceLine" id="cb59-6" title="6">    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb59-7" title="7">        <span class="co">// allowed, set2 is called on this</span></a>
+<a class="sourceLine" id="cb59-8" title="8">        <span class="kw">this</span>.set2(t) </a>
+<a class="sourceLine" id="cb59-9" title="9">        <span class="co">// not allowed, set2 is called on other</span></a>
+<a class="sourceLine" id="cb59-10" title="10">        other.set2(t) </a>
+<a class="sourceLine" id="cb59-11" title="11">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb59-12" title="12"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -2791,14 +2869,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb57-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb57-2" title="2">    <span class="co">// not allowed, t is internal, getValue is public</span></a>
-<a class="sourceLine" id="cb57-3" title="3">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
-<a class="sourceLine" id="cb57-4" title="4"><span class="op">}</span></a>
-<a class="sourceLine" id="cb57-5" title="5"><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb57-6" title="6">    <span class="co">// allowed through @PublishedApi</span></a>
-<a class="sourceLine" id="cb57-7" title="7">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
-<a class="sourceLine" id="cb57-8" title="8"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb60-1" title="1"><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb60-2" title="2">    <span class="co">// not allowed, t is internal, getValue is public</span></a>
+<a class="sourceLine" id="cb60-3" title="3">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
+<a class="sourceLine" id="cb60-4" title="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb60-5" title="5"><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb60-6" title="6">    <span class="co">// allowed through @PublishedApi</span></a>
+<a class="sourceLine" id="cb60-7" title="7">    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</a>
+<a class="sourceLine" id="cb60-8" title="8"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 </body>
 </html>
