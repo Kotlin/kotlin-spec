@@ -127,10 +127,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <header>
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.5-rfc+0.1</p>
+<p class="subtitle">Version 1.6-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
+
 
 
 
@@ -173,6 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
 <ul>
+<li><a href="syntax-and-grammar.html#notation" id="toc-element-notation" class="toc-element">Notation</a></li>
 <li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
 <ul>
 <li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
@@ -293,7 +295,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
 <ul>
-<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration-scopes" id="toc-element-constructor-declaration-scopes" class="toc-element">Constructor declaration scopes</a></li>
+</ul></li>
 <li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
@@ -309,6 +314,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
 <li><a href="declarations.html#local-class-declaration" id="toc-element-local-class-declaration" class="toc-element">Local class declaration</a></li>
 <li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+<li><a href="declarations.html#classifier-declaration-scopes" id="toc-element-classifier-declaration-scopes" class="toc-element">Classifier declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
 <ul>
@@ -318,6 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+<li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
 <ul>
@@ -330,6 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
 <li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
 <li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+<li><a href="declarations.html#property-declaration-scopes" id="toc-element-property-declaration-scopes" class="toc-element">Property declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
 <li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
@@ -477,11 +485,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
 <li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#basics" id="toc-element-basics" class="toc-element">Basics</a>
+<ul>
 <li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
 <li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
 <li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
 <li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
-<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+</ul></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set" id="toc-element-building-the-overload-candidate-set" class="toc-element">Building the overload candidate set</a>
 <ul>
 <li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
@@ -505,7 +516,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
 <li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+<li><a href="overload-resolution.html#using-lambda-return-type-to-refine-function-applicability" id="toc-element-using-lambda-return-type-to-refine-function-applicability" class="toc-element">Using lambda return type to refine function applicability</a></li>
 </ul></li>
+<li><a href="overload-resolution.html#resolving-property-access" id="toc-element-resolving-property-access" class="toc-element">Resolving property access</a></li>
 <li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
 <ul>
 <li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
@@ -532,6 +545,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
 <ul>
+<li><a href="control--and-data-flow-analysis.html#types-of-lattices" id="toc-element-types-of-lattices" class="toc-element">Types of lattices</a></li>
 <li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
 
  instruction</a></li>
@@ -596,7 +610,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
 <li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
 <li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
-<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a>
+<ul>
+<li><a href="annotations.html#kotlin.annotation.retention" id="toc-element-kotlin.annotation.retention" class="toc-element"><code>kotlin.annotation.Retention</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.target" id="toc-element-kotlin.annotation.target" class="toc-element"><code>kotlin.annotation.Target</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.repeatable" id="toc-element-kotlin.annotation.repeatable" class="toc-element"><code>kotlin.annotation.Repeatable</code></a></li>
+<li><a href="annotations.html#kotlin.requiresoptin-kotlin.optin" id="toc-element-kotlin.requiresoptin-kotlin.optin" class="toc-element"><code>kotlin.RequiresOptIn</code> / <code>kotlin.OptIn</code></a></li>
+<li><a href="annotations.html#kotlin.deprecated-kotlin.replacewith" id="toc-element-kotlin.deprecated-kotlin.replacewith" class="toc-element"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></a></li>
+<li><a href="annotations.html#kotlin.suppress" id="toc-element-kotlin.suppress" class="toc-element"><code>kotlin.Suppress</code></a></li>
+<li><a href="annotations.html#kotlin.sincekotlin" id="toc-element-kotlin.sincekotlin" class="toc-element"><code>kotlin.SinceKotlin</code></a></li>
+<li><a href="annotations.html#kotlin.unsafevariance" id="toc-element-kotlin.unsafevariance" class="toc-element"><code>kotlin.UnsafeVariance</code></a></li>
+<li><a href="annotations.html#kotlin.dslmarker" id="toc-element-kotlin.dslmarker" class="toc-element"><code>kotlin.DslMarker</code></a></li>
+<li><a href="annotations.html#kotlin.publishedapi" id="toc-element-kotlin.publishedapi" class="toc-element"><code>kotlin.PublishedApi</code></a></li>
+<li><a href="annotations.html#kotlin.builderinference" id="toc-element-kotlin.builderinference" class="toc-element"><code>kotlin.BuilderInference</code></a></li>
+<li><a href="annotations.html#kotlin.restrictsuspension" id="toc-element-kotlin.restrictsuspension" class="toc-element"><code>kotlin.RestrictSuspension</code></a></li>
+<li><a href="annotations.html#kotlin.overloadresolutionbylambdareturntype" id="toc-element-kotlin.overloadresolutionbylambdareturntype" class="toc-element"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="asynchronous-programming-with-coroutines.html#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
 <ul>
@@ -1844,10 +1873,10 @@ s and takes them in”.</span></p>
 <a class="sourceLine" id="cb6-103" title="103">    <span class="co">//   (from subtyping for parameterized types)</span></a>
 <a class="sourceLine" id="cb6-104" title="104">    <span class="co">// KB ⪯ KB&#39; where B &lt;: KB&#39; &lt;: B</span></a>
 <a class="sourceLine" id="cb6-105" title="105">    <span class="co">//   (from type containment rules)</span></a>
-<a class="sourceLine" id="cb6-106" title="106">    <span class="co">// KB =:= KB&#39;</span></a>
+<a class="sourceLine" id="cb6-106" title="106">    <span class="co">// KB ⊆ KB&#39;</span></a>
 <a class="sourceLine" id="cb6-107" title="107">    <span class="co">//   (from type containment rules)</span></a>
-<a class="sourceLine" id="cb6-108" title="108">    <span class="co">// (Nothing &lt;: KB :&lt; B) =:= (B &lt;: KB&#39; &lt;: B)</span></a>
-<a class="sourceLine" id="cb6-109" title="109">    <span class="co">//   (from subtyping for captured types)</span></a>
+<a class="sourceLine" id="cb6-108" title="108">    <span class="co">// (Nothing &lt;: KB :&lt; B) ⊆ (B &lt;: KB&#39; &lt;: B)</span></a>
+<a class="sourceLine" id="cb6-109" title="109">    <span class="co">//</span></a>
 <a class="sourceLine" id="cb6-110" title="110">    <span class="co">// False</span></a>
 <a class="sourceLine" id="cb6-111" title="111"></a>
 <a class="sourceLine" id="cb6-112" title="112"><span class="op">}</span></a>
@@ -1859,20 +1888,45 @@ s and takes them in”.</span></p>
 <a class="sourceLine" id="cb6-118" title="118"><span class="kw">fun</span> <span class="fu">test04</span><span class="op">()</span> <span class="op">{</span></a>
 <a class="sourceLine" id="cb6-119" title="119">    <span class="kw">val</span> <span class="va">rec</span><span class="op">:</span> <span class="dt">Recursive</span><span class="op">&lt;*&gt;</span> <span class="op">=</span> mk()</a>
 <a class="sourceLine" id="cb6-120" title="120"></a>
-<a class="sourceLine" id="cb6-121" title="121">    probe(rec)</a>
-<a class="sourceLine" id="cb6-122" title="122"></a>
-<a class="sourceLine" id="cb6-123" title="123">    <span class="co">// ?- Recursive&lt;*&gt; &lt;: Recursive&lt;T&gt;</span></a>
-<a class="sourceLine" id="cb6-124" title="124">    <span class="co">//</span></a>
-<a class="sourceLine" id="cb6-125" title="125">    <span class="co">// Recursive&lt;KS&gt; &lt;: Recursive&lt;KT&gt;</span></a>
-<a class="sourceLine" id="cb6-126" title="126">    <span class="co">//     where Nothing &lt;: KS &lt;: Recursive&lt;KS&gt;</span></a>
-<a class="sourceLine" id="cb6-127" title="127">    <span class="co">//           Nothing &lt;: KT &lt;: Recursive&lt;KT&gt;</span></a>
-<a class="sourceLine" id="cb6-128" title="128">    <span class="co">//   (from type capturing)</span></a>
-<a class="sourceLine" id="cb6-129" title="129">    <span class="co">// KS ⪯ KT</span></a>
-<a class="sourceLine" id="cb6-130" title="130">    <span class="co">//   (from subtyping for parameterized types)</span></a>
-<a class="sourceLine" id="cb6-131" title="131">    <span class="co">// KS =:= KT</span></a>
-<a class="sourceLine" id="cb6-132" title="132">    <span class="co">//   (from type containment rules)</span></a>
-<a class="sourceLine" id="cb6-133" title="133">    <span class="co">// True</span></a>
-<a class="sourceLine" id="cb6-134" title="134"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-121" title="121">    <span class="co">// Recursive&lt;*&gt; &lt;: Recursive&lt;KS&gt; where KS &lt;: Recursive&lt;KS&gt;</span></a>
+<a class="sourceLine" id="cb6-122" title="122">    <span class="co">//   (from type capturing)</span></a>
+<a class="sourceLine" id="cb6-123" title="123">    <span class="co">// Recursive&lt;KS&gt; &lt;: Root&lt;KS&gt;</span></a>
+<a class="sourceLine" id="cb6-124" title="124">    <span class="co">//   (from supertype relation)</span></a>
+<a class="sourceLine" id="cb6-125" title="125"></a>
+<a class="sourceLine" id="cb6-126" title="126">    <span class="kw">val</span> <span class="va">root</span><span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;*&gt;</span> <span class="op">=</span> rec</a>
+<a class="sourceLine" id="cb6-127" title="127"></a>
+<a class="sourceLine" id="cb6-128" title="128">    <span class="co">// ?- Recursive&lt;*&gt; &lt;: Root&lt;*&gt;</span></a>
+<a class="sourceLine" id="cb6-129" title="129">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-130" title="130">    <span class="co">// Root&lt;KS&gt; &lt;: Root&lt;KT&gt;</span></a>
+<a class="sourceLine" id="cb6-131" title="131">    <span class="co">//     where Nothing &lt;: KS &lt;: Recursive&lt;KS&gt;</span></a>
+<a class="sourceLine" id="cb6-132" title="132">    <span class="co">//           Nothing &lt;: KT &lt;: Any?</span></a>
+<a class="sourceLine" id="cb6-133" title="133">    <span class="co">//   (from above facts and type capturing)</span></a>
+<a class="sourceLine" id="cb6-134" title="134">    <span class="co">// KS ⪯ KT</span></a>
+<a class="sourceLine" id="cb6-135" title="135">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-136" title="136">    <span class="co">// KS ⊆ KT</span></a>
+<a class="sourceLine" id="cb6-137" title="137">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-138" title="138">    <span class="co">// (Nothing &lt;: KS &lt;: Recursive&lt;KS&gt;) ⊆ (Nothing &lt;: KT &lt;: Any?)</span></a>
+<a class="sourceLine" id="cb6-139" title="139">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-140" title="140">    <span class="co">// True</span></a>
+<a class="sourceLine" id="cb6-141" title="141"></a>
+<a class="sourceLine" id="cb6-142" title="142">    <span class="kw">val</span> <span class="va">rootRec</span><span class="op">:</span> <span class="dt">Root</span><span class="op">&lt;</span><span class="dt">Recursive</span><span class="op">&lt;*&gt;&gt;</span> <span class="op">=</span> rec</a>
+<a class="sourceLine" id="cb6-143" title="143"></a>
+<a class="sourceLine" id="cb6-144" title="144">    <span class="co">// ?- Recursive&lt;*&gt; &lt;: Root&lt;Recursive&lt;*&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-145" title="145">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-146" title="146">    <span class="co">// Root&lt;KS&gt; &lt;: Root&lt;Recursive&lt;*&gt;&gt;</span></a>
+<a class="sourceLine" id="cb6-147" title="147">    <span class="co">//     where Nothing &lt;: KS &lt;: Recursive&lt;KS&gt;</span></a>
+<a class="sourceLine" id="cb6-148" title="148">    <span class="co">//   (from above facts)</span></a>
+<a class="sourceLine" id="cb6-149" title="149">    <span class="co">// KS ⪯ Recursive&lt;*&gt;</span></a>
+<a class="sourceLine" id="cb6-150" title="150">    <span class="co">//   (from subtyping for parameterized types)</span></a>
+<a class="sourceLine" id="cb6-151" title="151">    <span class="co">// KS ⪯ KT where Recursive&lt;*&gt; &lt;: KT &lt;: Recursive&lt;*&gt;</span></a>
+<a class="sourceLine" id="cb6-152" title="152">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-153" title="153">    <span class="co">// KS ⊆ KT</span></a>
+<a class="sourceLine" id="cb6-154" title="154">    <span class="co">//   (from type containment rules)</span></a>
+<a class="sourceLine" id="cb6-155" title="155">    <span class="co">// (Nothing &lt;: KS &lt;: Recursive&lt;KS) ⊆ (Recursive&lt;*&gt; &lt;: KT &lt;: Recursive&lt;*&gt;)</span></a>
+<a class="sourceLine" id="cb6-156" title="156">    <span class="co">//</span></a>
+<a class="sourceLine" id="cb6-157" title="157">    <span class="co">// False</span></a>
+<a class="sourceLine" id="cb6-158" title="158">    </a>
+<a class="sourceLine" id="cb6-159" title="159"><span class="op">}</span></a></code></pre></div>
 </blockquote>
 <h4 id="type-containment">Type containment</h4>
 <div class="paragraph">
@@ -1944,7 +1998,7 @@ s and takes them in”.</span></p>
 <ul>
 <li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>⪯</mo><msub><mi>K</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">K_A \preceq K_B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⪯</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
 
- if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>≡</mo><msub><mi>K</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">K_A \equiv K_B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≡</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+ if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>⊆</mo><msub><mi>K</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">K_A \subseteq K_B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⊆</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
 
 </span></li>
 <li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>A</mi></msub><mo>⪯</mo><mi mathvariant="normal"><mrow><mtext mathvariant="monospace">out</mtext><mtext> </mtext></mrow></mi><mo>⁡</mo><msub><mi>K</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">K_A \preceq \operatorname{\texttt{out\,}}K_B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">A</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⪯</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mop"><span class="mord text"><span class="mord texttt">out</span><span class="mspace" style="margin-right:0.1667em;"></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>

@@ -127,10 +127,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <header>
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.5-rfc+0.1</p>
+<p class="subtitle">Version 1.6-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
+
 
 
 
@@ -173,6 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
 <ul>
+<li><a href="syntax-and-grammar.html#notation" id="toc-element-notation" class="toc-element">Notation</a></li>
 <li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
 <ul>
 <li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
@@ -293,7 +295,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
 <ul>
-<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration-scopes" id="toc-element-constructor-declaration-scopes" class="toc-element">Constructor declaration scopes</a></li>
+</ul></li>
 <li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
@@ -309,6 +314,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
 <li><a href="declarations.html#local-class-declaration" id="toc-element-local-class-declaration" class="toc-element">Local class declaration</a></li>
 <li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+<li><a href="declarations.html#classifier-declaration-scopes" id="toc-element-classifier-declaration-scopes" class="toc-element">Classifier declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
 <ul>
@@ -318,6 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+<li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
 <ul>
@@ -330,6 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
 <li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
 <li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+<li><a href="declarations.html#property-declaration-scopes" id="toc-element-property-declaration-scopes" class="toc-element">Property declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
 <li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
@@ -477,11 +485,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
 <li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#basics" id="toc-element-basics" class="toc-element">Basics</a>
+<ul>
 <li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
 <li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
 <li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
 <li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
-<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+</ul></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set" id="toc-element-building-the-overload-candidate-set" class="toc-element">Building the overload candidate set</a>
 <ul>
 <li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
@@ -505,7 +516,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
 <li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+<li><a href="overload-resolution.html#using-lambda-return-type-to-refine-function-applicability" id="toc-element-using-lambda-return-type-to-refine-function-applicability" class="toc-element">Using lambda return type to refine function applicability</a></li>
 </ul></li>
+<li><a href="overload-resolution.html#resolving-property-access" id="toc-element-resolving-property-access" class="toc-element">Resolving property access</a></li>
 <li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
 <ul>
 <li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
@@ -532,6 +545,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
 <ul>
+<li><a href="control--and-data-flow-analysis.html#types-of-lattices" id="toc-element-types-of-lattices" class="toc-element">Types of lattices</a></li>
 <li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
 
  instruction</a></li>
@@ -596,7 +610,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
 <li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
 <li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
-<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a>
+<ul>
+<li><a href="annotations.html#kotlin.annotation.retention" id="toc-element-kotlin.annotation.retention" class="toc-element"><code>kotlin.annotation.Retention</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.target" id="toc-element-kotlin.annotation.target" class="toc-element"><code>kotlin.annotation.Target</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.repeatable" id="toc-element-kotlin.annotation.repeatable" class="toc-element"><code>kotlin.annotation.Repeatable</code></a></li>
+<li><a href="annotations.html#kotlin.requiresoptin-kotlin.optin" id="toc-element-kotlin.requiresoptin-kotlin.optin" class="toc-element"><code>kotlin.RequiresOptIn</code> / <code>kotlin.OptIn</code></a></li>
+<li><a href="annotations.html#kotlin.deprecated-kotlin.replacewith" id="toc-element-kotlin.deprecated-kotlin.replacewith" class="toc-element"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></a></li>
+<li><a href="annotations.html#kotlin.suppress" id="toc-element-kotlin.suppress" class="toc-element"><code>kotlin.Suppress</code></a></li>
+<li><a href="annotations.html#kotlin.sincekotlin" id="toc-element-kotlin.sincekotlin" class="toc-element"><code>kotlin.SinceKotlin</code></a></li>
+<li><a href="annotations.html#kotlin.unsafevariance" id="toc-element-kotlin.unsafevariance" class="toc-element"><code>kotlin.UnsafeVariance</code></a></li>
+<li><a href="annotations.html#kotlin.dslmarker" id="toc-element-kotlin.dslmarker" class="toc-element"><code>kotlin.DslMarker</code></a></li>
+<li><a href="annotations.html#kotlin.publishedapi" id="toc-element-kotlin.publishedapi" class="toc-element"><code>kotlin.PublishedApi</code></a></li>
+<li><a href="annotations.html#kotlin.builderinference" id="toc-element-kotlin.builderinference" class="toc-element"><code>kotlin.BuilderInference</code></a></li>
+<li><a href="annotations.html#kotlin.restrictsuspension" id="toc-element-kotlin.restrictsuspension" class="toc-element"><code>kotlin.RestrictSuspension</code></a></li>
+<li><a href="annotations.html#kotlin.overloadresolutionbylambdareturntype" id="toc-element-kotlin.overloadresolutionbylambdareturntype" class="toc-element"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="asynchronous-programming-with-coroutines.html#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
 <ul>
@@ -637,7 +666,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The project <a href="packages-and-imports.html#packages-and-imports">packages</a>;</span></li>
 <li><span class="sentence">The top level scopes of non-script Kotlin files;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
-<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>.</span></li>
+<li><span class="sentence">The bodies of <a href="expressions.html#object-literals">object literals</a>;</span></li>
+<li><span class="sentence">Function parameter scope containing the declared value parameters in a <a href="declarations.html#function-declaration">function declaration</a> or a non-primary <a href="declarations.html#constructor-declaration">constructor declaration</a>;</span></li>
+<li><span class="sentence">Primary constructor parameter scope containing the declared value parameters in a <a href="declarations.html#constructor-declaration">primary constructor</a>.</span></li>
 </ul>
 <div class="paragraph">
 <p><span class="sentence">Statement scopes include:</span></p>
@@ -649,7 +680,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The bodies of <a href="expressions.html#function-literals">function literals</a>;</span></li>
 <li><span class="sentence">The bodies of getters and setters of <a href="declarations.html#property-declaration">properties</a>;</span></li>
 <li><span class="sentence">The bodies of <a href="declarations.html#constructor-declaration">constructors</a>;</span></li>
-<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>.</span></li>
+<li><span class="sentence">The bodies of instance initialization blocks in <a href="declarations.html#classifier-declaration">classifier declarations</a>;</span></li>
+<li><span class="sentence">Special initialization scope for a body of a <a href="declarations.html#classifier-declaration">classifier declaration</a>.</span></li>
 </ul>
 
 <div class="paragraph">
@@ -659,7 +691,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In most situations, it is not allowed to bind several values to the same identifier in the same scope, but it is allowed to bind a value to an identifier already available in the scope through linked scopes or imports.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">An exception to this rule are <a href="declarations.html#function-declaration">function declarations</a>, which are matched by <a href="declarations.html#function-signature">signatures</a> and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions">calling functions</a>, a process called <a href="overload-resolution.html#overload-resolution">overload resolution</a> allows for differentiating between such functions. </span><span class="sentence">Overload resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not allow defining several properties with the same name in the same scope.</span></p>
+<p><span class="sentence">An exception to this rule are <a href="declarations.html#function-declaration">function declarations</a>, which are matched by <a href="declarations.html#function-signature">signatures</a> and allow defining several functions with the same name in the same scope. </span><span class="sentence">When <a href="expressions.html#call-and-property-access-expressions">calling functions</a>, a process called <a href="overload-resolution.html#overload-resolution">overload resolution</a> allows for differentiating between such functions. </span><span class="sentence">Overload resolution also applies to properties if they are used as functions through <code>invoke</code>-convention, but it does not allow defining several properties with the same name and with the same receivers in the same scope.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -724,8 +756,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is DLD to any nested statement scopes;</span></li>
 <li><span class="sentence">A <a href="declarations.html#classifier-declaration">classifier or nested class declaration</a> scope is ULD to its companion object declaration scope;</span></li>
 <li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is DLD to any nested statement scopes;</span></li>
-<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is ULD to the classifier declaration scope of its parent classifier.</span></li>
+<li><span class="sentence">An <a href="declarations.html#nested-and-inner-classifiers">inner class declaration</a> scope is ULD to the classifier declaration scope of its parent classifier;</span></li>
+<li><span class="sentence">A function or non-primary constructor parameter scope is ULD to the scope containing the function declaration and DLD to the function body;</span></li>
+<li><span class="sentence">A primary constructor parameter scope is ULD to the scope containing the classifier declaration (but not the classifier declaration scope itself) and DLD to the classifier initialization scope;</span></li>
+<li><span class="sentence">The instance initialization blocks are ULD to the classifier initialization scope.</span></li>
 </ul>
+
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Important: linked scopes <strong>do not</strong> cover cases when identifiers from supertypes are used in subtypes, as this is covered by the <a href="inheritance.html#inheritance">inheritance</a> rules.</span></p>

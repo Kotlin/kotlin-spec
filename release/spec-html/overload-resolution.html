@@ -127,10 +127,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <header>
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.5-rfc+0.1</p>
+<p class="subtitle">Version 1.6-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
+
 
 
 
@@ -173,6 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="syntax-and-grammar.html#syntax-and-grammar" id="toc-element-syntax-and-grammar" class="toc-element">Syntax and grammar</a>
 <ul>
+<li><a href="syntax-and-grammar.html#notation" id="toc-element-notation" class="toc-element">Notation</a></li>
 <li><a href="syntax-and-grammar.html#lexical-grammar" id="toc-element-lexical-grammar" class="toc-element">Lexical grammar</a>
 <ul>
 <li><a href="syntax-and-grammar.html#whitespace-and-comments" id="toc-element-whitespace-and-comments" class="toc-element">Whitespace and comments</a></li>
@@ -293,7 +295,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#class-declaration" id="toc-element-class-declaration" class="toc-element">Class declaration</a>
 <ul>
-<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a></li>
+<li><a href="declarations.html#constructor-declaration" id="toc-element-constructor-declaration" class="toc-element">Constructor declaration</a>
+<ul>
+<li><a href="declarations.html#constructor-declaration-scopes" id="toc-element-constructor-declaration-scopes" class="toc-element">Constructor declaration scopes</a></li>
+</ul></li>
 <li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
@@ -309,6 +314,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#object-declaration" id="toc-element-object-declaration" class="toc-element">Object declaration</a></li>
 <li><a href="declarations.html#local-class-declaration" id="toc-element-local-class-declaration" class="toc-element">Local class declaration</a></li>
 <li><a href="declarations.html#classifier-initialization" id="toc-element-classifier-initialization" class="toc-element">Classifier initialization</a></li>
+<li><a href="declarations.html#classifier-declaration-scopes" id="toc-element-classifier-declaration-scopes" class="toc-element">Classifier declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#function-declaration" id="toc-element-function-declaration" class="toc-element">Function declaration</a>
 <ul>
@@ -318,6 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
+<li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#property-declaration" id="toc-element-property-declaration" class="toc-element">Property declaration</a>
 <ul>
@@ -330,6 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="declarations.html#property-initialization" id="toc-element-property-initialization" class="toc-element">Property initialization</a></li>
 <li><a href="declarations.html#constant-properties" id="toc-element-constant-properties" class="toc-element">Constant properties</a></li>
 <li><a href="declarations.html#late-initialized-properties" id="toc-element-late-initialized-properties" class="toc-element">Late-initialized properties</a></li>
+<li><a href="declarations.html#property-declaration-scopes" id="toc-element-property-declaration-scopes" class="toc-element">Property declaration scopes</a></li>
 </ul></li>
 <li><a href="declarations.html#type-alias" id="toc-element-type-alias" class="toc-element">Type alias</a></li>
 <li><a href="declarations.html#declarations-with-type-parameters" id="toc-element-declarations-with-type-parameters" class="toc-element">Declarations with type parameters</a>
@@ -477,11 +485,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#glossary-3" id="toc-element-glossary-3" class="toc-element unnumbered">Glossary</a></li>
 <li><a href="overload-resolution.html#introduction-4" id="toc-element-introduction-4" class="toc-element unnumbered">Introduction</a></li>
+<li><a href="overload-resolution.html#basics" id="toc-element-basics" class="toc-element">Basics</a>
+<ul>
 <li><a href="overload-resolution.html#receivers" id="toc-element-receivers" class="toc-element">Receivers</a></li>
 <li><a href="overload-resolution.html#the-forms-of-call-expression" id="toc-element-the-forms-of-call-expression" class="toc-element">The forms of call-expression</a></li>
 <li><a href="overload-resolution.html#callables-and-invoke-convention" id="toc-element-callables-and-invoke-convention" class="toc-element">Callables and <code>invoke</code> convention</a></li>
 <li><a href="overload-resolution.html#c-level-partition" id="toc-element-c-level-partition" class="toc-element">c-level partition</a></li>
-<li><a href="overload-resolution.html#building-the-overload-candidate-set-ocs" id="toc-element-building-the-overload-candidate-set-ocs" class="toc-element">Building the overload candidate set (OCS)</a>
+</ul></li>
+<li><a href="overload-resolution.html#building-the-overload-candidate-set" id="toc-element-building-the-overload-candidate-set" class="toc-element">Building the overload candidate set</a>
 <ul>
 <li><a href="overload-resolution.html#fully-qualified-call" id="toc-element-fully-qualified-call" class="toc-element">Fully-qualified call</a></li>
 <li><a href="overload-resolution.html#call-with-an-explicit-receiver" id="toc-element-call-with-an-explicit-receiver" class="toc-element">Call with an explicit receiver</a>
@@ -505,7 +516,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="overload-resolution.html#rationale-1" id="toc-element-rationale-1" class="toc-element">Rationale</a></li>
 <li><a href="overload-resolution.html#algorithm-of-msc-selection" id="toc-element-algorithm-of-msc-selection" class="toc-element">Algorithm of MSC selection</a></li>
+<li><a href="overload-resolution.html#using-lambda-return-type-to-refine-function-applicability" id="toc-element-using-lambda-return-type-to-refine-function-applicability" class="toc-element">Using lambda return type to refine function applicability</a></li>
 </ul></li>
+<li><a href="overload-resolution.html#resolving-property-access" id="toc-element-resolving-property-access" class="toc-element">Resolving property access</a></li>
 <li><a href="overload-resolution.html#resolving-callable-references" id="toc-element-resolving-callable-references" class="toc-element">Resolving callable references</a>
 <ul>
 <li><a href="overload-resolution.html#resolving-callable-references-not-used-as-arguments-to-a-call" id="toc-element-resolving-callable-references-not-used-as-arguments-to-a-call" class="toc-element">Resolving callable references not used as arguments to a call</a></li>
@@ -532,6 +545,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="control--and-data-flow-analysis.html#performing-analyses-on-the-control-flow-graph" id="toc-element-performing-analyses-on-the-control-flow-graph" class="toc-element">Performing analyses on the control-flow graph</a>
 <ul>
+<li><a href="control--and-data-flow-analysis.html#types-of-lattices" id="toc-element-types-of-lattices" class="toc-element">Types of lattices</a></li>
 <li><a href="control--and-data-flow-analysis.html#preliminary-analysis-and-operatornamemathitkilldataflow-instruction" id="toc-element-preliminary-analysis-and-operatornamemathitkilldataflow-instruction" class="toc-element">Preliminary analysis and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal"><mrow><mi>k</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>F</mi><mi>l</mi><mi>o</mi><mi>w</mi></mrow></mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{\mathit{killDataFlow}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mop"><span class="mord"><span class="mord mathit">k</span><span class="mord mathit">i</span><span class="mord mathit">l</span><span class="mord mathit">l</span><span class="mord mathit">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit">F</span><span class="mord mathit">l</span><span class="mord mathit">o</span><span class="mord mathit">w</span></span></span></span></span></span>
 
  instruction</a></li>
@@ -596,7 +610,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="annotations.html#annotation-retention" id="toc-element-annotation-retention" class="toc-element">Annotation retention</a></li>
 <li><a href="annotations.html#annotation-targets" id="toc-element-annotation-targets" class="toc-element">Annotation targets</a></li>
 <li><a href="annotations.html#annotation-declarations" id="toc-element-annotation-declarations" class="toc-element">Annotation declarations</a></li>
-<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a></li>
+<li><a href="annotations.html#built-in-annotations" id="toc-element-built-in-annotations" class="toc-element">Built-in annotations</a>
+<ul>
+<li><a href="annotations.html#kotlin.annotation.retention" id="toc-element-kotlin.annotation.retention" class="toc-element"><code>kotlin.annotation.Retention</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.target" id="toc-element-kotlin.annotation.target" class="toc-element"><code>kotlin.annotation.Target</code></a></li>
+<li><a href="annotations.html#kotlin.annotation.repeatable" id="toc-element-kotlin.annotation.repeatable" class="toc-element"><code>kotlin.annotation.Repeatable</code></a></li>
+<li><a href="annotations.html#kotlin.requiresoptin-kotlin.optin" id="toc-element-kotlin.requiresoptin-kotlin.optin" class="toc-element"><code>kotlin.RequiresOptIn</code> / <code>kotlin.OptIn</code></a></li>
+<li><a href="annotations.html#kotlin.deprecated-kotlin.replacewith" id="toc-element-kotlin.deprecated-kotlin.replacewith" class="toc-element"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></a></li>
+<li><a href="annotations.html#kotlin.suppress" id="toc-element-kotlin.suppress" class="toc-element"><code>kotlin.Suppress</code></a></li>
+<li><a href="annotations.html#kotlin.sincekotlin" id="toc-element-kotlin.sincekotlin" class="toc-element"><code>kotlin.SinceKotlin</code></a></li>
+<li><a href="annotations.html#kotlin.unsafevariance" id="toc-element-kotlin.unsafevariance" class="toc-element"><code>kotlin.UnsafeVariance</code></a></li>
+<li><a href="annotations.html#kotlin.dslmarker" id="toc-element-kotlin.dslmarker" class="toc-element"><code>kotlin.DslMarker</code></a></li>
+<li><a href="annotations.html#kotlin.publishedapi" id="toc-element-kotlin.publishedapi" class="toc-element"><code>kotlin.PublishedApi</code></a></li>
+<li><a href="annotations.html#kotlin.builderinference" id="toc-element-kotlin.builderinference" class="toc-element"><code>kotlin.BuilderInference</code></a></li>
+<li><a href="annotations.html#kotlin.restrictsuspension" id="toc-element-kotlin.restrictsuspension" class="toc-element"><code>kotlin.RestrictSuspension</code></a></li>
+<li><a href="annotations.html#kotlin.overloadresolutionbylambdareturntype" id="toc-element-kotlin.overloadresolutionbylambdareturntype" class="toc-element"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="asynchronous-programming-with-coroutines.html#asynchronous-programming-with-coroutines" id="toc-element-asynchronous-programming-with-coroutines" class="toc-element">Asynchronous programming with coroutines</a>
 <ul>
@@ -625,12 +654,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </dl>
 <h3 id="introduction-4" class="unnumbered">Introduction</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin supports <em>callable overloading</em>, that is, the ability for several callables (functions or function-like properties) with the same name to coexist in the same scope, with the compiler picking the most suitable one when such a callable is called. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
+<p><span class="sentence">Kotlin supports <em>overloading</em> for callables and properties, that is, the ability for several callables (functions or function-like properties) or properties with the same name to coexist in the same scope, with the compiler picking the most suitable one when such entity is referenced. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
 </div>
+<blockquote>
 <div class="paragraph">
-<p><span class="sentence">Unlike other object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
+<p><span class="sentence">Note: most of this section explains the overload resolution process for callables, as the overload resolution process for properties uses the same framework. </span><span class="sentence">Important differences w.r.t. properties are covered in the <a href="overload-resolution.html#resolving-property-access">corresponding section</a>.</span></p>
 </div>
-<h3 id="receivers">Receivers</h3>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Unlike many object-oriented languages, Kotlin does not have only regular class methods, but also top-level functions, local functions, extension functions and function-like values, which complicate the overload resolution process quite a bit. </span><span class="sentence">Additionally, Kotlin has infix functions, operator and property overloading, which add their own specifics to this process.</span></p>
+</div>
+<h3 id="basics">Basics</h3>
+<h4 id="receivers">Receivers</h4>
 <div class="paragraph">
 <p><span class="sentence">Every function or property that is defined as a method or an extension has one or more special parameters called <em>receiver</em> parameters. </span><span class="sentence">When calling such a callable using <a href="expressions.html#navigation-operators">navigation operators</a> (<code>.</code> or <code>?.</code>) the left hand side value is called an <em>explicit receiver</em> of this particular call. </span><span class="sentence">In addition to the explicit receiver, each call may indirectly access zero or more <em>implicit receivers</em>.</span></p>
 </div>
@@ -666,7 +701,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Important: DSL-specific annotations (marked with <a href="annotations.html#built-in-annotations"><code>kotlin.DslMarker</code></a> annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope.</span></p>
+<p><span class="sentence">Important: DSL-specific annotations (marked with <a href="annotations.html#kotlin.dslmarker"><code>kotlin.DslMarker</code></a> annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -714,7 +749,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-25" title="25">    <span class="op">}</span></a>
 <a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
 </blockquote>
-<h3 id="the-forms-of-call-expression">The forms of call-expression</h3>
+<h4 id="the-forms-of-call-expression">The forms of call-expression</h4>
 <div class="paragraph">
 <p><span class="sentence">Any function in Kotlin may be called in several different ways:</span></p>
 </div>
@@ -736,7 +771,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Important: the overload candidates are picked <strong>before</strong> the most specific function is chosen.</span></p>
 </div>
 </blockquote>
-<h3 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h3>
+<h4 id="callables-and-invoke-convention">Callables and <code>invoke</code> convention</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>callable</em> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>
 
@@ -816,7 +851,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">A <em>local callable</em> is any callable which is declared in a <a href="scopes-and-identifiers.html#scopes-and-identifiers">statement scope</a>.</span></p>
 </div>
-<h3 id="c-level-partition">c-level partition</h3>
+<h4 id="c-level-partition">c-level partition</h4>
 <div class="paragraph">
 <p><span class="sentence">When calculating overload candidate sets, member callables produce the following sets, considered separately, ordered by higher priority first:</span></p>
 </div>
@@ -836,7 +871,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Let us define this partition of callables to overload candidate sets as <em>c-level partition</em> (callable-level partition). </span><span class="sentence">As this partition is the most fine-grained of all other steps of partitioning resolution candidates into sets, it is always performed <strong>last</strong>, after all other applicable steps.</span></p>
 </div>
-<h3 id="building-the-overload-candidate-set-ocs">Building the overload candidate set (OCS)</h3>
+<h3 id="building-the-overload-candidate-set">Building the overload candidate set</h3>
 <h4 id="fully-qualified-call">Fully-qualified call</h4>
 <div class="paragraph">
 <p><span class="sentence">If a call is fully-qualified (that is, it contains a complete <a href="scopes-and-identifiers.html#identifiers-and-paths">package path</a>), then the overload candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>
@@ -888,22 +923,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <ol type="1">
 <li><span class="sentence">Non-extension member callables named <code>f</code> of type <code>T</code>;</span></li>
-<li><span class="sentence">Local extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, in the current scope and its <a href="scopes-and-identifiers.html#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span></li>
-<li><span class="sentence">Explicitly imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
-<li><span class="sentence">Extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>, declared in the package scope;</span></li>
-<li><span class="sentence">Star-imported extension callables named <code>f</code>, whose receiver type conforms to type <code>T</code>;</span></li>
-<li><span class="sentence">Implicitly imported extension callables named <code>f</code> (either from the Kotlin standard library or platform-specific ones), whose receiver type conforms to type <code>T</code>.</span></li>
+<li><span class="sentence">Extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>, in the current scope and its <a href="scopes-and-identifiers.html#linked-scopes">upwards-linked scopes</a>, ordered by the size of the scope (smallest first), excluding the package scope;</span>
+<ul>
+<li><span class="sentence">First, we assume there is <strong>no implicit receiver</strong> available for the dispatch receiver of <code>f</code> (i.e., we analyze <em>local</em> extension callables only);</span></li>
+<li><span class="sentence">Second, we consider each implicit receiver available for the dispatch receiver of <code>f</code> in the order of the implicit <a href="overload-resolution.html#receivers">receiver priority</a>;</span></li>
+</ul></li>
+<li><span class="sentence">Explicitly imported extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">Extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>, declared in the package scope;</span></li>
+<li><span class="sentence">Star-imported extension callables named <code>f</code>, whose receiver type <code>U</code> conforms to type <code>T</code>;</span></li>
+<li><span class="sentence">Implicitly imported extension callables named <code>f</code> (either from the Kotlin standard library or platform-specific ones), whose receiver type <code>U</code> conforms to type <code>T</code>.</span></li>
 </ol>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: here type <code>U</code> conforms to type <code>T</code>, if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>&lt;</mo><mo>:</mo><mi>U</mi></mrow><annotation encoding="application/x-tex">T &lt;: U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
 
 .</span></p>
-</div>
-</blockquote>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: a call to an extension callable with an explicit extension receiver, as noted above, may involve an implicit dispatch receiver. </span><span class="sentence">In this case, the case with <strong>no implicit receiver</strong> is considered first; then, for each implicit receiver available, a separate number of sets is constructed according to <a href="overload-resolution.html#call-without-an-explicit-receiver">the rules for implicit receivers</a>. </span><span class="sentence">These sets are considered in the order of the implicit <a href="overload-resolution.html#receivers">receiver priority</a>.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1284,8 +1318,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">In case 1, the more applicable candidate of the two is found and no additional steps are needed.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In case 2, an additional step is taken: a non-parameterized callable is a more specific candidate than any parameterized callable. </span><span class="sentence">If this step does not allow for deciding the more specific candidate, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
+<p><span class="sentence">In case 2, an additional step is performed.</span></p>
 </div>
+<ul>
+<li><span class="sentence">Any non-parameterized callable is a more specific candidate than any parameterized callable; If there are several non-parameterized candidates, further steps are limited to those candidates.</span></li>
+</ul>
 <div class="paragraph">
 <p><span class="sentence">In case 3, several additional steps are performed in order.</span></p>
 </div>
@@ -1305,7 +1342,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
+<p><span class="sentence">If after these additional steps there are still several candidates which are equally applicable for the call, we may attempt to <a href="overload-resolution.html#using-lambda-return-type-to-refine-function-applicability">use the lambda return type to refine function applicability</a>. </span><span class="sentence">If there are still more than one most specific candidate afterwards, this is an <strong>overload ambiguity</strong> which must be reported as a compile-time error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1319,6 +1356,282 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">First, the properties are compared for applicability and the most applicable property is chosen as described above. </span><span class="sentence">If several properties are equally applicable, this is an overload ambiguity as usual;</span></li>
 <li><span class="sentence">Second, for the property selected at first step, the most applicable operator <code>invoke</code> overload is chosen.</span></li>
 </ul>
+<h4 id="using-lambda-return-type-to-refine-function-applicability">Using lambda return type to refine function applicability</h4>
+<div class="paragraph">
+<p><span class="sentence">If the most specific candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span></span></span></span>
+
+ is ambiguous (has more than one callable) and contains at least one callable marked with <a href="annotations.html#kotlin.overloadresolutionbylambdareturntype"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a>, several additional checks and steps are performed to reduce it, by attempting to infer a single lambda return type and use it to refine function applicability.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">First, we perform the following checks.</span></p>
+</div>
+<ol type="1">
+<li><div class="paragraph">
+<p><span class="sentence">We <em>check</em> if the function call contains <strong>exactly one</strong> <a href="expressions.html#lambda-literals">lambda</a> argument <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
+
+ which requires type inference (which does not have an explicitly defined type).</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence">For every function in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span></span></span></span>
+
+ we collect parameters <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">P_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ corresponding to argument <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
+
+ and <em>check</em> their function types <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">T_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ to be structurally equal excluding return types (SEERT).</span></p>
+</div></li>
+</ol>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Informally: SEERT checks whether function types have the exactly same input parameters.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Examples: the following two function types are considered SEERT.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>(Int, String) -&gt; Int</code></span></li>
+<li><span class="sentence"><code>(Int, String) -&gt; Double</code></span></li>
+</ul>
+<div class="paragraph">
+<p><span class="sentence">The following two function types are not considered SEERT.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><code>Int.(String) -&gt; Int</code></span></li>
+<li><span class="sentence"><code>(Int, String) -&gt; Double</code></span></li>
+</ul>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If all checks succeed, we can perform the <a href="type-inference.html#statements-with-lambda-literals">type inference</a> for the lambda argument <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
+
+, as in all cases its parameter types are known (corollary from check 2 succeeding) and their corresponding constraints can be added to the constraint system. </span><span class="sentence">The constraint system solution gives us the inferred lambda return type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mtext>inf</mtext></msub></mrow><annotation encoding="application/x-tex">R_{\text{inf}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">inf</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, which may be used to refine function applicability, by removing overload candidates with incompatible lambda return types.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">This is performed by repeating the <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">function applicability test</a> on the most specific candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span></span></span></span>
+
+, with the additional constraint <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>≡</mo><msub><mi>R</mi><mtext>inf</mtext></msub></mrow><annotation encoding="application/x-tex">R \equiv R_{\text{inf}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≡</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">inf</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+ added for the corresponding lambda argument <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi></mrow><annotation encoding="application/x-tex">A</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span></span></span></span>
+
+. </span><span class="sentence">Candidates which remain applicable with this additional constraint are added to the refined set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>C</mi><mo mathvariant="normal">′</mo></msup></mrow><annotation encoding="application/x-tex">C^\prime</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span>
+
+.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: If any of the checks described above fails, we continue with the set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>C</mi><mo mathvariant="normal">′</mo></msup><mo>=</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">C^\prime = C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">If set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>C</mi><mo mathvariant="normal">′</mo></msup></mrow><annotation encoding="application/x-tex">C^\prime</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span>
+
+ contains more than one candidate, we attempt to prefer candidates <strong>without</strong> <a href="annotations.html#kotlin.overloadresolutionbylambdareturntype"><code>kotlin.OverloadResolutionByLambdaReturnType</code></a> annotation. </span><span class="sentence">If there are any, they are included in the resulting most specific candidate set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mtext>res</mtext></msub></mrow><annotation encoding="application/x-tex">C_{\text{res}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.07153em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">res</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>
+
+, with which we finish the <a href="overload-resolution.html#algorithm-of-msc-selection">MSC selection</a>. </span><span class="sentence">Otherwise, we finish the MSC selection with the set <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>C</mi><mo mathvariant="normal">′</mo></msup></mrow><annotation encoding="application/x-tex">C^\prime</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span>
+
+.</span></p>
+</div>
+
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb6-3" title="3"></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb6-6" title="6"></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="kw">fun</span> <span class="fu">testOk01</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-8" title="8">    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb6-9" title="9">    <span class="co">// Both (1) and (2) are applicable</span></a>
+<a class="sourceLine" id="cb6-10" title="10">    <span class="co">// (2) is preferred by the lambda return type</span></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb7-3" title="3"></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb7-6" title="6"></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="kw">fun</span> <span class="fu">testError01</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-8" title="8">    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></a>
+<a class="sourceLine" id="cb7-9" title="9">    <span class="co">// Overload ambiguity</span></a>
+<a class="sourceLine" id="cb7-10" title="10">    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb7-11" title="11">    <span class="co">// Both (1) and (2) are applicable</span></a>
+<a class="sourceLine" id="cb7-12" title="12">    <span class="co">// None is preferred by the lambda return type</span></a>
+<a class="sourceLine" id="cb7-13" title="13">    <span class="co">//   as their parameters are not SEERT</span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb8-6" title="6"></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="kw">fun</span> <span class="fu">testOk02</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb8-8" title="8">    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></a>
+<a class="sourceLine" id="cb8-9" title="9">    foo <span class="op">{</span> a -&gt; <span class="dv">42</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb8-10" title="10">    <span class="co">// Only (2) is applicable</span></a>
+<a class="sourceLine" id="cb8-11" title="11">    <span class="co">//   as its lambda takes one parameter</span></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example:</span></p>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb9-3" title="3"></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">CharSequence</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="kw">fun</span> <span class="fu">testError02</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-8" title="8">    <span class="co">// Error: required String, found CharSequence</span></a>
+<a class="sourceLine" id="cb9-9" title="9">    foo <span class="op">{</span> a -&gt;</a>
+<a class="sourceLine" id="cb9-10" title="10">        <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">CharSequence</span> <span class="op">=</span> <span class="st">&quot;42&quot;</span></a>
+<a class="sourceLine" id="cb9-11" title="11">        a</a>
+<a class="sourceLine" id="cb9-12" title="12">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb9-13" title="13">    <span class="co">// Both (1) and (2) are applicable</span></a>
+<a class="sourceLine" id="cb9-14" title="14">    <span class="co">// (1) is the only most specific candidate</span></a>
+<a class="sourceLine" id="cb9-15" title="15">    <span class="co">//   We do not attempt refinement by the lambda return type</span></a>
+<a class="sourceLine" id="cb9-16" title="16"><span class="op">}</span></a></code></pre></div>
+</blockquote>
+<h3 id="resolving-property-access">Resolving property access</h3>
+<div class="paragraph">
+<p><span class="sentence">As <a href="declarations.html#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.html#getters-and-setters">getters and setters</a>, be <a href="declarations.html#extension-property-declaration">extension</a> or <a href="declarations.html#delegated-property-declaration">delegated</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="overload-resolution.html#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="overload-resolution.html#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence"><em>Important</em>: this section concerns <em>only</em> properties accessed using property access syntax <code>a.x</code> or just <code>x</code> <em>without call suffix</em>. </span><span class="sentence">If a property is accessed with a call suffix, it is treated as any other callable and is required to have a suitable <code>invoke</code> overload available, see the rest of this part for details</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">There are two variants of property access syntax: read-only property access and property assignment.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: there is also <a href="expressions.html#navigation-operators">safe navigation syntax</a> for both assignment and read-only access, but that is expanded to non-safe navigation syntax covered by this section. </span><span class="sentence">Please refer to corresponding sections for details.</span></p>
+</div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Read-only property access <code>a.x</code> is resolved the same way as if the property access in question was a special function call <code>a.x$get()</code> and each property <code>val/var x: T</code> was replaced with corresponding function <code>fun x$get(): T</code> having all the same extension receivers, context receivers, type parameters and scope as the original property and providing direct access to the property getter. </span><span class="sentence">For different flavors of property declarations and getters, refer to <a href="declarations.html#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that this excludes any possibility to employ <code>invoke</code>-convention as these ephemeral functions cannot be properties themselves.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: one may consider property access in class <code>A</code> to be resolved as if it has been transformed to class <code>AA</code>.</span></p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-2" title="2">    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4">    <span class="kw">val</span> <span class="va">Double.a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb10-5" title="5">        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> != <span class="fl">42.0</span></a>
+<a class="sourceLine" id="cb10-6" title="6"></a>
+<a class="sourceLine" id="cb10-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-8" title="8"></a>
+<a class="sourceLine" id="cb10-9" title="9">        println(a) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb10-10" title="10"></a>
+<a class="sourceLine" id="cb10-11" title="11">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-12" title="12">            println(<span class="kw">this@A</span>.a) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb10-13" title="13">            println(<span class="kw">this</span>.a) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb10-14" title="14">            println(a) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb10-15" title="15">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb10-16" title="16">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb10-17" title="17"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">class</span> <span class="dt">AA</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Int</span> = <span class="dv">5</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb11-3" title="3"></a>
+<a class="sourceLine" id="cb11-4" title="4">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Boolean</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb11-5" title="5">              = <span class="kw">this</span> != <span class="fl">42.0</span></a>
+<a class="sourceLine" id="cb11-6" title="6"></a>
+<a class="sourceLine" id="cb11-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-8" title="8"></a>
+<a class="sourceLine" id="cb11-9" title="9">        println(a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb11-10" title="10"></a>
+<a class="sourceLine" id="cb11-11" title="11">        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-12" title="12">            println(<span class="kw">this@AA</span>.a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb11-13" title="13">            <span class="fu">println</span><span class="op">(</span><span class="va">this</span>.<span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb11-14" title="14">            <span class="fu">println</span><span class="op">(</span><span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb11-15" title="15">        }</a>
+<a class="sourceLine" id="cb11-16" title="16">    }</a>
+<a class="sourceLine" id="cb11-17" title="17">}</a></code></pre></div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">Property assignment <code>a.x = y</code> is resolved the same way as if it was replaced with a special function call <code>a.x$set(y)</code> and each property <code>var/val x: T</code> was replaced with a corresponding function <code>fun x$set(value: T)</code> having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter. </span><span class="sentence">For different flavors of property declarations and setters, refer to <a href="declarations.html#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that, although a read-only property declaration (using the keyword <code>val</code>) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate. </span><span class="sentence">Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.</span></p>
+</div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: informally, one may look at property assignment resolution as a sub-kind of read-only property resolution described above, first resolving the property as if it was accessed in a read-only fashion, and then using the setter. </span><span class="sentence">Read-only property access and property assignment syntax used in the same position <strong>never</strong> resolve to different property candidates</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Example: one may consider property access in class <code>B</code> to be resolved as if it has been transformed to class <code>BB</code>. </span><span class="sentence">Declaration bodies for ephemeral functions are omitted to avoid confusion</span></p>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">class</span> <span class="dt">B</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-2" title="2">    <span class="kw">var</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb12-3" title="3"></a>
+<a class="sourceLine" id="cb12-4" title="4">    <span class="kw">val</span> <span class="va">Double.b</span><span class="op">:</span> <span class="dt">Int</span> <span class="co">// (2)</span></a>
+<a class="sourceLine" id="cb12-5" title="5">        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span>.toInt()</a>
+<a class="sourceLine" id="cb12-6" title="6"></a>
+<a class="sourceLine" id="cb12-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-8" title="8">        b = <span class="dv">5</span> <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb12-9" title="9"></a>
+<a class="sourceLine" id="cb12-10" title="10">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-11" title="11">            <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb12-12" title="12">            <span class="kw">this@B</span>.b = <span class="dv">5</span> </a>
+<a class="sourceLine" id="cb12-13" title="13">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
+<a class="sourceLine" id="cb12-14" title="14">            <span class="kw">this</span>.b = <span class="dv">5</span> </a>
+<a class="sourceLine" id="cb12-15" title="15">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
+<a class="sourceLine" id="cb12-16" title="16">            b = <span class="dv">5</span> </a>
+<a class="sourceLine" id="cb12-17" title="17">        <span class="op">}</span></a>
+<a class="sourceLine" id="cb12-18" title="18">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb12-19" title="19"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">class</span> <span class="dt">BB</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-2" title="2">    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (1, getter)</span></a>
+<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (1, setter)</span></a>
+<a class="sourceLine" id="cb13-4" title="4"></a>
+<a class="sourceLine" id="cb13-5" title="5">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (2, getter)</span></a>
+<a class="sourceLine" id="cb13-6" title="6">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (2, setter)</span></a>
+<a class="sourceLine" id="cb13-7" title="7"></a>
+<a class="sourceLine" id="cb13-8" title="8">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-9" title="9">        b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb13-10" title="10"></a>
+<a class="sourceLine" id="cb13-11" title="11">        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-12" title="12">            <span class="co">// Resolves to (1)</span></a>
+<a class="sourceLine" id="cb13-13" title="13">            <span class="kw">this@B</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </a>
+<a class="sourceLine" id="cb13-14" title="14">            <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb13-15" title="15">            <span class="fu">this</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(<span class="dv">5</span>) </a>
+<a class="sourceLine" id="cb13-16" title="16">            <span class="co">// Resolves to (2)</span></a>
+<a class="sourceLine" id="cb13-17" title="17">            <span class="kw">this</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </a>
+<a class="sourceLine" id="cb13-18" title="18">        }</a>
+<a class="sourceLine" id="cb13-19" title="19">    }</a>
+<a class="sourceLine" id="cb13-20" title="20">}</a></code></pre></div>
+</blockquote>
+<div class="paragraph">
+<p><span class="sentence">The overload resolution for properties has the following features distinct from overload resolution for callables.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its <a href="declarations.html#getters-and-setters">backing field</a>);</span></li>
+<li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, an extension mutable property is considered to have an extension getter and setter, etc.;</span></li>
+<li><span class="sentence"><a href="declarations.html#object-declaration">Object declarations</a> and <a href="declarations.html#enum-class-declaration">enumeration entries</a> may be accessed using the property access syntax given that they may be resolved in the current scope.</span></li>
+</ul>
+
 <h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
@@ -1336,7 +1649,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">We build its type constraints and add them to the constraint system of the expression the callable reference is used in;</span></li>
 <li><span class="sentence">A callable reference is deemed applicable if the constraint system is sound;</span></li>
 </ul></li>
-<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.html#building-the-overload-candidate-set-ocs">as building OCS for regular calls</a>;</span></li>
+<li><span class="sentence">For all applicable candidates, the resolution sets are built according to the same rules <a href="overload-resolution.html#building-the-overload-candidate-set">as building OCS for regular calls</a>;</span></li>
 <li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
 <li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
 </ul>
@@ -1350,10 +1663,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb6-3" title="3">...</a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb14-3" title="3">...</a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
 </div>
@@ -1362,12 +1675,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case:</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
@@ -1378,9 +1691,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">In another case:</span></p>
 </div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb9-2" title="2"></a>
-<a class="sourceLine" id="cb9-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb17-2" title="2"></a>
+<a class="sourceLine" id="cb17-3" title="3">bar(::foo)</a></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
@@ -1419,6 +1732,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: if we had allowed interdependence between type inference and overload resolution, we would have been able to create an infinitely oscillating behaviour, leading to an infinite compilation.</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: an exception to this limitation is when a <a href="overload-resolution.html#using-lambda-return-type-to-refine-function-applicability">lambda return type is used to refine function applicability</a>. </span><span class="sentence">By limiting the scope of interdependence between type inference and overload resolution to a single step, we avoid creating an oscillating behaviour.</span></p>
 </div>
 </blockquote>
 <h3 id="conflicting-overloads">Conflicting overloads</h3>
