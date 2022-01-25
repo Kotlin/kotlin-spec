@@ -827,14 +827,39 @@ $$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(\RT, A_1, \ldots, A_n) \r
 
 i.e., receiver is considered as yet another argument of its function type.
 
-> Note: this means that, for example, these two types are equivalent w.r.t. type system
->
-> * `Int.(Int) -> String`
-> * `(Int, Int) -> String`
->
-> However, these two types are **not** equivalent w.r.t. [overload resolution][Overload resolution], as it distinguishes between functions with and without receiver.
+In addition to extension receiver, a function type (suspending or not) can additionally specify a number of **context receivers**.
 
-TODO(Specify other cases when these two types are **not** equivalent)
+A function type with context receivers
+
+$$\mathtt{context}(T_1, \ldots, T_m)\quad\FTR(\RT, A_1, \ldots, A_n) \rightarrow R$$
+
+or 
+
+$$\mathtt{context}(T_1, \ldots, T_m)\quad\FT(A_1, \ldots, A_n) \rightarrow R$$
+
+consists of a number of **context receiver types** $T_1, \ldots, T_m$ and the base function type $\FTR$ or $\FT$ which may or may not have an extension receiver.
+All context receivers can be considered as additional arguments to the corresponding function type, meaning that
+
+$$
+  \begin{aligned}
+    &\mathtt{context}(T_1, \ldots, T_m)\quad\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \\
+    &\quad{}\quad{}\quad{}\quad{}\equiv \FT(T_1, \ldots, T_m, \RT, A_1, \ldots, A_n, R) \\
+    &\mathtt{context}(T_1, \ldots, T_m)\quad\FT(A_1, \ldots, A_n) \rightarrow R \\
+    &\quad{}\quad{}\quad{}\quad{}\equiv \FT(T_1, \ldots, T_m, A_1, \ldots, A_n, R)
+  \end{aligned}
+$$
+
+> Note: this means that, for example, all these types are equivalent w.r.t. type system
+>
+> * `Int.(Double) -> String`
+> * `(Int, Double) -> String`
+> * `context(Int) (Double) -> String`
+> * `context(Int) Double.() -> String`
+> * `context(Int, Double) () -> String`
+>
+> However, these types are **not** equivalent w.r.t. [overload resolution][Overload resolution], as it distinguishes between functions with and without receiver.
+
+TODO(Specify other cases when these types are **not** equivalent)
 
 Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`-typesystem] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
 
@@ -861,6 +886,7 @@ Furthermore, all function types $\FunctionN$ are subtypes of a general argument-
 > // Function1<in Int, out Any> :> Function1<in Number, out Number>
 > val barRef: (Int) -> Any = Number::bar
 > ```
+
 
 ##### Suspending function types
 

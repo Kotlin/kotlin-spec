@@ -163,6 +163,7 @@ INLINE: 'inline';
 INFIX: 'infix';
 EXTERNAL: 'external';
 SUSPEND: 'suspend';
+CONTEXT: 'context';
 OVERRIDE: 'override';
 ABSTRACT: 'abstract';
 FINAL: 'final';
@@ -298,6 +299,7 @@ IdentifierOrSoftKey
     | EXPECT
     | ACTUAL
     | VALUE
+    | CONTEXT
     /* Strong keywords */
     | CONST
     | SUSPEND
@@ -504,6 +506,8 @@ Inside_CROSSINLINE: CROSSINLINE -> type(CROSSINLINE);
 Inside_REIFIED: REIFIED -> type(REIFIED);
 Inside_EXPECT: EXPECT -> type(EXPECT);
 Inside_ACTUAL: ACTUAL -> type(ACTUAL);
+
+Inside_CONTEXT: CONTEXT -> type(CONTEXT);
 
 Inside_BooleanLiteral: BooleanLiteral -> type(BooleanLiteral);
 Inside_IntegerLiteral: IntegerLiteral -> type(IntegerLiteral);

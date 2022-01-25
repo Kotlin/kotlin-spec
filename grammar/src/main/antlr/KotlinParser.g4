@@ -287,7 +287,7 @@ typeProjectionModifier
     ;
 
 functionType
-    : (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
+    : (contextModifier NL*)? (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
     ;
 
 functionTypeParameters
@@ -760,7 +760,8 @@ modifier
     | propertyModifier
     | inheritanceModifier
     | parameterModifier
-    | platformModifier) NL*
+    | platformModifier
+    | contextModifier) NL*
     ;
 
 typeModifiers
@@ -770,6 +771,7 @@ typeModifiers
 typeModifier
     : annotation
     | SUSPEND NL*
+    | contextModifier NL*
     ;
 
 classModifier
@@ -841,6 +843,9 @@ platformModifier
     : EXPECT
     | ACTUAL
     ;
+
+contextModifier
+    : CONTEXT NL* LPAREN NL* type NL* (COMMA NL* type)* RPAREN;
 
 // SECTION: annotations
 
@@ -916,6 +921,7 @@ simpleIdentifier
     | CONST
     | SUSPEND
     | VALUE
+    | CONTEXT
     ;
 
 identifier
