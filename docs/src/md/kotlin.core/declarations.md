@@ -692,7 +692,7 @@ Interfaces differ from classes in that they cannot be directly instantiated in t
 In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
 * An interface can be declared only in a declaration scope;
-  * Additionally, an interface cannot be declared in an [object literal];
+  * Additionally, an interface cannot be declared in an [object literal][Object literals];
 * An interface cannot have a class as its supertype;
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
@@ -779,7 +779,7 @@ No other values of this type may be declared, making object a single existing va
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
 * An object can only be declared in a declaration scope;
-  * Additionally, an object cannot be declared in an [object literal];
+  * Additionally, an object cannot be declared in an [object literal][Object literals];
 * An object type cannot be used as a supertype for other types;
 * An object cannot have an explicit primary or secondary constructor;
 * An object cannot have a companion object;
