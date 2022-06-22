@@ -58,7 +58,7 @@ dependencies {
     implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
     implementation("com.github.ajalt:clikt:1.7.0")
     implementation("com.zaxxer:nuprocess:2.0.1")
-    implementation("org.antlr:antlr4:4.+")
+    implementation("org.antlr:antlr4:4.8")
 }
 
 tasks.withType<KotlinCompile> {

@@ -48,7 +48,7 @@ sourceSets {
 
 dependencies {
     compile("junit:junit:4.12")
-    antlr("org.antlr:antlr4:4.+")
+    antlr("org.antlr:antlr4:4.8")
 }
 
 tasks.compileKotlin {
