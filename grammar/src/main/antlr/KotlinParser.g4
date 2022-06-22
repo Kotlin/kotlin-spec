@@ -354,12 +354,10 @@ assignment
 
 semi
     : (SEMICOLON | NL) NL*
-    | EOF
     ;
 
 semis
     : (SEMICOLON | NL)+
-    | EOF
     ;
 
 // SECTION: expressions
