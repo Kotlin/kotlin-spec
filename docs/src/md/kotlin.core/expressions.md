@@ -156,6 +156,15 @@ For further details, please refer to the corresponding section.
 The keyword `null` denotes the **null reference**, which represents an absence of a value and is a valid value only for [nullable types][Nullable types].
 Null reference has type [`kotlin.Nothing?`][`kotlin.Nothing`] and is, by definition, the only value of this type.
 
+### Constant expressions
+
+We use the term "constant expression" to refer to any expression constructed of the following:
+
+* [constant literals][Constant literals]
+* [access expressions][Call and property access expressions] to [enum entries][Enum class declaration]
+* [string interpolation][String interpolation expressions] over constant expressions
+* an implementation-defined set of functions that can always be evaluated at compile-time
+
 ### String interpolation expressions
 
 :::{.paste target=grammar-rule-stringLiteral}
@@ -434,11 +443,10 @@ A when expression is called **_exhaustive_** if at least one of the following is
 - It has an `else` entry;
 - It has a bound value and at least one of the following is true:
     - The bound expression is of type `kotlin.Boolean` and the conditions contain both:
-        - A constant expression evaluating to `true`;
+        - A [constant expression][Constant expressions] evaluating to `true`;
         
         - A constant expression evaluating to `false`;
-        
-          > Important: here the term "constant expression" refers to any expression constructed of [constant literals][Constant literals], [string interpolation][String interpolation expressions] over constant expressions and an implementation-defined set of functions that may always be evaluated at compile-time
+
     - The bound expression is of a [`sealed`][Sealed classes and interfaces] class or interface `S` and all of its [*direct non-sealed subtypes*][Sealed classes and interfaces] $T_1, \ldots, T_n$ are covered in this expression.
       A subtype $T_i$ is considered covered if when expression contains one of the following:
       * a type test condition $\is S_j$, where $S_j <: S, T_i <: S_j$;
@@ -535,7 +543,7 @@ A value created by any constructor call is never equal by reference to a null re
 There is an exception to these rules: values of [value classes][Value class declaration] are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler.
 It is thus highly discouraged to compare inline classes by reference.
 
-For special values created without explicit constructor calls, notably, constant literals and constant expressions composed of those literals, and for values of inline classes, the following holds:
+For special values created without explicit constructor calls, notably, [constant literals][Constant literals] and [constant expressions][Constant expressions] composed of those literals, and for values of inline classes, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
