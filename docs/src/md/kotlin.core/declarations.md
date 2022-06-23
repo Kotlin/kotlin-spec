@@ -820,9 +820,9 @@ A primary $pctor$ or secondary constructor $ctor$ has a corresponding superclass
 
 When a classifier type is initialized using a particular secondary constructor $ctor$ delegated to primary constructor $pctor$ which, in turn, is delegated to the corresponding superclass constructor $sctor$, the following happens, in this *initialization order*:
 
-- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters *in the order of appearance in the constructor declaration*;
 - The superclass object is initialized as if created by invoking $sctor$ with the specified parameters;
 - Interface delegation expressions are invoked and the result of each is stored in the object to allow for interface delegation, *in the order of appearance of delegation declarations in the supertype specifier list*;
+- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters *in the order of appearance in the constructor declaration*;
 - Each property initialization code as well as the initialization blocks in the class body are invoked *in the order of appearance in the class body*;
 - $ctor$ body is invoked using the specified parameters.
 
@@ -846,7 +846,12 @@ It stays unspecified even after the "proper" initialization is performed.
 >     }
 > }
 > 
-> class Init(val a: Number /* (1) */) : Base(0xC0FFEE) /* (2) */ {
+> interface I
+>
+> class Init(val a: Number) : Base(0xC0FFEE) /* (2) */,
+>     I by object : I {
+>         init { println("2.5") }
+>     } /* (2.5) */ {
 > 
 >     init {
 >         println("3: $this") /* (3) */
