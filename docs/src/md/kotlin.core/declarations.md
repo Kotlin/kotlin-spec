@@ -1760,6 +1760,62 @@ Reified type parameters can only be substituted by other [runtime-available type
 > }
 > ```
 
+#### Underscore type arguments
+
+In case one needs to explicitly specify some type parameters via [type arguments][Parameterized classifier types], but wants to use [type inference] for the rest, they can use an *underscore type argument*.
+
+An underscore type argument does not add any type information to the [constraint system][Kotlin type constraints] *besides the presence of a type parameter*, i.e., parameterized declaration with different number of type parameters could be distinguished by different number of underscore type arguments.
+
+If the type inference is successfull, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
+If the type inference is not successfull, it is a compile-time error.
+
+> Example:
+> ```kotlin
+> fun <T> mk(): T = TODO()
+> 
+> interface MyRunnable<T> {
+>     fun execute(): T
+> }
+> 
+> class StringRunnable : MyRunnable<String> {
+>     override fun execute(): String = "test"
+> }
+> 
+> class IntRunnable : MyRunnable<Int> {
+>     override fun execute(): Int = 42
+> }
+> 
+> inline fun <reified S : MyRunnable<T>, T> run(): T = mk<S>().execute()
+> 
+> fun main() {
+>     val s = run<StringRunnable, _ /* inferred to String */>()
+>     assert(s == "test")
+> 
+>     val i = run<IntRunnable, _ /* inferred to Int */>()
+>     assert(i == 42)
+> }
+> ```
+
+> Example:
+> ```kotlin
+> fun <T> foo(t: T): T = TODO() // (1)
+> fun <T, R : List<T>> foo(t: T, d: Double = 42.0): T = TODO() // (2)
+> 
+> fun bar() {
+>     val a: Boolean = foo(true)
+>     // resolves to (1)
+>     // per overload resolution rules
+> 
+>     val b: Int = foo<_ /* U1 */>(42)
+>     // resolves to (1)
+>     // with U1 inferred to Int
+> 
+>     val c: Double = foo<_ /* U1 */, _ /* U2 */>(42.0)
+>     // resolves to (2)
+>     // with U1 inferred to Double and U2 inferred to List<Double>
+> }
+> ```
+
 ### Declaration visibility
 
 Each declaration has a visibility property relative to the scope it is declared in.
