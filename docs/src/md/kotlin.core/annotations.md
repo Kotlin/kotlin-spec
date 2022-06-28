@@ -144,8 +144,6 @@ It is implementation-defined how this annotation is processed.
 
 > Note: before Kotlin 1.4.0, there were two other built-in annotations: `@Experimental` (now replaced by `@RequiresOptIn`) and `@UseExperimental` (now replaced by `@OptIn`) serving the same purpose which are now deprecated.
 
-TODO(Experimental status is still experimental itself)
-
 #### `kotlin.Deprecated` / `kotlin.ReplaceWith`
 
 `kotlin.Deprecated` is an annotation class with the following fields:
