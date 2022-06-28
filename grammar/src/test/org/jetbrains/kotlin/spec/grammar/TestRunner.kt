@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.spec.grammar.util.PsiTestData
 import org.jetbrains.kotlin.spec.grammar.util.TestDataFileHeader
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil.assertEqualsToFile
+import org.jetbrains.kotlin.spec.grammar.util.TestUtil.testPathPrefix
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeFalse
 import java.util.regex.Pattern
@@ -34,7 +35,7 @@ class TestRunner {
          * It can be used to run specific tests instead of running all ones
          * For instance, `Regex("""secondEmptyCatch\.kt$""")`
          */
-//        private val testPathFilter: Regex? = Regex("annotatedTypeInCatchBlockSignature.kt")
+        // private val testPathFilter: Regex? = Regex("complicateLTGT.kt")
         private val testPathFilter: Regex? = null
 
         private val antlrTreeFileHeaderPattern =
@@ -44,9 +45,10 @@ class TestRunner {
         @JvmStatic
         fun getTestFiles() = emptyList<Array<Any>>()
 
+        @Suppress("UNUSED")
         @com.intellij.testFramework.Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun getTestFiles(klass: Class<*>) = File("./testData").let { testsDir ->
+        fun getTestFiles(@Suppress("UNUSED_PARAMETER") klass: Class<*>) = File("./testData").let { testsDir ->
             testsDir.walkTopDown().filter { it.extension == "kt" && (testPathFilter == null || it.path.contains(testPathFilter)) }.map {
                 arrayOf(it.relativeTo(testsDir).path.replace("/", "$"))
             }.toList()
@@ -104,6 +106,10 @@ class TestRunner {
         println("HAS ANTLR PARSER ERRORS: ${if (parserHasErrors) "YES" else "NO"}")
         parserErrors.forEach { println("    - $it") }
 
+        fun mkFailedMarkerFile() {
+            File("${testFile.testPathPrefix}.failed").createNewFile()
+        }
+
         when (testData) {
             is PsiTestData -> {
                 val psi = PsiTextParser.parse(testData.psiParseTreeText)
@@ -113,11 +119,19 @@ class TestRunner {
 
                 println("HAS PSI ERROR ELEMENTS: ${if (psiHasErrorElements) "YES" else "NO"}")
                 psiErrorElements.forEach { println("    - Line ${it.second.first}:${it.second.second} ${it.first}") }
-                assertTrue((verdictsEquals && !isErrorExpected) || (isErrorExpected && !psiHasErrorElements) || (psiHasErrorElements && isMutedPsiError))
+
+                val isOK = (verdictsEquals && !isErrorExpected) || (isErrorExpected && !psiHasErrorElements) || (psiHasErrorElements && isMutedPsiError)
+                if (!isOK) mkFailedMarkerFile()
+
+                assertTrue(isOK)
             }
             is DiagnosticTestData -> {
                 val hasAnyErrors = lexerHasErrors || parserHasErrors
-                assertTrue((!hasAnyErrors && !isErrorExpected) || isErrorExpected && hasAnyErrors)
+
+                val isOK = (!hasAnyErrors && !isErrorExpected) || isErrorExpected && hasAnyErrors
+                if (!isOK) mkFailedMarkerFile()
+
+                assertTrue(isOK)
             }
         }
     }
