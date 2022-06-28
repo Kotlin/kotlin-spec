@@ -247,7 +247,7 @@ enumEntry
 // SECTION: types
 
 type
-    : typeModifiers? (parenthesizedType | nullableType | typeReference | functionType)
+    : typeModifiers? (parenthesizedType | nullableType | typeReference | functionType | definitelyNonNullableType)
     ;
 
 typeReference
@@ -304,6 +304,10 @@ receiverType
 
 parenthesizedUserType
     : LPAREN NL* (userType | parenthesizedUserType) NL* RPAREN
+    ;
+
+definitelyNonNullableType
+    : typeModifiers? (userType | parenthesizedUserType) NL* AMP NL* typeModifiers? (userType | parenthesizedUserType)
     ;
 
 // SECTION: statements
