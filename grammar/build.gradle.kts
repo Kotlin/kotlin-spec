@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "1.6.0"
     antlr
     `maven-publish`
     kotlin("jvm")
@@ -47,7 +47,7 @@ sourceSets {
 }
 
 dependencies {
-    compile("junit:junit:4.12")
+    implementation("junit:junit:4.12")
     antlr("org.antlr:antlr4:4.8")
 }
 
@@ -56,7 +56,7 @@ tasks.compileKotlin {
 }
 
 intellij {
-    version = "IC-2020.2"
+    version.set("IC-2022.1")
 }
 
 tasks.withType<AntlrTask> {
@@ -154,14 +154,14 @@ tasks.create("prepareDiagnosticsCompilerTests") {
     }
 }
 
-jar.archiveName = "$archivePrefix-$version.jar"
+jar.archiveFileName.set("$archivePrefix-$version.jar")
 
 jar.manifest {
     attributes(
         mapOf(
-            "Class-Path" to configurations.runtime.files.joinToString(" ") { it.name }
+            "Class-Path" to configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
         )
     )
 }
 
-jar.from(configurations.runtime.files.map { if (it.isDirectory) it else zipTree(it) })
+jar.from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })

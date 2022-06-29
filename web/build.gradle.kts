@@ -39,9 +39,8 @@ kotlin {
             webpackTask {
                 dependsOn("copyKatex")
 
-
                 output.apply {
-                    libraryTarget = KotlinWebpackOutput.Target.AMD_REQUIRE
+                    libraryTarget = KotlinWebpackOutput.Target.AMD
                     library = "main"
                 }
 

@@ -1,6 +1,4 @@
-import at.phatbl.shellexec.ShellExec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.nio.file.Paths
 import java.net.URI
 
 plugins {
@@ -62,7 +60,7 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 tasks.create<Jar>("filtersJar") {
@@ -102,15 +100,15 @@ tasks.create("prepareShell") {
 
     doFirst {
         val res = with(StringBuilder()) {
-            appendln("PROJECT_DIR=$projectDir")
-            if (disableTODOS) appendln("TODO_OPTION=--disable-todos")
-            else appendln("TODO_OPTION=--enable-todos")
+            appendLine("PROJECT_DIR=$projectDir")
+            if (disableTODOS) appendLine("TODO_OPTION=--disable-todos")
+            else appendLine("TODO_OPTION=--enable-todos")
 
             if (enableStaticMath) {
-                appendln("STATIC_MATH_OPTION=--enable-static-math")
-                appendln("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
+                appendLine("STATIC_MATH_OPTION=--enable-static-math")
+                appendLine("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
             }
-            else appendln("STATIC_MATH_OPTION=--disable-static-math")
+            else appendLine("STATIC_MATH_OPTION=--disable-static-math")
         }
 
         File("$buildDir/prepare.sh").writeText("$res")
