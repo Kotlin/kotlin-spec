@@ -1,9 +1,6 @@
 package org.jetbrains.kotlin.spec.grammar
 
 import com.intellij.testFramework.TestDataPath
-import org.junit.Test
-import org.junit.runner.RunWith
-import java.io.File
 import org.jetbrains.kotlin.spec.grammar.parsetree.ParseTreeUtil
 import org.jetbrains.kotlin.spec.grammar.psi.PsiTextParser
 import org.jetbrains.kotlin.spec.grammar.util.DiagnosticTestData
@@ -14,6 +11,9 @@ import org.jetbrains.kotlin.spec.grammar.util.TestUtil.assertEqualsToFile
 import org.jetbrains.kotlin.spec.grammar.util.TestUtil.testPathPrefix
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeFalse
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.File
 import java.util.regex.Pattern
 
 @TestDataPath("\$PROJECT_ROOT/grammar/testData/")
@@ -35,11 +35,10 @@ class TestRunner {
          * It can be used to run specific tests instead of running all ones
          * For instance, `Regex("""secondEmptyCatch\.kt$""")`
          */
-        // private val testPathFilter: Regex? = Regex("complicateLTGT.kt")
-        private val testPathFilter: Regex? = null
+        private val testPathFilter: Regex? = System.getProperty("TEST_PATH_FILTER")?.let(::Regex)
 
         private val antlrTreeFileHeaderPattern =
-                Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
+            Pattern.compile("""^File: .*?.kts? - (?<hash>[0-9a-f]{32})(?<markers> \((?<marker>$ERROR_EXPECTED_MARKER|$MUTE_MARKER|$MUTE_PSI_ERRORS_MARKER)\))?$""")
 
         @org.junit.runners.Parameterized.Parameters(name = "{0}")
         @JvmStatic
@@ -49,9 +48,10 @@ class TestRunner {
         @com.intellij.testFramework.Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun getTestFiles(@Suppress("UNUSED_PARAMETER") klass: Class<*>) = File("./testData").let { testsDir ->
-            testsDir.walkTopDown().filter { it.extension == "kt" && (testPathFilter == null || it.path.contains(testPathFilter)) }.map {
-                arrayOf(it.relativeTo(testsDir).path.replace("/", "$"))
-            }.toList()
+            testsDir.walkTopDown()
+                .filter { it.extension == "kt" && (testPathFilter == null || it.path.contains(testPathFilter)) }
+                .map { arrayOf(it.relativeTo(testsDir).path.replace("/", "$")) }
+                .toList()
         }
     }
 
@@ -59,17 +59,18 @@ class TestRunner {
     fun doTest() {
         val testFile = File(testFilePath.replace("$", "/"))
         val testData = TestUtil.getTestData(testFile)
-        val header = if (testData.antlrParseTreeText.exists())
-                antlrTreeFileHeaderPattern.matcher(testData.antlrParseTreeText.readText().lines().first()).run {
-                    if (!find())
-                        return@run null
+        val header = if (testData.antlrParseTreeText.exists()) {
+            antlrTreeFileHeaderPattern.matcher(
+                testData.antlrParseTreeText.readText().lines().first()
+            ).run {
+                if (!find()) return@run null
 
-                    val marker = group("marker")
-                    val hash = group("hash")
+                val marker = group("marker")
+                val hash = group("hash")
 
-                    TestDataFileHeader(marker, hash)
-                }
-            else null
+                TestDataFileHeader(marker, hash)
+            }
+        } else null
 
         if (header != null) {
             if (!FAIL_ON_DIFFERENT_HASHES_FOR_SOURCE_CODE) {
@@ -87,15 +88,15 @@ class TestRunner {
         val mutedPsiErrorText = (if (isMutedPsiError) " ($MUTE_PSI_ERRORS_MARKER)" else "")
 
         val dumpParseTree = parseTree.stringifyTree(
-                "File: ${testFile.name} - ${testData.sourceCodeHash}" + errorExpectedText + mutedPsiErrorText
+            "File: ${testFile.name} - ${testData.sourceCodeHash}" + errorExpectedText + mutedPsiErrorText
         )
 
         assertEqualsToFile(
-                "Expected and actual ANTLR parsetree are not equals",
-                testData.antlrParseTreeText,
-                dumpParseTree,
-                FORCE_APPLY_CHANGES || (header != null && header.hash != testData.sourceCodeHash),
-                DUMP_ERRONEOUS_DATA
+            "Expected and actual ANTLR parsetree are not equals",
+            testData.antlrParseTreeText,
+            dumpParseTree,
+            FORCE_APPLY_CHANGES || (header != null && header.hash != testData.sourceCodeHash),
+            DUMP_ERRONEOUS_DATA
         )
 
         val lexerHasErrors = lexerErrors.isNotEmpty()
@@ -120,7 +121,9 @@ class TestRunner {
                 println("HAS PSI ERROR ELEMENTS: ${if (psiHasErrorElements) "YES" else "NO"}")
                 psiErrorElements.forEach { println("    - Line ${it.second.first}:${it.second.second} ${it.first}") }
 
-                val isOK = (verdictsEquals && !isErrorExpected) || (isErrorExpected && !psiHasErrorElements) || (psiHasErrorElements && isMutedPsiError)
+                val isOK = (verdictsEquals && !isErrorExpected) ||
+                        (isErrorExpected && !psiHasErrorElements) ||
+                        (psiHasErrorElements && isMutedPsiError)
                 if (!isOK) mkFailedMarkerFile()
 
                 assertTrue(isOK)
@@ -128,7 +131,8 @@ class TestRunner {
             is DiagnosticTestData -> {
                 val hasAnyErrors = lexerHasErrors || parserHasErrors
 
-                val isOK = (!hasAnyErrors && !isErrorExpected) || isErrorExpected && hasAnyErrors
+                val isOK = (!hasAnyErrors && !isErrorExpected) ||
+                        (isErrorExpected && hasAnyErrors)
                 if (!isOK) mkFailedMarkerFile()
 
                 assertTrue(isOK)

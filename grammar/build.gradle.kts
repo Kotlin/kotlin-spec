@@ -70,6 +70,8 @@ tasks.withType<AntlrTask> {
 tasks.withType<Test> {
     workingDir = File("${project.rootDir}/${project.name}")
     ignoreFailures = project.hasProperty("teamcity")
+
+    systemProperties["TEST_PATH_FILTER"] = System.getProperty("TEST_PATH_FILTER")
 }
 
 tasks.create("removeCompilerTestData") {
