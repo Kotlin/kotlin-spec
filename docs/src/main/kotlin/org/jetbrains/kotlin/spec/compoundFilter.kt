@@ -26,14 +26,14 @@ private object CompoundFilter : CliktCommand() {
     val format: Format by argument("Pandoc output format").convert { Format(it) }
     val split: Boolean by option().flag("--no-split")
     val disableTODOS: Boolean by option().flag("--enable-todos")
-    val imageDirectory: File? by option().file(fileOkay = false)
+    val imageDirectory: File? by option().file(canBeFile = false)
     val embed: Boolean by option().flag()
     val defaultFormat: String? by option()
 
     val disableStaticMath by option().flag("--enable-static-math")
     val katex by option()
 
-    val outputDirectory: File by option().file(fileOkay = false).defaultLazy { File(".") }
+    val outputDirectory: File by option().file(canBeFile = false).defaultLazy { File(".") }
     val generateTOC: Boolean by option().flag("--no-toc")
 
     override fun run() {

@@ -47,7 +47,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation("junit:junit:4.12")
+    implementation("junit:junit:4.13.2")
     antlr("org.antlr:antlr4:4.8")
 }
 
@@ -154,14 +154,24 @@ tasks.create("prepareDiagnosticsCompilerTests") {
     }
 }
 
-jar.archiveFileName.set("$archivePrefix-$version.jar")
+val instrumentTestCodeTask = tasks.named("instrumentTestCode")
 
-jar.manifest {
-    attributes(
-        mapOf(
-            "Class-Path" to configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
-        )
-    )
+tasks.named("inspectClassesForKotlinIC") {
+    dependsOn(instrumentTestCodeTask)
 }
 
-jar.from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })
+tasks.withType<Jar> {
+    dependsOn(instrumentTestCodeTask)
+
+    archiveFileName.set("$archivePrefix-$archiveVersion.jar")
+
+    manifest {
+        attributes(
+            mapOf(
+                "Class-Path" to configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
+            )
+        )
+    }
+
+    from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })
+}

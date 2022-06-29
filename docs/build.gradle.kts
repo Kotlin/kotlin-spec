@@ -54,8 +54,8 @@ dependencies {
     implementation("ru.spbstu:g4-to-ebnf:0.0.0.4")
     implementation("ru.spbstu:kotlin-pandoc:0.0.15")
     implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
-    implementation("com.github.ajalt:clikt:1.7.0")
-    implementation("com.zaxxer:nuprocess:2.0.1")
+    implementation("com.github.ajalt:clikt:2.8.0")
+    implementation("com.zaxxer:nuprocess:2.0.3")
     implementation("org.antlr:antlr4:4.8")
 }
 
@@ -84,7 +84,7 @@ tasks.create<JavaExec>("convertGrammar") {
     outputs.file(outputFile)
 
     classpath = sourceSets["main"].runtimeClasspath
-    main = "org.jetbrains.kotlin.spec.ConvertGrammarKt"
+    mainClass.set("org.jetbrains.kotlin.spec.ConvertGrammarKt")
     args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
 
@@ -141,7 +141,7 @@ tasks.create<JavaExec>("execute") {
 
     classpath = sourceSets["main"].runtimeClasspath
 
-    main = project.findProperty("mainClass") as? String ?: ""
+    mainClass.set(project.findProperty("mainClass") as? String ?: "")
     args = (project.findProperty("args") as? String)?.split(" ") ?: emptyList()
     val wd = project.findProperty("workDir") as? String
     workingDir = wd?.let { File(it) } ?: File(".")
