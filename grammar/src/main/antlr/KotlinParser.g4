@@ -91,6 +91,7 @@ delegationSpecifier
     | explicitDelegation
     | userType
     | functionType
+    | SUSPEND NL* functionType
     ;
 
 constructorInvocation
