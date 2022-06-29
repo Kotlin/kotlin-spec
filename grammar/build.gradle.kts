@@ -67,7 +67,18 @@ tasks.withType<AntlrTask> {
     arguments.add("org.jetbrains.kotlin.spec.grammar")
 }
 
+tasks.create("removeFailedMarkerFiles") {
+    doFirst {
+        File("${project.rootDir}/${project.name}/testData")
+            .walkTopDown()
+            .filter { it.isFile && it.extension == "failed" }
+            .forEach { it.delete() }
+    }
+}
+
 tasks.withType<Test> {
+    dependsOn("removeFailedMarkerFiles")
+
     workingDir = File("${project.rootDir}/${project.name}")
     ignoreFailures = project.hasProperty("teamcity")
 
