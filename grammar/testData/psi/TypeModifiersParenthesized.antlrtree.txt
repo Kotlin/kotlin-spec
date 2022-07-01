@@ -596,33 +596,38 @@ File: TypeModifiersParenthesized.kt - f6c29a8e4a803dc0ddce3edd6619e8cb
             Identifier("lambdaParameter")
           COLON(":")
           type
-            parenthesizedType
-              LPAREN("(")
+            functionType
+              functionTypeParameters
+                LPAREN("(")
+                type
+                  parenthesizedType
+                    LPAREN("(")
+                    type
+                      typeModifiers
+                        typeModifier
+                          annotation
+                            singleAnnotation
+                              AT_NO_WS("@")
+                              unescapedAnnotation
+                                userType
+                                  simpleUserType
+                                    simpleIdentifier
+                                      Identifier("A")
+                      typeReference
+                        userType
+                          simpleUserType
+                            simpleIdentifier
+                              Identifier("C")
+                    RPAREN(")")
+                RPAREN(")")
+              ARROW("->")
               type
-                parenthesizedType
-                  LPAREN("(")
-                  type
-                    typeModifiers
-                      typeModifier
-                        annotation
-                          singleAnnotation
-                            AT_NO_WS("@")
-                            unescapedAnnotation
-                              userType
-                                simpleUserType
-                                  simpleIdentifier
-                                    Identifier("A")
-                    typeReference
-                      userType
-                        simpleUserType
-                          simpleIdentifier
-                            Identifier("C")
-                  RPAREN(")")
-              RPAREN(")")
-        ARROW("->")
-        Identifier("C")
-    semis
-      NL("\n")
+                typeReference
+                  userType
+                    simpleUserType
+                      simpleIdentifier
+                        Identifier("C")
+        NL("\n")
   topLevelObject
     declaration
       propertyDeclaration

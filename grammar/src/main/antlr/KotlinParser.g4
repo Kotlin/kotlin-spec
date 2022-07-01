@@ -248,7 +248,7 @@ enumEntry
 // SECTION: types
 
 type
-    : typeModifiers? (parenthesizedType | nullableType | typeReference | functionType | definitelyNonNullableType)
+    : typeModifiers? (functionType | parenthesizedType | nullableType | typeReference | definitelyNonNullableType)
     ;
 
 typeReference
