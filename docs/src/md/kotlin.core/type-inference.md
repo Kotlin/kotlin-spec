@@ -549,20 +549,60 @@ If $T$ is an intersection type, the same process is performed for every member o
 
 If $T$ is a nullable type $U?$, the steps given above are performed for its non-nullable counterpart type $U$.
 
-## Builder-style type inference
+### Builder-style type inference
 
-Some functions or parameters of functions in the standard library are annotated with the special [`@BuilderInference`][Built-in annotations] annotation, making calls to these functions eligible for the special kind of type inference: **builder-style type inference**.
-In order to allow builder-style inference for a function parameter, this parameter must hold the following properties:
+> Note: before Kotlin 1.7, builder-style type inference required using the [`@BuilderInference`][Built-in annotations] annotation on lambda parameters.
 
-- It must be of an extension-function type;
-- It must be marked with the `@BuilderInference` annotation.
+When working with DSLs that have generic builder functions, one may want to infer the generic builder type parameters using the information from the builder's lambda body.
+Kotlin supports special kind of type inference called **builder-style type inference** to allow this in some cases.
 
-In essence, the builder-style inference allows a receiver of an extension lambda parameter to be inferred from its usage in addition to standard type information sources.
-For a call to an eligible function with a lambda parameter $L$ the inference is performed [as described above][Statements with lambda literals], but the type parameters of the receiver parameter of the lambda expression are *postponed* till the body of the lambda expression is proceeded.
-After the inference of statements inside the lambda body, these parameters are inferred using an additional type inference step:
+In order to allow builder-style inference for a generic builder function and its type parameter `P`, it should satisfy the following requirements:
 
-- For each call to a member function of the receiver or an extension function of the receiver marked with the `@BuilderInference` annotation, the type constraints are collected and gathered into a single constraint system;
-- This system is solved in order to infer the actual type arguments of the receiver.
+- It has a lambda parameter of [function type with receiver][Function types], with receiver type `T`
+- The receiver type `T` uses type parameter `P` in its type arguments
+- The receiver type `T` can be used as receiver for callables which can provide information about `P` via their use
+
+> Note: using the type parameter `P` *directly* as the receiver type `T` (e.g., `fun <Q /* P */> myBuilder(builder: Q /* T */.() -> Unit)`) is not yet supported.
+
+In essence, the builder-style inference allows the type of the lambda parameter receiver to be inferred from its usage in the lambda body.
+This is performed only if the standard type inference cannot infer the required types, meaning one could provide additional type information to help with the inference, e.g., via explicit type arguments, and avoid the need for builder-style inference.
+
+If the builder-style inference is needed, for a call to an eligible function with a lambda parameter, the inference is performed [as described above][Statements with lambda literals], but the type arguments of the lambda parameter receiver are viewed as *postponed* type variables till the body of the lambda expression is proceeded.
+
+> Note: during the builder-style inference process, a postponed type variable is not required to be inferred to a concrete type.
+
+After the inference of statements inside the lambda is complete, these postponed type variables are inferred using an additional type inference step, which takes the resulting type constraint system and tries to find the instantiation of the postponed type variables to concrete types.
+
+If the system cannot be solved, it is a compile-time error.
 
 > Note: notable examples of builder-style inference-enabled functions are `kotlin.sequence` and `kotlin.iterator`.
 > See standard library documentation for details.
+
+> Example:
+> ```kotlin
+> fun <K, V> buildMap(action: MutableMap<K, V>.() -> Unit): Map<K, V> { ... }
+> 
+> interface Map<K, out V> : Map<K, V> { ... }
+> interface MutableMap<K, V> : Map<K, V> {
+>     fun put(key: K, value: V): V?
+>     fun putAll(from: Map<out K, V>): Unit
+> }
+> 
+> fun addEntryToMap(baseMap: Map<String, Number>,
+>                   additionalEntry: Pair<String, Int>?) {
+>    val myMap = buildMap/* <?, ?> */ { // cannot infer type arguments
+>                                       // needs builder-style inference
+>        putAll(baseMap)
+>        // provides information about String <: K, Number <: V
+> 
+>        if (additionalEntry != null) {
+>            put(additionalEntry.first, additionalEntry.second)
+>            // provides information about String <: K, Int <: V
+>        }
+>    }
+>    // solves to String =:= K, Number =:= V
+>    // ...
+> }
+> ```
+
+TODO(More detailed description of builder-style inference)
