@@ -7,14 +7,16 @@
   <meta name="author" content="Marat Akhin" />
   <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
   </style>
-  <link rel="stylesheet" href="./resources/css/main.css">
-  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <link rel="stylesheet" href="./resources/css/main.css" />
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -25,13 +27,13 @@
       };
   </script>
   <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-  
+
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
-  
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -62,41 +64,12 @@
     </div>
     <div class="toc-body empty"></div>
 </div>
-<header>
+<header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
 <p class="subtitle">Version 1.6-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -164,6 +137,7 @@
 <li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
 <ul>
 <li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+<li><a href="type-system.html#definitely-non-nullable-types" id="toc-element-definitely-non-nullable-types" class="toc-element">Definitely non-nullable types</a></li>
 </ul></li>
 <li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
 <li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
@@ -281,6 +255,7 @@
 <ul>
 <li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
 <li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+<li><a href="declarations.html#underscore-type-arguments" id="toc-element-underscore-type-arguments" class="toc-element">Underscore type arguments</a></li>
 </ul></li>
 <li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
 </ul></li>
@@ -341,6 +316,7 @@
 <li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
 <li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
 </ul></li>
+<li><a href="expressions.html#constant-expressions" id="toc-element-constant-expressions" class="toc-element">Constant expressions</a></li>
 <li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
 <li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
 <li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
@@ -529,8 +505,8 @@
 <li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
 </ul></li>
 <li><a href="type-inference.html#bare-type-argument-inference" id="toc-element-bare-type-argument-inference" class="toc-element">Bare type argument inference</a></li>
+<li><a href="type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 </ul></li>
-<li><a href="builder-style-type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 <li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
 <ul>
 <li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
@@ -582,5 +558,6 @@
 </ul>
 </div>
 <h1 id="kotlincore">Kotlin/Core</h1>
+
 </body>
 </html>
