@@ -7,77 +7,79 @@
   <meta name="author" content="Marat Akhin" />
   <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
-  <link rel="stylesheet" href="./resources/css/main.css">
-  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <link rel="stylesheet" href="./resources/css/main.css" />
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -88,13 +90,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       };
   </script>
   <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-  
+
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
-  
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -125,41 +127,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
     <div class="toc-body empty"></div>
 </div>
-<header>
+<header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.6-rfc+0.1</p>
+<p class="subtitle">Version 1.7-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -227,6 +200,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
 <ul>
 <li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+<li><a href="type-system.html#definitely-non-nullable-types" id="toc-element-definitely-non-nullable-types" class="toc-element">Definitely non-nullable types</a></li>
 </ul></li>
 <li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
 <li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
@@ -344,6 +318,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
 <li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+<li><a href="declarations.html#underscore-type-arguments" id="toc-element-underscore-type-arguments" class="toc-element">Underscore type arguments</a></li>
 </ul></li>
 <li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
 </ul></li>
@@ -404,6 +379,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
 <li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
 </ul></li>
+<li><a href="expressions.html#constant-expressions" id="toc-element-constant-expressions" class="toc-element">Constant expressions</a></li>
 <li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
 <li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
 <li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
@@ -592,8 +568,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
 </ul></li>
 <li><a href="type-inference.html#bare-type-argument-inference" id="toc-element-bare-type-argument-inference" class="toc-element">Bare type argument inference</a></li>
+<li><a href="type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 </ul></li>
-<li><a href="builder-style-type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 <li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
 <ul>
 <li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
@@ -644,7 +620,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 </div>
-<span style="visibility: hidden; counter-reset: chapter 17;"></span>
+<span style="visibility: hidden; counter-reset: chapter 16;"></span>
 <h2 id="annotations">Annotations</h2>
 <div class="paragraph">
 <p><span class="sentence">Annotations are a form of syntactically-defined metadata which may be associated with different entities in a Kotlin program. </span><span class="sentence">Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and at runtime (using <a href="runtime-type-information.html#reflection">reflection</a> facilities). </span><span class="sentence">Values of annotation types cannot be created directly, but can be operated on when accessed using platform-specific facilities.</span></p>
@@ -668,8 +644,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">The retention level of an annotation declares which compilation artifacts (for a particular compiler on a particular platform) <em>retain</em> this kind of annotation. </span><span class="sentence">There are the following types of retention available:</span></p>
 </div>
 <ul>
-<li><span class="sentence">Source retention (accessible by source-processing tools);</span></li>
-<li><span class="sentence">Binary retention (retained in compilation artifacts);</span></li>
+<li><div class="paragraph">
+<p><span class="sentence">Source retention (accessible by source-processing tools);</span></p>
+</div></li>
+<li><div class="paragraph">
+<p><span class="sentence">Binary retention (retained in compilation artifacts);</span></p>
+</div></li>
 <li><div class="paragraph">
 <p><span class="sentence">Runtime retention (accessible at runtime).</span></p>
 </div>
@@ -716,7 +696,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Retention</code> is an annotation which is only used on annotation classes to specify their annotation retention level. </span><span class="sentence">It has the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">val</span> <span class="va">value</span><span class="op">:</span> <span class="dt">AnnotationRetention</span> <span class="op">=</span> AnnotationRetention.RUNTIME</a></code></pre></div>
+<li><div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">value</span><span class="op">:</span> <span class="dt">AnnotationRetention</span> <span class="op">=</span> AnnotationRetention.RUNTIME</span></code></pre></div>
 <span class="sentence">The retention level of the annotated annotation.</span></li>
 </ul>
 <div class="paragraph">
@@ -732,7 +712,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.annotation.Target</code> is an annotation which is only used on annotation classes to specify targets those annotations are valid for. </span><span class="sentence">It has the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span><span class="op">:</span> <span class="dt">AnnotationTarget</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">vararg</span> <span class="kw">val</span> <span class="va">allowedTargets</span><span class="op">:</span> <span class="dt">AnnotationTarget</span></span></code></pre></div>
 <span class="sentence">The allowed annotation targets of the annotated annotation.</span></li>
 </ul>
 <div class="paragraph">
@@ -764,11 +744,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.RequiresOptIn</code> is an annotation class with two fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The message describing the particular opt-in requirements.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> <span class="op">=</span> Level.ERROR</a></code></pre></div>
+<li><div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">Level</span> <span class="op">=</span> Level.ERROR</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The severity level of the experimental status with two possible values: <code>Level.WARNING</code> and <code>Level.ERROR</code>.</span></p>
 </div></li>
@@ -780,7 +760,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.OptIn</code> is an annotation class with a single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">vararg</span> <span class="kw">val</span> <span class="va">markerClass</span><span class="op">:</span> <span class="dt">KClass</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">Annotation</span><span class="op">&gt;</span></span></code></pre></div>
 <span class="sentence">The classes which this annotation allows to use.</span></li>
 </ul>
 <div class="paragraph">
@@ -794,21 +774,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence">Note: before Kotlin 1.4.0, there were two other built-in annotations: <code>@Experimental</code> (now replaced by <code>@RequiresOptIn</code>) and <code>@UseExperimental</code> (now replaced by <code>@OptIn</code>) serving the same purpose which are now deprecated.</span></p>
 </div>
 </blockquote>
-
 <h4 id="kotlin.deprecated-kotlin.replacewith"><code>kotlin.Deprecated</code> / <code>kotlin.ReplaceWith</code></h4>
 <div class="paragraph">
 <p><span class="sentence"><code>kotlin.Deprecated</code> is an annotation class with the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">message</span><span class="op">:</span> <span class="dt">String</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">A message supporting the deprecation.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> <span class="op">=</span> ReplaceWith(<span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<li><div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">replaceWith</span><span class="op">:</span> <span class="dt">ReplaceWith</span> <span class="op">=</span> ReplaceWith(<span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An optional replacement for the deprecated code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> <span class="op">=</span> DeprecationLevel.WARNING</a></code></pre></div>
+<li><div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">level</span><span class="op">:</span> <span class="dt">DeprecationLevel</span> <span class="op">=</span> DeprecationLevel.WARNING</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The deprecation level with three possible values: <code>DeprecationLevel.WARNING</code>, <code>DeprecationLevel.ERROR</code> and <code>DeprecationLevel.HIDDEN</code>.</span></p>
 </div></li>
@@ -817,11 +796,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.ReplaceWith</code> is itself an annotation class containing the information on how to perform the replacement in case it is provided. </span><span class="sentence">It has the following fields:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">expression</span><span class="op">:</span> <span class="dt">String</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The replacement code.</span></p>
 </div></li>
-<li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">vararg</span> <span class="kw">val</span> <span class="va">imports</span><span class="op">:</span> <span class="dt">String</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">An array of imports needed for the replacement code to work correctly.</span></p>
 </div></li>
@@ -838,7 +817,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.Suppress</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">vararg</span> <span class="kw">val</span> <span class="va">names</span><span class="op">:</span> <span class="dt">String</span></span></code></pre></div>
 <span class="sentence">The names of features this annotation is suppressing.</span></li>
 </ul>
 <div class="paragraph">
@@ -849,7 +828,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="sentence"><code>kotlin.SinceKotlin</code> is an annotation class with the following single field:</span></p>
 </div>
 <ul>
-<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></a></code></pre></div>
+<li><div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> <span class="va">version</span><span class="op">:</span> <span class="dt">String</span></span></code></pre></div>
 <span class="sentence">The version of Kotlin language.</span></li>
 </ul>
 <div class="paragraph">
@@ -869,11 +848,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <h4 id="kotlin.builderinference"><code>kotlin.BuilderInference</code></h4>
 <div class="paragraph">
-<p><span class="sentence">Marks the annotated function of function argument as eligible for <a href="builder-style-type-inference.html#builder-style-type-inference">builder-style type inference</a>. </span><span class="sentence">See corresponding section for details.</span></p>
+<p><span class="sentence">Marks the annotated function of function argument as eligible for <a href="type-inference.html#builder-style-type-inference">builder-style type inference</a>. </span><span class="sentence">See corresponding section for details.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.6</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.6}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.6</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
 
 , this annotation is experimental and, in order to use it in one’s code, one must explicitly enable it using opt-in annotations given above. </span><span class="sentence">The particular marker class used to perform this is implementation-defined.</span></p>
 </div>
@@ -892,10 +871,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.6</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.6}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.6</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
 
 , this annotation is experimental and, in order to use it in one’s code, one must explicitly enable it using opt-in annotations given above. </span><span class="sentence">The particular marker class used to perform this is implementation-defined.</span></p>
 </div>
 </blockquote>
+
 </body>
 </html>

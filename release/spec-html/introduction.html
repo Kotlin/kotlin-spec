@@ -7,14 +7,16 @@
   <meta name="author" content="Marat Akhin" />
   <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
   </style>
-  <link rel="stylesheet" href="./resources/css/main.css">
-  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <link rel="stylesheet" href="./resources/css/main.css" />
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -25,13 +27,13 @@
       };
   </script>
   <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-  
+
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
-  
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -62,41 +64,12 @@
     </div>
     <div class="toc-body empty"></div>
 </div>
-<header>
+<header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.6-rfc+0.1</p>
+<p class="subtitle">Version 1.7-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -164,6 +137,7 @@
 <li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
 <ul>
 <li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+<li><a href="type-system.html#definitely-non-nullable-types" id="toc-element-definitely-non-nullable-types" class="toc-element">Definitely non-nullable types</a></li>
 </ul></li>
 <li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
 <li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
@@ -281,6 +255,7 @@
 <ul>
 <li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
 <li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+<li><a href="declarations.html#underscore-type-arguments" id="toc-element-underscore-type-arguments" class="toc-element">Underscore type arguments</a></li>
 </ul></li>
 <li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
 </ul></li>
@@ -341,6 +316,7 @@
 <li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
 <li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
 </ul></li>
+<li><a href="expressions.html#constant-expressions" id="toc-element-constant-expressions" class="toc-element">Constant expressions</a></li>
 <li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
 <li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
 <li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
@@ -529,8 +505,8 @@
 <li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
 </ul></li>
 <li><a href="type-inference.html#bare-type-argument-inference" id="toc-element-bare-type-argument-inference" class="toc-element">Bare type argument inference</a></li>
+<li><a href="type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 </ul></li>
-<li><a href="builder-style-type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 <li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
 <ul>
 <li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
@@ -581,12 +557,12 @@
 </ul></li>
 </ul>
 </div>
-<h2 id="introduction" class="unnumbered">Introduction</h2>
+<h2 class="unnumbered" id="introduction">Introduction</h2>
 <div class="paragraph">
 <p><span class="sentence">Kotlin took inspiration from many programming languages, including (but not limited to) Java, Scala, C# and Groovy. </span><span class="sentence">One of the main ideas behind Kotlin is being <em>pragmatic</em>, i.e., being a programming language useful for day-to-day development, which helps the users get the job done via its features and its tools. </span><span class="sentence">Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Kotlin is a multiplatform, statically typed, general-purpose programming language. </span><span class="sentence">Currently, as of version <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.6</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.6}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.6</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Kotlin is a multiplatform, statically typed, general-purpose programming language. </span><span class="sentence">Currently, as of version <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
 
 , it supports compilation to the following platforms.</span></p>
 </div>
@@ -615,18 +591,18 @@
 <div class="paragraph">
 <p><span class="sentence">Platform-specific parts of Kotlin and its multiplatform capabilities will be covered in their respective sub-specifications, i.e., Kotlin/JVM, Kotlin/JS and Kotlin/Native.</span></p>
 </div>
-<h3 id="compatibility" class="unnumbered">Compatibility</h3>
+<h3 class="unnumbered" id="compatibility">Compatibility</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin Language Specification is still in progress and has <strong>experimental</strong> stability level, meaning no compatibility should be expected between even incremental releases, any functionality can be added, removed or changed without warning.</span></p>
 </div>
-<h3 id="experimental-features" class="unnumbered">Experimental features</h3>
+<h3 class="unnumbered" id="experimental-features">Experimental features</h3>
 <div class="paragraph">
 <p><span class="sentence">In several cases this specification discusses <em>experimental</em> Kotlin features, i.e., features which are still in active development and which may be changed in the future. </span><span class="sentence">When so, the specification talks about the <em>current</em> state of said features, with no guarantees of their future stability (or even existence in the language).</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">The experimental features are marked as such in the specification to the best of our abilities.</span></p>
 </div>
-<h3 id="acknowledgments" class="unnumbered">Acknowledgments</h3>
+<h3 class="unnumbered" id="acknowledgments">Acknowledgments</h3>
 <div class="paragraph">
 <p><span class="sentence">We would like to thank the following people for their invaluable help and feedback during the writing of this specification.</span></p>
 </div>
@@ -651,18 +627,19 @@
 <div class="paragraph">
 <p><span class="sentence">We would also like to thank <a href="https://pandoc.org/">Pandoc</a>, its authors and community, as this specification would be much harder to implement without Pandoc’s versatility and support.</span></p>
 </div>
-<h3 id="feedback" class="unnumbered">Feedback</h3>
+<h3 class="unnumbered" id="feedback">Feedback</h3>
 <div class="paragraph">
 <p><span class="sentence">If you have any feedback for this document, feel free to create an issue at our <a href="https://github.com/Kotlin/kotlin-spec/issues">GitHub</a>. </span><span class="sentence">In case you prefer to use email, you can use <a href="mailto:marat.akhin@jetbrains.com">marat.akhin@jetbrains.com</a> and <a href="mailto:mikhail.belyaev@jetbrains.com">mikhail.belyaev@jetbrains.com</a>.</span></p>
 </div>
-<h3 id="reference" class="unnumbered">Reference</h3>
+<h3 class="unnumbered" id="reference">Reference</h3>
 <div class="paragraph">
 <p><span class="sentence">If one needs to reference this specification, they may use the following:</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Marat Akhin, Mikhail Belyaev et al. </span><span class="sentence">“Kotlin language specification: Kotlin/Core”, JetBrains / JetBrains Research, 2020</span></p>
+<p><span class="sentence">Marat Akhin, Mikhail Belyaev et al. “Kotlin language specification: Kotlin/Core”, JetBrains / JetBrains Research, 2020</span></p>
 </div>
 </blockquote>
+
 </body>
 </html>

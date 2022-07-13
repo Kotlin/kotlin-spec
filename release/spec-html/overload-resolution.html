@@ -7,77 +7,79 @@
   <meta name="author" content="Marat Akhin" />
   <meta name="author" content="Mikhail Belyaev" />
   <title>Kotlin language specification</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
-  <link rel="stylesheet" href="./resources/css/main.css">
-  <link rel="stylesheet" href="./resources/js/katex/katex.min.css">
+  <link rel="stylesheet" href="./resources/css/main.css" />
+  <link rel="stylesheet" href="./resources/js/katex/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -88,13 +90,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       };
   </script>
   <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-  
+
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
-  
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -125,41 +127,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
     <div class="toc-body empty"></div>
 </div>
-<header>
+<header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.6-rfc+0.1</p>
+<p class="subtitle">Version 1.7-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="TOC">
 <ul>
 <li><a href="kotlincore.html#kotlincore" id="toc-element-kotlincore" class="toc-element">Kotlin/Core</a>
@@ -227,6 +200,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="type-system.html#nullable-types" id="toc-element-nullable-types" class="toc-element">Nullable types</a>
 <ul>
 <li><a href="type-system.html#nullability-lozenge" id="toc-element-nullability-lozenge" class="toc-element">Nullability lozenge</a></li>
+<li><a href="type-system.html#definitely-non-nullable-types" id="toc-element-definitely-non-nullable-types" class="toc-element">Definitely non-nullable types</a></li>
 </ul></li>
 <li><a href="type-system.html#intersection-types" id="toc-element-intersection-types" class="toc-element">Intersection types</a></li>
 <li><a href="type-system.html#integer-literal-types" id="toc-element-integer-literal-types" class="toc-element">Integer literal types</a></li>
@@ -344,6 +318,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><a href="declarations.html#type-parameter-variance" id="toc-element-type-parameter-variance" class="toc-element">Type parameter variance</a></li>
 <li><a href="declarations.html#reified-type-parameters" id="toc-element-reified-type-parameters" class="toc-element">Reified type parameters</a></li>
+<li><a href="declarations.html#underscore-type-arguments" id="toc-element-underscore-type-arguments" class="toc-element">Underscore type arguments</a></li>
 </ul></li>
 <li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
 </ul></li>
@@ -404,6 +379,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="expressions.html#string-literals" id="toc-element-string-literals" class="toc-element">String literals</a></li>
 <li><a href="expressions.html#null-literal" id="toc-element-null-literal" class="toc-element">Null literal</a></li>
 </ul></li>
+<li><a href="expressions.html#constant-expressions" id="toc-element-constant-expressions" class="toc-element">Constant expressions</a></li>
 <li><a href="expressions.html#string-interpolation-expressions" id="toc-element-string-interpolation-expressions" class="toc-element">String interpolation expressions</a></li>
 <li><a href="expressions.html#try-expressions" id="toc-element-try-expressions" class="toc-element">Try-expressions</a></li>
 <li><a href="expressions.html#conditional-expressions" id="toc-element-conditional-expressions" class="toc-element">Conditional expressions</a></li>
@@ -592,8 +568,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="type-inference.html#statements-with-lambda-literals" id="toc-element-statements-with-lambda-literals" class="toc-element">Statements with lambda literals</a></li>
 </ul></li>
 <li><a href="type-inference.html#bare-type-argument-inference" id="toc-element-bare-type-argument-inference" class="toc-element">Bare type argument inference</a></li>
+<li><a href="type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 </ul></li>
-<li><a href="builder-style-type-inference.html#builder-style-type-inference" id="toc-element-builder-style-type-inference" class="toc-element">Builder-style type inference</a></li>
 <li><a href="runtime-type-information.html#runtime-type-information" id="toc-element-runtime-type-information" class="toc-element">Runtime type information</a>
 <ul>
 <li><a href="runtime-type-information.html#runtime-available-types" id="toc-element-runtime-available-types" class="toc-element">Runtime-available types</a></li>
@@ -646,13 +622,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <span style="visibility: hidden; counter-reset: chapter 10;"></span>
 <h2 id="overload-resolution">Overload resolution</h2>
-<h3 id="glossary-3" class="unnumbered">Glossary</h3>
+<h3 class="unnumbered" id="glossary-3">Glossary</h3>
 <dl>
 <dt><code>type(e)</code></dt>
 <dd><span class="sentence"><a href="type-system.html#type-system">Type</a> of expression <code>e</code></span>
 </dd>
 </dl>
-<h3 id="introduction-4" class="unnumbered">Introduction</h3>
+<h3 class="unnumbered" id="introduction-4">Introduction</h3>
 <div class="paragraph">
 <p><span class="sentence">Kotlin supports <em>overloading</em> for callables and properties, that is, the ability for several callables (functions or function-like properties) or properties with the same name to coexist in the same scope, with the compiler picking the most suitable one when such entity is referenced. </span><span class="sentence">This section describes <em>overload resolution process</em> in detail.</span></p>
 </div>
@@ -722,32 +698,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Note: there may be situations in which <em>the same implicit receiver</em> is used as both the dispatch receiver and the extension receiver for a particular callable invocation, for example:</span></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">interface</span> <span class="dt">Y</span></a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">class</span> <span class="dt">X</span> <span class="op">:</span> <span class="dt">Y</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-4" title="4">    <span class="kw">fun</span> <span class="fu">Y</span><span class="op">.</span><span class="fu">foo</span><span class="op">()</span> <span class="op">{}</span> <span class="co">// `foo` is an extension for Y,</span></a>
-<a class="sourceLine" id="cb1-5" title="5">                   <span class="co">//   needs extension receiver to be called</span></a>
-<a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-8" title="8">        foo() <span class="co">// `this` reference is both</span></a>
-<a class="sourceLine" id="cb1-9" title="9">              <span class="co">//   the extension and the dispatch receiver</span></a>
-<a class="sourceLine" id="cb1-10" title="10">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="op">}</span></a>
-<a class="sourceLine" id="cb1-12" title="12"></a>
-<a class="sourceLine" id="cb1-13" title="13"><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></a>
-<a class="sourceLine" id="cb1-14" title="14"></a>
-<a class="sourceLine" id="cb1-15" title="15"><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-16" title="16">    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">X</span> <span class="op">=</span> mk()</a>
-<a class="sourceLine" id="cb1-17" title="17">    <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Y</span> <span class="op">=</span> mk()</a>
-<a class="sourceLine" id="cb1-18" title="18"></a>
-<a class="sourceLine" id="cb1-19" title="19">    <span class="co">// y.foo()</span></a>
-<a class="sourceLine" id="cb1-20" title="20">    <span class="co">// Error, as there is no implicit receiver</span></a>
-<a class="sourceLine" id="cb1-21" title="21">    <span class="co">//   of type X available</span></a>
-<a class="sourceLine" id="cb1-22" title="22"></a>
-<a class="sourceLine" id="cb1-23" title="23">    with (x) <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-24" title="24">        y.foo() <span class="co">// OK!</span></a>
-<a class="sourceLine" id="cb1-25" title="25">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb1-26" title="26"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="dt">Y</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">X</span> <span class="op">:</span> <span class="dt">Y</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">Y</span><span class="op">.</span><span class="fu">foo</span><span class="op">()</span> <span class="op">{}</span> <span class="co">// `foo` is an extension for Y,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                   <span class="co">//   needs extension receiver to be called</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        foo() <span class="co">// `this` reference is both</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>              <span class="co">//   the extension and the dispatch receiver</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">X</span> <span class="op">=</span> mk()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Y</span> <span class="op">=</span> mk()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// y.foo()</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Error, as there is no implicit receiver</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   of type X available</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    with (x) <span class="op">{</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        y.foo() <span class="co">// OK!</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="the-forms-of-call-expression">The forms of call-expression</h4>
 <div class="paragraph">
@@ -884,14 +860,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">package</span> <span class="im">a.b.c</span></a>
-<a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb2-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">Char</span><span class="op">&gt;)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb2-7" title="7">. . .</a>
-<a class="sourceLine" id="cb2-8" title="8">a.b.c.foo()</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> <span class="im">a.b.c</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">Char</span><span class="op">&gt;)</span> <span class="op">{}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="op">{}</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>. . .</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>a.b.c.foo()</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here the resulting overload candidate set contains all the callables named <code>foo</code> from the package <code>a.b.c</code>.</span></p>
 </div>
@@ -1062,11 +1038,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Foo</span>, <span class="va">b</span><span class="op">:</span> <span class="dt">Bar</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb3-2" title="2">    (a + b)(<span class="dv">42</span>)</a>
-<a class="sourceLine" id="cb3-3" title="3">    <span class="co">// Such a call is handled as if it is</span></a>
-<a class="sourceLine" id="cb3-4" title="4">    <span class="co">//   (a + b).invoke(42)</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">Foo</span>, <span class="va">b</span><span class="op">:</span> <span class="dt">Bar</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    (a + b)(<span class="dv">42</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Such a call is handled as if it is</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   (a + b).invoke(42)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">As with <a href="overload-resolution.html#call-with-an-explicit-receiver">calls with explicit receiver</a>, we first pick an overload candidate set and then search this set for the most specific function to match the call.</span></p>
@@ -1173,8 +1149,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
  are fresh type variables;</span></li>
 </ul>
-
-
 <div class="paragraph">
 <p><span class="sentence">If this constraint system is sound, the function is applicable for the call. </span><span class="sentence">Only applicable functions are considered for the next step: <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
@@ -1210,19 +1184,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Consider the following example.</span></p>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{}</span>        <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{}</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb4-3" title="3">...</a>
-<a class="sourceLine" id="cb4-4" title="4">f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{}</span>        <span class="co">// (1)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">f</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{}</span> <span class="co">// (2)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>f(<span class="dv">2</span>, <span class="st">&quot;Hello&quot;</span>)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Both functions (1) and (2) are applicable for the call, but function (1) could easily call function (2) by forwarding both arguments into it, and the reverse is impossible. </span><span class="sentence">As a result, function (1) is more specific of the two.</span></p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">fun</span> <span class="fu">f1</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb5-2" title="2">    f2(arg, arg2) <span class="co">// VALID: can forward both arguments</span></a>
-<a class="sourceLine" id="cb5-3" title="3"><span class="op">}</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="kw">fun</span> <span class="fu">f2</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb5-5" title="5">    f1(arg, arg2) <span class="co">// INVALID: function f1 is not applicable</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">f1</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    f2(arg, arg2) <span class="co">// VALID: can forward both arguments</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">f2</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">arg2</span><span class="op">:</span> <span class="dt">CharSequence</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    f1(arg, arg2) <span class="co">// INVALID: function f1 is not applicable</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">The rest of this section will describe how the Kotlin compiler checks for this property in more detail.</span></p>
 </div>
@@ -1438,79 +1412,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 .</span></p>
 </div>
-
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb6-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb6-3" title="3"></a>
-<a class="sourceLine" id="cb6-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb6-6" title="6"></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="kw">fun</span> <span class="fu">testOk01</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb6-8" title="8">    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb6-9" title="9">    <span class="co">// Both (1) and (2) are applicable</span></a>
-<a class="sourceLine" id="cb6-10" title="10">    <span class="co">// (2) is preferred by the lambda return type</span></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">testOk01</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Both (1) and (2) are applicable</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// (2) is preferred by the lambda return type</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb7-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb7-3" title="3"></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb7-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb7-6" title="6"></a>
-<a class="sourceLine" id="cb7-7" title="7"><span class="kw">fun</span> <span class="fu">testError01</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb7-8" title="8">    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></a>
-<a class="sourceLine" id="cb7-9" title="9">    <span class="co">// Overload ambiguity</span></a>
-<a class="sourceLine" id="cb7-10" title="10">    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb7-11" title="11">    <span class="co">// Both (1) and (2) are applicable</span></a>
-<a class="sourceLine" id="cb7-12" title="12">    <span class="co">// None is preferred by the lambda return type</span></a>
-<a class="sourceLine" id="cb7-13" title="13">    <span class="co">//   as their parameters are not SEERT</span></a>
-<a class="sourceLine" id="cb7-14" title="14"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">testError01</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Overload ambiguity</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    foo <span class="op">{</span> <span class="dv">42</span> <span class="op">}</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Both (1) and (2) are applicable</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// None is preferred by the lambda return type</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   as their parameters are not SEERT</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb8-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb8-3" title="3"></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb8-6" title="6"></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="kw">fun</span> <span class="fu">testOk02</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb8-8" title="8">    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></a>
-<a class="sourceLine" id="cb8-9" title="9">    foo <span class="op">{</span> a -&gt; <span class="dv">42</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb8-10" title="10">    <span class="co">// Only (2) is applicable</span></a>
-<a class="sourceLine" id="cb8-11" title="11">    <span class="co">//   as its lambda takes one parameter</span></a>
-<a class="sourceLine" id="cb8-12" title="12"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="dt">Unit</span>.(<span class="op">)</span> -&gt; <span class="fu">String</span>) = <span class="kw">Unit</span> <span class="co">// (1)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">testOk02</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">take</span> <span class="op">=</span> <span class="kw">Unit</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    foo <span class="op">{</span> a -&gt; <span class="dv">42</span> <span class="op">}</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Only (2) is applicable</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   as its lambda takes one parameter</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb9-1" title="1"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb9-3" title="3"></a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="at">@OverloadResolutionByLambdaReturnType</span></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">CharSequence</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb9-6" title="6"></a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="kw">fun</span> <span class="fu">testError02</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb9-8" title="8">    <span class="co">// Error: required String, found CharSequence</span></a>
-<a class="sourceLine" id="cb9-9" title="9">    foo <span class="op">{</span> a -&gt;</a>
-<a class="sourceLine" id="cb9-10" title="10">        <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">CharSequence</span> <span class="op">=</span> <span class="st">&quot;42&quot;</span></a>
-<a class="sourceLine" id="cb9-11" title="11">        a</a>
-<a class="sourceLine" id="cb9-12" title="12">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb9-13" title="13">    <span class="co">// Both (1) and (2) are applicable</span></a>
-<a class="sourceLine" id="cb9-14" title="14">    <span class="co">// (1) is the only most specific candidate</span></a>
-<a class="sourceLine" id="cb9-15" title="15">    <span class="co">//   We do not attempt refinement by the lambda return type</span></a>
-<a class="sourceLine" id="cb9-16" title="16"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">String</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (1)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">@OverloadResolutionByLambdaReturnType</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">cb</span><span class="op">:</span> <span class="op">(</span><span class="dt">Unit</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">CharSequence</span><span class="op">)</span> = <span class="kw">Unit</span> <span class="co">// (2)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">testError02</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Error: required String, found CharSequence</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    foo <span class="op">{</span> a -&gt;</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">CharSequence</span> <span class="op">=</span> <span class="st">&quot;42&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        a</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Both (1) and (2) are applicable</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// (1) is the only most specific candidate</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   We do not attempt refinement by the lambda return type</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h3 id="resolving-property-access">Resolving property access</h3>
 <div class="paragraph">
@@ -1536,40 +1509,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: one may consider property access in class <code>A</code> to be resolved as if it has been transformed to class <code>AA</code>.</span></p>
 </div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb10-2" title="2">    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb10-3" title="3"></a>
-<a class="sourceLine" id="cb10-4" title="4">    <span class="kw">val</span> <span class="va">Double.a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb10-5" title="5">        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> != <span class="fl">42.0</span></a>
-<a class="sourceLine" id="cb10-6" title="6"></a>
-<a class="sourceLine" id="cb10-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb10-8" title="8"></a>
-<a class="sourceLine" id="cb10-9" title="9">        println(a) <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb10-10" title="10"></a>
-<a class="sourceLine" id="cb10-11" title="11">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
-<a class="sourceLine" id="cb10-12" title="12">            println(<span class="kw">this@A</span>.a) <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb10-13" title="13">            println(<span class="kw">this</span>.a) <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb10-14" title="14">            println(a) <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb10-15" title="15">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb10-16" title="16">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb10-17" title="17"><span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">class</span> <span class="dt">AA</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-2" title="2">    <span class="kw">fun</span> <span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Int</span> = <span class="dv">5</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb11-3" title="3"></a>
-<a class="sourceLine" id="cb11-4" title="4">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Boolean</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb11-5" title="5">              = <span class="kw">this</span> != <span class="fl">42.0</span></a>
-<a class="sourceLine" id="cb11-6" title="6"></a>
-<a class="sourceLine" id="cb11-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-8" title="8"></a>
-<a class="sourceLine" id="cb11-9" title="9">        println(a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb11-10" title="10"></a>
-<a class="sourceLine" id="cb11-11" title="11">        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-12" title="12">            println(<span class="kw">this@AA</span>.a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb11-13" title="13">            <span class="fu">println</span><span class="op">(</span><span class="va">this</span>.<span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb11-14" title="14">            <span class="fu">println</span><span class="op">(</span><span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb11-15" title="15">        }</a>
-<a class="sourceLine" id="cb11-16" title="16">    }</a>
-<a class="sourceLine" id="cb11-17" title="17">}</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">A</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">Double.a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="co">// (2)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> != <span class="fl">42.0</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        println(a) <span class="co">// Resolves to (1)</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        with(<span class="fl">42.0</span>) <span class="op">{</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            println(<span class="kw">this@A</span>.a) <span class="co">// Resolves to (1)</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            println(<span class="kw">this</span>.a) <span class="co">// Resolves to (2)</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            println(a) <span class="co">// Resolves to (2)</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">AA</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Int</span> = <span class="dv">5</span> <span class="co">// (1)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">a</span>$<span class="kw">get</span>(): <span class="kw">Boolean</span> <span class="co">// (2)</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>              = <span class="kw">this</span> != <span class="fl">42.0</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        println(a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            println(<span class="kw">this@AA</span>.a$<span class="kw">get</span><span class="op">()</span>) <span class="co">// Resolves to (1)</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">println</span><span class="op">(</span><span class="va">this</span>.<span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">println</span><span class="op">(</span><span class="va">a</span>$<span class="va">get</span>(<span class="op">)</span>) <span class="co">// Resolves to (2)</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">Property assignment <code>a.x = y</code> is resolved the same way as if it was replaced with a special function call <code>a.x$set(y)</code> and each property <code>var/val x: T</code> was replaced with a corresponding function <code>fun x$set(value: T)</code> having all the same extension receiver parameters, context receiver parameters, type parameters and scope as the original property and providing direct access to the property setter. </span><span class="sentence">For different flavors of property declarations and setters, refer to <a href="declarations.html#property-declaration">corresponding section</a>. </span><span class="sentence">Please note that, although a read-only property declaration (using the keyword <code>val</code>) does not allow for assignment or having a setter, it still takes part in overload resolution for property assignment and may still be picked up as a candidate. </span><span class="sentence">Such a candidate (in case it is selected as the final candidate) will result in compiler error at later stages of compilation.</span></p>
@@ -1583,45 +1556,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: one may consider property access in class <code>B</code> to be resolved as if it has been transformed to class <code>BB</code>. </span><span class="sentence">Declaration bodies for ephemeral functions are omitted to avoid confusion</span></p>
 </div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">class</span> <span class="dt">B</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb12-2" title="2">    <span class="kw">var</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb12-3" title="3"></a>
-<a class="sourceLine" id="cb12-4" title="4">    <span class="kw">val</span> <span class="va">Double.b</span><span class="op">:</span> <span class="dt">Int</span> <span class="co">// (2)</span></a>
-<a class="sourceLine" id="cb12-5" title="5">        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span>.toInt()</a>
-<a class="sourceLine" id="cb12-6" title="6"></a>
-<a class="sourceLine" id="cb12-7" title="7">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb12-8" title="8">        b = <span class="dv">5</span> <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb12-9" title="9"></a>
-<a class="sourceLine" id="cb12-10" title="10">        with(<span class="fl">42.0</span>) <span class="op">{</span></a>
-<a class="sourceLine" id="cb12-11" title="11">            <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb12-12" title="12">            <span class="kw">this@B</span>.b = <span class="dv">5</span> </a>
-<a class="sourceLine" id="cb12-13" title="13">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
-<a class="sourceLine" id="cb12-14" title="14">            <span class="kw">this</span>.b = <span class="dv">5</span> </a>
-<a class="sourceLine" id="cb12-15" title="15">            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></a>
-<a class="sourceLine" id="cb12-16" title="16">            b = <span class="dv">5</span> </a>
-<a class="sourceLine" id="cb12-17" title="17">        <span class="op">}</span></a>
-<a class="sourceLine" id="cb12-18" title="18">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb12-19" title="19"><span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">class</span> <span class="dt">BB</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb13-2" title="2">    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (1, getter)</span></a>
-<a class="sourceLine" id="cb13-3" title="3">    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (1, setter)</span></a>
-<a class="sourceLine" id="cb13-4" title="4"></a>
-<a class="sourceLine" id="cb13-5" title="5">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (2, getter)</span></a>
-<a class="sourceLine" id="cb13-6" title="6">    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (2, setter)</span></a>
-<a class="sourceLine" id="cb13-7" title="7"></a>
-<a class="sourceLine" id="cb13-8" title="8">    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb13-9" title="9">        b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb13-10" title="10"></a>
-<a class="sourceLine" id="cb13-11" title="11">        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb13-12" title="12">            <span class="co">// Resolves to (1)</span></a>
-<a class="sourceLine" id="cb13-13" title="13">            <span class="kw">this@B</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </a>
-<a class="sourceLine" id="cb13-14" title="14">            <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb13-15" title="15">            <span class="fu">this</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(<span class="dv">5</span>) </a>
-<a class="sourceLine" id="cb13-16" title="16">            <span class="co">// Resolves to (2)</span></a>
-<a class="sourceLine" id="cb13-17" title="17">            <span class="kw">this</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </a>
-<a class="sourceLine" id="cb13-18" title="18">        }</a>
-<a class="sourceLine" id="cb13-19" title="19">    }</a>
-<a class="sourceLine" id="cb13-20" title="20">}</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">B</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">5</span> <span class="co">// (1)</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">Double.b</span><span class="op">:</span> <span class="dt">Int</span> <span class="co">// (2)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span>.toInt()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        b = <span class="dv">5</span> <span class="co">// Resolves to (1)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        with(<span class="fl">42.0</span>) <span class="op">{</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (1)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this@B</span>.b = <span class="dv">5</span> </span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span>.b = <span class="dv">5</span> </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (2) and compiler error: cannot assign read-only property</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            b = <span class="dv">5</span> </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">BB</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (1, getter)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (1, setter)</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">get</span>(): <span class="kw">Int</span> <span class="co">// (2, getter)</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">Double</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(value: <span class="kw">Int</span>) <span class="co">// (2, setter)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">test</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> <span class="co">// Resolves to (1)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">with</span><span class="op">(</span><span class="va">42</span>.<span class="va">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (1)</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this@B</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (2)</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>            <span class="fu">this</span><span class="op">.</span><span class="fu">b</span>$<span class="kw">set</span>(<span class="dv">5</span>) </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Resolves to (2)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>            <span class="kw">this</span>.b$<span class="kw">set</span><span class="op">(</span><span class="va">5</span><span class="op">)</span> </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </blockquote>
 <div class="paragraph">
 <p><span class="sentence">The overload resolution for properties has the following features distinct from overload resolution for callables.</span></p>
@@ -1631,7 +1604,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, an extension mutable property is considered to have an extension getter and setter, etc.;</span></li>
 <li><span class="sentence"><a href="declarations.html#object-declaration">Object declarations</a> and <a href="declarations.html#enum-class-declaration">enumeration entries</a> may be accessed using the property access syntax given that they may be resolved in the current scope.</span></li>
 </ul>
-
 <h3 id="resolving-callable-references">Resolving callable references</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="expressions.html#callable-references">Callable references</a> introduce a special case of overload resolution which is somewhat similar to how regular calls are resolved, but different in several important aspects.</span></p>
@@ -1653,7 +1625,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="sentence">If the highest priority set contains more than one callable, this is an overload ambiguity and should be reported as a compile-time error.</span></li>
 <li><span class="sentence">Otherwise, the single callable in the set is chosen as the result of the resolution process.</span></li>
 </ul>
-
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets</span></p>
@@ -1663,10 +1634,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Important: when building the OCS for a callable reference, <code>invoke</code> operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets. </span><span class="sentence">For example, consider the following code:</span></p>
 </div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb14-3" title="3">...</a>
-<a class="sourceLine" id="cb14-4" title="4"><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> = <span class="dv">1</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">foo</span> <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">y</span> <span class="op">=</span> ::foo</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here both function <code>foo</code> and property <code>foo</code> are valid candidates for the callable reference and are placed <em>in the same candidate set</em>, thus producing an overload ambiguity. </span><span class="sentence">It is not important whether there is a suitable <code>invoke</code> operator available for the type of property <code>foo</code>.</span></p>
 </div>
@@ -1675,12 +1646,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Example: consider the following two functions:</span></p>
 </div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></a>
-<a class="sourceLine" id="cb15-2" title="2"><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> = <span class="dv">2</span>         <span class="co">// (1)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">d</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> = <span class="fl">2.0</span> <span class="co">// (2)</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">In the following case:</span></p>
 </div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="op">(</span><span class="dt">Int</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Int</span> <span class="op">=</span> ::foo</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (1) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
@@ -1691,9 +1662,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">In another case:</span></p>
 </div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></a>
-<a class="sourceLine" id="cb17-2" title="2"></a>
-<a class="sourceLine" id="cb17-3" title="3">bar(::foo)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">f</span><span class="op">:</span> <span class="op">(</span><span class="dt">Double</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>bar(::foo)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">candidate (2) is picked, because (assuming <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">CRT</mi><mo>⁡</mo></mrow><annotation encoding="application/x-tex">\operatorname{CRT}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mop"><span class="mord mathrm">C</span><span class="mord mathrm">R</span><span class="mord mathrm">T</span></span></span></span></span>
 
@@ -1724,7 +1695,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2. </span><span class="sentence">This ensures the overload resolution process for every callable being called is performed only once.</span></p>
 </div>
-
 <h3 id="type-inference-and-overload-resolution">Type inference and overload resolution</h3>
 <div class="paragraph">
 <p><span class="sentence"><a href="type-inference.html#type-inference">Type inference</a> in Kotlin is a very complicated process, and it is performed <em>after</em> overload resolution is done; meaning type inference may not affect the way overload resolution candidate is picked in any way.</span></p>
@@ -1757,12 +1727,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="paragraph">
 <p><span class="sentence">Two definitely interlinked callables <code>f</code> and <code>g</code> may create a <em>overload conflict</em>, if they could result in an overload ambiguity on most regular call sites.</span></p>
 </div>
-
 <div class="paragraph">
 <p><span class="sentence">To check whether such situation is possible, we compare <code>f</code> and <code>g</code> w.r.t. their <a href="overload-resolution.html#algorithm-of-msc-selection">applicability</a> for a phantom call site with a fully specified argument list (i.e., with no used default arguments). </span><span class="sentence">If both <code>f</code> and <code>g</code> are equally or more specific to each other and neither of them is selected by the <a href="overload-resolution.html#algorithm-of-msc-selection">additional steps</a> of MSC selection, we have an overload conflict.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Different platform implementations may extend which callables are considered as conflicting overloads.</span></p>
 </div>
+
 </body>
 </html>
