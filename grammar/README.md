@@ -33,5 +33,5 @@ An additional artifact available from TeamCity is **`kotlin-grammar-tools-{versi
 
 - [Anastasiya Shadrina](https://github.com/shadrina)
 - [Mikhail Belyaev](https://github.com/belyaev-mikhail)
-- [Victor Petukhov](https://github.com/PetukhovVictor)
+- [Victor Petukhov](https://github.com/petukhovv)
 - [Marat Akhin](https://github.com/ice-phoenix)
