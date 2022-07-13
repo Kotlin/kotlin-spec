@@ -996,6 +996,58 @@ Following the lozenge structure, for type variable type $T$ (i.e., either non-nu
 
 > Example: if we have $T? <: \Int?$, we also have $T!! <: \Int?$ and $T!! <: \Int!!$, however, we can establish only $T <: \Int?$, as $T <: \Int$ would need $T? <: \Int!!$ which is forbidden by the nullability lozenge.
 
+##### Definitely non-nullable types
+
+As discussed [here][Nullability lozenge], type variable types have unknown nullability, e.g., a type parameter $T$ may correspond to either nullable version $T?$, or non-nullable version $T!!$.
+In some cases, one might need to specifically denote a nullable/non-nullable version of $T$.
+
+> Note: for example, it is needed when overriding a Java method with a `@NotNull` annotated generic parameter.
+> 
+> Example:
+> ```java
+> public interface JBox {
+>     <T> void put(@NotNull T t);
+> }
+> ```
+> 
+> ```kotlin
+> class KBox : JBox {
+>     override fun <T> put(t: T/* !! */) = TODO()
+> }
+> ```
+
+To denote a nullable version of $T$, one can use the [nullable type][Nullable types] syntax $T?$.
+
+To denote a non-nullable version of $T$, one can use the definitely non-nullable type syntax $T \amp Any$.
+
+To represent a well-formed definitely non-nullable type, $T \amp Any$ should satisfy the following conditions.
+
+* $T$ is a well-formed [type parameter][Type parameters] with a nullable upper bound
+* $Any$ is resolved to $\Any$
+
+> Example:
+> ```kotlin
+> typealias MyAny = kotlin.Any
+> 
+> fun <T /* : Any? */, Q : Any> bar(t: T?, q: Q?, i: Int?) {
+>     // OK
+>     val a: T & Any = t!!
+>     // OK: MyAny is resolved to kotlin.Any
+>     val b: T & MyAny = t!!
+>     // ERROR: Int is not kotlin.Any
+>     val c: T & Int = t!!
+> 
+>     // ERROR: Q does not have a nullable upper bound
+>     val d: Q & Any = q!!
+> 
+>     // ERROR: Int? is not a type parameter
+>     val e: Int? & Any = i!!
+> }
+> ```
+
+One may notice the syntax looks like an intersection type $T \amp Any$, and that is not a coincidence, as an intersection type with $Any$ describes exactly a type which cannot hold `null` values.
+For the purposes of the type system, a definitely non-nullable type $T \amp Any$ is consider to be the same as an [intersection type][Intersection types] $T \amp Any$.
+
 #### Intersection types
 
 Intersection types are special *non-denotable* types used to express the fact that a value belongs to *all* of *several* types at the same time.
@@ -1010,6 +1062,7 @@ Thus, the normalization procedure for $\GLB$ may be used to *normalize* an inter
 When needed, the compiler may *approximate* an intersection type to a *denotable concrete* type using [type approximation][Type approximation].
 
 One of the main uses of intersection types are [smart casts][Smart casts].
+Another restricted version of intersection types are [definitely non-nullable types].
 
 #### Integer literal types
 

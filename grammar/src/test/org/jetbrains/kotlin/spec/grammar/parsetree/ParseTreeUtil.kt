@@ -18,6 +18,7 @@ class KotlinParserWithLimitedCache(input: TokenStream): KotlinParser(input) {
     companion object {
         private const val MAX_CACHE_SIZE = 10000
         private val cacheField = _sharedContextCache.javaClass.declaredFields.find { it.name == "cache" }!!.apply { isAccessible = true }
+        @Suppress("UNCHECKED_CAST")
         private val cache = cacheField.get(_sharedContextCache) as HashMap<PredictionContext, PredictionContext>
     }
 
@@ -34,6 +35,7 @@ class KotlinLexerWithLimitedCache(input: CharStream): KotlinLexer(input) {
     companion object {
         private const val MAX_CACHE_SIZE = 10000
         private val cacheField = _sharedContextCache.javaClass.declaredFields.find { it.name == "cache" }!!.apply { isAccessible = true }
+        @Suppress("UNCHECKED_CAST")
         private val cache = cacheField.get(_sharedContextCache) as HashMap<PredictionContext, PredictionContext>
     }
 
@@ -96,7 +98,7 @@ object ParseTreeUtil {
     fun parse(sourceCode: String): Pair<KotlinParseTree, Pair<List<SyntaxError>, List<SyntaxError>>> {
         val lexerErrors = mutableListOf<SyntaxError>()
         val parserErrors = mutableListOf<SyntaxError>()
-        val lexer = KotlinLexerWithLimitedCache(ANTLRInputStream(sourceCode))
+        val lexer = KotlinLexerWithLimitedCache(CharStreams.fromString(sourceCode))
         val tokens = CommonTokenStream(
                 lexer.apply {
                     removeErrorListeners()

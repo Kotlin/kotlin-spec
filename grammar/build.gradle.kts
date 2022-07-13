@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "1.6.0"
     antlr
     `maven-publish`
     kotlin("jvm")
@@ -47,8 +47,8 @@ sourceSets {
 }
 
 dependencies {
-    compile("junit:junit:4.12")
-    antlr("org.antlr:antlr4:4.+")
+    implementation("junit:junit:4.13.2")
+    antlr("org.antlr:antlr4:4.8")
 }
 
 tasks.compileKotlin {
@@ -56,7 +56,7 @@ tasks.compileKotlin {
 }
 
 intellij {
-    version = "IC-2020.2"
+    version.set("IC-2022.1")
 }
 
 tasks.withType<AntlrTask> {
@@ -67,9 +67,22 @@ tasks.withType<AntlrTask> {
     arguments.add("org.jetbrains.kotlin.spec.grammar")
 }
 
+tasks.create("removeFailedMarkerFiles") {
+    doFirst {
+        File("${project.rootDir}/${project.name}/testData")
+            .walkTopDown()
+            .filter { it.isFile && it.extension == "failed" }
+            .forEach { it.delete() }
+    }
+}
+
 tasks.withType<Test> {
+    dependsOn("removeFailedMarkerFiles")
+
     workingDir = File("${project.rootDir}/${project.name}")
     ignoreFailures = project.hasProperty("teamcity")
+
+    systemProperties["TEST_PATH_FILTER"] = System.getProperty("TEST_PATH_FILTER")
 }
 
 tasks.create("removeCompilerTestData") {
@@ -141,14 +154,24 @@ tasks.create("prepareDiagnosticsCompilerTests") {
     }
 }
 
-jar.archiveName = "$archivePrefix-$version.jar"
+val instrumentTestCodeTask = tasks.named("instrumentTestCode")
 
-jar.manifest {
-    attributes(
-        mapOf(
-            "Class-Path" to configurations.runtime.files.joinToString(" ") { it.name }
-        )
-    )
+tasks.named("inspectClassesForKotlinIC") {
+    dependsOn(instrumentTestCodeTask)
 }
 
-jar.from(configurations.runtime.files.map { if (it.isDirectory) it else zipTree(it) })
+tasks.withType<Jar> {
+    dependsOn(instrumentTestCodeTask)
+
+    archiveFileName.set("$archivePrefix-$archiveVersion.jar")
+
+    manifest {
+        attributes(
+            mapOf(
+                "Class-Path" to configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
+            )
+        )
+    }
+
+    from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })
+}

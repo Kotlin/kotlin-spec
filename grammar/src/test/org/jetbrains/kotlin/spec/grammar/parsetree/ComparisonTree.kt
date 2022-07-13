@@ -10,7 +10,7 @@ data class ComparisonTree(
 ) {
 
     fun dump(indent: Int = 0, sb: Appendable = StringBuilder()) {
-        sb.append(" ".repeat(indent)).appendln(text)
+        sb.append(" ".repeat(indent)).appendLine(text)
         for (child in children) child.dump(indent + 2, sb)
     }
     fun dumpChildren(sb: Appendable = StringBuilder()) {

@@ -32,7 +32,7 @@ class SpecTestsLoader {
             false -> """
         <a href="#" 
             data-id="${link.attr("id")}" 
-            data-type="${link.prop("tagName").toString().toLowerCase()}" 
+            data-type="${link.prop("tagName").toString().lowercase()}" 
             class="load-tests" 
             title="Show tests coverage">
             <button>Load tests</button>
@@ -89,7 +89,7 @@ class SpecTestsLoader {
 
         fun showMarkup() {
             `$`("h2, h3, h4, h5").each { _, section ->
-                val sectionTagName = section.tagName.toLowerCase()
+                val sectionTagName = section.tagName.lowercase()
                 val sectionElement = `$`(section)
                 val paragraphsInfo = getParagraphsInfo(sectionElement)
                         ?: return@each null
@@ -111,7 +111,7 @@ class SpecTestsLoader {
         }
 
         private fun getNestedSections(sectionElement: JQuery): List<String> {
-            val placeCurrentSectionLevel = sectionTagNames.indexOf(sectionElement.prop("tagName").toString().toUpperCase())
+            val placeCurrentSectionLevel = sectionTagNames.indexOf(sectionElement.prop("tagName").toString().uppercase())
             val otherSectionTagNames = sectionTagNames.slice(0..placeCurrentSectionLevel)
             val nestedSectionTagNames = sectionTagNames.slice(placeCurrentSectionLevel until sectionTagNames.size)
             var nextSibling = sectionElement.get()[0].nextElementSibling

@@ -692,7 +692,7 @@ Interfaces differ from classes in that they cannot be directly instantiated in t
 In other aspects they are similar to classes, therefore we shall specify their declarations by specifying their differences from class declarations.
 
 * An interface can be declared only in a declaration scope;
-  * Additionally, an interface cannot be declared in an [object literal];
+  * Additionally, an interface cannot be declared in an [object literal][Object literals];
 * An interface cannot have a class as its supertype;
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
@@ -779,7 +779,7 @@ No other values of this type may be declared, making object a single existing va
 Similarly to interfaces, we shall specify object declarations by highlighting their differences from class declarations.
 
 * An object can only be declared in a declaration scope;
-  * Additionally, an object cannot be declared in an [object literal];
+  * Additionally, an object cannot be declared in an [object literal][Object literals];
 * An object type cannot be used as a supertype for other types;
 * An object cannot have an explicit primary or secondary constructor;
 * An object cannot have a companion object;
@@ -820,9 +820,9 @@ A primary $pctor$ or secondary constructor $ctor$ has a corresponding superclass
 
 When a classifier type is initialized using a particular secondary constructor $ctor$ delegated to primary constructor $pctor$ which, in turn, is delegated to the corresponding superclass constructor $sctor$, the following happens, in this *initialization order*:
 
-- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters *in the order of appearance in the constructor declaration*;
 - The superclass object is initialized as if created by invoking $sctor$ with the specified parameters;
 - Interface delegation expressions are invoked and the result of each is stored in the object to allow for interface delegation, *in the order of appearance of delegation declarations in the supertype specifier list*;
+- $pctor$ is invoked using the specified parameters, initializing all the properties declared by its property parameters *in the order of appearance in the constructor declaration*;
 - Each property initialization code as well as the initialization blocks in the class body are invoked *in the order of appearance in the class body*;
 - $ctor$ body is invoked using the specified parameters.
 
@@ -846,7 +846,12 @@ It stays unspecified even after the "proper" initialization is performed.
 >     }
 > }
 > 
-> class Init(val a: Number /* (1) */) : Base(0xC0FFEE) /* (2) */ {
+> interface I
+>
+> class Init(val a: Number) : Base(0xC0FFEE) /* (2) */,
+>     I by object : I {
+>         init { println("2.5") }
+>     } /* (2.5) */ {
 > 
 >     init {
 >         println("3: $this") /* (3) */
@@ -1752,6 +1757,62 @@ Reified type parameters can only be substituted by other [runtime-available type
 > 
 > inline fun <reified T> foo(value: Any?) {
 >     if(value is T) ... // Ok
+> }
+> ```
+
+#### Underscore type arguments
+
+In case one needs to explicitly specify some type parameters via [type arguments][Parameterized classifier types], but wants to use [type inference] for the rest, they can use an *underscore type argument*.
+
+An underscore type argument does not add any type information to the [constraint system][Kotlin type constraints] *besides the presence of a type parameter*, i.e., parameterized declaration with different number of type parameters could be distinguished by different number of underscore type arguments.
+
+If the type inference is successfull, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
+If the type inference is not successfull, it is a compile-time error.
+
+> Example:
+> ```kotlin
+> fun <T> mk(): T = TODO()
+> 
+> interface MyRunnable<T> {
+>     fun execute(): T
+> }
+> 
+> class StringRunnable : MyRunnable<String> {
+>     override fun execute(): String = "test"
+> }
+> 
+> class IntRunnable : MyRunnable<Int> {
+>     override fun execute(): Int = 42
+> }
+> 
+> inline fun <reified S : MyRunnable<T>, T> run(): T = mk<S>().execute()
+> 
+> fun main() {
+>     val s = run<StringRunnable, _ /* inferred to String */>()
+>     assert(s == "test")
+> 
+>     val i = run<IntRunnable, _ /* inferred to Int */>()
+>     assert(i == 42)
+> }
+> ```
+
+> Example:
+> ```kotlin
+> fun <T> foo(t: T): T = TODO() // (1)
+> fun <T, R : List<T>> foo(t: T, d: Double = 42.0): T = TODO() // (2)
+> 
+> fun bar() {
+>     val a: Boolean = foo(true)
+>     // resolves to (1)
+>     // per overload resolution rules
+> 
+>     val b: Int = foo<_ /* U1 */>(42)
+>     // resolves to (1)
+>     // with U1 inferred to Int
+> 
+>     val c: Double = foo<_ /* U1 */, _ /* U2 */>(42.0)
+>     // resolves to (2)
+>     // with U1 inferred to Double and U2 inferred to List<Double>
 > }
 > ```
 

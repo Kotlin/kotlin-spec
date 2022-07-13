@@ -72,9 +72,14 @@ object TestUtil {
         }
     }
 
-    fun getTestData(testFile: File): TestData {
-        val relativePath = "${testFile.parent}/${testFile.nameWithoutExtension}"
+    val File.testPathPrefix: String get() {
+        val relativePath = "${parent}/${nameWithoutExtension}"
         val testPathPrefix = "$TESTS_DIR/$relativePath"
+        return testPathPrefix
+    }
+
+    fun getTestData(testFile: File): TestData {
+        val testPathPrefix = testFile.testPathPrefix
         val sourceCodeFile = File("$testPathPrefix.kt")
         val sourceCode = sourceCodeFile.readText()
         val antlrTreeFile = File("$testPathPrefix.antlrtree.txt")

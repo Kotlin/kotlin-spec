@@ -1,6 +1,4 @@
-import at.phatbl.shellexec.ShellExec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.nio.file.Paths
 import java.net.URI
 
 plugins {
@@ -56,13 +54,13 @@ dependencies {
     implementation("ru.spbstu:g4-to-ebnf:0.0.0.4")
     implementation("ru.spbstu:kotlin-pandoc:0.0.15")
     implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
-    implementation("com.github.ajalt:clikt:1.7.0")
-    implementation("com.zaxxer:nuprocess:2.0.1")
-    implementation("org.antlr:antlr4:4.+")
+    implementation("com.github.ajalt:clikt:2.8.0")
+    implementation("com.zaxxer:nuprocess:2.0.3")
+    implementation("org.antlr:antlr4:4.8")
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 
 tasks.create<Jar>("filtersJar") {
@@ -86,7 +84,7 @@ tasks.create<JavaExec>("convertGrammar") {
     outputs.file(outputFile)
 
     classpath = sourceSets["main"].runtimeClasspath
-    main = "org.jetbrains.kotlin.spec.ConvertGrammarKt"
+    mainClass.set("org.jetbrains.kotlin.spec.ConvertGrammarKt")
     args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
 
@@ -102,15 +100,15 @@ tasks.create("prepareShell") {
 
     doFirst {
         val res = with(StringBuilder()) {
-            appendln("PROJECT_DIR=$projectDir")
-            if (disableTODOS) appendln("TODO_OPTION=--disable-todos")
-            else appendln("TODO_OPTION=--enable-todos")
+            appendLine("PROJECT_DIR=$projectDir")
+            if (disableTODOS) appendLine("TODO_OPTION=--disable-todos")
+            else appendLine("TODO_OPTION=--enable-todos")
 
             if (enableStaticMath) {
-                appendln("STATIC_MATH_OPTION=--enable-static-math")
-                appendln("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
+                appendLine("STATIC_MATH_OPTION=--enable-static-math")
+                appendLine("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
             }
-            else appendln("STATIC_MATH_OPTION=--disable-static-math")
+            else appendLine("STATIC_MATH_OPTION=--disable-static-math")
         }
 
         File("$buildDir/prepare.sh").writeText("$res")
@@ -143,7 +141,7 @@ tasks.create<JavaExec>("execute") {
 
     classpath = sourceSets["main"].runtimeClasspath
 
-    main = project.findProperty("mainClass") as? String ?: ""
+    mainClass.set(project.findProperty("mainClass") as? String ?: "")
     args = (project.findProperty("args") as? String)?.split(" ") ?: emptyList()
     val wd = project.findProperty("workDir") as? String
     workingDir = wd?.let { File(it) } ?: File(".")

@@ -91,6 +91,7 @@ delegationSpecifier
     | explicitDelegation
     | userType
     | functionType
+    | SUSPEND NL* functionType
     ;
 
 constructorInvocation
@@ -247,7 +248,7 @@ enumEntry
 // SECTION: types
 
 type
-    : typeModifiers? (parenthesizedType | nullableType | typeReference | functionType)
+    : typeModifiers? (functionType | parenthesizedType | nullableType | typeReference | definitelyNonNullableType)
     ;
 
 typeReference
@@ -306,6 +307,10 @@ parenthesizedUserType
     : LPAREN NL* (userType | parenthesizedUserType) NL* RPAREN
     ;
 
+definitelyNonNullableType
+    : typeModifiers? (userType | parenthesizedUserType) NL* AMP NL* typeModifiers? (userType | parenthesizedUserType)
+    ;
+
 // SECTION: statements
 
 statements
@@ -354,12 +359,10 @@ assignment
 
 semi
     : (SEMICOLON | NL) NL*
-    | EOF
     ;
 
 semis
     : (SEMICOLON | NL)+
-    | EOF
     ;
 
 // SECTION: expressions

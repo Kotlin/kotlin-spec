@@ -5,7 +5,7 @@ enum class TestType(val shortName: String) {
     Negative("neg");
 
     override fun toString(): String {
-        return name.toLowerCase()
+        return name.lowercase()
     }
 
     companion object {

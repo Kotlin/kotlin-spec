@@ -1,7 +1,7 @@
 import at.phatbl.shellexec.ShellExec
 
 plugins {
-    kotlin("jvm") version "1.4.31" apply false
+    kotlin("jvm") version "1.7.0" apply false
     id("at.phatbl.shellexec") version "1.5.2"
 }
 
