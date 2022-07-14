@@ -15,7 +15,6 @@ plugins {
 group = "org.jetbrains.kotlin.spec.grammar"
 version = "0.1"
 
-val jar: Jar by tasks
 val archivePrefix = "kotlin-grammar-parser"
 
 repositories {
@@ -163,7 +162,7 @@ tasks.named("inspectClassesForKotlinIC") {
 tasks.withType<Jar> {
     dependsOn(instrumentTestCodeTask)
 
-    archiveFileName.set("$archivePrefix-$archiveVersion.jar")
+    archiveFileName.set("$archivePrefix-${archiveVersion.get()}.jar")
 
     manifest {
         attributes(
