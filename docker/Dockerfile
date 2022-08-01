@@ -26,3 +26,6 @@ RUN tlmgr install --no-persistent-downloads cancel
 RUN tlmgr install --no-persistent-downloads todonotes
 RUN tlmgr install --no-persistent-downloads titlesec
 RUN tlmgr install --no-persistent-downloads newunicodechar
+
+# add build-spec.sh file for GitHub Actions
+COPY build-spec.sh /build-spec.sh
