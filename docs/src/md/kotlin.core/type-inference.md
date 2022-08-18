@@ -454,7 +454,7 @@ TODO(Is this true?)
 
 ### Function signature type inference
 
-Function signature type inference is a variant of [local type inference], which is performed for [function declarations], [lambda literals] and [anonymous function declarations].
+Function signature type inference is a variant of [local type inference], which is performed for [function declarations][Function declaration], [lambda literals] and [anonymous function declarations].
 
 #### Named and anonymous function declarations
 
