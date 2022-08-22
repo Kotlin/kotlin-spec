@@ -9,9 +9,9 @@ for actual in `find "${TEST_DATA}" -name "*.actual"`; do
     cmp -s "actual_old_diff.tmp" "$REF"
 
     if [[ $? == 0 ]]; then
-	mv $actual $old
+        mv $actual $old
     else
-	echo "$actual"
-	echo `diff "$actual" "$old"`
+        echo "$actual"
+        echo `diff "$actual" "$old"`
     fi
 done
