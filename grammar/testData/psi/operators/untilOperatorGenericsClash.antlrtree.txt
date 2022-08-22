@@ -20,10 +20,69 @@ File: untilOperatorGenericsClash.kt - afc441d87b36516c26d14e4ca987be45
           simpleIdentifier
             Identifier("x")
           COLON(":")
-          RANGE("..")
-          LANGLE("<")
-          Identifier("Int")
-          RANGLE(">")
+          RANGE_UNTIL("..<")
+          type
+            typeReference
+              userType
+                simpleUserType
+                  simpleIdentifier
+                    Identifier("Int")
+        RANGLE(">")
+        ASSIGNMENT("=")
+        IntegerLiteral("1")
+    semis
+      NL("\n")
+  topLevelObject
+    declaration
+      propertyDeclaration
+        VAL("val")
+        variableDeclaration
+          simpleIdentifier
+            Identifier("x")
+        ASSIGNMENT("=")
+        RANGE_UNTIL("..<")
+        expression
+          disjunction
+            conjunction
+              equality
+                comparison
+                  genericCallLikeComparison
+                    infixOperation
+                      elvisExpression
+                        infixFunctionCall
+                          rangeExpression
+                            additiveExpression
+                              multiplicativeExpression
+                                asExpression
+                                  prefixUnaryExpression
+                                    postfixUnaryExpression
+                                      primaryExpression
+                                        simpleIdentifier
+                                          Identifier("Int")
+                  comparisonOperator
+                    RANGLE(">")
+                  genericCallLikeComparison
+                    infixOperation
+                      elvisExpression
+                        infixFunctionCall
+                          rangeExpression
+                            additiveExpression
+                              multiplicativeExpression
+                                asExpression
+                                  prefixUnaryExpression
+                                    postfixUnaryExpression
+                                      primaryExpression
+                                        callableReference
+                                          COLONCOLON("::")
+                                          CLASS("class")
+        NL("\n")
+  topLevelObject
+    declaration
+      propertyDeclaration
+        VAL("val")
+        variableDeclaration
+          simpleIdentifier
+            Identifier("x")
         ASSIGNMENT("=")
         expression
           disjunction
@@ -41,36 +100,11 @@ File: untilOperatorGenericsClash.kt - afc441d87b36516c26d14e4ca987be45
                                   prefixUnaryExpression
                                     postfixUnaryExpression
                                       primaryExpression
-                                        literalConstant
-                                          IntegerLiteral("1")
-        NL("\n")
-  topLevelObject
-    declaration
-      propertyDeclaration
-        VAL("val")
-        variableDeclaration
-          simpleIdentifier
-            Identifier("x")
-        ASSIGNMENT("=")
-        RANGE("..")
+        Identifier("`..`")
         LANGLE("<")
         Identifier("Int")
         RANGLE(">")
         COLONCOLON("::")
-  topLevelObject
-    declaration
-      classDeclaration
-        CLASS("class")
-        NL("\n")
-        simpleIdentifier
-          VAL("val")
-          Identifier("x")
-  ASSIGNMENT("=")
-  Identifier("`..`")
-  LANGLE("<")
-  Identifier("Int")
-  RANGLE(">")
-  COLONCOLON("::")
   topLevelObject
     declaration
       classDeclaration
