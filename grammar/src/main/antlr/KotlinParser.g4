@@ -140,7 +140,7 @@ anonymousInitializer
     ;
 
 companionObject
-    : modifiers? COMPANION NL* OBJECT
+    : modifiers? COMPANION NL* DATA? NL* OBJECT
       (NL* simpleIdentifier)?
       (NL* COLON NL* delegationSpecifiers)?
       (NL* classBody)?
@@ -596,7 +596,7 @@ functionLiteral
     ;
 
 objectLiteral
-    : OBJECT (NL* COLON NL* delegationSpecifiers NL*)? (NL* classBody)?
+    : DATA? NL* OBJECT (NL* COLON NL* delegationSpecifiers NL*)? (NL* classBody)?
     ;
 
 thisExpression
