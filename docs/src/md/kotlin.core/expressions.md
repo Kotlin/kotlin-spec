@@ -711,15 +711,16 @@ The type of elvis operator expression is the [least upper bound][Least upper bou
 :::{.paste target=grammar-rule-rangeExpression}
 :::
 
-A *range expression* is a binary expression which uses a range operator `..`.
-It is an [overloadable][Operator overloading] operator with the following expansion:
+A *range expression* is a binary expression which uses a range operator `..` or a range-until operator `..<`.
+These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A..B` is exactly the same as `A.rangeTo(B)`
+- `A..<B` is exactly the same as `A.rangeUntil(B)`
 
-where `rangeTo` is a valid operator function available in the current scope.
+where `rangeTo` or `rangeUntil` is a valid operator function available in the current scope.
 
-The return type of this function is not restricted.
-A range expression has the same type as the return type of the corresponding `rangeTo` overload variant.
+The return type of these functions is not restricted.
+A range expression has the same type as the return type of the corresponding operator function overload variant.
 
 ### Additive expressions
 
