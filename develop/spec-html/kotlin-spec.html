@@ -2509,6 +2509,8 @@
 <dd><span class="sentence">[<em><a href="#grammar-rule-modifiers">modifiers</a></em>]<br />
 <code>'companion'</code><br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+[<code>'data'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
 <code>'object'</code><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>]<br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
@@ -3031,7 +3033,7 @@
 <div id="grammar-rule-rangeExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+<dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {(<code>'..'</code> | <code>'..&lt;'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -3370,7 +3372,11 @@
 <div id="grammar-rule-objectLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'object'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}] [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
+<dd><span class="sentence">[<code>'data'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'object'</code><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -9507,7 +9513,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <ul>
 <li><span class="sentence">A <code>sealed</code> class is implicitly <code>abstract</code> (and these two modifiers are exclusive);</span></li>
 <li><span class="sentence">A <code>sealed</code> class or interface can only be inherited from by types declared in the same package and in the same <a href="#modules">module</a>, and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from <code>sealed</code> types);</span></li>
-<li><span class="sentence"><code>Sealed</code> classes and interfaces allow for exhaustiveness checking of <a href="#when-expressions">when expressions</a> for values of such types. </span><span class="sentence">Any sealed type <code>S</code> is associated with its <em>direct non-sealed subtypes</em>: a set of non-sealed types, which are either direct subtypes of <code>S</code> or transitive subtypes of <code>S</code> via some number of other <em>sealed</em> types. </span><span class="sentence">These direct non-sealed subtypes form the boundary for exhaustiveness checks.</span></li>
+<li><span class="sentence"><code>Sealed</code> classes and interfaces allow for exhaustiveness checking of <a href="#exhaustive-when-expressions">when expressions</a> for values of such types. </span><span class="sentence">Any sealed type <code>S</code> is associated with its <em>direct non-sealed subtypes</em>: a set of non-sealed types, which are either direct subtypes of <code>S</code> or transitive subtypes of <code>S</code> via some number of other <em>sealed</em> types. </span><span class="sentence">These direct non-sealed subtypes form the boundary for exhaustiveness checks.</span></li>
 </ul>
 <h4 id="inheritance-from-built-in-types">Inheritance from built-in types</h4>
 <div class="paragraph">
@@ -9800,7 +9806,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </ul>
 <h3 id="labels">Labels</h3>
 <div class="paragraph">
-<p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence"><a href="#lambda-literals">Lambda expressions</a>) and <a href="#loop-statements">loop statements</a> are allowed to be labeled, with label identifier associated with the corresponding entity.</span></p>
+<p><span class="sentence">Labels are special syntactic marks which allow one to reference certain code fragments or elements. </span><span class="sentence"><a href="#lambda-literals">Lambda expressions</a> and <a href="#loop-statements">loop statements</a> are allowed to be labeled, with label identifier associated with the corresponding entity.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -11286,21 +11292,22 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <div id="grammar-rule-rangeExpression-pasted-58" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+<dd><span class="sentence"><em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em> {(<code>'..'</code> | <code>'..&lt;'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code> or a range-until operator <code>..&lt;</code>. </span><span class="sentence">These are <a href="#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A..B</code> is exactly the same as <code>A.rangeTo(B)</code></span></li>
+<li><span class="sentence"><code>A..&lt;B</code> is exactly the same as <code>A.rangeUntil(B)</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">where <code>rangeTo</code> is a valid operator function available in the current scope.</span></p>
+<p><span class="sentence">where <code>rangeTo</code> or <code>rangeUntil</code> is a valid operator function available in the current scope.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The return type of this function is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding <code>rangeTo</code> overload variant.</span></p>
+<p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="additive-expressions">Additive expressions</h3>
 <div id="grammar-rule-additiveExpression-pasted-59" class="grammar-rule">
@@ -12210,7 +12217,11 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <div id="grammar-rule-objectLiteral-pasted-89" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'object'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}] [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
+<dd><span class="sentence">[<code>'data'</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'object'</code><br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-classBody">classBody</a></em>]</span>
 </dd>
 </dl>
 </div>
@@ -15921,7 +15932,7 @@ P_2 \times N_2
 </blockquote>
 <h3 id="function-signature-type-inference">Function signature type inference</h3>
 <div class="paragraph">
-<p><span class="sentence">Function signature type inference is a variant of <a href="#local-type-inference">local type inference</a>, which is performed for [function declarations], <a href="#lambda-literals">lambda literals</a> and <a href="#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
+<p><span class="sentence">Function signature type inference is a variant of <a href="#local-type-inference">local type inference</a>, which is performed for <a href="#function-declaration">function declarations</a>, <a href="#lambda-literals">lambda literals</a> and <a href="#anonymous-function-declarations">anonymous function declarations</a>.</span></p>
 </div>
 <h4 id="named-and-anonymous-function-declarations">Named and anonymous function declarations</h4>
 <div class="paragraph">
