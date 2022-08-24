@@ -5,7 +5,7 @@ import org.w3c.dom.get
 import kotlinx.browser.window
 
 fun String.format(vararg args: Any): String {
-    return this.replace(Regex("""\{(\d+)}""", RegexOption.MULTILINE)) {
+    return this.replace(Regex("""\{(\d+)\}""", RegexOption.MULTILINE)) {
         val number = it.groupValues[1].toInt()
 
         if (args.size >= number) args[number - 1].toString() else ""
