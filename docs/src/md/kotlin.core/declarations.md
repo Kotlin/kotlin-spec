@@ -1154,6 +1154,18 @@ Particular platforms may introduce additional restrictions or guarantees for the
 > }
 > ```
 
+#### Infix functions
+
+A function may be declared as an *infix* function by using a special `infix` modifier.
+An infix function can be called in an [infix form][Infix function call], i.e., `a foo b` instead of `a.foo(b)`.
+
+To be a valid infix function, function $F$ must satisfy the following requirements.
+
+* $F$ has a dispatch or an extension [receiver][Receivers]
+* $F$ has exactly one parameter
+
+TODO(Examples)
+
 #### Tail recursion optimization
 
 A function may be declared *tail-recursive* by using a special `tailrec` modifier.
