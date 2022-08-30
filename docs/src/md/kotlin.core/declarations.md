@@ -1166,6 +1166,27 @@ To be a valid infix function, function $F$ must satisfy the following requiremen
 
 TODO(Examples)
 
+#### Local function declaration
+
+A function may be declared *locally* inside a [statement scope][Scopes and identifiers] (namely, inside another function).
+Such declarations are similar to [function literals] in that they may capture values available in the scope they are declared in.
+Otherwise they are similar to regular function declarations.
+
+```kotlin
+fun foo() {
+    var x = 2
+    
+    fun bar(): Int {
+        return x
+    }
+    
+    println(bar()) // 2
+
+    x = 42
+    println(bar()) // 42
+}
+```
+
 #### Tail recursion optimization
 
 A function may be declared *tail-recursive* by using a special `tailrec` modifier.
