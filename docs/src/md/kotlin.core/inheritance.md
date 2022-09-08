@@ -29,7 +29,7 @@ When a classifier type $A$ is declared with base types $B_1, \dots, B_m$, it int
 
 A class declared `abstract` cannot be instantiated, i.e., an object of this class cannot be created directly.
 Abstract classes are implicitly `open` and their primary purpose is to be inherited from.
-Only abstract classes allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
+Abstract classes (similarly to [interfaces][Interface declaration]) allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
 
 #### Sealed classes and interfaces
 
@@ -74,8 +74,8 @@ As Kotlin is a language with single inheritance (only one supertype can be a cla
 
 * If a derived classifier type inherits a declaration from its superclass, no other matching *abstract* declarations from its superinterfaces are inherited.
 
-* If a derived classifier type inherits several matching declarations from its supertypes, it is a compile-time error (this means a derived classifier type should override such declarations).
-* If a derived classifier type inherits a single *abstract* declaration from its supertypes, it is a compile-time error (this means a derived classifier type should override such declaration).
+* If a derived classifier type inherits *several* matching declarations from its supertypes, it is a compile-time error (this means a derived classifier type should override such declarations).
+* If a derived *concrete* classifier type inherits an *abstract* declaration from its supertypes, it is a compile-time error (this means a derived classifier type should override such declaration).
 
 TODO(Examples)
 

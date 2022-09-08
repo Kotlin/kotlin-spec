@@ -700,7 +700,8 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * An interface cannot have inner classes;
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
-    * Trying to declare a non-public member property or function in an interface is an compile-time error.
+    * Trying to declare a non-public member property or function in an interface is an compile-time error;
+* Interface member properties and functions without implementation are implicitly abstract.
 
 ##### Functional interface declaration
 
@@ -947,7 +948,7 @@ In other cases return type $R$ cannot be omitted and must be specified explicitl
 > As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`-typesystem] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
 Function body $b$ is optional; if it is omitted, a function declaration creates an *abstract* function, which does not have an implementation.
-This is allowed only inside an [abstract class][Abstract classes-declarations].
+This is allowed only inside an [abstract class][Abstract classes-declarations] or an [interface][Interface declaration].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
 [`kotlin.Nothing`-typesystem]: #kotlin.nothing-typesystem
@@ -1666,7 +1667,7 @@ The scope where it is accessible is defined by its [*visibility modifiers*][Decl
 
 > Examples:
 > ```kotlin
-> // simple typ ealias declaration
+> // simple typealias declaration
 > typealias IntList = List<Int>
 > // parameterized type alias declaration
 > // T has out variance implicitly
@@ -1799,8 +1800,8 @@ In case one needs to explicitly specify some type parameters via [type arguments
 
 An underscore type argument does not add any type information to the [constraint system][Kotlin type constraints] *besides the presence of a type parameter*, i.e., parameterized declaration with different number of type parameters could be distinguished by different number of underscore type arguments.
 
-If the type inference is successfull, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
-If the type inference is not successfull, it is a compile-time error.
+If the type inference is successful, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
+If the type inference is not successful, it is a compile-time error.
 
 > Example:
 > ```kotlin
