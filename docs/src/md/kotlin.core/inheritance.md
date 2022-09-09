@@ -72,10 +72,11 @@ If the declaration $B$ of the base classifier type is inheritable, no other inhe
 
 As Kotlin is a language with single inheritance (only one supertype can be a class, any number of supertypes can be an interface), there are several additional rules which refine how declarations are inherited.
 
-* If a derived classifier type inherits a declaration from its superclass, no other matching *abstract* declarations from its superinterfaces are inherited.
+* If a derived class type inherits a declaration from its superclass, no other matching *abstract* declarations from its superinterfaces are inherited.
 
-* If a derived classifier type inherits *several* matching declarations from its supertypes, it is a compile-time error (this means a derived classifier type should override such declarations).
+* If a derived classifier type inherits *several* matching *concrete* declarations from its supertypes, it is a compile-time error (this means a derived classifier type should override such declarations).
 * If a derived *concrete* classifier type inherits an *abstract* declaration from its supertypes, it is a compile-time error (this means a derived classifier type should override such declaration).
+* If a derived classifier type inherits both an *abstract* and a *concrete* declaration from its superinterfaces, it is a compile-time error (this means a derived classifier type should override such declarations).
 
 TODO(Examples)
 
