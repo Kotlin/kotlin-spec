@@ -8680,30 +8680,40 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb70"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">fee</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span></span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">inl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>               <span class="kw">crossinline</span> <span class="va">cinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
-<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>               <span class="va">noinline</span> <span class="va">noinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be called</span></span>
-<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>    inl()</span>
-<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>    cinl()</span>
-<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>    noinl()</span>
-<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be passed as inline</span></span>
-<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>    fee(inl)</span>
-<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>    fee(cinl)</span>
-<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>    fee(noinl)</span>
-<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// passing to non-inline function</span></span>
-<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// is allowed only for noinline parameters</span></span>
-<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>    bar(inl) <span class="co">// not allowed</span></span>
-<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>    bar(cinl) <span class="co">// not allowed</span></span>
-<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>    bar(noinl) <span class="co">// allowed</span></span>
-<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// capturing in a lambda expression</span></span>
-<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// is allowed for noinline/crossinline parameters</span></span>
-<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> inl() <span class="op">}</span>) <span class="co">// not allowed</span></span>
-<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> cinl() <span class="op">}</span>) <span class="co">// allowed</span></span>
-<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> noinl() <span class="op">}</span>) <span class="co">// allowed</span></span>
-<span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">inlineParameter</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">noinlineParameter</span><span class="op">(</span><span class="va">noinline</span> <span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">crossinlineParameter</span><span class="op">(</span><span class="kw">crossinline</span> <span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">inl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>               <span class="kw">crossinline</span> <span class="va">cinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>               <span class="va">noinline</span> <span class="va">noinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be called</span></span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a>    inl()</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>    cinl()</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>    noinl()</span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be passed as inline</span></span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>    inlineParameter(inl)</span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>    inlineParameter(cinl)</span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>    inlineParameter(noinl)</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// only noinline arguments may be passed as noinline</span></span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(inl) <span class="co">// not allowed</span></span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(cinl) <span class="co">// not allowed</span></span>
+<span id="cb70-21"><a href="#cb70-21" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(noinl)</span>
+<span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// noinline/crossinline arguments may be passed as crossinline</span></span>
+<span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(inl) <span class="co">// not allowed</span></span>
+<span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(cinl)</span>
+<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(noinl)</span>
+<span id="cb70-26"><a href="#cb70-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// only noinline arguments may be passed to non-inline functions</span></span>
+<span id="cb70-27"><a href="#cb70-27" aria-hidden="true" tabindex="-1"></a>    bar(inl) <span class="co">// not allowed</span></span>
+<span id="cb70-28"><a href="#cb70-28" aria-hidden="true" tabindex="-1"></a>    bar(cinl) <span class="co">// not allowed</span></span>
+<span id="cb70-29"><a href="#cb70-29" aria-hidden="true" tabindex="-1"></a>    bar(noinl)</span>
+<span id="cb70-30"><a href="#cb70-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// noinline/crossinline parameters may be captured in lambda literals</span></span>
+<span id="cb70-31"><a href="#cb70-31" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> inl() <span class="op">}</span>) <span class="co">// not allowed</span></span>
+<span id="cb70-32"><a href="#cb70-32" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> cinl() <span class="op">}</span>)</span>
+<span id="cb70-33"><a href="#cb70-33" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> noinl() <span class="op">}</span>)</span>
+<span id="cb70-34"><a href="#cb70-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="infix-functions">Infix functions</h4>
 <div class="paragraph">
