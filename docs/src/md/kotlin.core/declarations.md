@@ -1129,8 +1129,12 @@ Particular platforms may introduce additional restrictions or guarantees for the
 > Examples:
 > 
 > ```kotlin
-> fun bar(value: Any?) {...}
-> inline fun fee(arg: () -> Unit) {...}
+> fun bar(value: Any?) {}
+> 
+> inline fun inlineParameter(arg: () -> Unit) { arg() }
+> inline fun noinlineParameter(noinline arg: () -> Unit) { arg() }
+> inline fun crossinlineParameter(crossinline arg: () -> Unit) { arg() }
+> 
 > inline fun foo(inl: () -> Unit,
 >                crossinline cinl: () -> Unit,
 >                noinline noinl: () -> Unit) {
@@ -1139,19 +1143,25 @@ Particular platforms may introduce additional restrictions or guarantees for the
 >     cinl()
 >     noinl()
 >     // all arguments may be passed as inline
->     fee(inl)
->     fee(cinl)
->     fee(noinl)
->     // passing to non-inline function
->     // is allowed only for noinline parameters
+>     inlineParameter(inl)
+>     inlineParameter(cinl)
+>     inlineParameter(noinl)
+>     // only noinline arguments may be passed as noinline
+>     noinlineParameter(inl) // not allowed
+>     noinlineParameter(cinl) // not allowed
+>     noinlineParameter(noinl)
+>     // noinline/crossinline arguments may be passed as crossinline
+>     crossinlineParameter(inl) // not allowed
+>     crossinlineParameter(cinl)
+>     crossinlineParameter(noinl)
+>     // only noinline arguments may be passed to non-inline functions
 >     bar(inl) // not allowed
 >     bar(cinl) // not allowed
->     bar(noinl) // allowed
->     // capturing in a lambda expression
->     // is allowed for noinline/crossinline parameters
+>     bar(noinl)
+>     // noinline/crossinline parameters may be captured in lambda literals
 >     bar({ inl() }) // not allowed
->     bar({ cinl() }) // allowed
->     bar({ noinl() }) // allowed
+>     bar({ cinl() })
+>     bar({ noinl() })
 > }
 > ```
 
