@@ -918,7 +918,7 @@ If the evaluation result of `e` is not equal to `null`, the result of `e!!` is t
 
 If the type of `e` is non-nullable, not-null assertion expression `e!!` has no effect.
 
-The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the type of `e`.
+The type of not-null assertion expression is the [non-nullable][Nullable types] variant of the type of `e`.
 
 > Note: this type may be non-denotable in Kotlin and, as such, may be [approximated][Type approximation] in some situations with the help of [type inference][Type inference].
 
