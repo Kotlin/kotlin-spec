@@ -659,9 +659,6 @@ Annotation classes cannot be constructed directly unless passed as arguments to 
 
 #### Value class declaration
 
-> Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature.
-> There is, however, a number of value classes in Kotlin standard library.
-
 A class may be declared a **value** class by using `inline` or `value` modifier in its declaration.
 Value classes must adhere to the following limitations:
 
