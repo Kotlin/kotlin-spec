@@ -1,1 +1,0 @@
-val bar: (Int) -> Unit = fun(a) {}
