@@ -694,17 +694,20 @@ Value classes must adhere to the following limitations:
 * Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
 * This property cannot be specified as `vararg` constructor argument;
 * This property must be declared `public`;
-* This property must be of [a runtime-available type][Runtime-available types];
 * They must not override `equals` and `hashCode` member functions of `kotlin.Any`;
 * They must not have any base classes besides `kotlin.Any`;
 * No other properties of this class may have backing fields.
 
 > Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
 
+> Note: before Kotlin 1.8, value classes supported only properties of [a runtime-available types].
+
 Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
 Unless `toString` is overridden by the value class definition, it is also implicitly overridden by delegating to the data property.
 In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
 This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+
+> Note: when inlining a data property of a non-runtime-available type $U$ (i.e., a non-reified type parameter), the property is considered to be of type, which is the runtime-available upper bound of $U$.
 
 Due to these restrictions, it is highly discouraged to use value classes with the [reference equality operators][Reference equality expressions].
 
