@@ -38,8 +38,6 @@ There are three kinds of classifier declarations:
 
 > Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
 
-
-
 #### Class declaration
 
 A simple class declaration consists of the following parts.
@@ -720,6 +718,8 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * An interface can be declared only in a declaration scope;
   * Additionally, an interface cannot be declared in an [object literal][Object literals];
 * An interface cannot have a class as its supertype;
+    * This also means it is not considered to have `kotlin.Any` as its supertype for the purposes of [inheriting] and [overriding] callables;
+    * However, it is still considered to be a subtype of `kotlin.Any` w.r.t. [subtyping];
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
 * Interface properties cannot be delegated;
