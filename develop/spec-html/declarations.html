@@ -1505,7 +1505,6 @@
 <li><span class="sentence">Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;</span></li>
 <li><span class="sentence">This property cannot be specified as <code>vararg</code> constructor argument;</span></li>
 <li><span class="sentence">This property must be declared <code>public</code>;</span></li>
-<li><span class="sentence">This property must be of <a href="runtime-type-information.html#runtime-available-types">a runtime-available type</a>;</span></li>
 <li><span class="sentence">They must not override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code>;</span></li>
 <li><span class="sentence">They must not have any base classes besides <code>kotlin.Any</code>;</span></li>
 <li><span class="sentence">No other properties of this class may have backing fields.</span></li>
@@ -1515,9 +1514,23 @@
 <p><span class="sentence">Note: <code>inline</code> modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.</span></p>
 </div>
 </blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: before Kotlin 1.8, value classes supported only properties of [a runtime-available types].</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Value classes implicitly override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code> by delegating them to their only data property. </span><span class="sentence">Unless <code>toString</code> is overridden by the value class definition, it is also implicitly overridden by delegating to the data property. </span><span class="sentence">In addition to these, an value class is allowed by the implementation to be <strong>inlined</strong> where applicable, so that its data property is operated on instead. </span><span class="sentence">This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: when inlining a data property of a non-runtime-available type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+ (i.e., a non-reified type parameter), the property is considered to be of type, which is the runtime-available upper bound of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Due to these restrictions, it is highly discouraged to use value classes with the <a href="expressions.html#reference-equality-expressions">reference equality operators</a>.</span></p>
 </div>
