@@ -54,6 +54,11 @@ dependencies {
     implementation("ru.spbstu:g4-to-ebnf:0.0.0.4")
     implementation("ru.spbstu:kotlin-pandoc:0.0.15")
     implementation("ru.spbstu:simple-diagrammer:0.0.0.7")
+    constraints {
+        implementation("org.apache.commons:commons-text:1.10.0") {
+            because("versions below 1.10 are vulnerable (https://security.snyk.io/vuln/SNYK-JAVA-ORGAPACHECOMMONS-3043138)")
+        }
+    }
     implementation("com.github.ajalt:clikt:2.8.0")
     implementation("com.zaxxer:nuprocess:2.0.3")
     implementation("org.antlr:antlr4:4.8")
