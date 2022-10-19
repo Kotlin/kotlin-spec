@@ -1551,15 +1551,17 @@ A return expression with no value implicitly returns the `kotlin.Unit` object.
 
 There are two forms of return expression: a simple return expression, specified using the non-labeled `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function declaration][Anonymous function declarations]), and a labeled return expression of the form `return@Context` which works as follows.
 
-- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function.
-  If several declarations match the same name, the `return@Context` is considered to be from the nearest matching function;
-- If `return@Context` is used inside a non-labeled lambda literal, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal;
-- If `return@Context` is used inside a labeled lambda literal, the label may be used as `Context` to refer to the lambda literal.
+- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function;
+- If `return@Context` is used inside a non-labeled [function literal][Function literals], the name of the function *using* this function literal as its argument may be used as `Context` to refer to the function literal;
+- If `return@Context` is used inside a labeled function literal, the label may be used as `Context` to refer to the function literal;
+- If several entities match the same label, the `return@Context` is considered to be from the nearest matching entity.
 
-If a return expression is used in the context of a lambda literal which is *not* [*inlined*][Inlining] in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.
+If a return expression is used in the context of a function literal which is *not* [*inlined*][Inlining] in the current context and refers to any function scope declared outside this function literal (i.e., such return would cross the function boundary), it is disallowed and should result in a compile-time error.
 
-> Note: these rules mean a simple return expression inside a lambda expression returns **from the innermost function** in which this lambda expression is defined.
-> They also mean such return expression is allowed only inside **inlined** lambda expressions.
+> Note: such cross-boundary return expressions are also called "non-local".
+
+> Note: these rules mean a simple return expression inside a lambda expression returns *from the innermost function declaration* in which this lambda expression is defined (i.e., it is always non-local).
+> They also mean a simple return expression inside a lambda expression is allowed only if the lambda expression is inlined.
 
 #### Continue expressions
 
@@ -1568,10 +1570,14 @@ When evaluated, this expression passes the control to the start of the next loop
 
 There are two forms of continue expressions:
 
-- A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
+- A simple continue expression, specified using the non-labeled `continue` keyword, which continue-jumps to the innermost [loop statement][Loop statements] in the current scope;
 - A labeled continue expression, denoted `continue@Loop`, where `Loop` is a label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+If a continue expression is used in the context of a [function literal][Function literals] which refers to any loop scope outside this function literal (i.e., such continue-jump would cross the function boundary), it is disallowed and should result in a compile-time error.
+
+> Note: such cross-boundary continue expressions are also called "non-local".
+
+Since Kotlin 1.9, it is allowed to use a non-local continue expression inside an [inlined][Inlining] function literal.
 
 #### Break expressions
 
@@ -1580,7 +1586,11 @@ When evaluated, this expression passes the control to the next program point imm
 
 There are two forms of break expressions:
 
-- A simple break expression, specified using the `break` keyword, which break-jumps to the innermost loop statement in the current scope;
+- A simple break expression, specified using the non-labeled `break` keyword, which break-jumps to the innermost [loop statement][Loop statements] in the current scope;
 - A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
-If a break expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+If a break expression is used in the context of a [function literal][Function literals] which refers to any loop scope outside this function literal (i.e., such break-jump would cross the function boundary), it is disallowed and should result in a compile-time error.
+
+> Note: such cross-boundary break expressions are also called "non-local".
+
+Since Kotlin 1.9, it is allowed to use a non-local break expression inside an [inlined][Inlining] function literal.

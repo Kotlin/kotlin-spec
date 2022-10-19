@@ -1168,7 +1168,7 @@ Declaring a function `inline` has two additional effects:
 - It allows type parameters of the function to be declared `reified`, making them [runtime-available][Runtime-available types] and allowing usage of specific expressions involving these parameters, such as [type checks][Type-checking expressions] and [class literals][Class literals].
   Calling such a function is only allowed in a context where a particular type argument provided for this type parameter is also a runtime-available type.
 - Any parameter of this function of a [function type][Function types] is treated as *inlined* parameter unless it has one of two special modifiers: `crossinline` or `noinline`.
-  If a particular argument corresponding to inline parameter is a [lambda literal][Lambda literals], this lambda literal is considered *inlined* and, in particular, affects the way the [return expressions][Return expressions] are handled in its body. See the corresponding section for details.
+  If a particular argument corresponding to inline parameter is a [lambda literal][Lambda literals], this lambda literal is considered *inlined* and, in particular, affects the way the [return expressions], [continue expressions] and [break expressions] are handled in its body. See the corresponding sections for details.
 
 Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values.
 They may only be called inside the function body or passed to other functions as inline arguments.
