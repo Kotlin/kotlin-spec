@@ -1448,7 +1448,7 @@ TODO(Add examples of this exceptional case, e.g., (List..List?) & Any =:= (List.
 In the presence of recursively defined parameterized types, the algorithm given above is not guaranteed to terminate as there may not exist a finite representation of $\GLB$ for particular two types.
 The detection and handling of such situations (compile-time error or leaving the type in some kind of denormalized state) is implementation-defined.
 
-In some situations, it is needed to construct the least upper bound for more than two types, in which case the least upper bound operator $\GLB(T_1, T_2, \ldots, T_N)$ is defined as $\GLB(T_1, \GLB(T_2, \ldots, T_N))$.
+In some situations, it is needed to construct the greatest lower bound for more than two types, in which case the greatest lower bound operator $\GLB(T_1, T_2, \ldots, T_N)$ is defined as $\GLB(T_1, \GLB(T_2, \ldots, T_N))$.
 
 TODO(It is probably order-dependent or needs to be proven otherwise)
 
