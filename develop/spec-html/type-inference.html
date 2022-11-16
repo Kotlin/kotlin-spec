@@ -277,10 +277,7 @@
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
 </ul></li>
-<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a>
-<ul>
-<li><a href="declarations.html#data-object-declaration" id="toc-element-data-object-declaration" class="toc-element">Data object declaration</a></li>
-</ul></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
 <li><a href="declarations.html#value-class-declaration" id="toc-element-value-class-declaration" class="toc-element">Value class declaration</a></li>
@@ -1386,7 +1383,7 @@ P_2 \times N_2
 <h3 id="builder-style-type-inference">Builder-style type inference</h3>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: before Kotlin 1.7, builder-style type inference required using the <a href="annotations.html#built-in-annotations"><code>@BuilderInference</code></a> annotation on lambda parameters.</span></p>
+<p><span class="sentence">Note: before Kotlin 1.7, builder-style type inference required using the <a href="annotations.html#built-in-annotations"><code>@BuilderInference</code></a> annotation on lambda parameters. </span><span class="sentence">Currently, for simple cases when there is a single lambda parameter which requires builder-style inference, this annotation may be omitted.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1422,6 +1419,13 @@ P_2 \times N_2
 <div class="paragraph">
 <p><span class="sentence">If the system cannot be solved, it is a compile-time error.</span></p>
 </div>
+<div class="paragraph">
+<p><span class="sentence">Builder-style inference has the following important restrictions.</span></p>
+</div>
+<ul>
+<li><span class="sentence">Any attempt to use an expression with type which is a postponed type variable is a compile-time error.</span></li>
+<li><span class="sentence">If a call needs builder-style inference for more than one lambda parameter, they all should be marked with <a href="annotations.html#built-in-annotations"><code>@BuilderInference</code></a> annotation. </span><span class="sentence">Otherwise, it is a compile-time error.</span></li>
+</ul>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: notable examples of builder-style inference-enabled functions are <code>kotlin.sequence</code> and <code>kotlin.iterator</code>. </span><span class="sentence">See standard library documentation for details.</span></p>
