@@ -82,7 +82,6 @@
 \opMathIT{\nested}{nested}
 \opMathIT{\dataClass}{dataClass}
 \opMathIT{\dataClassParam}{dp}
-\opMathIT{\dataObject}{dataObject}
 
 \opMathIT{\name}{name}
 \opMathIT{\type}{type}
