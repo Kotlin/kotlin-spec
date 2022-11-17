@@ -10,6 +10,7 @@ COMMON_PANDOC_OPTIONS="\
   --variable filecolor=cyan \
   --syntax-definition=kotlin.xml \
   --variable=subparagraph \
+  --variable=math: \
   --top-level-division=part"
 
 TOC_PANDOC_OPTIONS="\
@@ -29,5 +30,8 @@ init_settings() {
         PREAMBLE_OPTIONS="-H ./preamble.tex"
     elif [ "${type}" == "html" ]; then
       PREAMBLE_OPTIONS="-H ./preamble.html --include-before-body ./preface.html --include-after-body ./epilogue.html"
+      if [ "${STATIC_MATH_OPTION}" == "--disable-static-math" ]; then
+        PREAMBLE_OPTIONS="$PREAMBLE_OPTIONS -H ./dynamic_math.html"
+      fi
     fi
 }
