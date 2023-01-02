@@ -17,6 +17,9 @@ An annotation type is a special kind of class type which is allowed to include r
 - Other annotation types;
 - [Arrays][Array types] of any type listed above.
 
+> Important: when we say "other annotation types", we mean an annotation type cannot reference itself, either directly or indirectly.
+> For example, if annotation type `A` references annotation type `B` which references an array of `A`, it is prohibited and reported as a compile-time error.
+
 Annotation classes are not allowed to have any member functions, constructors or mutable properties.
 They are also not allowed to have declared supertypes and are considered to be implicitly derived from `kotlin.Annotation`.
 
