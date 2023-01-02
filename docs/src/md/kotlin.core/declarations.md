@@ -1130,6 +1130,8 @@ They may also be passed to other functions as `noinline` or `crossinline` argume
 
 Particular platforms may introduce additional restrictions or guarantees for the inlining mechanism.
 
+> Important: for extension functions, the extension receiver is considered to be effectively `noinline`.
+
 > Examples:
 > 
 > ```kotlin
