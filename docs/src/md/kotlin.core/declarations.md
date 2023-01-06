@@ -510,6 +510,8 @@ Enum class $E$ is a special kind of class with the following properties:
 - It cannot have type parameters of any kind;
 - It has special syntax to accommodate for the properties described above.
 
+> Note: for the purposes of overload resolution, enum entries are considered to be [static member callables][Call with an explicit type receiver] of the enum class type
+
 Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
 Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declaration].
 
@@ -542,27 +544,41 @@ Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` i
 
   (a member of `kotlin.Any`) defined by default to return the entry name, but may be overridden  to have different behaviour both in the enum class declaration and in entry declarations.
 
-In addition to these, every enum class type `E` has the following **static** member functions declared implicitly:
+In addition to these, every enum class type `E` has the following **static** members declared implicitly:
+
+- ```kotlin
+  public final static val entries: EnumEntries<E>
+  ```
+
+  This property returns an instance of a special immutable `EnumEntries<E>` list of all possible enum values in the order they are declared;
 
 - ```kotlin
   public final static fun valueOf(value: String): E
   ```
 
-   returning an object corresponding to the entry with the name equal to `value` parameter of the call or throws an exception otherwise;
+  This function returns an object corresponding to the entry with the name equal to `value` parameter of the call or throws an exception otherwise.
+
+> Important: `static` is not a valid Kotlin keyword and is only used here for clarity.
+> The static members are handled differently by the [overload resolution][Call with an explicit type receiver].
+
+Kotlin standard library also introduces a function to access all enum values for a specific enum class called `kotlin.enumEntries<T>`.
+Please refer to the standard library documentation for details.
+
+> Note: the `entries` property is available since Kotlin 1.9.
+
+For backwards compatibility, in addition to the `entries` property, every enum class type `E` has the following **static** member function declared implicitly.
 
 - ```kotlin
   public final static fun values(): kotlin.Array<E>
   ```
-  
-  returning an [array][Array types] of all possible enum values in the order they are declared.
+
+  This function returns an [array][Array types] of all possible enum values in the order they are declared.
   Every invocation of this function returns a new array to disallow changing its contents.
 
-> Important: `static` is not a valid Kotlin keyword and is only used here for clarity
+> Important: `values` function is effectively deprecated and `entries` property should be used instead.
 
-> Note: these static member functions are handled differently by the [overload resolution][Overload resolution].
-
-> Note: Kotlin standard library introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>`.
-> Please refer to the standard library documentation for details.
+Kotlin standard library also introduces another function to access all enum values for a specific enum class called `kotlin.enumValues<T>` (which is deprecated for subsequent removal).
+Please refer to the standard library documentation for details.
 
 > Example:
 >

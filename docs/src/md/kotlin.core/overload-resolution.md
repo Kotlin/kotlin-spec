@@ -230,7 +230,8 @@ They mostly follow the same rules as [calls with an explicit value receiver][Cal
 However, for a callable `f` with an explicit type receiver `T` the following sets are analyzed (**in the given order**):
 
 1. Static member callables named `f` of type `T`;
-2. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
+2. Static member callables named `f` of type `T` declared implicitly;
+3. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
 
 ##### Call with an explicit super-form receiver
 
