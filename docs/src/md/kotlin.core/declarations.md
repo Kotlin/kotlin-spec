@@ -625,7 +625,11 @@ Annotation classes have the following properties:
 > Note: annotation classes can have type parameters, but cannot use them as types for their primary constructor parameters.
 > Their main use is for various annotation processing tools, which can access the type arguments from the source code.
 
-Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+The main use of annotation classes is when specifying [code annotations][Annotations] for other entities.
+Additionally, annotation classes can be instantiated directly, for cases when you require working with an annotation instance directly.
+For example, this is needed for interoperability with some Java annotation APIs, as in Java you can implement an annotation interface and then instantiate it.
+
+> Note: before Kotlin 1.6, annotation classes could not be instantiated directly.
 
 > Examples:
 >
