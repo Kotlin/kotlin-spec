@@ -2,7 +2,9 @@
 
 Annotations are a form of syntactically-defined metadata which may be associated with different entities in a Kotlin program.
 Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and at runtime (using [reflection][Reflection] facilities).
-Values of annotation types cannot be created directly, but can be operated on when accessed using platform-specific facilities.
+Values of annotation types can also be created directly, but are usually operated on using platform-specific facilities.
+
+> Note: before Kotlin 1.6, annotation types could not be created directly.
 
 ### Annotation values
 
