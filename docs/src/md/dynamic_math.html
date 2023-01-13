@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    require([
+        "resources/js/katex/katex.min.js"
+    ], katex => {
+        let render = () => {
+            let mathElements = document.getElementsByClassName("math");
+            let macros = [];
+            for (let i = 0; i < mathElements.length; i++) {
+                let texText = mathElements[i].firstChild;
+                if (mathElements[i].tagName == "SPAN") {
+                    katex.render(texText.data, mathElements[i], {
+                        displayMode: mathElements[i].classList.contains("display"),
+                        throwOnError: false,
+                        macros: macros,
+                        fleqn: false
+                    });
+                }
+            }
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", render);
+        } else {
+            render();
+        }
+    });
+</script>

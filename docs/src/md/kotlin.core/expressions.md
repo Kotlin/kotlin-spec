@@ -541,9 +541,9 @@ In particular, this means that two values acquired by the same constructor call 
 A value created by any constructor call is never equal by reference to a null reference.
 
 There is an exception to these rules: values of [value classes][Value class declaration] are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler.
-It is thus highly discouraged to compare inline classes by reference.
+It is thus highly discouraged to compare value classes by reference.
 
-For special values created without explicit constructor calls, notably, [constant literals][Constant literals] and [constant expressions][Constant expressions] composed of those literals, and for values of inline classes, the following holds:
+For special values created without explicit constructor calls, notably, [constant literals][Constant literals] and [constant expressions][Constant expressions] composed of those literals, and for values of value classes, the following holds:
 
 - If these values are [non-equal by value][Value equality expressions], they are also non-equal by reference;
 - Any instance of the null reference `null` is equal by reference to any other
@@ -917,7 +917,7 @@ If the evaluation result of `e` is not equal to `null`, the result of `e!!` is t
 
 If the type of `e` is non-nullable, not-null assertion expression `e!!` has no effect.
 
-The type of non-null assertion expression is the [non-nullable][Nullable types] variant of the type of `e`.
+The type of not-null assertion expression is the [non-nullable][Nullable types] variant of the type of `e`.
 
 > Note: this type may be non-denotable in Kotlin and, as such, may be [approximated][Type approximation] in some situations with the help of [type inference][Type inference].
 

@@ -29,7 +29,7 @@ When a classifier type $A$ is declared with base types $B_1, \dots, B_m$, it int
 
 A class declared `abstract` cannot be instantiated, i.e., an object of this class cannot be created directly.
 Abstract classes are implicitly `open` and their primary purpose is to be inherited from.
-Only abstract classes allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
+Abstract classes (similarly to [interfaces][Interface declaration]) allow for `abstract` [property][Property declaration] and [function][Function declaration] declarations in their scope.
 
 #### Sealed classes and interfaces
 
@@ -37,7 +37,7 @@ A class or interface (but not a [functional interface][Functional interface decl
 
 - A `sealed` class is implicitly `abstract` (and these two modifiers are exclusive);
 - A `sealed` class or interface can only be inherited from by types declared in the same package and in the same [module][Modules], and which have a fully-qualified name (meaning local and anonymous types cannon be inherited from `sealed` types);
-- `Sealed` classes and interfaces allow for exhaustiveness checking of [when expressions][When expressions] for values of such types.
+- `Sealed` classes and interfaces allow for exhaustiveness checking of [when expressions][Exhaustive when expressions] for values of such types.
   Any sealed type `S` is associated with its *direct non-sealed subtypes*: a set of non-sealed types, which are either direct subtypes of `S` or transitive subtypes of `S` via some number of other *sealed* types.
   These direct non-sealed subtypes form the boundary for exhaustiveness checks.
 
@@ -46,6 +46,39 @@ A class or interface (but not a [functional interface][Functional interface decl
 [Built-in types][Built-in types] follow the same rules as user-defined types do.
 Most of them are closed class types and cannot be inherited from.
 [Function types][Function types] are treated as interfaces and can be inherited from as such.
+
+### Matching and subsumption of declarations
+
+A callable declaration $D$ *matches* to a callable declaration $B$ if the following are true.
+
+* $B$ and $D$ have the same name;
+* $B$ and $D$ are declarations of the same kind (property declarations or function declarations);
+* [Function signature][Function signature] of $D$ (if any) matches function signature of $B$ (if any).
+
+A callable declaration $D$ *subsumes* a callable declaration $B$ if the following are true.
+
+* $B$ and $D$ match;
+* The classifier of $B$ (where it is declared) is a supertype of the classifier of $D$.
+
+The notions of matching and subsumption are used when talking about how declarations are [inherited][Inheriting] and [overridden][Overriding].
+
+### Inheriting
+
+A callable declaration (that is, a [property][Property declaration] or [member function][Function declaration] declaration) inside a classifier declaration is said to be *inheritable* if:
+
+- Its visibility (and the visibility of its getter and setter, if present) is not `private`.
+
+If the declaration $B$ of the base classifier type is inheritable, no other inheritable declaration from the base classifier types subsume $B$, no declarations in the derived classifier type [override][Overriding] $B$, then $B$ is *inherited* by the derived classifier type.
+
+As Kotlin is a language with single inheritance (only one supertype can be a class, any number of supertypes can be an interface), there are several additional rules which refine how declarations are inherited.
+
+* If a derived class type inherits a declaration from its superclass, no other matching *abstract* declarations from its superinterfaces are inherited.
+
+* If a derived classifier type inherits *several* matching *concrete* declarations from its supertypes, it is a compile-time error (this means a derived classifier type should override such declarations).
+* If a derived *concrete* classifier type inherits an *abstract* declaration from its supertypes, it is a compile-time error (this means a derived classifier type should override such declaration).
+* If a derived classifier type inherits both an *abstract* and a *concrete* declaration from its superinterfaces, it is a compile-time error (this means a derived classifier type should override such declarations).
+
+TODO(Examples)
 
 ### Overriding
 
@@ -56,12 +89,7 @@ A callable declaration (that is, a [property][Property declaration] or [member f
 
 It is illegal for a declaration to be both `private` and either `open`, `abstract` or `override`, such declarations should result in a compile-time error.
 
-A callable declaration $D$ inside a classifier declaration *subsumes* a name-matching declaration $B$ of the base classifier type if the following are true.
-
-* $B$ and $D$ are declarations of the same kind (property declarations or function declarations);
-* [Function signature][Function signature] of $D$ (if any) matches function signature of $B$ (if any).
-
-If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes it, and $D$ has an `override` modifier, $D$ is *overriding* the base declaration $B$.
+If the declaration $B$ of the base classifier type is overridable, the declaration $D$ of the derived classifier type subsumes $B$, and $D$ has an `override` modifier, then $D$ is *overriding* the base declaration $B$.
 
 A function declaration $D$ which overrides function declaration $B$ should satisfy the following conditions.
 

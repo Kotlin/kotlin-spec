@@ -1,1 +1,0 @@
-val bar: (Any) -> Unit = fun (@Anno vararg a) {}

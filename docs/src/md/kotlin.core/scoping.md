@@ -124,7 +124,7 @@ Besides identifiers which are introduced by the developer (e.g., via declaring c
 ### Labels
 
 Labels are special syntactic marks which allow one to reference certain code fragments or elements.
-[Lambda expressions][Lambda literals]) and [loop statements][Loop statements] are allowed to be labeled, with label identifier associated with the corresponding entity.
+[Lambda expressions][Lambda literals] and [loop statements][Loop statements] are allowed to be labeled, with label identifier associated with the corresponding entity.
 
 > Note: in Kotlin version 1.3 and earlier, labels were allowed to be placed on any expression or statement.
 

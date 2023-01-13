@@ -129,7 +129,9 @@ object Sidebar {
 
             if (searchString.isBlank()) return@cb
 
-            val foundItem = `$`("$TOC .toc-element:contains($searchString)")
+            val foundItem = `$`("$TOC .toc-element").filter { _, element ->
+                element.textContent?.let { searchString.toRegex(RegexOption.IGNORE_CASE).containsMatchIn(it) } == true
+            }
 
             if (foundItem.length == 0) return@cb
 

@@ -1,1 +1,0 @@
-val bar: (Any) -> (Any) -> (Any) -> (Any) -> (Any) -> Unit = fun (a) = fun (b) = fun (vararg c) = fun (@Anno d) = fun (@Anno vararg e)

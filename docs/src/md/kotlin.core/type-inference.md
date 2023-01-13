@@ -454,7 +454,7 @@ TODO(Is this true?)
 
 ### Function signature type inference
 
-Function signature type inference is a variant of [local type inference], which is performed for [function declarations], [lambda literals] and [anonymous function declarations].
+Function signature type inference is a variant of [local type inference], which is performed for [function declarations][Function declaration], [lambda literals] and [anonymous function declarations].
 
 #### Named and anonymous function declarations
 
@@ -552,6 +552,7 @@ If $T$ is a nullable type $U?$, the steps given above are performed for its non-
 ### Builder-style type inference
 
 > Note: before Kotlin 1.7, builder-style type inference required using the [`@BuilderInference`][Built-in annotations] annotation on lambda parameters.
+> Currently, for simple cases when there is a single lambda parameter which requires builder-style inference, this annotation may be omitted.
 
 When working with DSLs that have generic builder functions, one may want to infer the generic builder type parameters using the information from the builder's lambda body.
 Kotlin supports special kind of type inference called **builder-style type inference** to allow this in some cases.
@@ -574,6 +575,12 @@ If the builder-style inference is needed, for a call to an eligible function wit
 After the inference of statements inside the lambda is complete, these postponed type variables are inferred using an additional type inference step, which takes the resulting type constraint system and tries to find the instantiation of the postponed type variables to concrete types.
 
 If the system cannot be solved, it is a compile-time error.
+
+Builder-style inference has the following important restrictions.
+
+- Any attempt to use an expression with type which is a postponed type variable is a compile-time error.
+- If a call needs builder-style inference for more than one lambda parameter, they all should be marked with [`@BuilderInference`][Built-in annotations] annotation.
+  Otherwise, it is a compile-time error.
 
 > Note: notable examples of builder-style inference-enabled functions are `kotlin.sequence` and `kotlin.iterator`.
 > See standard library documentation for details.

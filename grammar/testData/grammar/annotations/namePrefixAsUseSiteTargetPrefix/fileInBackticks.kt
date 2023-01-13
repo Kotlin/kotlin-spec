@@ -1,2 +1,0 @@
-@`fileann`
-fun main() {}

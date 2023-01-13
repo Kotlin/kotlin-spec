@@ -38,8 +38,6 @@ There are three kinds of classifier declarations:
 
 > Important: [object literals] are similar to [object declarations][Object declaration] and are considered to be anonymous classifier declarations, despite being [expressions].
 
-
-
 #### Class declaration
 
 A simple class declaration consists of the following parts.
@@ -627,7 +625,11 @@ Annotation classes have the following properties:
 > Note: annotation classes can have type parameters, but cannot use them as types for their primary constructor parameters.
 > Their main use is for various annotation processing tools, which can access the type arguments from the source code.
 
-Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying [code annotations][Annotations] for other entities.
+The main use of annotation classes is when specifying [code annotations][Annotations] for other entities.
+Additionally, annotation classes can be instantiated directly, for cases when you require working with an annotation instance directly.
+For example, this is needed for interoperability with some Java annotation APIs, as in Java you can implement an annotation interface and then instantiate it.
+
+> Note: before Kotlin 1.6, annotation classes could not be instantiated directly.
 
 > Examples:
 >
@@ -659,9 +661,6 @@ Annotation classes cannot be constructed directly unless passed as arguments to 
 
 #### Value class declaration
 
-> Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature.
-> There is, however, a number of value classes in Kotlin standard library.
-
 A class may be declared a **value** class by using `inline` or `value` modifier in its declaration.
 Value classes must adhere to the following limitations:
 
@@ -670,17 +669,20 @@ Value classes must adhere to the following limitations:
 * Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;
 * This property cannot be specified as `vararg` constructor argument;
 * This property must be declared `public`;
-* This property must be of [a runtime-available type][Runtime-available types];
 * They must not override `equals` and `hashCode` member functions of `kotlin.Any`;
 * They must not have any base classes besides `kotlin.Any`;
 * No other properties of this class may have backing fields.
 
 > Note: `inline` modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.
 
+> Note: before Kotlin 1.8, value classes supported only properties of [a runtime-available types].
+
 Value classes implicitly override `equals` and `hashCode` member functions of `kotlin.Any` by delegating them to their only data property.
 Unless `toString` is overridden by the value class definition, it is also implicitly overridden by delegating to the data property.
 In addition to these, an value class is allowed by the implementation to be **inlined** where applicable, so that its data property is operated on instead.
 This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.
+
+> Note: when inlining a data property of a non-runtime-available type $U$ (i.e., a non-reified type parameter), the property is considered to be of type, which is the runtime-available upper bound of $U$.
 
 Due to these restrictions, it is highly discouraged to use value classes with the [reference equality operators][Reference equality expressions].
 
@@ -694,13 +696,16 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * An interface can be declared only in a declaration scope;
   * Additionally, an interface cannot be declared in an [object literal][Object literals];
 * An interface cannot have a class as its supertype;
+    * This also means it is not considered to have `kotlin.Any` as its supertype for the purposes of [inheriting] and [overriding] callables;
+    * However, it is still considered to be a subtype of `kotlin.Any` w.r.t. [subtyping];
 * An interface cannot have a constructor;
 * Interface properties cannot have initializers or backing fields;
 * Interface properties cannot be delegated;
 * An interface cannot have inner classes;
 * An interface and all its members are implicitly open;
 * All interface member properties and functions are implicitly public;
-    * Trying to declare a non-public member property or function in an interface is an compile-time error.
+    * Trying to declare a non-public member property or function in an interface is an compile-time error;
+* Interface member properties and functions without implementation are implicitly abstract.
 
 ##### Functional interface declaration
 
@@ -947,7 +952,7 @@ In other cases return type $R$ cannot be omitted and must be specified explicitl
 > As type `kotlin.Nothing` has a [special meaning][`kotlin.Nothing`-typesystem] in Kotlin type system, it must be specified explicitly, to avoid spurious `kotlin.Nothing` function return types.
 
 Function body $b$ is optional; if it is omitted, a function declaration creates an *abstract* function, which does not have an implementation.
-This is allowed only inside an [abstract class][Abstract classes-declarations].
+This is allowed only inside an [abstract class][Abstract classes-declarations] or an [interface][Interface declaration].
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
 [`kotlin.Nothing`-typesystem]: #kotlin.nothing-typesystem
@@ -1128,8 +1133,12 @@ Particular platforms may introduce additional restrictions or guarantees for the
 > Examples:
 > 
 > ```kotlin
-> fun bar(value: Any?) {...}
-> inline fun fee(arg: () -> Unit) {...}
+> fun bar(value: Any?) {}
+> 
+> inline fun inlineParameter(arg: () -> Unit) { arg() }
+> inline fun noinlineParameter(noinline arg: () -> Unit) { arg() }
+> inline fun crossinlineParameter(crossinline arg: () -> Unit) { arg() }
+> 
 > inline fun foo(inl: () -> Unit,
 >                crossinline cinl: () -> Unit,
 >                noinline noinl: () -> Unit) {
@@ -1138,21 +1147,60 @@ Particular platforms may introduce additional restrictions or guarantees for the
 >     cinl()
 >     noinl()
 >     // all arguments may be passed as inline
->     fee(inl)
->     fee(cinl)
->     fee(noinl)
->     // passing to non-inline function
->     // is allowed only for noinline parameters
+>     inlineParameter(inl)
+>     inlineParameter(cinl)
+>     inlineParameter(noinl)
+>     // only noinline arguments may be passed as noinline
+>     noinlineParameter(inl) // not allowed
+>     noinlineParameter(cinl) // not allowed
+>     noinlineParameter(noinl)
+>     // noinline/crossinline arguments may be passed as crossinline
+>     crossinlineParameter(inl) // not allowed
+>     crossinlineParameter(cinl)
+>     crossinlineParameter(noinl)
+>     // only noinline arguments may be passed to non-inline functions
 >     bar(inl) // not allowed
 >     bar(cinl) // not allowed
->     bar(noinl) // allowed
->     // capturing in a lambda expression
->     // is allowed for noinline/crossinline parameters
+>     bar(noinl)
+>     // noinline/crossinline parameters may be captured in lambda literals
 >     bar({ inl() }) // not allowed
->     bar({ cinl() }) // allowed
->     bar({ noinl() }) // allowed
+>     bar({ cinl() })
+>     bar({ noinl() })
 > }
 > ```
+
+#### Infix functions
+
+A function may be declared as an *infix* function by using a special `infix` modifier.
+An infix function can be called in an [infix form][Infix function call], i.e., `a foo b` instead of `a.foo(b)`.
+
+To be a valid infix function, function $F$ must satisfy the following requirements.
+
+* $F$ has a dispatch or an extension [receiver][Receivers]
+* $F$ has exactly one parameter
+
+TODO(Examples)
+
+#### Local function declaration
+
+A function may be declared *locally* inside a [statement scope][Scopes and identifiers] (namely, inside another function).
+Such declarations are similar to [function literals] in that they may capture values available in the scope they are declared in.
+Otherwise they are similar to regular function declarations.
+
+```kotlin
+fun foo() {
+    var x = 2
+    
+    fun bar(): Int {
+        return x
+    }
+    
+    println(bar()) // 2
+
+    x = 42
+    println(bar()) // 42
+}
+```
 
 #### Tail recursion optimization
 
@@ -1633,7 +1681,7 @@ The scope where it is accessible is defined by its [*visibility modifiers*][Decl
 
 > Examples:
 > ```kotlin
-> // simple typ ealias declaration
+> // simple typealias declaration
 > typealias IntList = List<Int>
 > // parameterized type alias declaration
 > // T has out variance implicitly
@@ -1766,8 +1814,8 @@ In case one needs to explicitly specify some type parameters via [type arguments
 
 An underscore type argument does not add any type information to the [constraint system][Kotlin type constraints] *besides the presence of a type parameter*, i.e., parameterized declaration with different number of type parameters could be distinguished by different number of underscore type arguments.
 
-If the type inference is successfull, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
-If the type inference is not successfull, it is a compile-time error.
+If the type inference is successful, each underscore type argument is considered to be equal to the inferred type for their respective type parameter.
+If the type inference is not successful, it is a compile-time error.
 
 > Example:
 > ```kotlin
