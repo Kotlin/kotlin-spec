@@ -115,7 +115,7 @@
         <span class="divide"></span>
         <span class="divide"></span>
     </div>
-    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a class="main-page" href="https://kotlinlang.org">Kotlin</a>
     <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
         Download PDF
     </a>
@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.7-rfc+0.1</p>
+<p class="subtitle">Version 1.8-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -297,6 +297,8 @@
 <li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#infix-functions" id="toc-element-infix-functions" class="toc-element">Infix functions</a></li>
+<li><a href="declarations.html#local-function-declaration" id="toc-element-local-function-declaration" class="toc-element">Local function declaration</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 <li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
@@ -330,6 +332,8 @@
 <li><a href="inheritance.html#sealed-classes-and-interfaces" id="toc-element-sealed-classes-and-interfaces" class="toc-element">Sealed classes and interfaces</a></li>
 <li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
 </ul></li>
+<li><a href="inheritance.html#matching-and-subsumption-of-declarations" id="toc-element-matching-and-subsumption-of-declarations" class="toc-element">Matching and subsumption of declarations</a></li>
+<li><a href="inheritance.html#inheriting" id="toc-element-inheriting" class="toc-element">Inheriting</a></li>
 <li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
 </ul></li>
 <li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
@@ -623,8 +627,13 @@
 <span style="visibility: hidden; counter-reset: chapter 16;"></span>
 <h2 id="annotations">Annotations</h2>
 <div class="paragraph">
-<p><span class="sentence">Annotations are a form of syntactically-defined metadata which may be associated with different entities in a Kotlin program. </span><span class="sentence">Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and at runtime (using <a href="runtime-type-information.html#reflection">reflection</a> facilities). </span><span class="sentence">Values of annotation types cannot be created directly, but can be operated on when accessed using platform-specific facilities.</span></p>
+<p><span class="sentence">Annotations are a form of syntactically-defined metadata which may be associated with different entities in a Kotlin program. </span><span class="sentence">Annotations are specified in the source code of the program and may be accessed on a particular platform using platform-specific mechanisms both by the compiler (and source-processing tools) and at runtime (using <a href="runtime-type-information.html#reflection">reflection</a> facilities). </span><span class="sentence">Values of annotation types can also be created directly, but are usually operated on using platform-specific facilities.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: before Kotlin 1.6, annotation types could not be created directly.</span></p>
+</div>
+</blockquote>
 <h3 id="annotation-values">Annotation values</h3>
 <div class="paragraph">
 <p><span class="sentence">An annotation value is a value of a special <a href="annotations.html#annotation-declarations">annotation type</a>. </span><span class="sentence">An annotation type is a special kind of class type which is allowed to include read-only properties of the following types:</span></p>
@@ -852,7 +861,7 @@
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.8</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.8}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.8</span></span><span class="mord"></span></span></span></span>
 
 , this annotation is experimental and, in order to use it in one’s code, one must explicitly enable it using opt-in annotations given above. </span><span class="sentence">The particular marker class used to perform this is implementation-defined.</span></p>
 </div>
@@ -871,7 +880,7 @@
 </div>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Note: as of Kotlin <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.8</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.8}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.8</span></span><span class="mord"></span></span></span></span>
 
 , this annotation is experimental and, in order to use it in one’s code, one must explicitly enable it using opt-in annotations given above. </span><span class="sentence">The particular marker class used to perform this is implementation-defined.</span></p>
 </div>

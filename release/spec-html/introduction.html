@@ -52,7 +52,7 @@
         <span class="divide"></span>
         <span class="divide"></span>
     </div>
-    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a class="main-page" href="https://kotlinlang.org">Kotlin</a>
     <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
         Download PDF
     </a>
@@ -66,7 +66,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.7-rfc+0.1</p>
+<p class="subtitle">Version 1.8-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -234,6 +234,8 @@
 <li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#infix-functions" id="toc-element-infix-functions" class="toc-element">Infix functions</a></li>
+<li><a href="declarations.html#local-function-declaration" id="toc-element-local-function-declaration" class="toc-element">Local function declaration</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 <li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
@@ -267,6 +269,8 @@
 <li><a href="inheritance.html#sealed-classes-and-interfaces" id="toc-element-sealed-classes-and-interfaces" class="toc-element">Sealed classes and interfaces</a></li>
 <li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
 </ul></li>
+<li><a href="inheritance.html#matching-and-subsumption-of-declarations" id="toc-element-matching-and-subsumption-of-declarations" class="toc-element">Matching and subsumption of declarations</a></li>
+<li><a href="inheritance.html#inheriting" id="toc-element-inheriting" class="toc-element">Inheriting</a></li>
 <li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
 </ul></li>
 <li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
@@ -562,7 +566,7 @@
 <p><span class="sentence">Kotlin took inspiration from many programming languages, including (but not limited to) Java, Scala, C# and Groovy. </span><span class="sentence">One of the main ideas behind Kotlin is being <em>pragmatic</em>, i.e., being a programming language useful for day-to-day development, which helps the users get the job done via its features and its tools. </span><span class="sentence">Thus, a lot of design decisions were and still are influenced by how beneficial these decisions are for Kotlin users.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Kotlin is a multiplatform, statically typed, general-purpose programming language. </span><span class="sentence">Currently, as of version <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.7</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.7}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.7</span></span><span class="mord"></span></span></span></span>
+<p><span class="sentence">Kotlin is a multiplatform, statically typed, general-purpose programming language. </span><span class="sentence">Currently, as of version <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>1.8</mtext><mrow></mrow></mrow><annotation encoding="application/x-tex">\textrm{1.8}{}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord text"><span class="mord textrm">1.8</span></span><span class="mord"></span></span></span></span>
 
 , it supports compilation to the following platforms.</span></p>
 </div>
@@ -575,7 +579,7 @@
 <p><span class="sentence">Furthermore, it supports transparent interoperability between different platforms via its Kotlin Multiplatform Project (Kotlin MPP) feature.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type system of Kotlin distinguishes at compile time between nullable and not-nullable types, achieving null-safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., <code>null</code> value). </span><span class="sentence">Kotlin also extends its static type system with elements of gradual and flow typing, for better interoperability with other languages and ease of development.</span></p>
+<p><span class="sentence">The type system of Kotlin distinguishes at compile time between nullable and non-nullable types, achieving null-safety, i.e., guaranteeing the absence of runtime errors caused by the absence of value (i.e., <code>null</code> value). </span><span class="sentence">Kotlin also extends its static type system with elements of gradual and flow typing, for better interoperability with other languages and ease of development.</span></p>
 </div>
 <div class="paragraph">
 <p><span class="sentence">Kotlin is an object-oriented language which also has a lot of functional programming elements. </span><span class="sentence">From the object-oriented side, it supports nominal subtyping with bounded parametric polymorphism (akin to generics) and mixed-site variance. </span><span class="sentence">From the functional programming side, it has first-class support for higher-order functions and lambda literals.</span></p>

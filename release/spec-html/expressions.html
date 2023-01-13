@@ -115,7 +115,7 @@
         <span class="divide"></span>
         <span class="divide"></span>
     </div>
-    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a class="main-page" href="https://kotlinlang.org">Kotlin</a>
     <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
         Download PDF
     </a>
@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.7-rfc+0.1</p>
+<p class="subtitle">Version 1.8-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -297,6 +297,8 @@
 <li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#infix-functions" id="toc-element-infix-functions" class="toc-element">Infix functions</a></li>
+<li><a href="declarations.html#local-function-declaration" id="toc-element-local-function-declaration" class="toc-element">Local function declaration</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 <li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
@@ -330,6 +332,8 @@
 <li><a href="inheritance.html#sealed-classes-and-interfaces" id="toc-element-sealed-classes-and-interfaces" class="toc-element">Sealed classes and interfaces</a></li>
 <li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
 </ul></li>
+<li><a href="inheritance.html#matching-and-subsumption-of-declarations" id="toc-element-matching-and-subsumption-of-declarations" class="toc-element">Matching and subsumption of declarations</a></li>
+<li><a href="inheritance.html#inheriting" id="toc-element-inheriting" class="toc-element">Inheriting</a></li>
 <li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
 </ul></li>
 <li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
@@ -1426,10 +1430,10 @@
 <p><span class="sentence"><em>Reference equality expressions</em> are binary expressions which use reference equality operators: <code>===</code> and <code>!==</code>. </span><span class="sentence">These expressions check if two values are equal (<code>===</code>) or non-equal (<code>!==</code>) <em>by reference</em>: two values are equal by reference if and only if they represent the same runtime value. </span><span class="sentence">In particular, this means that two values acquired by the same constructor call are equal by reference, while two values created by two different constructor calls are not equal by reference. </span><span class="sentence">A value created by any constructor call is never equal by reference to a null reference.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">There is an exception to these rules: values of <a href="declarations.html#value-class-declaration">value classes</a> are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler. </span><span class="sentence">It is thus highly discouraged to compare inline classes by reference.</span></p>
+<p><span class="sentence">There is an exception to these rules: values of <a href="declarations.html#value-class-declaration">value classes</a> are not guaranteed to be reference equal even if they are created by the same constructor invocation as said constructor invocation is explicitly allowed to be inlined by the compiler. </span><span class="sentence">It is thus highly discouraged to compare value classes by reference.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For special values created without explicit constructor calls, notably, <a href="expressions.html#constant-literals">constant literals</a> and <a href="expressions.html#constant-expressions">constant expressions</a> composed of those literals, and for values of inline classes, the following holds:</span></p>
+<p><span class="sentence">For special values created without explicit constructor calls, notably, <a href="expressions.html#constant-literals">constant literals</a> and <a href="expressions.html#constant-expressions">constant expressions</a> composed of those literals, and for values of value classes, the following holds:</span></p>
 </div>
 <ul>
 <li><span class="sentence">If these values are <a href="expressions.html#value-equality-expressions">non-equal by value</a>, they are also non-equal by reference;</span></li>
@@ -2032,7 +2036,7 @@
 <p><span class="sentence">If the type of <code>e</code> is non-nullable, not-null assertion expression <code>e!!</code> has no effect.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The type of non-null assertion expression is the <a href="type-system.html#nullable-types">non-nullable</a> variant of the type of <code>e</code>.</span></p>
+<p><span class="sentence">The type of not-null assertion expression is the <a href="type-system.html#nullable-types">non-nullable</a> variant of the type of <code>e</code>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">

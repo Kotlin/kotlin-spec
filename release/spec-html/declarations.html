@@ -115,7 +115,7 @@
         <span class="divide"></span>
         <span class="divide"></span>
     </div>
-    <a class="main-page" href="http://kotlinlang.org">Kotlin</a>
+    <a class="main-page" href="https://kotlinlang.org">Kotlin</a>
     <a href="./pdf/kotlin-spec.pdf" target="_blank" class="download-full-pdf">
         Download PDF
     </a>
@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.7-rfc+0.1</p>
+<p class="subtitle">Version 1.8-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -297,6 +297,8 @@
 <li><a href="declarations.html#variable-length-parameters" id="toc-element-variable-length-parameters" class="toc-element">Variable length parameters</a></li>
 <li><a href="declarations.html#extension-function-declaration" id="toc-element-extension-function-declaration" class="toc-element">Extension function declaration</a></li>
 <li><a href="declarations.html#inlining" id="toc-element-inlining" class="toc-element">Inlining</a></li>
+<li><a href="declarations.html#infix-functions" id="toc-element-infix-functions" class="toc-element">Infix functions</a></li>
+<li><a href="declarations.html#local-function-declaration" id="toc-element-local-function-declaration" class="toc-element">Local function declaration</a></li>
 <li><a href="declarations.html#tail-recursion-optimization" id="toc-element-tail-recursion-optimization" class="toc-element">Tail recursion optimization</a></li>
 <li><a href="declarations.html#function-declaration-scopes" id="toc-element-function-declaration-scopes" class="toc-element">Function declaration scopes</a></li>
 </ul></li>
@@ -330,6 +332,8 @@
 <li><a href="inheritance.html#sealed-classes-and-interfaces" id="toc-element-sealed-classes-and-interfaces" class="toc-element">Sealed classes and interfaces</a></li>
 <li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
 </ul></li>
+<li><a href="inheritance.html#matching-and-subsumption-of-declarations" id="toc-element-matching-and-subsumption-of-declarations" class="toc-element">Matching and subsumption of declarations</a></li>
+<li><a href="inheritance.html#inheriting" id="toc-element-inheriting" class="toc-element">Inheriting</a></li>
 <li><a href="inheritance.html#overriding" id="toc-element-overriding" class="toc-element">Overriding</a></li>
 </ul></li>
 <li><a href="scopes-and-identifiers.html#scopes-and-identifiers" id="toc-element-scopes-and-identifiers" class="toc-element">Scopes and identifiers</a>
@@ -1407,8 +1411,13 @@
 </div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">Annotation classes cannot be constructed directly unless passed as arguments to other annotations, but their primary constructors are used when specifying <a href="annotations.html#annotations">code annotations</a> for other entities.</span></p>
+<p><span class="sentence">The main use of annotation classes is when specifying <a href="annotations.html#annotations">code annotations</a> for other entities. </span><span class="sentence">Additionally, annotation classes can be instantiated directly, for cases when you require working with an annotation instance directly. </span><span class="sentence">For example, this is needed for interoperability with some Java annotation APIs, as in Java you can implement an annotation interface and then instantiate it.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: before Kotlin 1.6, annotation classes could not be instantiated directly.</span></p>
+</div>
+</blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
@@ -1437,11 +1446,6 @@
 <span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">4</span></span></code></pre></div>
 </blockquote>
 <h4 id="value-class-declaration">Value class declaration</h4>
-<blockquote>
-<div class="paragraph">
-<p><span class="sentence">Note: as of Kotlin 1.5.0, user-defined value classes are an experimental feature. </span><span class="sentence">There is, however, a number of value classes in Kotlin standard library.</span></p>
-</div>
-</blockquote>
 <div class="paragraph">
 <p><span class="sentence">A class may be declared a <strong>value</strong> class by using <code>inline</code> or <code>value</code> modifier in its declaration. </span><span class="sentence">Value classes must adhere to the following limitations:</span></p>
 </div>
@@ -1451,7 +1455,6 @@
 <li><span class="sentence">Value classes must have a primary constructor with a single property constructor parameter, which is the data property of the class;</span></li>
 <li><span class="sentence">This property cannot be specified as <code>vararg</code> constructor argument;</span></li>
 <li><span class="sentence">This property must be declared <code>public</code>;</span></li>
-<li><span class="sentence">This property must be of <a href="runtime-type-information.html#runtime-available-types">a runtime-available type</a>;</span></li>
 <li><span class="sentence">They must not override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code>;</span></li>
 <li><span class="sentence">They must not have any base classes besides <code>kotlin.Any</code>;</span></li>
 <li><span class="sentence">No other properties of this class may have backing fields.</span></li>
@@ -1461,9 +1464,23 @@
 <p><span class="sentence">Note: <code>inline</code> modifier for value classes is supported as a legacy feature for compatibility with Kotlin 1.4 experimental inline classes and will be deprecated in the future.</span></p>
 </div>
 </blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: before Kotlin 1.8, value classes supported only properties of [a runtime-available types].</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Value classes implicitly override <code>equals</code> and <code>hashCode</code> member functions of <code>kotlin.Any</code> by delegating them to their only data property. </span><span class="sentence">Unless <code>toString</code> is overridden by the value class definition, it is also implicitly overridden by delegating to the data property. </span><span class="sentence">In addition to these, an value class is allowed by the implementation to be <strong>inlined</strong> where applicable, so that its data property is operated on instead. </span><span class="sentence">This also means that the property may be boxed back to the value class by using its primary constructor at any time if the compiler decides it is the right thing to do.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: when inlining a data property of a non-runtime-available type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+ (i.e., a non-reified type parameter), the property is considered to be of type, which is the runtime-available upper bound of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi></mrow><annotation encoding="application/x-tex">U</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span></span></span></span>
+
+.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">Due to these restrictions, it is highly discouraged to use value classes with the <a href="expressions.html#reference-equality-expressions">reference equality operators</a>.</span></p>
 </div>
@@ -1481,7 +1498,11 @@
 <ul>
 <li><span class="sentence">Additionally, an interface cannot be declared in an <a href="expressions.html#object-literals">object literal</a>;</span></li>
 </ul></li>
-<li><span class="sentence">An interface cannot have a class as its supertype;</span></li>
+<li><span class="sentence">An interface cannot have a class as its supertype;</span>
+<ul>
+<li><span class="sentence">This also means it is not considered to have <code>kotlin.Any</code> as its supertype for the purposes of <a href="inheritance.html#inheriting">inheriting</a> and <a href="inheritance.html#overriding">overriding</a> callables;</span></li>
+<li><span class="sentence">However, it is still considered to be a subtype of <code>kotlin.Any</code> w.r.t. <a href="type-system.html#subtyping">subtyping</a>;</span></li>
+</ul></li>
 <li><span class="sentence">An interface cannot have a constructor;</span></li>
 <li><span class="sentence">Interface properties cannot have initializers or backing fields;</span></li>
 <li><span class="sentence">Interface properties cannot be delegated;</span></li>
@@ -1489,8 +1510,9 @@
 <li><span class="sentence">An interface and all its members are implicitly open;</span></li>
 <li><span class="sentence">All interface member properties and functions are implicitly public;</span>
 <ul>
-<li><span class="sentence">Trying to declare a non-public member property or function in an interface is an compile-time error.</span></li>
+<li><span class="sentence">Trying to declare a non-public member property or function in an interface is an compile-time error;</span></li>
 </ul></li>
+<li><span class="sentence">Interface member properties and functions without implementation are implicitly abstract.</span></li>
 </ul>
 <h5 id="functional-interface-declaration">Functional interface declaration</h5>
 <div class="paragraph">
@@ -1869,7 +1891,7 @@
 <div class="paragraph">
 <p><span class="sentence">Function body <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span>
 
- is optional; if it is omitted, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="declarations.html#abstract-classes-declarations">abstract class</a>. </span><span class="sentence">If a function body <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span>
+ is optional; if it is omitted, a function declaration creates an <em>abstract</em> function, which does not have an implementation. </span><span class="sentence">This is allowed only inside an <a href="declarations.html#abstract-classes-declarations">abstract class</a> or an <a href="declarations.html#interface-declaration">interface</a>. </span><span class="sentence">If a function body <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault">b</span></span></span></span>
 
  is present, it should evaluate to type <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>
 
@@ -2133,31 +2155,74 @@
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">fee</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">inl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>               <span class="kw">crossinline</span> <span class="va">cinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>               <span class="va">noinline</span> <span class="va">noinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be called</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    inl()</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    cinl()</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    noinl()</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be passed as inline</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    fee(inl)</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    fee(cinl)</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    fee(noinl)</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// passing to non-inline function</span></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// is allowed only for noinline parameters</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    bar(inl) <span class="co">// not allowed</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    bar(cinl) <span class="co">// not allowed</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    bar(noinl) <span class="co">// allowed</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// capturing in a lambda expression</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// is allowed for noinline/crossinline parameters</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> inl() <span class="op">}</span>) <span class="co">// not allowed</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> cinl() <span class="op">}</span>) <span class="co">// allowed</span></span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> noinl() <span class="op">}</span>) <span class="co">// allowed</span></span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">inlineParameter</span><span class="op">(</span><span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">noinlineParameter</span><span class="op">(</span><span class="va">noinline</span> <span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">crossinlineParameter</span><span class="op">(</span><span class="kw">crossinline</span> <span class="va">arg</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span> arg() <span class="op">}</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">foo</span><span class="op">(</span><span class="va">inl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>               <span class="kw">crossinline</span> <span class="va">cinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>               <span class="va">noinline</span> <span class="va">noinl</span><span class="op">:</span> <span class="op">()</span> <span class="op">-&gt;</span> <span class="dt">Unit</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be called</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    inl()</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    cinl()</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    noinl()</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// all arguments may be passed as inline</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    inlineParameter(inl)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    inlineParameter(cinl)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    inlineParameter(noinl)</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// only noinline arguments may be passed as noinline</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(inl) <span class="co">// not allowed</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(cinl) <span class="co">// not allowed</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    noinlineParameter(noinl)</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// noinline/crossinline arguments may be passed as crossinline</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(inl) <span class="co">// not allowed</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(cinl)</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>    crossinlineParameter(noinl)</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// only noinline arguments may be passed to non-inline functions</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    bar(inl) <span class="co">// not allowed</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    bar(cinl) <span class="co">// not allowed</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    bar(noinl)</span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// noinline/crossinline parameters may be captured in lambda literals</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> inl() <span class="op">}</span>) <span class="co">// not allowed</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> cinl() <span class="op">}</span>)</span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>    bar(<span class="op">{</span> noinl() <span class="op">}</span>)</span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
+<h4 id="infix-functions">Infix functions</h4>
+<div class="paragraph">
+<p><span class="sentence">A function may be declared as an <em>infix</em> function by using a special <code>infix</code> modifier. </span><span class="sentence">An infix function can be called in an <a href="overload-resolution.html#infix-function-call">infix form</a>, i.e., <code>a foo b</code> instead of <code>a.foo(b)</code>.</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">To be a valid infix function, function <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span>
+
+ must satisfy the following requirements.</span></p>
+</div>
+<ul>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span>
+
+ has a dispatch or an extension <a href="overload-resolution.html#receivers">receiver</a></span></li>
+<li><span class="sentence"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span>
+
+ has exactly one parameter</span></li>
+</ul>
+<h4 id="local-function-declaration">Local function declaration</h4>
+<div class="paragraph">
+<p><span class="sentence">A function may be declared <em>locally</em> inside a <a href="scopes-and-identifiers.html#scopes-and-identifiers">statement scope</a> (namely, inside another function). </span><span class="sentence">Such declarations are similar to <a href="expressions.html#function-literals">function literals</a> in that they may capture values available in the scope they are declared in. </span><span class="sentence">Otherwise they are similar to regular function declarations.</span></p>
+</div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">foo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">bar</span><span class="op">():</span> <span class="dt">Int</span> <span class="op">{</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> x</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    println(bar()) <span class="co">// 2</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    x = <span class="dv">42</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    println(bar()) <span class="co">// 42</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <h4 id="tail-recursion-optimization">Tail recursion optimization</h4>
 <div class="paragraph">
 <p><span class="sentence">A function may be declared <em>tail-recursive</em> by using a special <code>tailrec</code> modifier. </span><span class="sentence">A tail-recursive function that contains a recursive call to itself may be optimized to a non-recursive form by a particular platform in order to avoid problems of recursion such as a possibility of stack overflows possible on some platforms.</span></p>
@@ -2169,31 +2234,31 @@
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">// this is not a tail-recursive function</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">// so tailrec modifier will produce a warning</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorial</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> i * factorial(i - <span class="dv">1</span>)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">// this is a tail-recursive function</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorialTC</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> result</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> factorialTC(i - <span class="dv">1</span>, i * result)</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">// this is not a tail-recursive function</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">// so tailrec modifier will produce a warning</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorial</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> <span class="dv">1</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> i * factorial(i - <span class="dv">1</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">// this is a tail-recursive function</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="kw">tailrec</span> <span class="kw">fun</span> <span class="fu">factorialTC</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i == <span class="dv">0</span>) <span class="kw">return</span> result</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> factorialTC(i - <span class="dv">1</span>, i * result)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence"><code>factorialTC</code> declaration given above should be compiled to loop form similar to the following declaration</span></p>
 </div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">factorialLoop</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> $<span class="va">i</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> i</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> $<span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> result</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span>(<span class="kw">true</span>) <span class="op">{</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> ($i == <span class="dv">0</span>) <span class="kw">return</span> $result</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>       <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>           $i = $i - <span class="dv">1</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>           $result = $i * $result</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">factorialLoop</span><span class="op">(</span><span class="va">i</span><span class="op">:</span> <span class="dt">Int</span>, <span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> 1<span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> $<span class="va">i</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> i</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> $<span class="va">result</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> result</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span>(<span class="kw">true</span>) <span class="op">{</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> ($i == <span class="dv">0</span>) <span class="kw">return</span> $result</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>       <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>           $i = $i - <span class="dv">1</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>           $result = $i * $result</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>       <span class="op">}</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="function-declaration-scopes">Function declaration scopes</h4>
 <div class="paragraph">
@@ -2235,13 +2300,13 @@
 <div class="paragraph">
 <p><span class="sentence">A read-only property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span> <span class="co">// (1)</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span> ... <span class="op">}</span> <span class="co">// (1)</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">or</span></p>
 </div>
-<div class="sourceCode" id="cb35"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = ... <span class="co">// (2)</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = ... <span class="co">// (2)</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation. </span><span class="sentence">All of the right-hand value <code>e</code>, the type <code>T</code> in both positions, and the getter are optional, however, at least one of them must be specified. </span><span class="sentence">More so, if we cannot infer the resulting property type from the type of <code>e</code> or from the type of getter in expression form (2), the type <code>T</code> must be specified explicitly either as the property type, or as the getter return type. </span><span class="sentence">In case both <code>e</code> and <code>T</code> are specified, the type of <code>e</code> must be a subtype of <code>T</code> (see <a href="type-system.html#subtyping">subtyping</a> for more details).</span></p>
 </div>
@@ -2260,9 +2325,9 @@
 <div class="paragraph">
 <p><span class="sentence">A mutable property declaration may include a custom <a href="declarations.html#getters-and-setters">getter</a> and/or custom <a href="declarations.html#getters-and-setters">setter</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb36"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">TS</span><span class="op">)</span> <span class="op">{</span> ... <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">TS</span><span class="op">)</span> <span class="op">{</span> ... <span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">in which case <code>x</code> is used as a synonym to the getter invocation when read from and to the setter invocation when written to.</span></p>
 </div>
@@ -2273,14 +2338,14 @@
 <div class="paragraph">
 <p><span class="sentence">Local property declarations also support <a href="operator-overloading.html#destructuring-declarations"><em>destructuring</em> declaration</a> in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">T</span><span class="op">,</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span><span class="op">,</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span><span class="op">,</span> ...) = <span class="va">e</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="op">(</span><span class="va">a</span><span class="op">:</span> <span class="dt">T</span><span class="op">,</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span><span class="op">,</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span><span class="op">,</span> ...) = <span class="va">e</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">which is a syntactic sugar for the following expansion</span></p>
 </div>
-<div class="sourceCode" id="cb38"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e.component1()</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span> <span class="op">=</span> e.component2()</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span> <span class="op">=</span> e.component3()</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e.component1()</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">U</span> <span class="op">=</span> e.component2()</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">V</span> <span class="op">=</span> e.component3()</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>componentN()</code> should be a valid operator function available on the result of <code>e</code>. </span><span class="sentence">Some of the entries in the destructuring declaration may be replaced with an <em>ignore marker</em> <code>_</code>, which signifies that no variable is declared and no <code>componentN()</code> function is called.</span></p>
 </div>
@@ -2291,9 +2356,9 @@
 <div class="paragraph">
 <p><span class="sentence">As mentioned before, a property declaration may include a custom getter and/or custom setter (together called <em>accessors</em>) in the form of</span></p>
 </div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">anyValidArgumentName</span><span class="op">:</span> <span class="dt">TS</span><span class="op">):</span> <span class="dt">RT</span> <span class="op">{</span> ... <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">TG</span> <span class="op">{</span> ... <span class="op">}</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">anyValidArgumentName</span><span class="op">:</span> <span class="dt">TS</span><span class="op">):</span> <span class="dt">RT</span> <span class="op">{</span> ... <span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">These functions have the following requirements</span></p>
 </div>
@@ -2340,9 +2405,9 @@
 <div class="paragraph">
 <p><span class="sentence">One can also omit the accessor body, in which case a <em>default</em> implementation is used (also known as default accessor).</span></p>
 </div>
-<div class="sourceCode" id="cb40"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="op">=</span> e</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span></span></code></pre></div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">This notation is usually used if you need to change some aspects of an accessor (i.e., its visibility) without changing the default implementation.</span></p>
@@ -2375,17 +2440,17 @@
 <div class="paragraph">
 <p><span class="sentence">A delegated read-only property declaration <code>val x: T by e</code> introduces <code>x</code> as a name for the <em>delegation</em> result of property <code>x</code> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">For the former, one may consider these properties as regular properties with a special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Here every access to such property (<code>x</code> in this case) becomes an <a href="operator-overloading.html#operator-overloading">overloadable</a> form which is expanded into the following:</span></p>
 </div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>e.getValue(thisRef, property)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>e.getValue(thisRef, property)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -2398,18 +2463,18 @@
 <div class="paragraph">
 <p><span class="sentence">A delegated mutable property declaration <code>var x: T by e</code> introduces <code>x</code> as a name of a mutable entity with type <code>T</code>, access to which is <em>delegated</em> to the entity <code>e</code> or to the delegatee of <code>e</code> provided by <a href="declarations.html#provide-delegate"><code>provideDelegate</code></a>. </span><span class="sentence">As before, one may view these properties as regular properties with special <em>delegating</em> <a href="declarations.html#getters-and-setters">getters and setters</a>:</span></p>
 </div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Read access is handled the same way as for a delegated read-only property. </span><span class="sentence">Any write access to <code>x</code> (using, for example, an assignment operator <code>x = y</code>) becomes an overloadable form with the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>e.setValue(thisRef, property, y)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>e.setValue(thisRef, property, y)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where</span></p>
 </div>
@@ -2427,24 +2492,24 @@
 <div class="paragraph">
 <p><span class="sentence">If the delegate expression has a suitable operator function called <code>provideDelegate</code>, a <em>provided</em> delegate is used instead. </span><span class="sentence">The provided delegate is accessed using the following expansion:</span></p>
 </div>
-<div class="sourceCode" id="cb47"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">and</span></p>
 </div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span> <span class="kw">by</span> e</span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">is the same as</span></p>
 </div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span>$delegate = e.provideDelegate(thisRef, ::x)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">T</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">get</span><span class="op">():</span> <span class="dt">T</span> = x$delegate.getValue(thisRef, ::x)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">{</span> x$delegate.setValue(thisRef, ::x, value) <span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">where <code>provideDelegate</code> is a suitable operator function available using the receiver <code>e</code>, while <code>getValue</code> and <code>setValue</code> work the same way they do with normal property delegation. </span><span class="sentence">As is the case with<code>setValue</code> and <code>getValue</code>, <code>thisRef</code> is a reference to the receiver of the property or <code>null</code> for local properties, but there is also a special case: for extension properties <code>thisRef</code> supplied to <code>provideDelegate</code> is <code>null</code>, while <code>thisRef</code> provided to <code>getValue</code> and <code>setValue</code> is the actual receiver. </span><span class="sentence">This is due to the fact that, during the creation of the property, no receiver is available.</span></p>
 </div>
@@ -2456,73 +2521,73 @@
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb51"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> =</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    getOrElse(property.name) <span class="op">{</span></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">throw</span> NoSuchElementException()</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="kw">as</span> R</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> =</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">property</span>.<span class="va">name</span>, <span class="va">newValue</span><span class="op">)</span></span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> handleConfig(config: MutableMap&lt;<span class="kw">String</span>, <span class="kw">Any</span>?&gt;) <span class="op">{</span></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property accesses to Map.getValue</span></span>
-<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Throwing NSEE as there is no &quot;port&quot; key in the map</span></span>
-<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// println(&quot;$parent: going to $host:$port&quot;)</span></span>
-<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property access to Map.setValue</span></span>
-<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>    port = <span class="dv">443</span></span>
-<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Map now contains &quot;port&quot; key</span></span>
-<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property accesses to Map.getValue</span></span>
-<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Not throwing NSEE as there is &quot;port&quot; key in the map</span></span>
-<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>    println(<span class="st">&quot;$parent: going to $host:$port&quot;</span>)</span>
-<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>    handleConfig(mutableMapOf(</span>
-<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</span>
-<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></span>
-<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb51-34"><a href="#cb51-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> =</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    getOrElse(property.name) <span class="op">{</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">throw</span> NoSuchElementException()</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="kw">as</span> R</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> =</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span><span class="op">(</span><span class="va">property</span>.<span class="va">name</span>, <span class="va">newValue</span><span class="op">)</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> handleConfig(config: MutableMap&lt;<span class="kw">String</span>, <span class="kw">Any</span>?&gt;) <span class="op">{</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property accesses to Map.getValue</span></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Throwing NSEE as there is no &quot;port&quot; key in the map</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// println(&quot;$parent: going to $host:$port&quot;)</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property access to Map.setValue</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>    port = <span class="dv">443</span></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Map now contains &quot;port&quot; key</span></span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Delegating property accesses to Map.getValue</span></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Not throwing NSEE as there is &quot;port&quot; key in the map</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>    println(<span class="st">&quot;$parent: going to $host:$port&quot;</span>)</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>    handleConfig(mutableMapOf(</span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example with <code>provideDelegate</code>:</span></p>
 </div>
-<div class="sourceCode" id="cb52"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">provideDelegate</span><span class="op">(</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>,</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;</span> =</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (containsKey(property.name)) <span class="kw">this</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="kw">throw</span> NoSuchElementException()</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> = ...</span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> = ...</span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">handleConfig</span><span class="op">(</span><span class="va">config</span><span class="op">:</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Any?</span><span class="op">&gt;)</span> <span class="op">{</span></span>
-<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></span>
-<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></span>
-<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></span>
-<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Throwing NSEE here as `provideDelegate`</span></span>
-<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   checks for &quot;port&quot; key in the map</span></span>
-<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>    handleConfig(mutableMapOf(</span>
-<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</span>
-<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></span>
-<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">provideDelegate</span><span class="op">(</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;</span> =</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (containsKey(property.name)) <span class="kw">this</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="kw">throw</span> NoSuchElementException()</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">V</span><span class="op">&gt;</span> <span class="fu">Map</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">getValue</span><span class="op">(</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;):</span> <span class="dt">R</span> = ...</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="kw">operator</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">V</span><span class="op">&gt;</span> <span class="fu">MutableMap</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">String</span>, <span class="dt">V</span><span class="op">&gt;.</span><span class="fu">setValue</span><span class="op">(</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">thisRef</span><span class="op">:</span> <span class="dt">Any?</span>, <span class="va">property</span><span class="op">:</span> <span class="dt">KProperty</span><span class="op">&lt;*&gt;</span>, <span class="va">newValue</span><span class="op">:</span> <span class="dt">V</span><span class="op">)</span> = ...</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">handleConfig</span><span class="op">(</span><span class="va">config</span><span class="op">:</span> <span class="dt">MutableMap</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Any?</span><span class="op">&gt;)</span> <span class="op">{</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">parent</span> <span class="kw">by</span> config       <span class="co">// Any?</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">host</span><span class="op">:</span> <span class="dt">String</span> <span class="kw">by</span> config <span class="co">// String</span></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">port</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">by</span> config    <span class="co">// Int</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Throwing NSEE here as `provideDelegate`</span></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">//   checks for &quot;port&quot; key in the map</span></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>    handleConfig(mutableMapOf(</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;parent&quot;</span> to <span class="st">&quot;&quot;</span>,</span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;host&quot;</span> to <span class="st">&quot;https://kotlinlang.org/&quot;</span></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="extension-property-declaration">Extension property declaration</h4>
 <div class="paragraph">
@@ -2556,16 +2621,16 @@
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">Int.foo</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> + <span class="dv">1</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;)</span> <span class="op">{</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Bar</span> <span class="op">{</span></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Bar</span></span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">Int.foo</span><span class="op">:</span> <span class="dt">Int</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> + <span class="dv">1</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">(</span><span class="va">args</span><span class="op">:</span> <span class="dt">Array</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;)</span> <span class="op">{</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    println(<span class="fl">2.f</span>oo.foo) <span class="co">// prints &quot;4&quot;</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Bar</span> <span class="op">{</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Bar</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">Int.foo</span> <span class="kw">get</span><span class="op">()</span> = <span class="kw">this</span> <span class="co">// returns type Int</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="property-initialization">Property initialization</h4>
 <div class="paragraph">
@@ -2592,13 +2657,13 @@
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Correct constant properties</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">answer</span> <span class="op">=</span> <span class="dv">2</span> * <span class="dv">21</span></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">msg</span> <span class="op">=</span> <span class="st">&quot;Hello World!&quot;</span></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">calculated</span> <span class="op">=</span> answer + <span class="dv">45</span></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Incorrect constant property</span></span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">emptyStringHashCode</span> <span class="op">=</span> <span class="st">&quot;&quot;</span>.hashCode()</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Correct constant properties</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">answer</span> <span class="op">=</span> <span class="dv">2</span> * <span class="dv">21</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">msg</span> <span class="op">=</span> <span class="st">&quot;Hello World!&quot;</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">calculated</span> <span class="op">=</span> answer + <span class="dv">45</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Incorrect constant property</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="kw">val</span> <span class="va">emptyStringHashCode</span> <span class="op">=</span> <span class="st">&quot;&quot;</span>.hashCode()</span></code></pre></div>
 </blockquote>
 <h4 id="late-initialized-properties">Late-initialized properties</h4>
 <div class="paragraph">
@@ -2652,13 +2717,13 @@
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">// simple typ ealias declaration</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> IntList = List&lt;<span class="kw">Int</span>&gt;</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">// parameterized type alias declaration</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">// T has out variance implicitly</span></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> IntMap&lt;T&gt; = Map&lt;<span class="kw">Int</span>, T&gt;</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">// type parameter may be unreferenced</span></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> Strange&lt;T&gt; = <span class="kw">String</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">// simple typealias declaration</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> IntList = List&lt;<span class="kw">Int</span>&gt;</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">// parameterized type alias declaration</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">// T has out variance implicitly</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> IntMap&lt;T&gt; = Map&lt;<span class="kw">Int</span>, T&gt;</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">// type parameter may be unreferenced</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="kw">typealias</span> Strange&lt;T&gt; = <span class="kw">String</span></span></code></pre></div>
 </blockquote>
 <h3 id="declarations-with-type-parameters">Declarations with type parameters</h3>
 <div class="paragraph">
@@ -2727,38 +2792,38 @@
 <div class="paragraph">
 <p><span class="sentence">Examples:</span></p>
 </div>
-<div class="sourceCode" id="cb56"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">e</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">f</span><span class="op">():</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, contravariant usage</span></span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
-<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
-<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></span>
-<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, covariant usage</span></span>
-<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
-<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
-<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
-<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">e</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">f</span><span class="op">():</span> <span class="dt">In</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, covariant usage</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, contravariant usage</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> <span class="dt">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, covariant usage</span></span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok, contravariant usage</span></span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">c</span><span class="op">(</span><span class="va">p</span><span class="op">:</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">d</span><span class="op">():</span> <span class="dt">Inv</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// ERROR, invariant usage</span></span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Any of these restrictions may be lifted using <code>@UnsafeVariance</code> annotation on the type argument:</span></p>
 </div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> @<span class="dt">UnsafeVariance</span> <span class="va">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> @<span class="dt">UnsafeVariance</span> <span class="fu">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Out</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is covariant</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">b</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> @<span class="dt">UnsafeVariance</span> <span class="va">T</span><span class="op">)</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">In</span><span class="op">&lt;</span><span class="kw">in</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span> <span class="co">// T is contravariant</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">a</span><span class="op">():</span> @<span class="dt">UnsafeVariance</span> <span class="fu">T</span> <span class="op">{</span>...<span class="op">}</span> <span class="co">// Ok</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="paragraph">
 <p><span class="sentence">Using <code>@UnsafeVariance</code> is inherently unsafe and should be used only when the programmer can guarantee that variance violations would not result in runtime errors. </span><span class="sentence">For example, receiving a value in a contravariant position for a covariant class parameter is usually OK if the function involved is guaranteed not to mutate internal state of the class.</span></p>
 </div>
@@ -2774,14 +2839,14 @@
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb58"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ERROR, is-operator is only allowed for runtime-available types</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(value <span class="kw">is</span> T) ... </span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(value <span class="kw">is</span> T) ... <span class="co">// Ok</span></span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// ERROR, is-operator is only allowed for runtime-available types</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(value <span class="kw">is</span> T) ... </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Any?</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(value <span class="kw">is</span> T) ... <span class="co">// Ok</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h4 id="underscore-type-arguments">Underscore type arguments</h4>
 <div class="paragraph">
@@ -2791,56 +2856,56 @@
 <p><span class="sentence">An underscore type argument does not add any type information to the <a href="kotlin-type-constraints.html#kotlin-type-constraints">constraint system</a> <em>besides the presence of a type parameter</em>, i.e., parameterized declaration with different number of type parameters could be distinguished by different number of underscore type arguments.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">If the type inference is successfull, each underscore type argument is considered to be equal to the inferred type for their respective type parameter. </span><span class="sentence">If the type inference is not successfull, it is a compile-time error.</span></p>
+<p><span class="sentence">If the type inference is successful, each underscore type argument is considered to be equal to the inferred type for their respective type parameter. </span><span class="sentence">If the type inference is not successful, it is a compile-time error.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb59"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">T</span></span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> StringRunnable : MyRunnable&lt;<span class="kw">String</span>&gt; <span class="op">{</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">String</span> = <span class="st">&quot;test&quot;</span></span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">IntRunnable</span> <span class="op">:</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">Int</span><span class="op">&gt;</span> <span class="op">{</span></span>
-<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">Int</span> = <span class="dv">42</span></span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">S</span> <span class="op">:</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span>, <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">run</span><span class="op">():</span> <span class="dt">T</span> = mk&lt;S&gt;().execute()</span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">s</span> <span class="op">=</span> run&lt;StringRunnable, _ <span class="co">/* inferred to String */</span>&gt;()</span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>    assert(s == <span class="st">&quot;test&quot;</span>)</span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">i</span> <span class="op">=</span> run&lt;IntRunnable, _ <span class="co">/* inferred to Int */</span>&gt;()</span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>    assert(i == <span class="dv">42</span>)</span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">mk</span><span class="op">():</span> <span class="dt">T</span> = <span class="al">TODO()</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">T</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> StringRunnable : MyRunnable&lt;<span class="kw">String</span>&gt; <span class="op">{</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">String</span> = <span class="st">&quot;test&quot;</span></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">IntRunnable</span> <span class="op">:</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">Int</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">execute</span><span class="op">():</span> <span class="dt">Int</span> = <span class="dv">42</span></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a><span class="kw">inline</span> <span class="kw">fun</span> <span class="op">&lt;</span><span class="kw">reified</span> <span class="dt">S</span> <span class="op">:</span> <span class="dt">MyRunnable</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span>, <span class="dt">T</span><span class="op">&gt;</span> <span class="fu">run</span><span class="op">():</span> <span class="dt">T</span> = mk&lt;S&gt;().execute()</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">s</span> <span class="op">=</span> run&lt;StringRunnable, _ <span class="co">/* inferred to String */</span>&gt;()</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>    assert(s == <span class="st">&quot;test&quot;</span>)</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">i</span> <span class="op">=</span> run&lt;IntRunnable, _ <span class="co">/* inferred to Int */</span>&gt;()</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>    assert(i == <span class="dv">42</span>)</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb60"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">T</span> = <span class="al">TODO()</span> <span class="co">// (1)</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span>, <span class="va">d</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> 42.0<span class="op">):</span> <span class="dt">T</span> = <span class="al">TODO()</span> <span class="co">// (2)</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> foo(<span class="kw">true</span>)</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (1)</span></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// per overload resolution rules</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> foo&lt;_ <span class="co">/* U1 */</span>&gt;(<span class="dv">42</span>)</span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (1)</span></span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// with U1 inferred to Int</span></span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> foo&lt;_ <span class="co">/* U1 */</span>, _ <span class="co">/* U2 */</span>&gt;(<span class="fl">42.0</span>)</span>
-<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (2)</span></span>
-<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// with U1 inferred to Double and U2 inferred to List&lt;Double&gt;</span></span>
-<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">):</span> <span class="dt">T</span> = <span class="al">TODO()</span> <span class="co">// (1)</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span>, <span class="dt">R</span> <span class="op">:</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;&gt;</span> <span class="fu">foo</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span>, <span class="va">d</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> 42.0<span class="op">):</span> <span class="dt">T</span> = <span class="al">TODO()</span> <span class="co">// (2)</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">bar</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">a</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> foo(<span class="kw">true</span>)</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (1)</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// per overload resolution rules</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">b</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> foo&lt;_ <span class="co">/* U1 */</span>&gt;(<span class="dv">42</span>)</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (1)</span></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// with U1 inferred to Int</span></span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">c</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> foo&lt;_ <span class="co">/* U1 */</span>, _ <span class="co">/* U2 */</span>&gt;(<span class="fl">42.0</span>)</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// resolves to (2)</span></span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// with U1 inferred to Double and U2 inferred to List&lt;Double&gt;</span></span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <h3 id="declaration-visibility">Declaration visibility</h3>
 <div class="paragraph">
@@ -2874,18 +2939,18 @@
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb61"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not allowed, T is in contravariant position</span></span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// allowed, set2 is private-to-this</span></span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// allowed, set2 is called on this</span></span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span>.set2(t) </span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// not allowed, set2 is called on other</span></span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>        other.set2(t) </span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="kw">out</span> <span class="dt">T</span><span class="op">&gt;(</span><span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span> <span class="co">// T is a covariant parameter</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not allowed, T is in contravariant position</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="kw">fun</span> <span class="fu">set1</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// allowed, set2 is private-to-this</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">set2</span><span class="op">(</span><span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{}</span> </span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">bar</span><span class="op">(</span><span class="va">other</span><span class="op">:</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;)</span> <span class="op">{</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// allowed, set2 is called on this</span></span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">this</span>.set2(t) </span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// not allowed, set2 is called on other</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>        other.set2(t) </span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <blockquote>
 <div class="paragraph">
@@ -2914,14 +2979,14 @@
 <div class="paragraph">
 <p><span class="sentence">Example:</span></p>
 </div>
-<div class="sourceCode" id="cb62"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not allowed, t is internal, getValue is public</span></span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// allowed through @PublishedApi</span></span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Foo</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span><span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not allowed, t is internal, getValue is public</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Bar</span><span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;(</span>@<span class="va">PublishedApi</span> <span class="kw">internal</span> <span class="kw">val</span> <span class="va">t</span><span class="op">:</span> <span class="dt">T</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// allowed through @PublishedApi</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">inline</span> <span class="kw">fun</span> <span class="fu">getValue</span><span class="op">():</span> <span class="dt">T</span> = t</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 
 </body>
