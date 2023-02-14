@@ -418,7 +418,7 @@ If when expression is not [exhaustive][Exhaustive when expressions], it has type
 > }
 > ```
 
-When with bound value also allows for an inline property declaration of the form `when (val V = E) { ... }` inside the parentheses.
+When with bound value also allows for an in-place property declaration of the form `when (val V = E) { ... }` inside the parentheses.
 This declares a new property (see [declaration sections][Property declaration] for details) alongside the usual mechanics of the *when-expression*.
 The scope of this property is limited to the `when` expression, including both conditions and control structure bodies of the expression.
 As its form is limited to a simple "assignment-like" declaration with an initializer, this property does not allow getters, setters, delegation or destructuring.
