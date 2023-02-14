@@ -1706,7 +1706,6 @@ The following declarations are not allowed to have type parameters:
 - Constructor declarations;
 - Getters and setters of property declarations;
 - Enum class declarations;
-- Annotation class declarations;
 - Classifier declarations inheriting from `kotlin.Throwable`.
 
 Type parameters are allowed to specify *subtyping restrictions* on them in the form `T : U`, meaning $T <: U$ where $T$ is a type parameter and $U$ is some other type available in the scope the declaration is declared in.
