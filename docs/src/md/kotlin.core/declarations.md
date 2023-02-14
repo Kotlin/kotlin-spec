@@ -1385,7 +1385,9 @@ Properties without backing fields are not allowed to have initializer expression
 
 Read/write access to the property is replaced with getter/setter invocation respectively. 
 Getters and setters allow for some modifiers available for function declarations (for example, they may be declared `inline`, see grammar for details).
+
 Properties themselves may also be declared `inline`, meaning that both getter and setter of said property are `inline`.
+Additionally, `inline` properties are not allowed to have backing fields, i.e., they must have custom accessors which do not use the `field` property.
 
 #### Delegated property declaration
 
@@ -1790,9 +1792,9 @@ By supplying this annotation the author of the code explicitly declares that saf
 
 #### Reified type parameters
 
-Type parameters of inline function declarations (and only those) can be declared `reified` using the corresponding keyword.
-A reified type parameter is a [runtime-available][Runtime-available types] type inside the function scope, see the corresponding section for details.
-Reified type parameters can only be substituted by other [runtime-available types][Runtime-available types] when using such functions.
+Type parameters of inline function or property declarations (and only those) can be declared `reified` using the corresponding keyword.
+A reified type parameter is a [runtime-available][Runtime-available types] type inside their declaration's scope, see the corresponding section for details.
+Reified type parameters can only be substituted by other [runtime-available types][Runtime-available types] when using such declarations.
 
 > Example:
 >
