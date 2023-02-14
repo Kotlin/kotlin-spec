@@ -8970,7 +8970,10 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">In all other cases a property has no backing field. </span><span class="sentence">Properties without backing fields are not allowed to have initializer expressions.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively. </span><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details). </span><span class="sentence">Properties themselves may also be declared <code>inline</code>, meaning that both getter and setter of said property are <code>inline</code>.</span></p>
+<p><span class="sentence">Read/write access to the property is replaced with getter/setter invocation respectively. </span><span class="sentence">Getters and setters allow for some modifiers available for function declarations (for example, they may be declared <code>inline</code>, see grammar for details).</span></p>
+</div>
+<div class="paragraph">
+<p><span class="sentence">Properties themselves may also be declared <code>inline</code>, meaning that both getter and setter of said property are <code>inline</code>. </span><span class="sentence">Additionally, <code>inline</code> properties are not allowed to have backing fields, i.e., they must have custom accessors which do not use the <code>field</code> property.</span></p>
 </div>
 <h4 id="delegated-property-declaration">Delegated property declaration</h4>
 <div class="paragraph">
@@ -9368,7 +9371,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </blockquote>
 <h4 id="reified-type-parameters">Reified type parameters</h4>
 <div class="paragraph">
-<p><span class="sentence">Type parameters of inline function declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside the function scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substituted by other <a href="#runtime-available-types">runtime-available types</a> when using such functions.</span></p>
+<p><span class="sentence">Type parameters of inline function or property declarations (and only those) can be declared <code>reified</code> using the corresponding keyword. </span><span class="sentence">A reified type parameter is a <a href="#runtime-available-types">runtime-available</a> type inside their declaration’s scope, see the corresponding section for details. </span><span class="sentence">Reified type parameters can only be substituted by other <a href="#runtime-available-types">runtime-available types</a> when using such declarations.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -10976,7 +10979,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <span id="cb121-21"><a href="#cb121-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </blockquote>
 <div class="paragraph">
-<p><span class="sentence">When with bound value also allows for an inline property declaration of the form <code>when (val V = E) { ... }</code> inside the parentheses. </span><span class="sentence">This declares a new property (see <a href="#property-declaration">declaration sections</a> for details) alongside the usual mechanics of the <em>when-expression</em>. </span><span class="sentence">The scope of this property is limited to the <code>when</code> expression, including both conditions and control structure bodies of the expression. </span><span class="sentence">As its form is limited to a simple “assignment-like” declaration with an initializer, this property does not allow getters, setters, delegation or destructuring. </span><span class="sentence">It is also required to be immutable. </span><span class="sentence">Conceptually, it is very similar to declaring such a property before the when-expression and using it as subject, but with a difference in scoping of this property described above.</span></p>
+<p><span class="sentence">When with bound value also allows for an in-place property declaration of the form <code>when (val V = E) { ... }</code> inside the parentheses. </span><span class="sentence">This declares a new property (see <a href="#property-declaration">declaration sections</a> for details) alongside the usual mechanics of the <em>when-expression</em>. </span><span class="sentence">The scope of this property is limited to the <code>when</code> expression, including both conditions and control structure bodies of the expression. </span><span class="sentence">As its form is limited to a simple “assignment-like” declaration with an initializer, this property does not allow getters, setters, delegation or destructuring. </span><span class="sentence">It is also required to be immutable. </span><span class="sentence">Conceptually, it is very similar to declaring such a property before the when-expression and using it as subject, but with a difference in scoping of this property described above.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
