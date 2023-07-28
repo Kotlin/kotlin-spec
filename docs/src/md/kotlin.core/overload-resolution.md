@@ -230,7 +230,8 @@ They mostly follow the same rules as [calls with an explicit value receiver][Cal
 However, for a callable `f` with an explicit type receiver `T` the following sets are analyzed (**in the given order**):
 
 1. Static member callables named `f` of type `T`;
-2. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
+2. Static member callables named `f` of type `T` declared implicitly;
+3. The overload candidate sets for call `T.f()`, where `T` is a companion object of type `T`.
 
 ##### Call with an explicit super-form receiver
 
@@ -729,6 +730,14 @@ In a simple case when the callable reference is not used as an argument to an ov
 TODO: more examples
 
 > Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets
+
+> Important: when the callable reference resolution for `T::f` requires building overload candidate sets for both [type][Call with an explicit type receiver] and [value][Call with an explicit receiver] receiver candidates, they are considered in the following order.
+>
+> 1. Static member callables named `f` of type `T`;
+> 2. The overload candidate sets for call `t::f`, where `t` is a value of type `T`;
+> 3. The overload candidate sets for call `T::f`, where `T` is a companion object of type `T`.
+>
+> Callable references to members of companion objects are deprioritized, as you could always use the `T.Companion::f` syntax to reference them.
 
 > Important: when building the OCS for a callable reference, `invoke` operator convention does not apply, and all property references are treated equally as function references, being placed in the same sets.
 > For example, consider the following code:

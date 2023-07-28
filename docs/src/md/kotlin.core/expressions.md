@@ -418,7 +418,7 @@ If when expression is not [exhaustive][Exhaustive when expressions], it has type
 > }
 > ```
 
-When with bound value also allows for an inline property declaration of the form `when (val V = E) { ... }` inside the parentheses.
+When with bound value also allows for an in-place property declaration of the form `when (val V = E) { ... }` inside the parentheses.
 This declares a new property (see [declaration sections][Property declaration] for details) alongside the usual mechanics of the *when-expression*.
 The scope of this property is limited to the `when` expression, including both conditions and control structure bodies of the expression.
 As its form is limited to a simple "assignment-like" declaration with an initializer, this property does not allow getters, setters, delegation or destructuring.
@@ -711,15 +711,16 @@ The type of elvis operator expression is the [least upper bound][Least upper bou
 :::{.paste target=grammar-rule-rangeExpression}
 :::
 
-A *range expression* is a binary expression which uses a range operator `..`.
-It is an [overloadable][Operator overloading] operator with the following expansion:
+A *range expression* is a binary expression which uses a range operator `..` or a range-until operator `..<`.
+These are [overloadable][Operator overloading] operators with the following expansions:
 
 - `A..B` is exactly the same as `A.rangeTo(B)`
+- `A..<B` is exactly the same as `A.rangeUntil(B)`
 
-where `rangeTo` is a valid operator function available in the current scope.
+where `rangeTo` or `rangeUntil` is a valid operator function available in the current scope.
 
-The return type of this function is not restricted.
-A range expression has the same type as the return type of the corresponding `rangeTo` overload variant.
+The return type of these functions is not restricted.
+A range expression has the same type as the return type of the corresponding operator function overload variant.
 
 ### Additive expressions
 
