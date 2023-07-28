@@ -95,7 +95,7 @@ delegationSpecifier
     ;
 
 constructorInvocation
-    : userType valueArguments
+    : userType NL* valueArguments
     ;
 
 annotatedDelegationSpecifier
