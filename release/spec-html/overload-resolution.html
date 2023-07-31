@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.8-rfc+0.1</p>
+<p class="subtitle">Version 1.9-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -277,7 +277,10 @@
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
 </ul></li>
-<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a>
+<ul>
+<li><a href="declarations.html#data-object-declaration" id="toc-element-data-object-declaration" class="toc-element">Data object declaration</a></li>
+</ul></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
 <li><a href="declarations.html#value-class-declaration" id="toc-element-value-class-declaration" class="toc-element">Value class declaration</a></li>
@@ -959,6 +962,7 @@
 </div>
 <ol type="1">
 <li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code> declared implicitly;</span></li>
 <li><span class="sentence">The overload candidate sets for call <code>T.f()</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
 </ol>
 <h5 id="call-with-an-explicit-super-form-receiver">Call with an explicit super-form receiver</h5>
@@ -1632,6 +1636,19 @@
 <blockquote>
 <div class="paragraph">
 <p><span class="sentence">Note: this is different from the overload resolution for regular calls in that no most specific candidate selection process is performed inside the sets</span></p>
+</div>
+</blockquote>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: when the callable reference resolution for <code>T::f</code> requires building overload candidate sets for both <a href="overload-resolution.html#call-with-an-explicit-type-receiver">type</a> and <a href="overload-resolution.html#call-with-an-explicit-receiver">value</a> receiver candidates, they are considered in the following order.</span></p>
+</div>
+<ol type="1">
+<li><span class="sentence">Static member callables named <code>f</code> of type <code>T</code>;</span></li>
+<li><span class="sentence">The overload candidate sets for call <code>t::f</code>, where <code>t</code> is a value of type <code>T</code>;</span></li>
+<li><span class="sentence">The overload candidate sets for call <code>T::f</code>, where <code>T</code> is a companion object of type <code>T</code>.</span></li>
+</ol>
+<div class="paragraph">
+<p><span class="sentence">Callable references to members of companion objects are deprioritized, as you could always use the <code>T.Companion::f</code> syntax to reference them.</span></p>
 </div>
 </blockquote>
 <blockquote>

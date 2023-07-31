@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.8-rfc+0.1</p>
+<p class="subtitle">Version 1.9-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -277,7 +277,10 @@
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
 <li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
 </ul></li>
-<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a>
+<ul>
+<li><a href="declarations.html#data-object-declaration" id="toc-element-data-object-declaration" class="toc-element">Data object declaration</a></li>
+</ul></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
 <li><a href="declarations.html#value-class-declaration" id="toc-element-value-class-declaration" class="toc-element">Value class declaration</a></li>
@@ -2339,7 +2342,7 @@
 <div id="grammar-rule-constructorInvocation" class="grammar-rule">
 <dl>
 <dt><strong><em>constructorInvocation</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-userType">userType</a></em> <em><a href="syntax-and-grammar.html#grammar-rule-valueArguments">valueArguments</a></em></span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-userType">userType</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-valueArguments">valueArguments</a></em></span>
 </dd>
 </dl>
 </div>
@@ -2430,6 +2433,8 @@
 <dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-modifiers">modifiers</a></em>]<br />
 <code>'companion'</code><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+[<code>'data'</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'object'</code><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-simpleIdentifier">simpleIdentifier</a></em>]<br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em>]<br />
@@ -2510,7 +2515,7 @@
 ({<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} (<em><a href="syntax-and-grammar.html#grammar-rule-multiVariableDeclaration">multiVariableDeclaration</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-variableDeclaration">variableDeclaration</a></em>))<br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-typeConstraints">typeConstraints</a></em>]<br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} ((<code>'='</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em>) | <em><a href="syntax-and-grammar.html#grammar-rule-propertyDelegate">propertyDelegate</a></em>)]<br />
-[(<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}) <code>';'</code>]<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>';'</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 (([<em><a href="syntax-and-grammar.html#grammar-rule-getter">getter</a></em>] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>] <em><a href="syntax-and-grammar.html#grammar-rule-setter">setter</a></em>]) | ([<em><a href="syntax-and-grammar.html#grammar-rule-setter">setter</a></em>] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>] <em><a href="syntax-and-grammar.html#grammar-rule-getter">getter</a></em>]))</span>
 </dd>
@@ -2952,7 +2957,7 @@
 <div id="grammar-rule-rangeExpression" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em> {(<code>'..'</code> | <code>'..&lt;'</code>) {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -3270,7 +3275,9 @@
 <div id="grammar-rule-anonymousFunction" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence"><code>'fun'</code><br />
+<dd><span class="sentence">[<code>'suspend'</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'fun'</code><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-parametersWithOptionalType">parametersWithOptionalType</a></em><br />
@@ -3291,7 +3298,11 @@
 <div id="grammar-rule-objectLiteral" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'object'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classBody">classBody</a></em>]</span>
+<dd><span class="sentence">[<code>'data'</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'object'</code><br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}]<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classBody">classBody</a></em>]</span>
 </dd>
 </dl>
 </div>
