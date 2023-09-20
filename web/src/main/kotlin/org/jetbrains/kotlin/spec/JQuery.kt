@@ -10,7 +10,7 @@ external fun `$`(selector: dynamic): JQuery
 @JsModule("jquery")
 @JsNonModule
 external interface JQueryCoordinates {
-    var left: Number
+    // var left: Number
     var top: Number
 }
 
@@ -21,7 +21,7 @@ external interface JQueryEventObject {
     var currentTarget: Element
     var target: Element
     var keyCode: Number
-    var offsetX: Number
+    // var offsetX: Number
     var offsetY: Number
 }
 
