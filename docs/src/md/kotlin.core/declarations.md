@@ -543,11 +543,13 @@ Enum class $E$ is a special kind of class with the following properties:
 
 Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
 Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declaration].
-Enum entries don't introduce their own type, they are always considered to be of type `E`.
-As a result, no members can be accessed outside the scope of the enum entry body, other than those overriden from `E` .
 
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
+
+Enum entries don't introduce their own type, they are always considered to be of type `E`.
+
+> Note: in most platforms, enum entries are governed by the same rules as [anonymous object types][Object literals].
 
 Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` in the following way:
 
