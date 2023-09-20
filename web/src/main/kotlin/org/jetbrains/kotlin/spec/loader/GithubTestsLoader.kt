@@ -1,10 +1,6 @@
 package org.jetbrains.kotlin.spec.loader
 
-import js.externals.jquery.JQueryAjaxSettings
-import js.externals.jquery.JQueryXHR
-import js.externals.jquery.`$`
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import org.jetbrains.kotlin.spec.entity.TestsLoadingInfo
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.SpecTest
@@ -13,6 +9,9 @@ import org.jetbrains.kotlin.spec.entity.test.parameters.TestInfo
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
 import org.jetbrains.kotlin.spec.utils.format
 import kotlinx.browser.window
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlin.js.Promise
 
 interface GithubTestsLoader {
@@ -30,32 +29,22 @@ interface GithubTestsLoader {
 
         const val DEFAULT_BRANCH = "spec-tests"
 
-        protected val testAreasToLoad = TestArea.values()
+        protected val testAreasToLoad = TestArea.entries
 
         fun getBranch() = window.localStorage.getItem("spec-tests-branch") ?: DEFAULT_BRANCH
 
-        fun loadHelperFromRawGithub(fileName: String, testArea: TestArea): Promise<String> {
-            return Promise { requestResolve, requestReject ->
-                `$`.ajax(getFullHelperPath(testArea, fileName),
-                        jQueryAjaxSettings { requestReject(Exception()) }
-                ).then({ response: Any?, _: Any ->
-                    requestResolve(response.toString())
-                })
-            }
-        }
+        fun loadHelperFromRawGithub(fileName: String, testArea: TestArea): Promise<String> =
+            window.fetch(getFullHelperPath(testArea, fileName)).then { it.text() }.then { it }
 
         fun loadTestFileFromRawGithub(
                 path: String,
                 testInfo: TestInfo,
                 testPlace: TestPlace,
                 testArea: TestArea
-        ): Promise<SpecTest> = Promise { requestResolve, requestReject ->
-            `$`.ajax(getFullTestPath(path),
-                    jQueryAjaxSettings { requestReject(Exception()) }
-            ).then({ response: Any?, _: Any ->
-                requestResolve(SpecTest(testInfo, testPlace, response.toString(), testArea))
-            })
-        }
+        ): Promise<SpecTest> =
+            window.fetch(getFullTestPath(path))
+                .then { it.text() }
+                .then { SpecTest(testInfo, testPlace, it, testArea) }
 
 
         fun loadTestMapFileFromRawGithub(
@@ -63,7 +52,7 @@ interface GithubTestsLoader {
                 path: String,
                 testType: TestOrigin,
                 sectionsMapByTestArea: Map<TestArea, TestsLoadingInfo.Sections>
-        ): Promise<Map<TestArea, TestsLoadingInfo.Tests>> = Promise { resolve, _ ->
+        ): Promise<Map<TestArea, TestsLoadingInfo.Tests>> {
             val resultMap = mutableMapOf<TestArea, TestsLoadingInfo.Tests>()
             val loadableTestAreas: MutableSet<TestArea> = mutableSetOf()
             testAreasToLoad.forEach {
@@ -71,20 +60,19 @@ interface GithubTestsLoader {
                     loadableTestAreas.add(it)
                 }
             }
-            `$`.`when`(
-                    *(loadableTestAreas.associateWith {
-                        `$`.ajax(getFullTestMapPath(testType, it, mainSectionName, path), jQueryAjaxSettings { })
-                                .then({ response: Any?, _: Any ->
-                                    resultMap[it] = TestsLoadingInfo.Tests(parseJsonText(response.toString()))
-                                })
-                    }.values.toTypedArray())
-            ).then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
+            return Promise.all(
+                loadableTestAreas.map { ta ->
+                    window.fetch(getFullTestMapPath(testType, ta, mainSectionName, path))
+                        .then { it.text() }
+                        .then { resultMap[ta] = TestsLoadingInfo.Tests(parseJsonText(it)) }
+                }.toTypedArray()
+            ).then { resultMap }
         }
 
         private fun Map<TestArea, TestsLoadingInfo.Sections>.isTestsMapExists(testArea: TestArea, requestedMainSection: String, requestedSubsectionPath: String): Boolean {
             val subsectionsArray = this[testArea]?.json?.jsonObject?.get(requestedMainSection) ?: return false
             subsectionsArray.jsonArray.forEach { jsonElement ->
-                if (jsonElement.primitive.content == requestedSubsectionPath)
+                if (jsonElement.jsonPrimitive.content == requestedSubsectionPath)
                     return true
             }
             return false
@@ -98,16 +86,15 @@ interface GithubTestsLoader {
                 }
 
 
-        fun loadSectionsMapFileFromRawGithub(): Promise<Map<TestArea, TestsLoadingInfo.Sections>> = Promise { resolve, _ ->
+        fun loadSectionsMapFileFromRawGithub(): Promise<Map<TestArea, TestsLoadingInfo.Sections>> {
             val resultMap = mutableMapOf<TestArea, TestsLoadingInfo.Sections>()
-            `$`.`when`(
-                    *(testAreasToLoad.asList().associateWith {
-                        `$`.ajax(getFullSectionsMapPath(it), jQueryAjaxSettings { })
-                                .then({ response: Any?, _: Any ->
-                                    resultMap[it] = TestsLoadingInfo.Sections(parseJsonText(response.toString()))
-                                })
-                    }.values.toTypedArray())
-            ).then({ _: Any?, _: Any -> resolve(resultMap) }, { resolve(resultMap) })
+            return Promise.all(
+                testAreasToLoad.map { ta ->
+                    window.fetch(getFullSectionsMapPath(ta))
+                        .then { it.text() }
+                        .then { resultMap[ta] = TestsLoadingInfo.Sections(parseJsonText(it)) }
+                }.toTypedArray()
+            ).then { resultMap }
         }
 
         private fun getFullSectionsMapPath(testArea: TestArea) = "{1}/{2}/{3}/{4}/{5}/{6}"
@@ -120,20 +107,9 @@ interface GithubTestsLoader {
 
         private fun getFullTestPath(path: String) = "{1}/{2}/{3}".format(RAW_GITHUB_URL, getBranch(), path)
 
-        private fun parseJsonText(text: String) = Json(JsonConfiguration.Stable).parseJson(text)
-
-        private fun jQueryAjaxSettings(requestReject: (Throwable) -> Unit) = object : JQueryAjaxSettings {
-            override var cache: Boolean?
-                get() = false
-                set(_) {}
-            override var type: String?
-                get() = "GET"
-                set(_) {}
-            override val error: ((jqXHR: JQueryXHR, textStatus: String, errorThrown: String) -> Any)?
-                get() = { _, _, _ -> requestReject(Exception()) }
-        }
+        private fun parseJsonText(text: String) = Json.parseToJsonElement(text)
 
     }
 
-    fun loadTestFiles(sectionToLoadName: String, mainSectionPath: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<Promise<SpecSection>>
+    fun loadTestFiles(sectionToLoadName: String, mainSectionPath: String, sectionsPath: List<String>, sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>): Promise<SpecSection>
 }

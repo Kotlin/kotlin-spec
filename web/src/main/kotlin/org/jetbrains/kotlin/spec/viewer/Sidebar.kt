@@ -1,11 +1,11 @@
 package org.jetbrains.kotlin.spec.viewer
 
-import js.externals.jquery.JQuery
-import js.externals.jquery.`$`
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.KeyboardEvent
 import kotlinx.browser.document
 import kotlinx.browser.window
+import org.jetbrains.kotlin.spec.`$`
+import org.jetbrains.kotlin.spec.JQuery
 
 object Sidebar {
     private const val LOAD_PDF_ICON = "./resources/images/pdf.png"
@@ -38,7 +38,7 @@ object Sidebar {
         val sectionIdFromHash = window.location.hash.removePrefix("#")
         val sectionIdFromPath = window.location.pathname.split("/").last().removeSuffix(".html")
 
-        expandItemsHierarchy(if (sectionIdFromHash.isNotBlank()) sectionIdFromHash else sectionIdFromPath)
+        expandItemsHierarchy(sectionIdFromHash.ifBlank { sectionIdFromPath })
 
         if (shouldScrollToItem) {
             scrollToActiveItem()
@@ -160,7 +160,7 @@ object Sidebar {
         `$`("h2").each { _, el ->
             val sectionName = `$`(el).attr("id")
             `$`(el).append("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" onclick=\"event.stopPropagation();\" class=\"download-section-as-pdf-text-link\" title=\"Download section as pdf\">"
-                    + """<img src="${LOAD_PDF_ICON}" />""".trimIndent() + "</a>")
+                    + """<img src="$LOAD_PDF_ICON" />""".trimIndent() + "</a>")
         }
     }
 }

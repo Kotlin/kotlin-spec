@@ -1,5 +1,8 @@
 package org.jetbrains.kotlin.spec.loader
 
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.TestsLoadingInfo
 import org.jetbrains.kotlin.spec.entity.test.SpecTest
@@ -37,7 +40,7 @@ class LoaderByTestsMapFile : GithubTestsLoader {
             for ((testType, testsByTypes) in testsByParagraphs.jsonObject) {
                 for ((testSentence, testsBySentences) in testsByTypes.jsonObject) {
                     testsBySentences.jsonArray.forEachIndexed { i, testInfo ->
-                        val testFilePath = testInfo.jsonObject["path"]?.primitive?.content ?: return@forEachIndexed
+                        val testFilePath = testInfo.jsonObject["path"]?.jsonPrimitive?.content ?: return@forEachIndexed
                         val testElementInfo = TestInfo(testInfo.jsonObject, i + 1)
                         val testPath = TestPlace(paragraph.toInt(), TestType.getByShortName(testType), testSentence.toInt())
                         promises.add(loadTestFileFromRawGithub(testFilePath, testElementInfo, testPath, testArea))
@@ -53,20 +56,21 @@ class LoaderByTestsMapFile : GithubTestsLoader {
                                mainSectionPath: String,
                                sectionsPath: List<String>,
                                sectionsMapsByTestArea: Map<TestArea, TestsLoadingInfo.Sections>
-    ) = loadTestsMapFile(mainSectionName = mainSectionPath,
+    ): Promise<SpecSection> = loadTestsMapFile(mainSectionName = mainSectionPath,
             sectionsPath = when {
-                mainSectionPath == sectionToLoadName && sectionsPath.isEmpty() -> "";
-                sectionsPath.isNotEmpty() -> sectionsPath.joinToString("/") + "/" + sectionToLoadName;
+                mainSectionPath == sectionToLoadName && sectionsPath.isEmpty() -> ""
+                sectionsPath.isNotEmpty() -> sectionsPath.joinToString("/") + "/" + sectionToLoadName
                 else -> sectionToLoadName
             },
             sectionsMapByTestArea = sectionsMapsByTestArea)
             .then { testsMapsByTestArea ->
                 val resultMap = mutableMapOf<TestArea, List<SpecTest>>()
-                Promise.all(testAreasToLoad.asList()
-                        .associateWith { getPromiseForTests(it, testsMapsByTestArea, resultMap) }
-                        .values.toTypedArray()
+                Promise.all(
+                    testAreasToLoad.map { ta ->
+                        getPromiseForTests(ta, testsMapsByTestArea, resultMap)
+                    }.toTypedArray()
                 ).then { SpecSection(resultMap) }
-            }
+            }.then { it }
 
     fun loadSectionsMapFiles() = loadSectionsMapFile()
 
@@ -74,7 +78,7 @@ class LoaderByTestsMapFile : GithubTestsLoader {
             testArea: TestArea,
             testMaps: Map<TestArea, TestsLoadingInfo.Tests>,
             mapOfTests: MutableMap<TestArea, List<SpecTest>>
-    ) = Promise.all(
+    ): Promise<Unit> = Promise.all(
             getPromisesForTestFilesFromTestMap(testMaps[testArea], testArea))
             .then { mapOfTests[testArea] = it.toList() }
 }

@@ -1,12 +1,12 @@
 import at.phatbl.shellexec.ShellExec
 
 plugins {
-    kotlin("jvm") version "1.7.0" apply false
+    kotlin("jvm") version "1.9.10" apply false
     id("at.phatbl.shellexec") version "1.5.2"
 }
 
-val htmlBuildDir = "$buildDir/spec/html"
-val pdfBuildDir = "$buildDir/spec/pdf"
+val htmlBuildDir = "${layout.buildDirectory.get()}/spec/html"
+val pdfBuildDir = "${layout.buildDirectory.get()}/spec/pdf"
 val resourcesBuildDir = "$htmlBuildDir/resources"
 val jsBuildDir = "$resourcesBuildDir/js"
 

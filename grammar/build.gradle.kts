@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "1.6.0"
+    id("org.jetbrains.intellij") version "1.15.0"
     antlr
     `maven-publish`
     kotlin("jvm")
@@ -155,9 +155,9 @@ tasks.create("prepareDiagnosticsCompilerTests") {
 
 val instrumentTestCodeTask = tasks.named("instrumentTestCode")
 
-tasks.named("inspectClassesForKotlinIC") {
-    dependsOn(instrumentTestCodeTask)
-}
+// tasks.named("inspectClassesForKotlinIC") {
+//     dependsOn(instrumentTestCodeTask)
+// }
 
 tasks.withType<Jar> {
     dependsOn(instrumentTestCodeTask)

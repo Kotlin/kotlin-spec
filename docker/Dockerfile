@@ -1,4 +1,4 @@
-FROM pandoc/latex:2.14.2-ubuntu
+FROM pandoc/latex:3.1.1-ubuntu
 MAINTAINER Marat Akhin <marat.akhin@jetbrains.com>
 
 WORKDIR /source

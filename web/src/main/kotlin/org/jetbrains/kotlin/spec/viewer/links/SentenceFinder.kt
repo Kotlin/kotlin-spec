@@ -1,6 +1,6 @@
 package org.jetbrains.kotlin.spec.viewer.links
 
-import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.`$`
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.getSentenceInfoFromSearchField
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.highlightParagraph
 import org.jetbrains.kotlin.spec.viewer.links.SpecPlaceHighlighter.highlightSentence
