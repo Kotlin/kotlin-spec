@@ -1,7 +1,7 @@
 package org.jetbrains.kotlin.spec.viewer
 
-import js.externals.jquery.JQuery
-import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.`$`
+import org.jetbrains.kotlin.spec.JQuery
 import org.jetbrains.kotlin.spec.entity.SpecSentence
 import org.jetbrains.kotlin.spec.entity.test.SpecTest
 import org.jetbrains.kotlin.spec.entity.test.TestCase
@@ -145,7 +145,7 @@ class SpecTestsViewer {
     fun onTestAreaChange() {
         val testArea = TestArea.getByShortName(`$`(TEST_AREA_SELECTOR).`val`().toString().apply { if (isEmpty()) return })
         currentSpecSentenceTests.getTests(testArea) ?: return
-        TestType.values().forEach { testType ->
+        TestType.entries.forEach { testType ->
             val tests = currentSpecSentenceTests.getTests(testArea, testType) ?: return@forEach
             if (tests.isNotEmpty())
                 `$`(TEST_TYPE_SELECTOR).append(TEST_TYPE_OPTION_TEMPLATE.format(testType.shortName, testType.name))
