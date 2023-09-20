@@ -547,6 +547,10 @@ Enum entries have their own bodies that may contain their own declarations, simi
 > Note: an enum class can have zero enum entries.
 > This makes objects of this class impossible to construct.
 
+Enum entries don't introduce their own type, they are always considered to be of type `E`.
+
+> Note: in most platforms, enum entries are governed by the same rules as [anonymous object types][Object literals].
+
 Every enum entry of class `E` implicitly overrides members of `kotlin.Enum<E>` in the following way:
 
 - ```kotlin
