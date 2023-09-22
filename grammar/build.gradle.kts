@@ -172,5 +172,7 @@ tasks.withType<Jar> {
         )
     }
 
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })
 }
