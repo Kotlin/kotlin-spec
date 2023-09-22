@@ -1,6 +1,6 @@
 import java.nio.file.Paths
 
-val htmlBuildDir = "${project.parent?.buildDir}/spec/html"
+val htmlBuildDir = "${project.parent?.layout?.buildDirectory?.get()}/spec/html"
 val scriptsDir = "${project.parent?.projectDir}/scripts/build"
 
 tasks.create<Exec>("build") {

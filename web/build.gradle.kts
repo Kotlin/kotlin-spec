@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackOutput
 
 plugins {
-    kotlin("js")
+    kotlin("multiplatform")
 }
 
 group = "org.jetbrains.kotlin.spec"
@@ -12,7 +12,6 @@ val buildMode = findProperty("mode")?.toString() ?: "production" // production |
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 tasks.create<Copy>("copyKatex") {
@@ -20,7 +19,7 @@ tasks.create<Copy>("copyKatex") {
     group = "internal"
 
     from("$rootDir/build/js/node_modules/katex/dist")
-    into("$buildDir/js/katex".also { File(it).mkdirs() })
+    into("${layout.buildDirectory.get()}/js/katex".also { File(it).mkdirs() })
 }
 
 kotlin {
@@ -36,7 +35,7 @@ kotlin {
             }
         }
         browser {
-            webpackTask {
+            webpackTask(Action {
                 dependsOn("copyKatex")
 
                 output.apply {
@@ -44,23 +43,23 @@ kotlin {
                     library = "main"
                 }
 
-                destinationDirectory = file("${buildDir}/js")
-                outputFileName = "main.js"
+                outputDirectory = file("${layout.buildDirectory.get()}/js")
+                mainOutputFileName = "main.js"
 
-                mode = Mode.valueOf(buildMode.toUpperCase())
+                mode = Mode.valueOf(buildMode.uppercase())
                 sourceMaps = (mode == Mode.DEVELOPMENT)
-            }
+            })
         }
     }
 
     sourceSets {
-        main {
+        val jsMain by getting {
+            kotlin.srcDir("src/main/kotlin")
             dependencies {
-                compileOnly("kotlin.js.externals:kotlin-js-jquery:2.0.0-0")
-                implementation(npm("katex", "0.11.1"))
+                implementation(npm("katex", "0.16.8"))
                 implementation(npm("jquery", "2.2.4"))
-                implementation(npm("kotlin-playground", "1.24.2"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:0.12.0")
+                implementation(npm("kotlin-playground", "1.28.0"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             }
         }
     }

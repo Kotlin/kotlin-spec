@@ -1,6 +1,6 @@
 import java.nio.file.Paths
 
-val pdfBuildDir = "${project.parent?.buildDir}/spec/pdf"
+val pdfBuildDir = "${project.parent?.layout?.buildDirectory?.get()}/spec/pdf"
 val scriptsDir = "${project.parent?.projectDir}/scripts/build"
 
 tasks.create<Exec>("build") {

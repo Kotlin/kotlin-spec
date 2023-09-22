@@ -1,11 +1,11 @@
 package org.jetbrains.kotlin.spec.viewer.links
 
-import js.externals.jquery.JQuery
-import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.*
 import org.w3c.dom.HTMLElement
 import kotlinx.browser.window
+import org.jetbrains.kotlin.spec.`$`
+import org.jetbrains.kotlin.spec.JQuery
 
 data class SpecPlaceComponents(
         val sectionId: String,
