@@ -265,7 +265,7 @@ Further details are available in the [corresponding section][Using lambda return
 #### `kotlin.Contextual`
 
 `kotlin.PublishedApi` is an annotation class with no fields which is applicable to any declaration.
-This annotation defines whether a members is accessible via the implicit scope when the containing type is used as a context.
+This annotation defines whether a member is accessible via the implicit scope when the containing type is used as a context.
 
 #### `kotlin.ContextNotFound`
 

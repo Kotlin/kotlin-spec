@@ -336,7 +336,7 @@ As with [calls with explicit receiver][Call with an explicit receiver], we first
 
 For an identifier named `f` the following sets are analyzed (**in the given order**):
 
-1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;*
+1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
 2. The overload candidate sets for each pair of implicit receivers `e` and `d` available in the current scope, calculated as if `e` is the [explicit receiver][Call with an explicit receiver], in order of the [receiver priority][Receivers];
    * Only contextually accessible members are considered in cases (1) and (2).
 3. Top-level non-extension functions named `f`, in the order of:
