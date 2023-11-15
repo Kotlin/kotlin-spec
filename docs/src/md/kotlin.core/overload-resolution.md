@@ -29,8 +29,8 @@ Implicit receivers are available in a syntactic scope according to the following
 - Any receiver available in a scope is available in its [downwards-linked scopes][Linked scopes];
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the declared object is available as implicit `this`;
 - In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the static callables of the declared object are available on a phantom static implicit `this`;
-- If a function or a property is an extension, `this` parameter of the extension is also available inside the extension declaration;
-- If a lambda expression has an extension function type, `this` argument of the lambda expression is also available inside the lambda expression declaration.
+- If a function or a property is an extension or has receiver context parameters, `this` parameter of the extension and of the receiver context parameters are also available inside the extension declaration;
+- If a lambda expression has an extension function type or has receiver context parameters in its function type, `this` argument of the lambda expression and of the receiver context parameters are also available inside the lambda expression declaration.
 
 > Important: a phantom static implicit `this` is a special receiver, which is included in the receiver chain for the purposes of handling static functions from [enum classes][Enum class declaration].
 > It may also be used on platforms to handle their static-like entities, e.g., static methods on JVM platform.
@@ -43,18 +43,22 @@ The available receivers are prioritized in the following way:
 - Current class companion object receiver has higher priority than any of the superclass companion objects;
 - Superclass companion object receivers are prioritized according to the inheritance order.
 
-> Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority.
+> Important: these rules mean implicit receivers are always totally ordered w.r.t. their priority, as no two implicit receivers can have the same priority;
+> with the exception of declarations introducing several extension or receiver context parameters.
 
 > Important: DSL-specific annotations (marked with [`kotlin.DslMarker`] annotation) change the availability of implicit receivers in the following way: for all types marked with a particular DSL-specific annotation, only the highest priority implicit receiver is available in a given scope. 
 
-The implicit receiver having the highest priority is also called the _default implicit receiver_.
-The default implicit receiver is available in a scope as `this`.
+The implicit receivers having the highest priority are also called the _default implicit receivers_.
+The default implicit receivers are available in a scope as `this`.
 Other available receivers may be accessed using [labeled this-expressions][This-expressions].
 
 If an implicit receiver is available in a given scope, it may be used to call callables implicitly in that scope without using the navigation operator.
 
-For [extension callables][Callables and `invoke` convention], the receiver used as the extension receiver parameter is called *extension receiver*, while the implicit receiver associated with the declaration scope the extension is declared in is called *dispatch receiver*. 
-For a particular callable invocation, any or both receivers may be involved, but, if an extension receiver is involved, the dispatch receiver must be implicit.
+For [callables with more than once receiver][Callables and `invoke` convention],
+the receiver used as the extension receiver parameter is called *extension receiver*, 
+the implicit receiver associated with the declaration scope the extension is declared in is called *dispatch receiver*,
+and the receivers coming from contexts are called *context receivers*.
+For a particular callable invocation, if an extension receiver is involved, the dispatch and context receivers must be implicit.
 
 > Note: by definition, local extension callables do not have a dispatch receiver, as they are declared in a statement scope.
 
@@ -88,6 +92,20 @@ For a particular callable invocation, any or both receivers may be involved, but
 >     }
 > }
 > ```
+
+_Contexts_ are defined similarly to implicit receivers:
+- Any context available in a scope is available in its [downwards-linked scopes][Linked scopes];
+- In a [classifier declaration][Classifier declaration] scope (including object and companion object declarations), the declared object is available as context;
+- If a function or a property is an extension or has (receiver or named) context parameters, those are also available inside the extension declaration;
+- If a lambda expression has an extension function type or has (receiver or named) context parameters in its function type, those are also available inside the lambda expression declaration.
+
+#### Accessibility for receiver contexts
+
+For the purpose of this section, the term accessible is refined for the case of implicit receivers introduced by a receiver context declaration.
+In that case a member is _accessible_ if, in addition to the usual conditions, at least one of the following holds:
+
+- The member is marked with the `kotlin.Contextual` annotation, is inherited from, or overrides one such member,
+- The member is declared in a type marked with the `kotlin.Contextual` annotation, is inherited from, or overrides one such member.
 
 #### The forms of call-expression
 
@@ -370,21 +388,30 @@ Second, the following constraint system is built:
 
 - For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter of type $U_j$, a constraint $T_i <: U_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
-- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter of type $U_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_n) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
-- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type $U_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
+- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter of type $U_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_n) \rightarrow R\right) <: \contextfree(U_m)$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
+- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type $U_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: \contextfree(U_m)$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
 
 TODO: in fact, it is an intersection of both non-suspend and suspend variants
 
 TODO: taking into account the fact that $\FT(L) -> R <: \FTR(L) -> R <: \FT(L) -> R$, this is not entirely correct. It's not that important for applicability though.
 
 If this constraint system is sound, the function is applicable for the call.
-Only applicable functions are considered for the next step: [choosing the most specific candidate from the overload candidate set][Choosing the most specific candidate from the overload candidate set].
+Only applicable functions are considered for the next step: [context resolution][Context resolution].
 
 Receiver parameters are handled in the same way as other parameters in this mechanism, with one important exception: any receiver of type $\Nothing$ is deemed not applicable for any member callables, regardless of other parameters.
 This is due to the fact that, as $\Nothing$ is the subtype of any other type in Kotlin type system, it would have allowed **all** member callables of **all** available types to participate in the overload resolution, which is theoretically possible, but very resource-consuming and does not make much sense from the practical point of view.
 Extension callables are still available, because they are limited to the declarations available or imported in the current scope.
 
 > Note: although it is impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type $\NothingQ$.
+
+#### Context resolution
+
+A function remain applicable if for each of their context parameters with type `P`, there is a value available in the context whose type is a subtype of `P`.
+If this filtering removes every function from the previous set, the compiler should issue an error containing the message from the `kotlin.ContextNotFound` annotation, if any.
+
+If for any call there is a context parameter for which there is more than one value available in the context _at the same priority level_, then an ambiguity error should be issued.
+
+The remaining applicable functions are considered for the next step: [choosing the most specific candidate from the overload candidate set][Choosing the most specific candidate from the overload candidate set].
 
 ### Choosing the most specific candidate from the overload candidate set
 
@@ -458,6 +485,7 @@ In case 3, several additional steps are performed in order.
 - For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
   The candidate with the least number of non-specified default parameters is a more specific candidate;
 - For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
+- For all candidates, a candidate without context parameters is less specific than any candidate with them.
 
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
@@ -496,6 +524,7 @@ First, we perform the following checks.
 >
 > * `Int.(String) -> Int`
 > * `(Int, String) -> Double`
+> * `context(Int) (String) -> Boolean`
 
 If all checks succeed, we can perform the [type inference][Statements with lambda literals] for the lambda argument $A$, as in all cases its parameter types are known (corollary from check 2 succeeding) and their corresponding constraints can be added to the constraint system.
 The constraint system solution gives us the inferred lambda return type $R_{\text{inf}}$, which may be used to refine function applicability, by removing overload candidates with incompatible lambda return types.

@@ -261,3 +261,18 @@ Further details are available in the [corresponding section][Using lambda return
 
 > Note: as of Kotlin $\currentKotlinMajorVersion{}$, this annotation is experimental and, in order to use it in one's code, one must explicitly enable it using opt-in annotations given above.
 > The particular marker class used to perform this is implementation-defined.
+
+#### `kotlin.Contextual`
+
+`kotlin.PublishedApi` is an annotation class with no fields which is applicable to any declaration.
+This annotation defines whether a members is accessible via the implicit scope when the containing type is used as a context.
+
+#### `kotlin.ContextNotFound`
+
+`kotlin.ContextNotFound` is an annotation class with the following single field:
+
+* ```kotlin
+  val message: String
+  ```
+
+  The message to be displayed when the type this annotation applies to cannot be resolved during _context resolution_.

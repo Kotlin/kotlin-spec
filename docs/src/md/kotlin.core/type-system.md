@@ -796,34 +796,36 @@ In case we need to establish type containment between regular type $A$ and captu
 
 Kotlin has first-order functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.
 
-A function type $\FT$
+A function type $\FT_m$
 
-$$\FT(A_1, \ldots, A_n) \rightarrow R$$
+$$\FT_m(C_1, \ldots, C_m, A_1, \ldots, A_n) \rightarrow R$$
 
 consists of
 
-* argument types $A_i$
+* contexts $C_i$
+* argument types $A_j$
 * return type $R$
 
-and may be considered the following instantiation of a special type constructor $\FunctionN(\inV P_1, \ldots, \inV P_n, \outV R)$ (please note the variance of type parameters)
+and may be considered the following instantiation of a special type constructor $\Function{M + N}(\inV P_1, \ldots, \inV P_m, \inV P_{m + 1}, \ldots, \inV P_{m + n}, \outV R)$ (please note the variance of type parameters)
 
-$$\FT(A_1, \ldots, A_n) \rightarrow R \equiv \FunctionN[A_1, \ldots, A_n, R]$$
+$$\FT(C_1, \ldots, C_m, A_1, \ldots, A_n) \rightarrow R \equiv \Function{M + N}[C_1, \dots, C_m, A_1, \ldots, A_n, R]$$
 
 These $\FunctionN$ types follow the rules of regular type constructors and parameterized types w.r.t. subtyping.
 
 A function type with receiver $\FTR$
 
-$$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R$$
+$$\FTR(C_1, \ldots C_m, \RT, A_1, \ldots, A_n) \rightarrow R$$
 
 consists of
 
+* contexts $C_i$
 * receiver type $\RT$
 * argument types $A_i$
 * return type $R$
 
 From the type system's point of view, it is equivalent to the following function type
 
-$$\FTR(\RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(\RT, A_1, \ldots, A_n) \rightarrow R$$
+$$\FTR(C_1, \dots, C_m, \RT, A_1, \ldots, A_n) \rightarrow R \equiv \FT(C_1, \ldots, C_m, \RT, A_1, \ldots, A_n) \rightarrow R$$
 
 i.e., receiver is considered as yet another argument of its function type.
 
@@ -831,12 +833,18 @@ i.e., receiver is considered as yet another argument of its function type.
 >
 > * `Int.(Int) -> String`
 > * `(Int, Int) -> String`
+> * `context(Int) (Int) -> String`
 >
 > However, these two types are **not** equivalent w.r.t. [overload resolution][Overload resolution], as it distinguishes between functions with and without receiver.
 
 TODO(Specify other cases when these two types are **not** equivalent)
 
 Furthermore, all function types $\FunctionN$ are subtypes of a general argument-agnostic type [$\Function$][`kotlin.Function`-typesystem] for the purpose of unification; this subtyping relation is also used in [overload resolution][Determining function applicability for a specific call].
+
+For each function type we define it's **context-free** version by dropping the context arguments.
+
+$$\contextfree(\FT(C_1, \ldots, C_m, A_1, \ldots, A_n)) = \FT(A_1, \ldots, A_n)$$
+$$\contextfree(\FTR(C_1, \ldots, C_m, \RT, A_1, \ldots, A_n)) = \FTR(\RT, A_1, \ldots, A_n)$$
 
 [`kotlin.Function`-typesystem]: #kotlin.function-typesystem
 
