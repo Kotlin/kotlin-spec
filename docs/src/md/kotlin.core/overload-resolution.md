@@ -99,13 +99,19 @@ _Contexts_ are defined similarly to implicit receivers:
 - If a function or a property is an extension or has (receiver or named) context parameters, those are also available inside the extension declaration;
 - If a lambda expression has an extension function type or has (receiver or named) context parameters in its function type, those are also available inside the lambda expression declaration.
 
-#### Accessibility for receiver contexts
+#### Contextual accessibility
 
-For the purpose of this section, the term accessible is refined for the case of implicit receivers introduced by a receiver context declaration.
-In that case a member is _accessible_ if, in addition to the usual conditions, at least one of the following holds:
+Whenever a member is brought into scope through a context, additional rules apply when used from the implicit scope.
+
+We say that a member is _contextually annotated_ if at least one of the following conditions holds:
 
 - The member is marked with the `kotlin.Contextual` annotation, is inherited from, or overrides one such member,
 - The member is declared in a type marked with the `kotlin.Contextual` annotation, is inherited from, or overrides one such member.
+
+We say that a member is _contextually accessible_ if either:
+
+- It is brought into scope by means other than a context,
+- It is brought into scope using a context, and it is contextually annotated.
 
 #### The forms of call-expression
 
@@ -220,6 +226,7 @@ If a call is correct, for a callable `f` with an explicit receiver `e` of type `
 2. Extension callables named `f`, whose receiver type `U` conforms to type `T`, in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
     * First, we assume there is **no implicit receiver** available for the dispatch receiver of `f` (i.e., we analyze _local_ extension callables only);
     * Second, we consider each implicit receiver available for the dispatch receiver of `f` in the order of the implicit [receiver priority][Receivers];
+        * When the dispatch receiver was brought using as a context, we consider only contextually accessible members.
 3. Explicitly imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
 4. Extension callables named `f`, whose receiver type `U` conforms to type `T`, declared in the package scope;
 5. Star-imported extension callables named `f`, whose receiver type `U` conforms to type `T`;
@@ -329,8 +336,9 @@ As with [calls with explicit receiver][Call with an explicit receiver], we first
 
 For an identifier named `f` the following sets are analyzed (**in the given order**):
 
-1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;
+1. Local non-extension callables named `f` in the current scope and its [upwards-linked scopes][Linked scopes], ordered by the size of the scope (smallest first), excluding the package scope;*
 2. The overload candidate sets for each pair of implicit receivers `e` and `d` available in the current scope, calculated as if `e` is the [explicit receiver][Call with an explicit receiver], in order of the [receiver priority][Receivers];
+   * Only contextually accessible members are considered in cases (1) and (2).
 3. Top-level non-extension functions named `f`, in the order of:
    a. Callables explicitly imported into the current file;
    b. Callables declared in the same package;
