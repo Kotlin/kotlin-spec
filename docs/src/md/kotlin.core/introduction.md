@@ -52,6 +52,7 @@ We would like to thank the following people for their invaluable help and feedba
 * Neal Gafter
 * Dmitrii Petrov
 * Victor Petukhov
+* Vladimir Reshetnikov
 * Dmitry Savvinov
 * Anastasiia Spaseeva
 * Mikhail Zarechenskii
