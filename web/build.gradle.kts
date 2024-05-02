@@ -23,7 +23,7 @@ tasks.create<Copy>("copyKatex") {
 }
 
 kotlin {
-    js {
+    js(IR) {
         moduleName = "main"
         compilations.all {
             packageJson {
@@ -34,6 +34,7 @@ kotlin {
                 moduleKind = "amd"
             }
         }
+        binaries.executable()
         browser {
             webpackTask(Action {
                 dependsOn("copyKatex")
@@ -56,10 +57,10 @@ kotlin {
         val jsMain by getting {
             kotlin.srcDir("src/main/kotlin")
             dependencies {
-                implementation(npm("katex", "0.16.8"))
+                implementation(npm("katex", "0.16.10"))
                 implementation(npm("jquery", "2.2.4"))
-                implementation(npm("kotlin-playground", "1.28.0"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation(npm("kotlin-playground", "1.30.0"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
     }
