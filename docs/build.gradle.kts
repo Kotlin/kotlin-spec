@@ -10,8 +10,8 @@ plugins {
 group = "org.jetbrains.kotlin.spec"
 version = "0.1"
 
-val htmlBuildDir = "$buildDir/spec/html"
-val pdfBuildDir = "$buildDir/spec/pdf"
+val htmlBuildDir = "${layout.buildDirectory.get()}/spec/html"
+val pdfBuildDir = "${layout.buildDirectory.get()}/spec/pdf"
 val resourcesBuildDir = "$htmlBuildDir/resources"
 val jsBuildDir = "$resourcesBuildDir/js"
 val scriptsDir = "$projectDir/scripts/build"
@@ -22,6 +22,10 @@ repositories {
         url = URI("https://maven.vorpal-research.science")
     }
     mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 sourceSets {
@@ -40,7 +44,7 @@ dependencies {
         }
     }
     implementation("com.github.ajalt:clikt:2.8.0")
-    implementation("com.zaxxer:nuprocess:2.0.3")
+    implementation("com.zaxxer:nuprocess:2.0.6")
     implementation("org.antlr:antlr4:4.8")
 }
 
@@ -91,12 +95,12 @@ tasks.create("prepareShell") {
 
             if (enableStaticMath) {
                 appendLine("STATIC_MATH_OPTION=--enable-static-math")
-                appendLine("KATEX_BIN_OPTION=\"--katex=${rootProject.buildDir}/js/node_modules/.bin/katex\"")
+                appendLine("KATEX_BIN_OPTION=\"--katex=${rootProject.layout.buildDirectory.get()}/js/node_modules/.bin/katex\"")
             }
             else appendLine("STATIC_MATH_OPTION=--disable-static-math")
         }
 
-        File("$buildDir/prepare.sh").writeText("$res")
+        File("${layout.buildDirectory.get()}/prepare.sh").writeText("$res")
     }
 
 }

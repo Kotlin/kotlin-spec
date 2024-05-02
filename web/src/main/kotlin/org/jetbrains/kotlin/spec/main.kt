@@ -1,6 +1,5 @@
 package org.jetbrains.kotlin.spec
 
-import js.externals.jquery.`$`
 import org.jetbrains.kotlin.spec.loader.SpecTestsLoader
 import org.jetbrains.kotlin.spec.utils.*
 import org.jetbrains.kotlin.spec.viewer.Header

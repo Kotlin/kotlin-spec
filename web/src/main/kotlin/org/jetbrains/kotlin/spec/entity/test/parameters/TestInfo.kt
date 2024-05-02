@@ -1,6 +1,7 @@
 package org.jetbrains.kotlin.spec.entity.test.parameters
 
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /** contains all options which could be defined in testMap.json's tests */
 private enum class TestElementKey(val value: String) {
@@ -26,13 +27,13 @@ class TestInfo(jsonSpecTestInfo: JsonObject, val testNumber: Int) {
 
 
     init {
-        fun parse(testElementKey: TestElementKey) = jsonSpecTestInfo[testElementKey.value]?.primitive?.content
+        fun parse(testElementKey: TestElementKey) = jsonSpecTestInfo[testElementKey.value]?.jsonPrimitive?.content
         specVersion = parse(TestElementKey.SPEC_VERSION) ?: ""
         casesNumber = parse(TestElementKey.CASES_NUMBER)?.toInt() ?: 1
         description = parse(TestElementKey.DESCRIPTION) ?: ""
         path = parse(TestElementKey.PATH) ?: ""
         unexpectedBehaviour = parse(TestElementKey.UNEXPECTED_BEHAVIOUR)?.toBoolean() ?: false
         linkType = parse(TestElementKey.LINK_TYPE)?.let { LinkType.valueOf(it) } ?: LinkType.main
-        helpers = parse(TestElementKey.HELPERS)?.split(",")?.map { it -> it.trim() }?.toSet() ?: emptySet()
+        helpers = parse(TestElementKey.HELPERS)?.split(",")?.map(String::trim)?.toSet() ?: emptySet()
     }
 }

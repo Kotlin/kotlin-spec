@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 plugins {
     idea
-    id("org.jetbrains.intellij") version "1.6.0"
+    id("org.jetbrains.intellij") version "1.17.3"
     antlr
     `maven-publish`
     kotlin("jvm")
@@ -47,11 +47,19 @@ sourceSets {
 
 dependencies {
     implementation("junit:junit:4.13.2")
-    antlr("org.antlr:antlr4:4.8")
+    antlr("org.antlr:antlr4:4.13.1")
 }
 
 tasks.compileKotlin {
     dependsOn("generateGrammarSource")
+}
+
+java {
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 intellij {
@@ -155,9 +163,9 @@ tasks.create("prepareDiagnosticsCompilerTests") {
 
 val instrumentTestCodeTask = tasks.named("instrumentTestCode")
 
-tasks.named("inspectClassesForKotlinIC") {
-    dependsOn(instrumentTestCodeTask)
-}
+// tasks.named("inspectClassesForKotlinIC") {
+//     dependsOn(instrumentTestCodeTask)
+// }
 
 tasks.withType<Jar> {
     dependsOn(instrumentTestCodeTask)
@@ -171,6 +179,8 @@ tasks.withType<Jar> {
             )
         )
     }
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     from(configurations.runtimeClasspath.get().files.map { if (it.isDirectory) it else zipTree(it) })
 }

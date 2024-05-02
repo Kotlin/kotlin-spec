@@ -1,7 +1,7 @@
 package org.jetbrains.kotlin.spec.viewer
 
-import js.externals.jquery.JQuery
-import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.`$`
+import org.jetbrains.kotlin.spec.JQuery
 import org.jetbrains.kotlin.spec.entity.SpecParagraph
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.SpecSentence

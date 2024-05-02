@@ -1,7 +1,6 @@
 package org.jetbrains.kotlin.spec.loader
 
-import js.externals.jquery.JQuery
-import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.`$`
 import org.jetbrains.kotlin.spec.entity.TestsLoadingInfo
 import org.jetbrains.kotlin.spec.entity.SpecSection
 import org.jetbrains.kotlin.spec.entity.test.parameters.testArea.TestArea
@@ -10,6 +9,7 @@ import org.jetbrains.kotlin.spec.utils.isDevMode
 import org.jetbrains.kotlin.spec.viewer.MarkUpArranger
 import org.jetbrains.kotlin.spec.viewer.SpecCoverageHighlighter
 import kotlinx.browser.window
+import org.jetbrains.kotlin.spec.JQuery
 import kotlin.js.Promise
 
 class SpecTestsLoader {
@@ -55,7 +55,7 @@ class SpecTestsLoader {
 
         fun getParagraphsInfo(sectionElement: JQuery): List<Map<String, Any>>? {
             var nextSibling = sectionElement.get().run {
-                if (size == 0) return@getParagraphsInfo null
+                if (isEmpty()) return@getParagraphsInfo null
                 this[0].nextElementSibling
             }
             val sectionName = sectionElement.attr("id")

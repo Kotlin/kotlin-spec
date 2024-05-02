@@ -1,4 +1,4 @@
-FROM pandoc/latex:2.14.2-ubuntu
+FROM pandoc/latex:3.1.1-ubuntu
 MAINTAINER Marat Akhin <marat.akhin@jetbrains.com>
 
 WORKDIR /source
@@ -12,12 +12,11 @@ RUN apt-get update
 RUN apt-get install -y zulu-11
 
 # install packages for the Kotlin spec
-RUN apt-get install -y git
-RUN apt-get install -y gpp
-RUN apt-get install -y librsvg2-bin
-RUN apt-get install -y npm
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y ca-certificates curl gnupg git gpp librsvg2-bin
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update
 RUN apt-get install -y nodejs
 
 # install more TeX Live packages

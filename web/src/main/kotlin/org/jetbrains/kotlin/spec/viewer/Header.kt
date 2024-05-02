@@ -1,6 +1,6 @@
 package org.jetbrains.kotlin.spec.viewer
 
-import js.externals.jquery.`$`
+import org.jetbrains.kotlin.spec.`$`
 import org.jetbrains.kotlin.spec.utils.format
 import org.jetbrains.kotlin.spec.utils.isDevMode
 import org.jetbrains.kotlin.spec.utils.shouldBeShowedMarkup
