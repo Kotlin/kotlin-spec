@@ -19,7 +19,7 @@ val ls: String = System.lineSeparator()
 
 repositories {
     maven {
-        url = URI("https://maven.vorpal-research.science")
+        url = URI("https://maven.apal-research.com")
     }
     mavenCentral()
 }

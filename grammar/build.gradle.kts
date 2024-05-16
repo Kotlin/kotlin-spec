@@ -19,7 +19,7 @@ val archivePrefix = "kotlin-grammar-parser"
 
 repositories {
     maven {
-        url = URI("https://maven.vorpal-research.science")
+        url = URI("https://maven.apal-research.com")
     }
     mavenCentral()
 }
