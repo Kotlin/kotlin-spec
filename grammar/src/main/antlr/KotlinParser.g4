@@ -346,7 +346,7 @@ forStatement
     ;
 
 whileStatement
-    : WHILE NL* LPAREN expression RPAREN NL* (controlStructureBody | SEMICOLON)
+    : WHILE NL* LPAREN expression RPAREN NL* controlStructureBody
     ;
 
 doWhileStatement
@@ -614,8 +614,7 @@ superExpression
 ifExpression
     : IF NL* LPAREN NL* expression NL* RPAREN NL*
       ( controlStructureBody
-      | controlStructureBody? NL* SEMICOLON? NL* ELSE NL* (controlStructureBody | SEMICOLON)
-      | SEMICOLON)
+      | controlStructureBody? NL* SEMICOLON? NL* ELSE NL* controlStructureBody)
     ;
 
 whenSubject
