@@ -26,16 +26,16 @@
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
 
   <script type="text/javascript">
       var require = {
@@ -44,28 +44,15 @@
           urlArgs : "v=3",
       };
   </script>
-  <script defer src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
   <script type="text/javascript">
-      window.addEventListener(
-          "load",
-          (e) => {
-              requirejs.onError = function(err) {
-                  console.log(err.requireType);
-                  if (err.requireType === "timeout") {
-                      console.log("modules: " + err.requireModules);
-                  }
-                  if (err.requireType === "notloaded" &&
-                      err.message.indexOf("crypto") !== -1) {
-                      return
-                  }
-      
-                  throw err;
-              };
-      
-              require(["main"], function(main) {
-                  console.log("locked and ready...")
-              });
-          });
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
   </script>
 </head>
 <body>
