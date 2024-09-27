@@ -44,24 +44,28 @@
           urlArgs : "v=3",
       };
   </script>
-  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script defer src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
   <script type="text/javascript">
-      requirejs.onError = function(err) {
-          console.log(err.requireType);
-          if (err.requireType === "timeout") {
-              console.log("modules: " + err.requireModules);
-          }
-          if (err.requireType === "notloaded" &&
-              err.message.indexOf("crypto") !== -1) {
-              return
-          }
+      window.addEventListener(
+          "load",
+          (e) => {
+              requirejs.onError = function(err) {
+                  console.log(err.requireType);
+                  if (err.requireType === "timeout") {
+                      console.log("modules: " + err.requireModules);
+                  }
+                  if (err.requireType === "notloaded" &&
+                      err.message.indexOf("crypto") !== -1) {
+                      return
+                  }
       
-          throw err;
-      };
+                  throw err;
+              };
       
-      require(["main"], function(main) {
-          console.log("locked and ready...")
-      });
+              require(["main"], function(main) {
+                  console.log("locked and ready...")
+              });
+          });
   </script>
 </head>
 <body>
