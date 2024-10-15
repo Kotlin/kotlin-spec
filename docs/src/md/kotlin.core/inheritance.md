@@ -25,6 +25,10 @@ Object types cannot be inherited from.
 Inheritance is the primary mechanism of introducing [subtyping relations][Subtyping] between user-defined types in Kotlin.
 When a classifier type $A$ is declared with base types $B_1, \dots, B_m$, it introduces subtyping relations $A <: B_1, \ldots, A <: B_m$, which are then used in [overload resolution][Overload resolution] and [type inference][Type inference] mechanisms.
 
+#### Inheritance delegation
+
+In a classifier declaration $C$, any interface supertype $I$ inheritance may be [delegated][Inheritance delegation] to an arbitrary value $v$ of type $T$, given $T$ is a subtype of $I$.
+
 #### Abstract classes {#abstract-classes-inheritance}
 
 A class declared `abstract` cannot be instantiated, i.e., an object of this class cannot be created directly.
