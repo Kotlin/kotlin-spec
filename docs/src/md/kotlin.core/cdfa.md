@@ -1123,9 +1123,9 @@ Such analyses may achieve limited path sensitivity via the analysis of condition
 In short, an analysis is defined on the CFG by introducing:
 
 - A lattice $\mathbf{S}$ (a partially ordered set that has both a greatest lower bound and a least upper bound defined for every pair of its elements) of values, called *abstract states*;
-- A *transfer function* for mapping CFG nodes to the elements of $\mathbf{S}$, essentially a set of rules on how to calculate an abstract state for each node of the CFG either directly or by using abstract states of other nodes.
+- A *transfer function* for mapping CFG nodes to the elements of $\mathbf{S} \to \mathbf{S}$ (functions from $\mathbf{S}$ to itself), essentially describing how current analysis state ($s \in \mathbf{S}$) should be changed when passing through a CFG node.
 
-The result of an analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e., an abstract state for each node such that the transfer function maps the state to itself.
+The result of an analysis is a *fixed point* of the transfer function for each node of the given CFG, i.e., an correspondence of abstract states to each CFG node such that all the equalities of analysis constrains hold.
 For the particular shapes of the transfer function used in program analyses, given a finite $\mathbf{S}$, the fixed point always exists, although the details of how this works go out of scope of this document.
 
 #### Types of lattices
@@ -1195,7 +1195,7 @@ $$
 \end{alignedat}
 $$
 
-After running this analysis, for every backedge $b$ and every variable $x$ present in $s$, if $\exists b_p, b_s: b_p \in predecessors(b) \land b_s \in successors(b) \land \llbracket b_p \rrbracket(x) > \llbracket b_s \rrbracket(x)$, a $\killDataFlow(x)$ instruction must be inserted after $b$.
+After running this analysis, for every backedge $b$ and every variable $x$ present in $s$, if $\exists b_p, b_s: b_p \in predecessors(b) \land b_s \in successors(b) \land \llbracket b_p \rrbracket(s)(x) > \llbracket b_s \rrbracket(s)(x)$, a $\killDataFlow(x)$ instruction must be inserted after $b$.
 
 > Informally: this somewhat complicated condition matches variables which have been assigned to in the loop body w.r.t. this loop's backedge.
 
