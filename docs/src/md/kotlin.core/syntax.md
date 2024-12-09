@@ -752,6 +752,7 @@ For example, an escaped identifier ``` `foo` ``` and non-escaped identifier `foo
   | [_FILE_](#grammar-rule-FILE)  
   | [_EXPECT_](#grammar-rule-EXPECT)  
   | [_ACTUAL_](#grammar-rule-ACTUAL)  
+  | [_VALUE_](#grammar-rule-VALUE)  
   | [_CONST_](#grammar-rule-CONST)  
   | [_SUSPEND_](#grammar-rule-SUSPEND)
 :::
