@@ -386,12 +386,14 @@ Due to the [initialization order of a classifier object][Classifier initializati
 > // but d1 methods are still delegated to x1
 > ```
 
-##### Abstract classes {#abstract-classes-declarations}
 
-A [class declaration][Class declaration] can be marked `abstract`.
-Such classes *cannot* be instantiated directly; they are used as superclasses for other classes or objects.
+##### Class inheritance modifiers
 
-Abstract classes may contain one or more abstract members: members without implementation, which should be implemented in a subtype of this abstract class.
+Class inheritance behaviour can be changed using modifiers, such as `open`, [`abstract`][Abstract classes] and [`sealed`][Sealed classes and interfaces].
+
+- Modifier `open` allows for a class to be inherited from. By default classes are [closed][Classifier type inheritance] (that is, they cannot be inherited from), one should add this modifier to change the behaviour.
+- Modifier [`abstract`][Abstract classes] allows for a class to have members without implementation (that is, *abstract members*). Such classes *cannot* be instantiated directly; they are used as superclasses for other classes or objects. Abstract members must be implemented in a non-abstract subtype of this abstract class. 
+- Modifier [`sealed`][Sealed classes and interfaces] works similarly to the `abstract` modifier, but for *sealed* classes inheritance is limited to the module it was defined in.
 
 #### Data class declaration
 
