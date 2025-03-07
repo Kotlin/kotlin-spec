@@ -246,6 +246,8 @@ Inner classes cannot be declared in a [statement scope][Scopes and identifiers],
 
 Inner classes cannot be declared in [object declarations][Object declaration], as object declarations also create a single named value of their type, which makes additional association unnecessary.
 
+Inner classes cannot contain any nested classes, interfaces or objects (including companion objects but excluding object literals). Additional inner classes are allowed inside an inner class.
+
 > Note: for information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
 
 > Note: unlike object declarations, in [object literals] only inner classes are allowed, as types of object literals are anonymous, making their nested classifiers available only through explicit receiver, effectively forcing them to be inner.
@@ -866,6 +868,8 @@ fun foo() {
     Local().y // 2
 }
 ```
+
+Local classes have restrictions similar to object literals and [inner classes][Nested and inner classifiers]; only inner classes are allowed in local classes. Nested classes, interfaces or objects are forbidden.
 
 Enum classes and annotation classes cannot be declared locally.
 
