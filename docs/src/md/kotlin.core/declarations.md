@@ -1780,56 +1780,142 @@ Only type parameters of [inline functions][Inlining] can be declared `reified`.
 
 #### Type parameter variance
 
-The [declaration-site variance][Mixed-site variance] of a particular type parameter for a classifier declaration is specified using special keywords `in` (for covariant parameters) and `out` (for contravariant parameters).
+The [declaration-site variance][Mixed-site variance] of a particular type parameter for a classifier declaration is specified using special keywords `in` (for contravariant parameters) and `out` (for covariant parameters).
 If the variance is not specified, the parameter is implicitly declared invariant.
 See [the type system section][Mixed-site variance] for details.
 
-A type parameter is **used in covariant position** in the following cases:
+We would consider a type expression `E` to be **covariant** in type parameter `X` if for every concrete type expressions `T1` and `T2` such that `T1 <: T2` it holds that `E[T1 / X] <: E[T2 / X]`. One could also say, that the *position* `X` takes in `E` is **covariant**.
 
-- It is used as an argument in another generic type and the corresponding parameter in that type is covariant;
-- It is the return type of a function;
-- It is a type of a property.
+Base covariant cases are the following:
 
-A type parameter is **used in contravariant position** in the following cases:
+- A type expression is covariant in type parameter `X`, if this parameter is explicitly declared as `out` either [in the expression itself][Use-site variance] or [in the type declaration][Declaration-site variance];
+- Types of functions are covariant in their return type parameter, since functions have [types of kind][Function types] `FN<in A1, ..., in AN, out R>`);
+- Types of read-only properties are effectively in covariant position;
 
-- It is used as an argument in another generic type and the corresponding parameter in that type is contravariant;
-- It is a type of an parameter of a function;
-- It is a type of a mutable property.
+In the same way, we would consider a type expression `E` to be **contravariant** in type parameter `X` if for every concrete type expressions `T1` and `T2` such that `T1 <: T2` it holds that `E[T2 / X] <: E[T1 / X]`.
 
-A type parameter is used in an invariant position if it is used as an argument in another generic type and the corresponding parameter in that type is invariant.
+Base contravariant cases are the following:
 
-A usage of a contravariant type parameter in a covariant or invariant position, as well as usage of a covariant type parameter in a contravariant or invariant position, results in **variance conflict** and a compiler error, unless the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the [visibility][Declaration visibility] section for details).
+- A type expression is contravariant in type parameter `X`, if this parameter is explicitly declared as `in` either [in the expression itself][Use-site variance] or [in the type declaration][Declaration-site variance];
+- Types of functions are contravariant in their argument types, since functions have [types of kind][Function types] `FN<in A1, ..., in AN, out R>`;
+
+Lastly, we would consider a type expression `E` to be **invariant** in type parameter `X` if for every concrete type expressions `T1` and `T2`, `E[T1 / X] <: E[T2 / X]` holds if and only if `T1 = T2` (`T1 <: T2` and `T2 <: T1`).
+
+Base invariant cases are the following:
+
+- A type expression is invariant in type parameter `X`, if this parameter is not declared as either `in` or `out` [in the expression itself][Use-site variance] or [in the type declaration][Declaration-site variance];
+- Types of mutable properties are effectively in invariant position;
+
+We will use `+` as a symbol denoting covariance, `-` as a symbol denoting contravariance and `o` as a symbol denoting invariance.
+
+To infer variance of a complex type expression in a type parameter, variance composition is used, which is defined as follows:
+
+- Given two type expressions, `A<X>` and `B<Y>`, if variance of `A<X>` in `X` is `v1`, and variance of `B<Y>` in `Y` is `v2`, then the variance of `A<B<Y>>` in `Y` is $\texttt{v1} \otimes \texttt{v2} = \texttt{v3}$, which is defined in the following table:
+
+\begin{align*}
+\texttt{+} \otimes x &= x \text{, where $x$ is any variance} \\
+\texttt{-} \otimes \texttt{+} &= \texttt{-} \\
+\texttt{-} \otimes \texttt{-} &= \texttt{+} \\ 
+\texttt{o} \otimes x &= \texttt{o} \text{, where $x$ is any variance} \\
+x \otimes \texttt{o} &= \texttt{o} \text{, where $x$ is any variance}
+\end{align*}
+
+This can be interpreted in the following way:
+
+- Covariance *preserves* the given variance
+- Contravariance *inverses* the given variance
+- Invariance *absorbs* the given variance
+
+Further reasoning and formalization behind this system is available in the ["Taming the Wildcards" paper][declarations.references].
+
+[declarations.references]: #declarations.references
+
+Using the base not-nested cases and the rules for combining variance, we can iteratively define for every type expression its variance in a given type parameter.
+
+When a type parameter has declared variance, and is used in a position of a different variance, a **variance conflict** may occure. The specific cases are:
+
+- A non-invariant type parameter is used as an argument to an invariant position;
+- A covariant type parameter is used as an argument to a contravariant position;
+- A contravariant type parameter is used as an argument to a covariant position;
+
+> Important remark: variance conflict does not occur if the containing declaration is private to the type parameter owner (in which case its visibility is restricted, see the [visibility][Declaration visibility] section for details).
+
 This applies only to member declarations of the corresponding class, extensions are not subject to this limitation.
 
-This restrictions may be lifted in particular cases by [annotating][Annotations] the corresponding type parameter usage with a special built-in annotation `kotlin.UnsafeVariance`.
+These restrictions may be lifted in particular cases by [annotating][Annotations] the corresponding type parameter usage with a special built-in annotation `kotlin.UnsafeVariance`.
 By supplying this annotation the author of the code explicitly declares that safety features that variance checks provide are not needed in this particular declarations.
 
-> Examples:
-> 
+> Basic examples:
+>
 > ```kotlin
-> class Inv<T> {
->     fun a(): T {...} // Ok, covariant usage
->     fun b(value: T) {...} // Ok, contravariant usage
->     fun c(p: Out<T>) {...} // Ok, covariant usage
->     fun d(): Out<T> {...} // Ok, covariant usage
->     fun e(p: In<T>) {...} // Ok, contravariant usage
->     fun f(): In<T> {...} // Ok, contravariant usage
+> interface Holder<T>
+>
+> interface Inv<T> { // T is invariant
+>     val a: T // Ok, covariant usage (read-only property)
+>     var b: T // Ok, invariant usage (mutable property)
+>     fun c(): T // Ok, covariant usage (return type)
+>     fun d(value: T) // Ok, contravariant usage (function argument)
+>     val e: Holder<T> // Ok, invariant usage (variance not declared)
+>     val f: Holder<in T> // Ok, contravariant usage (use-site contravariant)
+>     val f2: In<T> // Ok, contravariant usage (declaration-site contravariant)
+>     val g: Holder<out T> // Ok, covariant usage (use-site covariant)
+>     val g2: Out<T> // Ok, covariant usage (declaration-site covariant)
 > }
 > 
-> class Out<out T> { // T is covariant
->     fun a(): T {...} // Ok, covariant usage
->     fun b(value: T) {...} // ERROR, contravariant usage
->     fun c(p: Inv<T>) {...} // ERROR, invariant usage
->     fun d(): Inv<T> {...} // ERROR, invariant usage
+> interface Out<out T> { // T is covariant
+>     val a: T // Ok, covariant usage (read-only property)
+>     var b: T // ERROR, invariant usage (mutable property)
+>     fun c(): T // Ok, covariant usage (return type)
+>     fun d(value: T) // ERROR, contravariant usage (function argument)
+>     val e: Holder<T> // ERROR, invariant usage (variance not declared)
+>     val f: Holder<in T> // ERROR, contravariant usage (use-site contravariant)
+>     val f2: In<T> // ERROR, contravariant usage (delcaration-site contravariant)
+>     val g: Holder<out T> // Ok, covariant usage (use-site covariant)
+>     val g2: Out<T> // Ok, covariant usage (declaration-site covariant)
+>     private val h: Holder<T> // Ok, private member, no check required
 > }
 > 
-> class In<in T> { // T is contravariant
->     fun a(): T {...} // ERROR, covariant usage
->     fun b(value: T) {...} // Ok, contravariant usage
->     fun c(p: Inv<T>) {...} // ERROR, invariant usage
->     fun d(): Inv<T> {...} // ERROR, invariant usage
+> interface In<in T> { // T is contravariant
+>     val a: T // ERROR, covariant usage (read-only property)
+>     var b: T // ERROR, invariant usage (mutable property)
+>     fun c(): T // ERROR, covariant usage (return type)
+>     fun d(value: T) // Ok, covariant usage (function argument)
+>     val e: Holder<T> // ERROR, invariant usage (variance not declared)
+>     val f: Holder<in T> // Ok, contravariant usage (use-site contravariant)
+>     val f2: In<T> // Ok, contravariant usage (declaration-site contravariant)
+>     val g: Holder<out T> // ERROR, covariant usage (use-site covariant)
+>     val g2: Out<T> // ERROR, covariant usage (declaration-site contravariant)
 > }
 > ``` 
+> 
+> More complex examples, involving variance composition
+> ```kotlin
+> class Foo<in T>() // T is contravariant
+>
+> class Bar<in S>() { // S is contravariant
+>     fun bar(x: Foo<S>) {} // ERROR, contravariant parameter in covariant usage
+>     // bar has type F1<in Foo<S>, out Unit>
+>     // Need to find variance of F1<in Foo<S>, out Unit> in S
+>     // F1<in P1, out R> is contravariant (-) in P1
+>     // Foo<S> is contravariant (-) in S
+>     // Applying variance composition: - ⊗ - = + (covariance)
+>     // Variance of F1<in Foo<S>, out Unit> in S -- covariance
+> }
+>
+> class In<in T>() // T is contravariant
+> class Out<out T>() // T is covariant
+>
+> class Test<in I, out O> {
+>     fun test(a: In<In<I>>) {} // Ok, contravariant parameter in contravariant usage
+>     // test has type F1<in In<In<I>>, out Unit>
+>     // Need to find variance of F1<in In<In<I>>, out Unit> in I
+>     // In<I> is contravariant (-) in I
+>     // In<In<I>> is covariant in I, since - ⊗ - = + (covariance)
+>     // F1<in In<In<I>>> is contravariant in I, since - ⊗ + = - (contravariance)
+> }
+> ```
+>
+> Remark: cases `e`, `f`, `f2`, `g`, `g2` in "Basic examples" are also examples of variance composition, since they are read-only fields. However, since read-only fields are of covariance (`+`) and for any variance $x$, $\texttt{+} \otimes x = x$, it was omitted at that point.
 >
 > Any of these restrictions may be lifted using `@UnsafeVariance` annotation on the type argument:
 >
@@ -1984,4 +2070,8 @@ There is a partial order of *weakness* between different visibility modifiers:
 > }
 > ```
 > 
+
+### References {#declarations.references}
+
+1. John Altidor, Shan Shan Huang, and Yannis Smaragdakis. "Taming the wildcards: combining definition- and use-site variance." 2011 (\url{https://yanniss.github.io/variance-pldi11.pdf})
 
