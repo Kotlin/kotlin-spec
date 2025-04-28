@@ -129,7 +129,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">Kotlin language specification</h1>
-<p class="subtitle">Version 1.8-rfc+0.1</p>
+<p class="subtitle">Version 1.9-rfc+0.1</p>
 <p class="author">Marat Akhin</p>
 <p class="author">Mikhail Belyaev</p>
 </header>
@@ -275,9 +275,12 @@
 </ul></li>
 <li><a href="declarations.html#nested-and-inner-classifiers" id="toc-element-nested-and-inner-classifiers" class="toc-element">Nested and inner classifiers</a></li>
 <li><a href="declarations.html#inheritance-delegation" id="toc-element-inheritance-delegation" class="toc-element">Inheritance delegation</a></li>
-<li><a href="declarations.html#abstract-classes-declarations" id="toc-element-abstract-classes-declarations" class="toc-element">Abstract classes</a></li>
+<li><a href="declarations.html#class-inheritance-modifiers" id="toc-element-class-inheritance-modifiers" class="toc-element">Class inheritance modifiers</a></li>
 </ul></li>
-<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a></li>
+<li><a href="declarations.html#data-class-declaration" id="toc-element-data-class-declaration" class="toc-element">Data class declaration</a>
+<ul>
+<li><a href="declarations.html#data-object-declaration" id="toc-element-data-object-declaration" class="toc-element">Data object declaration</a></li>
+</ul></li>
 <li><a href="declarations.html#enum-class-declaration" id="toc-element-enum-class-declaration" class="toc-element">Enum class declaration</a></li>
 <li><a href="declarations.html#annotation-class-declaration" id="toc-element-annotation-class-declaration" class="toc-element">Annotation class declaration</a></li>
 <li><a href="declarations.html#value-class-declaration" id="toc-element-value-class-declaration" class="toc-element">Value class declaration</a></li>
@@ -323,11 +326,13 @@
 <li><a href="declarations.html#underscore-type-arguments" id="toc-element-underscore-type-arguments" class="toc-element">Underscore type arguments</a></li>
 </ul></li>
 <li><a href="declarations.html#declaration-visibility" id="toc-element-declaration-visibility" class="toc-element">Declaration visibility</a></li>
+<li><a href="declarations.html#declarations.references" id="toc-element-declarations.references" class="toc-element">References</a></li>
 </ul></li>
 <li><a href="inheritance.html#inheritance" id="toc-element-inheritance" class="toc-element">Inheritance</a>
 <ul>
 <li><a href="inheritance.html#classifier-type-inheritance" id="toc-element-classifier-type-inheritance" class="toc-element">Classifier type inheritance</a>
 <ul>
+<li><a href="inheritance.html#inheritance-delegation-1" id="toc-element-inheritance-delegation-1" class="toc-element">Inheritance delegation</a></li>
 <li><a href="inheritance.html#abstract-classes-inheritance" id="toc-element-abstract-classes-inheritance" class="toc-element">Abstract classes</a></li>
 <li><a href="inheritance.html#sealed-classes-and-interfaces" id="toc-element-sealed-classes-and-interfaces" class="toc-element">Sealed classes and interfaces</a></li>
 <li><a href="inheritance.html#inheritance-from-built-in-types" id="toc-element-inheritance-from-built-in-types" class="toc-element">Inheritance from built-in types</a></li>
@@ -780,7 +785,7 @@
 <dl>
 <dt><strong><em>DoubleLiteral</em>:</strong></dt>
 <dd><span class="sentence">[<a href="syntax-and-grammar.html#grammar-rule-DecDigits"><em>DecDigits</em></a>] <code>'.'</code> <a href="syntax-and-grammar.html#grammar-rule-DecDigits"><em>DecDigits</em></a> [<a href="syntax-and-grammar.html#grammar-rule-DoubleExponent"><em>DoubleExponent</em></a>]<br />
-| [<a href="syntax-and-grammar.html#grammar-rule-DecDigits"><em>DecDigits</em></a>] [<a href="syntax-and-grammar.html#grammar-rule-DoubleExponent"><em>DoubleExponent</em></a>]</span>
+| <a href="syntax-and-grammar.html#grammar-rule-DecDigits"><em>DecDigits</em></a> <a href="syntax-and-grammar.html#grammar-rule-DoubleExponent"><em>DoubleExponent</em></a></span>
 </dd>
 </dl>
 </div>
@@ -1709,21 +1714,22 @@
 <div id="grammar-rule-rangeExpression-pasted-58" class="grammar-rule">
 <dl>
 <dt><strong><em>rangeExpression</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em> {<code>'..'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em> {(<code>'..'</code> | <code>'..&lt;'</code>) {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-additiveExpression">additiveExpression</a></em>}</span>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code>. </span><span class="sentence">It is an <a href="operator-overloading.html#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
+<p><span class="sentence">A <em>range expression</em> is a binary expression which uses a range operator <code>..</code> or a range-until operator <code>..&lt;</code>. </span><span class="sentence">These are <a href="operator-overloading.html#operator-overloading">overloadable</a> operators with the following expansions:</span></p>
 </div>
 <ul>
 <li><span class="sentence"><code>A..B</code> is exactly the same as <code>A.rangeTo(B)</code></span></li>
+<li><span class="sentence"><code>A..&lt;B</code> is exactly the same as <code>A.rangeUntil(B)</code></span></li>
 </ul>
 <div class="paragraph">
-<p><span class="sentence">where <code>rangeTo</code> is a valid operator function available in the current scope.</span></p>
+<p><span class="sentence">where <code>rangeTo</code> or <code>rangeUntil</code> is a valid operator function available in the current scope.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">The return type of this function is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding <code>rangeTo</code> overload variant.</span></p>
+<p><span class="sentence">The return type of these functions is not restricted. </span><span class="sentence">A range expression has the same type as the return type of the corresponding operator function overload variant.</span></p>
 </div>
 <h3 id="additive-expressions">Additive expressions</h3>
 <div id="grammar-rule-additiveExpression-pasted-59" class="grammar-rule">
@@ -2463,7 +2469,9 @@
 <div id="grammar-rule-anonymousFunction-pasted-85" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence"><code>'fun'</code><br />
+<dd><span class="sentence">[<code>'suspend'</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'fun'</code><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-parametersWithOptionalType">parametersWithOptionalType</a></em><br />
@@ -2633,7 +2641,11 @@
 <div id="grammar-rule-objectLiteral-pasted-89" class="grammar-rule">
 <dl>
 <dt><strong><em>objectLiteral</em>:</strong></dt>
-<dd><span class="sentence"><code>'object'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classBody">classBody</a></em>]</span>
+<dd><span class="sentence">[<code>'data'</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'object'</code><br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-delegationSpecifiers">delegationSpecifiers</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}]<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-classBody">classBody</a></em>]</span>
 </dd>
 </dl>
 </div>
