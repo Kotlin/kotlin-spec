@@ -42,6 +42,7 @@ For instructions on how to do this, please refer to your operating system docume
 * [npm](https://www.npmjs.com/) (tested with version 6.14.6)
 * [gpp](https://logological.org/gpp) (tested with version 2.25)
 * [bash](https://www.gnu.org/software/bash/) (tested with version 5.0.17)
+* [librsvg](https://gitlab.gnome.org/GNOME/librsvg) (tested with version 2.61.3)
 
 After installing these dependencies, building the specification is as easy as running:
 

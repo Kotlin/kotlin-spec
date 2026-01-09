@@ -495,6 +495,10 @@ Rule names starting with capital letters denote lexical rules, while rule names 
 **_INNER_:**  
   ~ `'inner'`
 :::
+::: { .grammar-rule #grammar-rule-VALUE }
+**_VALUE_:**  
+  ~ `'value'`
+:::
 ::: { .grammar-rule #grammar-rule-TAILREC }
 **_TAILREC_:**  
   ~ `'tailrec'`
@@ -955,6 +959,7 @@ Note that syntax grammar ignores tokens [_DelimitedComment_](#grammar-rule-Delim
   | [_ANNOTATION_](#grammar-rule-ANNOTATION)  
   | [_DATA_](#grammar-rule-DATA)  
   | [_INNER_](#grammar-rule-INNER)  
+  | [_VALUE_](#grammar-rule-VALUE)  
   | [_TAILREC_](#grammar-rule-TAILREC)  
   | [_OPERATOR_](#grammar-rule-OPERATOR)  
   | [_INLINE_](#grammar-rule-INLINE)  
