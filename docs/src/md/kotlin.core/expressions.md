@@ -811,9 +811,9 @@ See [annotations][Annotations] chapter of this document for further information 
 A *prefix increment* expression is an expression which uses the prefix form of operator `++`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `++A` is exactly the same as `when(val $tmp = A.inc()) { else -> A = $tmp; $tmp }` where `inc` is a valid operator function available in the current scope.
+- `++A` is exactly the same as `when(val $tmp = A.inc()) { else -> A = $tmp; A }` where `inc` is a valid operator function available in the current scope.
 
-> Informally: `++A` assigns the result of `A.inc()` to `A` and also returns it as the result.
+> Informally: `++A` assigns the result of `A.inc()` to `A` and also returns the new value of `A` as the result.
 
 For a prefix increment expression `++A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -821,16 +821,16 @@ Otherwise, it is a compile-time error.
 As the result of `inc` is assigned to `A`, the return type of `inc` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A prefix increment expression has the same type as the return type of the corresponding `inc` overload variant.
+A prefix increment expression has the same type as its operand expression (for our examples, the type of `A`).
 
 #### Prefix decrement expressions
 
 A *prefix decrement* expression is an expression which uses the prefix form of operator `--`.
 It is an [overloadable][Operator overloading] operator with the following expansion:
 
-- `--A` is exactly the same as `when(val $tmp = A.dec()) { else -> A = $tmp; $tmp }` where `dec` is a valid operator function available in the current scope.
+- `--A` is exactly the same as `when(val $tmp = A.dec()) { else -> A = $tmp; A }` where `dec` is a valid operator function available in the current scope.
 
-> Informally: `--A` assigns the result of `A.dec()` to `A` and also returns it as the result.
+> Informally: `--A` assigns the result of `A.dec()` to `A` and also returns the new value of `A` as the result.
 
 For a prefix decrement expression `--A` expression `A` must be [an assignable expression][Assignments].
 Otherwise, it is a compile-time error.
@@ -838,7 +838,7 @@ Otherwise, it is a compile-time error.
 As the result of `dec` is assigned to `A`, the return type of `dec` must be a subtype of `A`.
 Otherwise, such declaration is a compile-time error.
 
-A prefix decrement expression has the same type as the return type of the corresponding `dec` overload variant.
+A prefix decrement expression has the same type as its operand expression (for our examples, the type of `A`).
 
 #### Unary minus expressions
 
