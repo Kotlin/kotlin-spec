@@ -104,13 +104,18 @@ TODO(This is a stub)
 A module is a concept on the boundary between the code itself and the resulting application, thus it depends on and influences both of them.
 A Kotlin module is a set of Kotlin files which are considered to be interdependent and must be handled together during compilation.
 
-In a simple case, a module is a set of files compiled at the same time in a given project.
+In a simple case, a module is a set of files compiled together with a single Kotlin compiler invocation.
+In practice, this corresponds to a single *compilation unit* of a build system.
+For example:
 
-* A set of files being compiled with a single Kotlin compiler invocation
-* A Maven module
-* A Gradle project
+* A Gradle source set (e.g., `main` or `test`) in a single Gradle subproject
+* A Maven compilation (the main source directory or the test source directory in a Maven module)
+* An IntelliJ IDEA module
+
+> Note: in Gradle and Maven, the `main` and `test` source sets of a single project or module are compiled separately and thus constitute *different* Kotlin modules.
+> This is why, for example, a `sealed` class declared in `main` sources cannot be extended by a class in `test` sources, even though they are part of the same project.
 
 In a more complicated case involving multi-platform projects, a module may be distributed across several compilations, projects and/or platforms.
 
-For the purposes of Kotlin/Core, modules are important for [`internal` visibility][Declaration visibility].
+For the purposes of Kotlin/Core, modules are important for [`internal` visibility][Declaration visibility] and [sealed class hierarchies][Inheritance].
 How modules influence particular platforms is described in their respective sections of this specification.
