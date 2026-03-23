@@ -177,6 +177,7 @@ CROSSINLINE: 'crossinline';
 REIFIED: 'reified';
 EXPECT: 'expect';
 ACTUAL: 'actual';
+CONTEXT: 'context';
 
 // SECTION: literals
 
@@ -303,6 +304,7 @@ IdentifierOrSoftKey
     /* Strong keywords */
     | CONST
     | SUSPEND
+    | CONTEXT
     ;
 
 FieldIdentifier
@@ -508,6 +510,7 @@ Inside_CROSSINLINE: CROSSINLINE -> type(CROSSINLINE);
 Inside_REIFIED: REIFIED -> type(REIFIED);
 Inside_EXPECT: EXPECT -> type(EXPECT);
 Inside_ACTUAL: ACTUAL -> type(ACTUAL);
+Inside_CONTEXT: CONTEXT -> type(CONTEXT);
 
 Inside_BooleanLiteral: BooleanLiteral -> type(BooleanLiteral);
 Inside_IntegerLiteral: IntegerLiteral -> type(IntegerLiteral);

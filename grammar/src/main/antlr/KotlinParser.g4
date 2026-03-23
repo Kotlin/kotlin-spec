@@ -154,8 +154,13 @@ functionValueParameter
     : parameterModifiers? parameter (NL* ASSIGNMENT NL* expression)?
     ;
 
+contextParameterList
+    : CONTEXT NL* LPAREN NL* functionValueParameter (NL* COMMA NL* functionValueParameter)* (NL* COMMA)? NL* RPAREN
+    ;
+
 functionDeclaration
-    : modifiers?
+    : (contextParameterList NL*)?
+      modifiers?
       FUN (NL* typeParameters)? (NL* receiverType NL* DOT)? NL* simpleIdentifier
       NL* functionValueParameters
       (NL* COLON NL* type)?
@@ -177,7 +182,8 @@ multiVariableDeclaration
     ;
 
 propertyDeclaration
-    : modifiers? (VAL | VAR)
+    : (contextParameterList NL*)?
+      modifiers? (VAL | VAR)
       (NL* typeParameters)?
       (NL* receiverType NL* DOT)?
       (NL* (multiVariableDeclaration | variableDeclaration))
@@ -287,8 +293,13 @@ typeProjectionModifier
     | annotation
     ;
 
+functionTypeContext
+    : CONTEXT NL* LPAREN NL* type (NL* COMMA NL* type)* (NL* COMMA)? NL* RPAREN
+    ;
+
 functionType
-    : (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
+    : (functionTypeContext NL*)?
+      (receiverType NL* DOT NL*)? functionTypeParameters NL* ARROW NL* type
     ;
 
 functionTypeParameters
@@ -582,7 +593,8 @@ lambdaParameter
     ;
 
 anonymousFunction
-    : SUSPEND?
+    : contextParameterList?
+      SUSPEND?
       NL*
       FUN
       (NL* type NL* DOT)?
@@ -925,6 +937,7 @@ simpleIdentifier
     | CONST
     | SUSPEND
     | VALUE
+    | CONTEXT
     ;
 
 identifier
