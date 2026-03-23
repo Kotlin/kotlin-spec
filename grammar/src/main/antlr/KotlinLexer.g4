@@ -340,6 +340,10 @@ QUOTE_OPEN: '"' -> pushMode(LineString);
 
 TRIPLE_QUOTE_OPEN: '"""' -> pushMode(MultiLineString);
 
+MULTI_DOLLAR_QUOTE_OPEN: '$'+ '"' -> pushMode(LineString), type(QUOTE_OPEN);
+
+MULTI_DOLLAR_TRIPLE_QUOTE_OPEN: '$'+ '"""' -> pushMode(MultiLineString), type(TRIPLE_QUOTE_OPEN);
+
 mode LineString;
 
 QUOTE_CLOSE
@@ -448,6 +452,8 @@ Inside_SINGLE_QUOTE: SINGLE_QUOTE  -> type(SINGLE_QUOTE);
 Inside_AMP: AMP  -> type(AMP);
 Inside_QUOTE_OPEN: QUOTE_OPEN -> pushMode(LineString), type(QUOTE_OPEN);
 Inside_TRIPLE_QUOTE_OPEN: TRIPLE_QUOTE_OPEN -> pushMode(MultiLineString), type(TRIPLE_QUOTE_OPEN);
+Inside_MULTI_DOLLAR_QUOTE_OPEN: MULTI_DOLLAR_QUOTE_OPEN -> pushMode(LineString), type(QUOTE_OPEN);
+Inside_MULTI_DOLLAR_TRIPLE_QUOTE_OPEN: MULTI_DOLLAR_TRIPLE_QUOTE_OPEN -> pushMode(MultiLineString), type(TRIPLE_QUOTE_OPEN);
 
 Inside_VAL: VAL -> type(VAL);
 Inside_VAR: VAR -> type(VAR);
