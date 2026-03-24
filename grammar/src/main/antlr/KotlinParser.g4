@@ -874,7 +874,7 @@ multiAnnotation
     ;
 
 annotationUseSiteTarget
-    : (AT_NO_WS | AT_PRE_WS) (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE) NL* COLON
+    : (AT_NO_WS | AT_PRE_WS) (FIELD | PROPERTY | GET | SET | RECEIVER | PARAM | SETPARAM | DELEGATE | ALL) NL* COLON
     ;
 
 unescapedAnnotation
@@ -927,6 +927,7 @@ simpleIdentifier
     | PARAM
     | SETPARAM
     | DELEGATE
+    | ALL
     | FILE
     | EXPECT
     | ACTUAL

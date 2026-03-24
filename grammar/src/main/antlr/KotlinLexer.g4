@@ -108,6 +108,7 @@ RECEIVER: 'receiver';
 PARAM: 'param';
 SETPARAM: 'setparam';
 DELEGATE: 'delegate';
+ALL: 'all';
 
 PACKAGE: 'package';
 IMPORT: 'import';
@@ -297,6 +298,7 @@ IdentifierOrSoftKey
     | PARAM
     | SETPARAM
     | DELEGATE
+    | ALL
     | FILE
     | EXPECT
     | ACTUAL
@@ -471,6 +473,7 @@ Inside_RECEIVER: RECEIVER -> type(RECEIVER);
 Inside_PARAM: PARAM -> type(PARAM);
 Inside_SETPARAM: SETPARAM -> type(SETPARAM);
 Inside_DELEGATE: DELEGATE -> type(DELEGATE);
+Inside_ALL: ALL -> type(ALL);
 Inside_THROW: THROW -> type(THROW);
 Inside_RETURN: RETURN -> type(RETURN);
 Inside_CONTINUE: CONTINUE -> type(CONTINUE);
