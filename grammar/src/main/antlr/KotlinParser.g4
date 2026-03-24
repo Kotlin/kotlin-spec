@@ -155,12 +155,11 @@ functionValueParameter
     ;
 
 contextParameterList
-    : CONTEXT NL* LPAREN NL* functionValueParameter (NL* COMMA NL* functionValueParameter)* (NL* COMMA)? NL* RPAREN
+    : CONTEXT NL* LPAREN NL* functionValueParameter (NL* COMMA NL* functionValueParameter)* (NL* COMMA)? NL* RPAREN NL*
     ;
 
 functionDeclaration
-    : (contextParameterList NL*)?
-      modifiers?
+    : modifiers?
       FUN (NL* typeParameters)? (NL* receiverType NL* DOT)? NL* simpleIdentifier
       NL* functionValueParameters
       (NL* COLON NL* type)?
@@ -182,8 +181,7 @@ multiVariableDeclaration
     ;
 
 propertyDeclaration
-    : (contextParameterList NL*)?
-      modifiers? (VAL | VAR)
+    : modifiers? (VAL | VAR)
       (NL* typeParameters)?
       (NL* receiverType NL* DOT)?
       (NL* (multiVariableDeclaration | variableDeclaration))
@@ -593,9 +591,7 @@ lambdaParameter
     ;
 
 anonymousFunction
-    : contextParameterList?
-      SUSPEND?
-      NL*
+    : (contextParameterList SUSPEND? | SUSPEND (NL* contextParameterList)?)? NL*
       FUN
       (NL* type NL* DOT)?
       NL* parametersWithOptionalType
@@ -766,7 +762,7 @@ safeNav
 // SECTION: modifiers
 
 modifiers
-    : (annotation | modifier)+
+    : (annotation | modifier | contextParameterList)+
     ;
 
 parameterModifiers
