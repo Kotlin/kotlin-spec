@@ -179,6 +179,10 @@ Rule names starting with capital letters denote lexical rules, while rule names 
 **_RANGE_:**  
   ~ `'..'`
 :::
+::: { .grammar-rule #grammar-rule-RANGE_UNTIL }
+**_RANGE_UNTIL_:**  
+  ~ `'..<'`
+:::
 ::: { .grammar-rule #grammar-rule-COLONCOLON }
 **_COLONCOLON_:**  
   ~ `'::'`
