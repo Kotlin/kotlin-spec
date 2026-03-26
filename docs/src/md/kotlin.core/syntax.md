@@ -495,6 +495,10 @@ Rule names starting with capital letters denote lexical rules, while rule names 
 **_INNER_:**  
   ~ `'inner'`
 :::
+::: { .grammar-rule #grammar-rule-VALUE }
+**_VALUE_:**  
+  ~ `'value'`
+:::
 ::: { .grammar-rule #grammar-rule-TAILREC }
 **_TAILREC_:**  
   ~ `'tailrec'`
@@ -752,6 +756,7 @@ For example, an escaped identifier ``` `foo` ``` and non-escaped identifier `foo
   | [_FILE_](#grammar-rule-FILE)  
   | [_EXPECT_](#grammar-rule-EXPECT)  
   | [_ACTUAL_](#grammar-rule-ACTUAL)  
+  | [_VALUE_](#grammar-rule-VALUE)  
   | [_CONST_](#grammar-rule-CONST)  
   | [_SUSPEND_](#grammar-rule-SUSPEND)
 :::
