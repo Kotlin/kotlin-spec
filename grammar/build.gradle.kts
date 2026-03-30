@@ -19,7 +19,7 @@ val archivePrefix = "kotlin-grammar-parser"
 
 repositories {
     maven {
-        url = URI("https://maven.apal-research.com")
+        url = URI("https://packages.jetbrains.team/maven/p/plan/apal")
     }
     mavenCentral()
 }
