@@ -542,6 +542,9 @@ Enum class $E$ is a special kind of class with the following properties:
 > Note: for the purposes of overload resolution, enum entries are considered to be [static member callables][Call with an explicit type receiver] of the enum class type
 
 Enum class body uses special kind of syntax (see grammar) to declare enum entries in addition to all other declarations inside the class body.
+The name of each enum entry must be followed by the corresponding arguments for the enum class constructor;
+except when no arguments are given, in that case the parentheses may be dropped.
+
 Enum entries have their own bodies that may contain their own declarations, similar to [object declarations][Classifier declaration].
 
 > Note: an enum class can have zero enum entries.
