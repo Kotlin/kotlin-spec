@@ -89,12 +89,12 @@ The expression `C[0][0]++` is expanded (see the [Expressions][expressions] secti
 - Second, the [assignment][Assignments] to an indexing expression (produced by the previous expansion) is expanded, resulting in:
   
     ```kotlin
-    C[0].set(C[0][0].inc())
+    C[0].set(0, C[0][0].inc())
     ```
 - Third, the [indexing expressions][Indexing expressions] are expanded, resulting in:
   
     ```kotlin
-    C.get(0).set(C.get(0).get(0).inc())
+    C.get(0).set(0, C.get(0).get(0).inc())
     ```
 
 TODO(Specify when we run the overload resolution to know what we're expanding to)
@@ -103,7 +103,7 @@ TODO(Specify when we run the overload resolution to know what we're expanding to
 > 
 > ```kotlin
 > val $tmp = C.get(0)
-> $tmp.set($tmp.get(0).inc())
+> $tmp.set(0, $tmp.get(0).inc())
 > ```
 
 ### Destructuring declarations
