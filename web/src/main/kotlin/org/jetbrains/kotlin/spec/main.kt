@@ -20,14 +20,13 @@ fun turnOnPermanentDevModeIfNeeded() {
 }
 
 fun init() {
-    val specTestsLoader = SpecTestsLoader()
-    val specTestsViewer = SpecTestsViewer()
-
     turnOnPermanentDevModeIfNeeded()
 
-    Sidebar.init()
-    Header.init()
-
+    `$`(document).ready {
+        Sidebar.init()
+        Header.init()
+    }
+    
     `$`("h2, h3, h4, h5").each { _, el ->
         val idValue = `$`(el).attr("id")
         if (idValue !in SpecTestsViewer.excludedSectionsToLoadTests) {
@@ -52,6 +51,9 @@ fun init() {
     }
 
     document.body?.let { `$`(it) }?.run {
+        val specTestsLoader = SpecTestsLoader()
+        val specTestsViewer = SpecTestsViewer()
+
         on("click", ".sentence.covered") { e, _ ->
             specTestsViewer.showViewer(`$`(e.currentTarget))
         }

@@ -19,7 +19,7 @@ val archivePrefix = "kotlin-grammar-parser"
 
 repositories {
     maven {
-        url = URI("https://maven.apal-research.com")
+        url = URI("https://packages.jetbrains.team/maven/p/plan/apal")
     }
     mavenCentral()
 }
@@ -60,7 +60,7 @@ intellij {
 
 tasks.withType<AntlrTask> {
     outputDirectory =
-        File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar/parser").also { it.mkdirs() }
+        File("${project.rootDir}/grammar/src/main/java/org/jetbrains/kotlin/spec/grammar").also { it.mkdirs() }
 
     arguments.add("-package")
     arguments.add("org.jetbrains.kotlin.spec.grammar")

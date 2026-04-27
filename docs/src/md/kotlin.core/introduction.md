@@ -30,7 +30,9 @@ Platform-specific parts of Kotlin and its multiplatform capabilities will be cov
 
 ### Compatibility {-}
 
-Kotlin Language Specification is still in progress and has **experimental** stability level, meaning no compatibility should be expected between even incremental releases, any functionality can be added, removed or changed without warning.
+Kotlin Language Specification is still in progress and has **experimental** stability level, meaning no compatibility should be expected between even incremental releases of the specification, any parts can be added, removed or changed without warning.
+
+> Important: while the specification has experimental stability level, the Kotlin language itself and its compiler have different stability levels for different components, which are described in more detail [here](https://kotlinlang.org/docs/components-stability.html).
 
 ### Experimental features {-}
 
@@ -52,6 +54,7 @@ We would like to thank the following people for their invaluable help and feedba
 * Neal Gafter
 * Dmitrii Petrov
 * Victor Petukhov
+* Vladimir Reshetnikov
 * Dmitry Savvinov
 * Anastasiia Spaseeva
 * Mikhail Zarechenskii
