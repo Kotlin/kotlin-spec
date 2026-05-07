@@ -83,30 +83,40 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: "resources/js",
-          urlArgs : "v=3"
-      };
-  </script>
-  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
+
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          enforceDefine: true,
+          urlArgs : "v=3",
+      };
+  </script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script type="text/javascript">
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
+  </script>
 </head>
 <body>
 <div class="header-bar">
@@ -766,18 +776,23 @@
 <p><span class="sentence">A module is a concept on the boundary between the code itself and the resulting application, thus it depends on and influences both of them. </span><span class="sentence">A Kotlin module is a set of Kotlin files which are considered to be interdependent and must be handled together during compilation.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In a simple case, a module is a set of files compiled at the same time in a given project.</span></p>
+<p><span class="sentence">In a simple case, a module is a set of files compiled together with a single Kotlin compiler invocation. </span><span class="sentence">In practice, this corresponds to a single <em>compilation unit</em> of a build system. </span><span class="sentence">For example:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A set of files being compiled with a single Kotlin compiler invocation</span></li>
-<li><span class="sentence">A Maven module</span></li>
-<li><span class="sentence">A Gradle project</span></li>
+<li><span class="sentence">A Gradle source set (e.g., <code>main</code> or <code>test</code>) in a single Gradle subproject</span></li>
+<li><span class="sentence">A Maven compilation (the main source directory or the test source directory in a Maven module)</span></li>
+<li><span class="sentence">An IntelliJ IDEA module</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in Gradle and Maven, the <code>main</code> and <code>test</code> source sets of a single project or module are compiled separately and thus constitute <em>different</em> Kotlin modules. </span><span class="sentence">This is why, for example, a <code>sealed</code> class declared in <code>main</code> sources cannot be extended by a class in <code>test</code> sources, even though they are part of the same project.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">In a more complicated case involving multi-platform projects, a module may be distributed across several compilations, projects and/or platforms.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For the purposes of Kotlin/Core, modules are important for <a href="declarations.html#declaration-visibility"><code>internal</code> visibility</a>. </span><span class="sentence">How modules influence particular platforms is described in their respective sections of this specification.</span></p>
+<p><span class="sentence">For the purposes of Kotlin/Core, modules are important for <a href="declarations.html#declaration-visibility"><code>internal</code> visibility</a> and <a href="inheritance.html#inheritance">sealed class hierarchies</a>. </span><span class="sentence">How modules influence particular platforms is described in their respective sections of this specification.</span></p>
 </div>
 
 </body>

@@ -83,30 +83,40 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: "resources/js",
-          urlArgs : "v=3"
-      };
-  </script>
-  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
+
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          enforceDefine: true,
+          urlArgs : "v=3",
+      };
+  </script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script type="text/javascript">
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
+  </script>
 </head>
 <body>
 <div class="header-bar">
@@ -1497,7 +1507,7 @@
 </blockquote>
 <h3 id="resolving-property-access">Resolving property access</h3>
 <div class="paragraph">
-<p><span class="sentence">As <a href="declarations.html#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.html#getters-and-setters">getters and setters</a>, be <a href="declarations.html#extension-property-declaration">extension</a>, <a href="declarations.html#delegated-property-declaration">delegated</a> or [contextual][Contextual property declaration], they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="overload-resolution.html#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="overload-resolution.html#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+<p><span class="sentence">As <a href="declarations.html#property-declaration">properties</a> in Kotlin can have custom <a href="declarations.html#getters-and-setters">getters and setters</a>, be <a href="declarations.html#extension-property-declaration">extension</a> or <a href="declarations.html#delegated-property-declaration">delegated</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="overload-resolution.html#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="overload-resolution.html#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="overload-resolution.html#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="overload-resolution.html#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -1611,7 +1621,7 @@
 </div>
 <ul>
 <li><span class="sentence">Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its <a href="declarations.html#getters-and-setters">backing field</a>);</span></li>
-<li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;</span></li>
+<li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, an extension mutable property is considered to have an extension getter and setter, etc.;</span></li>
 <li><span class="sentence"><a href="declarations.html#object-declaration">Object declarations</a> and <a href="declarations.html#enum-class-declaration">enumeration entries</a> may be accessed using the property access syntax given that they may be resolved in the current scope.</span></li>
 </ul>
 <h3 id="resolving-callable-references">Resolving callable references</h3>

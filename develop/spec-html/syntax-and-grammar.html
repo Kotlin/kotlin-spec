@@ -83,30 +83,40 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: "resources/js",
-          urlArgs : "v=3"
-      };
-  </script>
-  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
+
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          enforceDefine: true,
+          urlArgs : "v=3",
+      };
+  </script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script type="text/javascript">
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
+  </script>
 </head>
 <body>
 <div class="header-bar">
@@ -928,6 +938,13 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-RANGE_UNTIL" class="grammar-rule">
+<dl>
+<dt><strong><em>RANGE_UNTIL</em>:</strong></dt>
+<dd><span class="sentence"><code>'..&lt;'</code></span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-COLONCOLON" class="grammar-rule">
 <dl>
 <dt><strong><em>COLONCOLON</em>:</strong></dt>
@@ -1481,6 +1498,13 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-VALUE" class="grammar-rule">
+<dl>
+<dt><strong><em>VALUE</em>:</strong></dt>
+<dd><span class="sentence"><code>'value'</code></span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-TAILREC" class="grammar-rule">
 <dl>
 <dt><strong><em>TAILREC</em>:</strong></dt>
@@ -1868,7 +1892,7 @@
 | <a href="syntax-and-grammar.html#grammar-rule-FILE"><em>FILE</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-EXPECT"><em>EXPECT</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-ACTUAL"><em>ACTUAL</em></a><br />
-| <a href="#grammar-rule-VALUE"><em>VALUE</em></a><br />
+| <a href="syntax-and-grammar.html#grammar-rule-VALUE"><em>VALUE</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-CONST"><em>CONST</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-SUSPEND"><em>SUSPEND</em></a></span>
 </dd>
@@ -2106,6 +2130,7 @@
 | <a href="syntax-and-grammar.html#grammar-rule-ANNOTATION"><em>ANNOTATION</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-DATA"><em>DATA</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-INNER"><em>INNER</em></a><br />
+| <a href="syntax-and-grammar.html#grammar-rule-VALUE"><em>VALUE</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-TAILREC"><em>TAILREC</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-OPERATOR"><em>OPERATOR</em></a><br />
 | <a href="syntax-and-grammar.html#grammar-rule-INLINE"><em>INLINE</em></a><br />
@@ -2463,6 +2488,22 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-contextParameterList" class="grammar-rule">
+<dl>
+<dt><strong><em>contextParameterList</em>:</strong></dt>
+<dd><span class="sentence"><code>'context'</code><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em><br />
+{{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-functionValueParameter">functionValueParameter</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-functionDeclaration" class="grammar-rule">
 <dl>
 <dt><strong><em>functionDeclaration</em>:</strong></dt>
@@ -2706,10 +2747,26 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-functionTypeContext" class="grammar-rule">
+<dl>
+<dt><strong><em>functionTypeContext</em>:</strong></dt>
+<dd><span class="sentence"><code>'context'</code><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em><br />
+{{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em>}<br />
+[{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
+{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-functionType" class="grammar-rule">
 <dl>
 <dt><strong><em>functionType</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-receiverType">receiverType</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}]<br />
+<dd><span class="sentence">[<em><a href="syntax-and-grammar.html#grammar-rule-functionTypeContext">functionTypeContext</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}]<br />
+[<em><a href="syntax-and-grammar.html#grammar-rule-receiverType">receiverType</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}]<br />
 <em><a href="syntax-and-grammar.html#grammar-rule-functionTypeParameters">functionTypeParameters</a></em><br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'-&gt;'</code><br />
@@ -3278,7 +3335,7 @@
 <div id="grammar-rule-anonymousFunction" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence">[<code>'suspend'</code>]<br />
+<dd><span class="sentence">[(<em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em> [<code>'suspend'</code>]) | (<code>'suspend'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em>])]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'fun'</code><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
@@ -3365,8 +3422,15 @@
 <div id="grammar-rule-whenEntry" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
-| (<code>'else'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenGuard" class="grammar-rule">
+<dl>
+<dt><strong><em>whenGuard</em>:</strong></dt>
+<dd><span class="sentence"><code>'if'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-expression">expression</a></em></span>
 </dd>
 </dl>
 </div>
@@ -3562,7 +3626,7 @@
 <div id="grammar-rule-modifiers" class="grammar-rule">
 <dl>
 <dt><strong><em>modifiers</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-modifier">modifier</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-modifier">modifier</a></em>}</span>
+<dd><span class="sentence"><em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-modifier">modifier</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-annotation">annotation</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-modifier">modifier</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -3725,7 +3789,7 @@
 <div id="grammar-rule-annotationUseSiteTarget" class="grammar-rule">
 <dl>
 <dt><strong><em>annotationUseSiteTarget</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code>) {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="syntax-and-grammar.html#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code> | <code>'all'</code>) {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
 </dd>
 </dl>
 </div>
@@ -3782,12 +3846,14 @@
 | <code>'param'</code><br />
 | <code>'setparam'</code><br />
 | <code>'delegate'</code><br />
+| <code>'all'</code><br />
 | <code>'file'</code><br />
 | <code>'expect'</code><br />
 | <code>'actual'</code><br />
 | <code>'const'</code><br />
 | <code>'suspend'</code><br />
-| <code>'value'</code></span>
+| <code>'value'</code><br />
+| <code>'context'</code></span>
 </dd>
 </dl>
 </div>

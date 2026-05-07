@@ -83,30 +83,40 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: "resources/js",
-          urlArgs : "v=3"
-      };
-  </script>
-  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
+
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          enforceDefine: true,
+          urlArgs : "v=3",
+      };
+  </script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script type="text/javascript">
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
+  </script>
 </head>
 <body>
 <div class="header-bar">
@@ -1160,8 +1170,8 @@
 <div id="grammar-rule-whenEntry-pasted-44" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
-| (<code>'else'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
+<dd><span class="sentence">(<em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>','</code>] [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="syntax-and-grammar.html#grammar-rule-semi">semi</a></em>])</span>
 </dd>
 </dl>
 </div>
@@ -1897,11 +1907,11 @@
 <p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="operator-overloading.html#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>++A</code> is exactly the same as <code>when(val $tmp = A.inc()) { else -&gt; A = $tmp; $tmp }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>++A</code> is exactly the same as <code>when(val $tmp = A.inc()) { else -&gt; A = $tmp; A }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Informally: <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns the new value of <code>A</code> as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1911,18 +1921,18 @@
 <p><span class="sentence">As the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A prefix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
+<p><span class="sentence">A prefix increment expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h4 id="prefix-decrement-expressions">Prefix decrement expressions</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="operator-overloading.html#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>--A</code> is exactly the same as <code>when(val $tmp = A.dec()) { else -&gt; A = $tmp; $tmp }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>--A</code> is exactly the same as <code>when(val $tmp = A.dec()) { else -&gt; A = $tmp; A }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Informally: <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns the new value of <code>A</code> as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -1932,7 +1942,7 @@
 <p><span class="sentence">As the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A prefix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
+<p><span class="sentence">A prefix decrement expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h4 id="unary-minus-expressions">Unary minus expressions</h4>
 <div class="paragraph">
@@ -2469,7 +2479,7 @@
 <div id="grammar-rule-anonymousFunction-pasted-85" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence">[<code>'suspend'</code>]<br />
+<dd><span class="sentence">[(<em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em> [<code>'suspend'</code>]) | (<code>'suspend'</code> [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-contextParameterList">contextParameterList</a></em>])]<br />
 {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>}<br />
 <code>'fun'</code><br />
 [{<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <em><a href="syntax-and-grammar.html#grammar-rule-type">type</a></em> {<em><a href="syntax-and-grammar.html#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />

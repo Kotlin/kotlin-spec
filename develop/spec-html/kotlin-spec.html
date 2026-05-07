@@ -83,30 +83,40 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <script type="text/javascript">
-      var require = {
-          baseUrl: "resources/js",
-          urlArgs : "v=3"
-      };
-  </script>
-  <script data-main="main" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
-
   <link rel="Shortcut Icon" href="https://kotlinlang.org/assets/images/favicon.ico" type="image/x-icon"/>
   <link rel="apple-touch-icon" href="https://kotlinlang.org/assets/images/apple-touch-icon.png"/>
   <link rel="apple-touch-icon" sizes="72x72" href="https://kotlinlang.org/assets/images/apple-touch-icon-72x72.png"/>
   <link rel="apple-touch-icon" sizes="114x114" href="https://kotlinlang.org/assets/images/apple-touch-icon-114x114.png"/>
   <link rel="apple-touch-icon" sizes="144x144" href="https://kotlinlang.org/assets/images/apple-touch-icon-144x144.png"/>
 
-  <!-- Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript)
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5P98" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- Google Tag Manager -->
+  End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-5P98');</script>
-  <!-- End Google Tag Manager -->
+  End Google Tag Manager -->
+
+  <script type="text/javascript">
+      var require = {
+          baseUrl: "resources/js",
+          enforceDefine: true,
+          urlArgs : "v=3",
+      };
+  </script>
+  <script src="https://requirejs.org/docs/release/2.3.7/minified/require.js"></script>
+  <script type="text/javascript">
+      require(["main"], function(main) {
+          console.log("locked and ready...")
+      }, function(err) {
+          console.log(err.requireType);
+
+          throw err;
+      });
+  </script>
 </head>
 <body>
 <div class="header-bar">
@@ -666,8 +676,13 @@
 </div>
 <h3 class="unnumbered" id="compatibility">Compatibility</h3>
 <div class="paragraph">
-<p><span class="sentence">Kotlin Language Specification is still in progress and has <strong>experimental</strong> stability level, meaning no compatibility should be expected between even incremental releases, any functionality can be added, removed or changed without warning.</span></p>
+<p><span class="sentence">Kotlin Language Specification is still in progress and has <strong>experimental</strong> stability level, meaning no compatibility should be expected between even incremental releases of the specification, any parts can be added, removed or changed without warning.</span></p>
 </div>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Important: while the specification has experimental stability level, the Kotlin language itself and its compiler have different stability levels for different components, which are described in more detail <a href="https://kotlinlang.org/docs/components-stability.html">here</a>.</span></p>
+</div>
+</blockquote>
 <h3 class="unnumbered" id="experimental-features">Experimental features</h3>
 <div class="paragraph">
 <p><span class="sentence">In several cases this specification discusses <em>experimental</em> Kotlin features, i.e., features which are still in active development and which may be changed in the future. </span><span class="sentence">When so, the specification talks about the <em>current</em> state of said features, with no guarantees of their future stability (or even existence in the language).</span></p>
@@ -692,6 +707,7 @@
 <li><span class="sentence">Neal Gafter</span></li>
 <li><span class="sentence">Dmitrii Petrov</span></li>
 <li><span class="sentence">Victor Petukhov</span></li>
+<li><span class="sentence">Vladimir Reshetnikov</span></li>
 <li><span class="sentence">Dmitry Savvinov</span></li>
 <li><span class="sentence">Anastasiia Spaseeva</span></li>
 <li><span class="sentence">Mikhail Zarechenskii</span></li>
@@ -1008,6 +1024,13 @@
 <dl>
 <dt><strong><em>RANGE</em>:</strong></dt>
 <dd><span class="sentence"><code>'..'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-RANGE_UNTIL" class="grammar-rule">
+<dl>
+<dt><strong><em>RANGE_UNTIL</em>:</strong></dt>
+<dd><span class="sentence"><code>'..&lt;'</code></span>
 </dd>
 </dl>
 </div>
@@ -1561,6 +1584,13 @@
 <dl>
 <dt><strong><em>INNER</em>:</strong></dt>
 <dd><span class="sentence"><code>'inner'</code></span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-VALUE" class="grammar-rule">
+<dl>
+<dt><strong><em>VALUE</em>:</strong></dt>
+<dd><span class="sentence"><code>'value'</code></span>
 </dd>
 </dl>
 </div>
@@ -2189,6 +2219,7 @@
 | <a href="#grammar-rule-ANNOTATION"><em>ANNOTATION</em></a><br />
 | <a href="#grammar-rule-DATA"><em>DATA</em></a><br />
 | <a href="#grammar-rule-INNER"><em>INNER</em></a><br />
+| <a href="#grammar-rule-VALUE"><em>VALUE</em></a><br />
 | <a href="#grammar-rule-TAILREC"><em>TAILREC</em></a><br />
 | <a href="#grammar-rule-OPERATOR"><em>OPERATOR</em></a><br />
 | <a href="#grammar-rule-INLINE"><em>INLINE</em></a><br />
@@ -2546,6 +2577,22 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-contextParameterList" class="grammar-rule">
+<dl>
+<dt><strong><em>contextParameterList</em>:</strong></dt>
+<dd><span class="sentence"><code>'context'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-functionValueParameter">functionValueParameter</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-functionValueParameter">functionValueParameter</a></em>}<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}</span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-functionDeclaration" class="grammar-rule">
 <dl>
 <dt><strong><em>functionDeclaration</em>:</strong></dt>
@@ -2789,10 +2836,26 @@
 </dd>
 </dl>
 </div>
+<div id="grammar-rule-functionTypeContext" class="grammar-rule">
+<dl>
+<dt><strong><em>functionTypeContext</em>:</strong></dt>
+<dd><span class="sentence"><code>'context'</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>'('</code><br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<em><a href="#grammar-rule-type">type</a></em><br />
+{{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em>}<br />
+[{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>]<br />
+{<em><a href="#grammar-rule-NL">NL</a></em>}<br />
+<code>')'</code></span>
+</dd>
+</dl>
+</div>
 <div id="grammar-rule-functionType" class="grammar-rule">
 <dl>
 <dt><strong><em>functionType</em>:</strong></dt>
-<dd><span class="sentence">[<em><a href="#grammar-rule-receiverType">receiverType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+<dd><span class="sentence">[<em><a href="#grammar-rule-functionTypeContext">functionTypeContext</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
+[<em><a href="#grammar-rule-receiverType">receiverType</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code> {<em><a href="#grammar-rule-NL">NL</a></em>}]<br />
 <em><a href="#grammar-rule-functionTypeParameters">functionTypeParameters</a></em><br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
 <code>'-&gt;'</code><br />
@@ -3361,7 +3424,7 @@
 <div id="grammar-rule-anonymousFunction" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence">[<code>'suspend'</code>]<br />
+<dd><span class="sentence">[(<em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em> [<code>'suspend'</code>]) | (<code>'suspend'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em>])]<br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
 <code>'fun'</code><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
@@ -3448,8 +3511,15 @@
 <div id="grammar-rule-whenEntry" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
-| (<code>'else'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])</span>
+<dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>] [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])</span>
+</dd>
+</dl>
+</div>
+<div id="grammar-rule-whenGuard" class="grammar-rule">
+<dl>
+<dt><strong><em>whenGuard</em>:</strong></dt>
+<dd><span class="sentence"><code>'if'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-expression">expression</a></em></span>
 </dd>
 </dl>
 </div>
@@ -3645,7 +3715,7 @@
 <div id="grammar-rule-modifiers" class="grammar-rule">
 <dl>
 <dt><strong><em>modifiers</em>:</strong></dt>
-<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em>}</span>
+<dd><span class="sentence"><em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em> | <em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em> {<em><a href="#grammar-rule-annotation">annotation</a></em> | <em><a href="#grammar-rule-modifier">modifier</a></em> | <em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em>}</span>
 </dd>
 </dl>
 </div>
@@ -3808,7 +3878,7 @@
 <div id="grammar-rule-annotationUseSiteTarget" class="grammar-rule">
 <dl>
 <dt><strong><em>annotationUseSiteTarget</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
+<dd><span class="sentence">(<em><a href="#grammar-rule-AT_NO_WS">AT_NO_WS</a></em> | <em><a href="#grammar-rule-AT_PRE_WS">AT_PRE_WS</a></em>) (<code>'field'</code> | <code>'property'</code> | <code>'get'</code> | <code>'set'</code> | <code>'receiver'</code> | <code>'param'</code> | <code>'setparam'</code> | <code>'delegate'</code> | <code>'all'</code>) {<em><a href="#grammar-rule-NL">NL</a></em>} <code>':'</code></span>
 </dd>
 </dl>
 </div>
@@ -3865,12 +3935,14 @@
 | <code>'param'</code><br />
 | <code>'setparam'</code><br />
 | <code>'delegate'</code><br />
+| <code>'all'</code><br />
 | <code>'file'</code><br />
 | <code>'expect'</code><br />
 | <code>'actual'</code><br />
 | <code>'const'</code><br />
 | <code>'suspend'</code><br />
-| <code>'value'</code></span>
+| <code>'value'</code><br />
+| <code>'context'</code></span>
 </dd>
 </dl>
 </div>
@@ -11101,8 +11173,8 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <div id="grammar-rule-whenEntry-pasted-44" class="grammar-rule">
 <dl>
 <dt><strong><em>whenEntry</em>:</strong></dt>
-<dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
-| (<code>'else'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])</span>
+<dd><span class="sentence">(<em><a href="#grammar-rule-whenCondition">whenCondition</a></em> {{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenCondition">whenCondition</a></em>} [{<em><a href="#grammar-rule-NL">NL</a></em>} <code>','</code>] [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])<br />
+| (<code>'else'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-whenGuard">whenGuard</a></em>] {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'-&gt;'</code> {<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-controlStructureBody">controlStructureBody</a></em> [<em><a href="#grammar-rule-semi">semi</a></em>])</span>
 </dd>
 </dl>
 </div>
@@ -11838,11 +11910,11 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">A <em>prefix increment</em> expression is an expression which uses the prefix form of operator <code>++</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>++A</code> is exactly the same as <code>when(val $tmp = A.inc()) { else -&gt; A = $tmp; $tmp }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>++A</code> is exactly the same as <code>when(val $tmp = A.inc()) { else -&gt; A = $tmp; A }</code> where <code>inc</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Informally: <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>++A</code> assigns the result of <code>A.inc()</code> to <code>A</code> and also returns the new value of <code>A</code> as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -11852,18 +11924,18 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">As the result of <code>inc</code> is assigned to <code>A</code>, the return type of <code>inc</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A prefix increment expression has the same type as the return type of the corresponding <code>inc</code> overload variant.</span></p>
+<p><span class="sentence">A prefix increment expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h4 id="prefix-decrement-expressions">Prefix decrement expressions</h4>
 <div class="paragraph">
 <p><span class="sentence">A <em>prefix decrement</em> expression is an expression which uses the prefix form of operator <code>--</code>. </span><span class="sentence">It is an <a href="#operator-overloading">overloadable</a> operator with the following expansion:</span></p>
 </div>
 <ul>
-<li><span class="sentence"><code>--A</code> is exactly the same as <code>when(val $tmp = A.dec()) { else -&gt; A = $tmp; $tmp }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
+<li><span class="sentence"><code>--A</code> is exactly the same as <code>when(val $tmp = A.dec()) { else -&gt; A = $tmp; A }</code> where <code>dec</code> is a valid operator function available in the current scope.</span></li>
 </ul>
 <blockquote>
 <div class="paragraph">
-<p><span class="sentence">Informally: <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns it as the result.</span></p>
+<p><span class="sentence">Informally: <code>--A</code> assigns the result of <code>A.dec()</code> to <code>A</code> and also returns the new value of <code>A</code> as the result.</span></p>
 </div>
 </blockquote>
 <div class="paragraph">
@@ -11873,7 +11945,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">As the result of <code>dec</code> is assigned to <code>A</code>, the return type of <code>dec</code> must be a subtype of <code>A</code>. </span><span class="sentence">Otherwise, such declaration is a compile-time error.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">A prefix decrement expression has the same type as the return type of the corresponding <code>dec</code> overload variant.</span></p>
+<p><span class="sentence">A prefix decrement expression has the same type as its operand expression (for our examples, the type of <code>A</code>).</span></p>
 </div>
 <h4 id="unary-minus-expressions">Unary minus expressions</h4>
 <div class="paragraph">
@@ -12410,7 +12482,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <div id="grammar-rule-anonymousFunction-pasted-85" class="grammar-rule">
 <dl>
 <dt><strong><em>anonymousFunction</em>:</strong></dt>
-<dd><span class="sentence">[<code>'suspend'</code>]<br />
+<dd><span class="sentence">[(<em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em> [<code>'suspend'</code>]) | (<code>'suspend'</code> [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-contextParameterList">contextParameterList</a></em>])]<br />
 {<em><a href="#grammar-rule-NL">NL</a></em>}<br />
 <code>'fun'</code><br />
 [{<em><a href="#grammar-rule-NL">NL</a></em>} <em><a href="#grammar-rule-type">type</a></em> {<em><a href="#grammar-rule-NL">NL</a></em>} <code>'.'</code>]<br />
@@ -13201,18 +13273,23 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 <p><span class="sentence">A module is a concept on the boundary between the code itself and the resulting application, thus it depends on and influences both of them. </span><span class="sentence">A Kotlin module is a set of Kotlin files which are considered to be interdependent and must be handled together during compilation.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">In a simple case, a module is a set of files compiled at the same time in a given project.</span></p>
+<p><span class="sentence">In a simple case, a module is a set of files compiled together with a single Kotlin compiler invocation. </span><span class="sentence">In practice, this corresponds to a single <em>compilation unit</em> of a build system. </span><span class="sentence">For example:</span></p>
 </div>
 <ul>
-<li><span class="sentence">A set of files being compiled with a single Kotlin compiler invocation</span></li>
-<li><span class="sentence">A Maven module</span></li>
-<li><span class="sentence">A Gradle project</span></li>
+<li><span class="sentence">A Gradle source set (e.g., <code>main</code> or <code>test</code>) in a single Gradle subproject</span></li>
+<li><span class="sentence">A Maven compilation (the main source directory or the test source directory in a Maven module)</span></li>
+<li><span class="sentence">An IntelliJ IDEA module</span></li>
 </ul>
+<blockquote>
+<div class="paragraph">
+<p><span class="sentence">Note: in Gradle and Maven, the <code>main</code> and <code>test</code> source sets of a single project or module are compiled separately and thus constitute <em>different</em> Kotlin modules. </span><span class="sentence">This is why, for example, a <code>sealed</code> class declared in <code>main</code> sources cannot be extended by a class in <code>test</code> sources, even though they are part of the same project.</span></p>
+</div>
+</blockquote>
 <div class="paragraph">
 <p><span class="sentence">In a more complicated case involving multi-platform projects, a module may be distributed across several compilations, projects and/or platforms.</span></p>
 </div>
 <div class="paragraph">
-<p><span class="sentence">For the purposes of Kotlin/Core, modules are important for <a href="#declaration-visibility"><code>internal</code> visibility</a>. </span><span class="sentence">How modules influence particular platforms is described in their respective sections of this specification.</span></p>
+<p><span class="sentence">For the purposes of Kotlin/Core, modules are important for <a href="#declaration-visibility"><code>internal</code> visibility</a> and <a href="#inheritance">sealed class hierarchies</a>. </span><span class="sentence">How modules influence particular platforms is described in their respective sections of this specification.</span></p>
 </div>
 <h2 id="overload-resolution">Overload resolution</h2>
 <h3 class="unnumbered" id="glossary-3">Glossary</h3>
@@ -14081,7 +14158,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </blockquote>
 <h3 id="resolving-property-access">Resolving property access</h3>
 <div class="paragraph">
-<p><span class="sentence">As <a href="#property-declaration">properties</a> in Kotlin can have custom <a href="#getters-and-setters">getters and setters</a>, be <a href="#extension-property-declaration">extension</a>, <a href="#delegated-property-declaration">delegated</a> or [contextual][Contextual property declaration], they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
+<p><span class="sentence">As <a href="#property-declaration">properties</a> in Kotlin can have custom <a href="#getters-and-setters">getters and setters</a>, be <a href="#extension-property-declaration">extension</a> or <a href="#delegated-property-declaration">delegated</a>, they are also subject to overload resolution. </span><span class="sentence">Overload resolution for property access works similarly to how it works for <a href="#callables-and-invoke-convention">callables</a>, i.e., it consists of two steps: <a href="#building-the-overload-candidate-set">building the overload candidate set</a> of <a href="#determining-function-applicability-for-a-specific-call">applicable</a> candidates, and then <a href="#choosing-the-most-specific-candidate-from-the-overload-candidate-set">choosing the most specific candidate from the overload candidate set</a>.</span></p>
 </div>
 <blockquote>
 <div class="paragraph">
@@ -14195,7 +14272,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z'/></svg><
 </div>
 <ul>
 <li><span class="sentence">Properties without getter or setter are assumed to have default implementations for accessors (ones which get or set its <a href="#getters-and-setters">backing field</a>);</span></li>
-<li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, a contextual mutable property is considered to have a contextual getter and setter, etc.;</span></li>
+<li><span class="sentence">The overload resolution takes into account the kind of property, meaning an extension read-only property is considered to have an extension getter, an extension mutable property is considered to have an extension getter and setter, etc.;</span></li>
 <li><span class="sentence"><a href="#object-declaration">Object declarations</a> and <a href="#enum-class-declaration">enumeration entries</a> may be accessed using the property access syntax given that they may be resolved in the current scope.</span></li>
 </ul>
 <h3 id="resolving-callable-references">Resolving callable references</h3>
