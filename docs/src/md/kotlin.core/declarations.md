@@ -246,7 +246,7 @@ Inner classes cannot be declared in a [statement scope][Scopes and identifiers],
 
 Inner classes cannot be declared in [object declarations][Object declaration], as object declarations also create a single named value of their type, which makes additional association unnecessary.
 
-Inner classes cannot contain any nested classes, interfaces or objects (including companion objects but excluding object literals). Additional inner classes are allowed inside an inner class.
+Inner classes cannot contain any nested classes, interfaces, or objects (including companion objects but excluding object literals). Additional inner classes are allowed inside an inner class.
 
 > Note: for information on how type parameters of parent and nested / inner classifiers interoperate, we delegate you to the [type system][Inner and nested type contexts] section of the specification.
 
@@ -665,7 +665,7 @@ Annotation classes have the following properties:
 - They implicitly implement `kotlin.Annotation` interface (and cannot implement additional interfaces);
 - They cannot have any specified base classes;
 - They are implicitly closed and cannot be inherited from;
-- They may not have any member functions, properties not declared in the primary constructor or any overriding declarations;
+- They may not have any member functions, properties not declared in the primary constructor, or any overriding declarations;
 - They cannot have companion objects;
 - They cannot have nested classes;
 - The types of primary constructor parameters are limited to:
@@ -869,7 +869,7 @@ fun foo() {
 }
 ```
 
-Local classes have restrictions similar to object literals and [inner classes][Nested and inner classifiers]; only inner classes are allowed in local classes. Nested classes, interfaces or objects are forbidden.
+Local classes have restrictions similar to object literals and [inner classes][Nested and inner classifiers]; only inner classes are allowed in local classes. Nested classes, interfaces, or objects are forbidden.
 
 Enum classes and annotation classes cannot be declared locally.
 
@@ -966,16 +966,27 @@ It stays unspecified even after the "proper" initialization is performed.
 #### Classifier declaration scopes
 
 Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the **static** classifier body scope and the **actual** classifier body scope
-Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier.
-All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope.
+For an object declaration, the static classifier body scope and the actual classifier body scope are one and the same.
+
+The static classifier body scope of the classifier contains:
+
+* the primary constructor declaration of the classifier (if it exists);
+* all non-primary constructor declarations contained within the classifier body;
+* all non-inner classifier declarations (as well as their constructors) contained within the classifier body, including the companion object declaration (if it exists) and enum entry declarations (if the classifier is an enum class);
+* declarations contained within the classifier body scope of the classifier's companion object (if it exists).
+
+The actual classifier body scope of the classifier contains:
+
+* all function and property declarations contained within the classifier body;
+* all inner classifier declarations (as well as their constructors) contained within the classifier body.
+
 Static classifier body scope is upwards-linked to the actual classifier body scope.
-For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.
 
-In addition to this, objects and classes introduce a special *object initialization scope*, which is not syntactically delimited.
-The scopes of each initialization expression of every property in the class body, as well as the scopes of each initialization block, is upward-linked to the object initialization scope, which itself is upward-linked to the actual classifier body scope.
+In addition to this, objects and classes introduce a special *classifier initialization scope*, which is not syntactically delimited.
+The scopes of every property initializer and every initialization block in the classifier body are upward-linked to the classifier initialization scope, which itself is upward-linked to the actual classifier body scope.
 
-If a classifier declares a primary constructor, the parameters of this constructor are bound in the special *primary constructor parameter scope*, which is downward-linked to the initialization scope and upward-linked to the scope the classifier is declared in.
-The interface delegation expressions (if any) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
+If a classifier declares a primary constructor, the parameters of that constructor are contained within the special *primary constructor parameter scope*, which is upward-linked to the scope the classifier is declared in and downward-linked to the classifier initialization scope.
+Interface delegation expressions (if any exist) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
 
 ### Function declaration
 
@@ -1180,7 +1191,7 @@ Declaring a function `inline` has two additional effects:
 - Any parameter of this function of a [function type][Function types] is treated as *inlined* parameter unless it has one of two special modifiers: `crossinline` or `noinline`.
   If a particular argument corresponding to inline parameter is a [lambda literal][Lambda literals], this lambda literal is considered *inlined* and, in particular, affects the way the [return expressions][Return expressions] are handled in its body. See the corresponding section for details.
 
-Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function or captured by other values.
+Inlined parameters are not allowed to escape the scope of the function body, meaning that they cannot be stored in variables, returned from the function, or captured by other values.
 They may only be called inside the function body or passed to other functions as inline arguments.
 
 Crossinline parameters may not be stored or returned from the function, but may be captured (for example, by [object literals][Object literals] or other noinline lambda literals).
@@ -1318,7 +1329,7 @@ In addition to this scope, function parameters exist in a special *function para
 :::{.paste target=grammar-rule-propertyDeclaration}
 :::
 
-Kotlin uses *properties* to represent object-like entities, such as local variables, class fields or top-level values.
+Kotlin uses *properties* to represent object-like entities, such as local variables, class fields, or top-level values.
 
 Property declarations may create read-only (`val`) or mutable (`var`) entities in their respective scope.
 
@@ -1392,7 +1403,7 @@ where `componentN()` should be a valid operator function available on the result
 Some of the entries in the destructuring declaration may be replaced with an *ignore marker* `_`, which signifies that no variable is declared and no `componentN()` function is called.
 
 As with regular property declaration, type specification is optional, in which case the type is inferred from the corresponding `componentN()` function.
-Destructuring declarations cannot use getters, setters or delegates and must be initialized in-place.
+Destructuring declarations cannot use getters, setters, or delegates and must be initialized in-place.
 
 #### Getters and setters
 
@@ -1409,7 +1420,7 @@ These functions have the following requirements
 * $TG \equiv T$;
 * $TS \equiv T$;
 * $RT \equiv \mathtt{kotlin.Unit}$;
-* Types $TG$, $TS$ and $RT$ are optional and may be omitted from the declaration;
+* Types $TG$, $TS$, and $RT$ are optional and may be omitted from the declaration;
   
 * Read-only properties may have a custom getter, but not a custom setter;
 * Mutable properties may have any combination of a custom getter and a custom setter
@@ -1690,7 +1701,7 @@ In order to be declared `const`, a property must meet the following requirements
 - It is declared in the top-level scope or inside [an object declaration][Classifier declaration];
 - It has an initializer expression and this initializer expression can be evaluated at compile-time.
   Integer literals and string interpolation expressions without evaluated expressions, as well as built-in arithmetic/comparison operations and string concatenation operations on those are such expressions, as well as other constant properties, but it is implementation-defined which other expressions qualify for this;
-- It does not have getters, setters or delegation specifiers.
+- It does not have getters, setters, or delegation specifiers.
 
 > Example:
 > ```kotlin
@@ -1711,7 +1722,7 @@ This means, among other things, that it is the responsibility of the programmer 
 
 A property may be declared late-initialized if:
 
-- It has no custom getters, setters or delegation;
+- It has no custom getters, setters, or delegation;
 - It is a member or a top-level property;
 - It is mutable;
 - It has declared non-nullable type which is also not one of the following types:
