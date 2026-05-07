@@ -966,16 +966,27 @@ It stays unspecified even after the "proper" initialization is performed.
 #### Classifier declaration scopes
 
 Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the **static** classifier body scope and the **actual** classifier body scope
-Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier.
-All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope.
+For an object declaration, the static classifier body scope and the actual classifier body scope are one and the same.
+
+The static classifier body scope of the classifier contains:
+
+* the primary constructor declaration of the classifier (if it exists);
+* all non-primary constructor declarations contained within the classifier body;
+* all non-inner classifier declarations (as well as their constructors) contained within the classifier body, including the companion object declaration (if it exists) and enum entry declarations (if the classifier is an enum class);
+* declarations contained within the classifier body scope of the classifier's companion object (if it exists).
+
+The actual classifier body scope of the classifier contains:
+
+* all function and property declarations contained within the classifier body;
+* all inner classifier declarations (as well as their constructors) contained within the classifier body.
+
 Static classifier body scope is upwards-linked to the actual classifier body scope.
-For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.
 
-In addition to this, objects and classes introduce a special *object initialization scope*, which is not syntactically delimited.
-The scopes of each initialization expression of every property in the class body, as well as the scopes of each initialization block, is upward-linked to the object initialization scope, which itself is upward-linked to the actual classifier body scope.
+In addition to this, objects and classes introduce a special *classifier initialization scope*, which is not syntactically delimited.
+The scopes of every property initializer and every initialization block in the classifier body are upward-linked to the classifier initialization scope, which itself is upward-linked to the actual classifier body scope.
 
-If a classifier declares a primary constructor, the parameters of this constructor are bound in the special *primary constructor parameter scope*, which is downward-linked to the initialization scope and upward-linked to the scope the classifier is declared in.
-The interface delegation expressions (if any) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
+If a classifier declares a primary constructor, the parameters of that constructor are contained within the special *primary constructor parameter scope*, which is upward-linked to the scope the classifier is declared in and downward-linked to the classifier initialization scope.
+Interface delegation expressions (if any exist) are resolved in the primary constructor parameter scope if it exists and in the scope the classifier is declared in otherwise.
 
 ### Function declaration
 
