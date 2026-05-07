@@ -968,7 +968,7 @@ It stays unspecified even after the "proper" initialization is performed.
 Every classifier declaration introduces two declarations scope syntactically bound by the classifier body, if any: the **static** classifier body scope and the **actual** classifier body scope
 Every function, property or inner classifier declaration contained within the classifier body are declared in the actual classifier body scope of this classifier.
 All non-primary constructors of the classifier, as well as any non-inner nested classifier, including the companion object declaration (if it exists) and enum entries (if this is an enum class), are declared in the static classifier body scope.
-Static classifier body scope is upwards-linked to the actual classifier body scope.
+Static classifier body scope is downwards-linked to the actual classifier body scope.
 For an object declaration, static classifier body scope and the actual classifier body scoped are one and the same.
 
 In addition to this, objects and classes introduce a special *object initialization scope*, which is not syntactically delimited.
