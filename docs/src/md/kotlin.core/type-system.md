@@ -794,7 +794,7 @@ In case we need to establish type containment between regular type $A$ and captu
 
 #### Function types
 
-Kotlin has first-order functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.
+Kotlin has first-class functions; e.g., it supports function types, which describe the argument and return types of its corresponding function.
 
 A function type $\FT$
 
