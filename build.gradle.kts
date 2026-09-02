@@ -1,8 +1,16 @@
 import at.phatbl.shellexec.ShellExec
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 
 plugins {
     kotlin("jvm") version "1.7.0" apply false
     id("at.phatbl.shellexec") version "1.5.2"
+}
+
+rootProject.plugins.withType<NodeJsRootPlugin> {
+    rootProject.extensions.configure<NodeJsRootExtension> {
+        nodeVersion = "22.23.2"
+    }
 }
 
 val htmlBuildDir = "$buildDir/spec/html"
