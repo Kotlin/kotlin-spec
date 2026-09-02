@@ -131,6 +131,20 @@ This may trigger a new RIP.
 
 After that, a new independent set of inference variables is picked and this process is repeated until an inference error occurs or a solution for each inference variable is found.
 
+#### Integer literal type variables
+
+An [integer literal type][Integer literal types] introduces a restricted kind of inference variable called an *integer literal type variable*.
+For an integer literal type $\ILT(T_1, \ldots, T_N)$, the corresponding integer literal type variable may be fixed only to one of the possible built-in integer types $T_1, \ldots, T_N$.
+
+During constraint solving, constraints on an integer literal type variable narrow the set of possible types to those which satisfy the constraints after substituting the variable with a concrete possible type.
+If this set becomes empty, this is an inference error.
+If several possible types remain, the implementation may choose the result according to its local type inference strategy.
+In the absence of any constraints requiring another possible type, a signed integer literal is resolved to `kotlin.Int` if `kotlin.Int` is among its possible types and to `kotlin.Long` otherwise.
+
+This restriction is not itself a subtyping relation.
+From the fact that an integer literal type variable may be fixed to $T_i$ and $T_i <: U$, one cannot infer that the variable may be fixed to $U$, unless $U$ is also one of the possible built-in integer types of this literal.
+Similarly, ordinary subtype transitivity cannot be used through an integer literal type variable to derive subtyping relations between different possible built-in integer types.
+
 #### The relations on types as constraints
 
 In other sections (for example, [Expressions][Expressions-expressions] and [Statements][Statements-statements]) the relations between types may be expressed using the type operations found in the [type system section][Type system] of this document.

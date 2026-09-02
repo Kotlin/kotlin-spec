@@ -75,14 +75,16 @@ Digits may be separated by an underscore symbol, but no underscore can be placed
 
 Any of the decimal, hexadecimal or binary literals may be suffixed by the long literal mark (symbol `L`).
 An integer literal with the long literal mark has type `kotlin.Long`.
-A literal without the mark has a special [integer literal type][Integer literal types] dependent on the value of the literal:
+A literal without the mark has its type determined by the value of the literal:
 
 - If the value is greater than maximum `kotlin.Long` value (see [built-in integer types][Built-in integer types]), it is an illegal integer literal and should be a compile-time error;
 - Otherwise, if the value is greater than maximum `kotlin.Int` value (see [built-in integer types][Built-in integer types]), it has type `kotlin.Long`;
-- Otherwise, it has an integer literal type containing all the built-in integer types guaranteed to be able to represent this value.
+- Otherwise, it initially has an [integer literal type][Integer literal types] containing all the built-in integer types guaranteed to be able to represent this value.
 
-> Example: integer literal `0x01` has value $1$ and therefore has type $\ILT(\Byte, \Short, \Int, \Long)$.
-> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore has type $\ILT(\Int, \Long)$.
+This integer literal type is used by [type inference][Integer literal type inference] to choose a concrete built-in integer type for the literal.
+
+> Example: integer literal `0x01` has value $1$ and therefore may be resolved to any of the types represented by $\ILT(\Byte, \Short, \Int, \Long)$.
+> Integer literal `70000` has value $70000$, which is not representable using types `kotlin.Byte` and `kotlin.Short` and therefore may be resolved only to one of the types represented by $\ILT(\Int, \Long)$.
 
 #### Real literals
 

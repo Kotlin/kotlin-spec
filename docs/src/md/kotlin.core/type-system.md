@@ -112,6 +112,7 @@ Subtyping between these parameterized types is defined through [mixed-site varia
 For the purposes of this section, we establish the following type kinds --- different flavours of types which exist in the Kotlin type system.
 
 * [Built-in types][Built-in types]
+* [Integer literal types][Integer literal types]
 * [Classifier types][Classifier types]
 * [Type parameters][Type parameters]
 * [Function types][Function types]
@@ -209,6 +210,14 @@ However, they are **not** related by subtyping; meaning one cannot pass a `Boole
 $\ATS$ takes an important part in how [variable length parameters][Variable length parameters] are handled.
 
 > Note: additional details about built-in array types are available [here][Built-in array types].
+
+#### Integer literal types
+
+An integer literal type containing types $T_1, \ldots, T_N$, denoted $\ILT(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for [integer literals][Integer literals].
+
+Integer literal types are the initial types of integer literals before the compiler has selected their concrete built-in integer types.
+The types $T_1, \ldots, T_N$ are the possible [built-in integer types][Built-in integer types] the literal may be resolved to during [type inference][Integer literal type inference].
+Integer literal types are handled as [restricted type inference variables][Integer literal type variables] and do not introduce additional regular subtyping relations between their possible built-in integer types.
 
 #### Classifier types
 
@@ -1064,13 +1073,6 @@ When needed, the compiler may *approximate* an intersection type to a *denotable
 One of the main uses of intersection types are [smart casts][Smart casts].
 Another restricted version of intersection types are [definitely non-nullable types].
 
-#### Integer literal types
-
-An integer literal type containing types $T_1, \ldots, T_N$, denoted $\ILT(T_1, \ldots, T_N)$ is a special *non-denotable* type designed for integer literals.
-Each type $T_1, \ldots, T_N$ must be one of the [built-in integer types][Built-in integer types].
-
-Integer literal types are the types of [integer literals][Integer literals] and have special handling w.r.t. [subtyping][Subtyping for integer literal types].
-
 #### Union types
 
 > Important: Kotlin does **not** have union types in its type system.
@@ -1180,43 +1182,40 @@ Moreover, any type $T$ with supertypes $S_1, \ldots, S_N$ is also a subtype of $
 
 #### Subtyping for integer literal types
 
-All integer literal type are equivalent w.r.t. subtyping, meaning that for any sets $T_1, \ldots, T_K$ and $U_1, \ldots, U_N$ of built-in integer types:
+Integer literal types do not create ordinary subtyping between their possible built-in integer types.
+For an integer literal type $\ILT(T_1, \ldots, T_K)$, the presence of $T_i$ in its possible type set means the corresponding integer literal may be resolved to $T_i$ during [type inference][Integer literal type variables].
+It does not mean either $\ILT(T_1, \ldots, T_K) <: T_i$ or $T_i <: \ILT(T_1, \ldots, T_K)$ is available as a regular subtyping rule.
 
-- $\ILT(T_1, \ldots, T_K) <: \ILT(U_1, \ldots, U_N)$
-- $\ILT(U_1, \ldots, U_N) <: \ILT(T_1, \ldots, T_K)$
-- $\forall T_i \in \{T_1, \ldots, T_K\} : \ILT(T_1, \ldots, T_K) <: T_i$
-- $\forall T_i \in \{T_1, \ldots, T_K\} : T_i <: \ILT(T_1, \ldots, T_K)$
+As a consequence, regular subtype transitivity cannot be used to derive relations between unrelated built-in integer types through an integer literal type.
+For example, $\Byte$ and $\Short$ remain unrelated w.r.t. subtyping even though the integer literal type for value $1$ may be resolved to either of them.
 
-> Note: the last two rules mean $\ILT(T_1, \ldots, T_K)$ can be considered as an intersection type $T_1 \amp \ldots \amp T_K$ or as a union type $T_1 \hor \ldots \hor T_K$, depending on the context.
-> Viewing $\ILT$ as intersection type allows us to use integer literals where built-in integer types are expected.
-> Making $\ILT$ behave as union type is needed to support cases when they appear in contravariant position.
+> Note: this makes integer literal types different from [intersection types][Intersection types], [union types][Union types] and [flexible types][Flexible types].
+> They represent a restricted choice of the literal's final built-in integer type, not a first-class type-system value combining all possible choices.
 
 > Example:
 > ```kotlin
-> interface In<in T>
+> fun takeByte(value: Byte) {}
+> fun takeShort(value: Short) {}
+> fun takeInt(value: Int) {}
+> fun takeLong(value: Long) {}
 > 
-> fun <T> T.asIn(): In<T> = ...
+> fun ilts() {
+>     takeByte(1)
+>     takeShort(1)
+>     takeInt(1)
+>     takeLong(1)
 >
-> fun <S> select(a: S, b: In<S>): S = ...
-> 
-> fun iltAsIntersection() {
->     val a: Int = 42 // ILT(Byte, Short, Int, Long) <: Int
->     
->     fun foo(a: Short) {}
->     
->     foo(1377) // ILT(Short, Int, Long) <: Short
-> }
-> 
-> fun iltAsUnion() {
->     val a: Short = 42
->     
->     select(a, 1337.asIn())
->         // For argument a:
->         //   Short <: S
->         // For argument b:
->         //   In<ILT(Short, Int, Long)> <: In<S> =>
->         //     S <: ILT(Short, Int, Long)
->         // Solution: S =:= Short
+>     val b: Byte = 1
+>     val s: Short = 1
+>
+>     // Error: b has the concrete type Byte.
+>     // The fact that literal 1 may be resolved to Byte or Short
+>     // does not create a Byte <: Short subtyping relation.
+>     val bad: Short = b
+>
+>     // Error: 70000 has possible types Int and Long,
+>     // so it cannot be resolved to Short.
+>     takeShort(70000)
 > }
 > ```
 

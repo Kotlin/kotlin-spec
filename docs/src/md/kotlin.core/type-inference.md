@@ -452,6 +452,10 @@ In these cases an [optimal constraint system solution][Finding optimal constrain
 
 TODO(Is this true?)
 
+### Integer literal type inference
+
+Integer literal types are resolved during [local type inference] by fixing their corresponding [integer literal type variables][Integer literal type variables] to concrete built-in integer types.
+
 ### Function signature type inference
 
 Function signature type inference is a variant of [local type inference], which is performed for [function declarations][Function declaration], [lambda literals] and [anonymous function declarations].

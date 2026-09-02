@@ -124,7 +124,7 @@ $\Widen(T)$ for a built-in integer type $T$ is defined as follows:
 > foo(2)
 > ```
 > 
-> As the integer literal 2 has a type that is applicable for both versions of `foo` (see [Overload resolution section][Overload resolution] for details) and the types `kotlin.Int` and `kotlin.Short` are not related w.r.t. subtyping, it would not be possible to select a more specific candidate out of the two.
+> As the integer literal 2 may be resolved to a type applicable for both versions of `foo` (see [Overload resolution section][Overload resolution] for details) and the types `kotlin.Int` and `kotlin.Short` are not related w.r.t. subtyping, it would not be possible to select a more specific candidate out of the two.
 > However, if we consider $\Widen(\Int)$ and $\Widen(\Short)$ respectively as the types of `value`, first candidate becomes more specific than the second, because $\Widen(\Int) <: \Widen(\Short)$.
 
 ### Built-in floating point arithmetic types
@@ -400,4 +400,3 @@ Other members or base types for this class may be provided by platform and/or im
 It is the base type of [function references][Callable references].
 `kotlin.reflect.KFunction<R>` is a subtype of `kotlin.reflect.KCallable<R>` and `kotlin.Function<R>`.
 Other members or base types for this class may be provided by platform and/or implementation.
-
