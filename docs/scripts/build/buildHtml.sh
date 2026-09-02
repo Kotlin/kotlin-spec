@@ -10,6 +10,7 @@ export PROJECT_DIR
 export TODO_OPTION
 export STATIC_MATH_OPTION
 export KATEX_BIN_OPTION
+export TOC_OPTION=--generate-toc
 
 cd ${PROJECT_DIR}/src/md
 
@@ -18,6 +19,5 @@ gpp -H ./index.md | pandoc \
   ${PREAMBLE_OPTIONS} \
   ${COMMON_PANDOC_OPTIONS} \
   ${FORMAT_PANDOC_OPTIONS} \
-  ${TOC_PANDOC_OPTIONS} \
   ${HTML_ASSETS_OPTIONS} \
 -o ${BUILD_DIR}/spec/html/kotlin-spec.html

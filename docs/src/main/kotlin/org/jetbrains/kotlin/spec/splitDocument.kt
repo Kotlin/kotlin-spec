@@ -119,6 +119,11 @@ class TOCMaker : PandocVisitor() {
                     .let { Block.Div(Attr(id = "TOC"), it) }
 }
 
+fun Pandoc.buildTOC(): Block =
+        TOCMaker()
+                .apply { visit(this@buildTOC) }
+                .buildPandocList()
+
 fun counterName(splitLevel: Int): String? = when (splitLevel) {
     1 -> "part"
     2 -> "chapter"
@@ -144,9 +149,7 @@ class Splitter(val outputDirectory: File, val format: String, val generateTOC: B
         val linkFixer = LinkFixer(splitLevel, format)
         val newDoc = linkFixer.visit(doc)
         val generatedTOC = when {
-            generateTOC -> TOCMaker()
-                    .apply { visit(doc) }
-                    .buildPandocList()
+            generateTOC -> doc.buildTOC()
                     .let { linkFixer.visit(it) }
             else -> null
         }
