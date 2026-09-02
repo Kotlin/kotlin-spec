@@ -368,10 +368,17 @@ Lambda arguments are excluded, as their type inference needs the results of over
 
 Second, the following constraint system is built:
 
-- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter of type $U_j$, a constraint $T_i <: U_j$ is constructed;
+For every argument corresponding to a function parameter of type $U_p$, an expected parameter type $U'_p$ is determined as follows.
+
+- If $U_p$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the argument and $F_p$ is the associated function type of $U_p$, then $U'_p = F_p$;
+- Otherwise, $U'_p = U_p$.
+
+The constraint system is then built as follows:
+
+- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter with expected parameter type $U'_j$, a constraint $T_i <: U'_j$ is constructed;
 - All declaration-site type constraints for the function are also added to the constraint system;
-- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter of type $U_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_n) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
-- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter of type $U_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: U_m$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
+- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter with expected parameter type $U'_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_K) \rightarrow R\right) <: U'_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
+- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter with expected parameter type $U'_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: U'_n$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
 
 TODO: in fact, it is an intersection of both non-suspend and suspend variants
 
@@ -713,6 +720,8 @@ TODO(Anything else?)
 
 First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a [function type][Function types].
 Second, the type information needed to perform the resolution steps is acquired from _expected type_ of the reference itself, rather than the types of arguments and/or result.
+There are several special cases which enhance what is considered the expected type.
+* If [SAM conversion][SAM conversion] is available for a callable reference with a [functional interface][Functional interface declaration] expected type, the associated function type of that functional interface is used as the expected function type for callable reference resolution; after the callable reference is resolved, it may be converted to the original functional interface type using SAM conversion.
 The `invoke` operator convention **does not** apply to callable reference candidates.
 Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable being called and the callable being referenced are to be resolved _simultaneously_.
 

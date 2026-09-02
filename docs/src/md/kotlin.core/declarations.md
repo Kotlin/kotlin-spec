@@ -767,7 +767,7 @@ In other aspects they are similar to classes, therefore we shall specify their d
 
 A *functional interface* is an interface with a **single** abstract function and no other abstract properties or functions.
 
-A function interface declaration is marked as `fun interface`.
+A functional interface declaration is marked as `fun interface`.
 It has the following additional restrictions compared to regular [interface declarations][Interface declaration].
 
 * A functional interface can have only one abstract member function, which must be non-parameterized;
@@ -778,57 +778,86 @@ A functional interface has an associated [function type][Function types], which 
 > Important: the associated function type of a functional interface is different from the type of said functional interface.
 
 If one needs an object of a functional interface type, they can use the regular ways of implementing an interface, either via an [anonymous object declaration][Object literals] or as a complete [class][Classifier declaration].
-However, as functional interface essentially represents a single function, Kotlin supports the following additional ways of providing a functional interface implementation from function values (expressions with function type).
 
-* If an expression `L` is used as an argument of functional type `T` in a [function call][Function calls and property access], and the type of `L` is a subtype of the associated function type of `T`, this argument is considered as an instance of `T` with expression `L` used as its abstract member function implementation.
+###### SAM conversion
+
+As a functional interface essentially represents a single function, Kotlin supports an additional [expected-type-directed conversion][Explicit-type-directed conversions] from function literals, callable references and function-typed expressions to functional interface types.
+
+Let `T` be a functional interface type and `F` be its associated function type.
+When an expression is checked as an argument to a function call with a corresponding parameter of type `T`, SAM conversion is available for lambda literals, anonymous function declarations, callable references and expressions whose type is a function type or a subtype of a function type.
+In other expression contexts with expected type `T`, SAM conversion is available only for lambda literals and anonymous function declarations used directly as the expression being checked.
+
+If SAM conversion is available for an expression `l` with target type `T`, and `l` can be given a function type `S` such that `S <: F`, `l` may be converted to `T`.
+This conversion is called a *Single Abstract Method (SAM) conversion*.
+The resulting value is an instance of `T` whose single abstract member delegates to the function value produced by `l`.
+
+> Note: SAM conversion is not a subtyping relation between function types and functional interface types.
 
 > Example:
-> 
+>
 > ```kotlin
 > fun interface FI {
 >     fun bar(s: Int): Int
 > }
-> 
+>
 > fun doIt(fi: FI) {}
-> 
+>
+> fun same(s: Int): Int = s
+>
 > fun foo() {
+>     val lambda = { s: Number -> s.toInt() }
+>
 >     doIt { it }
 >     doIt { s: Int -> s + 42 }
 >     doIt { s: Number -> s.toInt() }
-> 
->     doIt(fun(s): Int { return s; })
-> 
->     val l = { s: Number -> s.toInt() }
-> 
->     doIt(l)
-> }
-> ```
-
-* When encountered in a function call as the *function being called*, a functional interface name `T` is considered to be representing a function of type `(T) -> T`, which allows conversion-like function calls as in the examples below.
-
-> Example:
-> 
-> ```kotlin
-> fun interface FI {
->     fun bar(s: Int): Int
-> }
-> 
-> fun foo() {
->     val fi = FI { it }
->     val fi2 = FI { s: Int -> s + 42 }
->     val fi3 = FI { s: Number -> s.toInt() }
->     val fi4 = FI({ it })
+>     doIt(fun(s: Int): Int { return s })
+>     doIt(lambda)
+>     doIt(::same)
 >
->     val lambda = { s: Int -> s + 42 }
->     val fi5 = FI(lambda)
+>     // SAM conversion available for non-argument function literals
+>     val fi1: FI = { s: Number -> s.toInt() }
+>     val fi2: FI = fun(s: Int): Int { return s + 1 }
+>
+>     // Error: SAM conversion not available for non-argument arbitrary expressions
+>     val fi3: FI = lambda
+>     val fi4: FI = ::same
 > }
 > ```
-
-> Informally: this feature is known as "Single Abstract Method" (SAM) conversion.
 
 > Note: in Kotlin version 1.3 and earlier, SAM conversion was not available for Kotlin functional interfaces.
 
 > Note: SAM conversion is also available on Kotlin/JVM for Java functional interfaces.
+
+###### SAM constructor
+
+For every functional interface type `T` with associated function type `F`, a synthetic callable with function type `(F) -> T` is available under the functional interface name.
+This callable is called a *SAM constructor* and may be used in function calls or as the target of a callable reference.
+When invoked with a function value, a SAM constructor produces an instance of `T` whose single abstract member delegates to this function value.
+
+> Example:
+> 
+> ```kotlin
+> fun interface FI {
+>     fun bar(s: Int): Int
+> }
+> 
+> fun same(s: Int): Int = s
+>
+> fun foo() {
+>     val lambda = { s: Number -> s.toInt() }
+>
+>     val fi = FI { it }
+>     val fi2 = FI { s: Int -> s + 42 }
+>     val fi3 = FI { s: Number -> s.toInt() }
+>     val fi4 = FI(fun(s: Int): Int { return s })
+>     val fi5 = FI(lambda)
+>     val fi6 = FI(::same)
+>
+>     val fi7 = (::FI) { it + 1 }
+>     val fi8 = (::FI)(lambda)
+>     val fi9 = (::FI)(::same)
+> }
+> ```
 
 #### Object declaration
 
@@ -2078,4 +2107,3 @@ There is a partial order of *weakness* between different visibility modifiers:
 ### References {#declarations.references}
 
 1. John Altidor, Shan Shan Huang, and Yannis Smaragdakis. "Taming the wildcards: combining definition- and use-site variance." 2011 (\url{https://yanniss.github.io/variance-pldi11.pdf})
-

@@ -1088,6 +1088,9 @@ The types of these expressions are implementation-defined, but the following con
     - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
     The receiver of such callable reference is bound to `lhs`.
 
+If [SAM conversion][SAM conversion] is available for a callable reference with expected functional interface type `T`, the associated function type of `T` is used as the expected function type for resolving the callable reference.
+After successful resolution, the resulting callable reference expression may be converted to `T` using SAM conversion.
+
 Being of a function type also means callable references are valid callables themselves, with an appropriate operator `invoke` overload, which allows using call syntax to evaluate such callable with the suitable arguments.
 
 > Informally: one may say that any callable reference is essentially the same as a lambda literal with the corresponding number of arguments, delegating to the callable being referenced.
@@ -1401,9 +1404,10 @@ TODO(Explain how escaping actually works for locals, local types and stuff)
 
 #### Functional interface lambda literals
 
-If a [lambda literal][Lambda literals] is preceded with a [functional interface][Functional interface declaration] name, this expression defines an anonymous object, implementing the specified functional interface via the provided lambda literal (which becomes the implementation of its single abstract method).
+If a [lambda literal][Lambda literals] is preceded with a [functional interface][Functional interface declaration] name, this expression is treated as an invocation of the corresponding SAM constructor with the lambda literal as its argument.
+The result is an anonymous object implementing the specified functional interface via the provided lambda literal, which becomes the implementation of its single abstract method.
 
-To be a well-formed functional interface lambda literal, the type of lambda literal must be a subtype of the associated function type of the specified functional interface.
+To be a well-formed functional interface lambda literal, the lambda literal must be compatible with the associated function type of the specified functional interface as described for [SAM constructors][SAM constructor].
 
 ### This-expressions
 
