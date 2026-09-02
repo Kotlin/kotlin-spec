@@ -98,8 +98,9 @@ Even more so, in some cases the compile-time type of a value may *change* depend
 Null safety is enforced by having two type universes: _nullable_ (with nullable types $T?$) and _non-nullable_ (with non-nullable types $T!!$).
 A value of any non-nullable type cannot contain `null`, meaning all operations within the non-nullable type universe are safe w.r.t. empty values, i.e., should never result in a runtime error caused by `null`.
 
-Implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expressions].
+Ordinary implicit conversions between types in Kotlin are limited to safe upcasts w.r.t. subtyping, meaning all other (unsafe) conversions must be explicit, done via either a conversion function or an [explicit cast][Cast expressions].
 However, Kotlin also supports smart casts --- a special kind of implicit conversions which are safe w.r.t. program control- and data-flow, which are covered in more detail [here][Smart casts].
+In addition, specified [expected-type-directed conversions][Explicit-type-directed conversions] may make a particular expression occurrence compatible with an expected type without creating a subtyping relation.
 
 The unified supertype type for all types in Kotlin is $\AnyQ$, a [nullable][Nullable types] version of [$\Any$][`kotlin.Any`].
 The unified subtype type for all types in Kotlin is [$\Nothing$][`kotlin.Nothing`].
@@ -1450,6 +1451,31 @@ The detection and handling of such situations (compile-time error or leaving the
 In some situations, it is needed to construct the greatest lower bound for more than two types, in which case the greatest lower bound operator $\GLB(T_1, T_2, \ldots, T_N)$ is defined as $\GLB(T_1, \GLB(T_2, \ldots, T_N))$.
 
 TODO(It is probably order-dependent or needs to be proven otherwise)
+
+### Explicit-type-directed conversions
+
+An expression occurrence is checked with an *expected type* $T$ when $T$ is supplied by the surrounding syntactic context or by an overload candidate currently being checked.
+Ordinarily, an expression with type $S$ is compatible with expected type $T$ when $S <: T$.
+In specifically defined cases, an expression may also be compatible with $T$ through an *expected-type-directed conversion*.
+
+An expected-type-directed conversion permits an expression occurrence to produce a value of the expected target type when ordinary compatibility does not hold.
+The concrete conversion rule defines the resulting value and its runtime behavior.
+
+Every expected-type-directed conversion rule must specify:
+
+- the expression forms to which it applies;
+- the contexts in which it is available;
+- its expected target type;
+- its applicability conditions;
+- the type and behavior of the resulting expression;
+- whether it may be composed with other conversions;
+- any effect its use has on overload resolution.
+
+Expected-type-directed conversions are local and apply only to the specific expression occurrences; they do not introduce additional subtyping relations or change the type of the same expression in other places.
+
+Expected-type-directed conversions are not implicitly closed under composition or subtyping.
+In particular, if an expression may be converted to type $T$ and $T <: U$, this does not imply that the expression may be converted to $U$.
+Several conversions may be composed only when such composition is explicitly permitted by every applicable rule.
 
 ### Type approximation
 
