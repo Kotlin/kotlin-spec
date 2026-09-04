@@ -783,20 +783,20 @@ If one needs an object of a functional interface type, they can use the regular 
 
 As a functional interface essentially represents a single function, Kotlin supports an additional [expected-type-directed conversion][Explicit-type-directed conversions] from function literals, callable references and function-typed expressions to functional interface types.
 
-Let `T` be a functional interface type and `F` be its associated function type.
+Let `T` be a functional interface type and `S` be its associated function type.
 
 The availability condition for SAM conversion to `T` is that an expression is checked with expected type `T`.
 
-The subject-kind conditions for an expression `l` are the following:
+The subject-kind conditions for an expression `e` are the following:
 
-- if `l` is an argument to a function call, it is a lambda literal, anonymous function declaration, callable reference, or an expression whose type is a function type or a subtype of a function type;
+- if `e` is an argument to a function call, it is a lambda literal, anonymous function declaration, callable reference, or an expression whose type is a function type or a subtype of a function type;
 - in any other context, it is a lambda literal or anonymous function declaration used directly as the expression being checked.
 
-The subject-compatibility condition is that `l` can be given a function type `S` such that `S <: F`.
+The subject-compatibility condition is that `e` can be given a type which is a subtype of `S`.
 
-If SAM conversion is available and `l` satisfies both its subject-kind and subject-compatibility conditions, `l` may be converted to `T`.
+If SAM conversion is available and `e` satisfies both its subject-kind and subject-compatibility conditions, `e` may be converted to `T`.
 This conversion is called a *Single Abstract Method (SAM) conversion*.
-The resulting value is an instance of `T` whose single abstract member delegates to the function value produced by `l`.
+The resulting value is an instance of `T` whose single abstract member delegates to the function value produced by `e`.
 
 > Note: SAM conversion is not a subtyping relation between function types and functional interface types.
 

@@ -888,16 +888,16 @@ However, as [lambda literals] do not have any explicitly declared function type,
 
 Despite the lack of a subtyping relation between suspending and non-suspending function types, Kotlin supports an [expected-type-directed conversion][Explicit-type-directed conversions] from non-suspending function values to suspending function types.
 
-Let `T` be a suspending function type and `F` be the corresponding non-suspending function type obtained from `T` by removing the `suspend` modifier.
+Let `T` be a suspending function type and `S` be the corresponding non-suspending function type obtained from `T` by removing the `suspend` modifier.
 
 The availability condition for suspend conversion to `T` is that an expression is checked with expected type `T`.
 
 The subject-kind conditions for an expression `e` are the following:
 
-- if `e` is an argument to a function call, it is either a callable reference or another expression which is not a lambda literal or anonymous function declaration and whose type is a function type or a subtype of a function type;
+- if `e` is an argument to a function call, it is either a callable reference or another expression which is not a lambda literal or anonymous function declaration and whose type is a non-suspending function type or a subtype of a non-suspending function type;
 - in any other context, it is a callable reference used directly as the expression being checked.
 
-The subject-compatibility condition is that `e` can be given a function type `S` such that `S <: F`.
+The subject-compatibility condition is that `e` can be given a type which is a subtype of `S`.
 
 Lambda literals are typed using the expected suspending function type and do not require suspend conversion.
 Non-suspending anonymous function declarations used directly as the expression being checked are not subject to suspend conversion.
@@ -943,6 +943,70 @@ The resulting value is a suspending function value which invokes the non-suspend
 >     // Error: suspend conversion is one-way
 >     consumeRegular(suspendFooRef)
 >     consumeRegular(suspendFooLambda)
+> }
+> ```
+
+###### Unit-returning function type conversions
+
+Kotlin supports an [expected-type-directed conversion][Explicit-type-directed conversions] from function values with arbitrary return types to corresponding function types with return type [`kotlin.Unit`][`kotlin.Unit`].
+
+Let `T` be a function type with return type `kotlin.Unit`, and let `S` be the same function type with its return type replaced by `kotlin.Any?`.
+
+The availability condition for Unit conversion to `T` is that an expression is checked with expected type `T`.
+
+The subject-kind conditions for an expression `e` are the following:
+
+- if `e` is an argument to a function call, it is either a callable reference or another expression which is not a lambda literal or anonymous function declaration and whose type is a function type or a subtype of a function type;
+- in any other context, it is a callable reference used directly as the expression being checked.
+
+The subject-compatibility condition is that `e` can be given a type which is a subtype of `S`.
+
+Lambda literals are typed using the expected `Unit`-returning function type and do not require Unit conversion.
+Non-`Unit`-returning anonymous function declarations used directly as the expression being checked are not subject to Unit conversion.
+
+If Unit conversion is available and `e` satisfies both its subject-kind and subject-compatibility conditions, `e` may be converted to `T`.
+This conversion is called *Unit conversion*.
+The resulting function value invokes the function value produced by `e` and discards its result.
+
+> Example:
+>
+> ```kotlin
+> object Result
+>
+> class ResultProducer : () -> Result {
+>     override fun invoke(): Result = Result
+> }
+>
+> fun produceResult(): Result = Result
+> suspend fun produceSuspendResult(): Result = Result
+> fun resultFunction(): () -> Result = ::produceResult
+>
+> fun consumeUnit(f: () -> Unit) {}
+> fun consumeSuspendUnit(f: suspend () -> Unit) {}
+>
+> fun example() {
+>     val functionValue: () -> Result = ::produceResult
+>     val suspendFunctionValue: suspend () -> Result = ::produceSuspendResult
+>     val anonymousFunctionValue = fun(): Result = Result
+>
+>     val unitReference: () -> Unit = ::produceResult
+>     val suspendUnitReference: suspend () -> Unit = ::produceSuspendResult
+>     val unitLambda: () -> Unit = { Result }
+>
+>     consumeUnit(functionValue)
+>     consumeUnit(anonymousFunctionValue)
+>     consumeUnit(resultFunction())
+>     consumeUnit(ResultProducer())
+>     consumeSuspendUnit(suspendFunctionValue)
+>
+>     // Error: direct anonymous function declarations are not Unit conversion subjects
+>     val directAnonymous: () -> Unit = fun(): Result = Result
+>     consumeUnit(fun(): Result = Result)
+>
+>     // Error: in initializer contexts, Unit conversion applies only to direct callable references
+>     val unitValue: () -> Unit = functionValue
+>     val unitProducedValue: () -> Unit = resultFunction()
+>     val suspendUnitValue: suspend () -> Unit = suspendFunctionValue
 > }
 > ```
 
@@ -1504,6 +1568,8 @@ An expression occurrence is checked with an *expected type* $T$ when $T$ is supp
 Ordinarily, an expression with type $S$ is compatible with expected type $T$ when $S <: T$.
 In specifically defined cases, an expression may also be compatible with $T$ through an *expected-type-directed conversion*.
 
+In the definition of a conversion, $T$ denotes its target type and $S$ denotes its *source compatibility type*, against which the subject is checked before the conversion is applied.
+
 An expected-type-directed conversion permits an expression occurrence to produce a value of the expected target type when ordinary compatibility does not hold.
 The concrete conversion rule defines the resulting value and its runtime behavior.
 
@@ -1515,7 +1581,7 @@ Whether a conversion may be used requires answering two separate questions:
 
 A conversion is applicable to an expression occurrence only if its availability conditions and subject conditions are both satisfied.
 A conversion rule may specify different subject conditions for different contexts.
-Subject conditions may be divided into *subject-kind conditions*, which identify the allowed kinds of expression without reference to the conversion target type, and *subject-compatibility conditions*, which relate the type of the subject to the conversion target type.
+Subject conditions may be divided into *subject-kind conditions*, which identify the allowed kinds of expression without reference to the conversion target type, and *subject-compatibility conditions*, which relate the type of the subject to the conversion's source compatibility type.
 Subject conditions are evaluated for that particular occurrence, rather than for the origin of the value it produces.
 Consequently, an expression which is not itself an eligible conversion subject may produce a value whose use in a separate expression occurrence is eligible.
 
@@ -1532,10 +1598,49 @@ Expected-type-directed conversions are not implicitly closed under composition o
 In particular, if an expression may be converted to type $T$ and $T <: U$, this does not imply that the expression may be converted to $U$.
 Several conversions may be composed only when the composition is explicitly permitted below.
 Within a permitted composition, the target type of each constituent conversion is treated as an expected type when determining whether that conversion is available.
+The subject-kind conditions are checked for the original expression occurrence, while the subject-compatibility condition of every conversion after the first is checked using the result of the preceding conversion.
 
 #### Conversion composition
 
-Suspend conversion may be followed by SAM conversion when the target suspending function type of the suspend conversion is the associated function type of the target functional interface, and both conversions are applicable to the expression.
+When present in a composition, suspend conversion, Unit conversion and SAM conversion are performed in this order.
+Any composition containing two or three of these conversions is permitted when every conversion is available, the original expression satisfies their subject-kind conditions, and each conversion satisfies its subject-compatibility condition as described above.
+
+##### Examples of conversion composition
+
+> ```kotlin
+> object Result
+>
+> fun interface Runner {
+>     fun run()
+> }
+>
+> fun interface SuspendResultProducer {
+>     suspend fun run(): Result
+> }
+>
+> fun interface SuspendRunner {
+>     suspend fun run()
+> }
+>
+> fun consumeSuspendUnit(f: suspend () -> Unit) {}
+> fun consumeRunner(r: Runner) {}
+> fun consumeSuspendResultProducer(p: SuspendResultProducer) {}
+> fun consumeSuspendRunner(r: SuspendRunner) {}
+>
+> fun example(functionValue: () -> Result) {
+>     // Suspend conversion, then Unit conversion
+>     consumeSuspendUnit(functionValue)
+>
+>     // Unit conversion, then SAM conversion
+>     consumeRunner(functionValue)
+>
+>     // Suspend conversion, then SAM conversion
+>     consumeSuspendResultProducer(functionValue)
+>
+>     // Suspend conversion, then Unit conversion, then SAM conversion
+>     consumeSuspendRunner(functionValue)
+> }
+> ```
 
 ### Type approximation
 

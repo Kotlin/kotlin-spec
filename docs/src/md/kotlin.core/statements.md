@@ -221,6 +221,8 @@ The type of a control structure body is the type of its value.
 When we expect the type of a control structure body to be `kotlin.Unit`, we relax the type checking requirements for its type by *coercing* it to `kotlin.Unit`.
 Specifically, we *ignore* the type mismatch between `kotlin.Unit` and the control structure body type.
 
+> Note: this control-structure-body coercion is distinct from [Unit conversion for function types][Unit-returning function type conversions], which converts function values to expected `Unit`-returning function types.
+
 > Examples:
 > 
 > ```kotlin

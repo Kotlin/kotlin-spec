@@ -366,23 +366,38 @@ Determining function applicability for a specific call is a [type constraint][Ko
 First, for every non-lambda argument of the function called, type inference is performed.
 Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
 
-Second, the following constraint system is built:
+Second, a single constraint system is built.
+All declaration-site type constraints for the function are added to it.
+Arguments are processed in source order.
+A constraint is considered *compatible* with the current constraint system if adding it does not make the constraint system unsound.
 
-For every argument corresponding to a function parameter of type $U_p$, intermediate expected parameter type $V_p$ is determined as follows.
+For every non-lambda argument inferred to have type $T_i$, corresponding to a function parameter of type $U_j$, its compatibility constraint is selected as follows.
 
-- If $U_p$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the argument, the argument satisfies its subject-kind conditions, and $F_p$ is the associated function type of $U_p$, then $V_p = F_p$;
+- If $T_i <: U_j$ is compatible with the current constraint system, this constraint is added and no expected-type-directed conversion is used for the argument;
+- Otherwise:
+    - an intermediate expected type $V_j$ is determined as follows:
+        - if $U_j$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the argument, and the argument satisfies its subject-kind conditions, then $V_j$ is the associated function type of $U_j$;
+        - otherwise, $V_j = U_j$;
+    - a single source compatibility type $S_j$ is derived from $V_j$ as follows:
+        - initially, $S_j = V_j$;
+        - if $T_i <: V_j$ is not compatible with the current constraint system, $V_j$ is a [suspending function type][Suspending function types], [suspend conversion][Suspending function type conversions] to $V_j$ is available for the argument and the argument satisfies its subject-kind conditions, then $S_j$ is the corresponding non-suspending function type;
+        - if $T_i <: S_j$ is not compatible with the current constraint system, $S_j$ has return type [`kotlin.Unit`][`kotlin.Unit`], [Unit conversion][Unit-returning function type conversions] is available for the argument and the argument satisfies its subject-kind conditions, then the return type of $S_j$ is replaced by `kotlin.Any?`;
+    - the constraint $T_i <: S_j$ is added to the constraint system.
+
+Once the constraint for an argument is selected and added, it is not reconsidered while processing later arguments.
+If the selected constraint is sound, the conversions selected while deriving $V_j$ and $S_j$ make the argument compatible with $U_j$.
+They are applied to the argument in the permitted order: suspend conversion, then Unit conversion, then SAM conversion.
+These conversions do not establish subtyping relations between their source and target types.
+
+For every lambda argument corresponding to a function parameter of type $U_p$, intermediate expected parameter type $V_p$ is determined as follows.
+
+- If $U_p$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the lambda argument, and the argument satisfies its subject-kind conditions, then $V_p$ is the associated function type of $U_p$;
 - Otherwise, $V_p = U_p$.
 
-The constraint system is then built as follows:
+Lambda argument constraints are then added as follows:
 
-- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter with expected parameter type $V_j$, a constraint $T_i <: V_j$ is constructed. If $V_j$ is a [suspending function type][Suspending function types], [suspend conversion][Suspending function type conversions] is available for the argument, the argument satisfies its subject-kind conditions, and $F_j$ is the corresponding non-suspending function type, the alternative constraint $T_i <: F_j$ may be used instead;
-- All declaration-site type constraints for the function are also added to the constraint system;
-- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter with expected parameter type $V_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_K) \rightarrow R\right) <: V_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
-- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter with expected parameter type $V_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: V_n$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
-
-When $V_p$ is the associated function type of a functional interface parameter $U_p$, satisfying the corresponding argument constraint makes the argument compatible with $U_p$ through SAM conversion.
-When the alternative constraint for a suspending function type $V_p$ is used, satisfying it makes the argument compatible with $V_p$ through suspend conversion.
-Neither case establishes a subtyping relation between the source and target types of the conversion.
+- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter with intermediate expected type $V_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_K) \rightarrow R\right) <: V_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
+- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter with intermediate expected type $V_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: V_n$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
 
 > Note: for applicability purposes, lambda argument constraints include both the non-suspending function type variants shown above and the corresponding suspending function type variants.
 
