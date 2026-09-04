@@ -784,10 +784,17 @@ If one needs an object of a functional interface type, they can use the regular 
 As a functional interface essentially represents a single function, Kotlin supports an additional [expected-type-directed conversion][Explicit-type-directed conversions] from function literals, callable references and function-typed expressions to functional interface types.
 
 Let `T` be a functional interface type and `F` be its associated function type.
-When an expression is checked as an argument to a function call with a corresponding parameter of type `T`, SAM conversion is available for lambda literals, anonymous function declarations, callable references and expressions whose type is a function type or a subtype of a function type.
-In other expression contexts with expected type `T`, SAM conversion is available only for lambda literals and anonymous function declarations used directly as the expression being checked.
 
-If SAM conversion is available for an expression `l` with target type `T`, and `l` can be given a function type `S` such that `S <: F`, `l` may be converted to `T`.
+The availability condition for SAM conversion to `T` is that an expression is checked with expected type `T`.
+
+The subject-kind conditions for an expression `l` are the following:
+
+- if `l` is an argument to a function call, it is a lambda literal, anonymous function declaration, callable reference, or an expression whose type is a function type or a subtype of a function type;
+- in any other context, it is a lambda literal or anonymous function declaration used directly as the expression being checked.
+
+The subject-compatibility condition is that `l` can be given a function type `S` such that `S <: F`.
+
+If SAM conversion is available and `l` satisfies both its subject-kind and subject-compatibility conditions, `l` may be converted to `T`.
 This conversion is called a *Single Abstract Method (SAM) conversion*.
 The resulting value is an instance of `T` whose single abstract member delegates to the function value produced by `l`.
 

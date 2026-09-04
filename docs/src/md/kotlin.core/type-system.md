@@ -882,21 +882,67 @@ This is important for [overload resolution] and [type inference], as it directly
 Most function values have either non-suspending or suspending function type based on their declarations.
 However, as [lambda literals] do not have any explicitly declared function type, they are considered as possibly being both non-suspending and suspending function type, with the final selection done during [type inference].
 
+##### Function type conversions
+
+###### Suspending function type conversions
+
+Despite the lack of a subtyping relation between suspending and non-suspending function types, Kotlin supports an [expected-type-directed conversion][Explicit-type-directed conversions] from non-suspending function values to suspending function types.
+
+Let `T` be a suspending function type and `F` be the corresponding non-suspending function type obtained from `T` by removing the `suspend` modifier.
+
+The availability condition for suspend conversion to `T` is that an expression is checked with expected type `T`.
+
+The subject-kind conditions for an expression `e` are the following:
+
+- if `e` is an argument to a function call, it is either a callable reference or another expression which is not a lambda literal or anonymous function declaration and whose type is a function type or a subtype of a function type;
+- in any other context, it is a callable reference used directly as the expression being checked.
+
+The subject-compatibility condition is that `e` can be given a function type `S` such that `S <: F`.
+
+Lambda literals are typed using the expected suspending function type and do not require suspend conversion.
+Non-suspending anonymous function declarations used directly as the expression being checked are not subject to suspend conversion.
+
+If suspend conversion is available and `e` satisfies both its subject-kind and subject-compatibility conditions, `e` may be converted to `T`.
+This conversion is called *suspend conversion*.
+The resulting value is a suspending function value which invokes the non-suspending function value produced by `e`.
+
 > Example:
-> 
+>
 > ```kotlin
 > fun foo(i: Int): String = TODO()
-> 
+> suspend fun suspendFoo(i: Int): String = TODO()
+> fun consumeRegular(f: (Int) -> String) {}
+> fun consumeSuspend(f: suspend (Int) -> String) {}
+> fun produceFoo(): (Int) -> String = { it.toString() }
+>
 > fun bar() {
 >     val fooRef: (Int) -> String = ::foo
 >     val fooLambda: (Int) -> String = { it.toString() }
+>     val fooAnonymous: (Int) -> String = fun(i: Int): String { return i.toString() }
+>     val suspendFooRef: suspend (Int) -> String = ::foo
+>     val directSuspendFooRef: suspend (Int) -> String = ::suspendFoo
 >     val suspendFooLambda: suspend (Int) -> String = { it.toString() }
-> 
->     // Error: as suspending and non-suspending
->     //   function types are unrelated
->     // val error: suspend (Int) -> String = ::foo
->     // val error: suspend (Int) -> String = fooLambda
->     // val error: (Int) -> String = suspendFooLambda
+>
+>     consumeSuspend(::foo)
+>     consumeSuspend(::suspendFoo)
+>     consumeSuspend { it.toString() }
+>     consumeSuspend(fooRef)
+>     consumeSuspend(fooLambda)
+>     consumeSuspend(fooAnonymous)
+>     consumeSuspend(produceFoo())
+>
+>     // Error: suspend conversion is not available for anonymous function declarations
+>     val suspendFooAnonymous: suspend (Int) -> String = fun(i: Int): String { return i.toString() }
+>     consumeSuspend(fun(i: Int): String { return i.toString() })
+>
+>     // Error: in initializer contexts, suspend conversion applies only to direct callable references
+>     val suspendFooRefValue: suspend (Int) -> String = fooRef
+>     val suspendFooLambdaValue: suspend (Int) -> String = fooLambda
+>     val suspendFooAnonymousValue: suspend (Int) -> String = fooAnonymous
+>
+>     // Error: suspend conversion is one-way
+>     consumeRegular(suspendFooRef)
+>     consumeRegular(suspendFooLambda)
 > }
 > ```
 
@@ -1461,21 +1507,35 @@ In specifically defined cases, an expression may also be compatible with $T$ thr
 An expected-type-directed conversion permits an expression occurrence to produce a value of the expected target type when ordinary compatibility does not hold.
 The concrete conversion rule defines the resulting value and its runtime behavior.
 
+The expression occurrence to which a conversion would be applied is called its *conversion subject*.
+Whether a conversion may be used requires answering two separate questions:
+
+- its *availability conditions* specify the expected target types and the expression contexts in which the conversion may be considered;
+- its *subject conditions* specify which expressions are eligible conversion subjects, based on properties such as their expression form and type.
+
+A conversion is applicable to an expression occurrence only if its availability conditions and subject conditions are both satisfied.
+A conversion rule may specify different subject conditions for different contexts.
+Subject conditions may be divided into *subject-kind conditions*, which identify the allowed kinds of expression without reference to the conversion target type, and *subject-compatibility conditions*, which relate the type of the subject to the conversion target type.
+Subject conditions are evaluated for that particular occurrence, rather than for the origin of the value it produces.
+Consequently, an expression which is not itself an eligible conversion subject may produce a value whose use in a separate expression occurrence is eligible.
+
 Every expected-type-directed conversion rule must specify:
 
-- the expression forms to which it applies;
-- the contexts in which it is available;
-- its expected target type;
-- its applicability conditions;
+- its availability conditions;
+- its subject conditions;
 - the type and behavior of the resulting expression;
-- whether it may be composed with other conversions;
 - any effect its use has on overload resolution.
 
 Expected-type-directed conversions are local and apply only to the specific expression occurrences; they do not introduce additional subtyping relations or change the type of the same expression in other places.
 
 Expected-type-directed conversions are not implicitly closed under composition or subtyping.
 In particular, if an expression may be converted to type $T$ and $T <: U$, this does not imply that the expression may be converted to $U$.
-Several conversions may be composed only when such composition is explicitly permitted by every applicable rule.
+Several conversions may be composed only when the composition is explicitly permitted below.
+Within a permitted composition, the target type of each constituent conversion is treated as an expected type when determining whether that conversion is available.
+
+#### Conversion composition
+
+Suspend conversion may be followed by SAM conversion when the target suspending function type of the suspend conversion is the associated function type of the target functional interface, and both conversions are applicable to the expression.
 
 ### Type approximation
 

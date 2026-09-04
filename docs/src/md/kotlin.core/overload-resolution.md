@@ -368,19 +368,23 @@ Lambda arguments are excluded, as their type inference needs the results of over
 
 Second, the following constraint system is built:
 
-For every argument corresponding to a function parameter of type $U_p$, an expected parameter type $U'_p$ is determined as follows.
+For every argument corresponding to a function parameter of type $U_p$, intermediate expected parameter type $V_p$ is determined as follows.
 
-- If $U_p$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the argument and $F_p$ is the associated function type of $U_p$, then $U'_p = F_p$;
-- Otherwise, $U'_p = U_p$.
+- If $U_p$ is a [functional interface][Functional interface declaration] type, [SAM conversion][SAM conversion] is available for the argument, the argument satisfies its subject-kind conditions, and $F_p$ is the associated function type of $U_p$, then $V_p = F_p$;
+- Otherwise, $V_p = U_p$.
 
 The constraint system is then built as follows:
 
-- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter with expected parameter type $U'_j$, a constraint $T_i <: U'_j$ is constructed;
+- For every non-lambda argument inferred to have type $T_i$, corresponding to the function parameter with expected parameter type $V_j$, a constraint $T_i <: V_j$ is constructed. If $V_j$ is a [suspending function type][Suspending function types], [suspend conversion][Suspending function type conversions] is available for the argument, the argument satisfies its subject-kind conditions, and $F_j$ is the corresponding non-suspending function type, the alternative constraint $T_i <: F_j$ may be used instead;
 - All declaration-site type constraints for the function are also added to the constraint system;
-- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter with expected parameter type $U'_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_K) \rightarrow R\right) <: U'_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
-- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter with expected parameter type $U'_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: U'_n$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
+- For every lambda argument with the number of lambda arguments known to be $K$, corresponding to the function parameter with expected parameter type $V_m$, a special constraint of the form [$\left(\FT(L_1, \ldots, L_K) \rightarrow R \amp \FTR(\RT, L_1, \ldots, L_K) \rightarrow R\right) <: V_m$][Function types] is added to the constraint system, where $R, \RT, L_1, \ldots, L_K$ are fresh type variables;
+- For each lambda argument with an unknown number of lambda arguments (that is, being equal to 0 or 1), corresponding to the function parameter with expected parameter type $V_n$, a special constraint of the form [$\left(\FT() \rightarrow R \amp \FT(L) \rightarrow R \amp \FTR(\RT) \rightarrow R \amp \FTR(\RT, L) \rightarrow R\right) <: V_n$][Function types] is added to the constraint system, where $R, \RT, L$ are fresh type variables;
 
-TODO: in fact, it is an intersection of both non-suspend and suspend variants
+When $V_p$ is the associated function type of a functional interface parameter $U_p$, satisfying the corresponding argument constraint makes the argument compatible with $U_p$ through SAM conversion.
+When the alternative constraint for a suspending function type $V_p$ is used, satisfying it makes the argument compatible with $V_p$ through suspend conversion.
+Neither case establishes a subtyping relation between the source and target types of the conversion.
+
+> Note: for applicability purposes, lambda argument constraints include both the non-suspending function type variants shown above and the corresponding suspending function type variants.
 
 TODO: taking into account the fact that $\FT(L) -> R <: \FTR(L) -> R <: \FT(L) -> R$, this is not entirely correct. It's not that important for applicability though.
 
@@ -721,7 +725,8 @@ TODO(Anything else?)
 First, property and function references are treated equally, as both kinds of references have a type which is a subtype of a [function type][Function types].
 Second, the type information needed to perform the resolution steps is acquired from _expected type_ of the reference itself, rather than the types of arguments and/or result.
 There are several special cases which enhance what is considered the expected type.
-* If [SAM conversion][SAM conversion] is available for a callable reference with a [functional interface][Functional interface declaration] expected type, the associated function type of that functional interface is used as the expected function type for callable reference resolution; after the callable reference is resolved, it may be converted to the original functional interface type using SAM conversion.
+* If [SAM conversion][SAM conversion] to a [functional interface][Functional interface declaration] expected type is available and the callable reference satisfies its subject-kind conditions, the associated function type of that functional interface is used as the expected function type for callable reference resolution; after the callable reference is resolved and satisfies the subject-compatibility condition, it may be converted to the original functional interface type using SAM conversion.
+* A callable reference with a [suspending function type][Suspending function types] as its expected type may be resolved using that suspending function type. If [suspend conversion][Suspending function type conversions] is available and the callable reference satisfies its subject-kind conditions, the corresponding non-suspending function type may alternatively be used as the expected function type; after the callable reference is resolved and satisfies the subject-compatibility condition, it may be converted to the original suspending function type using suspend conversion.
 The `invoke` operator convention **does not** apply to callable reference candidates.
 Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable being called and the callable being referenced are to be resolved _simultaneously_.
 

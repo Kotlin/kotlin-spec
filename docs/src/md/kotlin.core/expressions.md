@@ -1088,8 +1088,12 @@ The types of these expressions are implementation-defined, but the following con
     - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
     The receiver of such callable reference is bound to `lhs`.
 
-If [SAM conversion][SAM conversion] is available for a callable reference with expected functional interface type `T`, the associated function type of `T` is used as the expected function type for resolving the callable reference.
-After successful resolution, the resulting callable reference expression may be converted to `T` using SAM conversion.
+If [SAM conversion][SAM conversion] to expected functional interface type `T` is available and the callable reference satisfies its subject-kind conditions, the associated function type of `T` is used as the expected function type for resolving the callable reference.
+After successful resolution, if the resulting callable reference satisfies the subject-compatibility condition, it may be converted to `T` using SAM conversion.
+
+A callable reference with expected suspending function type `T` may be resolved using `T` as its expected function type.
+If [suspend conversion][Suspending function type conversions] to `T` is available and the callable reference satisfies its subject-kind conditions, the corresponding non-suspending function type may alternatively be used as the expected function type.
+After successful resolution against the non-suspending function type, if the resulting callable reference satisfies the subject-compatibility condition, it may be converted to `T` using suspend conversion.
 
 Being of a function type also means callable references are valid callables themselves, with an appropriate operator `invoke` overload, which allows using call syntax to evaluate such callable with the suitable arguments.
 
