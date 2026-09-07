@@ -1,4 +1,6 @@
 import at.phatbl.shellexec.ShellExec
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 
 plugins {
     kotlin("jvm") version "1.9.23" apply false

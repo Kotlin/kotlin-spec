@@ -54,11 +54,15 @@ private object CompoundFilter : CliktCommand() {
         val om = constructObjectMapper()
         val ii = om.readValue<Pandoc>(System.`in`)
 
+        val processed = visitor.visit(ii)
         if (split) {
-            visitor += Splitter(outputDirectory, format.format, generateTOC)
-            visitor.visit(ii)
+            Splitter(outputDirectory, format.format, generateTOC).visit(processed)
         } else {
-            om.writeValue(System.out, visitor.visit(ii))
+            val result = when {
+                generateTOC -> processed.copy(blocks = listOf(processed.buildTOC()) + processed.blocks)
+                else -> processed
+            }
+            om.writeValue(System.out, result)
         }
     }
 }

@@ -153,7 +153,9 @@ object Sidebar {
 
     private fun addPdfLinks() {
         `$`("$TOC > ul > li > ul > li").each { _, el ->
-            val sectionName = `$`(el).find("> a").attr("href").substringBefore(".html")
+            val sectionName = `$`(el).find("> a.toc-element").attr("href")
+                    .substringAfterLast("#")
+                    .substringBefore(".html")
             `$`(el).prepend("<a href=\"./pdf/sections/$sectionName.pdf\" target=\"_blank\" class=\"download-section-as-pdf\" title=\"Download section as pdf\"></a>")
         }
 
