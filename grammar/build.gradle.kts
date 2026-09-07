@@ -120,7 +120,6 @@ tasks.create("syncWithCompilerTests") {
 tasks.create("prepareDiagnosticsCompilerTests") {
     doFirst {
         //language=RegExp
-        val individualDiagnostic = """[^!,]*"""
         val rangeStartOrEndPattern = Pattern.compile("(<!(([^>])|((?<!\\!)\\>))+!>)|(<!>)")
         val filePattern = Pattern.compile("""// ?FILE: ?""")
         val ls = System.lineSeparator()

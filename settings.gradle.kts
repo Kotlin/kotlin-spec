@@ -1,5 +1,3 @@
-rootProject.name = "kotlin-spec"
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -13,6 +11,12 @@ pluginManagement {
         }
     }
 }
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+rootProject.name = "kotlin-spec"
 
 val withGrammarProject: String? by settings
 

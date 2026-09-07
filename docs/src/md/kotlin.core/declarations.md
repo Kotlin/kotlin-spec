@@ -1052,7 +1052,7 @@ This is allowed only inside an [abstract class][Abstract classes-declarations] o
 If a function body $b$ is present, it should evaluate to type $B$ which should satisfy $B <: R$.
 
 [`kotlin.Nothing`-typesystem]: #kotlin.nothing-typesystem
-[Abstract classes-declarations]: #abstract-classes-declarations
+[Abstract classes-declarations]: #abstract-classes-inheritance
 
 TODO([Kotlin 1.3+, Experimental] `expect` and `external` functions also do not have implementations)
 

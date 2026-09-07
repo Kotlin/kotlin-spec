@@ -256,7 +256,7 @@ For a callable `f` with an explicit extended super-form receiver `super<A>` the 
 
 Additionally, in either case, [abstract][Abstract classes-declarations] callables are not considered valid candidates for the overload resolution process.
 
-[Abstract classes-declarations]: #abstract-classes-declarations
+[Abstract classes-declarations]: #abstract-classes-inheritance
 
 #### Infix function call
 
