@@ -363,15 +363,17 @@ A function is *applicable* for a specific call if and only if the function param
 
 Determining function applicability for a specific call is a [type constraint][Kotlin type constraints] problem.
 
-First, for every non-lambda argument of the function called, type inference is performed.
-Lambda arguments are excluded, as their type inference needs the results of overload resolution to finish.
+For the purposes of applicability checking, an *ordinary argument* is an argument whose expression is neither a [function literal][Function literals] nor a [callable reference][Callable references].
+
+First, type inference is performed for every ordinary argument.
+Function-literal arguments and callable-reference arguments are excluded, as their resolution needs the expected types supplied by overload candidates.
 
 Second, a single constraint system is built.
 All declaration-site type constraints for the function are added to it.
-Arguments are processed in source order.
+Ordinary arguments are processed in source order.
 A constraint is considered *compatible* with the current constraint system if adding it does not make the constraint system unsound.
 
-For every non-lambda argument inferred to have type $T_i$, corresponding to a function parameter of type $U_j$, its compatibility constraint is selected as follows.
+For every ordinary argument inferred to have type $T_i$, corresponding to a function parameter of type $U_j$, its compatibility constraint is selected as follows.
 
 - If $T_i <: U_j$ is compatible with the current constraint system, this constraint is added and no expected-type-directed conversion is used for the argument;
 - Otherwise:
@@ -388,6 +390,11 @@ Once the constraint for an argument is selected and added, it is not reconsidere
 If the selected constraint is sound, the conversions selected while deriving $V_j$ and $S_j$ make the argument compatible with $U_j$.
 They are applied to the argument in the permitted order: suspend conversion, then Unit conversion, then SAM conversion.
 These conversions do not establish subtyping relations between their source and target types.
+
+Callable-reference arguments do not participate in this source-order processing; their resolution is candidate-specific.
+For every callable-reference argument corresponding to a function parameter of type $U_j$, the parameter type $U_j$, refined using information from the current constraint system, is used as the expected type for resolving the callable reference as described in [resolving callable references][Resolving callable references].
+If the expected type does not yet provide enough information, callable-reference resolution may be postponed until additional type information becomes available during constraint-system completion.
+If this resolution ultimately succeeds, the argument is compatible with $U_j$; otherwise, the candidate is not applicable.
 
 For every lambda argument corresponding to a function parameter of type $U_p$, intermediate expected parameter type $V_p$ is determined as follows.
 
@@ -411,6 +418,13 @@ This is due to the fact that, as $\Nothing$ is the subtype of any other type in 
 Extension callables are still available, because they are limited to the declarations available or imported in the current scope.
 
 > Note: although it is impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type $\NothingQ$.
+
+During applicability checking, the following conversion marks are recorded for every candidate:
+
+- a *SAM conversion mark*, if an argument uses [SAM conversion][SAM conversion];
+- a *function-type conversion mark*, if an argument uses [suspend conversion][Suspending function type conversions] or [Unit conversion][Unit-returning function type conversions].
+
+A candidate may have both marks, including when several conversions are [composed][Conversion composition] for the same argument.
 
 ### Choosing the most specific candidate from the overload candidate set
 
@@ -490,7 +504,18 @@ In case 3, several additional steps are performed in order.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
-If after these additional steps there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
+If after these additional steps there are still several candidates which are equally applicable for the call, the candidate set is narrowed using the conversion marks recorded during applicability checking.
+The following steps are applied in order:
+
+1. Prefer candidates without a SAM conversion mark;
+2. Prefer candidates without a function-type conversion mark.
+
+Each step is applied to the current candidate set.
+If it would remove all candidates or would remove no candidates, it has no effect and the next step is applied.
+If it leaves exactly one candidate, that candidate is selected as the most specific one.
+If it leaves several candidates, the MSC selection algorithm is applied again to the remaining candidates, except that the narrowing step which produced this set is not applied again during this recursive selection.
+
+If after conversion-based narrowing there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
 If there are still more than one most specific candidate afterwards, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
@@ -815,14 +840,16 @@ If a callable reference (or several callable references) is itself an argument t
 
 Assume we have a call `f(::g, b, c)`.
 
-1. For each overload candidate `f`, a separate overload resolution process is completed as described in other parts of this section, up to the point of picking the most specific candidate.
-    During this process, the only constraint for the callable reference `::g` is that it is an argument of a [function type][Function types];
-2. For the most specific candidate `f` found during the previous step, the overload resolution process for `::g` is performed as described [here][Resolving callable references not used as arguments to a call] and the most specific candidate for `::g` is selected.
+1. For every overload candidate `f`, argument mapping and applicability checking are performed as described in the other parts of this section.
+    The parameter type corresponding to `::g` for this candidate is used as the expected type of the callable reference;
+2. The callable reference is resolved for this candidate using the rules described [here][Resolving callable references not used as arguments to a call], including any applicable expected-type-directed conversions;
+3. If `::g` cannot be resolved with the expected type provided by a candidate `f`, this candidate is not applicable for the outer call.
+    Any conversions used while resolving `::g` are recorded on `f` using the corresponding conversion marks;
+4. After applicability has been checked for all overload candidates of `f`, the most specific candidate for `f` is selected using the normal rules.
 
-> Note: this may result in selecting the most specific candidate for `f` which has no available candidates for `::g`, meaning the bidirectional resolution process fails when resolving `::g`.
-
-When performing bidirectional resolution for calls with multiple callable reference arguments, the algorithm is exactly the same, with each callable reference resolved separately in step 2.
-This ensures the overload resolution process for every callable being called is performed only once.
+When performing bidirectional resolution for calls with multiple callable-reference arguments, every callable reference is resolved separately for every outer candidate.
+The outer candidate is applicable only if all callable-reference arguments are resolved successfully with their corresponding expected types.
+The selected outer candidate determines the selected callable-reference targets and the conversions used for them.
 
 TODO(Examples)
 
