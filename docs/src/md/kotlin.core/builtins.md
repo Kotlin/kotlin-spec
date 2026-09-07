@@ -111,7 +111,7 @@ $\Widen(T)$ for a built-in integer type $T$ is defined as follows:
 - $\Widen(T) = T$ for any other $T$
 
 > Informally: $\Widen$ means, for the purposes of overload resolution, $\Int$ is preferred over any other built-in integer type and $\Short$ is preferred to $\Byte$.
-> Using $\Widen$, we can reduce this priority to subtyping: $T$ is more preferred than $U$ if $\Widen(T) <: \Widen(U)$; this scheme allows to handle built-in integer types transparently when selecting the [most specific overload candidate][Algorithm of MSC selection].
+> Using $\Widen$, we can reduce this priority to subtyping: $T$ is more preferred than $U$ if $\Widen(T) <: U$; this scheme allows to handle built-in integer types transparently when selecting the [most specific overload candidate][Algorithm of MSC selection].
 >
 > For example, consider the following two functions:
 >
@@ -125,7 +125,7 @@ $\Widen(T)$ for a built-in integer type $T$ is defined as follows:
 > ```
 > 
 > As the integer literal 2 has a type that is applicable for both versions of `foo` (see [Overload resolution section][Overload resolution] for details) and the types `kotlin.Int` and `kotlin.Short` are not related w.r.t. subtyping, it would not be possible to select a more specific candidate out of the two.
-> However, if we consider $\Widen(\Int)$ and $\Widen(\Short)$ respectively as the types of `value`, first candidate becomes more specific than the second, because $\Widen(\Int) <: \Widen(\Short)$.
+> However, if we consider $\Widen(\Int)$ and $\Short$ respectively as the types of `value`, first candidate becomes more specific than the second, because $\Widen(\Int) <: \Short$.
 
 ### Built-in floating point arithmetic types
 

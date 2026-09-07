@@ -427,7 +427,7 @@ The selection process uses the [type constraint][Kotlin type constraints] facili
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
 - For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
-  If both $X_K$ and $Y_K$ are built-in integer types, a type constraint $\Widen(X_K) <: \Widen(Y_K)$ is built instead, where $\Widen$ is the [integer type widening] operator.
+  If both $X_K$ and $Y_K$ are built-in integer types, a type constraint $\Widen(X_K) <: Y_K$ is built instead, where $\Widen$ is the [integer type widening] operator.
   During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
 - If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. 
   For non-extension callables, only declaration-site parameters are considered;
