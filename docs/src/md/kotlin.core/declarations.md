@@ -675,8 +675,9 @@ Annotation classes have the following properties:
     - Other annotation types;
     - Arrays of any other allowed type.
 
-> Important: when we say "other annotation types", we mean an annotation type cannot reference itself, either directly or indirectly.
-> For example, if annotation type `A` references annotation type `B` which references an array of `A`, it is prohibited and reported as a compile-time error.
+> Important: an annotation type cannot reference itself, either directly or indirectly, unless every such reference cycle includes an array-typed or `vararg` parameter.
+> For example, if annotation type `A` has a parameter of annotation type `B`, which has a parameter of type `A`, it is prohibited and reported as a compile-time error.
+> If the parameter of `B` has type `Array<A>` or is declared as `vararg` of type `A` instead, the cycle is allowed.
 
 > Note: annotation classes can have type parameters, but cannot use them as types for their primary constructor parameters.
 > Their main use is for various annotation processing tools, which can access the type arguments from the source code.
