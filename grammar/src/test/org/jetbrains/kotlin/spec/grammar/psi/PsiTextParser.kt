@@ -81,15 +81,15 @@ object PsiTextParser {
         psiTextAsLines.forEach { line ->
             when {
                 matcherFind(line, rulePattern) ->
-                    addNode(matcher!!.group("offset"), NodeClass.RULE, matcher!!.group("type"), null)
+                    addNode(matcher!!.group("offset"), NodeClass.RULE, matcher.group("type"), null)
                 matcherFind(line, tokenPattern) ->
-                    addNode(matcher!!.group("offset"), NodeClass.TOKEN, matcher!!.group("type"), matcher!!.group("text"))
+                    addNode(matcher!!.group("offset"), NodeClass.TOKEN, matcher.group("type"), matcher.group("text"))
                 matcherFind(line, errorElementPattern) ->
-                    addNode(matcher!!.group("offset"), NodeClass.ERROR, null, matcher!!.group("description"))
+                    addNode(matcher!!.group("offset"), NodeClass.ERROR, null, matcher.group("description"))
                 matcherFind(line, whitespaceElementPattern) ->
-                    addNode(matcher!!.group("offset"), NodeClass.WHITESPACE, null, matcher!!.group("content"))
+                    addNode(matcher!!.group("offset"), NodeClass.WHITESPACE, null, matcher.group("content"))
                 matcherFind(line, otherElementPattern) ->
-                    addNode(matcher!!.group("offset"), NodeClass.OTHER, null, matcher!!.group("content"))
+                    addNode(matcher!!.group("offset"), NodeClass.OTHER, null, matcher.group("content"))
             }
         }
 

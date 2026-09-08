@@ -1,9 +1,7 @@
 import at.phatbl.shellexec.ShellExec
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 
 plugins {
-    kotlin("jvm") version "1.9.23" apply false
+    kotlin("jvm") version "2.4.0" apply false
     id("at.phatbl.shellexec") version "1.5.2"
 }
 
@@ -12,14 +10,14 @@ val pdfBuildDir = "${layout.buildDirectory.get()}/spec/pdf"
 val resourcesBuildDir = "$htmlBuildDir/resources"
 val jsBuildDir = "$resourcesBuildDir/js"
 
-tasks.create<Copy>("copyStatic") {
+tasks.register<Copy>("copyStatic") {
     group = "internal"
 
     from("$projectDir/web/resources")
     into(resourcesBuildDir)
 }
 
-tasks.create<Copy>("copyBuiltJs") {
+tasks.register<Copy>("copyBuiltJs") {
     group = "internal"
 
     mustRunAfter("web:build")
@@ -28,7 +26,7 @@ tasks.create<Copy>("copyBuiltJs") {
     into(jsBuildDir)
 }
 
-tasks.create<Copy>("copyHtml") {
+tasks.register<Copy>("copyHtml") {
     group = "internal"
 
     mustRunAfter("docs:buildHtml", "docs:buildHtmlBySections")
@@ -37,7 +35,7 @@ tasks.create<Copy>("copyHtml") {
     into(htmlBuildDir)
 }
 
-tasks.create<Copy>("copyPdf") {
+tasks.register<Copy>("copyPdf") {
     group = "internal"
 
     mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
@@ -46,7 +44,7 @@ tasks.create<Copy>("copyPdf") {
     into(pdfBuildDir)
 }
 
-tasks.create<Copy>("copyStubIndexToRedirectToIntroduction") {
+tasks.register<Copy>("copyStubIndexToRedirectToIntroduction") {
     group = "internal"
 
     mustRunAfter("docs:buildPdf", "docs:buildPdfBySections")
@@ -55,7 +53,7 @@ tasks.create<Copy>("copyStubIndexToRedirectToIntroduction") {
     into(htmlBuildDir)
 }
 
-tasks.create("buildJs") {
+tasks.register("buildJs") {
     group = "internal"
 
     dependsOn("copyStatic")
@@ -67,7 +65,7 @@ tasks.create("buildJs") {
     }
 }
 
-tasks.create("buildWeb") {
+tasks.register("buildWeb") {
     group = "build"
 
     dependsOn("docs:buildHtml")
@@ -76,7 +74,7 @@ tasks.create("buildWeb") {
     dependsOn("buildJs")
 }
 
-tasks.create("buildWebFullOnly") {
+tasks.register("buildWebFullOnly") {
     group = "build"
 
     dependsOn("docs:buildHtml")
@@ -84,7 +82,7 @@ tasks.create("buildWebFullOnly") {
     dependsOn("buildJs")
 }
 
-tasks.create("buildWebBySectionsOnly") {
+tasks.register("buildWebBySectionsOnly") {
     group = "build"
 
     dependsOn("docs:buildHtmlBySections")
@@ -93,7 +91,7 @@ tasks.create("buildWebBySectionsOnly") {
     dependsOn("copyStubIndexToRedirectToIntroduction")
 }
 
-tasks.create("buildPdf") {
+tasks.register("buildPdf") {
     group = "build"
 
     dependsOn("docs:buildPdf")
@@ -101,7 +99,7 @@ tasks.create("buildPdf") {
     dependsOn("copyPdf")
 }
 
-tasks.create<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {
+tasks.register<ShellExec>("syncGrammarWithKotlinGrammarApache2Repo") {
     group = "internal"
     command = """echo -e "Run the following commands: git checkout release; ...; git subtree push --prefix grammar/src/main/antlr git@github.com:Kotlin/kotlin-grammar-apache2 release""""
 }

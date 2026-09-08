@@ -3,7 +3,7 @@ import java.nio.file.Paths
 val htmlBuildDir = "${project.parent?.layout?.buildDirectory?.get()}/spec/html"
 val scriptsDir = "${project.parent?.projectDir}/scripts/build"
 
-tasks.create<Exec>("build") {
+tasks.register<Exec>("build") {
     group = "internal"
 
     inputs.dir("${project.parent?.projectDir}/src/md/kotlin.core")

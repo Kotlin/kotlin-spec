@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
 
 plugins {
@@ -26,6 +26,9 @@ repositories {
 
 kotlin {
     jvmToolchain(11)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
+    }
 }
 
 sourceSets {
@@ -48,11 +51,7 @@ dependencies {
     implementation("org.antlr:antlr4:4.8")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
-tasks.create<Jar>("filtersJar") {
+tasks.register<Jar>("filtersJar") {
     from(
         sourceSets.main.get().output,
         *configurations.runtimeClasspath.get().map { if (it.isDirectory()) it else zipTree(it) }.toTypedArray()
@@ -63,7 +62,7 @@ tasks.create<Jar>("filtersJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.create<JavaExec>("convertGrammar") {
+tasks.register<JavaExec>("convertGrammar") {
     val grammarsDir = "$rootDir/grammar/src/main/antlr"
     val lexerGrammar = "KotlinLexer.g4"
     val parserGrammar = "KotlinParser.g4"
@@ -77,7 +76,7 @@ tasks.create<JavaExec>("convertGrammar") {
     args = listOf("-d", grammarsDir, "-l", lexerGrammar, "-p", parserGrammar, "-o", outputFile)
 }
 
-tasks.create("prepareShell") {
+tasks.register("prepareShell") {
     group = "internal"
 
     val disableTODOS = project.findProperty("disableTODOS") != null
@@ -105,27 +104,27 @@ tasks.create("prepareShell") {
 
 }
 
-tasks.create("buildPdf") {
+tasks.register("buildPdf") {
     group = "internal"
     dependsOn("pdf:build")
 }
 
-tasks.create("buildPdfBySections") {
+tasks.register("buildPdfBySections") {
     group = "internal"
     dependsOn("pdfSections:build")
 }
 
-tasks.create("buildHtml") {
+tasks.register("buildHtml") {
     group = "internal"
     dependsOn("html:build")
 }
 
-tasks.create("buildHtmlBySections") {
+tasks.register("buildHtmlBySections") {
     group = "internal"
     dependsOn("htmlSections:build")
 }
 
-tasks.create<JavaExec>("execute") {
+tasks.register<JavaExec>("execute") {
     group = "internal"
 
     classpath = sourceSets["main"].runtimeClasspath

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackOutput
 
@@ -14,7 +15,7 @@ repositories {
     mavenCentral()
 }
 
-tasks.create<Copy>("copyKatex") {
+tasks.register<Copy>("copyKatex") {
     dependsOn(":kotlinNpmInstall")
     group = "internal"
 
@@ -23,15 +24,14 @@ tasks.create<Copy>("copyKatex") {
 }
 
 kotlin {
-    js(IR) {
-        moduleName = "main"
+    js {
+        compilerOptions {
+            moduleName.set("main")
+            moduleKind.set(JsModuleKind.MODULE_AMD)
+        }
         compilations.all {
             packageJson {
                 dependencies["jquery"] = "2.2.4"
-            }
-
-            kotlinOptions {
-                moduleKind = "amd"
             }
         }
         binaries.executable()
@@ -59,7 +59,7 @@ kotlin {
             dependencies {
                 implementation(npm("katex", "0.16.10"))
                 implementation(npm("jquery", "2.2.4"))
-                implementation(npm("kotlin-playground", "1.30.0"))
+                implementation(npm("kotlin-playground", "1.34.0"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
