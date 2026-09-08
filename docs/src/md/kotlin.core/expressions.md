@@ -1079,14 +1079,16 @@ Depending on the meaning of the left-hand and right-hand sides of a callable ref
 > }
 > ```
 
-The types of these expressions are implementation-defined, but the following constraints must hold:
+The types produced by resolving these expressions, before any applicable expected-type-directed conversion, are implementation-defined, but the following constraints must hold:
 
 - The type of any property reference is a subtype of `kotlin.reflect.KProperty<T>`, where the type parameter `T` is fixed to the type of the property;
-- The type of any function reference is a subtype of `kotlin.reflect.KFunction<T>`, where the type parameter `T` is fixed to the return type of the function;
+- Unless a function reference undergoes a [callable-reference adaptation][Callable-reference adaptations], its type is a subtype of `kotlin.reflect.KFunction<T>`, where the type parameter `T` is fixed to the return type of the function;
 - The type of any callable reference is a subtype of [function type][Function types] which allows the corresponding callable to be accessed/called accordingly.
-    - For a type-callable reference `lhs::rhs`, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type (type of `lhs`), `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable;
-    - For a value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
+    - For an unadapted type-callable reference `lhs::rhs`, it is a function type `(O, Arg0 ... ArgN) -> R`, where `O` is a receiver type (type of `lhs`), `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable;
+    - For an unadapted value-callable reference `lhs::rhs`, it is a function type `(Arg0 ... ArgN) -> R`, where `Arg0, ... , ArgN` are either empty (for a property reference) or the types of function formal parameters (for a function reference), and `R` is the result type of the callable.
     The receiver of such callable reference is bound to `lhs`.
+
+An adapted function reference has the non-reflective function type produced by its [callable-reference adaptation][Callable-reference adaptations] and is not a subtype of `kotlin.reflect.KFunction`.
 
 If [SAM conversion][SAM conversion] to expected functional interface type `T` is available and the callable reference satisfies its subject-kind conditions, the associated function type of `T` is used as the expected function type for resolving the callable reference.
 After successful resolution, if the resulting callable reference satisfies the subject-compatibility condition, it may be converted to `T` using SAM conversion.

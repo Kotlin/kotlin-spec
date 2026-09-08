@@ -419,12 +419,13 @@ Extension callables are still available, because they are limited to the declara
 
 > Note: although it is impossible to create a value of type $\Nothing$ directly, there may be situations where performing overload resolution on such value is necessary; for example, it may occur when doing safe navigation on values of type $\NothingQ$.
 
-During applicability checking, the following conversion marks are recorded for every candidate:
+During applicability checking, the following *resolution marks* are recorded for every candidate:
 
+- a *callable-reference adaptation mark*, if a callable-reference argument uses [default or arity adaptation][Callable-reference adaptations];
 - a *SAM conversion mark*, if an argument uses [SAM conversion][SAM conversion];
 - a *function-type conversion mark*, if an argument uses [suspend conversion][Suspending function type conversions] or [Unit conversion][Unit-returning function type conversions].
 
-A candidate may have both marks, including when several conversions are [composed][Conversion composition] for the same argument.
+A candidate may have several marks, including when several conversions are [composed][Conversion composition] for the same argument or when a callable-reference adaptation is used together with a conversion.
 
 ### Choosing the most specific candidate from the overload candidate set
 
@@ -504,18 +505,19 @@ In case 3, several additional steps are performed in order.
 
 > Important: compiler implementations may extend these steps with additional checks, if they deem necessary to do so.
 
-If after these additional steps there are still several candidates which are equally applicable for the call, the candidate set is narrowed using the conversion marks recorded during applicability checking.
+If after these additional steps there are still several candidates which are equally applicable for the call, the candidate set is narrowed using the resolution marks recorded during applicability checking.
 The following steps are applied in order:
 
-1. Prefer candidates without a SAM conversion mark;
-2. Prefer candidates without a function-type conversion mark.
+1. Prefer candidates without a callable-reference adaptation mark;
+2. Prefer candidates without a SAM conversion mark;
+3. Prefer candidates without a function-type conversion mark.
 
 Each step is applied to the current candidate set.
 If it would remove all candidates or would remove no candidates, it has no effect and the next step is applied.
 If it leaves exactly one candidate, that candidate is selected as the most specific one.
 If it leaves several candidates, the MSC selection algorithm is applied again to the remaining candidates, except that the narrowing step which produced this set is not applied again during this recursive selection.
 
-If after conversion-based narrowing there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
+If after narrowing by these marks there are still several candidates which are equally applicable for the call, we may attempt to [use the lambda return type to refine function applicability][Using lambda return type to refine function applicability].
 If there are still more than one most specific candidate afterwards, this is an **overload ambiguity** which must be reported as a compile-time error.
 
 > Note: unlike the applicability test, the candidate comparison constraint system is **not** based on the actual call, meaning that, when comparing two candidates, only constraints visible at *declaration site* apply.
@@ -771,6 +773,62 @@ There are several special cases which enhance what is considered the expected ty
 The `invoke` operator convention **does not** apply to callable reference candidates.
 Third, and most important, is that, in the case of a call with a callable reference as a parameter, the resolution is **bidirectional**, meaning that both the callable being called and the callable being referenced are to be resolved _simultaneously_.
 
+#### Callable-reference adaptations
+
+While a callable-reference expression is being resolved against an expected non-reflective [function type][Function types], a function or constructor reference candidate may be adapted to the input-parameter shape of that expected type.
+This *callable-reference adaptation* is expected-type-directed, but it is not an [expected-type-directed conversion][Explicit-type-directed conversions].
+It is available only while resolving the particular callable-reference expression; it cannot be applied later to another expression which evaluates to the resulting callable-reference value.
+
+Let $T$ be the function type used as the target of callable-reference resolution, and let $T_1, \ldots, T_M$ be the types of its input parameters.
+These input parameters and their types are called the *target parameters* and *target parameter types*, respectively.
+
+For a function or constructor reference candidate, its unbound receivers followed by its value parameters are called the *source parameters*.
+Let $S_1, \ldots, S_N$ be their types after applying the substitutions inferred while resolving the callable reference; these are called the *source parameter types*.
+For a variable length source parameter, its source parameter type is the corresponding specialized array type after the same substitutions, and its *source element type* is the corresponding substituted element type.
+
+Callable-reference resolution attempts to map the target parameters to the source parameters in declaration order.
+Every unbound receiver source parameter must be mapped to exactly one target parameter without adaptation.
+A non-variable-length source value parameter is also mapped to exactly one target parameter unless it is omitted using default adaptation.
+Mapping a target parameter of type $T_i$ to such a source parameter of type $S_j$ requires the constraint $T_i <: S_j$ to be compatible with the current constraint system.
+The mapping may additionally use the following adaptations.
+
+- With *default adaptation*, a source value parameter is left without a target parameter in a position where an ordinary function call may omit a [default parameter][Named, positional and default parameters], and its default value is used.
+- With *arity adaptation*, a [variable length][Variable length parameters] source parameter with source element type $E_j$ may be mapped to zero or more consecutive target parameters.
+  Mapping a target parameter of type $T_i$ in this way requires the constraint $T_i <: E_j$ to be compatible with the current constraint system.
+  When the adapted reference is invoked, the corresponding arguments are used as the elements of the variable length argument in the same order.
+
+Without arity adaptation, a variable length source parameter of source parameter type $S_j$ may instead be mapped to exactly one target parameter of type $T_i$ if the constraint $T_i <: S_j$ is compatible with the current constraint system.
+In this case, that target parameter supplies the complete variable length argument array.
+The array form and element form cannot be combined for the same source parameter.
+Default adaptation and arity adaptation may be used together if the resulting parameter mapping is valid.
+
+The mapping constructs a non-reflective source function type $S$ for the adapted callable reference.
+Before any separate expected-type-directed conversion, a source parameter mapped ordinarily contributes its source parameter type to $S$, every target parameter mapped using arity adaptation contributes the source element type, and an omitted source parameter contributes no input parameter.
+The resulting source function type $S$ must be a subtype of the target function type $T$.
+Invoking its value invokes the referenced function using the mapped arguments: omitted default arguments are evaluated as for an ordinary call, and arguments mapped to a variable length parameter are packed into its array.
+
+> Example (default adaptation):
+>
+> ```kotlin
+> fun foo(x: Any? = null) {}
+>
+> val direct: () -> Unit = ::foo // OK: `x` is omitted
+>
+> val stored = ::foo
+> val indirect: () -> Unit = stored // Error: `stored` is not a callable-reference expression
+> ```
+
+> Example (arity adaptation):
+>
+> ```kotlin
+> fun foo(vararg xs: Any?) {}
+>
+> val zero: () -> Unit = ::foo
+> val one: (Any?) -> Unit = ::foo
+> val two: (Any?, Any?) -> Unit = ::foo
+> val array: (Array<out Any?>) -> Unit = ::foo // Unadapted array form
+> ```
+
 #### Resolving callable references not used as arguments to a call
 
 In a simple case when the callable reference is not used as an argument to an overloaded call, its resolution is performed as follows:
@@ -843,14 +901,14 @@ Assume we have a call `f(::g, b, c)`.
 
 1. For every overload candidate `f`, argument mapping and applicability checking are performed as described in the other parts of this section.
     The parameter type corresponding to `::g` for this candidate is used as the expected type of the callable reference;
-2. The callable reference is resolved for this candidate using the rules described [here][Resolving callable references not used as arguments to a call], including any applicable expected-type-directed conversions;
-3. If `::g` cannot be resolved with the expected type provided by a candidate `f`, this candidate is not applicable for the outer call.
-    Any conversions used while resolving `::g` are recorded on `f` using the corresponding conversion marks;
-4. After applicability has been checked for all overload candidates of `f`, the most specific candidate for `f` is selected using the normal rules.
+2. The callable reference is resolved for this candidate using the rules described [here][Resolving callable references not used as arguments to a call], including any applicable callable-reference adaptations and expected-type-directed conversions;
+    Any default or arity adaptation used while resolving `::g` is recorded on `f` using a callable-reference adaptation mark, and any conversions are recorded using the corresponding resolution marks;
+    If `::g` cannot be resolved with the expected type provided by a candidate `f`, this candidate is not applicable for the outer call.
+3. After applicability has been checked for all overload candidates of `f`, the most specific candidate for `f` is selected using the normal rules.
 
 When performing bidirectional resolution for calls with multiple callable-reference arguments, every callable reference is resolved separately for every outer candidate.
 The outer candidate is applicable only if all callable-reference arguments are resolved successfully with their corresponding expected types.
-The selected outer candidate determines the selected callable-reference targets and the conversions used for them.
+The selected outer candidate determines the selected callable-reference targets and the adaptations and conversions used for them.
 
 TODO(Examples)
 
