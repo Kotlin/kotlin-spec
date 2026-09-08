@@ -10,6 +10,9 @@ import ru.spbstu.pandoc.*
 private fun String.splitAt(index: Int) = substring(0, minOf(index, length)) to substring(minOf(index, length))
 
 class SpecTodoFilterVisitor(val format: Format, val disableTODOS: Boolean) : PandocVisitor() {
+    override fun visit(bs: List<Block>, token: Block?): List<Block> =
+        super.visit(bs, token).filterNot { it == Block.Null }
+
     fun makeInlineTODO(contents: List<Inline>): Inline? = when {
         disableTODOS -> null
         format.isLaTeX() -> {
