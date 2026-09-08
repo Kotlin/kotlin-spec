@@ -1563,15 +1563,16 @@ A return expression with no value implicitly returns the `kotlin.Unit` object.
 
 There are two forms of return expression: a simple return expression, specified using the non-labeled `return` keyword, which returns from the innermost [function declaration][Function declaration] (or [anonymous function declaration][Anonymous function declarations]), and a labeled return expression of the form `return@Context` which works as follows.
 
-- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function.
-  If several declarations match the same name, the `return@Context` is considered to be from the nearest matching function;
-- If `return@Context` is used inside a non-labeled lambda literal, the name of the function **using** this lambda expression as its argument may be used as `Context` to refer to the lambda literal;
-- If `return@Context` is used inside a labeled lambda literal, the label may be used as `Context` to refer to the lambda literal.
+- If `return@Context` is used inside a named function declaration, the name of the declared function may be used as `Context` to refer to that function;
+- If `return@Context` is used inside a non-labeled [function literal][Function literals], the name of the function using this function literal as its argument may be used as `Context` to refer to the function literal;
+- If `return@Context` is used inside a labeled function literal, the label may be used as `Context` to refer to the function literal;
+- If several entities match the same label, `return@Context` refers to the nearest matching entity.
 
-If a return expression is used in the context of a lambda literal which is *not* [*inlined*][Inlining] in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.
+A return expression which refers to a function scope declared outside one or more containing [function literals][Function literals] is called *non-local*.
+It is allowed only if every function literal whose boundary it crosses is [*inlined*][Inlining]; otherwise it is a compile-time error.
 
-> Note: these rules mean a simple return expression inside a lambda expression returns **from the innermost function** in which this lambda expression is defined.
-> They also mean such return expression is allowed only inside **inlined** lambda expressions.
+> Note: these rules mean a simple return expression inside a lambda expression returns from the innermost function declaration in which this lambda expression is defined, so it is always non-local.
+> Such a return expression is therefore allowed only inside inlined lambda expressions.
 
 #### Continue expressions
 
@@ -1580,10 +1581,13 @@ When evaluated, this expression passes the control to the start of the next loop
 
 There are two forms of continue expressions:
 
-- A simple continue expression, specified using the `continue` keyword, which continue-jumps to the innermost loop statement in the current scope;
+- A simple continue expression, specified using the non-labeled `continue` keyword, which continue-jumps to the innermost [loop statement][Loop statements] in the current scope;
 - A labeled continue expression, denoted `continue@Loop`, where `Loop` is a label of a labeled loop statement `L`, which continue-jumps to the loop `L`.
 
-If a continue expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+A continue expression which refers to a loop scope outside one or more containing [function literals][Function literals] is called *non-local*.
+It is allowed only if every function literal whose boundary it crosses is [*inlined*][Inlining]; otherwise it is a compile-time error.
+
+> Note: non-local continue expressions are supported since Kotlin 2.2.
 
 #### Break expressions
 
@@ -1592,7 +1596,10 @@ When evaluated, this expression passes the control to the next program point imm
 
 There are two forms of break expressions:
 
-- A simple break expression, specified using the `break` keyword, which break-jumps to the innermost loop statement in the current scope;
+- A simple break expression, specified using the non-labeled `break` keyword, which break-jumps to the innermost [loop statement][Loop statements] in the current scope;
 - A labeled break expression, denoted `break@Loop`, where `Loop` is a label of a labeled loop statement `L`, which break-jumps to the loop `L`.
 
-If a break expression is used in the context of a lambda literal which refers to any loop scope outside this lambda literal, it is disallowed and should result in a compile-time error.
+A break expression which refers to a loop scope outside one or more containing [function literals][Function literals] is called *non-local*.
+It is allowed only if every function literal whose boundary it crosses is [*inlined*][Inlining]; otherwise it is a compile-time error.
+
+> Note: non-local break expressions are supported since Kotlin 2.2.

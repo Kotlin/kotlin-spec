@@ -118,9 +118,9 @@ It has the following single field:
 `kotlin.annotation.Repeatable` is an annotation which is only used on annotation classes to specify whether this particular annotation is repeatable.
 Annotations are non-repeatable by default.
 
-#### `kotlin.RequiresOptIn` / `kotlin.OptIn`
+#### `kotlin.RequiresOptIn`
 
-`kotlin.RequiresOptIn` is an annotation class with two fields:
+`kotlin.RequiresOptIn` is an annotation class applicable only to annotation classes, which has two fields:
 
 * ```kotlin
   val message: String = ""
@@ -136,19 +136,54 @@ Annotations are non-repeatable by default.
 
 This annotation is used to introduce implementation-defined experimental language or standard library features.
 
+If an annotation class `Foo` is marked with `@RequiresOptIn`, declarations marked with `@Foo` require their uses to explicitly opt in to `Foo`.
+The requirement can be satisfied in one of the following ways:
+
+* Mark the use or its containing declaration with `@Foo`, which propagates the opt-in requirement to uses of that declaration;
+* Mark the use or its containing declaration with [`@OptIn(Foo::class)`][`kotlin.OptIn`], which does not propagate the opt-in requirement.
+
+The exact details of how this annotation is processed are implementation-defined.
+
+> Note: before Kotlin 1.4, there was another built-in annotation `@Experimental` (now replaced by `@RequiresOptIn`) serving the same purpose which is now deprecated.
+
+#### `kotlin.OptIn`
+
 `kotlin.OptIn` is an annotation class with a single field:
 
 * ```kotlin
   vararg val markerClass: KClass<out Annotation>
   ```
 
-  The classes which this annotation allows to use.
+  The `@RequiresOptIn`-marked annotation classes this annotation opts in to.
 
-This annotation is used to explicitly mark declarations which use experimental features marked by `kotlin.RequiresOptIn`.
+This annotation is used to explicitly opt in to experimental features introduced by `@RequiresOptIn`-marked annotations.
 
-It is implementation-defined how this annotation is processed.
+The exact details of how this annotation is processed are implementation-defined.
 
-> Note: before Kotlin 1.4.0, there were two other built-in annotations: `@Experimental` (now replaced by `@RequiresOptIn`) and `@UseExperimental` (now replaced by `@OptIn`) serving the same purpose which are now deprecated.
+> Note: before Kotlin 1.4, there was another built-in annotation `@UseExperimental` (now replaced by `@OptIn`) serving the same purpose which is now deprecated.
+
+#### `kotlin.SubclassOptInRequired`
+
+> Note: this annotation is available since Kotlin 2.1.
+
+`kotlin.SubclassOptInRequired` may be applied only to non-local classes declared `open` or `abstract` (but not `sealed` classes), and to non-`fun` interfaces.
+It has a single field:
+
+* ```kotlin
+  vararg val markerClass: KClass<out Annotation>
+  ```
+
+  The `@RequiresOptIn`-marked annotation classes for which subclassing requires an explicit opt-in.
+
+If a classifier is marked with `@SubclassOptInRequired(Foo::class)`, a declaration which directly inherits from or implements it must explicitly opt in to `Foo`.
+This requirement does not otherwise restrict using the classifier.
+The inheritance requirement can be satisfied in one of the following ways:
+
+* Mark the subtype with `@Foo`, which propagates the regular opt-in requirement to all uses of the subtype, including further inheritance;
+* Mark the subtype with `@SubclassOptInRequired(Foo::class)`, which propagates the opt-in requirement only to further inheritance;
+* Mark the subtype with [`@OptIn(Foo::class)`][`kotlin.OptIn`], which does not propagate the opt-in requirement.
+
+The exact details of how this annotation is processed are implementation-defined.
 
 #### `kotlin.Deprecated` / `kotlin.ReplaceWith`
 
