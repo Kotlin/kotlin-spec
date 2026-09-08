@@ -34,14 +34,30 @@ RUN mkdir -p /etc/apt/keyrings \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# install more TeX Live packages
-RUN tlmgr update --self \
-    && tlmgr install --no-persistent-downloads \
-    enumitem \
-    cancel \
-    todonotes \
-    titlesec \
-    newunicodechar
+# Install the additional TeX Live packages used by the PDF build.  tlmgr may
+# exit successfully after an individual download has failed, so retry each
+# package and verify the file that Pandoc/LaTeX will actually load.
+RUN for attempt in 1 2 3; do \
+        if tlmgr update --self; then break; fi; \
+        if [[ "$attempt" == 3 ]]; then exit 1; fi; \
+        sleep "$((attempt * 5))"; \
+    done \
+    && install_tex_package() { \
+        local package="$1" style="$2" attempt; \
+        for attempt in 1 2 3; do \
+            tlmgr install --no-persistent-downloads "$package" || true; \
+            if kpsewhich "$style" >/dev/null; then return 0; fi; \
+            echo "TeX package $package did not provide $style (attempt $attempt/3)" >&2; \
+            if [[ "$attempt" != 3 ]]; then sleep "$((attempt * 5))"; fi; \
+        done; \
+        return 1; \
+    } \
+    && install_tex_package enumitem enumitem.sty \
+    && install_tex_package cancel cancel.sty \
+    && install_tex_package xkeyval xkeyval.sty \
+    && install_tex_package todonotes todonotes.sty \
+    && install_tex_package titlesec titlesec.sty \
+    && install_tex_package newunicodechar newunicodechar.sty
 
 # add build-spec.sh file for GitHub Actions
 COPY build-spec.sh /build-spec.sh
