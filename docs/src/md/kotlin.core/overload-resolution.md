@@ -467,7 +467,12 @@ The selection process uses the [type constraint][Kotlin type constraints] facili
 
 For every two distinct members of the candidate set $F_1$ and $F_2$, the following constraint system is constructed and solved:
 
-- For every non-default argument of the call and their corresponding declaration-site parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
+- For every non-default argument of the call, its corresponding declaration-site parameter type is determined separately for each candidate.
+  If the argument is mapped to a [variable-argument parameter][Variable length parameters], the corresponding type is:
+    - the element type of the variable-argument parameter, if the argument is positional and is not a [spread argument][Spread operator expressions];
+    - the array type of the variable-argument parameter, otherwise.
+  Each argument mapped to the same variable-argument parameter is considered separately;
+- For the corresponding parameter types $X_1, \ldots, X_N$ of $F_1$ and $Y_1, \ldots, Y_N$ of $F_2$, a type constraint $X_K <: Y_K$ is built **unless both $X_K$ and $Y_K$ are [built-in integer types][Built-in integer types].**
   If both $X_K$ and $Y_K$ are built-in integer types, a type constraint $\Widen(X_K) <: \Widen(Y_K)$ is built instead, where $\Widen$ is the [integer type widening] operator.
   During construction of these constraints, all declaration-site type parameters $T_1, \ldots, T_M$ of $F_1$ are considered bound to fresh type variables $T^{\sim}_1, \ldots, T^{\sim}_M$, and all type parameters of $F_2$ are considered free;
 - If $F_1$ and $F_2$ are extension callables, their extension receivers are also considered non-default arguments of the call, even if implicit, and the corresponding constraints are added to the constraint system as stated above. 
@@ -499,6 +504,23 @@ In case 3, several additional steps are performed in order.
 - For each candidate we count the number of default parameters *not* specified in the call (i.e., the number of parameters for which we use the default value).
   The candidate with the least number of non-specified default parameters is a more specific candidate;
 - For all candidates, the candidate having any variable-argument parameters is less specific than any candidate without them.
+
+> Example:
+>
+> ```kotlin
+> fun foo(vararg s: Int) {}            // (1)
+> fun foo(a: Int, b: Int, c: Int) {}   // (2)
+>
+> fun bar(vararg s: Int) {}            // (3)
+> fun bar(a: Int, vararg b: Int) {}    // (4)
+>
+> foo(1, 2, 3) // resolves to (2)
+> bar(1, 2, 3) // overload ambiguity between (3) and (4)
+> ```
+>
+> For each candidate, the three arguments in both calls correspond to parameter types `Int`, `Int`, and `Int`.
+> The candidates in each pair are therefore equally applicable by parameter types.
+> Candidate (2) is selected over (1), because it has no variable-argument parameter, whereas neither (3) nor (4) is preferred because both have one.
 
 > Note: it may seem strange to process built-in integer types in a way different from other types, but it is needed for cases when the call argument is an integer literal with an [integer literal type][Integer literal types].
 > In this particular case, several functions with different built-in integer types for the corresponding parameter may be applicable, and the `kotlin.Int` overload is selected to be the most specific.
