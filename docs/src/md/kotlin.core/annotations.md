@@ -12,8 +12,10 @@ An annotation value is a value of a special [annotation type][Annotation declara
 An annotation type is a special kind of class type which is allowed to include read-only properties of the following types:
 
 - [Integer types][Built-in integer types];
+- [`kotlin.Boolean`][`kotlin.Boolean`];
 - [Enum types][Enum class declaration];
 - [String type][`kotlin.String`];
+- [`kotlin.reflect.KClass`][`kotlin.reflect.KClass`];
 - Other annotation types;
 - [Arrays][Array types] of any type listed above.
 
