@@ -1589,8 +1589,10 @@ val x: T
 ```
 
 where `provideDelegate` is a suitable operator function available using the receiver `e`, while `getValue` and `setValue` work the same way they do with normal property delegation.
-As is the case with`setValue` and `getValue`,  `thisRef`  is a reference to the receiver of the property or `null` for local properties, but there is also a special case: for extension properties `thisRef` supplied to `provideDelegate` is `null`, while `thisRef` provided to `getValue` and `setValue` is the actual receiver.
-This is due to the fact that, during the creation of the property, no receiver is available.
+
+The `thisRef` argument supplied to `provideDelegate` is the [dispatch receiver][Receivers] of the property if the property has one, and `null` otherwise.
+In particular, for a member extension property, `thisRef` supplied to `provideDelegate` is the instance of the classifier which contains the property, whereas `thisRef` supplied to `getValue` and `setValue` is the extension receiver used to access the property.
+The extension receiver is not available when the provided delegate is created.
 :::
 
 For both provided and standard delegates, the generated delegate value is placed in the same context as its corresponding property.
