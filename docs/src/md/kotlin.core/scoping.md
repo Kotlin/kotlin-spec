@@ -79,28 +79,22 @@ TODO(identifier lifetime & such)
 Scopes `A` and `B` in a Kotlin program may be *downwards-linked* (`A ~> B`), meaning identifiers from `A` can be used in `B` without the need for additional qualification.
 If scopes `A` and `B` are downwards-linked, scopes `B` and `A` are considered *upwards-linked* (`B <~ A`).
 
-> Note: link relation is transitive, unless specified otherwise.
+> Note: the link relation is transitive unless specified otherwise.
 
 Scopes are downwards-linked (DLD) or upwards-linked (ULD) as follows:
 
-- A statement scope is DLD to any directly nested scope;
-- An [object declaration][Classifier declaration] scope is DLD to any nested scopes;
-- An [object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its superclasses;
-- An [object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;
-- An [object declaration][Classifier declaration] scope is ULD to the companion object declaration scope of its parent classifier;
-- A [companion object declaration][Classifier declaration] scope is DLD to any nested scopes;
-- A [companion object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its superclasses;
-- A [companion object declaration][Classifier declaration] scope is non-transitively ULD to the companion object scopes of its parent classifier superclasses;
-- A [companion object declaration][Classifier declaration] scope is ULD to the companion object declaration scope of the *parent* of its parent classifier;
-- A [classifier or nested class declaration][Classifier declaration] scope is DLD to any nested statement scopes;
-- A [classifier or nested class declaration][Classifier declaration] scope is ULD to its companion object declaration scope;
-- An [inner class declaration][Nested and inner classifiers] scope is DLD to any nested statement scopes;
-- An [inner class declaration][Nested and inner classifiers] scope is ULD to the classifier declaration scope of its parent classifier;
-- A function or non-primary constructor parameter scope is ULD to the scope containing the function declaration and DLD to the function body;
-- A primary constructor parameter scope is ULD to the scope containing the classifier declaration (but not the classifier declaration scope itself) and DLD to the classifier initialization scope;
-- The instance initialization blocks are ULD to the classifier initialization scope.
+* A [classifier body scope][Classifier declaration scopes] is DLD to any nested statement scope;
+* A statement scope is DLD to any directly nested scope;
+* A [static classifier body scope][Classifier declaration scopes] is DLD to the corresponding [actual classifier body scope][Classifier declaration scopes];
+* A [static classifier body scope][Classifier declaration scopes] is DLD to any nested [static classifier body scope][Classifier declaration scopes];
+* An [actual classifier body scope][Classifier declaration scopes] is DLD to any nested [actual classifier body scope][Classifier declaration scopes];
+* A [static classifier body scope][Classifier declaration scopes] is ULD to [static classifier body scopes][Classifier declaration scopes] of the classifier's superclasses, *ignoring the scopes' further upward links*;
+* A [function parameter scope][Function declaration scopes] is ULD to the scope containing the function declaration and DLD to the [function body scope][Function declaration scopes];
+* A [primary constructor parameter scope][Constructor declaration scopes] is ULD to the scope containing the classifier declaration and DLD to the [classifier initialization scope][Classifier declaration scopes];
+* A [classifier initialization scope][Classifier declaration scopes] is ULD to the corresponding [actual classifier body scope][Classifier declaration scopes];
+* Property initializers and initialization blocks are ULD to the [classifier initialization scope][Classifier declaration scopes].
 
-TODO: rewrite all the corresponding section (parameter declarations, initializers, etc) referring to the newly-introduced scopes
+TODO: rewrite all the corresponding section(s) (parameter declarations, initializers(?), constructors, etc.) referring to the newly introduced scopes
 
 > Important: linked scopes **do not** cover cases when identifiers from supertypes are used in subtypes, as this is covered by the [inheritance][Inheritance] rules.
 
