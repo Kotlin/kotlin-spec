@@ -759,10 +759,11 @@ In other aspects they are similar to classes, therefore we shall specify their d
 * Interface properties cannot have initializers or backing fields;
 * Interface properties cannot be delegated;
 * An interface cannot have inner classes;
-* An interface and all its members are implicitly open;
+* An interface is implicitly abstract;
 * All interface member properties and functions are implicitly public;
     * Trying to declare a non-public member property or function in an interface is an compile-time error;
-* Interface member properties and functions without implementation are implicitly abstract.
+* Interface member properties and functions without implementation are implicitly abstract;
+* Interface member properties and functions with implementation are implicitly open.
 
 ##### Functional interface declaration
 
