@@ -244,11 +244,13 @@ fun <T> Continuation<T>.intercepted(): Continuation<T>
 // Additional functions for types with explicit receiver
 
 fun <R, T> (suspend R.() -> T).createCoroutineUnintercepted(
+    receiver: R,
     completion: Continuation<T>
 ): Continuation<Unit>
 
 fun <T> (suspend R.() -> T).
     startCoroutineUninterceptedOrReturn(
+        receiver: R,
         completion: Continuation<T>): Any?
 ```
 
